@@ -1,52 +1,261 @@
 {
-  "name": "scad-ai-ide",
-  "displayName": "scad-ai-ide",
-  "description": "",
-  "version": "0.0.1",
-  "engines": {
-    "vscode": "^1.140.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [],
-  "main": "./dist/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "scad-ai-ide.helloWorld",
-        "title": "Hello World"
-      }
-    ]
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run package",
-    "compile": "npm run check-types && npm run lint && node esbuild.js",
-    "watch": "npm-run-all -p watch:*",
-    "watch:esbuild": "node esbuild.js --watch",
-    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-    "package": "npm run check-types && npm run lint && node esbuild.js --production",
-    "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "npm run compile-tests && npm run compile && npm run lint",
-    "check-types": "tsc --noEmit",
-    "lint": "eslint src",
-    "test": "vscode-test"
-  },
-  "devDependencies": {
-    "@types/vscode": "^1.140.0",
-    "@types/mocha": "^10.0.10",
-    "@types/node": "24.x",
-    "typescript-eslint": "^8.61.1",
-    "eslint": "^10.5.0",
-    "esbuild": "^0.28.1",
-    "npm-run-all": "^4.1.5",
-    "typescript": "^6.0.3",
-    "@vscode/test-cli": "^0.0.15",
-    "@vscode/test-electron": "^3.0.0"
-  },
-  "overrides": {
-    "diff": "^8.0.4",
-    "serialize-javascript": "^7.0.6"
-  }
+    "name": "scad-ai-ide",
+    "displayName": "SCAD AI IDE",
+    "description": "OpenSCAD runtime discovery and development tools for VS Code",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.140.0"
+    },
+    "categories": [
+        "Programming Languages",
+        "Other"
+    ],
+    "activationEvents": [
+        "onStartupFinished",
+        "onLanguage:openscad"
+    ],
+    "main": "./dist/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "scad-ai-ide.selectRuntime",
+                "title": "Select OpenSCAD Runtime",
+                "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai-ide.refreshRuntimes",
+                "title": "Discover OpenSCAD Runtimes",
+                "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai-ide.showRuntimeOutput",
+                "title": "Show Runtime Diagnostics",
+                "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai-ide.addRuntime",
+                "title": "Add OpenSCAD Runtime",
+                "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai.ai.open",
+                "title": "Open AI",
+                "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai.bricks.open",
+                "title": "Open Bricks",
+                "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai.libraries.open",
+                "title": "Open Libraries",
+                "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai.runtime.open",
+                "title": "Open Runtime",
+                "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai.customizer.edit",
+                "title": "Edit Customizer Parameter",
+                "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai-ide.restartLanguageServer",
+                "title": "Restart OpenSCAD Language Server",
+                "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai-ide.showLanguageServerOutput",
+                "title": "Show OpenSCAD Language Server Output",
+                "category": "SCAD AI IDE"
+            }
+        ],
+        "configuration": {
+            "title": "SCAD AI IDE",
+            "properties": {
+                "scad-ai-ide.openscadPath": {
+                    "type": "string",
+                    "default": "",
+                    "scope": "machine",
+                    "markdownDescription": "Absolute path to the OpenSCAD executable, or a macOS `.app`. Leave empty for automatic discovery (PATH, then common installation locations). Runs on the extension host, including SSH, WSL, or containers."
+                },
+                "scad-ai-ide.runtimeCommand": {
+                    "type": [
+                        "object",
+                        "null"
+                    ],
+                    "default": null,
+                    "scope": "machine",
+                    "additionalProperties": false,
+                    "required": [
+                        "executable",
+                        "argsPrefix"
+                    ],
+                    "properties": {
+                        "executable": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "argsPrefix": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "markdownDescription": "Selected runtime launch command, including Flatpak/Snap arguments. Use **SCAD AI IDE: Select OpenSCAD Runtime** to change it. `openscadPath` takes precedence when nonempty."
+                },
+                "scad-ai-ide.languageServer.enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable openscad-LSP in trusted workspaces."
+                },
+                "scad-ai-ide.languageServer.path": {
+                    "type": "string",
+                    "default": "",
+                    "scope": "machine",
+                    "description": "Absolute path to openscad-lsp on the extension host. Empty uses the bundled binary, then openscad-lsp on PATH."
+                },
+                "scad-ai-ide.languageServer.searchPaths": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [],
+                    "description": "Absolute OpenSCAD library directories. Changing this setting restarts the server to remove stale paths."
+                },
+                "scad-ai-ide.languageServer.defaultParameters": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Include optional default parameters in LSP completion snippets."
+                },
+                "scad-ai-ide.languageServer.indent": {
+                    "type": "string",
+                    "default": "    ",
+                    "pattern": "^\\s+$",
+                    "description": "Whitespace used by the OpenSCAD formatter."
+                },
+                "scad-ai-ide.languageServer.queryFile": {
+                    "type": "string",
+                    "default": "",
+                    "scope": "machine",
+                    "description": "Absolute path to a custom Topiary formatting query. Empty uses the server default."
+                }
+            }
+        },
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "scad-ai-ide",
+                    "title": "SCAD AI IDE",
+                    "icon": "resources/scad.svg"
+                }
+            ]
+        },
+        "views": {
+            "scad-ai-ide": [
+                {
+                    "id": "scad-ai.quickAccess",
+                    "name": "Quick Access"
+                },
+                {
+                    "id": "scad-ai.customizer",
+                    "name": "Customizer"
+                }
+            ]
+        },
+        "menus": {
+            "commandPalette": [
+                {
+                    "command": "scad-ai.customizer.edit",
+                    "when": "false"
+                }
+            ]
+        },
+        "languages": [
+            {
+                "id": "openscad",
+                "aliases": [
+                    "OpenSCAD"
+                ],
+                "extensions": [
+                    ".scad"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "openscad",
+                "scopeName": "source.openscad",
+                "path": "./syntaxes/openscad.tmLanguage.json"
+            }
+        ],
+        "snippets": [
+            {
+                "language": "openscad",
+                "path": "./snippets/openscad.json"
+            }
+        ],
+        "configurationDefaults": {
+            "[openscad]": {
+                "editor.insertSpaces": true,
+                "editor.tabSize": 4
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run build:lsp && npm run package",
+        "compile": "npm run check-types && npm run lint && node esbuild.js",
+        "watch": "npm-run-all -p watch:*",
+        "watch:esbuild": "node esbuild.js --watch",
+        "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+        "package": "npm run check-types && npm run lint && node esbuild.js --production",
+        "compile-tests": "tsc -p . --outDir out",
+        "watch-tests": "tsc -p . -w --outDir out",
+        "check-types": "tsc --noEmit",
+        "lint": "eslint src",
+        "test": "npm run compile-tests && node --test out/test/runtime.test.js out/test/customizer.test.js out/test/language.test.js",
+        "test:integration": "npm run compile-tests && npm run compile && vscode-test",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "build:lsp": "node scripts/build-lsp.cjs",
+        "prepare:lsp": "node scripts/prepare-lsp.cjs"
+    },
+    "devDependencies": {
+        "@types/mocha": "^10.0.10",
+        "@types/node": "24.x",
+        "@types/vscode": "^1.140.0",
+        "@vscode/test-cli": "^0.0.15",
+        "@vscode/test-electron": "^3.0.0",
+        "esbuild": "^0.28.1",
+        "eslint": "^10.5.0",
+        "eslint-config-prettier": "^10.1.8",
+        "npm-run-all": "^4.1.5",
+        "prettier": "^3.9.10",
+        "typescript": "^6.0.3",
+        "typescript-eslint": "^8.61.1",
+        "vscode-oniguruma": "^2.0.1",
+        "vscode-textmate": "^9.3.2"
+    },
+    "overrides": {
+        "diff": "^8.0.4",
+        "serialize-javascript": "^7.0.6"
+    },
+    "extensionKind": [
+        "workspace"
+    ],
+    "capabilities": {
+        "untrustedWorkspaces": {
+            "supported": "limited",
+            "description": "Runtime discovery and execution require workspace trust."
+        },
+        "virtualWorkspaces": false
+    },
+    "dependencies": {
+        "vscode-languageclient": "^9.0.1"
+    }
 }

@@ -1,26 +1,33 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as vscode from 'vscode'
+import { RuntimeManager } from './core/runtime/RuntimeManager'
+import { CustomizerService } from './core/customizer/CustomizerService'
+import { discover } from './platform/runtime/discovery'
+import { registerRuntime } from './features/runtime/registerRuntime'
+import { CustomizerTreeProvider } from './features/sidebar/CustomizerTreeProvider'
+import { QuickAccessTreeProvider, quickAccess } from './features/sidebar/QuickAccessTreeProvider'
+import { PanelManager } from './features/panels/PanelManager'
+import { registerLanguage } from './features/language/registerLanguage'
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+let language: ReturnType<typeof registerLanguage> | undefined
+
 export function activate(context: vscode.ExtensionContext) {
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "scad-ai-ide" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('scad-ai-ide.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from scad-ai-ide!');
-	});
-
-	context.subscriptions.push(disposable);
+    language = registerLanguage(context)
+    const runtime = registerRuntime(context, new RuntimeManager(discover))
+    const customizer = new CustomizerService()
+    const customizerTree = new CustomizerTreeProvider(customizer)
+    const panels = new PanelManager(context.extensionUri, runtime)
+    context.subscriptions.push(
+        customizerTree,
+        panels,
+        vscode.window.createTreeView('scad-ai.customizer', { treeDataProvider: customizerTree }),
+        vscode.window.createTreeView('scad-ai.quickAccess', { treeDataProvider: new QuickAccessTreeProvider() }),
+        vscode.commands.registerCommand('scad-ai.customizer.edit', (target: string, name: string) => customizerTree.edit(target, name)),
+        ...quickAccess.map((page) => vscode.commands.registerCommand(page.command, () => panels.open(page.id))),
+    )
+    return { language, getActiveRuntime: runtime.getActiveRuntime, refresh: runtime.refresh, customizer, panels, getRenderArguments: () => customizer.getArguments() }
 }
 
-// This method is called when your extension is deactivated
-export function deactivate() {}
+export async function deactivate() {
+    await language?.stop()
+    language = undefined
+}
