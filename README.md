@@ -15,15 +15,22 @@
 
 扩展通过 VS Code 标准贡献点和 `vscode-languageclient/node` 集成同仓库的 `../openscad-LSP`，语言 ID 统一为 `openscad`。不需要安装另一个 OpenSCAD VS Code 扩展。
 
-| 功能                         | 实现方式                                                                                                                |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| 语法高亮                     | `contributes.grammars` 注册 TextMate grammar，支持注释、字符串、数字、模块/函数声明、库路径、控制关键字和特殊变量       |
-| Snippet completion           | `contributes.snippets` 提供 module、function、for、if、difference、include、use、region；LSP 额外提供内建和用户符号补全 |
-| 括号匹配、自动闭合、选区包围 | `language-configuration.json`，覆盖 `{}`、`[]`、`()`，以及双引号闭合与包围                                              |
-| 注释切换                     | VS Code 原生行注释 `//` 和块注释 `/* */` 命令                                                                           |
-| 自动缩进                     | 语言缩进规则，支持代码块、向量、跨行调用；默认四空格                                                                    |
-| 标记折叠                     | `// #region Name` 到 `// #endregion`（也接受不带 `#` 的 region/endregion）；普通代码使用 VS Code 缩进折叠               |
-| 代码智能                     | openscad-LSP 的悬停、定义跳转、重命名、文档符号、诊断和 Topiary 文档格式化                                              |
+高亮采用与 JS/TS 兼容的标准 TextMate scope：函数/模块声明及调用为 `entity.name.function`，普通变量为 `variable.other.readwrite`，形参和命名实参为 `variable.parameter`，声明关键字为 `storage.type.function`，控制流为 `keyword.control`。在 Dark+ 下对应函数浅黄、变量/参数浅蓝、声明蓝色、控制流紫色，数字浅绿、字符串橙色、注释绿色；Light+ 和其他主题使用各自的调色板。扩展负责分类，具体颜色由主题与用户的 `editor.tokenColorCustomizations` 决定，不修改全局配色设置。主题工作方式见 [VS Code Syntax Highlight Guide](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide)。
+
+语法规则支持多行参数列表、嵌套默认值、匿名函数、命名实参和变量引用；注释与字符串中的代码保持原有分类。它提供词法高亮，不声称能解析跨文件符号或区分所有同名变量的语义身份。使用 [highlighting.scad](examples/highlighting.scad) 检查实际效果；以下对比由真实 TextMate 分词结果和内置 Dark+/Light+ 主题规则生成（左为修改前，右为修改后，不包含 LSP 语义高亮）。
+
+![Dark+ 与 Light+ 高亮前后对比](docs/images/highlighting-comparison.png)
+
+| 功能                         | 实现方式                                                                                                                                                         |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 语法高亮                     | `contributes.grammars` 注册 TextMate grammar，支持注释、字符串、数字、模块/函数声明、库路径、控制关键字和特殊变量                                                |
+| Snippet completion           | `contributes.snippets` 提供 module、function、for、if、difference、include、use、region；LSP 额外提供内建和用户符号补全；启用静态片段时隐藏重复的 LSP 关键字模板 |
+| 括号匹配、自动闭合、选区包围 | `language-configuration.json`，覆盖 `{}`、`[]`、`()`，以及双引号闭合与包围                                                                                       |
+| 注释切换                     | VS Code 原生行注释 `//` 和块注释 `/* */` 命令                                                                                                                    |
+| 自动缩进                     | 语言缩进规则，支持代码块、向量、跨行调用、无花括号的单语句控制/变换，以及块注释回车续行；默认四空格                                                              |
+| 标记折叠                     | `// #region Name` 到 `// #endregion`（也接受不带 `#` 的 region/endregion）；无 LSP 时普通代码使用 VS Code 缩进折叠                                               |
+| 结构折叠                     | openscad-LSP 复用 Tree-sitter 解析树，支持模块、函数、几何/控制块、调用、向量和块注释，不要求源码缩进；同时返回 region 标记                                      |
+| 代码智能                     | openscad-LSP 的悬停、定义跳转、重命名、文档符号、诊断和 Topiary 文档格式化                                                                                       |
 
 当前服务端未声明 semantic tokens、引用查找或 signatureHelp 能力；不会将这些功能标记为已实现。函数/模块签名可通过悬停查看。语法高亮与基础编辑功能无需启动服务端，未信任的工作区也能使用。服务端只处理已保存为文件的 OpenSCAD 文档；无标题文档仍有基础语言支持。
 
@@ -37,7 +44,9 @@ npm run compile
 
 F5 的默认构建任务先执行 `npm run prepare:lsp`，再启动 TypeScript/esbuild watch。准备步骤优先复用扩展内可运行的服务端；有 Cargo 时从源码构建；无 Cargo 时仅在本仓库已有的 `openscad-support-vscode/server` 或 `.build/extensions/unpacked/openscad-support-vscode/server` 中寻找兼容当前主机、支持 `--stdio` 的程序并复制到扩展内。不会在扩展运行时下载程序或修改用户全局设置。
 
-缓存回退仅用于本地开发，可能早于当前源码版本；来源路径、版本和 SHA-256 写入平台目录中的 `provenance.json`。当前缓存为 2.0.1，当前 openscad-LSP 源码为 2.0.3。需要当前源码版本时运行 `npm run build:lsp`；正式 `vscode:prepublish` 始终要求 Cargo 并从源码构建。没有 Cargo 也没有缓存时，准备任务明确失败，避免带着缺失的程序启动 F5。
+缓存回退仅用于本地开发，可能早于当前源码版本；来源路径、版本和 SHA-256 写入平台目录中的 `provenance.json`。旧开发缓存可能为 2.0.1；当前 openscad-LSP 源码为 2.0.3，结构折叠需要本仓库增强后的源码构建。需要当前源码版本时运行 `npm run build:lsp`；正式 `vscode:prepublish` 始终要求 Cargo 并从源码构建。没有 Cargo 也没有缓存时，准备任务明确失败，避免带着缺失的程序启动 F5。
+
+结构折叠由服务端提供，因此使用外部 `languageServer.path` 或旧开发缓存时，以该程序实际支持的能力为准。LSP 关闭或未接入的文档继续使用原生缩进与 region 折叠；使用 `editor.foldingStrategy: "indentation"` 可强制使用原生折叠。缩进规则是编辑启发式，不是完整语法分析；复杂嵌套表达式的整体排版仍交给文档格式化。
 
 `build:lsp` 使用 `cargo build --locked --release` 编译 **同仓库的 openscad-LSP 源码**，输出暂存在 `.build/lsp`，将当前平台/架构的程序和 Apache 许可证放入 `server/<platform>-<arch>/`。可以用 `CARGO` 环境变量指定 Cargo 可执行文件。服务端内置 OpenSCAD builtins 与 Topiary，无需另外配置 formatter 可执行文件。
 
@@ -130,7 +139,7 @@ npm run format:check
 npm run package
 ```
 
-语言单元测试包含真实 TextMate/Oniguruma 分词验证。设置 `SCAD_LSP_EXECUTABLE` 为 openscad-lsp 绝对路径后，集成测试额外验证真实 LSP 补全、悬停、跳转、重命名、符号、格式化、诊断和启停；未设置时使用扩展内已准备好的服务端；两者都不存在时跳过真实服务端用例。
+语言单元测试包含真实 TextMate/Oniguruma 分词验证。设置 `SCAD_LSP_EXECUTABLE` 为 openscad-lsp 绝对路径后，集成测试额外验证真实 LSP 补全、模板去重、悬停、跳转、重命名、符号、格式化、诊断、结构折叠（含未保存编辑）和启停，并验证原生回车缩进；未设置时使用扩展内已准备好的服务端；两者都不存在时跳过真实服务端用例。
 
 集成测试默认下载 VS Code，也可以通过 `SCAD_VSCODE_EXECUTABLE` 指定已有可执行文件。测试使用独立配置目录。`npm run package` 生成生产扩展 bundle；VSIX 可用 `vsce package --no-dependencies` 构建，发布身份等元数据在正式发布前配置。
 

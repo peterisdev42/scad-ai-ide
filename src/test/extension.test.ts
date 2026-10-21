@@ -20,7 +20,7 @@ suite('SCAD AI IDE integration', () => {
         const manifest = vscode.extensions.all.find((item) => item.packageJSON.name === 'scad-ai-ide')!.packageJSON
         assert.deepEqual(
             manifest.contributes.views['scad-ai-ide'].map((view: { name: string }) => view.name),
-            ['QUICK ACCESS', 'CUSTOMIZER'],
+            ['Quick Access', 'Customizer'],
         )
         await vscode.commands.executeCommand('scad-ai.quickAccess.focus')
         const tree = new QuickAccessTreeProvider()

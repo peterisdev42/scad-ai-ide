@@ -12,15 +12,15 @@
 
 ## 2. 功能架构与边界
 
-| 领域 | 当前实现 | 边界与依赖 | 源码依据 |
-| --- | --- | --- | --- |
-| 扩展入口与导航 | 启动完成或打开 OpenSCAD 时激活；Activity Bar 下 Quick Access、Customizer 两个原生 Tree View；四个管理页入口 | 纯 VS Code 扩展，不要求 fork Code-OSS | [activation](../package.json#L13)、[views](../package.json#L149)、[入口](../src/extension.ts#L13) |
-| 基础语言支持 | `.scad` 语言注册、TextMate 高亮、snippets、括号/引号、注释、缩进和 region 折叠 | 不依赖 LSP 启动；不等同于 AST 或 semantic tokens | [贡献点](../package.json#L178)、[语言配置](../language-configuration.json#L1) |
-| 代码智能 | 文件文档的补全、悬停、定义、重命名、文档符号、格式化、诊断接入 | 外部 openscad-lsp；信任工作区且启用后启动；没有声明 references、signatureHelp、semantic tokens | [客户端](../src/features/language/registerLanguage.ts#L24)、[上游 capabilities](../../openscad-LSP/src/server/mod.rs#L197)、[诊断](../../openscad-LSP/src/server/handler/notification.rs#L44) |
-| Runtime | 跨平台候选发现、版本探测、真实路径去重、显式选择、自动模式、状态栏、日志与管理表格 | 当前仅发现/选择和 `--version` 验证；没有几何任务执行器 | [候选发现](../src/platform/runtime/discovery.ts#L16)、[探测](../src/platform/runtime/discovery.ts#L115)、[交互](../src/features/runtime/registerRuntime.ts#L116) |
-| Customizer | 标量参数、分组、描述、范围/步长、枚举；点击编辑；每文件覆盖；生成 CLI 参数 | 独立简化解析器；会话内内存状态；不写源文件，无自动渲染 | [解析器](../src/core/customizer/CustomizerParser.ts#L81)、[服务](../src/core/customizer/CustomizerService.ts#L25)、[Tree 交互](../src/features/sidebar/CustomizerTreeProvider.ts#L83) |
-| AI / Bricks / Libraries | 可打开、复用和关闭对应标签页 | 只有导航与占位文案；没有模型提供方、Agent、MCP、砖块或依赖管理实现 | [导航定义](../src/features/sidebar/QuickAccessTreeProvider.ts#L3)、[占位渲染](../media/panels/main.js#L10)、[HTML](../media/panels/index.html#L38) |
-| 托管 OpenSCAD | 预留 globalStorage 平台目录作为发现候选 | 当前没有下载、安装、更新或删除功能；目录预留不等于交付了二进制 | [候选目录](../src/features/runtime/registerRuntime.ts#L42)、[当前范围说明](../README.md#L105) |
+| 领域                    | 当前实现                                                                                                    | 边界与依赖                                                                                     | 源码依据                                                                                                                                                                                      |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 扩展入口与导航          | 启动完成或打开 OpenSCAD 时激活；Activity Bar 下 Quick Access、Customizer 两个原生 Tree View；四个管理页入口 | 纯 VS Code 扩展，不要求 fork Code-OSS                                                          | [activation](../package.json#L13)、[views](../package.json#L149)、[入口](../src/extension.ts#L13)                                                                                             |
+| 基础语言支持            | `.scad` 语言注册、TextMate 高亮、snippets、括号/引号、注释、缩进和 region 折叠                              | 不依赖 LSP 启动；不等同于 AST 或 semantic tokens                                               | [贡献点](../package.json#L178)、[语言配置](../language-configuration.json#L1)                                                                                                                 |
+| 代码智能                | 文件文档的补全、悬停、定义、重命名、文档符号、格式化、诊断接入                                              | 外部 openscad-lsp；信任工作区且启用后启动；没有声明 references、signatureHelp、semantic tokens | [客户端](../src/features/language/registerLanguage.ts#L24)、[上游 capabilities](../../openscad-LSP/src/server/mod.rs#L197)、[诊断](../../openscad-LSP/src/server/handler/notification.rs#L44) |
+| Runtime                 | 跨平台候选发现、版本探测、真实路径去重、显式选择、自动模式、状态栏、日志与管理表格                          | 当前仅发现/选择和 `--version` 验证；没有几何任务执行器                                         | [候选发现](../src/platform/runtime/discovery.ts#L16)、[探测](../src/platform/runtime/discovery.ts#L115)、[交互](../src/features/runtime/registerRuntime.ts#L116)                              |
+| Customizer              | 标量参数、分组、描述、范围/步长、枚举；点击编辑；每文件覆盖；生成 CLI 参数                                  | 独立简化解析器；会话内内存状态；不写源文件，无自动渲染                                         | [解析器](../src/core/customizer/CustomizerParser.ts#L81)、[服务](../src/core/customizer/CustomizerService.ts#L25)、[Tree 交互](../src/features/sidebar/CustomizerTreeProvider.ts#L83)         |
+| AI / Bricks / Libraries | 可打开、复用和关闭对应标签页                                                                                | 只有导航与占位文案；没有模型提供方、Agent、MCP、砖块或依赖管理实现                             | [导航定义](../src/features/sidebar/QuickAccessTreeProvider.ts#L3)、[占位渲染](../media/panels/main.js#L10)、[HTML](../media/panels/index.html#L38)                                            |
+| 托管 OpenSCAD           | 预留 globalStorage 平台目录作为发现候选                                                                     | 当前没有下载、安装、更新或删除功能；目录预留不等于交付了二进制                                 | [候选目录](../src/features/runtime/registerRuntime.ts#L42)、[当前范围说明](../README.md#L105)                                                                                                 |
 
 ### 2.1 两套程序、三种解析路径
 
@@ -52,17 +52,17 @@ flowchart TB
 
 此图是对依赖与调用关系的概括：入口负责实例化；RuntimeManager 接收 `discover` 函数；Webview 通过消息调用 Runtime；语言客户端通过独立程序定位器启动外部服务。箭头不表示所有目录都遵循严格单向分层。[组装](../src/extension.ts#L13)、[函数注入](../src/core/runtime/RuntimeManager.ts#L7)、[Webview 消息](../src/features/panels/PanelManager.ts#L40)、[LSP](../src/features/language/registerLanguage.ts#L30)
 
-| 模块 | 职责、状态与接口 | 主要依赖 |
-| --- | --- | --- |
-| `extension.ts` | 组合根：注册语言、Runtime、Customizer、Tree、Panel 和命令；返回运行时查询、刷新、参数 API；停用时等待 LSP 停止 | VS Code 与各 feature；[源码](../src/extension.ts#L13) |
-| `core/runtime` | `LaunchCommand` 用 executable + argsPrefix 表示启动；Manager 保存 result/active，显式配置错误则 active 为空 | 不依赖 VS Code；[类型](../src/core/runtime/types.ts#L1)、[Manager](../src/core/runtime/RuntimeManager.ts#L9) |
-| `platform/runtime` | 静态候选、注册表/Spotlight/Flatpak 等探测、app 元数据、路径规范化、进程执行和版本检查 | Node 文件系统/进程/OS；[discovery](../src/platform/runtime/discovery.ts#L1)、[平台适配](../src/platform/runtime/platformDiscovery.ts#L57) |
-| `features/runtime` | 配置读写、信任判断、异步扫描队列、状态栏、诊断、QuickPick、浏览添加、变化事件 | VS Code + Manager + platform；[源码](../src/features/runtime/registerRuntime.ts#L8) |
-| `core/customizer` | 参数类型、文本解析、值校验、按 URI 的覆盖 Map、生成 `-D` 参数 | 无 VS Code 依赖；[Parser](../src/core/customizer/CustomizerParser.ts#L1)、[Service](../src/core/customizer/CustomizerService.ts#L25) |
-| `features/sidebar` | Quick Access 无子项叶节点；Customizer 跟踪编辑器/文档、生成树、打开输入交互 | VS Code + CustomizerService；[导航](../src/features/sidebar/QuickAccessTreeProvider.ts#L10)、[跟踪](../src/features/sidebar/CustomizerTreeProvider.ts#L10) |
-| `features/panels` | 按 PageId 复用标签页；装载模板、资源与 CSP；消息派发与销毁清理 | VS Code + Runtime feature 返回对象；[源码](../src/features/panels/PanelManager.ts#L9) |
-| `features/language` + `platform/language` | 延迟启动、串行重启、设置同步、日志和停止；定位显式/bundle/PATH 程序 | vscode-languageclient/node + 文件系统；[客户端](../src/features/language/registerLanguage.ts#L9)、[定位器](../src/platform/language/serverExecutable.ts#L5) |
-| `media/panels` | HTML/CSS/原生 JavaScript，显示 Runtime 状态与操作，无前端框架 | VS Code Webview bridge；[前端](../media/panels/main.js#L1) |
+| 模块                                      | 职责、状态与接口                                                                                               | 主要依赖                                                                                                                                                    |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `extension.ts`                            | 组合根：注册语言、Runtime、Customizer、Tree、Panel 和命令；返回运行时查询、刷新、参数 API；停用时等待 LSP 停止 | VS Code 与各 feature；[源码](../src/extension.ts#L13)                                                                                                       |
+| `core/runtime`                            | `LaunchCommand` 用 executable + argsPrefix 表示启动；Manager 保存 result/active，显式配置错误则 active 为空    | 不依赖 VS Code；[类型](../src/core/runtime/types.ts#L1)、[Manager](../src/core/runtime/RuntimeManager.ts#L9)                                                |
+| `platform/runtime`                        | 静态候选、注册表/Spotlight/Flatpak 等探测、app 元数据、路径规范化、进程执行和版本检查                          | Node 文件系统/进程/OS；[discovery](../src/platform/runtime/discovery.ts#L1)、[平台适配](../src/platform/runtime/platformDiscovery.ts#L57)                   |
+| `features/runtime`                        | 配置读写、信任判断、异步扫描队列、状态栏、诊断、QuickPick、浏览添加、变化事件                                  | VS Code + Manager + platform；[源码](../src/features/runtime/registerRuntime.ts#L8)                                                                         |
+| `core/customizer`                         | 参数类型、文本解析、值校验、按 URI 的覆盖 Map、生成 `-D` 参数                                                  | 无 VS Code 依赖；[Parser](../src/core/customizer/CustomizerParser.ts#L1)、[Service](../src/core/customizer/CustomizerService.ts#L25)                        |
+| `features/sidebar`                        | Quick Access 无子项叶节点；Customizer 跟踪编辑器/文档、生成树、打开输入交互                                    | VS Code + CustomizerService；[导航](../src/features/sidebar/QuickAccessTreeProvider.ts#L10)、[跟踪](../src/features/sidebar/CustomizerTreeProvider.ts#L10)  |
+| `features/panels`                         | 按 PageId 复用标签页；装载模板、资源与 CSP；消息派发与销毁清理                                                 | VS Code + Runtime feature 返回对象；[源码](../src/features/panels/PanelManager.ts#L9)                                                                       |
+| `features/language` + `platform/language` | 延迟启动、串行重启、设置同步、日志和停止；定位显式/bundle/PATH 程序                                            | vscode-languageclient/node + 文件系统；[客户端](../src/features/language/registerLanguage.ts#L9)、[定位器](../src/platform/language/serverExecutable.ts#L5) |
+| `media/panels`                            | HTML/CSS/原生 JavaScript，显示 Runtime 状态与操作，无前端框架                                                  | VS Code Webview bridge；[前端](../media/panels/main.js#L1)                                                                                                  |
 
 **分层评价**：最清晰的隔离在 Customizer core 和可注入的 discovery；两者无需 VS Code 即可测试。RuntimeManager 通过注入隔离探测，但 feature 反过来直接导入 platform，且 `platformDiscovery.ts` 与 `discovery.ts` 相互导入。PanelManager 用 `ReturnType<typeof registerRuntime>` 表达服务契约，将面板绑定到具体注册函数。当前未见实际故障证据，但若功能增长，建议让服务接口与 UI 注册解耦，而不是单纯继续拆文件。[注入边界](../src/platform/runtime/discovery.ts#L131)、[循环依赖两端](../src/platform/runtime/platformDiscovery.ts#L4)、[另一端](../src/platform/runtime/discovery.ts#L7)、[Panel 类型耦合](../src/features/panels/PanelManager.ts#L4)
 
@@ -97,11 +97,11 @@ sequenceDiagram
 
 候选顺序总体为显式配置 → PATH → 系统安装/包管理器来源 → Snap/Flatpak → 预留托管路径；显式路径优先于显式命令。失败记录为诊断并继续扫描，但任何显式配置错误会阻止 Manager 自动激活其他版本。这是“让用户修正指定 Runtime”的策略，并非“没有找到任何 Runtime”。[候选顺序](../src/platform/runtime/discovery.ts#L28)、[平台候选插入](../src/platform/runtime/discovery.ts#L137)、[显式错误](../src/platform/runtime/discovery.ts#L186)、[active 选择](../src/core/runtime/RuntimeManager.ts#L9)
 
-| 平台 | 发现策略 | 特别处理 |
-| --- | --- | --- |
-| macOS | PATH、Applications/用户 Applications/MacPorts、Homebrew/MacPorts 路径；目录扫描、Spotlight | `.app` 读取 CFBundleExecutable，并验证只能是文件名；Spotlight 与应用元数据读取最多 64 项；[静态候选](../src/platform/runtime/discovery.ts#L46)、[动态发现](../src/platform/runtime/platformDiscovery.ts#L77)、[app 解析](../src/platform/runtime/platformDiscovery.ts#L125) |
-| Windows | PATH、Program Files/用户 Programs、Scoop、三个卸载注册表 hive | 优先 `.com` 控制台启动器；`.com`/`.exe` 同安装去重，路径比较忽略大小写；[候选](../src/platform/runtime/discovery.ts#L58)、[注册表](../src/platform/runtime/platformDiscovery.ts#L70)、[去重](../src/platform/runtime/discovery.ts#L163) |
-| Linux | PATH、系统/用户 bin、Snap、Flatpak | Snap 保留 wrapper 身份；Flatpak 用 argsPrefix 保留 installation 与 branch；[系统发现](../src/platform/runtime/platformDiscovery.ts#L103)、[Flatpak](../src/platform/runtime/platformDiscovery.ts#L37)、[Snap](../src/platform/runtime/discovery.ts#L156) |
+| 平台    | 发现策略                                                                                   | 特别处理                                                                                                                                                                                                                                                                    |
+| ------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| macOS   | PATH、Applications/用户 Applications/MacPorts、Homebrew/MacPorts 路径；目录扫描、Spotlight | `.app` 读取 CFBundleExecutable，并验证只能是文件名；Spotlight 与应用元数据读取最多 64 项；[静态候选](../src/platform/runtime/discovery.ts#L46)、[动态发现](../src/platform/runtime/platformDiscovery.ts#L77)、[app 解析](../src/platform/runtime/platformDiscovery.ts#L125) |
+| Windows | PATH、Program Files/用户 Programs、Scoop、三个卸载注册表 hive                              | 优先 `.com` 控制台启动器；`.com`/`.exe` 同安装去重，路径比较忽略大小写；[候选](../src/platform/runtime/discovery.ts#L58)、[注册表](../src/platform/runtime/platformDiscovery.ts#L70)、[去重](../src/platform/runtime/discovery.ts#L163)                                     |
+| Linux   | PATH、系统/用户 bin、Snap、Flatpak                                                         | Snap 保留 wrapper 身份；Flatpak 用 argsPrefix 保留 installation 与 branch；[系统发现](../src/platform/runtime/platformDiscovery.ts#L103)、[Flatpak](../src/platform/runtime/platformDiscovery.ts#L37)、[Snap](../src/platform/runtime/discovery.ts#L156)                    |
 
 程序执行采用 `execFile` 与参数数组，默认超时 5 秒、缓冲上限 4 MiB，接收 stdout/stderr；探测要求绝对路径与可执行权限，并匹配 OpenSCAD 版本输出。Runtime id 是启动命令规范化结果的 SHA-256，并非安装包内容摘要。选择结果写入宿主全局配置，并保留启动前缀参数。[执行与探测](../src/platform/runtime/discovery.ts#L95)、[id](../src/platform/runtime/discovery.ts#L124)、[配置保存](../src/features/runtime/registerRuntime.ts#L75)
 
@@ -146,14 +146,14 @@ PanelManager 用 PageId→WebviewPanel Map 确保每页单实例；在当前编�
 
 TypeScript 使用 strict、Node16 模块解析和 ES2022；esbuild 把入口及依赖打为 CommonJS Node bundle，仅将 `vscode` 外置，production 开启压缩并关闭 sourcemap。没有 Vue/React 或独立 Web bundler，面板文件直接随扩展分发。[tsconfig](../tsconfig.json#L2)、[esbuild](../esbuild.js#L26)、[面板资源加载](../src/features/panels/PanelManager.ts#L72)
 
-| 命令/入口 | 实际作用 | 重要边界 |
-| --- | --- | --- |
-| `npm run compile` | check-types + lint + esbuild 开发 bundle | 不构建 LSP；[scripts](../package.json#L210) |
-| `npm run package` | check-types + lint + production bundle | 名为 package，但本身不产 VSIX，也不构建 LSP；[scripts](../package.json#L216) |
-| `npm run build:lsp` | 从相邻 openscad-LSP 执行 Cargo locked release，暂存本机平台二进制与许可证 | 要求 Cargo 与 sibling 源码；只 staging 当前平台架构；[脚本](../scripts/build-lsp.cjs#L6) |
-| `npm run prepare:lsp` | 复用已可运行 bundle；有 Cargo 则源码构建；否则检查两处仓库缓存并复制 | 仅开发 bootstrap；回退写 version/path/SHA-256 provenance，版本可落后于源码；[脚本](../scripts/prepare-lsp.cjs#L10) |
-| F5 | 先 prepare:lsp，再 tsc/esbuild watch，然后 Extension Development Host | 调试启动禁用其他已安装扩展；[任务](../.vscode/tasks.json#L6)、[launch](../.vscode/launch.json#L8) |
-| `vscode:prepublish` | build:lsp 后 package | 正式打包要求源码构建 LSP，不能把 prepare 的缓存回退当作发布路径；[scripts](../package.json#L211) |
+| 命令/入口             | 实际作用                                                                  | 重要边界                                                                                                           |
+| --------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `npm run compile`     | check-types + lint + esbuild 开发 bundle                                  | 不构建 LSP；[scripts](../package.json#L210)                                                                        |
+| `npm run package`     | check-types + lint + production bundle                                    | 名为 package，但本身不产 VSIX，也不构建 LSP；[scripts](../package.json#L216)                                       |
+| `npm run build:lsp`   | 从相邻 openscad-LSP 执行 Cargo locked release，暂存本机平台二进制与许可证 | 要求 Cargo 与 sibling 源码；只 staging 当前平台架构；[脚本](../scripts/build-lsp.cjs#L6)                           |
+| `npm run prepare:lsp` | 复用已可运行 bundle；有 Cargo 则源码构建；否则检查两处仓库缓存并复制      | 仅开发 bootstrap；回退写 version/path/SHA-256 provenance，版本可落后于源码；[脚本](../scripts/prepare-lsp.cjs#L10) |
+| F5                    | 先 prepare:lsp，再 tsc/esbuild watch，然后 Extension Development Host     | 调试启动禁用其他已安装扩展；[任务](../.vscode/tasks.json#L6)、[launch](../.vscode/launch.json#L8)                  |
+| `vscode:prepublish`   | build:lsp 后 package                                                      | 正式打包要求源码构建 LSP，不能把 prepare 的缓存回退当作发布路径；[scripts](../package.json#L211)                   |
 
 相邻 LSP 源码版本是 2.0.3；当前 `darwin-arm64` 目录的 provenance 记录开发缓存为 OpenSCAD-LSP 2.0.1。不能仅凭源码版本认定实际进程也是 2.0.3；provenance 是暂存记录，实际运行版本还需结合最终选中的程序核验。`.vscodeignore` 排除了 src、测试产物、构建脚本与 `.build`，而不是排除运行所需的 media 或 server。[源码版本](../../openscad-LSP/Cargo.toml#L1)、[当前缓存记录](../server/darwin-arm64/provenance.json#L2)、[回退 provenance](../scripts/prepare-lsp.cjs#L38)、[打包排除](../.vscodeignore#L1)
 
@@ -163,12 +163,12 @@ TypeScript 使用 strict、Node16 模块解析和 ES2022；esbuild 把入口及�
 
 普通 `npm test` 先 TypeScript 编译测试，再由 Node test runner 执行 runtime/customizer/language 三组；VS Code extension 与真实 LSP 集成用例单独归 `test:integration`，不在普通测试内。[scripts](../package.json#L217)、[VS Code test 配置](../.vscode-test.mjs#L3)
 
-| 测试组 | 源码体现的覆盖 | 尚不能据此推定 |
-| --- | --- | --- |
-| Runtime 单元/进程测试 | 顺序、平台候选、注册表和 Flatpak 解析、去重、错误、超时；部分真实 shell stub 与 macOS app 元数据 | Windows/Linux/macOS 全部安装渠道真机可用；[用例](../src/test/runtime.test.ts#L18)、[依赖注入](../src/test/runtime.test.ts#L62)、[真实进程](../src/test/runtime.test.ts#L131) |
-| Customizer | 解析、注释/引号、类型/范围/步长/枚举、按文件覆盖、参数生成、Manager 选择 | VS Code 编辑交互与渲染结果；[用例](../src/test/customizer.test.ts#L25) |
-| 语言单元测试 | 语言配置、snippets 贡献、真实 TextMate/Oniguruma 分词、LSP 程序解析顺序 | 真实 LSP 协议生命周期成功；[用例](../src/test/language.test.ts#L10)、[分词](../src/test/language.test.ts#L56)、[解析](../src/test/language.test.ts#L85) |
-| VS Code integration | View、面板复用、Customizer 目标与编辑、模拟 Runtime 配置；真实 LSP 补全/悬停/跳转/重命名/符号/格式化/诊断与启停 | 缺二进制时真实 LSP 用例会 skip，不能只看 suite 命令退出码；[扩展集成](../src/test/extension.test.ts#L18)、[LSP skip 条件](../src/test/language.integration.test.ts#L31) |
+| 测试组                | 源码体现的覆盖                                                                                                  | 尚不能据此推定                                                                                                                                                               |
+| --------------------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Runtime 单元/进程测试 | 顺序、平台候选、注册表和 Flatpak 解析、去重、错误、超时；部分真实 shell stub 与 macOS app 元数据                | Windows/Linux/macOS 全部安装渠道真机可用；[用例](../src/test/runtime.test.ts#L18)、[依赖注入](../src/test/runtime.test.ts#L62)、[真实进程](../src/test/runtime.test.ts#L131) |
+| Customizer            | 解析、注释/引号、类型/范围/步长/枚举、按文件覆盖、参数生成、Manager 选择                                        | VS Code 编辑交互与渲染结果；[用例](../src/test/customizer.test.ts#L25)                                                                                                       |
+| 语言单元测试          | 语言配置、snippets 贡献、真实 TextMate/Oniguruma 分词、LSP 程序解析顺序                                         | 真实 LSP 协议生命周期成功；[用例](../src/test/language.test.ts#L10)、[分词](../src/test/language.test.ts#L56)、[解析](../src/test/language.test.ts#L85)                      |
+| VS Code integration   | View、面板复用、Customizer 目标与编辑、模拟 Runtime 配置；真实 LSP 补全/悬停/跳转/重命名/符号/格式化/诊断与启停 | 缺二进制时真实 LSP 用例会 skip，不能只看 suite 命令退出码；[扩展集成](../src/test/extension.test.ts#L18)、[LSP skip 条件](../src/test/language.integration.test.ts#L31)      |
 
 本次研究的独立核验结果：**`npm test` 22/22 通过；`npm run lint` 与 `npm run check-types` 均退出 0**。这些是本次执行结果，测试范围由上述命令定义限定；没有执行 VS Code integration、完整 VSIX 打包或多平台真机验证，也不能把源码能力声明等同于已验证用户体验。
 

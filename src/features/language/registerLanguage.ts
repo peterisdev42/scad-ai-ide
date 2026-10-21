@@ -5,6 +5,10 @@ import { LanguageClient, RevealOutputChannelOn, type ServerOptions } from 'vscod
 import { resolveLanguageServer } from '../../platform/language/serverExecutable'
 
 const section = 'scad-ai-ide.languageServer'
+// Bundle the same prefix list contributed to VS Code, rather than maintaining
+// a second list of template keywords that can drift from the shipped snippets.
+const snippets = require('../../../snippets/openscad.json') as Record<string, { prefix: string | string[] }>
+const snippetPrefixes = new Set(Object.values(snippets).flatMap((snippet) => snippet.prefix))
 
 export function registerLanguage(context: vscode.ExtensionContext) {
     const output = vscode.window.createOutputChannel('SCAD AI IDE Language Server')
@@ -36,6 +40,23 @@ export function registerLanguage(context: vscode.ExtensionContext) {
                     outputChannel: output,
                     revealOutputChannelOn: RevealOutputChannelOn.Never,
                     markdown: { isTrusted: false, supportHtml: false },
+                    middleware: {
+                        provideCompletionItem: async (document, position, completionContext, token, next) => {
+                            const result = await next(document, position, completionContext, token)
+                            const editor = vscode.workspace.getConfiguration('editor', { uri: document.uri, languageId: document.languageId })
+                            if (!result || editor.get('snippetSuggestions') === 'none' || !editor.get('suggest.showSnippets', true)) {
+                                return result
+                            }
+                            // Keep callable/user symbol completions even when their names
+                            // match a template. Only duplicated keyword snippets are hidden.
+                            const keep = (item: vscode.CompletionItem) => item.kind !== vscode.CompletionItemKind.Keyword || !(item.insertText instanceof vscode.SnippetString) || !snippetPrefixes.has(typeof item.label === 'string' ? item.label : item.label.label)
+                            if (Array.isArray(result)) {
+                                return result.filter(keep)
+                            }
+                            result.items = result.items.filter(keep)
+                            return result
+                        },
+                    },
                 })
                 client = next
                 let started = false

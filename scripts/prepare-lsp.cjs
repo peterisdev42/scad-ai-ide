@@ -1,6 +1,6 @@
 // Development bootstrap only. Release packaging always runs build-lsp.cjs.
 const { spawnSync } = require('node:child_process')
-const { existsSync, mkdirSync, copyFileSync, chmodSync, readFileSync, writeFileSync } = require('node:fs')
+const { existsSync, mkdirSync, copyFileSync, chmodSync, readFileSync, writeFileSync, renameSync } = require('node:fs')
 const { createHash } = require('node:crypto')
 const path = require('node:path')
 
@@ -32,8 +32,10 @@ for (const candidate of candidates) {
         continue
     }
     mkdirSync(path.dirname(destination), { recursive: true })
-    copyFileSync(candidate, destination)
-    chmodSync(destination, 0o755)
+    const staged = `${destination}.${process.pid}.tmp`
+    copyFileSync(candidate, staged)
+    chmodSync(staged, 0o755)
+    renameSync(staged, destination)
     copyFileSync(path.resolve(root, '../openscad-LSP/LICENSE-APACHE'), path.join(root, 'server', 'LICENSE-APACHE'))
     const provenance = { source: candidate, version, sha256: createHash('sha256').update(readFileSync(candidate)).digest('hex'), purpose: 'Local development fallback; use npm run build:lsp to replace with the current source build.' }
     writeFileSync(path.join(path.dirname(destination), 'provenance.json'), JSON.stringify(provenance, null, 4) + '\n')

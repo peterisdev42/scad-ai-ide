@@ -1,6 +1,6 @@
 // Build the checked-out sibling sources/openscad-LSP, then stage for this host.
 const { spawnSync } = require('node:child_process')
-const { mkdirSync, copyFileSync, chmodSync, rmSync } = require('node:fs')
+const { mkdirSync, copyFileSync, chmodSync, rmSync, renameSync } = require('node:fs')
 const path = require('node:path')
 
 const root = path.resolve(__dirname, '..')
@@ -15,8 +15,12 @@ if (result.error || result.status !== 0) {
 const name = process.platform === 'win32' ? 'openscad-lsp.exe' : 'openscad-lsp'
 const destination = path.join(root, 'server', `${process.platform}-${process.arch}`)
 mkdirSync(destination, { recursive: true })
-copyFileSync(path.join(target, 'release', name), path.join(destination, name))
-chmodSync(path.join(destination, name), 0o755)
+// Replace the inode rather than overwriting an executable whose code signature
+// macOS may have cached from a previously launched development binary.
+const staged = path.join(destination, `${name}.${process.pid}.tmp`)
+copyFileSync(path.join(target, 'release', name), staged)
+chmodSync(staged, 0o755)
+renameSync(staged, path.join(destination, name))
 rmSync(path.join(destination, 'provenance.json'), { force: true })
 copyFileSync(path.join(source, 'LICENSE-APACHE'), path.join(root, 'server', 'LICENSE-APACHE'))
 console.log(`Staged openscad-LSP in ${destination}`)
