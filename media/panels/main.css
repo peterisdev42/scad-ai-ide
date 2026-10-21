@@ -1,0 +1,99 @@
+:root {
+    color-scheme: light dark;
+}
+body {
+    font-family: var(--vscode-font-family);
+    color: var(--vscode-foreground);
+    background: var(--vscode-editor-background);
+    margin: 0;
+    font-size: var(--vscode-font-size);
+}
+main {
+    max-width: 1100px;
+    padding: 28px 32px;
+}
+h1 {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0 0 10px;
+}
+h2 {
+    font-size: 16px;
+    font-weight: 500;
+}
+header {
+    margin-bottom: 26px;
+}
+p {
+    line-height: 1.6;
+}
+#summary,
+#status {
+    color: var(--vscode-descriptionForeground);
+}
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+button {
+    font: inherit;
+    border: 1px solid var(--vscode-button-border, transparent);
+    border-radius: 2px;
+    padding: 6px 12px;
+    color: var(--vscode-button-foreground);
+    background: var(--vscode-button-background);
+    cursor: pointer;
+}
+button:hover {
+    background: var(--vscode-button-hoverBackground);
+}
+button:focus-visible {
+    outline: 1px solid var(--vscode-focusBorder);
+    outline-offset: 2px;
+}
+button:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+.secondary {
+    color: var(--vscode-button-secondaryForeground);
+    background: var(--vscode-button-secondaryBackground);
+}
+.secondary:hover {
+    background: var(--vscode-button-secondaryHoverBackground);
+}
+.table-container {
+    overflow-x: auto;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+th,
+td {
+    padding: 12px;
+    border-bottom: 1px solid var(--vscode-panel-border);
+    vertical-align: middle;
+}
+th {
+    color: var(--vscode-descriptionForeground);
+    font-weight: 500;
+}
+td.path {
+    overflow-wrap: anywhere;
+    min-width: 160px;
+}
+[hidden] {
+    display: none !important;
+}
+@media (max-width: 550px) {
+    main {
+        padding: 20px 16px;
+    }
+    th,
+    td {
+        padding: 8px;
+    }
+}

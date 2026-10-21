@@ -1,0 +1,13 @@
+{
+    "files.exclude": { "out": false, "dist": false },
+    "search.exclude": { "out": true, "dist": true },
+    "js/ts.tsc.autoDetect": "off",
+    "debug.javascript.enableNetworkView": false,
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false,
+    "editor.formatOnSave": true,
+    "[typescript][javascript][json][jsonc][markdown]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+}
