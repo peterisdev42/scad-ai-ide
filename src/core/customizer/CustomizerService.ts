@@ -27,6 +27,28 @@ export class CustomizerService {
     parameters: Parameter[] = []
     private readonly overrides = new Map<string, Map<string, ParameterValue>>()
 
+    private readonly listeners = new Set<(target: string) => void>()
+
+    onDidChangeValues(listener: (target: string) => void): { dispose(): void } {
+        this.listeners.add(listener)
+        return {
+            dispose: () => {
+                this.listeners.delete(listener)
+            },
+        }
+    }
+
+    getOverrides(target: string): Record<string, ParameterValue> {
+        return Object.fromEntries(this.overrides.get(target) ?? [])
+    }
+
+    replaceOverrides(target: string, values: Record<string, ParameterValue>): void {
+        this.overrides.set(target, new Map(Object.entries(values)))
+        for (const listener of this.listeners) {
+            listener(target)
+        }
+    }
+
     load(target: string, source: string): void {
         this.target = target
         this.parameters = parseCustomizer(source)
@@ -66,6 +88,9 @@ export class CustomizerService {
             values.delete(name)
         } else {
             values.set(name, value)
+        }
+        for (const listener of this.listeners) {
+            listener(this.target)
         }
     }
 

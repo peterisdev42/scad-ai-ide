@@ -151,3 +151,9 @@ vite.config.ts.timestamp-*
 # Locally built language server
 .build/
 server/
+
+# Preview sync: version baselines, ignore temporary review files
+/.preview-sync/plans/
+/.preview-sync/merge-*/
+/.preview-sync/lock
+*.preview-sync-*

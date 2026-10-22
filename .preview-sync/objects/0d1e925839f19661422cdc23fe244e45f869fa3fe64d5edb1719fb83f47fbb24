@@ -1,0 +1,23 @@
+import { commands, Disposable, TabInputCustom, window } from 'vscode'
+
+export const previewEditorViewType = 'openscad.preview.editor'
+
+/** Use the same editor replacement command as the built-in Markdown preview. */
+export function registerShowPanelCommand(): Disposable {
+    return Disposable.from(
+        commands.registerCommand('openscad.showPanel', async () => {
+            const document = window.activeTextEditor?.document
+            if (document?.languageId !== 'scad' || document.uri.scheme !== 'file') return
+            await commands.executeCommand('reopenActiveEditorWith', previewEditorViewType)
+        }),
+        commands.registerCommand('openscad.showSource', async () => {
+            const input = window.tabGroups.activeTabGroup.activeTab?.input
+            if (!(input instanceof TabInputCustom) || input.viewType !== previewEditorViewType) return
+            await commands.executeCommand('reopenActiveEditorWith', 'default')
+        }),
+        commands.registerCommand('openscad.togglePreview', async () => {
+            const input = window.tabGroups.activeTabGroup.activeTab?.input
+            await commands.executeCommand(input instanceof TabInputCustom && input.viewType === previewEditorViewType ? 'openscad.showSource' : 'openscad.showPanel')
+        }),
+    )
+}
