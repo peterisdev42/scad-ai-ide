@@ -62,6 +62,22 @@ F5 的默认构建任务先执行 `npm run prepare:lsp`，再启动 TypeScript/e
 
 VSIX 发布前的 `vscode:prepublish` 自动构建 LSP 和扩展 bundle。每个平台/架构需要分别构建与发布相应 VSIX（例如 macOS Apple Silicon 使用 `vsce package --target darwin-arm64 --no-dependencies`）；`npm run package` 仅构建 JavaScript bundle，不替代 `build:lsp`。从扩展独立源码归档构建时，需提供相邻的 `openscad-LSP` 源码目录。
 
+### 交互式 3D 预览
+
+已将相邻 `vscode-openscad-preview` 的预览实现集成到本扩展，无需安装独立 Preview 扩展。打开已保存为 `.scad` 的文件，点击编辑器标题栏 **Open as Preview**，或按 `Cmd+Shift+V` / `Ctrl+Shift+V`；同一快捷键或 **Reopen as source file** 返回源码。也可通过 **Open With → OpenSCAD Preview** 打开。预览在原标签内替换源码，不改变 `.scad` 默认的文本打开方式。
+
+- Three.js 视口：旋转、平移、缩放、26 方向视角立方体、透视/正交、实体/X-Ray/线框、光照和阴影。
+- 场景工具：网格/打印平台、平台原点切换、顶点/边/面吸附测量、剖切及场景树。场景按文件保存在工作区状态中。
+- 参数：复用 IDE 的 Customizer 解析器，预览和原生侧栏双向同步每文件覆盖值；支持同名 `.json` 的 OpenSCAD 参数预设、保存、应用、删除及外部变更刷新。
+- 渲染：250ms 防抖预览未保存内容，使用 stdin 和源文件目录作为 cwd；源码中的相对 `include`、`use`、`import` 路径按该目录解析。新建的无标题文档需先保存为 `.scad`。
+- 输出：STL / 3MF 导出、发送切片软件、预览内编译日志和 **SCAD AI IDE Preview** Output 通道。
+
+预览和导出统一使用 Runtime 页面选择的 OpenSCAD，保留 Flatpak/Snap 的启动参数；SSH、WSL、容器中运行于 workspace extension host。未信任工作区不会运行 CLI。默认使用兼容稳定版的 STL；需要保留颜色时将 `scad-ai-ide.preview.format` 设为 `3mf`，并选择支持该格式的 OpenSCAD。`scad-ai-ide.preview.enableLazyUnion` 同样需要运行时支持。
+
+`scad-ai-ide.preview.slicerExecutable` 可配置扩展宿主上的切片程序绝对路径；空值调用系统默认模型应用。远程开发时它作用于远程宿主，不会自动启动本机切片软件。发送切片软件的模型保存在宿主临时目录，留给切片程序读取；普通预览和导出生成的临时渲染目录在成功、失败、取消后清理。
+
+预览源码的迁移边界、资源打包和上游许可证见 [preview-integration.md](docs/preview-integration.md) 和 [PREVIEW-LICENSE.md](PREVIEW-LICENSE.md)。
+
 ### Customizer
 
 打开 `.scad` 文件后，Customizer 自动解析并显示参数。未分组的参数直接显示在根层级，只有显式的分组注释才会生成分组节点。点击数字或字符串使用原生 InputBox 编辑，枚举使用 QuickPick 选择，布尔值点击切换。输入会验证类型、数值范围、步长及枚举选项。
@@ -124,6 +140,7 @@ Quick Access 点击后在当前编辑器组中以普通标签页打开对应的 
 - `src/features/sidebar/`：两个原生 TreeDataProvider 与参数编辑交互。
 - `src/features/panels/`：统一的 WebviewPanel 生命周期及消息处理。
 - `src/features/runtime/`：Runtime 配置、状态栏、命令和诊断。
+- `src/features/preview/`：预览宿主会话、消息协议、Lit/Three.js 视口和内嵌打印平台资源。
 - `src/features/language/`：标准 Language Client、服务端启动与停止、设置同步。
 - `syntaxes/`、`snippets/`、`language-configuration.json`：声明式语言功能。
 - `scripts/build-lsp.cjs`：从相邻 openscad-LSP 源码构建和暂存平台二进制。
@@ -135,12 +152,19 @@ Quick Access 点击后在当前编辑器组中以普通标签页打开对应的 
 npm run compile
 npm test
 npm run test:integration
+SCAD_VSCODE_EXECUTABLE=/absolute/path/to/code npm run test:preview-editor
 npm run format:check
 npm run package
 ```
+
+预览回归包含视角立方体的 26 个方向、几何拾取、相机导航和打印平台原点。`test:preview-editor` 使用隔离的临时用户配置和假 CLI，验证真实扩展宿主中的反复源码/预览切换、未保存内容保留、stdin/cwd、Runtime 启动前缀、参数双向同步、预设与导出；设置 `SCAD_OPENSCAD_EXECUTABLE` 可额外验证真实 OpenSCAD 的 STL/3MF 导出（要求支持 3MF 的版本）。使用本仓库已构建的 Code OSS 时可设置 `VSCODE_SKIP_PRELAUNCH=1 SCAD_VSCODE_EXECUTABLE=../vscode/scripts/code.sh`。
 
 语言单元测试包含真实 TextMate/Oniguruma 分词验证。设置 `SCAD_LSP_EXECUTABLE` 为 openscad-lsp 绝对路径后，集成测试额外验证真实 LSP 补全、模板去重、悬停、跳转、重命名、符号、格式化、诊断、结构折叠（含未保存编辑）和启停，并验证原生回车缩进；未设置时使用扩展内已准备好的服务端；两者都不存在时跳过真实服务端用例。
 
 集成测试默认下载 VS Code，也可以通过 `SCAD_VSCODE_EXECUTABLE` 指定已有可执行文件。测试使用独立配置目录。`npm run package` 生成生产扩展 bundle；VSIX 可用 `vsce package --no-dependencies` 构建，发布身份等元数据在正式发布前配置。
 
 Prettier 使用单引号、4 空格缩进、非必要不使用分号，`printWidth: 1000000` 避免按常规行长换行；ESLint 关闭 `max-len`。保留已有生成器的 esbuild、watch、F5 调试与测试配置。
+
+## Preview 源码同步
+
+手动双向同步工具和基线由本插件维护，不依赖 Builder。在本目录执行 `npm run preview:sync -- status`；默认使用相邻 `../vscode-openscad-preview`，其他位置通过 `PREVIEW_SYNC_PREVIEW_ROOT` 指定。详见 [同步说明](scripts/preview-sync/README.md)。
