@@ -1,0 +1,410 @@
+{
+  "version": 1,
+  "formatter": "3.9.10",
+  "config": "994546a99d40799ea584cb0e7f23ae18c86d6fc8899e071b85532c4917b9d2b0",
+  "entries": {
+    "src/extension/commands/showPanel.ts": {
+      "idePath": "src/features/preview/extension/commands/showPanel.ts",
+      "preview": "0d1e925839f19661422cdc23fe244e45f869fa3fe64d5edb1719fb83f47fbb24",
+      "ide": "19fae9e06771ae79beefcbdbbe1673d0d41464fdd03ec00ad399ebb9ea16a8d0"
+    },
+    "src/extension/core/ScadParameters.ts": {
+      "idePath": "src/features/preview/extension/core/ScadParameters.ts",
+      "preview": "20f2abb1cfa409d319911bfe38df63ebb174397300a74f63f831e4cffa68f887",
+      "ide": "43b828cf1c8c9b47056a216e9eac5407e9c04b71ad604f6b2fc0feb5d216db19"
+    },
+    "src/extension/core/ScadSession.ts": {
+      "idePath": "src/features/preview/extension/core/ScadSession.ts",
+      "preview": "6502c38a9516a0170cca9be10a86b769232bc3b5a25dbf09e1df322cb65c45a9",
+      "ide": "1caea292832664775157de3446d96a9dd69a42689e356f0943406148cbe1824a"
+    },
+    "src/extension/core/ScadSessionManager.ts": {
+      "idePath": "src/features/preview/extension/core/ScadSessionManager.ts",
+      "preview": "9ff18ebc377389f937fab9a620922946beebfedef95c43304acc1e8cece6559a",
+      "ide": "9789090ae0b22b0a90974bdc8d19dacdd3d0ca8cc13bfb817e6c7a792b4267b8"
+    },
+    "src/extension/services/ScadClient.ts": {
+      "idePath": "src/features/preview/extension/services/ScadClient.ts",
+      "preview": "8d536f47ad4d90d2d1806408333dc68fab61e75ef70bf8bf282ffca0506cb93b",
+      "ide": "762e179701fee2f2079478db0779a2860d4a06fe96fab1170afe7d182651c102"
+    },
+    "src/extension/services/ScadParser.ts": {
+      "idePath": "src/features/preview/extension/services/ScadParser.ts",
+      "preview": "15f5af19ffb29975eca04714d8dca17c5320d2f0ad9fa4169eee5ee01c59601d",
+      "ide": "6077555534caecf3850e1ac454b314328ffc2b5f25bbbce68103c7e1a2a3c877"
+    },
+    "src/extension/services/ScadRenderer.ts": {
+      "idePath": "src/features/preview/extension/services/ScadRenderer.ts",
+      "preview": "5b2d7ba11b061d63eaaf1e2c2228c56c88a4039c45f44ab4a0ba8efbbbf8c17a",
+      "ide": "e2c474800451af5ae3faabba35ef3c01b0252bd66abb79dc60f1f722c05839cf"
+    },
+    "src/extension/services/ScadWatcher.ts": {
+      "idePath": "src/features/preview/extension/services/ScadWatcher.ts",
+      "preview": "049f0d327c9b63e455ae42cc0cb25a458bac9af258d4532cf36640c39d6c6431",
+      "ide": "a48716a1bba49317149d5dfef813f47403164de49551456cb1c7d60ac37a8ea5"
+    },
+    "src/extension/views/ScadPreviewEditorProvider.ts": {
+      "idePath": "src/features/preview/extension/views/ScadPreviewEditorProvider.ts",
+      "preview": "df212730a8b2732d52de2fcc3742e94b680f449ed2d64556188496a6958a8297",
+      "ide": "df212730a8b2732d52de2fcc3742e94b680f449ed2d64556188496a6958a8297"
+    },
+    "src/extension/views/ScadWebviewPanel.ts": {
+      "idePath": "src/features/preview/extension/views/ScadWebviewPanel.ts",
+      "preview": "58398b1eda36b30b89cdf578b1b439f929bdc25d26f89b4c8edecf7ad687ea0e",
+      "ide": "81bb32667cdf337ec80184b47a4a7d912d88e912792bfd700adc0c648c03f3fb"
+    },
+    "src/shared/types/ExtensionToWebviewMessage.ts": {
+      "idePath": "src/features/preview/shared/types/ExtensionToWebviewMessage.ts",
+      "preview": "9620bd0108c9428a01f9144d57687554cf604c2e719138d3625c0d0e4d2eb787",
+      "ide": "9620bd0108c9428a01f9144d57687554cf604c2e719138d3625c0d0e4d2eb787"
+    },
+    "src/shared/types/ModelFormat.ts": {
+      "idePath": "src/features/preview/shared/types/ModelFormat.ts",
+      "preview": "719183308b143c0af4c584753d319d3fc3ec0769e539529eb0d96627d6537cf3",
+      "ide": "719183308b143c0af4c584753d319d3fc3ec0769e539529eb0d96627d6537cf3"
+    },
+    "src/shared/types/ScadParameter.ts": {
+      "idePath": "src/features/preview/shared/types/ScadParameter.ts",
+      "preview": "6cfb0a398ccda054049c919fb46d0be63621487c680a713ff643e3c7b06087a5",
+      "ide": "6cfb0a398ccda054049c919fb46d0be63621487c680a713ff643e3c7b06087a5"
+    },
+    "src/shared/types/WebviewToExtensionMessage.ts": {
+      "idePath": "src/features/preview/shared/types/WebviewToExtensionMessage.ts",
+      "preview": "82075d40f12969021392ac80157839b93c0593f6548811a9406598166b492263",
+      "ide": "82075d40f12969021392ac80157839b93c0593f6548811a9406598166b492263"
+    },
+    "src/shared/utilities/mapObject.ts": {
+      "idePath": "src/features/preview/shared/utilities/mapObject.ts",
+      "preview": "2fe1117743f0c94ff3454b8643945e59b648b8abe269f5150a6afbf778401cbd",
+      "ide": "2fe1117743f0c94ff3454b8643945e59b648b8abe269f5150a6afbf778401cbd"
+    },
+    "src/test/navigationAndPlate.test.ts": {
+      "idePath": "src/test/preview/navigationAndPlate.test.ts",
+      "preview": "c9fd269b8d5f56756669340cc8e4ceb9249655ee1751ffae397f32d9c008730f",
+      "ide": "c9fd269b8d5f56756669340cc8e4ceb9249655ee1751ffae397f32d9c008730f"
+    },
+    "src/test/viewCube.test.ts": {
+      "idePath": "src/test/preview/viewCube.test.ts",
+      "preview": "9f509019a26b5d66d869d883b65a1e51cb3af133246b1b6c628b49970ff0226f",
+      "ide": "9f509019a26b5d66d869d883b65a1e51cb3af133246b1b6c628b49970ff0226f"
+    },
+    "src/webview/components/App.ts": {
+      "idePath": "src/features/preview/webview/components/App.ts",
+      "preview": "7e858ceff6106473d30936cee93fa28f2a01612732330e47b839e7a15c26140b",
+      "ide": "7e858ceff6106473d30936cee93fa28f2a01612732330e47b839e7a15c26140b"
+    },
+    "src/webview/components/aside/Environment.ts": {
+      "idePath": "src/features/preview/webview/components/aside/Environment.ts",
+      "preview": "33fca319aaf08154b5ee5c34673a665fa3332af4e970225be0687a95f07a7307",
+      "ide": "33fca319aaf08154b5ee5c34673a665fa3332af4e970225be0687a95f07a7307"
+    },
+    "src/webview/components/aside/ObjectProperties.ts": {
+      "idePath": "src/features/preview/webview/components/aside/ObjectProperties.ts",
+      "preview": "08f7f25c3d7b2d1626311e1390e8b1ed133466fadef1f30f993e1b7f2159c316",
+      "ide": "08f7f25c3d7b2d1626311e1390e8b1ed133466fadef1f30f993e1b7f2159c316"
+    },
+    "src/webview/components/aside/Parameters.ts": {
+      "idePath": "src/features/preview/webview/components/aside/Parameters.ts",
+      "preview": "5dc2ddac88dd0d637bbe40d3fdd69effe2c91952932e5f470a2b5bd847d39373",
+      "ide": "5dc2ddac88dd0d637bbe40d3fdd69effe2c91952932e5f470a2b5bd847d39373"
+    },
+    "src/webview/components/aside/SceneTree.ts": {
+      "idePath": "src/features/preview/webview/components/aside/SceneTree.ts",
+      "preview": "fb798371c9d9eae346ae25993c30715b2f35d299405face9449bbed659059166",
+      "ide": "fb798371c9d9eae346ae25993c30715b2f35d299405face9449bbed659059166"
+    },
+    "src/webview/components/aside/SidePanel.ts": {
+      "idePath": "src/features/preview/webview/components/aside/SidePanel.ts",
+      "preview": "226fb0f6b8f283771e557e5bb03d297793c52c146469c86578cd1d9bc3915794",
+      "ide": "56afdcc6298ad609a72e00038cf4891bb7a238c97c75cf13d4663754f5cf7698"
+    },
+    "src/webview/components/atoms/Collapsible.ts": {
+      "idePath": "src/features/preview/webview/components/atoms/Collapsible.ts",
+      "preview": "92da4606ce7dc6eb81f975dd57c088a85252b24537222c451251c2e147fba3c3",
+      "ide": "92da4606ce7dc6eb81f975dd57c088a85252b24537222c451251c2e147fba3c3"
+    },
+    "src/webview/components/atoms/Field.ts": {
+      "idePath": "src/features/preview/webview/components/atoms/Field.ts",
+      "preview": "2875c306cd96382775dad8591dd8a30b9f9b1e505219afc5fb911ec3b1b27335",
+      "ide": "2875c306cd96382775dad8591dd8a30b9f9b1e505219afc5fb911ec3b1b27335"
+    },
+    "src/webview/components/atoms/Icon.ts": {
+      "idePath": "src/features/preview/webview/components/atoms/Icon.ts",
+      "preview": "01041621907c2f9e773b3608dc22655d9cdf0423e74521a1297ecedd3a849266",
+      "ide": "01041621907c2f9e773b3608dc22655d9cdf0423e74521a1297ecedd3a849266"
+    },
+    "src/webview/components/atoms/IconButton.ts": {
+      "idePath": "src/features/preview/webview/components/atoms/IconButton.ts",
+      "preview": "742765186b4c33180390ad1eeec4dad7703ad0e159549024c3479072acfefe5d",
+      "ide": "742765186b4c33180390ad1eeec4dad7703ad0e159549024c3479072acfefe5d"
+    },
+    "src/webview/components/atoms/NumberField.ts": {
+      "idePath": "src/features/preview/webview/components/atoms/NumberField.ts",
+      "preview": "923356255d6ecfe7387719de00d36cb16816a7a87608bfb242daf4074cf6af20",
+      "ide": "923356255d6ecfe7387719de00d36cb16816a7a87608bfb242daf4074cf6af20"
+    },
+    "src/webview/components/atoms/SplitLayout.ts": {
+      "idePath": "src/features/preview/webview/components/atoms/SplitLayout.ts",
+      "preview": "46f1e29a88215beb809f452cc7deea7bb9579424c4ca59aa4250e2b23a5dda80",
+      "ide": "46f1e29a88215beb809f452cc7deea7bb9579424c4ca59aa4250e2b23a5dda80"
+    },
+    "src/webview/components/footer/Output.ts": {
+      "idePath": "src/features/preview/webview/components/footer/Output.ts",
+      "preview": "31e3c1069a7023a9117ecc527ca99e5aa62d140ff4b8d4163ec134c6cc2f6725",
+      "ide": "31e3c1069a7023a9117ecc527ca99e5aa62d140ff4b8d4163ec134c6cc2f6725"
+    },
+    "src/webview/components/main/Options.ts": {
+      "idePath": "src/features/preview/webview/components/main/Options.ts",
+      "preview": "07491d44bbb175ed7f4f57055578c5b359731e825d835d383a756ce0133d32be",
+      "ide": "07491d44bbb175ed7f4f57055578c5b359731e825d835d383a756ce0133d32be"
+    },
+    "src/webview/components/main/Preview.ts": {
+      "idePath": "src/features/preview/webview/components/main/Preview.ts",
+      "preview": "21075c2b34b4fbdfdd72a2e9a2e5c148c5754b31369d6798d418df1a4a735fe6",
+      "ide": "21075c2b34b4fbdfdd72a2e9a2e5c148c5754b31369d6798d418df1a4a735fe6"
+    },
+    "src/webview/components/main/Toolbar.ts": {
+      "idePath": "src/features/preview/webview/components/main/Toolbar.ts",
+      "preview": "6647d9b6211032282bb0560da75704119207c8b8869c2f3662c85dcd10c5871e",
+      "ide": "6647d9b6211032282bb0560da75704119207c8b8869c2f3662c85dcd10c5871e"
+    },
+    "src/webview/contexts/ActiveToolContext.ts": {
+      "idePath": "src/features/preview/webview/contexts/ActiveToolContext.ts",
+      "preview": "4c8aa24f6de0d4cce8658e461bbe2103103a26b80432d58b62fa0169de2ebee2",
+      "ide": "4c8aa24f6de0d4cce8658e461bbe2103103a26b80432d58b62fa0169de2ebee2"
+    },
+    "src/webview/contexts/LogContext.ts": {
+      "idePath": "src/features/preview/webview/contexts/LogContext.ts",
+      "preview": "0dbb1ba76799e049cc061d49b8cf2144843b67f6d8d237bbca0c13b932ef3749",
+      "ide": "0dbb1ba76799e049cc061d49b8cf2144843b67f6d8d237bbca0c13b932ef3749"
+    },
+    "src/webview/contexts/ModelContext.ts": {
+      "idePath": "src/features/preview/webview/contexts/ModelContext.ts",
+      "preview": "e387e43e8a9fc01083ac6cf3784964d86da12321567ce0729b1b795c6a789672",
+      "ide": "e387e43e8a9fc01083ac6cf3784964d86da12321567ce0729b1b795c6a789672"
+    },
+    "src/webview/contexts/PanelContext.ts": {
+      "idePath": "src/features/preview/webview/contexts/PanelContext.ts",
+      "preview": "100b5e3ce5b6384ccaf0c2306ebe28d343b525f1c13d9945aa47c461821701f2",
+      "ide": "100b5e3ce5b6384ccaf0c2306ebe28d343b525f1c13d9945aa47c461821701f2"
+    },
+    "src/webview/contexts/ParameterContext.ts": {
+      "idePath": "src/features/preview/webview/contexts/ParameterContext.ts",
+      "preview": "20a09d27e756adb0ebf73d6534b1ff988480af4d87442a63e9486ae1498ec616",
+      "ide": "20a09d27e756adb0ebf73d6534b1ff988480af4d87442a63e9486ae1498ec616"
+    },
+    "src/webview/contexts/SceneContext.ts": {
+      "idePath": "src/features/preview/webview/contexts/SceneContext.ts",
+      "preview": "c5588b034053226087181f45da573cf6e769d07c48823698cb9302486e211151",
+      "ide": "c5588b034053226087181f45da573cf6e769d07c48823698cb9302486e211151"
+    },
+    "src/webview/contexts/SelectedObjectContext.ts": {
+      "idePath": "src/features/preview/webview/contexts/SelectedObjectContext.ts",
+      "preview": "026a965533bf6f074fb6cbbea8ea6ec6c91f5aa7f77bbe85ccb9d0124517e0b2",
+      "ide": "026a965533bf6f074fb6cbbea8ea6ec6c91f5aa7f77bbe85ccb9d0124517e0b2"
+    },
+    "src/webview/contexts/ViewOptionsContext.ts": {
+      "idePath": "src/features/preview/webview/contexts/ViewOptionsContext.ts",
+      "preview": "d96f0a01504d6f15cd82068ced6828b22663d82f65977f5bdc82915bebf54802",
+      "ide": "d96f0a01504d6f15cd82068ced6828b22663d82f65977f5bdc82915bebf54802"
+    },
+    "src/webview/controllers/LogController.ts": {
+      "idePath": "src/features/preview/webview/controllers/LogController.ts",
+      "preview": "d07d73d1ff3f2b555bf43aec8c7cc78b920abeacf0f9a89592199f4b324b0757",
+      "ide": "d07d73d1ff3f2b555bf43aec8c7cc78b920abeacf0f9a89592199f4b324b0757"
+    },
+    "src/webview/data/defaultScene.ts": {
+      "idePath": "src/features/preview/webview/data/defaultScene.ts",
+      "preview": "770ee9fb7a590070fb684c11c8a30e00e09388e9401acf3daedb43da3fe6ada2",
+      "ide": "770ee9fb7a590070fb684c11c8a30e00e09388e9401acf3daedb43da3fe6ada2"
+    },
+    "src/webview/data/sceneObjectMeta.ts": {
+      "idePath": "src/features/preview/webview/data/sceneObjectMeta.ts",
+      "preview": "549e84839729cb1aff39c40fed36ffdfae35e9c5c5e34126dcbaee02cdcbd460",
+      "ide": "549e84839729cb1aff39c40fed36ffdfae35e9c5c5e34126dcbaee02cdcbd460"
+    },
+    "src/webview/index.ts": {
+      "idePath": "src/features/preview/webview/index.ts",
+      "preview": "53cc212c3193d3353f8c5a8d8a7e512671f7688de74438fd854e207f56a87da8",
+      "ide": "53cc212c3193d3353f8c5a8d8a7e512671f7688de74438fd854e207f56a87da8"
+    },
+    "src/webview/module.d.ts": {
+      "idePath": "src/features/preview/webview/module.d.ts",
+      "preview": "586512750c225899f097ee7dc75f8f918c4646c869028589c64fa0f0702b3984",
+      "ide": "586512750c225899f097ee7dc75f8f918c4646c869028589c64fa0f0702b3984"
+    },
+    "src/webview/preview/assets/models/buildPlate.stl": {
+      "idePath": "src/features/preview/webview/preview/assets/models/buildPlate.stl",
+      "preview": "08438b4893c6f01b5cf3b780bb61f9a0e3508704775ccf358a9b6eaa6cbfd14d",
+      "ide": "08438b4893c6f01b5cf3b780bb61f9a0e3508704775ccf358a9b6eaa6cbfd14d"
+    },
+    "src/webview/preview/managers/BuildPlateLayout.ts": {
+      "idePath": "src/features/preview/webview/preview/managers/BuildPlateLayout.ts",
+      "preview": "7c001cc73154f80fc904caa50885fd6cf0155a014eb83c9174b114a8e1d3fedc",
+      "ide": "7c001cc73154f80fc904caa50885fd6cf0155a014eb83c9174b114a8e1d3fedc"
+    },
+    "src/webview/preview/managers/EnvironmentManager.ts": {
+      "idePath": "src/features/preview/webview/preview/managers/EnvironmentManager.ts",
+      "preview": "cff5f7d49c4462e326b5fe7abb1fd28276c035f207a40b17f936ec6dcd74630e",
+      "ide": "cff5f7d49c4462e326b5fe7abb1fd28276c035f207a40b17f936ec6dcd74630e"
+    },
+    "src/webview/preview/managers/MaterialManager.ts": {
+      "idePath": "src/features/preview/webview/preview/managers/MaterialManager.ts",
+      "preview": "d005e09f5df152ed74bcd7b52a5e96f5016aff1f25f8bb8b0d20443f42c7cc9d",
+      "ide": "0132fa171509b080e7914df8bc5a07a09278768cf9d15ccc0638b1f2cddcab42"
+    },
+    "src/webview/preview/managers/ToolManager.ts": {
+      "idePath": "src/features/preview/webview/preview/managers/ToolManager.ts",
+      "preview": "b4ca4d63431d891a221eb1d1f0a0224f4135d9f3b10768dc5d3323d5a4d40c47",
+      "ide": "b4ca4d63431d891a221eb1d1f0a0224f4135d9f3b10768dc5d3323d5a4d40c47"
+    },
+    "src/webview/preview/passes/XRayPass.ts": {
+      "idePath": "src/features/preview/webview/preview/passes/XRayPass.ts",
+      "preview": "582b4a97d494dbcad55a9ccfd4a6901799b4baec1d6bd971c640f94cb75dc0e1",
+      "ide": "582b4a97d494dbcad55a9ccfd4a6901799b4baec1d6bd971c640f94cb75dc0e1"
+    },
+    "src/webview/preview/rigs/AmbientLightRig.ts": {
+      "idePath": "src/features/preview/webview/preview/rigs/AmbientLightRig.ts",
+      "preview": "7d5d33c5d9496e82ccb041a254be8a040fe2991904aca0773bf463023849b54f",
+      "ide": "7d5d33c5d9496e82ccb041a254be8a040fe2991904aca0773bf463023849b54f"
+    },
+    "src/webview/preview/rigs/CameraRig.ts": {
+      "idePath": "src/features/preview/webview/preview/rigs/CameraRig.ts",
+      "preview": "f5b53e5d9407268847fdeb6c2f2bdbff51247cdf6873cfe1660cbc868d277272",
+      "ide": "f5b53e5d9407268847fdeb6c2f2bdbff51247cdf6873cfe1660cbc868d277272"
+    },
+    "src/webview/preview/rigs/CrossSectionRig.ts": {
+      "idePath": "src/features/preview/webview/preview/rigs/CrossSectionRig.ts",
+      "preview": "7c90d5ee6704c17ef36aff707ecdd9bd04da3823a05e9792c1cac1c4b8534351",
+      "ide": "7c90d5ee6704c17ef36aff707ecdd9bd04da3823a05e9792c1cac1c4b8534351"
+    },
+    "src/webview/preview/rigs/DirectionalLightRig.ts": {
+      "idePath": "src/features/preview/webview/preview/rigs/DirectionalLightRig.ts",
+      "preview": "693570b78affd7e6ca0c5651e44d19ad94c9dac8105567075d3a42443f8e40e9",
+      "ide": "693570b78affd7e6ca0c5651e44d19ad94c9dac8105567075d3a42443f8e40e9"
+    },
+    "src/webview/preview/rigs/DirectPointerNavigation.ts": {
+      "idePath": "src/features/preview/webview/preview/rigs/DirectPointerNavigation.ts",
+      "preview": "8d13fb0a32de998c8730a895cf54b78900004ac7cf18c45632c4835d6e5ef1db",
+      "ide": "8d13fb0a32de998c8730a895cf54b78900004ac7cf18c45632c4835d6e5ef1db"
+    },
+    "src/webview/preview/rigs/LightRig.ts": {
+      "idePath": "src/features/preview/webview/preview/rigs/LightRig.ts",
+      "preview": "5a2af5199a245985e7162af0b3ca1253171ecf9082d29ee24ac2efe358f834b3",
+      "ide": "5a2af5199a245985e7162af0b3ca1253171ecf9082d29ee24ac2efe358f834b3"
+    },
+    "src/webview/preview/rigs/MeasurementRig.ts": {
+      "idePath": "src/features/preview/webview/preview/rigs/MeasurementRig.ts",
+      "preview": "605e93b8cf650fcc3af08838f756197b0dfba89b02eb29d1d05815a0822fe8c9",
+      "ide": "605e93b8cf650fcc3af08838f756197b0dfba89b02eb29d1d05815a0822fe8c9"
+    },
+    "src/webview/preview/rigs/PointLightRig.ts": {
+      "idePath": "src/features/preview/webview/preview/rigs/PointLightRig.ts",
+      "preview": "0d55d864a0f6c6e4a0ee5356e206b20aa34e23b9a2366c2e21b33653f7bebb86",
+      "ide": "0d55d864a0f6c6e4a0ee5356e206b20aa34e23b9a2366c2e21b33653f7bebb86"
+    },
+    "src/webview/preview/rigs/Rig.ts": {
+      "idePath": "src/features/preview/webview/preview/rigs/Rig.ts",
+      "preview": "4d72af015a1137d2feeb64fee375df7076f41abf1b4bc0fec51ef3a3149935d5",
+      "ide": "4d72af015a1137d2feeb64fee375df7076f41abf1b4bc0fec51ef3a3149935d5"
+    },
+    "src/webview/preview/rigs/SpotLightRig.ts": {
+      "idePath": "src/features/preview/webview/preview/rigs/SpotLightRig.ts",
+      "preview": "09f8113762706b8f455914a67c4253811cce1a24a6bffe7c4ab6c6e259c58cf4",
+      "ide": "09f8113762706b8f455914a67c4253811cce1a24a6bffe7c4ab6c6e259c58cf4"
+    },
+    "src/webview/preview/Stage.ts": {
+      "idePath": "src/features/preview/webview/preview/Stage.ts",
+      "preview": "f4d5a3fb89ec3ddb4073c93219635146e8ec1148f22cfec0c392b26c13e53986",
+      "ide": "f4d5a3fb89ec3ddb4073c93219635146e8ec1148f22cfec0c392b26c13e53986"
+    },
+    "src/webview/preview/tools/MeasureTool.ts": {
+      "idePath": "src/features/preview/webview/preview/tools/MeasureTool.ts",
+      "preview": "fac9057055b2437c73578130c1be3dd51e343fe42d713bb37f8454ec7ee5f649",
+      "ide": "fac9057055b2437c73578130c1be3dd51e343fe42d713bb37f8454ec7ee5f649"
+    },
+    "src/webview/preview/tools/MoveTool.ts": {
+      "idePath": "src/features/preview/webview/preview/tools/MoveTool.ts",
+      "preview": "2248ffd6f8da04728ba9cb9af67896aa3f5d830e2cfeedbe09cd0c346b8c6ee2",
+      "ide": "2248ffd6f8da04728ba9cb9af67896aa3f5d830e2cfeedbe09cd0c346b8c6ee2"
+    },
+    "src/webview/preview/tools/RotateTool.ts": {
+      "idePath": "src/features/preview/webview/preview/tools/RotateTool.ts",
+      "preview": "c72f5b773685f79a1920935ef7ea0f9afb54bc939c91d5c9e459aa5244000591",
+      "ide": "c72f5b773685f79a1920935ef7ea0f9afb54bc939c91d5c9e459aa5244000591"
+    },
+    "src/webview/preview/tools/ScaleTool.ts": {
+      "idePath": "src/features/preview/webview/preview/tools/ScaleTool.ts",
+      "preview": "f14af3b87a7d339d919b81d1b296d6a555e5b7ff694d81e94c440c7c08f4bf82",
+      "ide": "f14af3b87a7d339d919b81d1b296d6a555e5b7ff694d81e94c440c7c08f4bf82"
+    },
+    "src/webview/preview/tools/SelectTool.ts": {
+      "idePath": "src/features/preview/webview/preview/tools/SelectTool.ts",
+      "preview": "213d079a67ecf0cbd054673d472bdeffa4a2a66b493dd0d42b55efbbb3b4db6b",
+      "ide": "213d079a67ecf0cbd054673d472bdeffa4a2a66b493dd0d42b55efbbb3b4db6b"
+    },
+    "src/webview/preview/tools/Tool.ts": {
+      "idePath": "src/features/preview/webview/preview/tools/Tool.ts",
+      "preview": "f7aa4e1a07156290b92dfaaec64cb2dcb82a6490692e65e941ccc9ad41916e19",
+      "ide": "f7aa4e1a07156290b92dfaaec64cb2dcb82a6490692e65e941ccc9ad41916e19"
+    },
+    "src/webview/preview/widgets/AxisColors.ts": {
+      "idePath": "src/features/preview/webview/preview/widgets/AxisColors.ts",
+      "preview": "7a2dfabcf6395f1813dd78653df5f0fdd42905f7a11122d126670c5384397844",
+      "ide": "7a2dfabcf6395f1813dd78653df5f0fdd42905f7a11122d126670c5384397844"
+    },
+    "src/webview/preview/widgets/InfiniteGrid.frag.glsl": {
+      "idePath": "src/features/preview/webview/preview/widgets/InfiniteGrid.frag.glsl",
+      "preview": "0ecab6d4f0478963bc52306c21d18fafb6dca2a76850ecffbf67e05bf118bcd6",
+      "ide": "0ecab6d4f0478963bc52306c21d18fafb6dca2a76850ecffbf67e05bf118bcd6"
+    },
+    "src/webview/preview/widgets/InfiniteGrid.ts": {
+      "idePath": "src/features/preview/webview/preview/widgets/InfiniteGrid.ts",
+      "preview": "52d9cd95ff8dcde7fd06e763eeb2818c0459a2b8a8dc20fd22b153d8f6d0c083",
+      "ide": "52d9cd95ff8dcde7fd06e763eeb2818c0459a2b8a8dc20fd22b153d8f6d0c083"
+    },
+    "src/webview/preview/widgets/InfiniteGrid.vert.glsl": {
+      "idePath": "src/features/preview/webview/preview/widgets/InfiniteGrid.vert.glsl",
+      "preview": "b21eae166485e4ae712e618cd2abe3b52a5b5e937b561de71fc2d42e7f565765",
+      "ide": "b21eae166485e4ae712e618cd2abe3b52a5b5e937b561de71fc2d42e7f565765"
+    },
+    "src/webview/preview/widgets/ViewCubeGeometry.ts": {
+      "idePath": "src/features/preview/webview/preview/widgets/ViewCubeGeometry.ts",
+      "preview": "ae4c50a8b5a48df85b750a8dfdae7d98e804e3de36ffd9c32f7c6470bfbd008e",
+      "ide": "ae4c50a8b5a48df85b750a8dfdae7d98e804e3de36ffd9c32f7c6470bfbd008e"
+    },
+    "src/webview/preview/widgets/ViewCubeWidget.ts": {
+      "idePath": "src/features/preview/webview/preview/widgets/ViewCubeWidget.ts",
+      "preview": "bfc769a7bd6f5997697086b943d64e6896e24f6916d936236577ec1d09cd2643",
+      "ide": "bfc769a7bd6f5997697086b943d64e6896e24f6916d936236577ec1d09cd2643"
+    },
+    "src/webview/services/Bridge.ts": {
+      "idePath": "src/features/preview/webview/services/Bridge.ts",
+      "preview": "5145e2a7635afca0846c1ef9198f527ee810c75e5180772f3b35b4607f3875b5",
+      "ide": "5145e2a7635afca0846c1ef9198f527ee810c75e5180772f3b35b4607f3875b5"
+    }
+  },
+  "watched": {
+    "preview": {
+      "package.json": "288666a9a5445280049afa39c2e65bcf2bdc993d2b8ccfd8a8f6b02f8e5cd60c",
+      "package-lock.json": "7a90c3cbb135ff785f2c96fb11aa25af77fe1d3737895701a5495d95f239f3fd",
+      "esbuild.ts": "c81c1a12a715dbd137c1ef8f9e062866ea7ec2eb2a2d9657042985863f9ffe4c",
+      "tsconfig.base.json": "8930e9b57ec4e414623e1b3421ade3a61f5e1eb59a8d0fb49a8ae568649b940b",
+      "tsconfig.extension.json": "93f41ab11065ab0058a849d2249497d78483648ac33611e615b0a1b99fc277e5",
+      "tsconfig.webview.json": "f412911db568c24a6b2e912e121a06828c26fe6ec6c85f13dca19e3b67d7db08",
+      "src/extension/index.ts": "0a05a3ce830d2943944356937848609d86bab2725ebaad899628d17d6fd085b7",
+      "src/extension/services/ScadParser.test.ts": "4814ac69ab8b69539f7c6c73b5916df2609888de0571e4179cc455d4fb8f6fea"
+    },
+    "ide": {
+      "package.json": "ed4c8f688cdbfc603eeb669ff225962f40f8b15e85b0d0bad88c4a8ada606bfe",
+      "package-lock.json": "ccc4ed43115d65d08e6cb35c51ac0e96a97648d196620b26b7f74eb544366362",
+      "esbuild.js": "a3e10de84f693a7f9a53fc8b2af648e950cda984b3a45d406eb6d781e1cbc5e3",
+      "tsconfig.json": "babe29d02f709ad89b9449de79c760d5483e97a60dcb39479852dff2053fb197",
+      "tsconfig.webview.json": "2715829dd6fcdfab9632a3ab43df458cff17897f3c6fa59d0936a19b58d1d8c5",
+      "src/features/preview/registerPreview.ts": "fd6cdda8029eb2848a93d447e051425e353a5c5eb2572d50364c6555184be8a1",
+      "src/core/customizer/CustomizerParser.ts": "2df4f37bc86c5e71070a34486a36bfbd6d1f1dcf1fc774ef1d04ddd70678cba1",
+      "src/core/customizer/CustomizerService.ts": "4c24656c4c90a506bb5b5dd0f200f41048754fc5ed0b32cfa40cb541ed039ab2",
+      "src/features/runtime/registerRuntime.ts": "40b39faf315fa2a4c7773fcefa4a6badc2bd2ee252b2592c40c650a3a741cb57"
+    }
+  }
+}

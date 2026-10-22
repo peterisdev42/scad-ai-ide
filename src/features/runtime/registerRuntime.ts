@@ -170,6 +170,7 @@ export function registerRuntime(context: vscode.ExtensionContext, manager: Runti
     void refresh()
     return {
         getActiveRuntime: () => manager.active,
+        whenReady: () => pending,
         getState: () => ({ runtimes: manager.result.runtimes, activeId: manager.active?.id, busy, message }),
         onDidChange: changed.event,
         refresh,
