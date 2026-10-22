@@ -19,3 +19,5 @@ vsc-extension-quickstart.md
 
 scripts/**
 .build/**
+
+.preview-sync/**

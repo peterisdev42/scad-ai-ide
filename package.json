@@ -71,6 +71,23 @@
                 "command": "scad-ai-ide.showLanguageServerOutput",
                 "title": "Show OpenSCAD Language Server Output",
                 "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai-ide.showPreview",
+                "title": "Open as Preview",
+                "icon": "$(preview)",
+                "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai-ide.showSource",
+                "title": "Reopen as source file",
+                "icon": "$(file-code)",
+                "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai-ide.togglePreview",
+                "title": "Toggle Preview",
+                "category": "SCAD AI IDE"
             }
         ],
         "configuration": {
@@ -143,6 +160,26 @@
                     "default": "",
                     "scope": "machine",
                     "description": "Absolute path to a custom Topiary formatting query. Empty uses the server default."
+                },
+                "scad-ai-ide.preview.format": {
+                    "type": "string",
+                    "enum": [
+                        "3mf",
+                        "stl"
+                    ],
+                    "default": "stl",
+                    "description": "The format to use for the 3D preview. 3MF supports colors but requires OpenSCAD Nightly. STL is universally supported."
+                },
+                "scad-ai-ide.preview.slicerExecutable": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Optional path to the slicer executable (e.g., Bambu Studio or PrusaSlicer). If left empty, the OS default application for the 3D model will be used.",
+                    "scope": "machine"
+                },
+                "scad-ai-ide.preview.enableLazyUnion": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable lazy unions, creating a multi-part exported object."
                 }
             }
         },
@@ -172,6 +209,30 @@
                 {
                     "command": "scad-ai.customizer.edit",
                     "when": "false"
+                },
+                {
+                    "command": "scad-ai-ide.showPreview",
+                    "when": "editorLangId == openscad && resourceScheme == file"
+                },
+                {
+                    "command": "scad-ai-ide.showSource",
+                    "when": "activeCustomEditorId == 'scad-ai-ide.preview.editor'"
+                },
+                {
+                    "command": "scad-ai-ide.togglePreview",
+                    "when": "(editorLangId == openscad && resourceScheme == file) || activeCustomEditorId == 'scad-ai-ide.preview.editor'"
+                }
+            ],
+            "editor/title": [
+                {
+                    "command": "scad-ai-ide.showPreview",
+                    "group": "navigation@2",
+                    "when": "activeEditor == workbench.editors.files.textFileEditor && editorLangId == openscad && resourceScheme == file"
+                },
+                {
+                    "command": "scad-ai-ide.showSource",
+                    "group": "navigation@2",
+                    "when": "activeCustomEditorId == 'scad-ai-ide.preview.editor'"
                 }
             ]
         },
@@ -205,7 +266,27 @@
                 "editor.insertSpaces": true,
                 "editor.tabSize": 4
             }
-        }
+        },
+        "keybindings": [
+            {
+                "command": "scad-ai-ide.togglePreview",
+                "key": "ctrl+shift+v",
+                "mac": "cmd+shift+v",
+                "when": "(editorLangId == openscad && resourceScheme == file) || activeCustomEditorId == 'scad-ai-ide.preview.editor'"
+            }
+        ],
+        "customEditors": [
+            {
+                "viewType": "scad-ai-ide.preview.editor",
+                "displayName": "OpenSCAD Preview",
+                "selector": [
+                    {
+                        "filenamePattern": "*.scad"
+                    }
+                ],
+                "priority": "option"
+            }
+        ]
     },
     "scripts": {
         "vscode:prepublish": "npm run build:lsp && npm run package",
@@ -216,14 +297,18 @@
         "package": "npm run check-types && npm run lint && node esbuild.js --production",
         "compile-tests": "tsc -p . --outDir out",
         "watch-tests": "tsc -p . -w --outDir out",
-        "check-types": "tsc --noEmit",
+        "check-types": "tsc --noEmit && tsc -p tsconfig.webview.json",
         "lint": "eslint src",
-        "test": "npm run compile-tests && node --test out/test/runtime.test.js out/test/customizer.test.js out/test/language.test.js",
+        "test": "npm run compile-tests && node --test out/test/runtime.test.js out/test/customizer.test.js out/test/language.test.js && npm run test:preview",
         "test:integration": "npm run compile-tests && npm run compile && vscode-test",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "build:lsp": "node scripts/build-lsp.cjs",
-        "prepare:lsp": "node scripts/prepare-lsp.cjs"
+        "prepare:lsp": "node scripts/prepare-lsp.cjs",
+        "test:preview": "node --import tsx --test src/test/preview/*.test.ts",
+        "test:preview-editor": "npm run package && node scripts/test-preview-editor.mjs",
+        "preview:sync": "node scripts/preview-sync.mjs",
+        "test:preview-sync": "node --test scripts/preview-sync/engine.test.mjs"
     },
     "devDependencies": {
         "@types/mocha": "^10.0.10",
@@ -239,7 +324,10 @@
         "typescript": "^6.0.3",
         "typescript-eslint": "^8.61.1",
         "vscode-oniguruma": "^2.0.1",
-        "vscode-textmate": "^9.3.2"
+        "vscode-textmate": "^9.3.2",
+        "@types/three": "^0.184.0",
+        "@types/vscode-webview": "^1.57.5",
+        "tsx": "^4.21.0"
     },
     "overrides": {
         "diff": "^8.0.4",
@@ -256,6 +344,11 @@
         "virtualWorkspaces": false
     },
     "dependencies": {
-        "vscode-languageclient": "^9.0.1"
+        "vscode-languageclient": "^9.0.1",
+        "@lit/context": "^1.1.6",
+        "@vscode-elements/elements": "^2.5.1",
+        "@vscode/codicons": "^0.0.45",
+        "lit": "^3.3.2",
+        "three": "^0.184.0"
     }
 }

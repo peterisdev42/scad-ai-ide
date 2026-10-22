@@ -9,11 +9,19 @@ export class CustomizerTreeProvider implements vscode.TreeDataProvider<vscode.Tr
 
     constructor(readonly service: CustomizerService) {
         this.subscriptions = [
+            service.onDidChangeValues((target) => {
+                if (target === service.target) {
+                    this.changed.fire()
+                }
+            }),
             vscode.window.onDidChangeActiveTextEditor((editor) => {
                 if (editor) {
                     this.load(editor.document)
+                } else {
+                    this.loadTarget()
                 }
             }),
+            vscode.window.tabGroups.onDidChangeTabs(() => this.loadTarget()),
             vscode.workspace.onDidChangeTextDocument((event) => {
                 if (event.document.uri.toString() === service.target) {
                     this.load(event.document)
@@ -29,6 +37,14 @@ export class CustomizerTreeProvider implements vscode.TreeDataProvider<vscode.Tr
     }
 
     private loadTarget(): void {
+        const input = vscode.window.tabGroups.activeTabGroup.activeTab?.input
+        if (input instanceof vscode.TabInputCustom && input.viewType === 'scad-ai-ide.preview.editor') {
+            const document = vscode.workspace.textDocuments.find((document) => document.uri.toString() === input.uri.toString() && !document.isClosed)
+            if (document) {
+                this.load(document)
+                return
+            }
+        }
         const editor = vscode.window.activeTextEditor
         if (editor && !editor.document.isClosed && (editor.document.languageId === 'openscad' || editor.document.uri.path.toLowerCase().endsWith('.scad'))) {
             this.load(editor.document)

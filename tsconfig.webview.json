@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "preserve",
+        "moduleResolution": "bundler",
+        "sourceMap": true,
+        "strict": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "experimentalDecorators": true,
+        "useDefineForClassFields": false,
+        "noEmit": true,
+        "lib": ["ES2022", "DOM"],
+        "types": ["vscode-webview"],
+        "skipLibCheck": true
+    },
+    "exclude": ["node_modules", ".vscode-test", "dist"],
+    "include": ["src/features/preview/webview/**/*", "src/features/preview/shared/**/*"]
+}

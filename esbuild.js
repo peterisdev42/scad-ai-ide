@@ -40,11 +40,31 @@ async function main() {
             esbuildProblemMatcherPlugin,
         ],
     })
+    const fs = require('node:fs/promises')
+    await fs.mkdir('dist/codicons', { recursive: true })
+    for (const file of ['codicon.css', 'codicon.ttf']) {
+        await fs.copyFile(`node_modules/@vscode/codicons/dist/${file}`, `dist/codicons/${file}`)
+    }
+    const webview = await esbuild.context({
+        entryPoints: ['src/features/preview/webview/index.ts'],
+        tsconfig: 'tsconfig.webview.json',
+        bundle: true,
+        format: 'esm',
+        platform: 'browser',
+        outfile: 'dist/preview.js',
+        minify: production,
+        sourcemap: !production,
+        loader: { '.stl': 'binary', '.glsl': 'text' },
+        plugins: [esbuildProblemMatcherPlugin],
+    })
     if (watch) {
-        await ctx.watch()
+        await Promise.all([ctx.watch(), webview.watch()])
     } else {
-        await ctx.rebuild()
-        await ctx.dispose()
+        try {
+            await Promise.all([ctx.rebuild(), webview.rebuild()])
+        } finally {
+            await Promise.all([ctx.dispose(), webview.dispose()])
+        }
     }
 }
 
