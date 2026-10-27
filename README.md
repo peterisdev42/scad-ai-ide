@@ -6,7 +6,7 @@
 
 在本目录执行 `npm ci`，按 `F5`（macOS 可用 `Fn + F5`）启动扩展开发宿主。F5 开发窗口禁用其他已安装扩展，只加载当前开发扩展和内置扩展；当前工作区同时关闭 JavaScript 调试器的 Network 视图，以避开本机 Node inspector 的网络事件错误。普通断点与变量调试仍然可用。左侧 **SCAD AI IDE** 只有两个独立的原生 View：
 
-- **QUICK ACCESS**：按 AI、Bricks、Libraries、Runtime 顺序显示四个纯文本叶子节点。
+- **QUICK ACCESS**：按 AI、Bricks、Libraries、Runtime、More 顺序显示五个纯文本叶子节点。
 - **CUSTOMIZER**：当前或最近使用的 `.scad` 文件的参数分组和参数值。
 
 树节点没有自定义图标，使用普通单行文本；两个 View 可以独立折叠和调整高度。
@@ -104,16 +104,27 @@ shape = "round"; // [round:Round, square:Square]
 
 ### 管理页面
 
-Quick Access 点击后在当前编辑器组中以普通标签页打开对应的 WebviewPanel，不自动创建分屏。每个页面只有一个实例，重复点击激活原标签，四个页面可同时打开，关闭后可重新创建。
+Quick Access 点击后在当前编辑器组中以普通标签页打开对应的 WebviewPanel，不自动创建分屏。每个页面只有一个实例，重复点击激活原标签，五个页面可同时打开，关闭后可重新创建。
 
 - **AI**：预留 Skills、MCP、Agent Tools、AI Provider 管理入口。
 - **Bricks**：预留可复用 Brick 管理入口。
 - **Libraries**：预留 Library 和依赖管理入口。
 - **Runtime**：展示真实检测结果，支持刷新、添加可执行文件、选择版本、恢复自动发现和查看诊断。
+- **More**：在 GitHub Tab 中查看匿名/已鉴权状态、账号与 Token 可用性，并连接账号；只传递安全状态，不显示或传递 Token 内容。
 
 前三个页面目前为占位内容。页面使用本地静态资源和 VS Code 主题变量，配置 CSP，通过 Webview 消息调用 Extension Host 服务，不监听网络端口。
 
 ### Runtime
+
+Runtime 页面在标题下提供 Overview、Installed、Available 三个标签，并记住当前标签。Overview 在同一张卡片内先显示系统环境，再显示 Runtime 当前状态、版本、路径和操作入口；Installed 按版本从新到旧展示本地安装，突出 In Use 与 Use This Version；每次切换到此标签静默重新扫描，保留列表和状态，结果不变时不重绘，首次发现仍显示加载状态；重复切换合并进行中的扫描，无需手动刷新；Available 以相同列表样式展示兼容版本、已识别的版本渠道，以及 Install/Reinstall。Installed 的来源以标签跟随版本标题，下方直接展示路径，不显示 Source 和 Location 字段标签，Available 列表仅展示下载大小，顶部显示完整系统版本与架构，不显示重复的包名和 Release 字段；两页共用同一份 Add from your computer 模板，手动选择路径和归档导入分别调用同一个 browse / installArchive 函数，自动发现与诊断放在 Troubleshooting 中。安装与重装流程不变。切换 Runtime 时仅对应按钮显示 Switching，保留列表与角标；Release 刷新状态放在 Refresh 按钮，首次加载放在列表内容区域；构建安装进度显示在对应行，本地导入进度显示在导入入口下方。各管理 Panel 共用 Tab 下、列表上方的提示区，集中展示完整警告、发现、请求与操作错误，取消安装不作为错误；GitHub 后台会话检查保持静默，交互连接状态显示在连接按钮。面板颜色、字体与字号跟随 VS Code 主题和字体设置，支持深色、浅色与高对比度主题。标签支持方向键、Home/End 和键盘焦点导航，空列表与网络错误分别提供下一步提示。
+
+Runtime 面板显示扩展宿主的系统、版本和 CPU 架构（macOS 显示产品版本，Windows/Linux 显示系统内核版本）。打开面板时分页拉取 [GitHub 全部 Releases](https://api.github.com/repos/peterisdev42/scad-ai-ide-builder/releases)，包括预发布版本，只显示与当前系统、架构精确匹配的 CLI 构建包，不显示校验文件或其他平台构建。列表支持手动刷新；网络错误和无匹配构建分别提示。GitHub 请求失败时直接显示 HTTP 状态、原始错误消息、请求 URL、GitHub 请求 ID，以及响应中提供的配额、重置时间和 Retry-After；网络错误保留 DNS/TLS/连接失败的底层原因，不把权限错误一概称为限流。已有列表可继续显示，并明确标注其为此前加载的结果；相同信息写入 Runtime 诊断日志。Install 会在扩展宿主下载归档，校验 Release 提供的 SHA256，在临时目录解压并通过 `--version` 验证后移入正式目录。安装支持进度提示与取消；失败会清理临时文件。Available 根据磁盘上实际存在的托管安装目录显示 Install 或 Reinstall，也通过离线包的 `build-info.json` 识别对应 Release；损坏的托管安装仍可重装。Reinstall 会先删除对应版本目录，再重新下载、校验和安装，不删除其他版本或用户保留的原始压缩包。删除旧版本后和安装结束后都会刷新 Runtime 发现；若重装失败，该版本不保留半成品，列表恢复为 Install。用户可在 Installed 中切换当前版本。
+
+Release 列表、所有分页、构建包和 SHA256 校验文件共用 `src/platform/github/` 的请求入口。扩展通过 VS Code Authentication API 静默获取 `github` 已授权会话；有会话时添加 `Authorization: Bearer ...`，未登录或尚未授权时匿名访问，不主动弹出登录框。首次授权可在 More → GitHub 点击 **Connect GitHub Account**，或运行同名命令，完成后自动刷新 Release 列表。More 随 VS Code GitHub 会话登录、退出或变更自动同步，不需要手动检查。所有 Panel 共享匿名 GitHub 请求失败后的登录提示，通过 **Connect GitHub Account** 跳转到 More → GitHub；登录后自动清除提示。原始错误原因保留，登录仅作为可能的解决方式。无需配置或粘贴 Token，也不要求新增仓库读写权限。每次请求读取当前会话，并发请求合并进行中的会话读取，因此后续请求会跟随登录、退出和会话 Token 更新。Token 不写入插件配置、安装目录或 Webview；重定向到下载 CDN 或其他非凭据域时移除鉴权头。Authentication Provider 不可用时保留匿名访问，并将原因记录到 **SCAD AI IDE GitHub** 输出通道；GitHub HTTP 和网络错误继续在 Runtime 页面显示。
+
+版本渠道结合 Release 的 tag、标题及 GitHub `prerelease` 判断：含 `nightly` 为 Nightly；含 TEST、dev/development、snapshot、alpha/beta/rc、preview 或日期快照版本为 Development；其他 GitHub 预发布为 Pre-release。无开发标记、未标为预发布且 tag 为 `openscad-cli-YYYY.MM` 的版本显示 Stable；无法识别时不显示版本标签。这是版本命名分类，不是运行稳定性的验证。
+
+Installed 和 Available 页面提供 **Install from Archive…**：选择已经下载的 `.zip` 或 `.tar.gz` CLI 构建包即可离线安装，包内平台与架构必须匹配当前扩展宿主。此入口把原始归档复制到 `globalStorageUri/runtimes` 下的临时目录，与在线安装共用解压、CLI 验证、正式目录写入及重新发现流程。临时副本在成功、失败或取消时都会清理，用户选中的原始归档保持不变。解压后验证一次，移入正式目录后再次验证；验证失败会清理本次解压/安装目录，不会加入 Installed。本地包按内容 SHA256 存入 `runtimes/<platform>-<arch>/local-<sha256>/`，相同文件重复导入会复用已验证的安装。**Add Existing Runtime** 则只选择本机已经安装或解压好的可执行文件，不复制其安装目录。
 
 状态栏仅显示纯文本。点击状态栏打开原生 QuickPick，版本与可执行文件路径显示在同一行，并支持按路径搜索。
 
@@ -125,9 +136,11 @@ Quick Access 点击后在当前编辑器组中以普通标签页打开对应的 
 | macOS   | PATH、系统和用户 Applications 的版本化应用包、Spotlight、Info.plist、Homebrew、MacPorts      |
 | Linux   | PATH、系统和用户 bin、Snap、Flatpak 的不同安装范围和分支                                     |
 
-所有候选通过 `--version` 验证，捕获 stdout/stderr，执行设置超时，并按真实路径及启动参数去重。Flatpak 保留前置参数，Snap 保留包装器入口。自定义 AppImage 和便携版可通过手动路径或 PATH 使用，暂不扫描任意磁盘目录。
+所有候选通过 `--version` 验证，捕获 stdout/stderr，执行设置超时，并按真实路径及启动参数去重。托管安装额外按实际安装目录合并发现入口，macOS 包内的 `.app` 与 `bin/openscad` 只展示一项，优先使用验证可用的托管启动器；独立安装目录和不同启动参数继续保留。Flatpak 保留前置参数，Snap 保留包装器入口。自定义 AppImage 和便携版可通过手动路径或 PATH 使用，暂不扫描任意磁盘目录。
 
-托管 CLI 的预留路径为 `globalStorageUri/runtimes/<platform>-<arch>/openscad`（Windows 为 `openscad.com`），扩展安装目录不存放下载的程序。当前尚未实现下载、安装、更新或删除，也不会删除系统安装的 OpenSCAD。
+Source 来自候选项的发现渠道：PATH 搜索、系统应用目录/Spotlight/Windows 注册表、Homebrew/MacPorts/Scoop 等目录或包管理器、自定义路径，以及插件托管目录。来源标签在候选收集阶段确定，所有候选随后通过 `--version` 验证；手动选中一个已发现安装会保留其原有来源，同一托管包的重复入口合并后显示 Installed by SCAD AI IDE。
+
+托管 CLI 安装在 `globalStorageUri/runtimes/<platform>-<arch>/<release-asset-id>/`，保留构建包内的 `bin/`、应用包和依赖目录，支持多个版本共存。每次发现都会扫描这些安装目录并验证可执行文件。扩展安装目录不存放下载的程序，不删除系统安装的 OpenSCAD，也不会覆盖已安装的其他构建。旧的 `globalStorageUri/runtimes/<platform>-<arch>/openscad`（Windows 为 `openscad.com`）路径继续兼容。
 
 发现运行于 workspace extension host：SSH、WSL、Dev Container 场景针对相应主机或容器。未信任的工作区不会执行发现和版本检测。
 
@@ -168,3 +181,5 @@ Prettier 使用单引号、4 空格缩进、非必要不使用分号，`printWid
 ## Preview 源码同步
 
 手动双向同步工具和基线由本插件维护，不依赖 Builder。在本目录执行 `npm run preview:sync -- status`；默认使用相邻 `../vscode-openscad-preview`，其他位置通过 `PREVIEW_SYNC_PREVIEW_ROOT` 指定。详见 [同步说明](scripts/preview-sync/README.md)。
+
+管理 Panel 的 Loading、警告和错误交互遵循 [Panel 反馈规范](docs/panel-feedback.md)。

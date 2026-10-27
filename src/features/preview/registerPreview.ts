@@ -26,7 +26,8 @@ export function registerPreview(context: vscode.ExtensionContext, runtime: Retur
             supportsMultipleEditorsPerDocument: false,
         }),
         runtime.onDidChange(() => {
-            if (!runtime.getState().busy) {
+            const state = runtime.getState()
+            if (!state.busy && !state.selectingId && !state.installing) {
                 sessions.refresh()
             }
         }),

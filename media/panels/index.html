@@ -11,30 +11,126 @@
         <main>
             <header>
                 <h1>{{title}}</h1>
+                <div id="runtime-tabs" class="tabs" role="tablist" aria-label="Runtime sections" hidden>
+                    <button id="tab-overview" role="tab" aria-controls="panel-overview" aria-selected="true" data-tab="overview">Overview</button>
+                    <button id="tab-installed" role="tab" aria-controls="panel-installed" aria-selected="false" tabindex="-1" data-tab="installed">Installed <span id="installed-count" class="count"></span></button>
+                    <button id="tab-available" role="tab" aria-controls="panel-available" aria-selected="false" tabindex="-1" data-tab="available">Available <span id="available-count" class="count"></span></button>
+                </div>
+                <div id="more-tabs" class="tabs" role="tablist" aria-label="More sections" hidden>
+                    <button id="tab-github" role="tab" aria-controls="panel-github" aria-selected="true">GitHub</button>
+                </div>
                 <p id="summary"></p>
             </header>
+            <section id="panel-notices" aria-label="Warnings and errors">
+                <p id="action-error" class="notice error request-error" role="alert" hidden></p>
+                <p id="overview-error" class="notice error request-error" role="alert" hidden></p>
+                <p id="installed-error" class="notice error request-error" role="alert" hidden></p>
+                <p id="available-error" class="notice error request-error" role="alert" hidden></p>
+                <p id="github-error" class="notice error request-error" role="alert" hidden></p>
+                <aside id="github-sign-in-hint" class="notice warning" role="status" aria-live="polite" hidden>
+                    <p>A GitHub request failed in anonymous mode. Connecting your account provides higher API limits and may help resolve the error.</p>
+                    <button data-action="openGitHubConnection" class="secondary">Connect GitHub Account</button>
+                </aside>
+            </section>
             <section id="runtime" hidden aria-label="OpenSCAD runtimes">
-                <div class="toolbar">
-                    <button data-action="refresh">Refresh</button>
-                    <button data-action="browse">Add Runtime</button>
-                    <button data-action="automatic">Use Automatic Discovery</button>
-                    <button data-action="diagnostics" class="secondary">Diagnostics</button>
-                </div>
-                <p id="status" role="status" aria-live="polite"></p>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Version</th>
-                                <th>Source</th>
-                                <th>Executable</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="runtimes"></tbody>
-                    </table>
+                <section id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" tabindex="0">
+                    <div class="card runtime-card">
+                        <dl class="system-details" aria-label="Workspace host environment">
+                            <div>
+                                <dt>System</dt>
+                                <dd id="system-os">Detecting…</dd>
+                            </div>
+                            <div>
+                                <dt>Architecture</dt>
+                                <dd id="system-arch">Detecting…</dd>
+                            </div>
+                        </dl>
+                        <div class="section-heading">
+                            <h2 id="active-title">Looking for OpenSCAD…</h2>
+                            <span id="runtime-badge" class="badge">Checking</span>
+                        </div>
+                        <p id="active-description">Checking this computer for an installed runtime.</p>
+                        <p id="active-path" class="path muted" hidden></p>
+                        <div id="overview-actions" class="actions">
+                            <button id="overview-primary" data-tab="available">Find a Runtime</button>
+                            <button id="overview-secondary" class="secondary" data-action="browse" data-runtime-action>Add Existing Runtime</button>
+                        </div>
+                    </div>
+                </section>
+                <section id="panel-installed" role="tabpanel" aria-labelledby="tab-installed" tabindex="0" hidden>
+                    <div id="installed-loading" class="empty-state" role="status" aria-live="polite" hidden>
+                        <p>Looking for installed versions…</p>
+                    </div>
+                    <div id="installed-empty" class="empty-state" hidden>
+                        <h2>No versions installed yet</h2>
+                        <p>Install OpenSCAD to start previewing and exporting your models.</p>
+                    </div>
+                    <div id="runtimes" class="version-list" role="list" aria-label="Installed OpenSCAD versions" hidden></div>
+                    <div data-local-runtime-options></div>
+                    <details class="advanced">
+                        <summary>Troubleshooting</summary>
+                        <div class="actions">
+                            <button data-action="automatic" data-runtime-action class="secondary">Use Automatic Discovery</button>
+                            <button data-action="diagnostics" class="secondary">View Diagnostics</button>
+                        </div>
+                    </details>
+                </section>
+                <section id="panel-available" role="tabpanel" aria-labelledby="tab-available" tabindex="0" hidden>
+                    <div class="section-toolbar">
+                        <p id="builds-environment" class="small">
+                            System: <strong id="builds-system-os">Detecting…</strong> <span>Architecture: <strong id="builds-system-arch">Detecting…</strong></span>
+                        </p>
+                        <button data-action="refreshBuilds" class="text-button" id="refresh-builds">Refresh</button>
+                    </div>
+                    <div id="builds-loading" class="empty-state" role="status" aria-live="polite" hidden>
+                        <p>Loading available versions…</p>
+                    </div>
+                    <div id="builds-empty" class="empty-state" hidden>
+                        <h2 id="builds-empty-title">No matching versions yet</h2>
+                        <p id="builds-empty-description">You can also add OpenSCAD from your computer.</p>
+                        <button data-tab="installed" class="secondary">Go to Installed</button>
+                    </div>
+                    <div id="builds" class="version-list" role="list" aria-label="Available OpenSCAD versions" hidden></div>
+                    <div data-local-runtime-options></div>
+                </section>
+            </section>
+            <section id="more" hidden aria-label="More">
+                <div id="panel-github" class="card" role="tabpanel" aria-labelledby="tab-github" tabindex="0">
+                    <div class="section-heading">
+                        <h2>GitHub</h2>
+                        <span id="github-badge" class="badge">Checking…</span>
+                    </div>
+                    <p id="github-description">Checking GitHub account access…</p>
+                    <dl class="version-metadata github-metadata">
+                        <div>
+                            <dt>Account</dt>
+                            <dd id="github-account">—</dd>
+                        </div>
+                        <div>
+                            <dt>Requests</dt>
+                            <dd id="github-mode">Checking…</dd>
+                        </div>
+                        <div>
+                            <dt>Token</dt>
+                            <dd id="github-token">Not checked</dd>
+                        </div>
+                    </dl>
+                    <div class="actions tool-actions">
+                        <button data-action="connectGitHub" id="connect-github">Connect GitHub Account</button>
+                    </div>
                 </div>
             </section>
+            <template id="local-runtime-options-template">
+                <details class="local-options">
+                    <summary>Add from your computer</summary>
+                    <div class="actions">
+                        <button data-action="browse" data-runtime-action class="secondary">Add Existing Runtime</button>
+                        <button data-action="installArchive" data-runtime-action class="secondary">Install from Archive…</button>
+                    </div>
+                    <p class="muted small">Use an installed copy or install a downloaded .zip / .tar.gz file.</p>
+                    <p data-local-runtime-status class="muted small request-error" role="status" aria-live="polite" hidden></p>
+                </details>
+            </template>
             <section id="placeholder" hidden>
                 <h2 id="placeholder-heading"></h2>
                 <p>This feature is not available yet.</p>

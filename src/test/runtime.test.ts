@@ -3,8 +3,16 @@ import { test } from 'node:test'
 import { mkdtemp, mkdir, writeFile, chmod, rm } from 'node:fs/promises'
 import * as os from 'node:os'
 import * as path from 'node:path'
+import * as vm from 'node:vm'
+import { readFile } from 'node:fs/promises'
+import type * as vscode from 'vscode'
+import { RuntimeManager } from '../core/runtime/RuntimeManager'
+import { UserWarning } from '../core/feedback'
+import type { DiscoveryResult, DiscoveryOptions } from '../core/runtime/types'
 import { discover, fileCandidate, getCandidates, parseVersion, probe, runCommand, type Candidate, type Runtime } from '../platform/runtime/discovery'
 import { parseFlatpak, parseRegistry, resolveApplication } from '../platform/runtime/platformDiscovery'
+import { classifyRuntimeRelease, detectRuntimeSystem, fetchRuntimeBuilds, matchesRuntimeBuild, normalizeArchitecture, type RuntimeSystem } from '../platform/runtime/releases'
+import { sortRuntimesByVersion } from '../core/runtime/sortRuntimes'
 
 const noPlatform = async () => ({ candidates: [], diagnostics: [] })
 const fakeProbe = async (candidate: Candidate): Promise<Runtime> => ({
@@ -13,6 +21,32 @@ const fakeProbe = async (candidate: Candidate): Promise<Runtime> => ({
     version: '2026.10.15',
     platform: 'linux',
     status: 'available',
+})
+
+test('Installed versions sort newest first numerically without changing discovery priority', async () => {
+    const versions = ['2021.01', '2026.9', '2026.10-TEST2', '2026.10-TEST10', '2026.10', '2026.10.2', '2026.10.10 (git abc123)', 'unknown']
+    const runtimes = await Promise.all(versions.map(async (version, index) => ({ ...(await fakeProbe({ source: index % 2 ? 'managed' : 'PATH', command: { executable: index % 2 ? `/storage/runtime/${index}` : `/system/runtime/${index}`, argsPrefix: [] } })), version })))
+    const sorted = sortRuntimesByVersion(runtimes)
+    assert.deepEqual(
+        sorted.map((runtime) => runtime.version),
+        ['2026.10.10 (git abc123)', '2026.10.2', '2026.10', '2026.10-TEST10', '2026.10-TEST2', '2026.9', '2021.01', 'unknown'],
+    )
+    assert.deepEqual(
+        runtimes.map((runtime) => runtime.version),
+        versions,
+    )
+    assert.notEqual(sorted, runtimes)
+    assert.equal(
+        sorted.find((runtime) => runtime.id === runtimes[0].id),
+        runtimes[0],
+    )
+})
+
+test('equal versions ignore source, path, runtime ID and git metadata when sorting', async () => {
+    const first = { ...(await fakeProbe({ source: 'managed', command: { executable: '/runtime/a', argsPrefix: [] } })), version: '2026.10 (git ffffff)' }
+    const second = { ...(await fakeProbe({ source: 'PATH', command: { executable: '/runtime/b', argsPrefix: [] } })), version: '2026.10 (git aaaaaa)' }
+    assert.deepEqual(sortRuntimesByVersion([second, first]), [second, first])
+    assert.deepEqual(sortRuntimesByVersion([first, second]), [first, second])
 })
 
 test('explicit override precedes PATH, ignores relative PATH entries and deduplicates', () => {
@@ -177,4 +211,676 @@ test('selecting a discovered installation preserves its source label', async () 
     )
     assert.equal(result.runtimes[0].command.executable, '/usr/bin/openscad')
     assert.equal(result.runtimes[0].source, 'native-package')
+})
+
+test('runtime build matching requires the exact OS and architecture and excludes checksum files', () => {
+    const system = (platform: string, architecture: string): RuntimeSystem => ({ platform, architecture, name: '', version: '' })
+    for (const [platform, target] of [
+        ['darwin', 'macos'],
+        ['win32', 'windows'],
+        ['linux', 'linux'],
+    ]) {
+        for (const [architecture, suffix] of [
+            ['x64', 'x86_64'],
+            ['arm64', 'arm64'],
+            ['x86', 'x86'],
+        ]) {
+            const name = `openscad-cli-${target}-${suffix}.${platform === 'win32' ? 'zip' : 'tar.gz'}`
+            assert.ok(matchesRuntimeBuild(name, system(platform, architecture)))
+            assert.ok(!matchesRuntimeBuild(`${name}.sha256`, system(platform, architecture)))
+            assert.ok(!matchesRuntimeBuild(name, system(platform, 'unsupported')))
+            assert.ok(!matchesRuntimeBuild(name, system('freebsd', architecture)))
+            assert.ok(!matchesRuntimeBuild(name, system(platform === 'darwin' ? 'win32' : 'darwin', architecture)))
+        }
+    }
+    assert.equal(normalizeArchitecture('AMD64'), 'x64')
+    assert.equal(normalizeArchitecture('aarch64'), 'arm64')
+    assert.equal(normalizeArchitecture('ia32'), 'x86')
+    assert.equal(normalizeArchitecture('armv7l'), 'armv7l')
+})
+
+test('release listing follows pagination and includes stable and prerelease matching archives only', async () => {
+    const system: RuntimeSystem = { platform: 'darwin', architecture: 'arm64', name: 'macOS', version: '15' }
+    const asset = (id: number, name: string) => ({ id, name, size: 1024, browser_download_url: `https://github.com/peterisdev42/scad-ai-ide-builder/releases/download/tag/${name}` })
+    const release = (tag: string, assets: unknown[], extra = {}) => ({ tag_name: tag, assets, ...extra })
+    const pages = [[release('new', [asset(1, 'openscad-cli-macos-arm64.tar.gz'), asset(2, 'openscad-cli-macos-x86_64.tar.gz'), asset(3, 'openscad-cli-macos-arm64.tar.gz.sha256')], { prerelease: true })], [release('old', [asset(4, 'openscad-cli-macos-arm64.tar.gz')]), release('draft', [asset(5, 'openscad-cli-macos-arm64.tar.gz')], { draft: true })]]
+    const calls: string[] = []
+    const builds = await fetchRuntimeBuilds(system, async (input, options) => {
+        calls.push(String(input))
+        assert.ok(options?.signal)
+        return new Response(JSON.stringify(pages[calls.length - 1]), { headers: calls.length === 1 ? { link: '<https://api.github.com/next>; rel="next"' } : {} })
+    })
+    assert.equal(calls.length, 2)
+    assert.match(calls[0], /per_page=100&page=1$/)
+    assert.match(calls[1], /per_page=100&page=2$/)
+    assert.deepEqual(
+        builds.map((build) => [build.id, build.tag, build.prerelease]),
+        [
+            [1, 'new', true],
+            [4, 'old', false],
+        ],
+    )
+    assert.equal(builds[0].release, 'new')
+})
+
+test('release listing handles empty results, API failures, invalid payloads and untrusted downloads', async () => {
+    const system: RuntimeSystem = { platform: 'linux', architecture: 'x64', name: 'Linux', version: '6' }
+    assert.deepEqual(await fetchRuntimeBuilds(system, async () => new Response('[]')), [])
+    await assert.rejects(
+        fetchRuntimeBuilds(system, async () => new Response('', { status: 403 })),
+        /HTTP 403 Forbidden/,
+    )
+    await assert.rejects(
+        fetchRuntimeBuilds(system, async () => new Response('', { status: 503 })),
+        /HTTP 503/,
+    )
+    await assert.rejects(
+        fetchRuntimeBuilds(system, async () => new Response('{}')),
+        /Invalid/,
+    )
+    await assert.rejects(
+        fetchRuntimeBuilds(system, async () => {
+            throw new Error('offline')
+        }),
+        /offline/,
+    )
+    assert.deepEqual(
+        await fetchRuntimeBuilds(
+            system,
+            async () =>
+                new Response(
+                    JSON.stringify([
+                        {
+                            tag_name: 'tag',
+                            assets: [{ id: 1, name: 'openscad-cli-linux-x64.tar.gz', browser_download_url: 'https://example.com/archive' }],
+                        },
+                    ]),
+                ),
+        ),
+        [],
+    )
+})
+
+test('system detection returns the extension host platform, version and normalized architecture', async () => {
+    const system = await detectRuntimeSystem()
+    assert.equal(system.platform, process.platform)
+    assert.ok(system.name)
+    assert.ok(system.version)
+    assert.ok(system.architecture)
+    assert.equal(system.architecture, normalizeArchitecture(system.architecture))
+})
+
+test('managed macOS app and wrapper appear once, preserving PATH installations and separate builds', async () => {
+    const root = '/storage/runtimes/darwin-arm64/100'
+    const other = '/storage/runtimes/darwin-arm64/101'
+    const wrapper = `${root}/bin/openscad`
+    const app = `${root}/OpenSCAD.app/Contents/MacOS/OpenSCAD`
+    const result = await discover(
+        { platform: 'darwin', env: { PATH: '/usr/local/bin' }, managedPaths: [wrapper, `${other}/bin/openscad`] },
+        {
+            collect: async () => ({ candidates: [fileCandidate(app, 'official')], diagnostics: [] }),
+            canonicalize: async (file) => file,
+            check: async (candidate) => {
+                if (!['/usr/local/bin/openscad', app, wrapper, `${other}/bin/openscad`].includes(candidate.command.executable)) {
+                    throw new Error('missing')
+                }
+                return fakeProbe(candidate)
+            },
+        },
+    )
+    assert.deepEqual(
+        result.runtimes.map((runtime) => [runtime.command.executable, runtime.source]),
+        [
+            ['/usr/local/bin/openscad', 'PATH'],
+            [wrapper, 'managed'],
+            [`${other}/bin/openscad`, 'managed'],
+        ],
+    )
+    assert.equal(result.runtimes[1].installPath, root)
+    assert.equal(result.runtimes[1].id, JSON.stringify({ executable: wrapper, argsPrefix: [] }))
+})
+
+test('explicitly selected app keeps priority when merged into its managed launcher, including canonical storage aliases', async () => {
+    const root = '/storage/runtimes/darwin-arm64/100'
+    const app = `${root}/OpenSCAD.app/Contents/MacOS/OpenSCAD`
+    const wrapper = `${root}/bin/openscad`
+    const result = await discover(
+        { platform: 'darwin', configuredPath: app, env: { PATH: '/tools' }, managedPaths: [wrapper] },
+        {
+            collect: noPlatform,
+            canonicalize: async (file) => file.replace(/^\/storage/, '/private/storage'),
+            check: async (candidate) => {
+                if (!candidate.command.executable.startsWith('/private/storage/') && candidate.command.executable !== '/tools/openscad') {
+                    throw new Error('missing')
+                }
+                return fakeProbe(candidate)
+            },
+        },
+    )
+    assert.equal(result.configuredError, undefined)
+    assert.equal(result.runtimes.length, 2)
+    assert.equal(result.runtimes[0].command.executable, `/private${wrapper}`)
+    assert.equal(result.runtimes[0].source, 'managed')
+    assert.equal(result.runtimes[0].installPath, root)
+})
+
+test('managed launchers on PATH retain managed metadata and distinct argument prefixes', async () => {
+    const root = '/storage/runtimes/linux-x64/100'
+    const wrapper = `${root}/bin/openscad`
+    const result = await discover(
+        { platform: 'linux', configuredCommand: { executable: wrapper, argsPrefix: ['--special'] }, env: { PATH: `${root}/bin` }, managedPaths: [wrapper] },
+        {
+            collect: noPlatform,
+            canonicalize: async (file) => file,
+            check: async (candidate) => {
+                if (candidate.command.executable !== wrapper) {
+                    throw new Error('missing')
+                }
+                return fakeProbe(candidate)
+            },
+        },
+    )
+    assert.equal(result.runtimes.length, 2)
+    assert.deepEqual(result.runtimes[0].command.argsPrefix, ['--special'])
+    assert.equal(result.runtimes[1].source, 'managed')
+    assert.equal(result.runtimes[1].installPath, root)
+})
+
+test('an unusable managed wrapper does not hide a working app entry', async () => {
+    const root = '/storage/runtimes/darwin-arm64/100'
+    const app = `${root}/OpenSCAD.app/Contents/MacOS/OpenSCAD`
+    const result = await discover(
+        { platform: 'darwin', env: {}, managedPaths: [`${root}/bin/openscad`] },
+        {
+            collect: async () => ({ candidates: [fileCandidate(app, 'official')], diagnostics: [] }),
+            canonicalize: async (file) => file,
+            check: async (candidate) => {
+                if (candidate.command.executable !== app) {
+                    throw new Error('missing')
+                }
+                return fakeProbe(candidate)
+            },
+        },
+    )
+    assert.equal(result.runtimes.length, 1)
+    assert.equal(result.runtimes[0].command.executable, app)
+    assert.equal(result.runtimes[0].source, 'official')
+})
+
+test('Windows PATH and repeated registry entries merge .com/.exe launchers case-insensitively', async () => {
+    const p = path.win32
+    const directory = 'C:\\Program Files\\OpenSCAD'
+    const registry = ['HKEY_LOCAL_MACHINE\\OpenSCAD', 'HKEY_CURRENT_USER\\OpenSCAD'].map((key) => `${key}\n    DisplayName    REG_SZ    OpenSCAD\n    InstallLocation    REG_SZ    ${directory}\n    DisplayIcon    REG_SZ    "${directory}\\openscad.exe",0\n`).join('')
+    const result = await discover(
+        { platform: 'win32', env: { Path: directory.toLowerCase() }, home: 'C:\\Users\\test' },
+        {
+            collect: async () => ({ candidates: parseRegistry(registry), diagnostics: [] }),
+            canonicalize: async (file) => file,
+            check: async (candidate) => {
+                if (p.dirname(candidate.command.executable).toLowerCase() !== directory.toLowerCase()) {
+                    throw new Error('missing')
+                }
+                return { ...(await fakeProbe(candidate)), platform: 'win32' }
+            },
+        },
+    )
+    assert.equal(result.runtimes.length, 1)
+    assert.match(result.runtimes[0].command.executable, /openscad\.com$/i)
+    assert.equal(result.runtimes[0].source, 'PATH')
+})
+
+test('Windows falls back to .exe when the .com launcher fails without duplicating registry results', async () => {
+    const directory = 'C:\\Program Files\\OpenSCAD'
+    const result = await discover(
+        { platform: 'win32', env: { Path: directory }, home: 'C:\\Users\\test' },
+        {
+            collect: async () => ({ candidates: [fileCandidate(`${directory}\\openscad.exe`, 'official')], diagnostics: [] }),
+            canonicalize: async (file) => file,
+            check: async (candidate) => {
+                if (candidate.command.executable !== `${directory}\\openscad.exe`) {
+                    throw new Error('missing or broken launcher')
+                }
+                return { ...(await fakeProbe(candidate)), platform: 'win32' }
+            },
+        },
+    )
+    assert.equal(result.runtimes.length, 1)
+    assert.equal(result.runtimes[0].command.executable, `${directory}\\openscad.exe`)
+})
+
+test('Windows managed packages merge PATH, registry, root and bin launchers while preserving selected priority and other builds', async () => {
+    const p = path.win32
+    const root = 'C:\\Users\\test\\globalStorage\\runtimes\\win32-x64\\100'
+    const other = 'C:\\Users\\test\\globalStorage\\runtimes\\win32-x64\\101'
+    const executable = p.join(root, 'bin/openscad.exe')
+    const otherExecutable = p.join(other, 'bin/openscad.exe')
+    const standalone = 'C:\\Tools\\openscad.exe'
+    const registry = `HKEY_LOCAL_MACHINE\\OpenSCAD\n    DisplayName    REG_SZ    OpenSCAD\n    InstallLocation    REG_SZ    ${root.toUpperCase()}\n    DisplayIcon    REG_SZ    "${executable.toUpperCase()}",0\n`
+    const result = await discover(
+        { platform: 'win32', configuredPath: p.join(root, 'openscad.exe'), env: { Path: `${p.join(root, 'bin')};C:\\Tools` }, managedPaths: [executable, otherExecutable] },
+        {
+            collect: async () => ({ candidates: parseRegistry(registry), diagnostics: [] }),
+            canonicalize: async (file) => file,
+            check: async (candidate) => {
+                const file = candidate.command.executable.toLowerCase()
+                const available = [p.join(root, 'openscad.exe'), p.join(root, 'bin/openscad.com'), executable, otherExecutable, standalone].map((file) => file.toLowerCase())
+                if (!available.includes(file)) {
+                    throw new Error('missing')
+                }
+                return { ...(await fakeProbe(candidate)), platform: 'win32' }
+            },
+        },
+    )
+    assert.equal(result.configuredError, undefined)
+    assert.deepEqual(
+        result.runtimes.map((runtime) => [runtime.command.executable, runtime.source]),
+        [
+            [executable, 'managed'],
+            [standalone, 'PATH'],
+            [otherExecutable, 'managed'],
+        ],
+    )
+    assert.equal(result.runtimes[0].installPath, root)
+    assert.equal(result.runtimes[2].installPath, other)
+})
+
+test('Windows Scoop junction aliases merge with physical paths without merging separate launch arguments', async () => {
+    const current = 'D:\\scoop\\apps\\openscad\\current'
+    const physical = 'D:\\scoop\\apps\\openscad\\2026.10'
+    const executable = `${physical}\\openscad.com`
+    const result = await discover(
+        { platform: 'win32', configuredCommand: { executable, argsPrefix: ['--special'] }, env: { Path: `${physical};${current}`, SCOOP: 'D:\\scoop' } },
+        {
+            collect: noPlatform,
+            canonicalize: async (file) => file.replace(current, physical),
+            check: async (candidate) => {
+                if (path.win32.dirname(candidate.command.executable) !== physical) {
+                    throw new Error('missing')
+                }
+                return { ...(await fakeProbe(candidate)), platform: 'win32' }
+            },
+        },
+    )
+    assert.equal(result.runtimes.length, 2)
+    assert.deepEqual(
+        result.runtimes.map((runtime) => runtime.command.argsPrefix),
+        [['--special'], []],
+    )
+    assert.ok(result.runtimes.every((runtime) => runtime.command.executable === executable))
+})
+
+test('release channels distinguish TEST development builds and nightlies even when GitHub prerelease is false', () => {
+    assert.equal(classifyRuntimeRelease('openscad-cli-2021.01', 'OpenSCAD CLI 2021.01', false), 'Stable')
+    assert.equal(classifyRuntimeRelease('openscad-cli-2026.10-TEST4', 'OpenSCAD CLI 2026.10-TEST4', false), 'Development')
+    assert.equal(classifyRuntimeRelease('openscad-cli-2026.10.10', '', false), 'Development')
+    for (const marker of ['dev', 'development', 'snapshot', 'alpha2', 'beta1', 'rc3', 'preview']) {
+        assert.equal(classifyRuntimeRelease(`openscad-cli-2026.10-${marker}`, '', false), 'Development')
+    }
+    assert.equal(classifyRuntimeRelease('openscad-cli-nightly-2026.10.10', '', false), 'Nightly')
+    assert.equal(classifyRuntimeRelease('openscad-cli-2026.10', 'OpenSCAD Nightly', false), 'Nightly')
+    assert.equal(classifyRuntimeRelease('openscad-cli-2026.10', 'OpenSCAD Development', false), 'Development')
+    assert.equal(classifyRuntimeRelease('openscad-cli-2026.10', '', true), 'Pre-release')
+    assert.equal(classifyRuntimeRelease('custom-build', '', false), undefined)
+})
+
+test('GitHub rate-limit failures preserve the upstream message, status, reset time and request metadata', async () => {
+    const system: RuntimeSystem = { platform: 'darwin', architecture: 'arm64', name: '', version: '' }
+    const message = 'API rate limit exceeded for 192.0.2.1. Please wait before retrying.'
+    const documentation = 'https://docs.github.com/rest/using-the-rest-api/rate-limits-for-the-rest-api'
+    await assert.rejects(
+        fetchRuntimeBuilds(
+            system,
+            async () =>
+                new Response(JSON.stringify({ message, documentation_url: documentation }), {
+                    status: 403,
+                    headers: { 'x-ratelimit-remaining': '0', 'x-ratelimit-limit': '60', 'x-ratelimit-reset': '1800000000', 'retry-after': '120', 'x-github-request-id': 'TEST:1234' },
+                }),
+        ),
+        (error: Error) => {
+            assert.match(error.message, /GitHub API error: HTTP 403 Forbidden/)
+            assert.ok(error.message.includes(message))
+            assert.ok(error.message.includes(documentation))
+            assert.match(error.message, /requests remaining: 0 \/ 60/)
+            assert.ok(error.message.includes(new Date(1800000000 * 1000).toISOString()))
+            assert.match(error.message, /Retry after: 120 seconds/)
+            assert.match(error.message, /GitHub request ID: TEST:1234/)
+            assert.match(error.message, /Request: https:\/\/api.github.com\/repos\/peterisdev42\/scad-ai-ide-builder\/releases\?per_page=100&page=1/)
+            return true
+        },
+    )
+})
+
+test('GitHub permission errors are distinct from rate limits and plain upstream failures keep their response', async () => {
+    const system: RuntimeSystem = { platform: 'linux', architecture: 'x64', name: '', version: '' }
+    await assert.rejects(
+        fetchRuntimeBuilds(system, async () => new Response(JSON.stringify({ message: 'Resource not accessible by integration', errors: [{ resource: 'Release', code: 'forbidden' }] }), { status: 403 })),
+        (error: Error) => {
+            assert.match(error.message, /Resource not accessible by integration/)
+            assert.match(error.message, /"resource":"Release","code":"forbidden"/)
+            assert.doesNotMatch(error.message, /rate limit/i)
+            return true
+        },
+    )
+    await assert.rejects(
+        fetchRuntimeBuilds(system, async () => new Response(JSON.stringify({ message: 'You have exceeded a secondary rate limit.' }), { status: 429, headers: { 'retry-after': '60' } })),
+        (error: Error) => {
+            assert.match(error.message, /HTTP 429 Too Many Requests/)
+            assert.match(error.message, /You have exceeded a secondary rate limit\./)
+            assert.match(error.message, /Retry after: 60 seconds/)
+            return true
+        },
+    )
+    await assert.rejects(
+        fetchRuntimeBuilds(system, async () => new Response('upstream connect error: connection reset by peer', { status: 502 })),
+        /HTTP 502 Bad Gateway[\s\S]*upstream connect error: connection reset by peer/,
+    )
+    await assert.rejects(
+        fetchRuntimeBuilds(system, async () => new Response('<html>GitHub service temporarily unavailable</html>', { status: 503 })),
+        /HTTP 503 Service Unavailable[\s\S]*<html>GitHub service temporarily unavailable<\/html>/,
+    )
+})
+
+test('GitHub network failures expose DNS, TLS, timeout and aggregate connection causes', async () => {
+    const system: RuntimeSystem = { platform: 'linux', architecture: 'x64', name: '', version: '' }
+    const failures = [new Error('fetch failed', { cause: Object.assign(new Error('getaddrinfo ENOTFOUND api.github.com'), { code: 'ENOTFOUND' }) }), new Error('fetch failed', { cause: Object.assign(new Error('certificate has expired'), { code: 'CERT_HAS_EXPIRED' }) }), new DOMException('The operation was aborted due to timeout', 'TimeoutError'), new Error('fetch failed', { cause: new AggregateError([Object.assign(new Error('connection refused'), { code: 'ECONNREFUSED' }), Object.assign(new Error('connection timed out'), { code: 'ETIMEDOUT' })], 'All connection attempts failed') })]
+    const patterns = [/ENOTFOUND api.github.com/, /certificate has expired \(CERT_HAS_EXPIRED\)/, /TimeoutError: The operation was aborted due to timeout/, /ECONNREFUSED[\s\S]*ETIMEDOUT/]
+    for (const [index, failure] of failures.entries()) {
+        await assert.rejects(
+            fetchRuntimeBuilds(system, async () => {
+                throw failure
+            }),
+            (error: Error) => {
+                assert.match(error.message, /GitHub API request failed/)
+                assert.match(error.message, patterns[index])
+                return true
+            },
+        )
+    }
+})
+
+test('invalid GitHub response content retains the request and parsing error or unexpected payload', async () => {
+    const system: RuntimeSystem = { platform: 'linux', architecture: 'x64', name: '', version: '' }
+    await assert.rejects(
+        fetchRuntimeBuilds(system, async () => new Response('not JSON')),
+        /Invalid JSON response from GitHub API \(HTTP 200\)[\s\S]*Request:[\s\S]*SyntaxError/,
+    )
+    await assert.rejects(
+        fetchRuntimeBuilds(system, async () => new Response(JSON.stringify({ message: 'Unexpected upstream response' }))),
+        /expected a release list[\s\S]*Unexpected upstream response/,
+    )
+})
+
+async function mockRuntimeFeature(detect: (options: DiscoveryOptions) => Promise<DiscoveryResult>) {
+    const configuration = new Map<string, unknown>()
+    let updateError: Error | undefined
+    let archiveError: Error | undefined
+    let cancelInstallation = false
+    const file = path.join(__dirname, '../features/runtime/registerRuntime.js')
+    const subscriptions: vscode.Disposable[] = []
+    const disposable = { dispose() {} }
+    const status = { text: '', tooltip: '', show() {}, dispose() {} }
+    class Emitter {
+        listeners = new Set<() => void>()
+        event = (listener: () => void) => {
+            this.listeners.add(listener)
+            return { dispose: () => this.listeners.delete(listener) }
+        }
+        fire() {
+            this.listeners.forEach((listener) => listener())
+        }
+        dispose() {
+            this.listeners.clear()
+        }
+    }
+    const mock = {
+        EventEmitter: Emitter,
+        StatusBarAlignment: { Left: 1 },
+        ConfigurationTarget: { Global: 1 },
+        ProgressLocation: { Notification: 1 },
+        Uri: { joinPath: (...parts: Array<string | { fsPath: string }>) => ({ fsPath: parts.map((part) => (typeof part === 'string' ? part : part.fsPath)).join('/') }) },
+        commands: { registerCommand: () => disposable },
+        window: {
+            createOutputChannel: () => ({ appendLine() {}, dispose() {} }),
+            createStatusBarItem: () => status,
+            showOpenDialog: async () => [{ fsPath: '/mock/archive.zip' }],
+            withProgress: async (_options: unknown, task: (progress: vscode.Progress<{ message?: string; increment?: number }>, token: vscode.CancellationToken) => Promise<unknown>) => task({ report() {} }, { isCancellationRequested: cancelInstallation, onCancellationRequested: () => disposable }),
+        },
+        workspace: {
+            isTrusted: true,
+            getConfiguration: () => ({
+                get: (key: string, fallback: unknown) => (configuration.has(key) ? configuration.get(key) : fallback),
+                update: async (key: string, value: unknown) => {
+                    if (updateError) throw updateError
+                    configuration.set(key, value)
+                },
+            }),
+            onDidGrantWorkspaceTrust: () => disposable,
+            onDidChangeConfiguration: () => disposable,
+        },
+    }
+    const sandbox = {
+        process,
+        AbortController,
+        exports: {} as { registerRuntime: typeof import('../features/runtime/registerRuntime').registerRuntime },
+        require: (id: string) => {
+            if (id === 'vscode') return mock
+            if (id.endsWith('/installation'))
+                return {
+                    managedRuntimePaths: async () => [],
+                    installedRuntimeBuilds: async () => [],
+                    installRuntimeArchive: async (_root: unknown, _system: unknown, _source: unknown, options: { signal: AbortSignal; progress: (value: { message: string; percent?: number }) => void }) => {
+                        if (options.signal.aborted) throw new Error('Cancelled')
+                        if (archiveError) throw archiveError
+                        options.progress({ message: 'Validating runtime', percent: 100 })
+                        return '/mock/openscad'
+                    },
+                }
+            if (id.endsWith('/releases')) return { detectRuntimeSystem: async () => ({ platform: 'linux', architecture: 'x64', name: 'Linux', version: 'test' }) }
+            return id.startsWith('.') ? require(path.resolve(path.dirname(file), id)) : require(id)
+        },
+    }
+    vm.runInNewContext(await readFile(file, 'utf8'), sandbox, { filename: file })
+    const manager = new RuntimeManager(detect)
+    const runtime = sandbox.exports.registerRuntime({ globalStorageUri: { fsPath: '/mock-storage' }, subscriptions } as unknown as vscode.ExtensionContext, manager, async () => {
+        throw new Error('Local scanning must not access GitHub')
+    })
+    return {
+        runtime,
+        manager,
+        status,
+        configuration,
+        setTrusted: (value: boolean) => {
+            mock.workspace.isTrusted = value
+        },
+        setArchiveError: (error: Error) => {
+            archiveError = error
+        },
+        cancelInstallation: () => {
+            cancelInstallation = true
+        },
+        setUpdateError: (error: Error) => {
+            updateError = error
+        },
+        dispose: () => subscriptions.forEach((subscription) => subscription.dispose()),
+    }
+}
+
+test('Installed scans silently, coalesces repeated visits and publishes only changed discovery results', async () => {
+    const installed = await fakeProbe({ source: 'PATH', command: { executable: '/runtime/openscad', argsPrefix: [] } })
+    const result: DiscoveryResult = { runtimes: [installed], diagnostics: [] }
+    let scan: () => Promise<DiscoveryResult> = async () => result
+    let scans = 0
+    const mock = await mockRuntimeFeature(async () => {
+        scans++
+        return scan()
+    })
+    try {
+        assert.equal(mock.runtime.getState().busy, true)
+        assert.equal(mock.runtime.getState().refreshingSilently, false)
+        await mock.runtime.whenReady()
+        let updates = 0
+        mock.runtime.onDidChange(() => updates++)
+        let complete!: (value: DiscoveryResult) => void
+        scan = () =>
+            new Promise((resolve) => {
+                complete = resolve
+            })
+        const refreshing = mock.runtime.refreshInstalled()
+        assert.equal(mock.runtime.getState().busy, true)
+        assert.equal(mock.runtime.getState().refreshingSilently, true)
+        assert.equal(mock.runtime.getState().runtimes[0].id, installed.id)
+        assert.equal(mock.status.text, `OpenSCAD ${installed.version}`)
+        assert.equal(updates, 0)
+        assert.equal(mock.runtime.refreshInstalled(), refreshing)
+        await new Promise<void>((resolve) => setImmediate(resolve))
+        complete(result)
+        await refreshing
+        assert.equal(scans, 2)
+        assert.equal(updates, 0)
+        assert.equal(mock.runtime.getState().busy, false)
+        assert.equal(mock.runtime.getState().refreshingSilently, false)
+        scan = async () => ({ runtimes: [{ ...installed, version: '2027.01' }], diagnostics: [] })
+        await mock.runtime.refreshInstalled()
+        assert.equal(updates, 1)
+        assert.equal(mock.runtime.getState().runtimes[0].version, '2027.01')
+        const manual = mock.runtime.refresh()
+        assert.equal(mock.runtime.getState().refreshingSilently, false)
+        assert.equal(mock.status.text, 'OpenSCAD: Discovering')
+        assert.equal(updates, 2)
+        await manual
+        assert.equal(updates, 3)
+    } finally {
+        mock.dispose()
+    }
+})
+
+test('silent scan failures publish the actual reason and clear stale runtime results', async () => {
+    const installed = await fakeProbe({ source: 'PATH', command: { executable: '/runtime/openscad', argsPrefix: [] } })
+    let failed = false
+    const mock = await mockRuntimeFeature(async () => {
+        if (failed) throw new Error('Storage is unavailable')
+        return { runtimes: [installed], diagnostics: [] }
+    })
+    try {
+        await mock.runtime.whenReady()
+        let updates = 0
+        mock.runtime.onDidChange(() => updates++)
+        failed = true
+        await mock.runtime.refreshInstalled()
+        assert.equal(updates, 1)
+        assert.equal(mock.runtime.getState().busy, false)
+        assert.equal(mock.runtime.getState().refreshingSilently, false)
+        assert.match(mock.runtime.getState().message, /Storage is unavailable/)
+        assert.equal(mock.runtime.getState().runtimes.length, 0)
+    } finally {
+        mock.dispose()
+    }
+})
+
+test('switching runtime exposes only the selected ID while validating silently and clears it after success', async () => {
+    const old = await fakeProbe({ source: 'PATH', command: { executable: '/old/openscad', argsPrefix: [] } })
+    const next = { ...(await fakeProbe({ source: 'managed', command: { executable: '/new/openscad', argsPrefix: [] } })), version: '2027.01' }
+    let finish!: () => void
+    let started!: () => void
+    const entered = new Promise<void>((resolve) => {
+        started = resolve
+    })
+    const gate = new Promise<void>((resolve) => {
+        finish = resolve
+    })
+    const mock = await mockRuntimeFeature(async (options) => {
+        if (options.configuredCommand?.executable === next.command.executable) {
+            started()
+            await gate
+            return { runtimes: [next, old], diagnostics: [] }
+        }
+        return { runtimes: [old, next], diagnostics: [] }
+    })
+    try {
+        await mock.runtime.whenReady()
+        const states: ReturnType<typeof mock.runtime.getState>[] = []
+        mock.runtime.onDidChange(() => states.push(mock.runtime.getState()))
+        const switching = mock.runtime.select(next.id)
+        assert.equal(mock.runtime.getState().selectingId, next.id)
+        await entered
+        assert.equal(mock.runtime.getState().refreshingSilently, true)
+        assert.equal(mock.runtime.getState().activeId, old.id)
+        assert.equal(mock.status.text, `OpenSCAD ${old.version}`)
+        assert.ok(states.every((state) => !state.busy || state.refreshingSilently))
+        await mock.runtime.select(old.id)
+        assert.equal(mock.runtime.getState().selectingId, next.id)
+        finish()
+        await switching
+        assert.equal(mock.runtime.getState().selectingId, undefined)
+        assert.equal(mock.runtime.getState().activeId, next.id)
+        assert.equal(mock.runtime.getState().busy, false)
+        assert.equal(mock.runtime.getState().runtimes[0].id, next.id)
+    } finally {
+        finish()
+        mock.dispose()
+    }
+})
+
+test('failed runtime selection clears its button state, preserves the active runtime and returns the actual error', async () => {
+    const old = await fakeProbe({ source: 'PATH', command: { executable: '/old/openscad', argsPrefix: [] } })
+    const next = await fakeProbe({ source: 'managed', command: { executable: '/new/openscad', argsPrefix: [] } })
+    const mock = await mockRuntimeFeature(async () => ({ runtimes: [old, next], diagnostics: [] }))
+    try {
+        await mock.runtime.whenReady()
+        mock.setUpdateError(new Error('Cannot write user settings'))
+        await assert.rejects(mock.runtime.select(next.id), /Cannot write user settings/)
+        assert.equal(mock.runtime.getState().selectingId, undefined)
+        assert.equal(mock.runtime.getState().activeId, old.id)
+        assert.equal(mock.runtime.getState().busy, false)
+    } finally {
+        mock.dispose()
+    }
+})
+
+test('installation publishes completion even when discovery is unchanged and cancellation is not an error', async () => {
+    const mock = await mockRuntimeFeature(async () => ({ runtimes: [], diagnostics: [] }))
+    try {
+        await mock.runtime.whenReady()
+        const states: ReturnType<typeof mock.runtime.getState>[] = []
+        mock.runtime.onDidChange(() => states.push(mock.runtime.getState()))
+        await mock.runtime.installArchive()
+        assert.ok(states.some((state) => state.installing?.message === 'Validating runtime'))
+        assert.equal(states.at(-1)?.installing, undefined)
+        assert.equal(states.at(-1)?.installationIsArchive, true)
+        assert.match(states.at(-1)?.installationMessage ?? '', /installed/)
+        assert.equal(states.at(-1)?.installationError, '')
+        mock.setArchiveError(new Error('Archive validation failed'))
+        await assert.rejects(mock.runtime.installArchive(), /Archive validation failed/)
+        assert.equal(states.at(-1)?.installing, undefined)
+        assert.match(states.at(-1)?.installationError ?? '', /Archive validation failed/)
+        mock.cancelInstallation()
+        await mock.runtime.installArchive()
+        assert.equal(states.at(-1)?.installationError, '')
+        assert.equal(states.at(-1)?.installationMessage, 'Installation cancelled.')
+        assert.equal(states.at(-1)?.installing, undefined)
+    } finally {
+        mock.dispose()
+    }
+})
+
+test('workspace trust prerequisites are panel warnings and do not start runtime operations', async () => {
+    let scans = 0
+    const mock = await mockRuntimeFeature(async () => {
+        scans++
+        return { runtimes: [], diagnostics: [] }
+    })
+    try {
+        await mock.runtime.whenReady()
+        mock.setTrusted(false)
+        await mock.runtime.refreshInstalled()
+        assert.equal(scans, 1)
+        assert.equal(mock.runtime.getState().messageSeverity, 'warning')
+        for (const operation of [() => mock.runtime.browse(), () => mock.runtime.select('missing'), () => mock.runtime.installArchive()]) {
+            await assert.rejects(operation(), (error) => error instanceof UserWarning && /Trust this workspace/.test(error.message))
+        }
+        assert.equal(scans, 1)
+        assert.equal(mock.runtime.getState().installing, undefined)
+    } finally {
+        mock.dispose()
+    }
 })

@@ -2,6 +2,8 @@ import { randomBytes } from 'node:crypto'
 import * as vscode from 'vscode'
 import { quickAccess } from '../sidebar/QuickAccessTreeProvider'
 import type { registerRuntime } from '../runtime/registerRuntime'
+import type { registerGitHub } from '../github/registerGitHub'
+import { UserWarning } from '../../core/feedback'
 
 export type PageId = (typeof quickAccess)[number]['id']
 type RuntimeFeature = ReturnType<typeof registerRuntime>
@@ -9,15 +11,22 @@ type RuntimeFeature = ReturnType<typeof registerRuntime>
 export class PanelManager implements vscode.Disposable {
     private readonly panels = new Map<PageId, vscode.WebviewPanel>()
     private readonly changed: vscode.Disposable
+    private readonly githubChanged: vscode.Disposable
 
     constructor(
         private readonly extensionUri: vscode.Uri,
         private readonly runtime: RuntimeFeature,
+        private readonly github: ReturnType<typeof registerGitHub>,
     ) {
         this.changed = runtime.onDidChange(() => {
             const panel = this.panels.get('runtime')
             if (panel) {
                 void panel.webview.postMessage({ type: 'runtimeState', state: runtime.getState() })
+            }
+        })
+        this.githubChanged = github.onDidChange(() => {
+            for (const panel of this.panels.values()) {
+                void panel.webview.postMessage({ type: 'githubState', state: github.getState() })
             }
         })
     }
@@ -30,6 +39,11 @@ export class PanelManager implements vscode.Disposable {
         const existing = this.panels.get(id)
         if (existing) {
             existing.reveal()
+            if (id === 'runtime') {
+                await this.runtime.loadBuilds()
+            } else if (id === 'more') {
+                await this.github.refresh()
+            }
             return
         }
         const page = quickAccess.find((page) => page.id === id)!
@@ -43,13 +57,37 @@ export class PanelManager implements vscode.Disposable {
                 }
                 const { action, id: runtimeId } = value as { action?: unknown; id?: unknown }
                 try {
+                    if (action === 'openGitHubConnection') {
+                        await this.open('more')
+                        return
+                    }
+                    if (action === 'ready') {
+                        await panel.webview.postMessage({ type: 'githubState', state: this.github.getState() })
+                    }
+                    if (id === 'more') {
+                        if (action === 'ready') {
+                            await this.github.refresh()
+                        } else if (action === 'connectGitHub') {
+                            await vscode.commands.executeCommand('scad-ai-ide.connectGitHub')
+                        }
+                        return
+                    }
                     if (id !== 'runtime') {
                         return
                     }
                     if (action === 'ready') {
                         await panel.webview.postMessage({ type: 'runtimeState', state: this.runtime.getState() })
+                        await this.runtime.loadBuilds()
+                    } else if (action === 'refreshBuilds') {
+                        await this.runtime.loadBuilds(true)
+                    } else if (action === 'installBuild' && typeof runtimeId === 'string') {
+                        await this.runtime.installBuild(Number(runtimeId))
                     } else if (action === 'refresh') {
                         await this.runtime.refresh()
+                    } else if (action === 'refreshInstalled') {
+                        await this.runtime.refreshInstalled()
+                    } else if (action === 'installArchive') {
+                        await this.runtime.installArchive()
                     } else if (action === 'browse') {
                         await this.runtime.browse()
                     } else if (action === 'automatic') {
@@ -60,7 +98,11 @@ export class PanelManager implements vscode.Disposable {
                         await this.runtime.select(runtimeId)
                     }
                 } catch (error) {
-                    await panel.webview.postMessage({ type: 'error', message: error instanceof Error ? error.message : String(error) })
+                    await panel.webview.postMessage({ type: 'error', action, severity: error instanceof UserWarning ? 'warning' : 'error', message: error instanceof Error ? error.message : String(error) })
+                } finally {
+                    if (['browse', 'installArchive', 'automatic'].includes(String(action))) {
+                        await panel.webview.postMessage({ type: 'actionComplete', action })
+                    }
                 }
             }),
             panel.onDidDispose(() => {
@@ -92,6 +134,7 @@ export class PanelManager implements vscode.Disposable {
 
     dispose(): void {
         this.changed.dispose()
+        this.githubChanged.dispose()
         for (const panel of [...this.panels.values()]) {
             panel.dispose()
         }

@@ -74,11 +74,14 @@ export function getCandidates(options: DiscoveryOptions = {}): Candidate[] {
     if (options.bundledPath) {
         candidates.push(fileCandidate(options.bundledPath, 'bundled'))
     }
+    for (const executable of options.managedPaths ?? []) {
+        candidates.push({ ...fileCandidate(executable, 'managed'), installPath: p.dirname(p.dirname(executable)) })
+    }
     const seen = new Map<string, RuntimeSource>()
     return candidates.filter((candidate) => {
         const key = commandKey(candidate.command, platform)
         const previousSource = seen.get(key)
-        if (previousSource && !(previousSource === 'custom' && candidate.source !== 'custom')) {
+        if (previousSource && !(previousSource === 'custom' && candidate.source !== 'custom') && !(candidate.source === 'managed' && previousSource !== 'managed')) {
             return false
         }
         seen.set(key, candidate.source)
@@ -146,6 +149,9 @@ export async function discover(options: DiscoveryOptions = {}, dependencies: Dis
     candidates.splice(bundledIndex < 0 ? candidates.length : bundledIndex, 0, ...extra.candidates.filter((candidate) => ['snap', 'flatpak'].includes(candidate.source)))
     result.diagnostics.push(...extra.diagnostics)
     const platform = options.platform ?? process.platform
+    const p = platform === 'win32' ? path.win32 : path.posix
+    const normalized = (file: string) => (platform === 'win32' ? p.normalize(file).toLowerCase() : p.normalize(file))
+    const managedRoots = (await Promise.allSettled((options.managedPaths ?? []).map((file) => canonicalize(p.dirname(p.dirname(file)))))).flatMap((result) => (result.status === 'fulfilled' ? [normalized(result.value)] : []))
     const seen = new Map<string, Runtime>()
     for (let candidate of candidates) {
         try {
@@ -169,8 +175,17 @@ export async function discover(options: DiscoveryOptions = {}, dependencies: Dis
                     platform,
                 )
             }
+            // Spotlight can find the .app inside a managed package as well as its CLI
+            // wrapper. Group these by installation, retaining distinct launch arguments.
+            const managedRoot = managedRoots.find((root) => {
+                const relative = p.relative(root, normalized(canonical))
+                return relative !== '' && relative !== '..' && !relative.startsWith(`..${p.sep}`) && !p.isAbsolute(relative)
+            })
+            if (managedRoot) {
+                key = JSON.stringify(['managed', managedRoot, command.argsPrefix])
+            }
             const existing = seen.get(key)
-            if (existing) {
+            if (existing && candidate.source !== 'managed') {
                 // An explicit selection changes priority, not the installation's origin.
                 if (existing.source === 'custom' && candidate.source !== 'custom') {
                     existing.source = candidate.source
@@ -180,8 +195,14 @@ export async function discover(options: DiscoveryOptions = {}, dependencies: Dis
                 continue
             }
             const runtime = await check({ ...candidate, command })
-            seen.set(key, runtime)
-            result.runtimes.push(runtime)
+            if (existing) {
+                // Prefer the validated managed launcher and metadata while preserving
+                // discovery priority (including an explicitly selected installation).
+                Object.assign(existing, runtime)
+            } else {
+                seen.set(key, runtime)
+                result.runtimes.push(runtime)
+            }
             result.diagnostics.push(`Found ${runtime.version}: ${command.executable} ${command.argsPrefix.join(' ')} (${candidate.source})`)
         } catch (error) {
             const message = `${candidate.command.executable}: ${error instanceof Error ? error.message : String(error)}`
