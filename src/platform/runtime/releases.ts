@@ -1,10 +1,11 @@
 import { anonymousGitHubRequest, type GitHubRequest } from '../github/client'
+import { sortRuntimesByVersion } from '../../core/runtime/sortRuntimes'
 import * as os from 'node:os'
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 import { describeRequestError, requestGitHub } from '../github/errors'
 
-export const releasesApi = 'https://api.github.com/repos/peterisdev42/scad-ai-ide-builder/releases'
+export const releasesApi = 'https://api.github.com/repos/peterisdev42/openscad-cli-builder/releases'
 
 export interface RuntimeSystem {
     platform: string
@@ -26,21 +27,12 @@ export interface RuntimeBuild {
     channel?: RuntimeReleaseChannel
 }
 
-export type RuntimeReleaseChannel = 'Stable' | 'Development' | 'Nightly' | 'Pre-release'
+export type RuntimeReleaseChannel = 'Stable'
 
-export function classifyRuntimeRelease(tag: string, title: string, prerelease: boolean): RuntimeReleaseChannel | undefined {
-    const text = `${tag} ${title}`
-    if (/(?:^|[^a-z])nightly(?:$|[^a-z])/i.test(text)) {
-        return 'Nightly'
-    }
-    if (/(?:^|[^a-z])(?:dev(?:elopment)?|snapshot|test\d*|alpha\d*|beta\d*|rc\d*|preview)(?:$|[^a-z])/i.test(text) || /^openscad-cli-\d{4}\.\d{2}\.\d{2}(?:$|[-+])/i.test(tag)) {
-        return 'Development'
-    }
-    if (prerelease) {
-        return 'Pre-release'
-    }
-    // OpenSCAD release tags use YYYY.MM. Unknown naming has no channel label.
-    return /^openscad-cli-\d{4}\.\d{2}$/i.test(tag) ? 'Stable' : undefined
+export function classifyRuntimeRelease(version: string): RuntimeReleaseChannel | undefined {
+    // Only a suffix-free version gets a badge; retain support for older YYYY.MM releases.
+    const normalized = version.trim().replace(/^OpenSCAD CLI\s+/i, '')
+    return /^(?:openscad(?:-cli)?-)?\d{4}\.\d{2}(?:\.\d{2})?$/i.test(normalized) ? 'Stable' : undefined
 }
 
 export function normalizeArchitecture(value: string): string {
@@ -109,7 +101,7 @@ export async function fetchRuntimeBuilds(system: RuntimeSystem, request: GitHubR
                     continue
                 }
                 const url = new URL(asset.browser_download_url)
-                if (url.origin !== 'https://github.com' || !url.pathname.startsWith('/peterisdev42/scad-ai-ide-builder/releases/download/')) {
+                if (url.origin !== 'https://github.com' || !url.pathname.startsWith('/peterisdev42/openscad-cli-builder/releases/download/')) {
                     continue
                 }
                 seen.add(asset.id)
@@ -125,12 +117,12 @@ export async function fetchRuntimeBuilds(system: RuntimeSystem, request: GitHubR
                     size: typeof asset.size === 'number' ? asset.size : 0,
                     downloadUrl: url.toString(),
                     checksumUrl,
-                    channel: classifyRuntimeRelease(release.tag_name, typeof release.name === 'string' ? release.name : '', release.prerelease === true),
+                    channel: classifyRuntimeRelease(typeof release.name === 'string' && release.name.trim() ? release.name : release.tag_name),
                 })
             }
         }
         if (!response.headers.get('link')?.includes('rel="next"')) {
-            return builds
+            return sortRuntimesByVersion(builds)
         }
     }
 }

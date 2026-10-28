@@ -47,7 +47,8 @@ export class CameraRig extends Rig {
         this.color = color
 
         this.persCamera = new PerspectiveCamera(45, width / (height || 1), 0.1, 1_000_000)
-        this.persCamera.position.set(0, -200, 100)
+        this.persCamera.position.set(0, 0, 200)
+        this.persCamera.up.set(0, 1, 0)
 
         const aspect = width / (height || 1)
         const viewSize = 100

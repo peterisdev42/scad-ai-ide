@@ -4,6 +4,7 @@ import { access, realpath } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import * as os from 'node:os'
 import * as path from 'node:path'
+import { readRuntimeMetadata } from './metadata'
 import { collectPlatformCandidates, resolveApplication } from './platformDiscovery'
 
 import type { RuntimeSource, LaunchCommand, Candidate, Runtime, DiscoveryResult, DiscoveryOptions } from '../../core/runtime/types'
@@ -126,6 +127,7 @@ export async function probe(candidate: Candidate): Promise<Runtime> {
         ...candidate,
         id: createHash('sha256').update(commandKey(candidate.command)).digest('hex'),
         version,
+        ...(candidate.installPath ? await readRuntimeMetadata(candidate.installPath) : {}),
         platform: process.platform,
         status: 'available',
     }

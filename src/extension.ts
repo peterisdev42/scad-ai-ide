@@ -30,7 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.createTreeView('scad-ai.customizer', { treeDataProvider: customizerTree }),
         vscode.window.createTreeView('scad-ai.quickAccess', { treeDataProvider: new QuickAccessTreeProvider() }),
         vscode.commands.registerCommand('scad-ai.customizer.edit', (target: string, name: string) => customizerTree.edit(target, name)),
-        ...quickAccess.map((page) => vscode.commands.registerCommand(page.command, () => panels.open(page.id))),
+        ...quickAccess.map((page) => vscode.commands.registerCommand(page.command, (tab?: unknown) => panels.open(page.id, tab === 'available' ? 'available' : undefined))),
     )
     return { preview, language, getActiveRuntime: runtime.getActiveRuntime, refresh: runtime.refresh, customizer, panels, getRenderArguments: () => customizer.getArguments() }
 }

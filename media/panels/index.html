@@ -28,8 +28,8 @@
                 <p id="available-error" class="notice error request-error" role="alert" hidden></p>
                 <p id="github-error" class="notice error request-error" role="alert" hidden></p>
                 <aside id="github-sign-in-hint" class="notice warning" role="status" aria-live="polite" hidden>
-                    <p>A GitHub request failed in anonymous mode. Connecting your account provides higher API limits and may help resolve the error.</p>
-                    <button data-action="openGitHubConnection" class="secondary">Connect GitHub Account</button>
+                    <p>A GitHub request failed while using anonymous access. If the error reports an API rate limit, authorize your GitHub account for a higher limit.</p>
+                    <button data-action="openGitHubConnection" class="secondary">Authorize GitHub Access</button>
                 </aside>
             </section>
             <section id="runtime" hidden aria-label="OpenSCAD runtimes">
@@ -52,10 +52,11 @@
                         <p id="active-description">Checking this computer for an installed runtime.</p>
                         <p id="active-path" class="path muted" hidden></p>
                         <div id="overview-actions" class="actions">
-                            <button id="overview-primary" data-tab="available">Find a Runtime</button>
-                            <button id="overview-secondary" class="secondary" data-action="browse" data-runtime-action>Add Existing Runtime</button>
+                            <button id="overview-primary" data-tab="available">Download Available Runtime</button>
+                            <button class="secondary" data-action="refresh" data-runtime-action>Rescan</button>
                         </div>
                     </div>
+                    <div data-local-runtime-options></div>
                 </section>
                 <section id="panel-installed" role="tabpanel" aria-labelledby="tab-installed" tabindex="0" hidden>
                     <div id="installed-loading" class="empty-state" role="status" aria-live="polite" hidden>
@@ -67,13 +68,6 @@
                     </div>
                     <div id="runtimes" class="version-list" role="list" aria-label="Installed OpenSCAD versions" hidden></div>
                     <div data-local-runtime-options></div>
-                    <details class="advanced">
-                        <summary>Troubleshooting</summary>
-                        <div class="actions">
-                            <button data-action="automatic" data-runtime-action class="secondary">Use Automatic Discovery</button>
-                            <button data-action="diagnostics" class="secondary">View Diagnostics</button>
-                        </div>
-                    </details>
                 </section>
                 <section id="panel-available" role="tabpanel" aria-labelledby="tab-available" tabindex="0" hidden>
                     <div class="section-toolbar">
@@ -90,34 +84,36 @@
                         <p id="builds-empty-description">You can also add OpenSCAD from your computer.</p>
                         <button data-tab="installed" class="secondary">Go to Installed</button>
                     </div>
+                    <section id="recommended-build" class="recommended-build" aria-labelledby="recommended-title" hidden>
+                        <div class="version-info">
+                            <p class="recommended-label muted small">Recommended for you</p>
+                            <h3 id="recommended-title"></h3>
+                            <p id="recommended-description" class="muted small"></p>
+                        </div>
+                        <button id="install-recommended">Install Recommended</button>
+                    </section>
+                    <h3 id="all-versions-heading" class="all-versions-heading" hidden>All versions</h3>
                     <div id="builds" class="version-list" role="list" aria-label="Available OpenSCAD versions" hidden></div>
                     <div data-local-runtime-options></div>
                 </section>
             </section>
             <section id="more" hidden aria-label="More">
-                <div id="panel-github" class="card" role="tabpanel" aria-labelledby="tab-github" tabindex="0">
-                    <div class="section-heading">
-                        <h2>GitHub</h2>
-                        <span id="github-badge" class="badge">Checking…</span>
-                    </div>
-                    <p id="github-description">Checking GitHub account access…</p>
-                    <dl class="version-metadata github-metadata">
-                        <div>
-                            <dt>Account</dt>
-                            <dd id="github-account">—</dd>
+                <div id="panel-github" class="github-access" role="tabpanel" aria-labelledby="tab-github" tabindex="0">
+                    <h2>GitHub API access</h2>
+                    <p class="github-intro">SCAD AI IDE uses the GitHub API to load releases and other project data. Requests are anonymous by default and subject to GitHub's anonymous API rate limit.</p>
+                    <p class="github-intro">If a section reports a rate-limit error, you can authorize SCAD AI IDE to use the access token for your GitHub account in VS Code. Requests will then use your account's higher API limit.</p>
+                    <section class="card github-authorization" aria-labelledby="github-authorization-heading">
+                        <div class="section-heading">
+                            <h3 id="github-authorization-heading">Account authorization</h3>
+                            <span id="github-badge" class="badge" role="status" aria-live="polite">Checking…</span>
                         </div>
-                        <div>
-                            <dt>Requests</dt>
-                            <dd id="github-mode">Checking…</dd>
+                        <p id="github-description" aria-live="polite">Checking account authorization in VS Code…</p>
+                        <p id="github-authorization-error" class="notice error request-error" role="alert" hidden></p>
+                        <div class="actions">
+                            <button data-action="connectGitHub" id="connect-github">Authorize GitHub Access</button>
                         </div>
-                        <div>
-                            <dt>Token</dt>
-                            <dd id="github-token">Not checked</dd>
-                        </div>
-                    </dl>
-                    <div class="actions tool-actions">
-                        <button data-action="connectGitHub" id="connect-github">Connect GitHub Account</button>
-                    </div>
+                    </section>
+                    <p class="github-help muted">Not signed in? VS Code will prompt you to sign in to GitHub when you authorize access. If authorization fails, sign in from the Accounts menu in VS Code, then try again.</p>
                 </div>
             </section>
             <template id="local-runtime-options-template">

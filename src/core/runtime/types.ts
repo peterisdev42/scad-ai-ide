@@ -15,6 +15,8 @@ export interface Candidate {
 export interface Runtime extends Candidate {
     id: string
     version: string
+    tag?: string
+    release?: string
     platform: NodeJS.Platform
     status: 'available'
 }

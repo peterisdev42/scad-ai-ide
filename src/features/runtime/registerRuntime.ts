@@ -6,7 +6,7 @@ import { RuntimeManager } from '../../core/runtime/RuntimeManager'
 import { sortRuntimesByVersion } from '../../core/runtime/sortRuntimes'
 import { UserWarning } from '../../core/feedback'
 import { detectRuntimeSystem, fetchRuntimeBuilds, type RuntimeBuild, type RuntimeSystem } from '../../platform/runtime/releases'
-import { installRuntimeArchive, installRuntimeBuild, installedRuntimeBuilds, managedRuntimePaths, type InstalledRuntimeBuild, type InstallProgress, type InstallOptions } from '../../platform/runtime/installation'
+import { installRuntimeArchive, installRuntimeBuild, removeRuntimeInstallation, installedRuntimeBuilds, managedRuntimePaths, type InstalledRuntimeBuild, type InstallProgress, type InstallOptions } from '../../platform/runtime/installation'
 import * as path from 'node:path'
 
 const section = 'scad-ai-ide'
@@ -22,6 +22,7 @@ export function registerRuntime(context: vscode.ExtensionContext, manager: Runti
     let busy = false
     let discovered = false
     let refreshingSilently = false
+    let deletingId: string | undefined
     let selectingId: string | undefined
     let message = ''
     let saving = false
@@ -191,7 +192,7 @@ export function registerRuntime(context: vscode.ExtensionContext, manager: Runti
     }
 
     const useRuntime = async (id: string) => {
-        if (selectingId || installing) {
+        if (selectingId || installing || deletingId) {
             return
         }
         selectingId = id
@@ -221,22 +222,20 @@ export function registerRuntime(context: vscode.ExtensionContext, manager: Runti
         const choices: (vscode.QuickPickItem & {
             runtime?: Runtime
             action?: string
-        })[] = manager.result.runtimes.map((runtime) => ({
+        })[] = sortRuntimesByVersion(manager.result.runtimes).map((runtime) => ({
             label: `OpenSCAD ${runtime.version}`,
             description: runtime.command.executable,
             runtime,
         }))
-        choices.push({ label: 'Browse for OpenSCAD…', action: 'browse' }, { label: 'Use automatic discovery', action: 'auto' })
+        choices.push({ label: 'Download Other OpenSCAD CLI Versions…', action: 'download' })
         const choice = await vscode.window.showQuickPick(choices, {
             title: 'OpenSCAD Runtime',
             matchOnDescription: true,
         })
         if (choice?.runtime) {
             await useRuntime(choice.runtime.id)
-        } else if (choice?.action === 'browse') {
-            await browse()
-        } else if (choice?.action === 'auto') {
-            await saveCommand(null)
+        } else if (choice?.action === 'download') {
+            await vscode.commands.executeCommand('scad-ai.runtime.open', 'available')
         }
     }
 
@@ -246,7 +245,7 @@ export function registerRuntime(context: vscode.ExtensionContext, manager: Runti
         }
         // A silent scan leaves the UI usable; finish that scan before modifying files.
         await pending
-        if (installing) {
+        if (installing || deletingId) {
             return
         }
         const abort = new AbortController()
@@ -303,7 +302,7 @@ export function registerRuntime(context: vscode.ExtensionContext, manager: Runti
         if (!vscode.workspace.isTrusted) {
             throw new UserWarning(workspaceTrustMessage)
         }
-        if (installing) {
+        if (installing || deletingId) {
             return
         }
         const files = await vscode.window.showOpenDialog({
@@ -322,6 +321,30 @@ export function registerRuntime(context: vscode.ExtensionContext, manager: Runti
         await runInstallation(path.basename(source), undefined, (options) => installRuntimeArchive(runtimesRoot, system!, source, options))
     }
 
+    const deleteRuntime = async (id: string) => {
+        if (!vscode.workspace.isTrusted) throw new UserWarning(workspaceTrustMessage)
+        if (installing || selectingId || deletingId) return
+        deletingId = id
+        changed.fire()
+        try {
+            await pending
+            const runtime = manager.result.runtimes.find((runtime) => runtime.id === id)
+            if (!runtime?.installPath || !system) {
+                throw new UserWarning('Only extension-managed runtime installations can be deleted.')
+            }
+            const deletesActive = manager.active?.installPath === runtime.installPath
+            await removeRuntimeInstallation(runtimesRoot, system, runtime.installPath)
+            if (deletesActive) await saveCommand(null)
+        } finally {
+            try {
+                await refresh(true)
+            } finally {
+                deletingId = undefined
+                changed.fire()
+            }
+        }
+    }
+
     context.subscriptions.push(
         output,
         status,
@@ -337,7 +360,6 @@ export function registerRuntime(context: vscode.ExtensionContext, manager: Runti
         vscode.commands.registerCommand('scad-ai-ide.selectRuntime', select),
         vscode.commands.registerCommand('scad-ai-ide.addRuntime', browse),
         vscode.commands.registerCommand('scad-ai-ide.installRuntimeArchive', installArchive),
-        vscode.commands.registerCommand('scad-ai-ide.showRuntimeOutput', () => output.show()),
         vscode.workspace.onDidGrantWorkspaceTrust(() => refresh()),
         vscode.workspace.onDidChangeConfiguration((event) => {
             if (!saving && (event.affectsConfiguration(`${section}.openscadPath`) || event.affectsConfiguration(`${section}.runtimeCommand`))) {
@@ -355,6 +377,7 @@ export function registerRuntime(context: vscode.ExtensionContext, manager: Runti
             busy,
             refreshingSilently,
             selectingId,
+            deletingId,
             message,
             messageSeverity: vscode.workspace.isTrusted ? 'error' : 'warning',
             system,
@@ -369,6 +392,7 @@ export function registerRuntime(context: vscode.ExtensionContext, manager: Runti
             installedBuildIds: installedBuilds.map((build) => build.id),
         }),
         loadBuilds,
+        deleteRuntime,
         installArchive,
         installBuild: async (id: number) => {
             const build = builds.find((build) => build.id === id)
@@ -390,10 +414,8 @@ export function registerRuntime(context: vscode.ExtensionContext, manager: Runti
         },
         onDidChange: changed.event,
         refresh,
-        refreshInstalled: () => (busy || installing || selectingId ? pending : refresh(true)),
+        refreshInstalled: () => (busy || installing || selectingId || deletingId ? pending : refresh(true)),
         browse,
         select,
-        automatic: () => saveCommand(null),
-        showDiagnostics: () => output.show(),
     }
 }

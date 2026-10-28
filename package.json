@@ -33,11 +33,6 @@
                 "category": "SCAD AI IDE"
             },
             {
-                "command": "scad-ai-ide.showRuntimeOutput",
-                "title": "Show Runtime Diagnostics",
-                "category": "SCAD AI IDE"
-            },
-            {
                 "command": "scad-ai-ide.addRuntime",
                 "title": "Add OpenSCAD Runtime",
                 "category": "SCAD AI IDE"
@@ -260,7 +255,11 @@
                 "extensions": [
                     ".scad"
                 ],
-                "configuration": "./language-configuration.json"
+                "configuration": "./language-configuration.json",
+                "icon": {
+                    "light": "./resources/openscad.svg",
+                    "dark": "./resources/openscad.svg"
+                }
             }
         ],
         "grammars": [

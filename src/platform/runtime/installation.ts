@@ -1,11 +1,12 @@
 import { anonymousGitHubRequest, type GitHubRequest } from '../github/client'
 import { createHash } from 'node:crypto'
 import { createReadStream, createWriteStream } from 'node:fs'
-import { mkdir, mkdtemp, open, readFile, readdir, realpath, rename, rm, stat } from 'node:fs/promises'
+import { mkdir, mkdtemp, open, readFile, readdir, realpath, rename, rm, stat, writeFile } from 'node:fs/promises'
 import * as path from 'node:path'
 import { pipeline } from 'node:stream/promises'
 import * as tar from 'tar'
 import * as yauzl from 'yauzl'
+import { readRuntimeTag } from './metadata'
 import { fileCandidate, probe } from './discovery'
 import { matchesRuntimeBuild, type RuntimeBuild, type RuntimeSystem } from './releases'
 import { requestGitHub } from '../github/errors'
@@ -41,6 +42,17 @@ export async function managedRuntimePaths(root: string, system: RuntimeSystem): 
     return (await managedInstallDirectories(root, system)).map((directory) => path.join(directory, 'bin', system.platform === 'win32' ? 'openscad.exe' : 'openscad'))
 }
 
+/** Remove only a recognized installation owned by this extension. */
+export async function removeRuntimeInstallation(root: string, system: RuntimeSystem, installPath: string): Promise<void> {
+    const normalize = (directory: string) => (process.platform === 'win32' ? path.resolve(directory).toLowerCase() : path.resolve(directory))
+    const directories = await managedInstallDirectories(root, system)
+    const directory = directories.find((directory) => normalize(directory) === normalize(installPath))
+    if (!directory) {
+        throw new Error('Only extension-managed runtime installations can be deleted.')
+    }
+    await rm(directory, { recursive: true })
+}
+
 export interface InstalledRuntimeBuild {
     id: number
     directories: string[]
@@ -49,15 +61,7 @@ export interface InstalledRuntimeBuild {
 export async function installedRuntimeBuilds(root: string, system: RuntimeSystem, builds: RuntimeBuild[]): Promise<InstalledRuntimeBuild[]> {
     const packages = await Promise.all(
         (await managedInstallDirectories(root, system)).map(async (directory) => {
-            let tag: string | undefined
-            try {
-                const metadata: unknown = JSON.parse(await readFile(path.join(directory, 'build-info.json'), 'utf8'))
-                if (metadata && typeof metadata === 'object' && 'tag' in metadata && typeof metadata.tag === 'string') {
-                    tag = metadata.tag.replace(/^openscad-/, 'openscad-cli-')
-                }
-            } catch {
-                // Older or damaged installs can still be identified by the asset ID directory.
-            }
+            const tag = await readRuntimeTag(directory)
             return { directory, assetId: path.basename(directory), tag }
         }),
     )
@@ -160,6 +164,8 @@ export interface InstallOptions {
 }
 
 interface ArchiveSource {
+    release?: string
+    tag?: string
     key?: string
     buildId?: number
     format: '.zip' | '.tar.gz'
@@ -241,6 +247,9 @@ async function installPackage(root: string, system: RuntimeSystem, source: Archi
             throw new Error('The archive must contain one OpenSCAD CLI package matching this system and architecture.')
         }
         const packageRoot = path.join(extracted, packages[0].name)
+        if (source.tag) {
+            await writeFile(path.join(packageRoot, 'scad-ai-release.json'), JSON.stringify({ tag: source.tag, release: source.release }))
+        }
         const stagedExecutable = path.join(packageRoot, 'bin', executableName)
         if (!inside(await realpath(packageRoot), await realpath(stagedExecutable))) {
             throw new Error('Runtime executable is outside its package.')
@@ -314,6 +323,8 @@ export async function installRuntimeBuild(root: string, system: RuntimeSystem, b
         system,
         {
             key: String(build.id),
+            tag: build.tag,
+            release: build.release,
             buildId: build.id,
             format: build.name.endsWith('.zip') ? '.zip' : '.tar.gz',
             acquire: async (archive, signal, report) => {

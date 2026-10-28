@@ -23,23 +23,31 @@ const fakeProbe = async (candidate: Candidate): Promise<Runtime> => ({
     status: 'available',
 })
 
-test('Installed versions sort newest first numerically without changing discovery priority', async () => {
-    const versions = ['2021.01', '2026.9', '2026.10-TEST2', '2026.10-TEST10', '2026.10', '2026.10.2', '2026.10.10 (git abc123)', 'unknown']
-    const runtimes = await Promise.all(versions.map(async (version, index) => ({ ...(await fakeProbe({ source: index % 2 ? 'managed' : 'PATH', command: { executable: index % 2 ? `/storage/runtime/${index}` : `/system/runtime/${index}`, argsPrefix: [] } })), version })))
+test('all runtime lists sort by release name year, month, day and natural suffix without changing discovery priority', async () => {
+    const releases = ['2025.12.31-TEST99', '2026.09.30-Z99', '2026.10.27-Z99', '2026.10.28-TEST2', '2026.10.28-TEST10', '2026.10.28', '2026.10.28-RC3', '2027.01.01', 'unknown']
+    const runtimes = await Promise.all(releases.map(async (release, index) => ({ ...(await fakeProbe({ source: index % 2 ? 'managed' : 'PATH', command: { executable: `/runtime/${index}`, argsPrefix: [] } })), release, tag: 'unknown', version: 'unknown' })))
+    // A differing tag and CLI version must not override a valid Release name.
+    runtimes[0].tag = 'openscad-cli-2099.12.31'
+    runtimes[0].version = '2099.12.31'
     const sorted = sortRuntimesByVersion(runtimes)
     assert.deepEqual(
-        sorted.map((runtime) => runtime.version),
-        ['2026.10.10 (git abc123)', '2026.10.2', '2026.10', '2026.10-TEST10', '2026.10-TEST2', '2026.9', '2021.01', 'unknown'],
+        sorted.map((runtime) => runtime.release),
+        [releases[7], releases[4], releases[3], releases[6], releases[5], releases[2], releases[1], releases[0], releases[8]],
     )
     assert.deepEqual(
-        runtimes.map((runtime) => runtime.version),
-        versions,
+        runtimes.map((runtime) => runtime.release),
+        releases,
     )
-    assert.notEqual(sorted, runtimes)
     assert.equal(
         sorted.find((runtime) => runtime.id === runtimes[0].id),
         runtimes[0],
     )
+    const legacy = [{ release: 'OpenSCAD CLI', tag: 'openscad-cli-2026.10-TEST10' }, { version: '2026.10.28' }, { version: '2026.10.TEST2' }]
+    assert.deepEqual(sortRuntimesByVersion(legacy), [legacy[1], legacy[0], legacy[2]])
+    const numericSuffixes = [{ release: '2026.10.28-2' }, { release: '2026.10.28-10' }]
+    assert.deepEqual(sortRuntimesByVersion(numericSuffixes), [numericSuffixes[1], numericSuffixes[0]])
+    const equivalent = [{ release: '2026.10.28-test2' }, { release: '2026.10.28-TEST2' }]
+    assert.deepEqual(sortRuntimesByVersion(equivalent), equivalent)
 })
 
 test('equal versions ignore source, path, runtime ID and git metadata when sorting', async () => {
@@ -241,9 +249,9 @@ test('runtime build matching requires the exact OS and architecture and excludes
 
 test('release listing follows pagination and includes stable and prerelease matching archives only', async () => {
     const system: RuntimeSystem = { platform: 'darwin', architecture: 'arm64', name: 'macOS', version: '15' }
-    const asset = (id: number, name: string) => ({ id, name, size: 1024, browser_download_url: `https://github.com/peterisdev42/scad-ai-ide-builder/releases/download/tag/${name}` })
+    const asset = (id: number, name: string) => ({ id, name, size: 1024, browser_download_url: `https://github.com/peterisdev42/openscad-cli-builder/releases/download/tag/${name}` })
     const release = (tag: string, assets: unknown[], extra = {}) => ({ tag_name: tag, assets, ...extra })
-    const pages = [[release('new', [asset(1, 'openscad-cli-macos-arm64.tar.gz'), asset(2, 'openscad-cli-macos-x86_64.tar.gz'), asset(3, 'openscad-cli-macos-arm64.tar.gz.sha256')], { prerelease: true })], [release('old', [asset(4, 'openscad-cli-macos-arm64.tar.gz')]), release('draft', [asset(5, 'openscad-cli-macos-arm64.tar.gz')], { draft: true })]]
+    const pages = [[release('openscad-cli-2026.10-TEST2', [asset(1, 'openscad-cli-macos-arm64.tar.gz'), asset(2, 'openscad-cli-macos-x86_64.tar.gz'), asset(3, 'openscad-cli-macos-arm64.tar.gz.sha256')], { prerelease: true, name: '2026.10.29-TEST2' })], [release('openscad-cli-2026.10-TEST10', [asset(4, 'openscad-cli-macos-arm64.tar.gz')], { name: '2026.10.28', prerelease: true }), release('draft', [asset(5, 'openscad-cli-macos-arm64.tar.gz')], { draft: true })]]
     const calls: string[] = []
     const builds = await fetchRuntimeBuilds(system, async (input, options) => {
         calls.push(String(input))
@@ -256,11 +264,13 @@ test('release listing follows pagination and includes stable and prerelease matc
     assert.deepEqual(
         builds.map((build) => [build.id, build.tag, build.prerelease]),
         [
-            [1, 'new', true],
-            [4, 'old', false],
+            [1, 'openscad-cli-2026.10-TEST2', true],
+            [4, 'openscad-cli-2026.10-TEST10', true],
         ],
     )
-    assert.equal(builds[0].release, 'new')
+    assert.equal(builds[0].release, '2026.10.29-TEST2')
+    assert.equal(builds[0].channel, undefined)
+    assert.equal(builds[1].channel, 'Stable')
 })
 
 test('release listing handles empty results, API failures, invalid payloads and untrusted downloads', async () => {
@@ -509,18 +519,16 @@ test('Windows Scoop junction aliases merge with physical paths without merging s
     assert.ok(result.runtimes.every((runtime) => runtime.command.executable === executable))
 })
 
-test('release channels distinguish TEST development builds and nightlies even when GitHub prerelease is false', () => {
-    assert.equal(classifyRuntimeRelease('openscad-cli-2021.01', 'OpenSCAD CLI 2021.01', false), 'Stable')
-    assert.equal(classifyRuntimeRelease('openscad-cli-2026.10-TEST4', 'OpenSCAD CLI 2026.10-TEST4', false), 'Development')
-    assert.equal(classifyRuntimeRelease('openscad-cli-2026.10.10', '', false), 'Development')
-    for (const marker of ['dev', 'development', 'snapshot', 'alpha2', 'beta1', 'rc3', 'preview']) {
-        assert.equal(classifyRuntimeRelease(`openscad-cli-2026.10-${marker}`, '', false), 'Development')
+test('only suffix-free release versions receive a Stable badge', () => {
+    for (const version of ['2026.10.28', '2026.10', 'openscad-cli-2026.10.28', 'OpenSCAD CLI 2026.10.28']) {
+        assert.equal(classifyRuntimeRelease(version), 'Stable', version)
     }
-    assert.equal(classifyRuntimeRelease('openscad-cli-nightly-2026.10.10', '', false), 'Nightly')
-    assert.equal(classifyRuntimeRelease('openscad-cli-2026.10', 'OpenSCAD Nightly', false), 'Nightly')
-    assert.equal(classifyRuntimeRelease('openscad-cli-2026.10', 'OpenSCAD Development', false), 'Development')
-    assert.equal(classifyRuntimeRelease('openscad-cli-2026.10', '', true), 'Pre-release')
-    assert.equal(classifyRuntimeRelease('custom-build', '', false), undefined)
+    for (const suffix of ['TEST4', 'nightly', 'dev', 'snapshot', 'alpha1', 'beta2', 'rc3', 'preview', 'custom', '1']) {
+        assert.equal(classifyRuntimeRelease(`2026.10.28-${suffix}`), undefined, suffix)
+    }
+    for (const version of ['', 'unknown', 'OpenSCAD Nightly', '2026.10.28-', '2026.10.28+build1']) {
+        assert.equal(classifyRuntimeRelease(version), undefined, version)
+    }
 })
 
 test('GitHub rate-limit failures preserve the upstream message, status, reset time and request metadata', async () => {
@@ -544,7 +552,7 @@ test('GitHub rate-limit failures preserve the upstream message, status, reset ti
             assert.ok(error.message.includes(new Date(1800000000 * 1000).toISOString()))
             assert.match(error.message, /Retry after: 120 seconds/)
             assert.match(error.message, /GitHub request ID: TEST:1234/)
-            assert.match(error.message, /Request: https:\/\/api.github.com\/repos\/peterisdev42\/scad-ai-ide-builder\/releases\?per_page=100&page=1/)
+            assert.match(error.message, /Request: https:\/\/api.github.com\/repos\/peterisdev42\/openscad-cli-builder\/releases\?per_page=100&page=1/)
             return true
         },
     )
@@ -610,7 +618,7 @@ test('invalid GitHub response content retains the request and parsing error or u
     )
 })
 
-async function mockRuntimeFeature(detect: (options: DiscoveryOptions) => Promise<DiscoveryResult>) {
+async function mockRuntimeFeature(detect: (options: DiscoveryOptions) => Promise<DiscoveryResult>, remove: (installPath: string) => Promise<void> = async () => {}) {
     const configuration = new Map<string, unknown>()
     let updateError: Error | undefined
     let archiveError: Error | undefined
@@ -666,6 +674,7 @@ async function mockRuntimeFeature(detect: (options: DiscoveryOptions) => Promise
             if (id === 'vscode') return mock
             if (id.endsWith('/installation'))
                 return {
+                    removeRuntimeInstallation: async (_root: string, _system: unknown, installPath: string) => remove(installPath),
                     managedRuntimePaths: async () => [],
                     installedRuntimeBuilds: async () => [],
                     installRuntimeArchive: async (_root: unknown, _system: unknown, _source: unknown, options: { signal: AbortSignal; progress: (value: { message: string; percent?: number }) => void }) => {
@@ -880,6 +889,41 @@ test('workspace trust prerequisites are panel warnings and do not start runtime 
         }
         assert.equal(scans, 1)
         assert.equal(mock.runtime.getState().installing, undefined)
+    } finally {
+        mock.dispose()
+    }
+})
+
+test('deleting an active managed runtime clears its saved selection and keeps the fallback; failed deletion preserves it', async () => {
+    const active = { ...(await fakeProbe({ source: 'managed', command: { executable: '/managed/100/bin/openscad', argsPrefix: [] } })), installPath: '/managed/100' }
+    const fallback = await fakeProbe({ source: 'PATH', command: { executable: '/system/openscad', argsPrefix: [] } })
+    let removed = false
+    let fail = true
+    const mock = await mockRuntimeFeature(
+        async () => ({ runtimes: removed ? [fallback] : [active, fallback], diagnostics: [] }),
+        async (installPath) => {
+            assert.equal(installPath, active.installPath)
+            if (fail) throw new Error('Permission denied')
+            removed = true
+        },
+    )
+    try {
+        await mock.runtime.whenReady()
+        mock.configuration.set('runtimeCommand', active.command)
+        await assert.rejects(mock.runtime.deleteRuntime(active.id), /Permission denied/)
+        assert.equal(mock.runtime.getState().activeId, active.id)
+        assert.equal(mock.configuration.get('runtimeCommand'), active.command)
+        assert.equal(mock.runtime.getState().deletingId, undefined)
+        fail = false
+        await mock.runtime.deleteRuntime(active.id)
+        assert.equal(mock.configuration.get('runtimeCommand'), null)
+        assert.equal(mock.runtime.getState().activeId, fallback.id)
+        assert.deepEqual(
+            mock.runtime.getState().runtimes.map((runtime) => runtime.id),
+            [fallback.id],
+        )
+        assert.equal(mock.runtime.getState().deletingId, undefined)
+        await assert.rejects(mock.runtime.deleteRuntime(fallback.id), /Only extension-managed/)
     } finally {
         mock.dispose()
     }

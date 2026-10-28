@@ -187,6 +187,7 @@ async function mockVSCodeGitHub() {
     let token: string | undefined
     let responseStatus = 200
     let authenticationError: Error | undefined
+    let signInUnavailable = false
     let delayed: Promise<{ accessToken: string; account: { label: string } } | undefined> | undefined
     class MockEmitter<T> {
         listeners = new Set<(event: T) => void>()
@@ -224,7 +225,7 @@ async function mockVSCodeGitHub() {
                     delayed = undefined
                     return pending
                 }
-                if (options.createIfNone) {
+                if (options.createIfNone && !signInUnavailable) {
                     token = 'test-connected-token'
                 }
                 return token ? { accessToken: token, account: { label: 'maker' } } : undefined
@@ -251,6 +252,9 @@ async function mockVSCodeGitHub() {
         sessionChanges,
         setResponseStatus: (status: number) => {
             responseStatus = status
+        },
+        disableSignIn: () => {
+            signInUnavailable = true
         },
         setError: (error: Error) => {
             authenticationError = error
@@ -291,11 +295,28 @@ test('VS Code GitHub sign-in is interactive only when Connect is explicitly call
     assert.equal(mock.requests[1].get('authorization'), 'Bearer test-connected-token')
 })
 
+test('failed or cancelled authorization explains VS Code sign-in and preserves anonymous requests', async () => {
+    for (const reason of ['The GitHub authentication provider is disabled', 'User cancelled authorization', undefined]) {
+        const mock = await mockVSCodeGitHub()
+        if (reason) mock.setError(new Error(reason))
+        else mock.disableSignIn()
+        await assert.rejects(mock.client.connect(), /GitHub authorization failed.*Sign in to GitHub from the Accounts menu in VS Code/)
+        assert.equal(mock.sessions[0].options.createIfNone, true)
+        assert.equal(mock.client.getState().mode, 'anonymous')
+        assert.equal(mock.client.getState().busy, false)
+        assert.match(mock.client.getState().message!, /Sign in to GitHub/)
+        assert.ok(mock.client.getState().message!.includes(reason ?? 'did not provide a GitHub access token'))
+        await mock.client.request(api)
+        assert.equal(mock.requests[0].get('authorization'), null)
+        assert.match(mock.client.getState().message!, reason ? /authentication|cancelled/ : /Sign in to GitHub/)
+    }
+})
+
 test('release pagination, runtime downloads and checksums all use the shared authenticated GitHub client', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'scad-github-client-'))
     try {
         const bytes = Buffer.from(zipSync({ 'openscad-cli-windows-x86_64/bin/openscad.exe': strToU8('test executable') }))
-        const download = 'https://github.com/peterisdev42/scad-ai-ide-builder/releases/download/test/openscad-cli-windows-x86_64.zip'
+        const download = 'https://github.com/peterisdev42/openscad-cli-builder/releases/download/test/openscad-cli-windows-x86_64.zip'
         const checksum = require('node:crypto').createHash('sha256').update(bytes).digest('hex')
         const calls: string[] = []
         const request = createGitHubRequest(
@@ -455,12 +476,12 @@ test('More retains the shared sign-in hint across anonymous checks and clears it
     assert.equal(mock.client.getState().loginSuggested, undefined)
 })
 
-test('all panels receive anonymous failure guidance and route to the same More GitHub page', async () => {
+test('panel navigation shares GitHub guidance and opens requested Runtime tabs before and after readiness', async () => {
     const file = path.join(__dirname, '../features/panels/PanelManager.js')
     const code = await readFile(file, 'utf8')
     const pages = ['ai', 'bricks', 'libraries', 'runtime', 'more']
     type Listener = (message: unknown) => Promise<void>
-    const panels = new Map<string, { messages: Array<{ type: string; state?: unknown; severity?: string; action?: string }>; receive?: Listener; reveals: number; html: string }>()
+    const panels = new Map<string, { messages: Array<{ type: string; state?: unknown; severity?: string; action?: string; tab?: string }>; receive?: Listener; reveals: number; html: string }>()
     let changed!: () => void
     let state = { mode: 'anonymous', busy: false, loginSuggested: false }
     const disposable = { dispose() {} }
@@ -470,11 +491,11 @@ test('all panels receive anonymous failure guidance and route to the same More G
         workspace: { fs: { readFile: async () => Buffer.from('{{page}}') } },
         window: {
             createWebviewPanel: (viewType: string) => {
-                const record = { messages: [] as Array<{ type: string; state?: unknown; severity?: string; action?: string }>, receive: undefined as Listener | undefined, reveals: 0, html: '' }
+                const record = { messages: [] as Array<{ type: string; state?: unknown; severity?: string; action?: string; tab?: string }>, receive: undefined as Listener | undefined, reveals: 0, html: '' }
                 panels.set(viewType.replace('scad-ai.', ''), record)
                 return {
                     webview: {
-                        postMessage: async (message: { type: string; state?: unknown; severity?: string; action?: string }) => record.messages.push(message),
+                        postMessage: async (message: { type: string; state?: unknown; severity?: string; action?: string; tab?: string }) => record.messages.push(message),
                         onDidReceiveMessage: (listener: Listener) => {
                             record.receive = listener
                             return disposable
@@ -515,11 +536,17 @@ test('all panels receive anonymous failure guidance and route to the same More G
             refresh: async () => {},
         } as unknown as ReturnType<typeof import('../features/github/registerGitHub').registerGitHub>,
     )
+    await manager.open('runtime', 'available')
+    assert.equal(
+        panels.get('runtime')!.messages.some((message) => message.type === 'runtimeTab'),
+        false,
+    )
     for (const id of pages) {
         await manager.open(id as Parameters<typeof manager.open>[0])
         await panels.get(id)!.receive!({ action: 'ready' })
         assert.ok(panels.get(id)!.messages.some((message) => message.type === 'githubState'))
     }
+    assert.ok(panels.get('runtime')!.messages.some((message) => message.type === 'runtimeTab' && message.tab === 'available'))
     state = { ...state, loginSuggested: true }
     changed()
     for (const id of pages) {
@@ -535,6 +562,12 @@ test('all panels receive anonymous failure guidance and route to the same More G
     assert.equal(panels.get('runtime')!.messages.at(-2)?.severity, 'warning')
     assert.equal(panels.get('runtime')!.messages.at(-2)?.action, 'browse')
     assert.equal(panels.get('runtime')!.messages.at(-1)?.type, 'actionComplete')
+    await manager.open('runtime', 'available')
+    assert.equal(panels.get('runtime')!.messages.at(-1)?.type, 'runtimeTab')
+    assert.equal(panels.get('runtime')!.messages.at(-1)?.tab, 'available')
+    const delivered = panels.get('runtime')!.messages.length
+    await manager.open('runtime')
+    assert.equal(panels.get('runtime')!.messages.length, delivered)
 })
 
 test('background GitHub session checks preserve the connected UI without showing interactive loading', async () => {

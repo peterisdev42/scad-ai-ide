@@ -8,11 +8,11 @@ import { gzipSync } from 'node:zlib'
 import * as tar from 'tar'
 import { zipSync, strToU8 } from 'fflate'
 import { discover, probe, type Runtime } from '../platform/runtime/discovery'
-import { extractRuntimeArchive, installRuntimeArchive, installRuntimeBuild, installedRuntimeBuilds, managedDirectory, managedRuntimePaths } from '../platform/runtime/installation'
+import { extractRuntimeArchive, installRuntimeArchive, installRuntimeBuild, installedRuntimeBuilds, managedDirectory, managedRuntimePaths, removeRuntimeInstallation } from '../platform/runtime/installation'
 import type { RuntimeBuild, RuntimeSystem } from '../platform/runtime/releases'
 
 const system: RuntimeSystem = { platform: process.platform, architecture: process.arch, name: '', version: '' }
-const build: RuntimeBuild = { id: 100, name: `openscad-cli-${process.platform === 'darwin' ? 'macos' : 'linux'}-${process.arch}.tar.gz`, tag: 'test', release: 'OpenSCAD test', size: 0, prerelease: false, publishedAt: '', downloadUrl: 'https://example.test/archive', checksumUrl: 'https://example.test/checksum' }
+const build: RuntimeBuild = { id: 100, name: `openscad-cli-${process.platform === 'darwin' ? 'macos' : 'linux'}-${process.arch}.tar.gz`, tag: 'test', release: '2026.10.28-TEST10', size: 0, prerelease: false, publishedAt: '', downloadUrl: 'https://example.test/archive', checksumUrl: 'https://example.test/checksum' }
 
 async function fixture() {
     const root = await mkdtemp(path.join(os.tmpdir(), 'scad-install-test-'))
@@ -22,6 +22,7 @@ async function fixture() {
     const executable = path.join(source, name, 'bin/openscad')
     await writeFile(executable, '#!/bin/sh\necho "OpenSCAD version 2021.01"\n')
     await chmod(executable, 0o755)
+    await writeFile(path.join(source, name, 'build-info.json'), JSON.stringify({ tag: 'openscad-2026.10-TEST2' }))
     await mkdir(path.join(source, name, 'lib'))
     await writeFile(path.join(source, name, 'lib/dependency'), 'bundled dependency')
     await symlink('dependency', path.join(source, name, 'lib/current'))
@@ -40,7 +41,7 @@ test('installation verifies, extracts, probes and discovers all managed versions
     try {
         const progress: string[] = []
         const first = await installRuntimeBuild(f.storage, system, { ...build, size: f.bytes.length }, { request: f.request, progress: (p) => progress.push(p.message) })
-        const second = await installRuntimeBuild(f.storage, system, { ...build, id: 101 }, { request: f.request })
+        const second = await installRuntimeBuild(f.storage, system, { ...build, id: 101, tag: 'other' }, { request: f.request })
         assert.notEqual(first, second)
         assert.ok(progress.includes('Verifying download…'))
         assert.ok(progress.includes('Extracting…'))
@@ -50,6 +51,11 @@ test('installation verifies, extracts, probes and discovers all managed versions
         assert.deepEqual(paths.sort(), [first, second].sort())
         const result = await discover({ platform: process.platform, env: {}, managedPaths: paths }, { collect: async () => ({ candidates: [], diagnostics: [] }) })
         assert.equal(result.runtimes.filter((runtime) => runtime.source === 'managed').length, 2)
+        assert.deepEqual(result.runtimes.map((runtime) => runtime.tag).sort(), ['other', build.tag].sort(), 'Release tags must override the CLI version and bundled metadata')
+        assert.ok(
+            result.runtimes.every((runtime) => runtime.release === build.release),
+            'Release names must survive installation and rediscovery',
+        )
         assert.ok(result.runtimes.every((runtime) => runtime.source !== 'managed' || runtime.installPath))
         const sentinel = path.join(path.dirname(path.dirname(first)), 'old-installation-marker')
         await writeFile(sentinel, 'remove during reinstall')
@@ -207,6 +213,7 @@ test('local archive imports copy, verify and discover a renamed package offline,
         assert.deepEqual(await readdir(managedDirectory(f.storage, system)), entries)
         const result = await discover({ platform: process.platform, env: {}, managedPaths: await managedRuntimePaths(f.storage, system) }, { collect: async () => ({ candidates: [], diagnostics: [] }) })
         assert.equal(result.runtimes.filter((runtime) => runtime.source === 'managed').length, 1)
+        assert.equal(result.runtimes[0].tag, 'openscad-cli-2026.10-TEST2')
     } finally {
         await rm(f.root, { recursive: true, force: true })
     }
@@ -368,6 +375,32 @@ test('reinstall removes matching offline imports before downloading and preserve
         await assert.rejects(installRuntimeBuild(storage, windows, release, { request: async () => new Response('', { status: 503 }) }), /HTTP 503/)
         assert.deepEqual(await installedRuntimeBuilds(storage, windows, [release]), [])
         assert.deepEqual(await readdir(managedDirectory(storage, windows)), ['999'])
+    } finally {
+        await rm(root, { recursive: true, force: true })
+    }
+})
+
+test('runtime deletion removes only the selected managed installation and rejects paths outside its ownership', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'scad-delete-'))
+    const windows: RuntimeSystem = { platform: 'win32', architecture: 'x64', name: 'Windows', version: '' }
+    const storage = path.join(root, 'runtimes')
+    const first = path.join(managedDirectory(storage, windows), '100')
+    const second = path.join(managedDirectory(storage, windows), '101')
+    const external = path.join(root, 'system-install')
+    try {
+        for (const directory of [first, second, external]) {
+            await mkdir(path.join(directory, 'bin'), { recursive: true })
+            await writeFile(path.join(directory, 'bin/openscad.exe'), 'executable')
+            await writeFile(path.join(directory, 'dependency.dll'), 'dependency')
+        }
+        for (const invalid of [external, root, managedDirectory(storage, windows), path.join(first, 'bin')]) {
+            await assert.rejects(removeRuntimeInstallation(storage, windows, invalid), /Only extension-managed/)
+        }
+        await removeRuntimeInstallation(storage, windows, first)
+        await assert.rejects(readFile(path.join(first, 'dependency.dll')), { code: 'ENOENT' })
+        assert.deepEqual(await managedRuntimePaths(storage, windows), [path.join(second, 'bin/openscad.exe')])
+        assert.equal(await readFile(path.join(second, 'dependency.dll'), 'utf8'), 'dependency')
+        assert.equal(await readFile(path.join(external, 'bin/openscad.exe'), 'utf8'), 'executable')
     } finally {
         await rm(root, { recursive: true, force: true })
     }

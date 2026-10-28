@@ -215,8 +215,7 @@ dd {
     color: var(--vscode-textLink-activeForeground, var(--vscode-textLink-foreground));
     background: var(--vscode-toolbar-hoverBackground);
 }
-.local-options,
-.advanced {
+.local-options {
     margin-top: 20px;
 }
 summary {
@@ -224,12 +223,38 @@ summary {
     color: var(--muted);
     width: fit-content;
 }
-.local-options .actions,
-.advanced .actions {
+.local-options .actions {
     margin-top: 14px;
 }
 .local-options p {
     margin-bottom: 0;
+}
+.recommended-build {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 24px;
+    flex-wrap: wrap;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 20px;
+    margin-bottom: 24px;
+    background: var(--vscode-editorWidget-background, var(--vscode-editor-background));
+}
+.recommended-build .recommended-label {
+    margin: 0 0 6px;
+}
+#recommended-description {
+    margin: 6px 0 0;
+}
+.recommended-build > button {
+    flex-shrink: 0;
+}
+.all-versions-heading {
+    font-size: var(--font-small);
+    color: var(--muted);
+    font-weight: 500;
+    margin: 0 0 10px;
 }
 .version-list {
     border: 1px solid var(--border);
@@ -246,9 +271,43 @@ summary {
 .version-row:last-child {
     border-bottom: 0;
 }
-.version-row > button {
+.version-row > button,
+.version-actions > button:not(.runtime-delete) {
     min-width: 100px;
     white-space: nowrap;
+}
+.version-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.runtime-delete {
+    border: 0;
+    padding: 7px 0;
+    color: var(--muted);
+    background: transparent;
+    opacity: 0;
+    pointer-events: none;
+    white-space: nowrap;
+}
+.version-row:hover .runtime-delete,
+.version-row:focus-within .runtime-delete,
+.runtime-delete[aria-busy='true'] {
+    opacity: 1;
+    pointer-events: auto;
+}
+.runtime-delete:enabled:hover {
+    color: var(--vscode-errorForeground);
+    background: transparent;
+}
+.runtime-delete:disabled {
+    background: transparent;
+}
+@media (hover: none) {
+    .runtime-delete {
+        opacity: 1;
+        pointer-events: auto;
+    }
 }
 .version-info {
     min-width: 0;
@@ -294,11 +353,25 @@ summary {
     grid-column: 1 / -1;
     margin: 0;
 }
-.github-metadata {
-    margin: 20px 0;
+.github-access {
+    max-width: 760px;
 }
-.tool-actions {
-    margin-top: 20px;
+.github-intro {
+    color: var(--muted);
+    margin: 12px 0;
+}
+.github-authorization {
+    margin-top: 24px;
+}
+.github-authorization .section-heading {
+    margin-bottom: 12px;
+}
+.github-authorization .actions {
+    margin-top: 18px;
+}
+.github-help {
+    font-size: var(--font-small);
+    margin: 16px 0 0;
 }
 .empty-state {
     text-align: center;
@@ -350,6 +423,7 @@ summary {
     .system-details {
         gap: 16px;
     }
+    .recommended-build,
     .version-row {
         padding: 16px;
         gap: 12px;

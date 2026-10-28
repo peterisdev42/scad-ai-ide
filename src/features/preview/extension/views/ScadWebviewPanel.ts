@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto'
 import { ScadClient } from '../services/ScadClient'
+import { showRenderError } from '../services/renderError'
 import { Disposable, Memento, ProgressLocation, Uri, Webview, WebviewPanel, env, window, workspace } from 'vscode'
 import * as os from 'os'
 import * as path from 'path'
@@ -134,16 +135,10 @@ export class ScadWebviewPanel {
                     loading: false,
                 })
 
-                // Show the error in the VS Code notification area and direct the user
-                // to the output channel for the full OpenSCAD stderr output.
                 const msg = err.message
-                window.showErrorMessage(`OpenSCAD render failed: ${msg.split('\n')[0]}`, 'Show Output').then((choice) => {
-                    if (choice === 'Show Output') {
-                        ScadClient.outputChannel.show()
-                    }
-                })
+                void showRenderError(err, () => ScadClient.outputChannel.show())
 
-                // Also forward the first line of the error to the webview log panel.
+                // Keep the full error and recovery guidance in the webview log panel.
                 if (this.isWebviewReady) {
                     this.postMessage({
                         type: 'log',

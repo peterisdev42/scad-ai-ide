@@ -1,4 +1,5 @@
 import * as vscode from 'vscode'
+import { RuntimeUnavailableError } from '../../core/runtime/errors'
 import type { CustomizerService } from '../../core/customizer/CustomizerService'
 import type { registerRuntime } from '../runtime/registerRuntime'
 import { previewEditorViewType, registerShowPanelCommand } from './extension/commands/showPanel'
@@ -8,11 +9,17 @@ import { ScadPreviewEditorProvider } from './extension/views/ScadPreviewEditorPr
 
 export function registerPreview(context: vscode.ExtensionContext, runtime: ReturnType<typeof registerRuntime>, customizer: CustomizerService) {
     const sessions = new ScadSessionManager(customizer)
+    const runtimeIdentity = () => {
+        const active = runtime.getActiveRuntime()
+        return active ? JSON.stringify({ id: active.id, version: active.version, command: active.command }) : undefined
+    }
+    let previousRuntime = runtimeIdentity()
+    let runtimeWasInstalling = false
     ScadClient.configure(async () => {
         await runtime.whenReady()
         const active = runtime.getActiveRuntime()
         if (!active) {
-            throw new Error('No OpenSCAD runtime available. Run SCAD AI IDE: Select OpenSCAD Runtime.')
+            throw new RuntimeUnavailableError()
         }
         return active.command
     })
@@ -27,9 +34,14 @@ export function registerPreview(context: vscode.ExtensionContext, runtime: Retur
         }),
         runtime.onDidChange(() => {
             const state = runtime.getState()
-            if (!state.busy && !state.selectingId && !state.installing) {
-                sessions.refresh()
-            }
+            runtimeWasInstalling ||= !!state.installing
+            if (state.busy || state.selectingId || state.installing || state.deletingId) return
+            const currentRuntime = runtimeIdentity()
+            // Release loading, account updates and unchanged scans do not affect rendering.
+            const shouldRefresh = currentRuntime !== previousRuntime || (runtimeWasInstalling && currentRuntime !== undefined)
+            previousRuntime = currentRuntime
+            runtimeWasInstalling = false
+            if (shouldRefresh) sessions.refresh()
         }),
         vscode.workspace.onDidChangeConfiguration((event) => {
             if (event.affectsConfiguration('scad-ai-ide.preview')) {
