@@ -1,3 +1,4 @@
+import { notifications } from '../../platform/notifications'
 import * as vscode from 'vscode'
 import { CustomizerService, validateValue } from '../../core/customizer/CustomizerService'
 import type { Parameter, ParameterValue } from '../../core/customizer/CustomizerParser'
@@ -134,7 +135,7 @@ export class CustomizerTreeProvider implements vscode.TreeDataProvider<vscode.Tr
             this.service.set(name, value)
             this.changed.fire()
         } catch (error) {
-            void vscode.window.showErrorMessage(String(error))
+            void notifications.customizerError(error, target)
         }
     }
 

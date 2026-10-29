@@ -1,5 +1,5 @@
 {
-    "exclude": ["node_modules", "src/features/preview/webview", "src/test/preview"],
+    "exclude": ["node_modules", "sources", "src/features/preview/webview", "src/test/preview"],
     "compilerOptions": {
         "module": "Node16",
         "target": "ES2022",

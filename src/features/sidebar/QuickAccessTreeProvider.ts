@@ -5,6 +5,7 @@ export const quickAccess = [
     { id: 'bricks', title: 'Bricks', command: 'scad-ai.bricks.open' },
     { id: 'libraries', title: 'Libraries', command: 'scad-ai.libraries.open' },
     { id: 'runtime', title: 'Runtime', command: 'scad-ai.runtime.open' },
+    { id: 'more', title: 'More', command: 'scad-ai.more.open' },
 ] as const
 
 export class QuickAccessTreeProvider implements vscode.TreeDataProvider<vscode.TreeItem> {

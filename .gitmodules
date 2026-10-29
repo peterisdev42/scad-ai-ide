@@ -1,0 +1,6 @@
+[submodule "sources/vscode-openscad-preview"]
+	path = sources/vscode-openscad-preview
+	url = https://github.com/peterisdev42/vscode-openscad-preview.git
+[submodule "sources/openscad-LSP"]
+	path = sources/openscad-LSP
+	url = https://github.com/peterisdev42/openscad-LSP.git

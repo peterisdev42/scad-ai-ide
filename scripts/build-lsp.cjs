@@ -1,10 +1,14 @@
-// Build the checked-out sibling sources/openscad-LSP, then stage for this host.
+// Build the checked-out sources/openscad-LSP submodule, then stage for this host.
 const { spawnSync } = require('node:child_process')
-const { mkdirSync, copyFileSync, chmodSync, rmSync, renameSync } = require('node:fs')
+const { existsSync, mkdirSync, copyFileSync, chmodSync, rmSync, renameSync } = require('node:fs')
 const path = require('node:path')
 
 const root = path.resolve(__dirname, '..')
-const source = path.resolve(root, '../openscad-LSP')
+const source = path.join(root, 'sources', 'openscad-LSP')
+if (!existsSync(path.join(source, 'Cargo.toml'))) {
+    console.error('Missing sources/openscad-LSP. Run git submodule update --init --recursive before building the server.')
+    process.exit(1)
+}
 const target = path.join(root, '.build', 'lsp')
 const result = spawnSync(process.env.CARGO || 'cargo', ['build', '--locked', '--release', '--manifest-path', path.join(source, 'Cargo.toml'), '--target-dir', target], { stdio: 'inherit', cwd: source })
 if (result.error || result.status !== 0) {

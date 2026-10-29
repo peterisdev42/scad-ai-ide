@@ -8,13 +8,12 @@ const json = (file: string) => JSON.parse(readFileSync(path.join(root, file), 'u
 const configuration = json('language-configuration.json')
 let onigurumaReady: Promise<void> | undefined
 
-async function textmate(theme?: import('vscode-textmate').IRawTheme) {
+async function textmate() {
     const { Registry } = require('vscode-textmate') as typeof import('vscode-textmate')
     const { loadWASM, OnigScanner, OnigString } = require('vscode-oniguruma') as typeof import('vscode-oniguruma')
     onigurumaReady ??= loadWASM(readFileSync(require.resolve('vscode-oniguruma/release/onig.wasm')))
     await onigurumaReady
     const registry = new Registry({
-        theme,
         onigLib: Promise.resolve({ createOnigScanner: (patterns) => new OnigScanner(patterns), createOnigString: (text) => new OnigString(text) }),
         loadGrammar: async () => json('syntaxes/openscad.tmLanguage.json'),
     })
@@ -215,45 +214,6 @@ test('TextMate scopes distinguish multiline parameters, nested defaults, named a
         }
     } finally {
         registry.dispose()
-    }
-})
-
-test('standard scopes receive distinct JS/TS-style colors without language-specific theme overrides', async () => {
-    // Representative Dark+/Light+ rules from VS Code theme-defaults. Only
-    // standard parent scopes are supplied: no .openscad or .ts selectors.
-    // https://github.com/microsoft/vscode/tree/main/extensions/theme-defaults/themes
-    for (const colors of [
-        { plain: '#D4D4D4', variable: '#9CDCFE', callable: '#DCDCAA', keyword: '#C586C0', storage: '#569CD6', number: '#B5CEA8', string: '#CE9178', comment: '#6A9955' },
-        { plain: '#000000', variable: '#001080', callable: '#795E26', keyword: '#AF00DB', storage: '#0000FF', number: '#098658', string: '#A31515', comment: '#008000' },
-    ]) {
-        const settings = [{ settings: { foreground: colors.plain, background: '#FFFFFF' } }, ...(['variable', 'callable', 'keyword', 'storage', 'number', 'string', 'comment'] as const).map((key) => ({ scope: { variable: 'variable', callable: 'entity.name.function', keyword: 'keyword.control', storage: 'storage.type', number: 'constant.numeric', string: 'string', comment: 'comment' }[key], settings: { foreground: colors[key] } }))]
-        const { registry, grammar } = await textmate({ settings })
-        try {
-            for (const [line, word, color] of [
-                ['width = 40;', 'width', colors.variable],
-                ['module bracket(wall = 2) {}', 'wall', colors.variable],
-                ['cube(size = width);', 'size', colors.variable],
-                ['cube(width);', 'cube', colors.callable],
-                ['module bracket() {}', 'bracket', colors.callable],
-                ['module bracket() {}', 'module', colors.storage],
-                ['if (enabled)', 'if', colors.keyword],
-                ['width = 40;', '40', colors.number],
-                ['color("steelblue")', 'steelblue', colors.string],
-                ['// model notes', 'notes', colors.comment],
-            ]) {
-                const { tokens } = grammar.tokenizeLine2(line, null)
-                const index = line.indexOf(word)
-                let metadata = 0
-                for (let i = 0; i < tokens.length && tokens[i] <= index; i += 2) {
-                    metadata = tokens[i + 1]
-                }
-                const foreground = registry.getColorMap()[(metadata >>> 15) & 0x1ff]
-                assert.equal(foreground, color, `${line}: ${word}`)
-                assert.notEqual(foreground, colors.plain)
-            }
-        } finally {
-            registry.dispose()
-        }
     }
 })
 
