@@ -1,3 +1,5 @@
+import { NotificationCenter } from '../../core/notifications/NotificationCenter'
+import { createNotifications } from '../../core/notifications/createNotifications'
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { readFileSync } from 'node:fs'
@@ -11,28 +13,31 @@ function mockRenderError(selectAction = true) {
     let outputShown = 0
     const module = { exports: {} as { showRenderError: (error: Error, showOutput: () => void) => Promise<void> } }
     const source = readFileSync(new URL('../../features/preview/extension/services/renderError.ts', import.meta.url), 'utf8')
-    vm.runInNewContext(transformSync(source, { loader: 'ts', format: 'cjs', target: 'es2022' }).code, {
+    const notifications = createNotifications(
+        new NotificationCenter(
+            async (notice) => {
+                const action = notice.actions?.[0]?.label ?? ''
+                notices.push({ message: notice.message, action })
+                return selectAction ? action : undefined
+            },
+            (error) => {
+                throw error
+            },
+        ),
+        (command, ...args) => {
+            commands.push([command, ...args])
+        },
+    )
+    const sandbox = {
         module,
         require: (id: string) => {
-            if (id === 'vscode')
-                return {
-                    window: {
-                        showErrorMessage: async (message: string, action: string) => {
-                            notices.push({ message, action })
-                            return selectAction ? action : undefined
-                        },
-                    },
-                    commands: {
-                        executeCommand: async (command: string, ...args: unknown[]) => {
-                            commands.push([command, ...args])
-                        },
-                    },
-                }
-            if (id.endsWith('/runtime/errors')) return { RuntimeUnavailableError }
+            if (id.endsWith('/platform/notifications')) return { notifications }
             throw new Error(`Unexpected dependency: ${id}`)
         },
-    })
+    }
+    vm.runInNewContext(transformSync(source, { loader: 'ts', format: 'cjs', target: 'es2022' }).code, sandbox)
     return {
+        notifications,
         notices,
         commands,
         show: (error: Error) => module.exports.showRenderError(error, () => outputShown++),
@@ -45,7 +50,7 @@ test('missing Runtime offers simple installation guidance and opens Available', 
     const error = new RuntimeUnavailableError()
     await mock.show(error)
     assert.equal(mock.notices[0].action, 'Install OpenSCAD CLI')
-    assert.equal(mock.notices[0].message, 'OpenSCAD render failed: No OpenSCAD runtime is available.')
+    assert.equal(mock.notices[0].message, 'No OpenSCAD runtime is available.')
     assert.deepEqual(mock.commands, [['scad-ai.runtime.open', 'available']])
     assert.equal(mock.outputShown(), 0)
 })
@@ -64,4 +69,15 @@ test('dismissing missing-Runtime guidance does not open another panel', async ()
     await mock.show(new RuntimeUnavailableError())
     assert.deepEqual(mock.commands, [])
     assert.equal(mock.outputShown(), 0)
+})
+
+test('startup and multiple preview failures share one unresolved Runtime problem', async () => {
+    const mock = mockRenderError()
+    await Promise.all([mock.notifications.runtimeUnavailable(), mock.show(new RuntimeUnavailableError()), mock.show(new RuntimeUnavailableError())])
+    await mock.show(new RuntimeUnavailableError())
+    assert.equal(mock.notices.length, 1)
+    assert.equal(mock.commands.length, 1)
+    mock.notifications.runtimeAvailable()
+    await mock.show(new RuntimeUnavailableError())
+    assert.equal(mock.notices.length, 2)
 })

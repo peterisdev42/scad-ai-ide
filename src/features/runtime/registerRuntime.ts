@@ -8,6 +8,7 @@ import { UserWarning } from '../../core/feedback'
 import { detectRuntimeSystem, fetchRuntimeBuilds, type RuntimeBuild, type RuntimeSystem } from '../../platform/runtime/releases'
 import { installRuntimeArchive, installRuntimeBuild, removeRuntimeInstallation, installedRuntimeBuilds, managedRuntimePaths, type InstalledRuntimeBuild, type InstallProgress, type InstallOptions } from '../../platform/runtime/installation'
 import * as path from 'node:path'
+import { notifications } from '../../platform/notifications'
 
 const section = 'scad-ai-ide'
 const workspaceTrustMessage = 'Trust this workspace to discover, add, or run OpenSCAD runtimes.'
@@ -127,6 +128,11 @@ export function registerRuntime(context: vscode.ExtensionContext, manager: Runti
                 result.diagnostics.forEach((line) => output.appendLine(line))
                 status.text = active ? `OpenSCAD ${active.version}` : 'OpenSCAD: Setup'
                 status.tooltip = active ? active.command.executable : (result.configuredError ?? 'OpenSCAD not found. Click to select an executable.')
+                if (active) {
+                    notifications.runtimeAvailable()
+                } else {
+                    void notifications.runtimeUnavailable()
+                }
             })
             .catch((error) => {
                 output.appendLine(String(error))

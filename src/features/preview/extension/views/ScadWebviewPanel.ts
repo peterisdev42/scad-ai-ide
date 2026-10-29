@@ -1,3 +1,4 @@
+import { notifications, confirmDeleteParameterSet } from '../../../../platform/notifications'
 import { randomBytes } from 'node:crypto'
 import { ScadClient } from '../services/ScadClient'
 import { showRenderError } from '../services/renderError'
@@ -61,8 +62,7 @@ export class ScadWebviewPanel {
                             return
                         }
                         case 'deleteParameterSet': {
-                            const selection = await window.showWarningMessage(`Delete the "${message.name}" parameter set?`, { modal: true }, 'Delete')
-                            if (selection === 'Delete') {
+                            if (await confirmDeleteParameterSet(message.name)) {
                                 await this.session.deleteParameterSet(message.name)
                             }
                             return
@@ -80,11 +80,11 @@ export class ScadWebviewPanel {
                             await this.workspaceState.update(this.sceneStateKey, message.snapshot)
                             return
                         case 'error':
-                            void window.showErrorMessage(`Preview Error: ${message.message}`)
+                            void notifications.previewError(message.message, this.session.documentUri.toString())
                             return
                     }
                 } catch (error) {
-                    void window.showErrorMessage(`OpenSCAD preview: ${error instanceof Error ? error.message : String(error)}`)
+                    void notifications.previewError(error, this.session.documentUri.toString())
                 }
             },
             null,
@@ -136,7 +136,7 @@ export class ScadWebviewPanel {
                 })
 
                 const msg = err.message
-                void showRenderError(err, () => ScadClient.outputChannel.show())
+                void showRenderError(err, () => ScadClient.outputChannel.show(), this.session.documentUri.toString())
 
                 // Keep the full error and recovery guidance in the webview log panel.
                 if (this.isWebviewReady) {
@@ -319,9 +319,9 @@ export class ScadWebviewPanel {
                     },
                 )
 
-                window.showInformationMessage(`Successfully exported ${format.label} to ${uri.fsPath}`)
+                void notifications.exported(format.label, uri.fsPath)
             } catch (error) {
-                window.showErrorMessage(`Failed to export ${format.label}: ${error}`)
+                void notifications.exportFailed(error, format.label, this.session.documentUri.toString())
             }
         }
     }
@@ -354,7 +354,7 @@ export class ScadWebviewPanel {
                     if (slicerExecutable && slicerExecutable.trim() !== '') {
                         cp.execFile(slicerExecutable.trim(), [tmpFilePath], (error) => {
                             if (error) {
-                                window.showErrorMessage(`Failed to launch slicer: ${error.message}`)
+                                void notifications.slicerFailed(error, this.session.documentUri.toString())
                             }
                         })
                     } else {
@@ -363,7 +363,7 @@ export class ScadWebviewPanel {
                 },
             )
         } catch (error) {
-            window.showErrorMessage(`Failed to send to slicer: ${error}`)
+            void notifications.slicerFailed(error, this.session.documentUri.toString())
         }
     }
 

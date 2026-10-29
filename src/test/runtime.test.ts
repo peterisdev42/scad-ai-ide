@@ -1,3 +1,6 @@
+import { RuntimeUnavailableError } from '../core/runtime/errors'
+import { NotificationCenter } from '../core/notifications/NotificationCenter'
+import { createNotifications } from '../core/notifications/createNotifications'
 import * as assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { mkdtemp, mkdir, writeFile, chmod, rm } from 'node:fs/promises'
@@ -618,7 +621,10 @@ test('invalid GitHub response content retains the request and parsing error or u
     )
 })
 
-async function mockRuntimeFeature(detect: (options: DiscoveryOptions) => Promise<DiscoveryResult>, remove: (installPath: string) => Promise<void> = async () => {}) {
+async function mockRuntimeFeature(detect: (options: DiscoveryOptions) => Promise<DiscoveryResult>, remove: (installPath: string) => Promise<void> = async () => {}, trusted = true) {
+    const notices: { message: string; action: string }[] = []
+    const commands: unknown[][] = []
+    let selectAction = true
     const configuration = new Map<string, unknown>()
     let updateError: Error | undefined
     let archiveError: Error | undefined
@@ -646,15 +652,24 @@ async function mockRuntimeFeature(detect: (options: DiscoveryOptions) => Promise
         ConfigurationTarget: { Global: 1 },
         ProgressLocation: { Notification: 1 },
         Uri: { joinPath: (...parts: Array<string | { fsPath: string }>) => ({ fsPath: parts.map((part) => (typeof part === 'string' ? part : part.fsPath)).join('/') }) },
-        commands: { registerCommand: () => disposable },
+        commands: {
+            registerCommand: () => disposable,
+            executeCommand: async (...args: unknown[]) => {
+                commands.push(args)
+            },
+        },
         window: {
             createOutputChannel: () => ({ appendLine() {}, dispose() {} }),
             createStatusBarItem: () => status,
+            showErrorMessage: async (message: string, action: string) => {
+                notices.push({ message, action })
+                return selectAction ? action : undefined
+            },
             showOpenDialog: async () => [{ fsPath: '/mock/archive.zip' }],
             withProgress: async (_options: unknown, task: (progress: vscode.Progress<{ message?: string; increment?: number }>, token: vscode.CancellationToken) => Promise<unknown>) => task({ report() {} }, { isCancellationRequested: cancelInstallation, onCancellationRequested: () => disposable }),
         },
         workspace: {
-            isTrusted: true,
+            isTrusted: trusted,
             getConfiguration: () => ({
                 get: (key: string, fallback: unknown) => (configuration.has(key) ? configuration.get(key) : fallback),
                 update: async (key: string, value: unknown) => {
@@ -666,12 +681,22 @@ async function mockRuntimeFeature(detect: (options: DiscoveryOptions) => Promise
             onDidChangeConfiguration: () => disposable,
         },
     }
+    const notifications = createNotifications(
+        new NotificationCenter(
+            async (notice) => mock.window.showErrorMessage(notice.message, notice.actions?.[0]?.label ?? ''),
+            (error) => {
+                throw error
+            },
+        ),
+        (command, ...args) => mock.commands.executeCommand(command, ...args),
+    )
     const sandbox = {
         process,
         AbortController,
         exports: {} as { registerRuntime: typeof import('../features/runtime/registerRuntime').registerRuntime },
         require: (id: string) => {
             if (id === 'vscode') return mock
+            if (id.endsWith('/platform/notifications')) return { notifications }
             if (id.endsWith('/installation'))
                 return {
                     removeRuntimeInstallation: async (_root: string, _system: unknown, installPath: string) => remove(installPath),
@@ -695,6 +720,12 @@ async function mockRuntimeFeature(detect: (options: DiscoveryOptions) => Promise
     })
     return {
         runtime,
+        notifications,
+        notices,
+        commands,
+        dismissNotice: () => {
+            selectAction = false
+        },
         manager,
         status,
         configuration,
@@ -710,9 +741,86 @@ async function mockRuntimeFeature(detect: (options: DiscoveryOptions) => Promise
         setUpdateError: (error: Error) => {
             updateError = error
         },
-        dispose: () => subscriptions.forEach((subscription) => subscription.dispose()),
+        dispose: () => {
+            notifications.dispose()
+            subscriptions.forEach((subscription) => subscription.dispose())
+        },
     }
 }
+
+test('startup waits for discovery and offers Runtime Available once when no runtime exists', async () => {
+    let complete!: (result: DiscoveryResult) => void
+    const mock = await mockRuntimeFeature(
+        () =>
+            new Promise((resolve) => {
+                complete = resolve
+            }),
+    )
+    try {
+        await new Promise<void>((resolve) => setImmediate(resolve))
+        assert.equal(mock.notices.length, 0)
+        complete({ runtimes: [], diagnostics: [] })
+        await mock.runtime.whenReady()
+        assert.deepEqual(mock.notices, [{ message: 'No OpenSCAD runtime is available.', action: 'Install OpenSCAD CLI' }])
+        assert.deepEqual(mock.commands, [['scad-ai.runtime.open', 'available']])
+        const refresh = mock.runtime.refresh()
+        await new Promise<void>((resolve) => setImmediate(resolve))
+        complete({ runtimes: [], diagnostics: [] })
+        await refresh
+        assert.equal(mock.notices.length, 1)
+    } finally {
+        mock.dispose()
+    }
+})
+
+test('startup stays quiet when a usable runtime is discovered', async () => {
+    const installed = await fakeProbe({ source: 'PATH', command: { executable: '/runtime/openscad', argsPrefix: [] } })
+    const mock = await mockRuntimeFeature(async () => ({ runtimes: [installed], diagnostics: [] }))
+    try {
+        await mock.runtime.whenReady()
+        assert.equal(mock.notices.length, 0)
+        assert.equal(mock.commands.length, 0)
+    } finally {
+        mock.dispose()
+    }
+})
+
+test('dismissing startup guidance leaves Runtime closed', async () => {
+    const mock = await mockRuntimeFeature(async () => ({ runtimes: [], diagnostics: [] }))
+    mock.dismissNotice()
+    try {
+        await mock.runtime.whenReady()
+        assert.equal(mock.notices.length, 1)
+        assert.equal(mock.commands.length, 0)
+    } finally {
+        mock.dispose()
+    }
+})
+
+test('startup defers missing-runtime guidance until the workspace is trusted', async () => {
+    const mock = await mockRuntimeFeature(async () => ({ runtimes: [], diagnostics: [] }), undefined, false)
+    try {
+        await mock.runtime.whenReady()
+        assert.equal(mock.notices.length, 0)
+        mock.setTrusted(true)
+        await mock.runtime.refresh()
+        assert.equal(mock.notices.length, 1)
+    } finally {
+        mock.dispose()
+    }
+})
+
+test('discovery failures do not claim that OpenSCAD is missing', async () => {
+    const mock = await mockRuntimeFeature(async () => {
+        throw new Error('Storage is unavailable')
+    })
+    try {
+        await mock.runtime.whenReady()
+        assert.equal(mock.notices.length, 0)
+    } finally {
+        mock.dispose()
+    }
+})
 
 test('Installed scans silently, coalesces repeated visits and publishes only changed discovery results', async () => {
     const installed = await fakeProbe({ source: 'PATH', command: { executable: '/runtime/openscad', argsPrefix: [] } })
@@ -924,6 +1032,26 @@ test('deleting an active managed runtime clears its saved selection and keeps th
         )
         assert.equal(mock.runtime.getState().deletingId, undefined)
         await assert.rejects(mock.runtime.deleteRuntime(fallback.id), /Only extension-managed/)
+    } finally {
+        mock.dispose()
+    }
+})
+
+test('discovery shares missing Runtime with preview and rearms only after successful recovery', async () => {
+    const installed = await fakeProbe({ source: 'PATH', command: { executable: '/runtime/openscad', argsPrefix: [] } })
+    let available = false
+    const mock = await mockRuntimeFeature(async () => ({ runtimes: available ? [installed] : [], diagnostics: [] }))
+    try {
+        await mock.runtime.whenReady()
+        await mock.notifications.renderFailed(new RuntimeUnavailableError(), () => assert.fail('No compiler output for missing Runtime'), 'file-a')
+        await mock.runtime.refresh()
+        assert.equal(mock.notices.length, 1)
+        available = true
+        await mock.runtime.refresh()
+        available = false
+        await mock.runtime.refresh()
+        await mock.notifications.renderFailed(new RuntimeUnavailableError(), () => {}, 'file-b')
+        assert.equal(mock.notices.length, 2)
     } finally {
         mock.dispose()
     }

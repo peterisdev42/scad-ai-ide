@@ -1,3 +1,4 @@
+import { notifications } from './platform/notifications'
 import { registerGitHub } from './features/github/registerGitHub'
 import * as vscode from 'vscode'
 import { registerPreview } from './features/preview/registerPreview'
@@ -13,6 +14,8 @@ import { registerLanguage } from './features/language/registerLanguage'
 let language: ReturnType<typeof registerLanguage> | undefined
 
 export function activate(context: vscode.ExtensionContext) {
+    notifications.reset()
+    context.subscriptions.push(notifications)
     language = registerLanguage(context)
     const github = registerGitHub(context)
     const runtime = registerRuntime(context, new RuntimeManager(discover), github.request)

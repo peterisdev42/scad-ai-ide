@@ -13,9 +13,9 @@
 
 ### OpenSCAD 语言支持
 
-扩展通过 VS Code 标准贡献点和 `vscode-languageclient/node` 集成同仓库的 `../openscad-LSP`，语言 ID 统一为 `openscad`。不需要安装另一个 OpenSCAD VS Code 扩展。
+扩展通过 VS Code 标准贡献点和 `vscode-languageclient/node` 集成子模块 `sources/openscad-LSP`，语言 ID 统一为 `openscad`。不需要安装另一个 OpenSCAD VS Code 扩展。
 
-`.scad` 的默认文件图标通过语言贡献点注册，沿用同仓库 `openscad-support-vscode/media/openscad.svg` 的 OpenSCAD 图标（适用本项目 GPL-3.0 许可证）。深浅主题共用同一个 SVG 文件。文件图标主题为该语言定义图标时以主题为准；禁用文件图标时不会显示。
+`.scad` 的默认文件图标通过语言贡献点注册，沿用来自 `openscad-support-vscode/media/openscad.svg` 的 OpenSCAD 图标（适用本项目 GPL-3.0 许可证）。深浅主题共用同一个 SVG 文件。文件图标主题为该语言定义图标时以主题为准；禁用文件图标时不会显示。
 
 高亮采用与 JS/TS 兼容的标准 TextMate scope：函数/模块声明及调用为 `entity.name.function`，普通变量为 `variable.other.readwrite`，形参和命名实参为 `variable.parameter`，声明关键字为 `storage.type.function`，控制流为 `keyword.control`。在 Dark+ 下对应函数浅黄、变量/参数浅蓝、声明蓝色、控制流紫色，数字浅绿、字符串橙色、注释绿色；Light+ 和其他主题使用各自的调色板。扩展负责分类，具体颜色由主题与用户的 `editor.tokenColorCustomizations` 决定，不修改全局配色设置。主题工作方式见 [VS Code Syntax Highlight Guide](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide)。
 
@@ -39,18 +39,17 @@
 首次开发推荐安装 Rust stable 工具链并初始化 `sources/openscad-LSP`，然后在本扩展目录运行：
 
 ```sh
+git submodule update --init --recursive
 npm ci
 npm run build:lsp
 npm run compile
 ```
 
-F5 的默认构建任务先执行 `npm run prepare:lsp`，再启动 TypeScript/esbuild watch。准备步骤优先复用扩展内可运行的服务端；有 Cargo 时从源码构建；无 Cargo 时仅在本仓库已有的 `openscad-support-vscode/server` 或 `.build/extensions/unpacked/openscad-support-vscode/server` 中寻找兼容当前主机、支持 `--stdio` 的程序并复制到扩展内。不会在扩展运行时下载程序或修改用户全局设置。
-
-缓存回退仅用于本地开发，可能早于当前源码版本；来源路径、版本和 SHA-256 写入平台目录中的 `provenance.json`。旧开发缓存可能为 2.0.1；当前 openscad-LSP 源码为 2.0.3，结构折叠需要本仓库增强后的源码构建。需要当前源码版本时运行 `npm run build:lsp`；正式 `vscode:prepublish` 始终要求 Cargo 并从源码构建。没有 Cargo 也没有缓存时，准备任务明确失败，避免带着缺失的程序启动 F5。
+F5 的默认构建任务先执行 `npm run prepare:lsp`，再启动 TypeScript/esbuild watch。准备步骤优先复用扩展内可运行且支持 `--stdio` 的服务端；否则使用 Cargo 从 `sources/openscad-LSP` 子模块构建。缺少 Rust stable 工具链时准备任务会明确失败；不再依赖仓库外的旧扩展缓存。正式 `vscode:prepublish` 始终从子模块源码构建。
 
 结构折叠由服务端提供，因此使用外部 `languageServer.path` 或旧开发缓存时，以该程序实际支持的能力为准。LSP 关闭或未接入的文档继续使用原生缩进与 region 折叠；使用 `editor.foldingStrategy: "indentation"` 可强制使用原生折叠。缩进规则是编辑启发式，不是完整语法分析；复杂嵌套表达式的整体排版仍交给文档格式化。
 
-`build:lsp` 使用 `cargo build --locked --release` 编译 **同仓库的 openscad-LSP 源码**，输出暂存在 `.build/lsp`，将当前平台/架构的程序和 Apache 许可证放入 `server/<platform>-<arch>/`。可以用 `CARGO` 环境变量指定 Cargo 可执行文件。服务端内置 OpenSCAD builtins 与 Topiary，无需另外配置 formatter 可执行文件。
+`build:lsp` 使用 `cargo build --locked --release` 编译 **`sources/openscad-LSP` 子模块源码**，输出暂存在 `.build/lsp`，将当前平台/架构的程序和 Apache 许可证放入 `server/<platform>-<arch>/`。可以用 `CARGO` 环境变量指定 Cargo 可执行文件。服务端内置 OpenSCAD builtins 与 Topiary，无需另外配置 formatter 可执行文件。
 
 在可信工作区打开第一个 `.scad` 文件时，Language Client 自动以 `--stdio` 启动服务端，进程运行在 workspace extension host（包括 SSH、WSL、容器）。可执行文件选择顺序：
 
@@ -62,13 +61,15 @@ F5 的默认构建任务先执行 `npm run prepare:lsp`，再启动 TypeScript/e
 
 设置 `scad-ai-ide.languageServer.enabled` 可关闭服务端；`searchPaths` 为库绝对目录数组；`defaultParameters` 控制补全片段是否包含默认参数；`indent` 控制格式化空白；`queryFile` 可指定 Topiary 查询文件。修改设置会重启服务端，避免上游库路径只增不减导致旧路径残留。这些设置为当前 workspace extension host 的统一配置，多根工作区共用一个服务端。
 
-VSIX 发布前的 `vscode:prepublish` 自动构建 LSP 和扩展 bundle。每个平台/架构需要分别构建与发布相应 VSIX（例如 macOS Apple Silicon 使用 `vsce package --target darwin-arm64 --no-dependencies`）；`npm run package` 仅构建 JavaScript bundle，不替代 `build:lsp`。从扩展独立源码归档构建时，需提供相邻的 `openscad-LSP` 源码目录。
+VSIX 发布前的 `vscode:prepublish` 自动构建 LSP 和扩展 bundle。每个平台/架构需要分别构建与发布相应 VSIX（例如 macOS Apple Silicon 使用 `vsce package --target darwin-arm64 --no-dependencies`）；`npm run package` 仅构建 JavaScript bundle，不替代 `build:lsp`。克隆时使用 `git clone --recurse-submodules`，或克隆后执行 `git submodule update --init --recursive`；源码归档需要另行包含 `sources/openscad-LSP` 子模块内容。发布包排除 `sources/`，只携带构建后的服务端。
+
+`npm run package` 同时执行 `prepare:licenses`，将 Preview 和 LSP 子模块根目录中的原始 LICENSE、COPYING、NOTICE 及第三方声明文件复制到 `licenses/<子模块名>/`，随 VSIX 分发。可运行 `npm run prepare:licenses` 单独生成；缺少子模块或许可证时会明确报错。生成目录不提交 Git，每次生成会清理这两个子目录中的旧文件，并保留原始文件名与内容。
 
 ### 交互式 3D 预览
 
 已将相邻 `vscode-openscad-preview` 的预览实现集成到本扩展，无需安装独立 Preview 扩展。打开已保存为 `.scad` 的文件，点击编辑器标题栏 **Open as Preview**，或按 `Cmd+Shift+V` / `Ctrl+Shift+V`；同一快捷键或 **Reopen as source file** 返回源码。也可通过 **Open With → OpenSCAD Preview** 打开。预览在原标签内替换源码，不改变 `.scad` 默认的文本打开方式。
 
-Preview 缺少可用 Runtime 时，通知与底部日志显示简洁的 “OpenSCAD render failed: No OpenSCAD runtime is available.”，通知提供 **Install OpenSCAD CLI** 按钮，点击直接打开 Runtime 的 Available Tab。模型编译等其他渲染错误继续提供 **Show Output** 查看编译输出。
+缺少可用 Runtime 时，启动检测、Preview、导出和切片器操作统一聚合为一条 “No OpenSCAD runtime is available.” 通知，恢复前不重复弹出；通知提供 **Install OpenSCAD CLI** 按钮，点击直接打开 Runtime 的 Available Tab。预览底部日志仍保留完整渲染错误。模型编译等其他渲染错误继续提供 **Show Output** 查看编译输出。所有通知的文案、按钮和去重策略统一管理，详见 [通知系统](docs/notifications.md)。
 
 - 首次进入 Preview 默认使用 Reset view (fit model, Top) 的俯视视角并适配首个有效模型；重新打开时恢复已保存的相机视角，后续模型更新保留当前视角。
 - Three.js 视口：旋转、平移、缩放、26 方向视角立方体、透视/正交、实体/X-Ray/线框、光照和阴影。
@@ -167,7 +168,7 @@ Source 来自候选项的发现渠道：PATH 搜索、系统应用目录/Spotlig
 - `src/features/preview/`：预览宿主会话、消息协议、Lit/Three.js 视口和内嵌打印平台资源。
 - `src/features/language/`：标准 Language Client、服务端启动与停止、设置同步。
 - `syntaxes/`、`snippets/`、`language-configuration.json`：声明式语言功能。
-- `scripts/build-lsp.cjs`：从相邻 openscad-LSP 源码构建和暂存平台二进制。
+- `scripts/build-lsp.cjs`：从 `sources/openscad-LSP` 子模块源码构建和暂存平台二进制。
 - `media/panels/`：随 VSIX 打包的静态页面。
 
 ## 开发验证
@@ -191,6 +192,6 @@ Prettier 使用单引号、4 空格缩进、非必要不使用分号，`printWid
 
 ## Preview 源码同步
 
-手动双向同步工具和基线由本插件维护，不依赖 Builder。在本目录执行 `npm run preview:sync -- status`；默认使用相邻 `../vscode-openscad-preview`，其他位置通过 `PREVIEW_SYNC_PREVIEW_ROOT` 指定。详见 [同步说明](scripts/preview-sync/README.md)。
+手动双向同步工具和基线由本插件维护，不依赖 Builder。在本目录执行 `npm run preview:sync -- status`；默认使用子模块 `sources/vscode-openscad-preview`，其他位置通过 `PREVIEW_SYNC_PREVIEW_ROOT` 指定。详见 [同步说明](scripts/preview-sync/README.md)。
 
 管理 Panel 的 Loading、警告和错误交互遵循 [Panel 反馈规范](docs/panel-feedback.md)。

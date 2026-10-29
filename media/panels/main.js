@@ -249,7 +249,7 @@ function render(state) {
 
 function renderRecommendedBuild(state, loading) {
     const builds = state.builds ?? []
-    const build = builds.find((build) => build.channel === 'Stable') ?? builds[0]
+    const build = builds[0]
     get('recommended-build').hidden = !build || !!state.buildsError
     get('all-versions-heading').hidden = !builds.length
     if (!build) return
@@ -257,7 +257,7 @@ function renderRecommendedBuild(state, loading) {
     const installing = state.installing?.buildId === build.id
     get('recommended-title').textContent = build.release.replace(/^OpenSCAD CLI\b/i, 'OpenSCAD')
     get('recommended-title').title = build.tag
-    const reason = build.channel === 'Stable' ? 'Latest stable version for your system.' : 'Newest available build for your system. No stable version is listed.'
+    const reason = 'Newest available build for your system.'
     get('recommended-description').textContent = installing ? state.installing.message : `${reason}${installed ? ' Already installed.' : ''}`
     const button = get('install-recommended')
     button.textContent = installing ? `Installing${state.installing.percent === undefined ? '…' : ` ${state.installing.percent}%`}` : installed ? 'View Installed' : 'Install Recommended'

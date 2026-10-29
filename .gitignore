@@ -152,6 +152,9 @@ vite.config.ts.timestamp-*
 .build/
 server/
 
+# Generated third-party licenses included in the VSIX
+/licenses/
+
 # Preview sync: version baselines, ignore temporary review files
 /.preview-sync/plans/
 /.preview-sync/merge-*/
