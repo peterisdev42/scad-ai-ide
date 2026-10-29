@@ -1,6 +1,6 @@
 # Preview 集成说明
 
-选择源码迁移并适配宿主，而非重写视口。来源为相邻 `sources/vscode-openscad-preview` 当前工作树（HEAD `4bbb851853bbf1780a568b70e06824a365c7dbe2`），包括其视角立方体、导航和打印平台改动；没有修改来源仓库。其 Three.js/Lit 组件、rig、工具、shader、打印平台 STL 和消息协议迁入 `src/features/preview/`。这是独立可构建的源码快照，构建、发布和运行不读取相邻 Preview 仓库，也不安装该扩展。
+选择源码迁移并适配宿主，而非重写视口。来源为子模块 `sources/vscode-openscad-preview` 当前工作树（HEAD `4bbb851853bbf1780a568b70e06824a365c7dbe2`），包括其视角立方体、导航和打印平台改动；没有修改来源仓库。其 Three.js/Lit 组件、rig、工具、shader、打印平台 STL 和消息协议迁入 `src/features/preview/`。这是独立可构建的源码快照，构建、发布和运行不读取 Preview 子模块，也不安装该扩展。
 
 ## 宿主边界
 
@@ -26,4 +26,4 @@
 
 ## 手动双向同步
 
-本插件根目录提供 `npm run preview:sync -- to-ide` 与 `to-preview`，分别生成外部到内部、内部到外部的审阅计划；加 `--apply` 可在无冲突时直接应用。同步使用两份独立基线和三方合并，保留宿主适配，不改变本扩展独立构建、独立运行的方式。同步脚本及 `.preview-sync/` 基线随本插件维护，不依赖 Builder；默认使用相邻 Preview 仓库，可通过 `PREVIEW_SYNC_PREVIEW_ROOT` 指定其他路径。完整流程及冲突解决见 [同步说明](../scripts/preview-sync/README.md)。同步不拉取上游、不自动执行、不提交 Git。初始基线已建立，不需要重新 init。
+本插件根目录提供 `npm run preview:sync -- to-ide` 与 `to-preview`，分别生成外部到内部、内部到外部的审阅计划；加 `--apply` 可在无冲突时直接应用。同步使用两份独立基线和三方合并，保留宿主适配，不改变本扩展独立构建、独立运行的方式。同步脚本及 `.preview-sync/` 基线随本插件维护，不依赖 Builder；默认使用 Preview 子模块，可通过 `PREVIEW_SYNC_PREVIEW_ROOT` 指定其他路径。完整流程及冲突解决见 [同步说明](../scripts/preview-sync/README.md)。同步不拉取上游、不自动执行、不提交 Git。初始基线已建立，不需要重新 init。

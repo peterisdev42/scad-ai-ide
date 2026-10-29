@@ -334,6 +334,7 @@ export class App extends LitElement {
                 }
             }
             this.previewEl.stage.setActiveCamera(this.sceneContextValue.activeCameraId)
+            this.previewEl.stage.initializeView(!!this.pendingProperties?.has(this.sceneContextValue.activeCameraId))
             this.pendingProperties = null
         }
     }

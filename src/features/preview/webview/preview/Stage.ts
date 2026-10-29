@@ -70,6 +70,7 @@ export class Stage {
     private modelGroup: Group
     private viewCube: ViewCubeWidget
     private viewOptions?: ViewOptionsContext
+    private fitInitialModel = false
 
     // Scene object registry
     private handles = new Map<string, Rig>()
@@ -310,12 +311,25 @@ export class Stage {
             if (h instanceof CrossSectionRig) h.rebuildForModel(this.modelGroup)
         })
         this.rebuildModelClipping()
+        this.fitInitialModelIfReady()
     }
 
-    public resetView(): void {
+    /** Scene hydration decides whether to restore a saved pose or fit the first model. */
+    public initializeView(hasSavedCamera: boolean): void {
+        this.fitInitialModel = !hasSavedCamera
+        this.fitInitialModelIfReady()
+    }
+
+    private fitInitialModelIfReady(): void {
+        if (!this.fitInitialModel || new Box3().setFromObject(this.modelGroup).isEmpty()) return
+        this.fitInitialModel = false
+        this.resetView(0)
+    }
+
+    public resetView(duration = 420): void {
         const modelBounds = new Box3().setFromObject(this.modelGroup)
         const bounds = this.viewOptions?.is('environment', Environment.BuildPlate) ? buildPlateResetBounds(modelBounds, this.viewOptions.get('buildPlateOrigin')) : modelBounds
-        this.activeCameraRig.resetView(bounds)
+        this.activeCameraRig.resetView(bounds, duration)
         if (this.selectedId === this.activeCameraRig.id) this.onPropertiesChange?.(this.activeCameraRig.getProperties())
         this.onPersist?.()
     }

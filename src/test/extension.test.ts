@@ -15,7 +15,7 @@ suite('SCAD AI IDE integration', () => {
         return (await extension.activate()) as ReturnType<typeof activate>
     }
 
-    test('registers exactly two native views and four plain leaf navigation items', async () => {
+    test('registers exactly two native views and five plain leaf navigation items', async () => {
         await api()
         const manifest = vscode.extensions.all.find((item) => item.packageJSON.name === 'scad-ai-ide')!.packageJSON
         assert.deepEqual(
@@ -27,7 +27,7 @@ suite('SCAD AI IDE integration', () => {
         const items = tree.getChildren()
         assert.deepEqual(
             items.map((item) => item.label),
-            ['AI', 'Bricks', 'Libraries', 'Runtime'],
+            ['AI', 'Bricks', 'Libraries', 'Runtime', 'More'],
         )
         assert.deepEqual(
             items.map((item) => item.command?.command),

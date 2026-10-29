@@ -1,3 +1,4 @@
+import { notifications } from '../../platform/notifications'
 import * as path from 'node:path'
 import * as vscode from 'vscode'
 import { LanguageClient, RevealOutputChannelOn, type ServerOptions } from 'vscode-languageclient/node'
@@ -73,6 +74,7 @@ export function registerLanguage(context: vscode.ExtensionContext) {
                             },
                         },
                     })
+                    notifications.languageAvailable()
                 } catch (error) {
                     client = undefined
                     // LanguageClient 9 cannot dispose a client in startFailed state.
@@ -86,7 +88,7 @@ export function registerLanguage(context: vscode.ExtensionContext) {
             .catch((error: unknown) => {
                 output.appendLine(String(error))
                 if (!disposed) {
-                    void vscode.window.showWarningMessage('OpenSCAD language server could not start. For development run npm run prepare:lsp in the extension source directory, install openscad-lsp on PATH, or set scad-ai-ide.languageServer.path. See the SCAD AI IDE Language Server output for details.')
+                    void notifications.languageUnavailable()
                 }
             })
         return pending

@@ -3,6 +3,7 @@ import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { window, workspace } from 'vscode'
+import { RuntimeUnavailableError } from '../../../../core/runtime/errors'
 import type { LaunchCommand } from '../../../../core/runtime/types'
 import { ModelFormat } from '../../shared/types/ModelFormat'
 
@@ -47,7 +48,7 @@ export class ScadClient {
         const command = await this.resolveCommand?.()
         check()
         if (!command) {
-            throw new Error('Select an OpenSCAD runtime before previewing.')
+            throw new RuntimeUnavailableError()
         }
         if (!workspace.isTrusted) {
             throw new Error('Trust this workspace to run OpenSCAD.')

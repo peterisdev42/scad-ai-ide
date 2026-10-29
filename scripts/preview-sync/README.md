@@ -27,7 +27,7 @@ npm run preview:sync -- to-preview --apply
 
 `--apply` 仅在整个计划无冲突时写入。一项冲突也会阻止整批应用，源码和同步基线均保持不变。默认命令只生成审阅材料；不要求两份仓库先提交，也不会把旧的 IDE 宿主适配当成新改动反向导出。
 
-默认使用相邻的 `../vscode-openscad-preview` 仓库。独立克隆或更换目录时，可通过环境变量指定外部仓库（相对路径以本插件根目录为基准）：
+默认使用 `sources/vscode-openscad-preview` 子模块，首次使用前运行 `git submodule update --init --recursive`。独立克隆或更换目录时，可通过环境变量指定外部仓库（相对路径以本插件根目录为基准）：
 
 ```sh
 PREVIEW_SYNC_PREVIEW_ROOT=/path/to/vscode-openscad-preview npm run preview:sync -- status

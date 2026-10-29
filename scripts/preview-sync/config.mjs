@@ -1,7 +1,7 @@
 // Keep the scope explicit. The two extension entry points and IDE-only tests
 // belong to their hosts and must never be copied over one another.
 export const config = {
-    roots: { preview: '../vscode-openscad-preview', ide: '.' },
+    roots: { preview: 'sources/vscode-openscad-preview', ide: '.' },
     trees: [
         ['src/webview', 'src/features/preview/webview'],
         ['src/shared', 'src/features/preview/shared'],

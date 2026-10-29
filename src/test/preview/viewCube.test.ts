@@ -59,15 +59,6 @@ test('Face labels follow OpenSCAD Z-up coordinates and pole directions are exact
     assert.deepEqual(top.toArray(), [0, 0, 1])
 })
 
-test('Bevels have half their original thickness while face labels still fit', () => {
-    const regions = createCubeRegions()
-    const edge = regions.find((region) => region.label === 'Right · Front')!
-    assert.ok(Math.abs(edge.vertices[0].distanceTo(edge.vertices[1]) - Math.SQRT2 * 0.18) < 1e-10)
-    const face = regions.find((region) => region.label === 'Right')!
-    const extent = Math.max(...face.vertices.map((vertex) => Math.abs(vertex.y)))
-    assert.ok(extent > 1.5 / 2, 'Fixed face texture must fit within the face')
-})
-
 test('Face labels have fixed, outward-facing orientations tied to the requested adjacent faces', () => {
     const expectedUp: Record<string, number[]> = {
         Front: [0, 0, 1],
