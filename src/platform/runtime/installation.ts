@@ -8,7 +8,7 @@ import * as tar from 'tar'
 import * as yauzl from 'yauzl'
 import { readRuntimeTag } from './metadata'
 import { fileCandidate, probe } from './discovery'
-import { matchesRuntimeBuild, type RuntimeBuild, type RuntimeSystem } from './releases'
+import { matchesRuntimeBuild, type RuntimeBuild, type RuntimeSystem, type RuntimeReleaseChannel } from './releases'
 import { requestGitHub } from '../github/errors'
 
 export interface InstallProgress {
@@ -66,7 +66,9 @@ export async function installedRuntimeBuilds(root: string, system: RuntimeSystem
         }),
     )
     return builds.flatMap((build) => {
-        const directories = packages.filter((entry) => entry.assetId === String(build.id) || entry.tag === build.tag).map((entry) => entry.directory)
+        // Older packages used openscad-cli-* aliases; keep compatibility without rewriting the saved Release identity.
+        const legacyTag = (tag: string | undefined) => tag?.replace(/^openscad-cli-/, 'openscad-')
+        const directories = packages.filter((entry) => entry.assetId === String(build.id) || legacyTag(entry.tag) === legacyTag(build.tag)).map((entry) => entry.directory)
         return directories.length ? [{ id: build.id, directories }] : []
     })
 }
@@ -166,6 +168,7 @@ export interface InstallOptions {
 interface ArchiveSource {
     release?: string
     tag?: string
+    channel?: RuntimeReleaseChannel
     key?: string
     buildId?: number
     format: '.zip' | '.tar.gz'
@@ -248,7 +251,7 @@ async function installPackage(root: string, system: RuntimeSystem, source: Archi
         }
         const packageRoot = path.join(extracted, packages[0].name)
         if (source.tag) {
-            await writeFile(path.join(packageRoot, 'scad-ai-release.json'), JSON.stringify({ tag: source.tag, release: source.release }))
+            await writeFile(path.join(packageRoot, 'scad-ai-release.json'), JSON.stringify({ tag: source.tag, release: source.release, channel: source.channel }))
         }
         const stagedExecutable = path.join(packageRoot, 'bin', executableName)
         if (!inside(await realpath(packageRoot), await realpath(stagedExecutable))) {
@@ -325,6 +328,7 @@ export async function installRuntimeBuild(root: string, system: RuntimeSystem, b
             key: String(build.id),
             tag: build.tag,
             release: build.release,
+            channel: build.channel,
             buildId: build.id,
             format: build.name.endsWith('.zip') ? '.zip' : '.tar.gz',
             acquire: async (archive, signal, report) => {
@@ -335,9 +339,10 @@ export async function installRuntimeBuild(root: string, system: RuntimeSystem, b
                 }
                 const hash = await writeArchive(response.body, archive, build.size, signal, (percent) => report('Downloading…', percent))
                 if (build.checksumUrl) {
-                    report('Verifying download…')
+                    report('Downloading checksum…')
                     const response = await requestGitHub(request, build.checksumUrl, { signal }, 'GitHub checksum download')
                     const checksum = (await response.text()).trim().split(/\s+/)[0]
+                    report('Verifying download…')
                     if (!/^[a-f0-9]{64}$/i.test(checksum) || hash !== checksum.toLowerCase()) {
                         throw new Error('Runtime checksum verification failed.')
                     }

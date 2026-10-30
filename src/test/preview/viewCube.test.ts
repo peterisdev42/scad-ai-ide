@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { Euler, Quaternion, Mesh, MeshBasicMaterial, Raycaster, Vector3 } from 'three'
-import { createCubeRegions, cubeRegionGeometry, cubeViewDirection, cubeLabelQuaternion, cubeViewUp, cubeEdgeRotation } from '../../features/preview/webview/preview/widgets/ViewCubeGeometry'
+import { Mesh, MeshBasicMaterial, Raycaster, Vector3 } from 'three'
+import { createCubeRegions, cubeRegionGeometry, cubeViewDirection, cubeLabelQuaternion, cubeViewUp } from '../../features/preview/webview/preview/widgets/ViewCubeGeometry'
 
 test('View cube exposes exactly 6 face, 12 edge and 8 corner directions', () => {
     const regions = createCubeRegions()
@@ -123,26 +123,6 @@ test('Side, edge and corner clicks restore Z-up while poles retain the nearest l
             assert.ok(Math.abs(actual.dot(region.direction)) < 1e-10)
             assert.ok(Math.abs(actual.length() - 1) < 1e-10)
             assert.ok(cubeViewUp(region.direction, actual).distanceTo(actual) < 1e-10, 'Repeated clicks must keep a calibrated screen pose stable')
-        }
-    }
-})
-
-test('Edge clicks follow the visible screen edge using yaw or pitch without extra roll', () => {
-    for (let i = 0; i < 80; i++) {
-        const camera = new Quaternion().setFromEuler(new Euler(i * 0.137, i * 0.317, i * 0.479))
-        const up = new Vector3(0, 1, 0).applyQuaternion(camera)
-        const right = new Vector3(1, 0, 0).applyQuaternion(camera)
-        const from = new Vector3(0, 0, 1).applyQuaternion(camera)
-        for (const edge of createCubeRegions().filter((region) => region.kind === 'edge')) {
-            const missing = edge.direction.toArray().findIndex((value) => Math.abs(value) < 1e-10)
-            const along = new Vector3().setComponent(missing, 1)
-            const vertical = Math.abs(along.dot(up)) >= Math.abs(along.dot(right))
-            const fixedAxis = vertical ? up : right
-            const rotation = cubeEdgeRotation(edge.direction, camera)
-            assert.ok(fixedAxis.clone().applyQuaternion(rotation).distanceTo(fixedAxis) < 1e-9, 'Vertical edges must keep screen-up fixed; horizontal edges must keep screen-right fixed')
-            const end = from.clone().applyQuaternion(rotation)
-            const wanted = edge.direction.clone().addScaledVector(fixedAxis, -edge.direction.dot(fixedAxis)).normalize()
-            assert.ok(end.distanceTo(wanted) < 1e-9, 'Edge turn must reach the closest direction on the single-axis orbit')
         }
     }
 })

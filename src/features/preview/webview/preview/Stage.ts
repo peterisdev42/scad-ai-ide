@@ -1,4 +1,5 @@
-import { Box3, Color, FogExp2, Group, Mesh, MeshStandardMaterial, Object3D, Plane, Raycaster, Scene, Vector2, Vector3, WebGLRenderer } from 'three'
+import { Box3, BufferGeometry, Color, Float32BufferAttribute, FogExp2, Group, Mesh, MeshStandardMaterial, Object3D, PCFShadowMap, Plane, Raycaster, Scene, Uint32BufferAttribute, Vector2, Vector3, WebGLRenderer } from 'three'
+import type { CsgScene } from '../../../../core/csg/types'
 
 // OpenSCAD uses Z-up; align Three.js to match so models load without reorientation.
 // Setting DEFAULT_UP before any Object3D is constructed makes every camera, light,
@@ -16,13 +17,15 @@ import { SceneObjectType } from '../contexts/SceneContext'
 import { Environment, RenderMode, ViewOptionsContext } from '../contexts/ViewOptionsContext'
 import { XRayPass } from './passes/XRayPass'
 import { AmbientLightRig } from './rigs/AmbientLightRig'
-import { CameraRig } from './rigs/CameraRig'
+import { CameraRig, type CameraViewState } from './rigs/CameraRig'
 import { DirectionalLightRig } from './rigs/DirectionalLightRig'
 import { MeasurementRig } from './rigs/MeasurementRig'
 import { PointLightRig } from './rigs/PointLightRig'
 import { Rig } from './rigs/Rig'
 import { SpotLightRig } from './rigs/SpotLightRig'
 import { buildPlateResetBounds } from './managers/BuildPlateLayout'
+import { fitDirectionalShadow } from './managers/Lighting'
+import { createStudioEnvironment, studioSurface } from './managers/StudioAppearance'
 import { MaterialManager } from './managers/MaterialManager'
 import { ToolManager } from './managers/ToolManager'
 import { CrossSectionRig } from './rigs/CrossSectionRig'
@@ -34,17 +37,8 @@ import { ScaleTool } from './tools/ScaleTool'
 import { SelectTool } from './tools/SelectTool'
 import { ViewCubeWidget } from './widgets/ViewCubeWidget'
 
-export interface Theme {
-    background: Color
-    foreground: Color
-    grid: Color
-    fog: Color
-    plate: Color
-    plateGrid: Color
-    additive: Color
-    subtractive: Color
-    accent: Color
-}
+import type { Theme } from './Theme'
+export type { Theme } from './Theme'
 
 // Model sits between tier 0 cap (11) and tier 1 stencil (20) so all tiers
 // except tier 0 can depth-test against the model when their cap renders.
@@ -56,6 +50,7 @@ const ROTATION_SNAP = Math.PI / 36
 
 export class Stage {
     private container: HTMLElement
+    private studioEnvironment: ReturnType<typeof createStudioEnvironment>
     private renderer: WebGLRenderer
     private css2dRenderer: CSS2DRenderer
     private scene: Scene
@@ -88,6 +83,8 @@ export class Stage {
     private pointerDownX = 0
     private pointerDownY = 0
     private theme: Theme
+    private disposed = false
+    private paused = false
 
     private raycaster: Raycaster
     private toolVariant: string | null = null
@@ -111,7 +108,13 @@ export class Stage {
         this.renderer = new WebGLRenderer({ antialias: true, stencil: true })
         this.renderer.setPixelRatio(window.devicePixelRatio)
         this.renderer.setSize(width || 1, height || 1)
+        this.renderer.shadowMap.type = PCFShadowMap
         this.renderer.shadowMap.enabled = true
+        this.studioEnvironment = createStudioEnvironment(this.renderer)
+        this.scene.environment = this.studioEnvironment.texture
+        this.scene.environmentIntensity = 0.45
+        // The studio environment is Y-up; OpenSCAD and this scene are Z-up.
+        this.scene.environmentRotation.x = Math.PI / 2
         this.renderer.domElement.classList.add('main-canvas')
         this.container.appendChild(this.renderer.domElement)
 
@@ -192,6 +195,8 @@ export class Stage {
     }
 
     public dispose() {
+        if (this.disposed) return
+        this.disposed = true
         if (this.animationFrameId !== null) cancelAnimationFrame(this.animationFrameId)
 
         this.renderer.domElement.removeEventListener('click', this.handleCanvasClick)
@@ -205,8 +210,24 @@ export class Stage {
         this.cameraHandles.clear()
         this.xrayPass.dispose()
         this.viewCube.dispose()
+        this.clearModel()
+        this.environmentRig.setEnvironment(Environment.None)
 
-        if (this.renderer) this.renderer.dispose()
+        this.scene.environment = null
+        this.studioEnvironment.dispose()
+        this.renderer.dispose()
+        this.renderer.forceContextLoss()
+        this.renderer.domElement.remove()
+        this.css2dRenderer.domElement.remove()
+    }
+
+    public setActive(active: boolean) {
+        if (this.disposed || active === !this.paused) return
+        this.paused = !active
+        if (!active) {
+            if (this.animationFrameId !== null) cancelAnimationFrame(this.animationFrameId)
+            this.animationFrameId = null
+        } else this.startAnimationLoop()
     }
 
     public updateTheme(theme: Theme) {
@@ -214,6 +235,8 @@ export class Stage {
         this.scene.background = theme.background
         this.environmentRig.setTheme(theme)
         this.xrayPass.setColor(theme.foreground)
+        if (this.scene.fog) this.scene.fog.color.copy(theme.fog)
+        this.materialManager.setTheme(this.modelGroup, theme, this.viewOptions?.get('modelColor'))
         this.handles.forEach((h) => {
             if (h instanceof CrossSectionRig) h.setTheme(theme)
         })
@@ -239,6 +262,7 @@ export class Stage {
         this.activeCameraRig.setMode(viewOptions.get('camera'))
         this.renderer.shadowMap.enabled = viewOptions.get('shadows')
         this.scene.fog = new FogExp2(this.theme.fog, viewOptions.get('fogDensity'))
+        this.materialManager.setTheme(this.modelGroup, this.theme, viewOptions.get('modelColor'))
         this.materialManager.applyToGroup(this.modelGroup, viewOptions)
 
         // Enable clipping whenever any cross-section plane exists and is visible
@@ -247,7 +271,10 @@ export class Stage {
 
     public loadModelData(modelContext: ModelContext) {
         const { format, base64Data } = modelContext
-        if (!base64Data || !format) return
+        if (!base64Data || !format) {
+            this.clearModel()
+            return
+        }
 
         const binaryString = window.atob(base64Data)
         const bytes = new Uint8Array(binaryString.length)
@@ -255,9 +282,39 @@ export class Stage {
             bytes[i] = binaryString.charCodeAt(i)
         }
 
-        this.modelGroup.clear()
+        this.clearModel()
 
-        if (format === ModelFormat.ThreeMF) {
+        if (format === ModelFormat.CSG) {
+            const scene = JSON.parse(new TextDecoder().decode(bytes)) as CsgScene
+            if (scene.version !== 1 || !Array.isArray(scene.meshes)) throw new Error('Invalid CSG scene payload.')
+            const decode = (text: string) => Uint8Array.from(window.atob(text), (c) => c.charCodeAt(0)).buffer
+            for (const data of scene.meshes) {
+                const properties = new Float32Array(decode(data.properties))
+                const indices = new Uint32Array(decode(data.indices))
+                if (data.stride < 3 || data.stride > 8 || properties.length % data.stride || indices.length % 3) throw new Error('Invalid CSG mesh buffers.')
+                const count = properties.length / data.stride
+                if (indices.some((i) => i >= count)) throw new Error('Invalid CSG triangle index.')
+                const positions = new Float32Array(count * 3),
+                    colors = new Float32Array(count * 4),
+                    defaults = new Float32Array(count)
+                let transparent = false
+                for (let i = 0; i < count; i++) {
+                    positions.set(properties.subarray(i * data.stride, i * data.stride + 3), i * 3)
+                    const rgba = data.stride === 8 ? properties.subarray(i * 8 + 3, i * 8 + 7) : [1, 1, 1, 1]
+                    colors.set(rgba, i * 4)
+                    defaults[i] = data.stride === 8 ? properties[i * 8 + 7] : 1
+                    transparent ||= rgba[3] < 1
+                }
+                const geometry = new BufferGeometry()
+                geometry.setAttribute('position', new Float32BufferAttribute(positions, 3))
+                geometry.setAttribute('color', new Float32BufferAttribute(colors, 4))
+                geometry.setAttribute('scadDefaultColor', new Float32BufferAttribute(defaults, 1))
+                geometry.setIndex(new Uint32BufferAttribute(indices, 1))
+                geometry.computeVertexNormals()
+                this.modelGroup.add(new Mesh(geometry, new MeshStandardMaterial({ color: 0xffffff, vertexColors: true, transparent, flatShading: true, ...studioSurface, fog: false })))
+            }
+            if (this.viewOptions) this.materialManager.applyToGroup(this.modelGroup, this.viewOptions)
+        } else if (format === ModelFormat.ThreeMF) {
             const loader = new ThreeMFLoader()
             try {
                 const group = loader.parse(bytes.buffer)
@@ -267,8 +324,9 @@ export class Stage {
                         materials.forEach((mat) => {
                             if (mat.color) {
                                 const hex = mat.color.getHexString().toLowerCase()
-                                if (hex === 'f9d72c') mat.color.copy(this.theme.additive)
-                                else if (hex === '9dcb51') mat.color.copy(this.theme.subtractive)
+                                if (hex === 'f9d72c') mat.userData.previewThemeColor = 'additive'
+                                else if (hex === '9dcb51') mat.userData.previewThemeColor = 'subtractive'
+                                if (mat.userData.previewThemeColor) Object.assign(mat, studioSurface)
                             }
                         })
                         if (!child.geometry.attributes.normal) child.geometry.computeVertexNormals()
@@ -286,8 +344,10 @@ export class Stage {
                 const material = new MeshStandardMaterial({
                     color: this.theme.additive,
                     flatShading: false,
+                    ...studioSurface,
                     fog: false,
                 })
+                material.userData.previewThemeColor = 'additive'
                 const mesh = new Mesh(geometry, material)
                 this.modelGroup.add(mesh)
                 if (this.viewOptions) this.materialManager.applyToGroup(this.modelGroup, this.viewOptions)
@@ -296,9 +356,12 @@ export class Stage {
             }
         }
 
+        this.materialManager.setTheme(this.modelGroup, this.theme, this.viewOptions?.get('modelColor'))
+
         // Pick an absorption coefficient so a ray traversing the model's full
         // diagonal in material reads as ~95% opaque (1 - exp(-3) ≈ 0.95).
         const bounds = new Box3().setFromObject(this.modelGroup)
+        this.updateLightShadows(bounds)
         if (bounds.isEmpty()) {
             this.xrayPass.setAbsorption(0)
         } else {
@@ -314,6 +377,16 @@ export class Stage {
         this.fitInitialModelIfReady()
     }
 
+    private clearModel() {
+        this.modelGroup.traverse((child) => {
+            if (!(child instanceof Mesh)) return
+            child.geometry.dispose()
+            const materials = Array.isArray(child.material) ? child.material : [child.material]
+            for (const material of materials) material.dispose()
+        })
+        this.modelGroup.clear()
+    }
+
     /** Scene hydration decides whether to restore a saved pose or fit the first model. */
     public initializeView(hasSavedCamera: boolean): void {
         this.fitInitialModel = !hasSavedCamera
@@ -323,13 +396,13 @@ export class Stage {
     private fitInitialModelIfReady(): void {
         if (!this.fitInitialModel || new Box3().setFromObject(this.modelGroup).isEmpty()) return
         this.fitInitialModel = false
-        this.resetView(0)
+        this.resetView(0, new Vector3(-1, -1, 1))
     }
 
-    public resetView(duration = 420): void {
+    public resetView(duration = 420, direction?: Vector3): void {
         const modelBounds = new Box3().setFromObject(this.modelGroup)
         const bounds = this.viewOptions?.is('environment', Environment.BuildPlate) ? buildPlateResetBounds(modelBounds, this.viewOptions.get('buildPlateOrigin')) : modelBounds
-        this.activeCameraRig.resetView(bounds, duration)
+        this.activeCameraRig.resetView(bounds, duration, direction)
         if (this.selectedId === this.activeCameraRig.id) this.onPropertiesChange?.(this.activeCameraRig.getProperties())
         this.onPersist?.()
     }
@@ -378,24 +451,33 @@ export class Stage {
         }
 
         if (type === 'ambient-light') {
-            const h = new AmbientLightRig(id, 0.25 * Math.PI)
+            const h = new AmbientLightRig(id, 0.02 * Math.PI)
             this.scene.add(h.light)
             handle = h
         } else if (type === 'directional-light') {
-            const h = new DirectionalLightRig(id, 0.5 * Math.PI, 100, 50, 200, this.theme.foreground)
+            const h = new DirectionalLightRig(id, 0.4 * Math.PI, -150, -200, 300, this.theme.foreground)
             this.scene.add(h.light)
             handle = h
         } else if (type === 'spot-light') {
-            const h = new SpotLightRig(id, 0.5 * Math.PI, 200, 200, 200, 0.15, 1, this.theme.foreground)
+            const h = new SpotLightRig(id, 0.04 * Math.PI, 200, 200, 250, 0.6, 1, this.theme.foreground)
             this.scene.add(h.light)
             handle = h
         } else if (type === 'point-light') {
-            const h = new PointLightRig(id, 0.25 * Math.PI, -200, -200, -200, 0, this.theme.foreground)
+            const h = new PointLightRig(id, 0.04 * Math.PI, -200, 100, 100, 0, this.theme.foreground)
             this.scene.add(h.light)
             handle = h
         }
 
-        if (handle) this.handles.set(id, handle)
+        if (handle) {
+            this.handles.set(id, handle)
+            this.updateLightShadows(new Box3().setFromObject(this.modelGroup))
+        }
+    }
+
+    private updateLightShadows(bounds: Box3): void {
+        for (const handle of this.handles.values()) {
+            if (handle instanceof DirectionalLightRig) fitDirectionalShadow(handle.light, bounds)
+        }
     }
 
     public removeSceneObject(id: string): void {
@@ -523,7 +605,9 @@ export class Stage {
     }
 
     public setObjectProperty(id: string, key: string, value: number): void {
-        this.handles.get(id)?.setProperty(key, value)
+        const handle = this.handles.get(id)
+        handle?.setProperty(key, value)
+        if (handle instanceof DirectionalLightRig) fitDirectionalShadow(handle.light, new Box3().setFromObject(this.modelGroup))
     }
 
     /**
@@ -536,6 +620,14 @@ export class Stage {
             out.set(id, handle.getProperties())
         }
         return out
+    }
+
+    public captureCameraViews(): Map<string, CameraViewState> {
+        return new Map([...this.cameraHandles].map(([id, camera]) => [id, camera.captureView()]))
+    }
+
+    public restoreCameraViews(views: Map<string, CameraViewState>): void {
+        for (const [id, view] of views) this.cameraHandles.get(id)?.restoreView(view)
     }
 
     // ============= Callbacks from Preview (bridge to Lit contexts) =============
@@ -633,6 +725,7 @@ export class Stage {
     // ============= Animation loop =============
 
     private startAnimationLoop = () => {
+        if (this.paused || this.disposed) return
         this.animationFrameId = requestAnimationFrame(this.startAnimationLoop)
         this.activeCameraRig.update()
         this.viewCube.update(this.activeCameraRig.activeCamera)
@@ -654,6 +747,7 @@ export class Stage {
     }
 
     private renderFrame() {
+        if (this.paused || this.disposed) return
         const camera = this.activeCameraRig.activeCamera
 
         if (this.viewOptions?.is('renderMode', RenderMode.XRay)) {

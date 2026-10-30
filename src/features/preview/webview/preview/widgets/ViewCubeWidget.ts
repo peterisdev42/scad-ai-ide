@@ -296,6 +296,7 @@ export class ViewCubeWidget {
         for (const label of this.axisLabels) label.material.dispose()
         for (const texture of this.textures) texture.dispose()
         this.renderer.dispose()
+        this.renderer.forceContextLoss()
         this.rollControls.remove()
         canvas.remove()
     }

@@ -87,24 +87,6 @@ export function cubeViewDirection(direction: Vector3): Vector3 {
     return direction.clone().normalize()
 }
 
-/** Turn toward an edge using only yaw/pitch in the current screen frame. */
-export function cubeEdgeRotation(direction: Vector3, cameraRotation: Quaternion): Quaternion {
-    const edgeAxis = [direction.x, direction.y, direction.z].findIndex((value) => Math.abs(value) < 1e-10)
-    if (edgeAxis < 0) return new Quaternion()
-    const alongEdge = new Vector3().setComponent(edgeAxis, 1)
-    const screenRight = new Vector3(1, 0, 0).applyQuaternion(cameraRotation)
-    const screenUp = new Vector3(0, 1, 0).applyQuaternion(cameraRotation)
-    // Classify the visible edge, including Top/Bottom views and rolled cameras.
-    const vertical = Math.abs(alongEdge.dot(screenUp)) >= Math.abs(alongEdge.dot(screenRight))
-    const axis = vertical ? screenUp : screenRight
-    const start = new Vector3(0, 0, 1).applyQuaternion(cameraRotation)
-    const end = direction.clone().addScaledVector(axis, -direction.dot(axis))
-    if (end.lengthSq() < 1e-20) return new Quaternion()
-    end.normalize()
-    const angle = Math.atan2(axis.dot(start.clone().cross(end)), start.dot(end))
-    return new Quaternion().setFromAxisAngle(axis, angle)
-}
-
 /** Standard Z-up views, with the nearest local quarter-turn at the two poles. */
 export function cubeViewUp(direction: Vector3, preferredUp?: Vector3): Vector3 {
     const normal = direction.clone().normalize()

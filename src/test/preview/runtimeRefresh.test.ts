@@ -19,9 +19,11 @@ function mockPreview(initialRuntime?: Runtime) {
         require: (id: string) => {
             if (id === 'vscode')
                 return {
+                    Uri: { joinPath: () => ({ fsPath: '/dist/csg-worker.mjs' }) },
                     window: { registerCustomEditorProvider: () => disposable },
                     workspace: { onDidChangeConfiguration: () => disposable },
                 }
+            if (id.endsWith('/csg/compile')) return { configureCsgWorker() {} }
             if (id.endsWith('/runtime/errors')) return { RuntimeUnavailableError }
             if (id.endsWith('/ScadSessionManager'))
                 return {
@@ -32,6 +34,8 @@ function mockPreview(initialRuntime?: Runtime) {
                     },
                 }
             if (id.endsWith('/ScadClient')) return { ScadClient: { configure() {}, outputChannel: disposable } }
+            if (id.endsWith('/MeshPreviewEditorProvider')) return { MeshPreviewEditorProvider: class {} }
+            if (id.endsWith('/previewFile')) return { meshPreviewEditorViewType: 'mesh' }
             if (id.endsWith('/ScadPreviewEditorProvider')) return { ScadPreviewEditorProvider: class {} }
             if (id.endsWith('/showPanel')) return { registerShowPanelCommand: () => disposable, previewEditorViewType: 'preview' }
             throw new Error(`Unexpected dependency: ${id}`)

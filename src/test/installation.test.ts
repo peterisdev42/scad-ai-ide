@@ -9,7 +9,7 @@ import * as tar from 'tar'
 import { zipSync, strToU8 } from 'fflate'
 import { discover, probe, type Runtime } from '../platform/runtime/discovery'
 import { extractRuntimeArchive, installRuntimeArchive, installRuntimeBuild, installedRuntimeBuilds, managedDirectory, managedRuntimePaths, removeRuntimeInstallation } from '../platform/runtime/installation'
-import type { RuntimeBuild, RuntimeSystem } from '../platform/runtime/releases'
+import { fetchRuntimeBuilds, type RuntimeBuild, type RuntimeSystem } from '../platform/runtime/releases'
 
 const system: RuntimeSystem = { platform: process.platform, architecture: process.arch, name: '', version: '' }
 const build: RuntimeBuild = { id: 100, name: `openscad-cli-${process.platform === 'darwin' ? 'macos' : 'linux'}-${process.arch}.tar.gz`, tag: 'test', release: '2026.10.28-TEST10', size: 0, prerelease: false, publishedAt: '', downloadUrl: 'https://example.test/archive', checksumUrl: 'https://example.test/checksum' }
@@ -36,11 +36,68 @@ async function fixture() {
 
 const unixOnly = { skip: process.platform === 'win32' }
 
+test('release checksum is downloaded and verified when present, and skipped only when absent', async (t) => {
+    const windows: RuntimeSystem = { platform: 'win32', architecture: 'x64', name: '', version: '' }
+    const name = 'openscad-cli-windows-x86_64.zip'
+    const download = `https://github.com/peterisdev42/openscad-cli-builder/releases/download/test/${name}`
+    const bytes = Buffer.from(zipSync({ 'openscad-cli-windows-x86_64/bin/openscad.exe': strToU8('test executable') }))
+    const hash = createHash('sha256').update(bytes).digest('hex')
+    for (const scenario of ['valid', 'absent', 'mismatch', 'malformed', 'download failed'] as const) {
+        await t.test(scenario, async () => {
+            const root = await mkdtemp(path.join(os.tmpdir(), 'scad-checksum-test-'))
+            const calls: string[] = []
+            const progress: string[] = []
+            let probes = 0
+            try {
+                const request = async (url: string) => {
+                    calls.push(url)
+                    if (url === download) return new Response(bytes)
+                    if (url === `${download}.sha256`) {
+                        if (scenario === 'download failed') return new Response('unavailable', { status: 503 })
+                        const checksum = scenario === 'mismatch' ? '0'.repeat(64) : scenario === 'malformed' ? 'invalid' : hash.toUpperCase()
+                        return new Response(`${checksum}  ${name}\n`)
+                    }
+                    assert.ok(url.startsWith('https://api.github.com/'))
+                    return new Response(JSON.stringify([{ tag_name: 'test', assets: [{ id: 100, name, browser_download_url: download, size: bytes.length }, ...(scenario === 'absent' ? [] : [{ id: 101, name: `${name}.sha256`, browser_download_url: `${download}.sha256` }])] }]))
+                }
+                const [selected] = await fetchRuntimeBuilds(windows, request)
+                const installation = installRuntimeBuild(root, windows, selected, {
+                    request,
+                    progress: (value) => progress.push(value.message),
+                    check: async (candidate) => {
+                        probes++
+                        assert.equal(await readFile(candidate.command.executable, 'utf8'), 'test executable')
+                        return { ...candidate, id: 'test', version: '2021.01', platform: 'win32', status: 'available' }
+                    },
+                })
+                if (scenario === 'valid' || scenario === 'absent') {
+                    const executable = await installation
+                    assert.deepEqual(await managedRuntimePaths(root, windows), [executable])
+                    assert.ok(probes > 0)
+                } else {
+                    await assert.rejects(installation, scenario === 'download failed' ? /HTTP 503/ : /checksum verification failed/)
+                    assert.equal(probes, 0, 'checksum must pass before extracting and checking the executable')
+                    assert.deepEqual(await readdir(managedDirectory(root, windows)), [])
+                }
+                assert.equal(calls.filter((url) => url === `${download}.sha256`).length, scenario === 'absent' ? 0 : 1)
+                assert.equal(progress.includes('Downloading checksum…'), scenario !== 'absent')
+                assert.equal(progress.includes('Verifying download…'), scenario !== 'absent' && scenario !== 'download failed')
+                if (scenario === 'valid') {
+                    assert.ok(progress.indexOf('Downloading checksum…') < progress.indexOf('Verifying download…'))
+                    assert.ok(progress.indexOf('Verifying download…') < progress.indexOf('Extracting…'))
+                }
+            } finally {
+                await rm(root, { recursive: true, force: true })
+            }
+        })
+    }
+})
+
 test('installation verifies, extracts, probes and discovers all managed versions from disk', unixOnly, async () => {
     const f = await fixture()
     try {
         const progress: string[] = []
-        const first = await installRuntimeBuild(f.storage, system, { ...build, size: f.bytes.length }, { request: f.request, progress: (p) => progress.push(p.message) })
+        const first = await installRuntimeBuild(f.storage, system, { ...build, size: f.bytes.length, channel: 'Test' }, { request: f.request, progress: (p) => progress.push(p.message) })
         const second = await installRuntimeBuild(f.storage, system, { ...build, id: 101, tag: 'other' }, { request: f.request })
         assert.notEqual(first, second)
         assert.ok(progress.includes('Verifying download…'))
@@ -51,6 +108,8 @@ test('installation verifies, extracts, probes and discovers all managed versions
         assert.deepEqual(paths.sort(), [first, second].sort())
         const result = await discover({ platform: process.platform, env: {}, managedPaths: paths }, { collect: async () => ({ candidates: [], diagnostics: [] }) })
         assert.equal(result.runtimes.filter((runtime) => runtime.source === 'managed').length, 2)
+        assert.equal(result.runtimes.find((runtime) => runtime.tag === build.tag)?.channel, 'Test', 'Release channel must survive installation and offline rediscovery')
+        assert.equal(result.runtimes.find((runtime) => runtime.tag === 'other')?.channel, undefined)
         assert.deepEqual(result.runtimes.map((runtime) => runtime.tag).sort(), ['other', build.tag].sort(), 'Release tags must override the CLI version and bundled metadata')
         assert.ok(
             result.runtimes.every((runtime) => runtime.release === build.release),
@@ -213,7 +272,7 @@ test('local archive imports copy, verify and discover a renamed package offline,
         assert.deepEqual(await readdir(managedDirectory(f.storage, system)), entries)
         const result = await discover({ platform: process.platform, env: {}, managedPaths: await managedRuntimePaths(f.storage, system) }, { collect: async () => ({ candidates: [], diagnostics: [] }) })
         assert.equal(result.runtimes.filter((runtime) => runtime.source === 'managed').length, 1)
-        assert.equal(result.runtimes[0].tag, 'openscad-cli-2026.10-TEST2')
+        assert.equal(result.runtimes[0].tag, 'openscad-2026.10-TEST2')
     } finally {
         await rm(f.root, { recursive: true, force: true })
     }

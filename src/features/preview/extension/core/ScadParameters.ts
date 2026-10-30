@@ -1,3 +1,4 @@
+import { parseLiteral } from '../../../../core/customizer/CustomizerParser'
 import { validateValue } from '../../../../core/customizer/CustomizerService'
 import type { ParameterValue } from '../../../../core/customizer/CustomizerParser'
 import { ScadParameter } from '../../shared/types/ScadParameter'
@@ -10,13 +11,13 @@ export class ScadParameters {
     private parameters: Map<string, ScadParameter> = new Map()
     private parameterSets: Record<string, Record<string, string>> = {}
     private activeSetName: string | undefined = undefined
-    private overrides: Map<string, string | number | boolean> = new Map()
-    private onChange?: (event: { parameters: ScadParameter[]; parameterSets: Record<string, Record<string, string>>; activeSetName: string | undefined; overrides: Record<string, string | number | boolean> }) => void
+    private overrides: Map<string, string | number | boolean | number[]> = new Map()
+    private onChange?: (event: { parameters: ScadParameter[]; parameterSets: Record<string, Record<string, string>>; activeSetName: string | undefined; overrides: Record<string, string | number | boolean | number[]> }) => void
 
     constructor({
         onChange,
     }: {
-        onChange?: (event: { parameters: ScadParameter[]; parameterSets: Record<string, Record<string, string>>; activeSetName: string | undefined; overrides: Record<string, string | number | boolean> }) => void
+        onChange?: (event: { parameters: ScadParameter[]; parameterSets: Record<string, Record<string, string>>; activeSetName: string | undefined; overrides: Record<string, string | number | boolean | number[]> }) => void
     } = {}) {
         this.onChange = onChange
     }
@@ -32,8 +33,9 @@ export class ScadParameters {
                 group: parameter.group ?? '',
                 description: parameter.description ?? '',
                 defaultValue: parameter.value,
-                range: parameter.type === 'number' && parameter.min !== undefined && parameter.max !== undefined ? { min: parameter.min, max: parameter.max, step: parameter.step } : undefined,
-                choices: parameter.type !== 'boolean' ? parameter.options?.map((option) => ({ label: option.label ?? String(option.value), value: option.value })) : undefined,
+                range: (parameter.type === 'number' || parameter.type === 'vector') && parameter.min !== undefined && parameter.max !== undefined ? { min: parameter.min, max: parameter.max, step: parameter.step } : undefined,
+                maxLength: parameter.type === 'string' ? parameter.maxLength : undefined,
+                choices: parameter.type === 'number' || parameter.type === 'string' ? parameter.options?.map((option) => ({ label: option.label ?? String(option.value), value: option.value })) : undefined,
             },
             value,
         )
@@ -92,13 +94,19 @@ export class ScadParameters {
             for (const param of this.parameters.values()) {
                 if (param.name in setValues) {
                     const rawStr = setValues[param.name]
-                    if (typeof param.value === 'number') {
+                    if ((param.type === 'number' || param.type === 'string') && param.options) {
+                        const choice = param.options.find((option) => typeof option.value === 'string' && option.value === rawStr) ?? param.options.find((option) => option.value === parseLiteral(rawStr))
+                        if (choice) this.overrides.set(param.name, choice.value)
+                    } else if (Array.isArray(param.value)) {
+                        const vector = parseLiteral(rawStr)
+                        if (Array.isArray(vector)) this.overrides.set(param.name, vector)
+                    } else if (typeof param.value === 'number') {
                         const number = Number(rawStr)
                         if (Number.isFinite(number)) {
                             this.overrides.set(param.name, number)
                         }
                     } else if (typeof param.value === 'boolean') {
-                        this.overrides.set(param.name, rawStr === 'true')
+                        if (rawStr === 'true' || rawStr === 'false') this.overrides.set(param.name, rawStr === 'true')
                     } else {
                         this.overrides.set(param.name, rawStr)
                     }
@@ -122,12 +130,12 @@ export class ScadParameters {
      * Call this to override a parameter value, or to revert back to the original
      * value for a parameter.
      */
-    public replaceOverrides(values: Record<string, string | number | boolean>) {
+    public replaceOverrides(values: Record<string, string | number | boolean | number[]>) {
         this.overrides = new Map(Object.entries(values).filter(([name, value]) => this.valid(name, value)))
         this.fireChange()
     }
 
-    public updateValue(name: string, value: string | number | boolean | undefined) {
+    public updateValue(name: string, value: string | number | boolean | number[] | undefined) {
         const parameter = this.parameters.get(name)
         if (!parameter) {
             return
@@ -148,7 +156,7 @@ export class ScadParameters {
         return Array.from(this.parameters.values())
     }
 
-    public getOverrides(): Record<string, string | number | boolean> {
+    public getOverrides(): Record<string, string | number | boolean | number[]> {
         return Object.fromEntries(this.overrides)
     }
 
@@ -156,8 +164,8 @@ export class ScadParameters {
      * Returns a merged record of the active parameter values,
      * combining default values exclusively with the flat active overrides map.
      */
-    public getActiveValues(): Record<string, string | number | boolean> {
-        const active: Record<string, string | number | boolean> = {}
+    public getActiveValues(): Record<string, string | number | boolean | number[]> {
+        const active: Record<string, string | number | boolean | number[]> = {}
 
         for (const param of this.parameters.values()) {
             if (this.overrides.has(param.name)) {
@@ -178,7 +186,7 @@ export class ScadParameters {
     public calculateActiveSetPartial(): Record<string, string> {
         const partial: Record<string, string> = {}
         for (const [name, value] of this.overrides) {
-            partial[name] = value.toString()
+            partial[name] = Array.isArray(value) ? JSON.stringify(value) : value.toString()
         }
         return partial
     }
