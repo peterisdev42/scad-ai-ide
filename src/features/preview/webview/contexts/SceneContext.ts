@@ -34,6 +34,7 @@ export const sceneContext = createContext<SceneContext>('scene')
  * persist time (positions, intensities, etc.) and re-applied on load.
  */
 export interface SceneSnapshot {
+    modelColor?: string | null
     version: 1
     activeCameraId: string
     objects: Array<SceneObjectDescriptor & { properties?: ObjectProperties }>

@@ -18,7 +18,7 @@
 | 基础语言支持            | `.scad` 语言注册、TextMate 高亮、snippets、括号/引号、注释、缩进和 region 折叠                              | 不依赖 LSP 启动；不等同于 AST 或 semantic tokens                                               | [贡献点](../package.json#L178)、[语言配置](../language-configuration.json#L1)                                                                                                                 |
 | 代码智能                | 文件文档的补全、悬停、定义、重命名、文档符号、格式化、诊断接入                                              | 外部 openscad-lsp；信任工作区且启用后启动；没有声明 references、signatureHelp、semantic tokens | [客户端](../src/features/language/registerLanguage.ts#L24)、[上游 capabilities](../sources/openscad-LSP/src/server/mod.rs#L197)、[诊断](../sources/openscad-LSP/src/server/handler/notification.rs#L44) |
 | Runtime                 | 跨平台候选发现、版本探测、真实路径去重、显式选择、自动模式、状态栏、日志与管理表格                          | 当前仅发现/选择和 `--version` 验证；没有几何任务执行器                                         | [候选发现](../src/platform/runtime/discovery.ts#L16)、[探测](../src/platform/runtime/discovery.ts#L115)、[交互](../src/features/runtime/registerRuntime.ts#L116)                              |
-| Customizer              | 标量参数、分组、描述、范围/步长、枚举；点击编辑；每文件覆盖；生成 CLI 参数                                  | 独立简化解析器；会话内内存状态；不写源文件，无自动渲染                                         | [解析器](../src/core/customizer/CustomizerParser.ts#L81)、[服务](../src/core/customizer/CustomizerService.ts#L25)、[Tree 交互](../src/features/sidebar/CustomizerTreeProvider.ts#L83)         |
+| Customizer              | HTML 侧栏、TreeView 样式、标量/向量控件、分组、Comment Hints 悬停、每文件覆盖与预览同步                                  | 独立简化解析器；会话内内存状态；不写源文件，无自动渲染                                         | [解析器](../src/core/customizer/CustomizerParser.ts#L81)、[服务](../src/core/customizer/CustomizerService.ts#L25)、[Tree 交互](../src/features/sidebar/CustomizerViewProvider.ts)         |
 | AI / Bricks / Libraries | 可打开、复用和关闭对应标签页                                                                                | 只有导航与占位文案；没有模型提供方、Agent、MCP、砖块或依赖管理实现                             | [导航定义](../src/features/sidebar/QuickAccessTreeProvider.ts#L3)、[占位渲染](../media/panels/main.js#L10)、[HTML](../media/panels/index.html#L38)                                            |
 | 托管 OpenSCAD           | 预留 globalStorage 平台目录作为发现候选                                                                     | 当前没有下载、安装、更新或删除功能；目录预留不等于交付了二进制                                 | [候选目录](../src/features/runtime/registerRuntime.ts#L42)、[当前范围说明](../README.md#L105)                                                                                                 |
 
@@ -59,7 +59,7 @@ flowchart TB
 | `platform/runtime`                        | 静态候选、注册表/Spotlight/Flatpak 等探测、app 元数据、路径规范化、进程执行和版本检查                          | Node 文件系统/进程/OS；[discovery](../src/platform/runtime/discovery.ts#L1)、[平台适配](../src/platform/runtime/platformDiscovery.ts#L57)                   |
 | `features/runtime`                        | 配置读写、信任判断、异步扫描队列、状态栏、诊断、QuickPick、浏览添加、变化事件                                  | VS Code + Manager + platform；[源码](../src/features/runtime/registerRuntime.ts#L8)                                                                         |
 | `core/customizer`                         | 参数类型、文本解析、值校验、按 URI 的覆盖 Map、生成 `-D` 参数                                                  | 无 VS Code 依赖；[Parser](../src/core/customizer/CustomizerParser.ts#L1)、[Service](../src/core/customizer/CustomizerService.ts#L25)                        |
-| `features/sidebar`                        | Quick Access 无子项叶节点；Customizer 跟踪编辑器/文档、生成树、打开输入交互                                    | VS Code + CustomizerService；[导航](../src/features/sidebar/QuickAccessTreeProvider.ts#L10)、[跟踪](../src/features/sidebar/CustomizerTreeProvider.ts#L10)  |
+| `features/sidebar`                        | Quick Access 无子项叶节点；Customizer 跟踪编辑器/文档、提供 HTML 侧栏及参数消息校验                                    | VS Code + CustomizerService；[导航](../src/features/sidebar/QuickAccessTreeProvider.ts#L10)、[跟踪](../src/features/sidebar/CustomizerViewProvider.ts)  |
 | `features/panels`                         | 按 PageId 复用标签页；装载模板、资源与 CSP；消息派发与销毁清理                                                 | VS Code + Runtime feature 返回对象；[源码](../src/features/panels/PanelManager.ts#L9)                                                                       |
 | `features/language` + `platform/language` | 延迟启动、串行重启、设置同步、日志和停止；定位显式/bundle/PATH 程序                                            | vscode-languageclient/node + 文件系统；[客户端](../src/features/language/registerLanguage.ts#L9)、[定位器](../src/platform/language/serverExecutable.ts#L5) |
 | `media/panels`                            | HTML/CSS/原生 JavaScript，显示 Runtime 状态与操作，无前端框架                                                  | VS Code Webview bridge；[前端](../media/panels/main.js#L1)                                                                                                  |
@@ -70,7 +70,7 @@ flowchart TB
 
 ### 4.1 激活与资源生命周期
 
-`activate()` 同步完成注册并返回 API；Runtime 注册末尾异步触发刷新，语言注册则监听文档并检查已打开文档，Customizer 立即选择当前文档。调用方不应把 `activate()` 返回等同于“Runtime/LSP 已完成就绪”：Runtime 有 `refresh()`，语言有 `ready()`。[入口](../src/extension.ts#L13)、[Runtime 自动刷新](../src/features/runtime/registerRuntime.ts#L170)、[LSP 文档检查](../src/features/language/registerLanguage.ts#L107)、[Customizer 初始目标](../src/features/sidebar/CustomizerTreeProvider.ts#L28)
+`activate()` 同步完成注册并返回 API；Runtime 注册末尾异步触发刷新，语言注册则监听文档并检查已打开文档，Customizer 立即选择当前文档。调用方不应把 `activate()` 返回等同于“Runtime/LSP 已完成就绪”：Runtime 有 `refresh()`，语言有 `ready()`。[入口](../src/extension.ts#L13)、[Runtime 自动刷新](../src/features/runtime/registerRuntime.ts#L170)、[LSP 文档检查](../src/features/language/registerLanguage.ts#L107)、[Customizer 初始目标](../src/features/sidebar/CustomizerViewProvider.ts)
 
 Tree、Panel、命令、事件与输出通道由 subscriptions/Disposable 管理；Panel 销毁会删除映射并清理监听器，扩展停用显式等待语言服务停止。语言 stop 标记 disposed、等待已有重启 Promise，再 dispose 客户端。[扩展 subscriptions](../src/extension.ts#L19)、[面板销毁](../src/features/panels/PanelManager.ts#L66)、[停用](../src/extension.ts#L30)、[语言停止](../src/features/language/registerLanguage.ts#L81)
 
@@ -111,7 +111,7 @@ sequenceDiagram
 
 仅首次出现 `scheme=file, language=openscad` 文档才设置 requested 并尝试启动；手动 restart 也可设置 requested。启动必须满足“未销毁、已请求、工作区可信、配置 enabled”，失败写日志并提示。重启串行等待旧客户端 dispose；所有该配置段变化都重启，随后把 searchPaths/defaultParameters/indent/queryFile 转成上游设置字段。[触发条件](../src/features/language/registerLanguage.ts#L74)、[启动门禁](../src/features/language/registerLanguage.ts#L16)、[设置同步](../src/features/language/registerLanguage.ts#L43)、[事件注册](../src/features/language/registerLanguage.ts#L87)
 
-LSP 文档 selector 接受文件 URI，所以已保存文件中的未保存编辑仍可增量同步；限制是**无标题/其他 URI scheme 文档不接入 LSP**，而非“每次编辑都必须保存”。基础高亮、snippet 和 Customizer 另走自己的机制。[selector](../src/features/language/registerLanguage.ts#L34)、[上游增量同步](../sources/openscad-LSP/src/server/mod.rs#L198)、[文档变更](../sources/openscad-LSP/src/server/handler/notification.rs#L22)、[Customizer 接受文档](../src/features/sidebar/CustomizerTreeProvider.ts#L41)
+LSP 文档 selector 接受文件 URI，所以已保存文件中的未保存编辑仍可增量同步；限制是**无标题/其他 URI scheme 文档不接入 LSP**，而非“每次编辑都必须保存”。基础高亮、snippet 和 Customizer 另走自己的机制。[selector](../src/features/language/registerLanguage.ts#L34)、[上游增量同步](../sources/openscad-LSP/src/server/mod.rs#L198)、[文档变更](../sources/openscad-LSP/src/server/handler/notification.rs#L22)、[Customizer 接受文档](../src/features/sidebar/CustomizerViewProvider.ts)
 
 上游源码声明补全、定义、悬停、文档符号、格式化、重命名，诊断通过文档变更通知发布；没有声明 references、signatureHelp 和 semantic tokens。客户端只是协议桥接，不能把上游未声明的功能计入本扩展能力。上游库路径更新调用 extend_libs，扩展选择重启以避免旧路径残留；一个客户端实例共享当前 extension host 的设置。[capabilities](../sources/openscad-LSP/src/server/mod.rs#L197)、[诊断与配置处理](../sources/openscad-LSP/src/server/handler/notification.rs#L44)、[路径扩展](../sources/openscad-LSP/src/server/handler/notification.rs#L118)、[单客户端状态](../src/features/language/registerLanguage.ts#L9)
 
@@ -119,22 +119,30 @@ LSP 文档 selector 接受文件 URI，所以已保存文件中的未保存编�
 
 ```mermaid
 flowchart LR
-    Doc[当前或最近 SCAD 文档] -->|编辑器切换 / 文本变更| Tree[CustomizerTreeProvider]
-    Tree -->|URI + 全文| Service[CustomizerService.load]
+    Doc[当前或最近 SCAD 文档] -->|编辑器切换 / 文本变更| Provider[CustomizerViewProvider]
+    Provider -->|URI + 全文| Service[CustomizerService.load]
     Service --> Parser[parseCustomizer]
-    Parser --> Params[标量参数与注释元数据]
-    Params --> View[分组树 / 值]
-    View -->|QuickPick / InputBox / 布尔切换| Validate[validateValue]
+    Parser --> Params[标量 / 向量及注释元数据]
+    Params --> View[自定义 HTML / CSS 侧栏]
+    View -->|目标 URI + revision + 参数值| Validate[宿主消息校验 / validateValue]
     Validate --> Override[按文件 URI 的内存覆盖值]
     Override --> CLI[getArguments 输出 -D 数组]
-    CLI --> API[getRenderArguments 扩展 API]
+    Override <-->|双向同步| Preview[预览会话 / JSON 预设]
 ```
 
-解析器逐行跳过注释/字符串干扰，仅接收整行简单赋值；遇到 module/function 或花括号停止，因此它不是完整 AST 解析器，也不会解析向量、表达式、多行赋值或模块局部参数。支持 `/* [Group] */`、`Hidden`、描述注释、数值范围/步长、带标签枚举；重复参数只接收第一次。[字面量](../src/core/customizer/CustomizerParser.ts#L12)、[注释元数据](../src/core/customizer/CustomizerParser.ts#L51)、[结构边界](../src/core/customizer/CustomizerParser.ts#L138)
+解析器扫描语句并跳过字符串和注释中的分隔符，只暴露首个真实 `{` 之前的简单字面量赋值。支持多行赋值、1–4 维数值向量，以及无需分号的 include/use 指令；不加载库、不执行表达式。无花括号的 module/function 定义不会提前终止扫描。Comment Hints 生成最大值/范围/步长滑块、枚举、数字微调步长、文本长度及向量范围；参数前的多行注释作为描述。`Hidden` 隐藏，`Global` 在侧栏根级显示，其他分组以可折叠树行展示。[解析器](../src/core/customizer/CustomizerParser.ts)、[官方规范](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Customizer)
 
-覆盖值以 `Map<URI, Map<name, value>>` 保存在内存中；重新解析时移除不存在或已不合法的值，恢复默认值会删除覆盖。`clear()` 仅清空当前目标和参数，不清除 overrides Map，因此关闭文档后树会清空，但同会话再次打开相同 URI 仍可能恢复覆盖值；不存在磁盘持久化。参数变化输出 JSON 字面量形式的独立 `-D` 参数，不修改原文。[覆盖状态](../src/core/customizer/CustomizerService.ts#L25)、[clear](../src/core/customizer/CustomizerService.ts#L42)、[写入与参数生成](../src/core/customizer/CustomizerService.ts#L51)
+覆盖值以 `Map<URI, Map<name, value>>` 保存在会话内存中，不修改原文。重新解析会移除不存在或不合法的值；恢复默认值或重置会删除对应覆盖。数字、字符串、布尔和数值向量均以 JSON 字面量形式传入独立 `-D` 参数；预览与侧栏共享覆盖值，向量预设使用带方括号的字符串保存。[服务](../src/core/customizer/CustomizerService.ts)、[预览参数](../src/features/preview/extension/core/ScadParameters.ts)
 
-UI 在切到非 SCAD 编辑器或管理页时保留最近的 SCAD 目标；目标关闭时重新选择可用目标或清空。编辑交互开始和提交时均比较 target，避免输入期间切文件把值写到另一目标。**性能分析**：每次匹配目标的文本变更都重读并解析全文，未 debounce；现阶段简单模型足够，长文档或高频输入后可考虑基准测试再引入增量策略。[文档监听](../src/features/sidebar/CustomizerTreeProvider.ts#L10)、[目标保留](../src/features/sidebar/CustomizerTreeProvider.ts#L31)、[提交检查](../src/features/sidebar/CustomizerTreeProvider.ts#L83)
+侧栏由 `WebviewViewProvider` 提供，资源限定为 `media/customizer` 与 `dist`，CSP 仅允许本地 CSS 与带 nonce 的脚本。自定义 HTML/CSS 使用 VSCode 字体和颜色变量，参照原生 TreeView 的 22px 行高、缩进、折叠箭头、悬停/选择/焦点状态与方向键导航。注释使用 `textContent` 展示，并关联无障碍说明；悬停或聚焦可显示提示，Escape、滚动或切换文档会关闭提示。[提供器](../src/features/sidebar/CustomizerViewProvider.ts)、[视图逻辑](../media/customizer/main.js)、[主题样式](../media/customizer/main.css)
+
+切到非 SCAD 编辑器或管理页时保留最近目标；预览编辑器同样可以选中 SCAD 文档，关闭目标后重新选择或清空。宿主校验消息中的目标 URI 和定义 revision，防止切换文件或源码变更后提交过期值；校验错误显示在参数行。数值变化复用现有 DOM，避免预览同步打断正在编辑的字段；定义变化重建控件并保留分组折叠状态。匹配目标的源码变更仍会重读并解析全文。
+
+Customizer 的外层滚动容器使用微软 `monaco-editor@0.57.0` 发布包中与 VS Code 同源的 `DomScrollableElement`，上游 VS Code commit 为 `6a598d4a13031703d483d103c1d934a36ad27971`。构建只导入滚动组件及其依赖图，不加载编辑器、语言服务或 worker；产物为 `dist/customizer.js` / `dist/customizer.css`，连同原始许可证和 notices 打入 VSIX。`media/customizer/scrollbar.js` 隔离内部 API，包括 DOM 尺寸扫描和原生平滑滚动配置；升级固定版本时必须运行 `npm run test:customizer` 验证交互。
+
+容器复用上游的悬停、拖拽、自动隐藏、淡出和阴影实现，配色由 `--vscode-scrollbarSlider-*`、`--vscode-scrollbar-background` 及 `--vscode-scrollbar-shadow` 提供。列表滚轮灵敏度、Alt 加速和平滑滚动跟随 `workbench.list` 设置；当前宿主的 Modern UI 开启时宽度为 8px，并使用 `--vscode-cornerRadius-small` 圆角；普通模式为 10px。ResizeObserver 与内容变更观察负责更新滚动范围，焦点滚动、分组折叠和文件切换均保持同步，Webview 销毁时释放观察器与滚动组件。
+
+浏览器回归命令：先执行 `npx playwright install chromium`，再执行 `npm run test:customizer`；也可设置 `SCAD_CHROMIUM_EXECUTABLE` 使用已有 Chromium。测试加载真实提供器 HTML 和生产滚动 bundle，保留 CSP，验证滚轮、拖拽、自动隐藏、主题变量、键盘滚动、折叠/缩放、文件切换和配置更新。[文档选择与消息边界](../src/features/sidebar/CustomizerViewProvider.ts)
 
 ## 5. Webview、信任与部署边界
 

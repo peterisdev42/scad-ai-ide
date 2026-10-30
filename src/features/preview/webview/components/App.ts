@@ -11,13 +11,14 @@ import { SceneContext, SceneObjectType, SceneSnapshot, sceneContext } from '../c
 import { ObjectProperties, SelectedObjectContext, selectedObjectContext } from '../contexts/SelectedObjectContext'
 import { CameraMode, Environment, BuildPlateOrigin, RenderMode, ViewOptionsContext, viewOptionsContext } from '../contexts/ViewOptionsContext'
 import { LogController } from '../controllers/LogController'
-import { bridge } from '../services/Bridge'
+import { bridge, type Bridge } from '../services/Bridge'
 import { defaultScene } from '../data/defaultScene'
 import { sceneObjectMeta } from '../data/sceneObjectMeta'
 import './aside/SidePanel'
 import './atoms/SplitLayout'
 import './footer/Output'
 import './main/Options'
+import './main/BackendStatus'
 import './main/Preview'
 import './main/Toolbar'
 
@@ -29,6 +30,8 @@ declare global {
 
 @customElement('scad-app')
 export class App extends LitElement {
+    public bridge: Bridge = bridge
+
     static styles = css`
         :host {
             display: flex;
@@ -38,6 +41,12 @@ export class App extends LitElement {
             overflow: hidden;
             background-color: var(--vscode-panel-background);
             color: var(--vscode-panel-foreground);
+        }
+
+        :host([embedded]) {
+            width: 100%;
+            height: 100%;
+            min-width: 0;
         }
     `
 
@@ -70,7 +79,8 @@ export class App extends LitElement {
             buildPlateOrigin: BuildPlateOrigin.Center,
             renderMode: RenderMode.Solid,
             camera: CameraMode.Perspective,
-            shadows: false,
+            modelColor: null,
+            shadows: true,
             fogDensity: 0,
         },
         get: (key) => this.viewSettingsContext.options[key],
@@ -83,6 +93,7 @@ export class App extends LitElement {
                     [key]: value,
                 },
             }
+            if (key === 'modelColor') this.schedulePersist()
         },
     }
 
@@ -95,22 +106,22 @@ export class App extends LitElement {
         overrides: {},
         get: (name) => this.parameterContext.parameters.find((p) => p.name === name),
         override: (name, value) => {
-            bridge.updateParameterOverride(name, value)
+            this.bridge.updateParameterOverride(name, value)
         },
         revert: (name) => {
-            bridge.updateParameterOverride(name, undefined)
+            this.bridge.updateParameterOverride(name, undefined)
         },
         saveSet: (name) => {
-            bridge.saveParameterSet(name)
+            this.bridge.saveParameterSet(name)
         },
         saveAsNewSet: () => {
-            bridge.promptSaveParameterSet()
+            this.bridge.promptSaveParameterSet()
         },
         applySet: (name) => {
-            bridge.applyParameterSet(name)
+            this.bridge.applyParameterSet(name)
         },
         deleteSet: (name) => {
-            bridge.deleteParameterSet(name)
+            this.bridge.deleteParameterSet(name)
         },
     }
 
@@ -121,8 +132,8 @@ export class App extends LitElement {
         base64Data: null,
         isLoading: true,
         loadingMessage: 'Rendering SCAD...',
-        export: bridge.exportModel,
-        sendToSlicer: bridge.sendToSlicer,
+        export: () => this.bridge.exportModel(),
+        sendToSlicer: () => this.bridge.sendToSlicer(),
     }
 
     @provide({ context: activeToolContext })
@@ -241,8 +252,15 @@ export class App extends LitElement {
 
     connectedCallback() {
         super.connectedCallback()
-        this.unsubscribe = bridge.onMessage(this.handleMessage)
-        bridge.ready()
+        this.unsubscribe = this.bridge.onMessage(this.handleMessage)
+        this.bridge.ready()
+    }
+
+    firstUpdated() {
+        if (this.hasAttribute('embedded')) {
+            this.parameterPanelSize = `${Math.max(100, this.clientWidth - 280)}px`
+            this.debugPanelSize = `${Math.max(100, this.clientHeight - 200)}px`
+        }
     }
 
     private schedulePersist() {
@@ -262,13 +280,14 @@ export class App extends LitElement {
         const properties = stage.serializeProperties()
         const snapshot: SceneSnapshot = {
             version: 1,
+            modelColor: this.viewSettingsContext.get('modelColor'),
             activeCameraId: this.sceneContextValue.activeCameraId,
             objects: this.sceneContextValue.objects.map((o) => {
                 const props = properties.get(o.id)
                 return props ? { ...o, properties: props } : { ...o }
             }),
         }
-        bridge.persistScene(snapshot)
+        this.bridge.persistScene(snapshot)
     }
 
     private _stageWired = false
@@ -340,12 +359,21 @@ export class App extends LitElement {
     }
 
     disconnectedCallback() {
+        if (this.persistTimer !== null) window.clearTimeout(this.persistTimer)
+        this.persistScene()
+        this.dispatchEvent(new Event('preview-disconnecting'))
         super.disconnectedCallback()
         this.unsubscribe?.()
     }
 
     private handleMessage = (message: ExtensionToWebviewMessage) => {
         switch (message.type) {
+            case 'previewBackend':
+                this.modelContext = { ...this.modelContext, backend: message.backend, loadingMessage: this.modelContext.isLoading && message.backend.kind === 'fallback' ? 'Generating STL fallback…' : this.modelContext.loadingMessage }
+                break
+            case 'previewMode':
+                this.modelContext = { ...this.modelContext, previewMode: message.mode, setPreviewMode: (mode) => this.bridge.setPreviewMode(mode) }
+                break
             case 'update':
                 if (message.content) {
                     this.modelContext = {
@@ -355,7 +383,7 @@ export class App extends LitElement {
                         isLoading: false,
                     }
                 } else {
-                    bridge.reportError('No content in update message')
+                    this.bridge.reportError('No content in update message')
                 }
                 break
             case 'updateParameters':
@@ -368,8 +396,13 @@ export class App extends LitElement {
                         overrides: message.overrides || {},
                     }
                 } else {
-                    bridge.reportError('No parameters in update message')
+                    this.bridge.reportError('No parameters in update message')
                 }
+                break
+            case 'emptyModel':
+            case 'renderError':
+                this.logController.processLoadingState(false)
+                this.modelContext = { ...this.modelContext, base64Data: null, format: null, isLoading: false, loadingMessage: message.message }
                 break
             case 'loadingState':
                 this.logController.processLoadingState(message.loading)
@@ -393,6 +426,8 @@ export class App extends LitElement {
     private applySceneSnapshot(snapshot: unknown) {
         const parsed = this.parseSnapshot(snapshot)
         if (parsed) {
+            const color = parsed.modelColor
+            this.viewSettingsContext.set('modelColor', typeof color === 'string' && /^#[0-9a-f]{6}$/i.test(color) ? color : null)
             const { properties, ...rest } = this.deconstructSnapshot(parsed)
             this.pendingProperties = properties
             this.sceneContextValue = {
@@ -436,8 +471,9 @@ export class App extends LitElement {
             <scad-split-layout split="horizontal" fixed-pane="end" handle-position=${bottomPanel ? this.debugPanelSize : '100%'} @vsc-split-layout-change=${(e: CustomEvent) => this.handleResize('bottom', e)}>
                 <scad-split-layout slot="start" split="vertical" fixed-pane="end" handle-position=${sidePanel ? this.parameterPanelSize : '100%'} @vsc-split-layout-change=${(e: CustomEvent) => this.handleResize('right', e)}>
                     <div slot="start" style="position:relative;width:100%;height:100%;">
-                        <scad-preview></scad-preview>
+                        <scad-preview @stage-ready=${() => this.requestUpdate()}></scad-preview>
                         <scad-toolbar @clear-measurements=${this.clearMeasurements}></scad-toolbar>
+                        <scad-backend-status></scad-backend-status>
                         <scad-options @reset-view=${() => this.previewEl?.stage?.resetView()}></scad-options>
                     </div>
                     <div slot="end">${sidePanel ? html`<scad-side-panel></scad-side-panel>` : nothing}</div>
@@ -456,6 +492,10 @@ export class App extends LitElement {
             selectedId: objects.some((object) => object.id === this.sceneContextValue.selectedId) ? this.sceneContextValue.selectedId : null,
         }
         this.schedulePersist()
+    }
+
+    public saveView() {
+        this.persistScene()
     }
 
     private handleResize(panel: 'right' | 'bottom', e: CustomEvent) {

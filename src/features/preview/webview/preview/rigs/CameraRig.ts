@@ -1,13 +1,20 @@
-import { Box3, BufferGeometry, Color, DoubleSide, Float32BufferAttribute, Group, LineBasicMaterial, LineSegments, MathUtils, Mesh, MeshBasicMaterial, Object3D, OrthographicCamera, PerspectiveCamera, Quaternion, Vector3 } from 'three'
+import { Box3, BufferGeometry, Color, DoubleSide, Float32BufferAttribute, Group, LineBasicMaterial, LineSegments, Matrix4, MathUtils, Mesh, MeshBasicMaterial, Object3D, OrthographicCamera, PerspectiveCamera, Quaternion, Vector3 } from 'three'
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js'
 import { CameraProperties } from '../../contexts/SelectedObjectContext'
 import { CameraMode } from '../../contexts/ViewOptionsContext'
 import { Rig } from './Rig'
 import { DirectPointerNavigation } from './DirectPointerNavigation'
 
-import { cubeViewUp, cubeViewDirection, cubeEdgeRotation } from '../widgets/ViewCubeGeometry'
+import { cubeViewUp, cubeViewDirection } from '../widgets/ViewCubeGeometry'
 
 const GIZMO_DISPLAY_DISTANCE = 15
+
+export interface CameraViewState {
+    position: number[]
+    target: number[]
+    up: number[]
+    fov: number
+}
 
 export class CameraRig extends Rig {
     public readonly id: string
@@ -22,7 +29,6 @@ export class CameraRig extends Rig {
     private _userVisible = true
     private _isActiveCamera = false
     private color: Color
-    private edgeSelection?: Vector3
     private resetTransition?: {
         start: number
         duration: number
@@ -31,6 +37,7 @@ export class CameraRig extends Rig {
         fromDistance: number
         toDistance: number
         fromRotation: Quaternion
+        toRotation: Quaternion
     }
     private orientationTransition?: {
         start: number
@@ -57,12 +64,12 @@ export class CameraRig extends Rig {
         this.activeCamera = this.persCamera
 
         this.controls = new TrackballControls(this.persCamera, domElement)
-        this.controls.zoomSpeed = 0.5
+        this.controls.zoomSpeed = 1
+        this.controls.panSpeed = 1
         this.controls.staticMoving = true
         this.controls.rotateSpeed = 1
         this.controls.keys = ['', '', '']
         this.controls.addEventListener('start', () => {
-            this.edgeSelection = undefined
             this.orientationTransition = undefined
             this.resetTransition = undefined
         })
@@ -131,6 +138,22 @@ export class CameraRig extends Rig {
         return this.controls
     }
 
+    public captureView(): CameraViewState {
+        return { position: this.persCamera.position.toArray(), target: this.controls.target.toArray(), up: this.persCamera.up.toArray(), fov: this.persCamera.fov }
+    }
+
+    public restoreView(view: CameraViewState): void {
+        this.orientationTransition = undefined
+        this.resetTransition = undefined
+        this.persCamera.position.fromArray(view.position)
+        this.controls.target.fromArray(view.target)
+        this.persCamera.up.fromArray(view.up)
+        this.persCamera.fov = view.fov
+        this.persCamera.updateProjectionMatrix()
+        this.controls.update()
+        this.syncCameras()
+    }
+
     public setMode(mode: CameraMode): void {
         this.syncCameras()
         this.activeCamera = mode === CameraMode.Orthographic ? this.orthCamera : this.persCamera
@@ -138,7 +161,6 @@ export class CameraRig extends Rig {
 
     /** Orient the active rig without moving the orbit target or changing zoom. */
     public orientTo(direction: Vector3, duration = 280): void {
-        this.edgeSelection = undefined
         if (!direction.lengthSq()) return
         this.resetTransition = undefined
         const offset = this.persCamera.position.clone().sub(this.controls.target)
@@ -161,39 +183,13 @@ export class CameraRig extends Rig {
         if (duration <= 0) this.update()
     }
 
-    /** Edge clicks change one screen-space angle, correcting inverted up across a pole. */
+    /** An edge is the fixed bisector of its two adjacent faces, independent of the starting view. */
     public orientToEdge(direction: Vector3, duration = 280): void {
-        if (!direction.lengthSq()) return
-        const selected = direction.clone().normalize()
-        // Re-clicking a bevel must not switch from yaw to pitch as its projection changes.
-        if (this.edgeSelection?.distanceToSquared(selected) === 0) return
-        const offset = this.persCamera.position.clone().sub(this.controls.target)
-        if (!offset.lengthSq()) return
-        this.edgeSelection = selected
-        this.resetTransition = undefined
-        const up = new Vector3(0, 1, 0).applyQuaternion(this.persCamera.quaternion)
-        const rotation = cubeEdgeRotation(direction, this.persCamera.quaternion)
-        const start = offset.clone().normalize()
-        const end = start.clone().applyQuaternion(rotation)
-        const transportedUp = up.clone().applyQuaternion(rotation)
-        // Leaving (or passing through) Top/Bottom on the opposite meridian can
-        // transport screen-up below the XY plane. Correct it during this animation,
-        // before the next Z-up mouse orbit would otherwise flip the screen frame.
-        const crossesPole = start.z * end.z > 0 && start.x * end.x + start.y * end.y <= 1e-10 && up.z >= -1e-10 && transportedUp.z < -1e-10
-        this.orientationTransition = {
-            start: performance.now(),
-            duration,
-            offset,
-            up,
-            rotation,
-            roll: crossesPole ? Math.PI : 0,
-        }
-        if (duration <= 0) this.update()
+        this.orientTo(direction, duration)
     }
 
     /** Positive angles rotate the displayed model clockwise around the viewing axis. */
     public roll(angle: number, duration = 220): void {
-        this.edgeSelection = undefined
         this.resetTransition = undefined
         this.orientationTransition = {
             start: performance.now(),
@@ -207,17 +203,25 @@ export class CameraRig extends Rig {
     }
 
     /** Center the complete model and restore the canonical Top (+Z, screen-up +Y) view. */
-    public resetView(bounds: Box3, duration = 420): void {
-        this.edgeSelection = undefined
+    public resetView(bounds: Box3, duration = 420, direction = new Vector3(0, 0, 1)): void {
         this.orientationTransition = undefined
         this.resetTransition = undefined
         const center = bounds.isEmpty() ? new Vector3() : bounds.getCenter(new Vector3())
         const half = bounds.isEmpty() ? new Vector3(50, 50, 50) : bounds.getSize(new Vector3()).multiplyScalar(0.5)
+        const normal = cubeViewDirection(direction)
+        const up = cubeViewUp(normal)
+        const right = up.clone().cross(normal).normalize()
+        const rotation = new Quaternion().setFromRotationMatrix(new Matrix4().makeBasis(right, up, normal))
+        // Fit the bounding box in the requested camera frame, including tall models.
+        const projectedHalf = (axis: Vector3) => Math.abs(axis.x) * half.x + Math.abs(axis.y) * half.y + Math.abs(axis.z) * half.z
+        const halfWidth = projectedHalf(right),
+            halfUp = projectedHalf(up),
+            halfDepth = projectedHalf(normal)
         const tangent = Math.tan(MathUtils.degToRad(this.persCamera.fov / 2))
         // Keep margin on both screen axes, including portrait-shaped viewports.
-        const halfHeight = Math.max(half.y, half.x / this.persCamera.aspect, 0.01) * 2
-        const distance = this.activeCamera === this.orthCamera ? Math.max(halfHeight / tangent, half.z + this.persCamera.near * 2) : half.z + Math.max(halfHeight / tangent, this.persCamera.near * 2)
-        this.persCamera.far = Math.max(this.persCamera.far, distance + half.z + 1)
+        const halfHeight = Math.max(halfUp, halfWidth / this.persCamera.aspect, 0.01) * 2
+        const distance = this.activeCamera === this.orthCamera ? Math.max(halfHeight / tangent, halfDepth + this.persCamera.near * 2) : halfDepth + Math.max(halfHeight / tangent, this.persCamera.near * 2)
+        this.persCamera.far = Math.max(this.persCamera.far, distance + halfDepth + 1)
         this.orthCamera.far = this.persCamera.far
         this.persCamera.updateProjectionMatrix()
         this.resetTransition = {
@@ -228,6 +232,7 @@ export class CameraRig extends Rig {
             fromDistance: Math.max(this.persCamera.position.distanceTo(this.controls.target), 1e-6),
             toDistance: distance,
             fromRotation: this.persCamera.quaternion.clone(),
+            toRotation: rotation,
         }
         if (duration <= 0) this.update()
     }
@@ -237,7 +242,7 @@ export class CameraRig extends Rig {
         if (reset) {
             const progress = reset.duration <= 0 ? 1 : Math.min(1, (performance.now() - reset.start) / reset.duration)
             const eased = progress * progress * (3 - 2 * progress)
-            const rotation = reset.fromRotation.clone().slerp(new Quaternion(), eased)
+            const rotation = reset.fromRotation.clone().slerp(reset.toRotation, eased)
             const distance = Math.exp(MathUtils.lerp(Math.log(reset.fromDistance), Math.log(reset.toDistance), eased))
             this.controls.target.lerpVectors(reset.fromTarget, reset.toTarget, eased)
             this.persCamera.position.set(0, 0, distance).applyQuaternion(rotation).add(this.controls.target)
@@ -280,7 +285,6 @@ export class CameraRig extends Rig {
     public setIsActiveCamera(active: boolean): void {
         this._isActiveCamera = active
         if (!active) {
-            this.edgeSelection = undefined
             this.orientationTransition = undefined
             this.resetTransition = undefined
         }
@@ -302,7 +306,6 @@ export class CameraRig extends Rig {
     }
 
     public setProperty(key: string, value: number): void {
-        this.edgeSelection = undefined
         switch (key) {
             case 'fov':
                 this.persCamera.fov = value

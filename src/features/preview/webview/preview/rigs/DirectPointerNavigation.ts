@@ -59,7 +59,7 @@ export class DirectPointerNavigation {
     private onDown = (event: PointerEvent) => {
         if (!this.controls.enabled) return
         this.controls.handleResize()
-        if (event.pointerType === 'touch' || (event.button !== 0 && event.button !== 2)) return
+        if (event.pointerType === 'touch' || (event.button !== 0 && event.button !== 1 && event.button !== 2)) return
         event.preventDefault()
         event.stopImmediatePropagation()
         if (this.drag) return
@@ -67,7 +67,7 @@ export class DirectPointerNavigation {
             pointerId: event.pointerId,
             x: event.clientX,
             y: event.clientY,
-            mode: event.button === 2 || event.shiftKey || event.ctrlKey || event.metaKey ? 'pan' : 'rotate',
+            mode: event.button === 1 || event.button === 2 || event.shiftKey || event.ctrlKey || event.metaKey ? 'pan' : 'rotate',
         }
         this.element.setPointerCapture(event.pointerId)
         this.controls.dispatchEvent({ type: 'start' })

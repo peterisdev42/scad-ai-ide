@@ -8,6 +8,13 @@ declare global {
 }
 
 const icons = {
+    'color-reset': svg`
+    <path d="M3 5a5.5 5.5 0 1 1-.2 5M3 2v3.5h3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  `,
+    'model-color': svg`
+    <path d="M8 1.5a6.5 6.5 0 1 0 0 13h1a1.5 1.5 0 0 0 1-2.6c-.4-.4-.1-1.1.5-1.1H12a2.5 2.5 0 0 0 2.5-2.5A6.5 6.5 0 0 0 8 1.5Z" fill="none" stroke="currentColor" stroke-width="1.3"/>
+    <circle cx="4.5" cy="7" r="1" fill="currentColor"/><circle cx="6.5" cy="4.5" r="1" fill="currentColor"/><circle cx="10" cy="4.5" r="1" fill="currentColor"/>
+  `,
     'clear-measurements': svg`
     <path d="M2 5h12M6 2h4l1 3M4 5l1 9h6l1-9M7 7v5M9 7v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
   `,
@@ -149,7 +156,7 @@ const icons = {
     <line x1="2" y1="10" x2="14" y2="10" stroke="currentColor" stroke-width="1"/>
   `,
     'env-build-plate': svg`
-    <path d="M 4 4 L 6 4 L 6 3 L 10 3 L 10 4 L 12 4 Q 13 4 13 5 L 13 11 L 11 13 L 4 13 Q 3 13 3 12 L 3 5 Q 3 4 4 4 Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M 3.2 3.2 L 5.6 3.2 L 5.6 2 L 10.4 2 L 10.4 3.2 L 12.8 3.2 Q 14 3.2 14 4.4 L 14 11.6 L 11.6 14 L 3.2 14 Q 2 14 2 12.8 L 2 4.4 Q 2 3.2 3.2 3.2 Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
   `,
 
     // Panels

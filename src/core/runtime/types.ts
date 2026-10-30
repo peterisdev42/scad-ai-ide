@@ -1,5 +1,7 @@
 export type RuntimeSource = 'custom' | 'PATH' | 'official' | 'homebrew' | 'macports' | 'native-package' | 'scoop' | 'snap' | 'flatpak' | 'bundled' | 'managed'
 
+export type RuntimeReleaseChannel = 'Stable' | 'RC' | 'Test' | 'Snapshot' | 'Unknown'
+
 export interface LaunchCommand {
     executable: string
     argsPrefix: string[]
@@ -17,6 +19,7 @@ export interface Runtime extends Candidate {
     version: string
     tag?: string
     release?: string
+    channel?: RuntimeReleaseChannel
     platform: NodeJS.Platform
     status: 'available'
 }

@@ -4,17 +4,20 @@ import { createNotifications } from '../core/notifications/createNotifications'
 import * as assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { mkdtemp, mkdir, writeFile, chmod, rm } from 'node:fs/promises'
+import { rmSync } from 'node:fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
 import * as vm from 'node:vm'
 import { readFile } from 'node:fs/promises'
 import type * as vscode from 'vscode'
+import type { GitHubRequest } from '../platform/github/client'
+import { readRuntimeCatalogCache, runtimeCatalogCacheKey, runtimeCatalogCachePath } from '../platform/runtime/catalogCache'
 import { RuntimeManager } from '../core/runtime/RuntimeManager'
 import { UserWarning } from '../core/feedback'
 import type { DiscoveryResult, DiscoveryOptions } from '../core/runtime/types'
 import { discover, fileCandidate, getCandidates, parseVersion, probe, runCommand, type Candidate, type Runtime } from '../platform/runtime/discovery'
 import { parseFlatpak, parseRegistry, resolveApplication } from '../platform/runtime/platformDiscovery'
-import { classifyRuntimeRelease, detectRuntimeSystem, fetchRuntimeBuilds, matchesRuntimeBuild, normalizeArchitecture, type RuntimeSystem } from '../platform/runtime/releases'
+import { classifyRuntimeRelease, readReleaseMetadata, detectRuntimeSystem, fetchLatestRuntimeTag, fetchRuntimeBuilds, matchesRuntimeBuild, normalizeArchitecture, type RuntimeSystem } from '../platform/runtime/releases'
 import { sortRuntimesByVersion } from '../core/runtime/sortRuntimes'
 
 const noPlatform = async () => ({ candidates: [], diagnostics: [] })
@@ -272,8 +275,10 @@ test('release listing follows pagination and includes stable and prerelease matc
         ],
     )
     assert.equal(builds[0].release, '2026.10.29-TEST2')
-    assert.equal(builds[0].channel, undefined)
-    assert.equal(builds[1].channel, 'Stable')
+    assert.equal(builds[0].channel, 'Test')
+    assert.equal(builds[1].channel, 'Test')
+    assert.equal(builds[0].checksumUrl, `${builds[0].downloadUrl}.sha256`)
+    assert.equal(builds[1].checksumUrl, undefined, 'another release checksum must not be reused')
 })
 
 test('release listing handles empty results, API failures, invalid payloads and untrusted downloads', async () => {
@@ -522,16 +527,84 @@ test('Windows Scoop junction aliases merge with physical paths without merging s
     assert.ok(result.runtimes.every((runtime) => runtime.command.executable === executable))
 })
 
-test('only suffix-free release versions receive a Stable badge', () => {
-    for (const version of ['2026.10.28', '2026.10', 'openscad-cli-2026.10.28', 'OpenSCAD CLI 2026.10.28']) {
-        assert.equal(classifyRuntimeRelease(version), 'Stable', version)
+function releaseMetadata(version: string, channel: string, extra = {}) {
+    return { schemaVersion: 1, version, channel, upstream: { repository: 'openscad/openscad', commit: 'a'.repeat(40) }, ...extra }
+}
+
+function metadataBody(data: unknown): string {
+    // JSON is also valid YAML; use a YAML fence as required by the Release schema.
+    return '```yaml\n' + JSON.stringify(data) + '\n```\nRelease notes'
+}
+
+test('release channels use validated YAML and never infer Stable or Snapshot from a date', () => {
+    for (const [channel, label] of [
+        ['stable', 'Stable'],
+        ['rc', 'RC'],
+        ['test', 'Test'],
+        ['snapshot', 'Snapshot'],
+    ]) {
+        const release = { tag_name: 'openscad-2026.10.27', prerelease: channel !== 'stable', body: metadataBody(releaseMetadata('2026.10.27', channel)) }
+        assert.equal(classifyRuntimeRelease(release), label)
+        assert.equal(readReleaseMetadata(release)?.upstream.commit, 'a'.repeat(40))
     }
-    for (const suffix of ['TEST4', 'nightly', 'dev', 'snapshot', 'alpha1', 'beta2', 'rc3', 'preview', 'custom', '1']) {
-        assert.equal(classifyRuntimeRelease(`2026.10.28-${suffix}`), undefined, suffix)
+    const snapshot = { tag_name: 'openscad-2026.10.27', prerelease: true, body: '```yaml\r\nschemaVersion: 1\r\nversion: "2026.10.27"\r\nchannel: snapshot\r\nupstream:\r\n  repository: openscad/openscad\r\n  commit: ' + 'a'.repeat(40) + '\r\n```' }
+    assert.equal(classifyRuntimeRelease(snapshot), 'Snapshot')
+    assert.equal(classifyRuntimeRelease({ tag_name: 'openscad-2026.10.27', prerelease: true }), 'Unknown')
+    assert.equal(classifyRuntimeRelease({ tag_name: 'openscad-2021.01', prerelease: false }), 'Stable')
+    assert.equal(classifyRuntimeRelease({ tag_name: 'openscad-2021.01' }), 'Unknown')
+    assert.equal(classifyRuntimeRelease({ tag_name: 'openscad-2021.01', prerelease: false, draft: true }), 'Unknown')
+    assert.equal(classifyRuntimeRelease({ tag_name: 'openscad-2026.10-RC2', prerelease: true }), 'RC')
+    assert.equal(classifyRuntimeRelease({ tag_name: 'openscad-cli-2026.10-TEST4', prerelease: true }), 'Test')
+})
+
+test('invalid or inconsistent release metadata is rejected safely', () => {
+    const base = { tag_name: 'openscad-2026.10.27', prerelease: true }
+    const valid = releaseMetadata('2026.10.27', 'snapshot')
+    for (const data of [null, [], 'text', { ...valid, schemaVersion: 2 }, { ...valid, channel: 'nightly' }, { ...valid, version: '2026.10.28' }, { ...valid, upstream: { repository: 'openscad/openscad', commit: '123' } }, { ...valid, upstream: { commit: 'a'.repeat(40) } }]) {
+        const release = { ...base, body: metadataBody(data) }
+        assert.equal(readReleaseMetadata(release), undefined)
+        assert.equal(classifyRuntimeRelease(release), 'Unknown')
     }
-    for (const version of ['', 'unknown', 'OpenSCAD Nightly', '2026.10.28-', '2026.10.28+build1']) {
-        assert.equal(classifyRuntimeRelease(version), undefined, version)
+    assert.equal(readReleaseMetadata({ ...base, prerelease: false, body: metadataBody(valid) }), undefined)
+    assert.equal(readReleaseMetadata({ ...base, body: '```yaml\ninvalid: [\n```' }), undefined)
+    assert.equal(readReleaseMetadata({ ...base, body: 'Notes first\n' + metadataBody(valid) }), undefined)
+})
+
+test('GitHub Latest chooses the recommended stable tag independently of snapshots', async () => {
+    const request = async (url: string) => {
+        assert.equal(url, 'https://api.github.com/repos/peterisdev42/openscad-cli-builder/releases/latest')
+        return new Response(JSON.stringify({ tag_name: 'openscad-2021.01', prerelease: false }))
     }
+    assert.equal(await fetchLatestRuntimeTag(request), 'openscad-2021.01')
+    assert.equal(await fetchLatestRuntimeTag(async () => new Response(JSON.stringify({ tag_name: 'openscad-2026.10.27', prerelease: true }))), undefined)
+    await assert.rejects(
+        fetchLatestRuntimeTag(async () => new Response('[]')),
+        /Invalid GitHub Latest/,
+    )
+})
+
+test('available builds sort by upstream title date, then tag, with publication time only as fallback', async () => {
+    const system = { platform: 'linux', architecture: 'x64', name: 'Linux', version: '6' }
+    const fixture = (id: number, tag: string, name: string, prerelease: boolean, published_at: string, body?: string) => ({
+        tag_name: tag,
+        name,
+        prerelease,
+        published_at,
+        body,
+        assets: [{ id, name: 'openscad-cli-linux-x86_64.tar.gz', browser_download_url: `https://github.com/peterisdev42/openscad-cli-builder/releases/download/${tag}/openscad-cli-linux-x86_64.tar.gz` }],
+    })
+    const releases = [fixture(1, 'openscad-2021.01', '2021.01.31', false, '2026-10-29T00:00:00Z'), fixture(2, 'openscad-2026.10-TEST4', '2026.10.15-TEST4', true, '2026-10-28T00:00:00Z'), fixture(3, 'openscad-2026.10.27', '2026.10.27', true, '2026-10-27T00:00:00Z', metadataBody(releaseMetadata('2026.10.27', 'snapshot'))), fixture(4, 'openscad-legacy', 'Legacy release', true, '2026-10-20T00:00:00Z'), fixture(5, 'openscad-invalid-date', '2026.02.30', true, '2020-01-01T00:00:00Z'), fixture(6, 'openscad-a', '2026.10.27-RC1', true, '2026-10-29T00:00:00Z')]
+    const builds = await fetchRuntimeBuilds(system, async () => new Response(JSON.stringify(releases)))
+    assert.deepEqual(
+        builds.map((build) => build.id),
+        [3, 6, 4, 2, 1, 5],
+    )
+    assert.deepEqual(
+        builds.filter((build) => [1, 2, 3].includes(build.id)).map((build) => build.channel),
+        ['Snapshot', 'Test', 'Stable'],
+    )
+    assert.equal(builds[0].upstreamCommit, 'a'.repeat(40))
+    assert.equal(builds[0].tag, 'openscad-2026.10.27')
 })
 
 test('GitHub rate-limit failures preserve the upstream message, status, reset time and request metadata', async () => {
@@ -621,7 +694,8 @@ test('invalid GitHub response content retains the request and parsing error or u
     )
 })
 
-async function mockRuntimeFeature(detect: (options: DiscoveryOptions) => Promise<DiscoveryResult>, remove: (installPath: string) => Promise<void> = async () => {}, trusted = true) {
+async function mockRuntimeFeature(detect: (options: DiscoveryOptions) => Promise<DiscoveryResult>, remove: (installPath: string) => Promise<void> = async () => {}, trusted = true, request?: GitHubRequest, globalState = new Map<string, unknown>(), storageRoot?: string) {
+    const storage = storageRoot ?? (await mkdtemp(path.join(os.tmpdir(), 'scad-runtime-feature-')))
     const notices: { message: string; action: string }[] = []
     const commands: unknown[][] = []
     let selectAction = true
@@ -709,15 +783,30 @@ async function mockRuntimeFeature(detect: (options: DiscoveryOptions) => Promise
                         return '/mock/openscad'
                     },
                 }
-            if (id.endsWith('/releases')) return { detectRuntimeSystem: async () => ({ platform: 'linux', architecture: 'x64', name: 'Linux', version: 'test' }) }
+            if (id.endsWith('/releases')) return { ...require(path.resolve(path.dirname(file), id)), detectRuntimeSystem: async () => ({ platform: 'linux', architecture: 'x64', name: 'Linux', version: 'test' }) }
             return id.startsWith('.') ? require(path.resolve(path.dirname(file), id)) : require(id)
         },
     }
     vm.runInNewContext(await readFile(file, 'utf8'), sandbox, { filename: file })
     const manager = new RuntimeManager(detect)
-    const runtime = sandbox.exports.registerRuntime({ globalStorageUri: { fsPath: '/mock-storage' }, subscriptions } as unknown as vscode.ExtensionContext, manager, async () => {
-        throw new Error('Local scanning must not access GitHub')
-    })
+    const runtime = sandbox.exports.registerRuntime(
+        {
+            globalStorageUri: { fsPath: storage },
+            subscriptions,
+            globalState: {
+                get: (key: string) => globalState.get(key),
+                update: async (key: string, value: unknown) => {
+                    if (value === undefined) globalState.delete(key)
+                    else globalState.set(key, value)
+                },
+            },
+        } as unknown as vscode.ExtensionContext,
+        manager,
+        request ??
+            (async () => {
+                throw new Error('Local scanning must not access GitHub')
+            }),
+    )
     return {
         runtime,
         notifications,
@@ -744,27 +833,36 @@ async function mockRuntimeFeature(detect: (options: DiscoveryOptions) => Promise
         dispose: () => {
             notifications.dispose()
             subscriptions.forEach((subscription) => subscription.dispose())
+            if (!storageRoot) rmSync(storage, { recursive: true, force: true })
         },
     }
 }
 
 test('startup waits for discovery and offers Runtime Available once when no runtime exists', async () => {
     let complete!: (result: DiscoveryResult) => void
+    let started!: () => void
+    let discoveryStarted = new Promise<void>((resolve) => {
+        started = resolve
+    })
     const mock = await mockRuntimeFeature(
         () =>
             new Promise((resolve) => {
                 complete = resolve
+                started()
             }),
     )
     try {
-        await new Promise<void>((resolve) => setImmediate(resolve))
+        await discoveryStarted
         assert.equal(mock.notices.length, 0)
         complete({ runtimes: [], diagnostics: [] })
         await mock.runtime.whenReady()
         assert.deepEqual(mock.notices, [{ message: 'No OpenSCAD runtime is available.', action: 'Install OpenSCAD CLI' }])
         assert.deepEqual(mock.commands, [['scad-ai.runtime.open', 'available']])
+        discoveryStarted = new Promise<void>((resolve) => {
+            started = resolve
+        })
         const refresh = mock.runtime.refresh()
-        await new Promise<void>((resolve) => setImmediate(resolve))
+        await discoveryStarted
         complete({ runtimes: [], diagnostics: [] })
         await refresh
         assert.equal(mock.notices.length, 1)
@@ -1052,6 +1150,180 @@ test('discovery shares missing Runtime with preview and rearms only after succes
         await mock.runtime.refresh()
         await mock.notifications.renderFailed(new RuntimeUnavailableError(), () => {}, 'file-b')
         assert.equal(mock.notices.length, 2)
+    } finally {
+        mock.dispose()
+    }
+})
+
+test('Runtime recommendation uses Latest Stable while keeping snapshots first in Available', async () => {
+    const asset = (id: number, tag: string) => ({ id, name: 'openscad-cli-linux-x86_64.tar.gz', browser_download_url: `https://github.com/peterisdev42/openscad-cli-builder/releases/download/${tag}/openscad-cli-linux-x86_64.tar.gz` })
+    const stable = { tag_name: 'openscad-2021.01', name: '2021.01.31', prerelease: false, assets: [asset(1, 'openscad-2021.01')] }
+    const snapshot = { tag_name: 'openscad-2026.10.27', name: '2026.10.27', prerelease: true, body: metadataBody(releaseMetadata('2026.10.27', 'snapshot')), assets: [asset(2, 'openscad-2026.10.27')] }
+    let matchingStable = true
+    const request: GitHubRequest = async (url) => new Response(JSON.stringify(url.endsWith('/latest') ? stable : matchingStable ? [stable, snapshot] : [snapshot]))
+    const installed = await fakeProbe({ source: 'managed', command: { executable: '/runtime/snapshot', argsPrefix: [] } })
+    const stableRuntime = { ...installed, id: 'stable', tag: stable.tag_name, version: '2021.01' }
+    const snapshotRuntime = { ...installed, tag: snapshot.tag_name, channel: 'Unknown' as const }
+    const offlineRuntime = { ...installed, id: 'offline', tag: 'offline', channel: 'Test' as const }
+    const unknownRuntime = { ...installed, id: 'unknown', version: '2026.10.28' }
+    const rcRuntime = { ...installed, id: 'rc', version: '2026.10.28-RC2' }
+    const runtimes = [stableRuntime, snapshotRuntime, offlineRuntime, unknownRuntime, rcRuntime]
+    const mock = await mockRuntimeFeature(async () => ({ runtimes, diagnostics: [] }), undefined, true, request)
+    try {
+        await mock.runtime.whenReady()
+        assert.equal(mock.runtime.getState().runtimes.find((runtime) => runtime.id === 'offline')?.channel, 'Test')
+        assert.equal(mock.runtime.getState().runtimes.find((runtime) => runtime.id === 'unknown')?.channel, 'Unknown')
+        assert.equal(mock.runtime.getState().runtimes.find((runtime) => runtime.id === 'rc')?.channel, 'RC')
+        await mock.runtime.loadBuilds()
+        assert.equal(mock.runtime.getState().runtimes.find((runtime) => runtime.id === installed.id)?.channel, 'Snapshot')
+        assert.equal(mock.runtime.getState().runtimes.find((runtime) => runtime.id === 'stable')?.channel, 'Stable')
+        assert.equal(mock.runtime.getState().buildsError, '')
+        assert.deepEqual(
+            Array.from(mock.runtime.getState().builds, (build) => build.id),
+            [2, 1],
+        )
+        assert.equal(mock.runtime.getState().recommendedBuildId, 1)
+        matchingStable = false
+        await mock.runtime.loadBuilds(true)
+        assert.equal(mock.runtime.getState().recommendedBuildId, undefined, 'Do not recommend a snapshot when Latest has no matching platform asset')
+        assert.deepEqual(
+            Array.from(mock.runtime.getState().builds, (build) => build.id),
+            [2],
+        )
+    } finally {
+        mock.dispose()
+    }
+})
+
+test('Runtime catalog persists across restarts, restores Installed channels without GitHub and survives failed refreshes', async (t) => {
+    const storage = await mkdtemp(path.join(os.tmpdir(), 'scad-catalog-cache-'))
+    t.after(() => rm(storage, { recursive: true, force: true }))
+    const system = { platform: 'linux', architecture: 'x64', name: '', version: '' }
+    const globalState = new Map<string, unknown>()
+    const installed = { ...(await fakeProbe({ source: 'managed', command: { executable: '/runtime/snapshot', argsPrefix: [] } })), tag: 'openscad-cli-2026.10.27' }
+    const detect = async () => ({ runtimes: [installed], diagnostics: [] })
+    const tag = 'openscad-2026.10.27'
+    const snapshot = { tag_name: tag, name: '2026.10.27', prerelease: true, body: metadataBody(releaseMetadata('2026.10.27', 'snapshot')), assets: [{ id: 2, name: 'openscad-cli-linux-x86_64.tar.gz', size: 1024, browser_download_url: `https://github.com/peterisdev42/openscad-cli-builder/releases/download/${tag}/openscad-cli-linux-x86_64.tar.gz` }] }
+    const stable = { tag_name: 'openscad-2021.01', prerelease: false }
+    const online: GitHubRequest = async (url) => new Response(JSON.stringify(url.endsWith('/latest') ? stable : [snapshot]))
+    const first = await mockRuntimeFeature(detect, undefined, true, online, globalState, storage)
+    try {
+        await first.runtime.whenReady()
+        await first.runtime.loadBuilds()
+        assert.equal(first.runtime.getState().buildsError, '')
+        assert.equal(first.runtime.getState().runtimes[0].channel, 'Snapshot')
+        assert.equal(globalState.size, 1)
+        assert.equal(readRuntimeCatalogCache(globalState.get(runtimeCatalogCacheKey(system)), system)?.builds[0].id, 2)
+    } finally {
+        first.dispose()
+    }
+    // Recreate VS Code's serialized globalState after a restart.
+    const saved = JSON.stringify([...globalState])
+    const persisted = new Map<string, unknown>(JSON.parse(saved))
+    let requests = 0
+    const offline: GitHubRequest = async () => {
+        requests++
+        throw new Error('Offline')
+    }
+    const second = await mockRuntimeFeature(detect, undefined, true, offline, persisted, storage)
+    try {
+        await second.runtime.whenReady()
+        assert.equal(requests, 0, 'Installed discovery must restore labels without network access')
+        assert.equal(second.runtime.getState().runtimes[0].channel, 'Snapshot')
+        assert.equal(second.runtime.getState().builds[0].id, 2)
+        assert.equal(second.runtime.getState().buildsLoaded, false, 'First visit should still attempt an online refresh')
+        await second.runtime.loadBuilds()
+        assert.ok(requests > 0)
+        assert.match(second.runtime.getState().buildsError, /Offline/)
+        assert.equal(second.runtime.getState().builds[0].id, 2)
+        assert.equal(second.runtime.getState().runtimes[0].channel, 'Snapshot')
+        assert.equal(JSON.stringify([...persisted]), saved, 'Failed refresh must preserve the persisted catalog')
+    } finally {
+        second.dispose()
+    }
+    const third = await mockRuntimeFeature(detect, undefined, true, async (url) => new Response(JSON.stringify(url.endsWith('/latest') ? stable : [])), persisted, storage)
+    try {
+        await third.runtime.whenReady()
+        await third.runtime.loadBuilds()
+        assert.equal(third.runtime.getState().builds.length, 0, 'Successful refresh replaces cached data')
+        const cached = readRuntimeCatalogCache(persisted.get(runtimeCatalogCacheKey(system)), system)
+        assert.equal(cached?.builds.length, 0)
+    } finally {
+        third.dispose()
+    }
+})
+
+test('Runtime catalog cache rejects corrupt data, foreign platforms and untrusted download URLs', () => {
+    const system = { platform: 'linux', architecture: 'x64', name: '', version: '' }
+    const build = { id: 1, release: '2021.01.31', tag: 'openscad-2021.01', prerelease: false, publishedAt: '', name: 'openscad-cli-linux-x86_64.tar.gz', size: 1, downloadUrl: 'https://github.com/peterisdev42/openscad-cli-builder/releases/download/openscad-2021.01/openscad-cli-linux-x86_64.tar.gz', channel: 'Stable' }
+    const cache = { version: 1, builds: [build], recommendedBuildId: 1 }
+    assert.equal(readRuntimeCatalogCache(cache, system)?.recommendedBuildId, 1)
+    for (const invalid of [null, {}, { ...cache, version: 2 }, { ...cache, builds: [null] }, { ...cache, builds: [{ ...build, channel: 'invalid' }] }, { ...cache, builds: [{ ...build, downloadUrl: 'https://example.test/runtime.tar.gz' }] }, { ...cache, builds: [{ ...build, checksumUrl: 'https://example.test/hash' }] }]) {
+        assert.equal(readRuntimeCatalogCache(invalid, system), undefined)
+    }
+    const other = { ...system, architecture: 'arm64' }
+    assert.notEqual(runtimeCatalogCacheKey(system), runtimeCatalogCacheKey(other))
+    assert.equal(readRuntimeCatalogCache(cache, other), undefined)
+})
+
+test('legacy file catalog migrates into globalState without GitHub access', async () => {
+    const system = { platform: 'linux', architecture: 'x64', name: '', version: '' }
+    const cache = { version: 1 as const, builds: [{ id: 1, release: '2021.01.31', tag: 'openscad-2021.01', prerelease: false, publishedAt: '', name: 'openscad-cli-linux-x86_64.tar.gz', size: 1, downloadUrl: 'https://github.com/peterisdev42/openscad-cli-builder/releases/download/openscad-2021.01/openscad-cli-linux-x86_64.tar.gz', channel: 'Stable' as const }], recommendedBuildId: 1 }
+    const globalState = new Map<string, unknown>()
+    const storage = await mkdtemp(path.join(os.tmpdir(), 'scad-catalog-migration-'))
+    await mkdir(path.join(storage, 'cache'))
+    await writeFile(runtimeCatalogCachePath(storage, system), JSON.stringify(cache))
+    const installed = { ...(await fakeProbe({ source: 'managed', command: { executable: '/runtime/stable', argsPrefix: [] } })), tag: 'openscad-2021.01' }
+    const mock = await mockRuntimeFeature(async () => ({ runtimes: [installed], diagnostics: [] }), undefined, true, undefined, globalState, storage)
+    try {
+        await mock.runtime.whenReady()
+        assert.equal(mock.runtime.getState().runtimes[0].channel, 'Stable')
+        assert.deepEqual(globalState.get(runtimeCatalogCacheKey(system)), cache)
+    } finally {
+        mock.dispose()
+        await rm(storage, { recursive: true, force: true })
+    }
+})
+
+test('each Runtime panel load shows cached data while GitHub refresh is pending, then replaces UI and globalState', async () => {
+    const system = { platform: 'linux', architecture: 'x64', name: '', version: '' }
+    const tag = 'openscad-2021.01'
+    const build = { id: 1, release: '2021.01.31', tag, prerelease: false, publishedAt: '', name: 'openscad-cli-linux-x86_64.tar.gz', size: 1, downloadUrl: `https://github.com/peterisdev42/openscad-cli-builder/releases/download/${tag}/openscad-cli-linux-x86_64.tar.gz`, channel: 'Stable' }
+    const globalState = new Map<string, unknown>([[runtimeCatalogCacheKey(system), { version: 1, builds: [build], recommendedBuildId: 1 }]])
+    let requests = 0
+    let respond!: (response: Response) => void
+    let started!: () => void
+    let requestStarted = new Promise<void>((resolve) => {
+        started = resolve
+    })
+    const request: GitHubRequest = async (url) => {
+        if (url.endsWith('/latest')) return new Response(JSON.stringify({ tag_name: tag, prerelease: false }))
+        requests++
+        return new Promise((resolve) => {
+            respond = resolve
+            started()
+        })
+    }
+    const mock = await mockRuntimeFeature(async () => ({ runtimes: [], diagnostics: [] }), undefined, true, request, globalState)
+    try {
+        await mock.runtime.whenReady()
+        for (const id of [2, 3]) {
+            requestStarted = new Promise<void>((resolve) => {
+                started = resolve
+            })
+            const loading = mock.runtime.loadBuilds()
+            await requestStarted
+            assert.equal(mock.runtime.getState().buildsBusy, true)
+            assert.equal(mock.runtime.getState().builds[0].id, id - 1, 'Cached catalog stays visible while GitHub is pending')
+            assert.equal(readRuntimeCatalogCache(globalState.get(runtimeCatalogCacheKey(system)), system)?.builds[0].id, id - 1)
+            respond(new Response(JSON.stringify([{ tag_name: tag, name: '2021.01.31', prerelease: false, assets: [{ id, name: build.name, size: 2, browser_download_url: build.downloadUrl }] }])))
+            await loading
+            assert.equal(mock.runtime.getState().builds[0].id, id)
+            assert.equal(mock.runtime.getState().recommendedBuildId, id)
+            assert.equal(mock.runtime.getState().buildsBusy, false)
+            assert.equal(readRuntimeCatalogCache(globalState.get(runtimeCatalogCacheKey(system)), system)?.builds[0].id, id)
+        }
+        assert.equal(requests, 2, 'Reopening after a successful load must still refresh GitHub')
     } finally {
         mock.dispose()
     }

@@ -79,7 +79,7 @@ suite('OpenSCAD language integration', () => {
         if (!executable && !existsSync(bundled)) {
             this.skip()
         }
-        const api = (await extension.activate()) as ReturnType<typeof activate>
+        const api = (await extension.activate()) as Awaited<ReturnType<typeof activate>>
         const configuration = vscode.workspace.getConfiguration('scad-ai-ide.languageServer')
         const previous = configuration.inspect<string>('path')?.globalValue
         const previousEnabled = configuration.inspect<boolean>('enabled')?.globalValue
@@ -157,7 +157,7 @@ suite('OpenSCAD language integration', () => {
         if (!executable && !existsSync(bundled)) {
             this.skip()
         }
-        const api = (await extension.activate()) as ReturnType<typeof activate>
+        const api = (await extension.activate()) as Awaited<ReturnType<typeof activate>>
         const configuration = vscode.workspace.getConfiguration('scad-ai-ide.languageServer')
         const previous = configuration.inspect<string>('path')?.globalValue
         const directory = await mkdtemp(path.join(os.tmpdir(), 'scad-folding-'))

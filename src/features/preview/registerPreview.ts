@@ -5,9 +5,13 @@ import type { registerRuntime } from '../runtime/registerRuntime'
 import { previewEditorViewType, registerShowPanelCommand } from './extension/commands/showPanel'
 import { ScadSessionManager } from './extension/core/ScadSessionManager'
 import { ScadClient } from './extension/services/ScadClient'
+import { MeshPreviewEditorProvider } from './extension/views/MeshPreviewEditorProvider'
+import { meshPreviewEditorViewType } from './extension/services/previewFile'
 import { ScadPreviewEditorProvider } from './extension/views/ScadPreviewEditorProvider'
+import { configureCsgWorker } from '../../core/csg/compile'
 
 export function registerPreview(context: vscode.ExtensionContext, runtime: ReturnType<typeof registerRuntime>, customizer: CustomizerService) {
+    configureCsgWorker(vscode.Uri.joinPath(context.extensionUri, 'dist', 'csg-worker.mjs').fsPath)
     const sessions = new ScadSessionManager(customizer)
     const runtimeIdentity = () => {
         const active = runtime.getActiveRuntime()
@@ -29,6 +33,10 @@ export function registerPreview(context: vscode.ExtensionContext, runtime: Retur
         sessions,
         registerShowPanelCommand(),
         vscode.window.registerCustomEditorProvider(previewEditorViewType, new ScadPreviewEditorProvider(context, sessions), {
+            webviewOptions: { enableFindWidget: true },
+            supportsMultipleEditorsPerDocument: false,
+        }),
+        vscode.window.registerCustomEditorProvider(meshPreviewEditorViewType, new MeshPreviewEditorProvider(context), {
             webviewOptions: { enableFindWidget: true },
             supportsMultipleEditorsPerDocument: false,
         }),

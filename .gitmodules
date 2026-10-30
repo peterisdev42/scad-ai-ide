@@ -4,3 +4,6 @@
 [submodule "sources/openscad-LSP"]
 	path = sources/openscad-LSP
 	url = https://github.com/peterisdev42/openscad-LSP.git
+[submodule "sources/openscad"]
+	path = sources/openscad
+	url = https://github.com/peterisdev42/openscad.git

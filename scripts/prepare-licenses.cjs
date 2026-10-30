@@ -1,4 +1,4 @@
-// Stage the submodules' original license and notice files for VSIX packaging.
+// Stage original license and notice files for source imports bundled into the VSIX.
 const { readdirSync, readFileSync, mkdirSync, rmSync, writeFileSync } = require('node:fs')
 const path = require('node:path')
 
@@ -8,7 +8,7 @@ const legalFile = /^(?:licen[cs]e|copying|notice|third[-_]?party(?:[-_]?notices)
 const licenseFile = /^(?:licen[cs]e|copying)(?:[._-].*)?$/i
 
 try {
-    // Read both sources before replacing previously staged files.
+    // Read every source before replacing previously staged files.
     const bundles = submodules.map((name) => {
         const source = path.join(root, 'sources', name)
         let entries
@@ -29,6 +29,21 @@ try {
         }
         return { name, files: files.map((file) => ({ name: file, contents: readFileSync(path.join(source, file)) })) }
     })
+    // Only the scrollbar import graph is bundled; preserve its upstream notices too.
+    const monacoSource = path.join(root, 'node_modules', 'monaco-editor')
+    bundles.push({
+        name: 'monaco-editor',
+        files: ['LICENSE', 'ThirdPartyNotices.txt'].map((name) => ({ name, contents: readFileSync(path.join(monacoSource, name)) })),
+    })
+    for (const name of ['vscode-textmate', 'vscode-oniguruma', 'jsonc-parser', 'manifold-3d']) {
+        const source = path.join(root, 'node_modules', name)
+        bundles.push({
+            name,
+            files: readdirSync(source)
+                .filter((file) => legalFile.test(file) || /^notices?(?:\.|$)/i.test(file))
+                .map((file) => ({ name: file, contents: readFileSync(path.join(source, file)) })),
+        })
+    }
     for (const bundle of bundles) {
         const destination = path.join(root, 'licenses', bundle.name)
         rmSync(destination, { recursive: true, force: true })
