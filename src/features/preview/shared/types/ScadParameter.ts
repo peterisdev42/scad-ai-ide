@@ -2,6 +2,7 @@ interface ParameterMetadata {
     name: string
     description?: string
     group?: string
+    hint?: string
 }
 
 export interface ParameterOption<T> {
@@ -15,7 +16,7 @@ export interface NumericParameter extends ParameterMetadata {
     min?: number
     max?: number
     step?: number
-    options?: ParameterOption<number>[]
+    options?: ParameterOption<string | number>[]
 }
 
 export interface BooleanParameter extends ParameterMetadata {
@@ -26,7 +27,16 @@ export interface BooleanParameter extends ParameterMetadata {
 export interface StringParameter extends ParameterMetadata {
     type: 'string'
     value: string
-    options?: ParameterOption<string>[]
+    options?: ParameterOption<string | number>[]
+    maxLength?: number
 }
 
-export type ScadParameter = NumericParameter | BooleanParameter | StringParameter
+export interface VectorParameter extends ParameterMetadata {
+    type: 'vector'
+    value: number[]
+    min?: number
+    max?: number
+    step?: number
+}
+
+export type ScadParameter = NumericParameter | BooleanParameter | StringParameter | VectorParameter

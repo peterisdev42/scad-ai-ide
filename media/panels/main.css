@@ -158,6 +158,13 @@ button:disabled {
     background: var(--vscode-editor-background);
     border: 1px solid currentColor;
 }
+.badge.runtime-channel {
+    background: transparent;
+    border: 1px solid var(--border, color-mix(in srgb, currentColor 25%, transparent));
+}
+.runtime-channel:not(.success) {
+    color: var(--muted);
+}
 .system-details {
     display: flex;
     flex-wrap: wrap;

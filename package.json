@@ -16,6 +16,14 @@
     ],
     "main": "./dist/extension.js",
     "contributes": {
+        "markdown.markdownItPlugins": true,
+        "markdown.previewStyles": [
+            "./media/markdown/preview.css"
+        ],
+        "markdown.previewScripts": [
+            "./media/markdown/preview.js",
+            "./dist/markdown-preview.js"
+        ],
         "commands": [
             {
                 "command": "scad-ai-ide.connectGitHub",
@@ -68,11 +76,6 @@
                 "category": "SCAD AI IDE"
             },
             {
-                "command": "scad-ai.customizer.edit",
-                "title": "Edit Customizer Parameter",
-                "category": "SCAD AI IDE"
-            },
-            {
                 "command": "scad-ai-ide.restartLanguageServer",
                 "title": "Restart OpenSCAD Language Server",
                 "category": "SCAD AI IDE"
@@ -98,6 +101,27 @@
                 "command": "scad-ai-ide.togglePreview",
                 "title": "Toggle Preview",
                 "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai-ide.customizer.resetAll",
+                "title": "Reset all parameters",
+                "category": "SCAD AI IDE",
+                "icon": "$(refresh)",
+                "enablement": "scad-ai-ide.customizer.hasParameters"
+            },
+            {
+                "command": "scad-ai-ide.customizer.collapseAll",
+                "title": "Collapse All",
+                "category": "SCAD AI IDE",
+                "icon": "$(collapse-all)",
+                "enablement": "scad-ai-ide.customizer.hasGroups"
+            },
+            {
+                "command": "scad-ai-ide.customizer.expandAll",
+                "title": "Expand All",
+                "category": "SCAD AI IDE",
+                "icon": "$(expand-all)",
+                "enablement": "scad-ai-ide.customizer.hasGroups"
             }
         ],
         "configuration": {
@@ -180,6 +204,19 @@
                     "default": "stl",
                     "description": "The format to use for the 3D preview. 3MF supports colors but requires OpenSCAD Nightly. STL is universally supported."
                 },
+                "scad-ai-ide.preview.renderMode": {
+                    "type": "string",
+                    "enum": [
+                        "preview",
+                        "render"
+                    ],
+                    "enumDescriptions": [
+                        "Interactive CSG tree preview. Evaluates the expanded tree in a worker; unsupported operations use the native mesh backend.",
+                        "Fully evaluated interactive 3D model using the selected STL/3MF format."
+                    ],
+                    "default": "render",
+                    "description": "Initial preview mode for SCAD files. Switch between CSG preview and full mesh render in the top toolbar; mesh exports always evaluate the full geometry."
+                },
                 "scad-ai-ide.preview.slicerExecutable": {
                     "type": "string",
                     "default": "",
@@ -190,6 +227,24 @@
                     "type": "boolean",
                     "default": false,
                     "description": "Enable lazy unions, creating a multi-part exported object."
+                },
+                "scad-ai-ide.markdown.preview.enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Show Preview and Source tabs for openscad and scad fenced code blocks in the built-in Markdown preview, with interactive 4:3 previews up to 800 × 600. Requires workspace trust and an available OpenSCAD runtime."
+                },
+                "scad-ai-ide.markdown.preview.renderMode": {
+                    "type": "string",
+                    "enum": [
+                        "preview",
+                        "render"
+                    ],
+                    "enumDescriptions": [
+                        "Interactive CSG tree preview, with $preview set to true.",
+                        "Interactive native mesh render. Evaluates the final geometry, with $preview set to false."
+                    ],
+                    "default": "preview",
+                    "description": "OpenSCAD CLI mode used to generate interactive Markdown previews. Changing the mode refreshes cached previews."
                 }
             }
         },
@@ -209,6 +264,7 @@
                     "name": "Quick Access"
                 },
                 {
+                    "type": "webview",
                     "id": "scad-ai.customizer",
                     "name": "Customizer"
                 }
@@ -217,32 +273,57 @@
         "menus": {
             "commandPalette": [
                 {
-                    "command": "scad-ai.customizer.edit",
-                    "when": "false"
-                },
-                {
                     "command": "scad-ai-ide.showPreview",
-                    "when": "editorLangId == openscad && resourceScheme == file"
+                    "when": "resourceScheme == file && resourceFilename =~ /\\.(scad|csg|stl|3mf)$/i && activeCustomEditorId != 'scad-ai-ide.preview.editor' && activeCustomEditorId != 'scad-ai-ide.preview.mesh'"
                 },
                 {
                     "command": "scad-ai-ide.showSource",
-                    "when": "activeCustomEditorId == 'scad-ai-ide.preview.editor'"
+                    "when": "(activeCustomEditorId == 'scad-ai-ide.preview.editor' || activeCustomEditorId == 'scad-ai-ide.preview.mesh')"
                 },
                 {
                     "command": "scad-ai-ide.togglePreview",
-                    "when": "(editorLangId == openscad && resourceScheme == file) || activeCustomEditorId == 'scad-ai-ide.preview.editor'"
+                    "when": "(resourceScheme == file && resourceFilename =~ /\\.(scad|csg|stl|3mf)$/i) || (activeCustomEditorId == 'scad-ai-ide.preview.editor' || activeCustomEditorId == 'scad-ai-ide.preview.mesh')"
+                },
+                {
+                    "command": "scad-ai-ide.customizer.resetAll",
+                    "when": "false"
+                },
+                {
+                    "command": "scad-ai-ide.customizer.collapseAll",
+                    "when": "false"
+                },
+                {
+                    "command": "scad-ai-ide.customizer.expandAll",
+                    "when": "false"
                 }
             ],
             "editor/title": [
                 {
                     "command": "scad-ai-ide.showPreview",
                     "group": "navigation@2",
-                    "when": "activeEditor == workbench.editors.files.textFileEditor && editorLangId == openscad && resourceScheme == file"
+                    "when": "resourceScheme == file && resourceFilename =~ /\\.(scad|csg|stl|3mf)$/i && activeCustomEditorId != 'scad-ai-ide.preview.editor' && activeCustomEditorId != 'scad-ai-ide.preview.mesh'"
                 },
                 {
                     "command": "scad-ai-ide.showSource",
                     "group": "navigation@2",
-                    "when": "activeCustomEditorId == 'scad-ai-ide.preview.editor'"
+                    "when": "(activeCustomEditorId == 'scad-ai-ide.preview.editor' || activeCustomEditorId == 'scad-ai-ide.preview.mesh')"
+                }
+            ],
+            "view/title": [
+                {
+                    "command": "scad-ai-ide.customizer.resetAll",
+                    "when": "view == scad-ai.customizer && scad-ai-ide.customizer.hasParameters",
+                    "group": "navigation@1"
+                },
+                {
+                    "command": "scad-ai-ide.customizer.collapseAll",
+                    "when": "view == scad-ai.customizer && scad-ai-ide.customizer.hasGroups && !scad-ai-ide.customizer.allCollapsed",
+                    "group": "navigation@2"
+                },
+                {
+                    "command": "scad-ai-ide.customizer.expandAll",
+                    "when": "view == scad-ai.customizer && scad-ai-ide.customizer.hasGroups && scad-ai-ide.customizer.allCollapsed",
+                    "group": "navigation@2"
                 }
             ]
         },
@@ -250,10 +331,12 @@
             {
                 "id": "openscad",
                 "aliases": [
-                    "OpenSCAD"
+                    "OpenSCAD",
+                    "scad"
                 ],
                 "extensions": [
-                    ".scad"
+                    ".scad",
+                    ".csg"
                 ],
                 "configuration": "./language-configuration.json",
                 "icon": {
@@ -267,6 +350,16 @@
                 "language": "openscad",
                 "scopeName": "source.openscad",
                 "path": "./syntaxes/openscad.tmLanguage.json"
+            },
+            {
+                "scopeName": "markdown.openscad.codeblock",
+                "path": "./syntaxes/markdown-openscad.tmLanguage.json",
+                "injectTo": [
+                    "text.html.markdown"
+                ],
+                "embeddedLanguages": {
+                    "meta.embedded.block.openscad": "openscad"
+                }
             }
         ],
         "snippets": [
@@ -286,7 +379,7 @@
                 "command": "scad-ai-ide.togglePreview",
                 "key": "ctrl+shift+v",
                 "mac": "cmd+shift+v",
-                "when": "(editorLangId == openscad && resourceScheme == file) || activeCustomEditorId == 'scad-ai-ide.preview.editor'"
+                "when": "(resourceScheme == file && resourceFilename =~ /\\.(scad|csg|stl|3mf)$/i) || (activeCustomEditorId == 'scad-ai-ide.preview.editor' || activeCustomEditorId == 'scad-ai-ide.preview.mesh')"
             }
         ],
         "customEditors": [
@@ -295,7 +388,23 @@
                 "displayName": "OpenSCAD Preview",
                 "selector": [
                     {
-                        "filenamePattern": "*.scad"
+                        "filenamePattern": "*.[sS][cC][aA][dD]"
+                    },
+                    {
+                        "filenamePattern": "*.[cC][sS][gG]"
+                    }
+                ],
+                "priority": "option"
+            },
+            {
+                "viewType": "scad-ai-ide.preview.mesh",
+                "displayName": "3D Model Preview",
+                "selector": [
+                    {
+                        "filenamePattern": "*.[sS][tT][lL]"
+                    },
+                    {
+                        "filenamePattern": "*.3[mM][fF]"
                     }
                 ],
                 "priority": "option"
@@ -313,7 +422,11 @@
         "watch-tests": "tsc -p . -w --outDir out",
         "check-types": "tsc --noEmit && tsc -p tsconfig.webview.json",
         "lint": "eslint src",
-        "test": "npm run compile-tests && node --test out/test/notifications.test.js out/test/runtime.test.js out/test/github.test.js out/test/installation.test.js out/test/customizer.test.js out/test/language.test.js && npm run test:preview",
+        "test": "npm run compile-tests && node --test out/test/notifications.test.js out/test/runtime.test.js out/test/github.test.js out/test/installation.test.js out/test/customizer.test.js out/test/language.test.js out/test/markdown.test.js && npm run test:preview",
+        "test:customizer": "npm run compile-tests && node esbuild.js && node --test scripts/customizer-scrollbar.test.mjs",
+        "test:markdown": "npm run compile && npm run compile-tests && node --test out/test/markdown.test.js && node --test scripts/markdown-preview.test.mjs",
+        "test:markdown-host": "npm run compile && node --test scripts/markdown-webview.test.mjs",
+        "test:fast-preview": "npm run compile && node --import tsx --test src/test/preview/fastPreview.test.ts src/test/preview/csg.test.ts && node --test scripts/preview-fast.test.mjs",
         "test:integration": "npm run compile-tests && npm run compile && vscode-test",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
@@ -326,6 +439,7 @@
         "test:preview-sync": "node --test scripts/preview-sync/engine.test.mjs"
     },
     "devDependencies": {
+        "@types/markdown-it": "^14.2.0",
         "@types/mocha": "^10.0.10",
         "@types/node": "24.x",
         "@types/three": "^0.184.0",
@@ -338,13 +452,14 @@
         "eslint": "^10.5.0",
         "eslint-config-prettier": "^10.1.8",
         "fflate": "^0.8.3",
+        "markdown-it": "^14.3.3",
+        "monaco-editor": "0.57.0",
         "npm-run-all": "^4.1.5",
+        "playwright": "1.61.1",
         "prettier": "^3.9.10",
         "tsx": "^4.21.0",
         "typescript": "^6.0.3",
-        "typescript-eslint": "^8.61.1",
-        "vscode-oniguruma": "^2.0.1",
-        "vscode-textmate": "^9.3.2"
+        "typescript-eslint": "^8.61.1"
     },
     "overrides": {
         "diff": "^8.0.4",
@@ -364,10 +479,15 @@
         "@lit/context": "^1.1.6",
         "@vscode-elements/elements": "^2.5.1",
         "@vscode/codicons": "^0.0.45",
+        "jsonc-parser": "^3.3.1",
         "lit": "^3.3.2",
+        "manifold-3d": "^3.5.4",
         "tar": "^7.5.22",
         "three": "^0.184.0",
         "vscode-languageclient": "^9.0.1",
+        "vscode-oniguruma": "^2.0.1",
+        "vscode-textmate": "^9.3.2",
+        "yaml": "^2.9.1",
         "yauzl": "^3.4.0"
     }
 }

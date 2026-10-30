@@ -1,6 +1,10 @@
 import { ExtensionToWebviewMessage } from '../../shared/types/ExtensionToWebviewMessage'
+import type { PreviewMode } from '../../shared/types/PreviewMode'
 
-const vscode = acquireVsCodeApi()
+let vscode: ReturnType<typeof acquireVsCodeApi> | undefined
+const nativePost = (message: unknown) => {
+    ;(vscode ??= acquireVsCodeApi()).postMessage(message)
+}
 
 export type MessageCallback = (message: ExtensionToWebviewMessage) => void
 
@@ -11,8 +15,11 @@ export type MessageCallback = (message: ExtensionToWebviewMessage) => void
 export class Bridge {
     private callbacks: Set<MessageCallback> = new Set()
 
-    constructor() {
-        window.addEventListener('message', this.handleMessage)
+    constructor(
+        private readonly post = nativePost,
+        native = true,
+    ) {
+        if (native) window.addEventListener('message', this.handleMessage)
     }
 
     public dispose() {
@@ -26,51 +33,58 @@ export class Bridge {
     }
 
     public ready() {
-        vscode.postMessage({ type: 'ready' })
+        this.post({ type: 'ready' })
     }
 
-    public updateParameterOverride(name: string, value: string | number | boolean | undefined) {
-        vscode.postMessage({ type: 'parameterChanged', name, value })
+    public setPreviewMode(mode: PreviewMode) {
+        this.post({ type: 'setPreviewMode', mode })
+    }
+
+    public updateParameterOverride(name: string, value: string | number | boolean | number[] | undefined) {
+        this.post({ type: 'parameterChanged', name, value })
     }
 
     public saveParameterSet(name: string) {
-        vscode.postMessage({ type: 'saveParameterSet', name })
+        this.post({ type: 'saveParameterSet', name })
     }
 
     public promptSaveParameterSet() {
-        vscode.postMessage({ type: 'promptSaveParameterSet' })
+        this.post({ type: 'promptSaveParameterSet' })
     }
 
     public deleteParameterSet(name: string) {
-        vscode.postMessage({ type: 'deleteParameterSet', name })
+        this.post({ type: 'deleteParameterSet', name })
     }
 
     public applyParameterSet(name: string | undefined) {
-        vscode.postMessage({ type: 'applyParameterSet', name })
+        this.post({ type: 'applyParameterSet', name })
     }
 
     public exportModel() {
-        vscode.postMessage({ type: 'exportModel' })
+        this.post({ type: 'exportModel' })
     }
 
     public sendToSlicer() {
-        vscode.postMessage({ type: 'sendToSlicer' })
+        this.post({ type: 'sendToSlicer' })
     }
 
     public persistScene(snapshot: unknown) {
-        vscode.postMessage({ type: 'persistScene', snapshot })
+        this.post({ type: 'persistScene', snapshot })
     }
 
     public reportError(error: unknown) {
         console.error('[OpenSCAD Preview]', error)
-        vscode.postMessage({
+        this.post({
             type: 'error',
             message: error?.toString(),
         })
     }
 
     private handleMessage = (event: MessageEvent) => {
-        const message = event.data as ExtensionToWebviewMessage
+        this.receive(event.data as ExtensionToWebviewMessage)
+    }
+
+    public receive(message: ExtensionToWebviewMessage) {
         this.callbacks.forEach((cb) => cb(message))
     }
 }

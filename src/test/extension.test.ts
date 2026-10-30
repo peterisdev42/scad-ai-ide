@@ -5,23 +5,24 @@ import * as os from 'node:os'
 import * as vscode from 'vscode'
 import type { activate } from '../extension'
 import { QuickAccessTreeProvider, quickAccess } from '../features/sidebar/QuickAccessTreeProvider'
-import { CustomizerTreeProvider } from '../features/sidebar/CustomizerTreeProvider'
+import { CustomizerViewProvider } from '../features/sidebar/CustomizerViewProvider'
 import { CustomizerService } from '../core/customizer/CustomizerService'
 
 suite('SCAD AI IDE integration', () => {
     async function api() {
         const extension = vscode.extensions.all.find((item) => item.packageJSON.name === 'scad-ai-ide')
         assert.ok(extension)
-        return (await extension.activate()) as ReturnType<typeof activate>
+        return (await extension.activate()) as Awaited<ReturnType<typeof activate>>
     }
 
-    test('registers exactly two native views and five plain leaf navigation items', async () => {
+    test('registers native Quick Access and an HTML Customizer with five plain navigation items', async () => {
         await api()
         const manifest = vscode.extensions.all.find((item) => item.packageJSON.name === 'scad-ai-ide')!.packageJSON
         assert.deepEqual(
             manifest.contributes.views['scad-ai-ide'].map((view: { name: string }) => view.name),
             ['Quick Access', 'Customizer'],
         )
+        assert.equal(manifest.contributes.views['scad-ai-ide'][1].type, 'webview')
         await vscode.commands.executeCommand('scad-ai.quickAccess.focus')
         const tree = new QuickAccessTreeProvider()
         const items = tree.getChildren()
@@ -73,7 +74,7 @@ suite('SCAD AI IDE integration', () => {
         const first = await vscode.workspace.openTextDocument({ language: 'openscad', content: '/* [Geometry] */\nwidth = 40; // [10:100]\nhollow = true;\n' })
         await vscode.window.showTextDocument(first)
         assert.equal(extension.customizer.target, first.uri.toString())
-        await vscode.commands.executeCommand('scad-ai.customizer.edit', first.uri.toString(), 'hollow')
+        extension.customizer.set('hollow', false)
         assert.deepEqual(extension.getRenderArguments(), ['-D', 'hollow=false'])
         assert.equal(first.getText().includes('hollow = true'), true)
         const second = await vscode.workspace.openTextDocument({ language: 'openscad', content: 'height = 20;\n' })
@@ -85,34 +86,56 @@ suite('SCAD AI IDE integration', () => {
         await vscode.commands.executeCommand('scad-ai.runtime.open')
         assert.equal(extension.customizer.target, first.uri.toString())
         extension.panels.getPanel('runtime')?.dispose()
+    })
+
+    test('HTML Customizer validates messages and rejects edits from a stale document', async () => {
         const service = new CustomizerService()
-        const tree = new CustomizerTreeProvider(service)
+        const provider = new CustomizerViewProvider(service, vscode.extensions.all.find((item) => item.packageJSON.name === 'scad-ai-ide')!.extensionUri)
+        const messages: any[] = []
+        let receive!: (message: unknown) => void
+        const disposable = { dispose() {} }
+        const webview = {
+            options: {} as vscode.WebviewOptions,
+            html: '',
+            cspSource: 'vscode-webview:',
+            asWebviewUri: (uri: vscode.Uri) => uri,
+            postMessage: (message: unknown) => {
+                messages.push(message)
+                return Promise.resolve(true)
+            },
+            onDidReceiveMessage: (handler: typeof receive) => {
+                receive = handler
+                return disposable
+            },
+        }
         try {
-            service.clear()
-            assert.deepEqual(tree.getChildren(), [])
-            service.load('test.scad', '/* [Geometry] */\nwidth = 40;\n')
-            const groups = tree.getChildren()
-            const parameter = tree.getChildren(groups[0])[0]
-            assert.equal(groups[0].label, 'Geometry')
-            assert.equal(parameter.label, 'width')
-            assert.equal(parameter.description, '40')
-            assert.equal(parameter.iconPath, undefined)
-            assert.deepEqual(tree.getChildren(parameter), [])
-            service.load('ungrouped.scad', 'width = 40;\nheight = 20;\n/* [Parameters] */\nwall = 2.5;\n')
-            const items = tree.getChildren()
-            assert.deepEqual(
-                items.map((item) => item.label),
-                ['width', 'height', 'Parameters'],
-            )
-            assert.equal(items[0].description, '40')
-            assert.deepEqual(items[0].command?.arguments, ['ungrouped.scad', 'width'])
-            assert.deepEqual(tree.getChildren(items[0]), [])
-            assert.deepEqual(
-                tree.getChildren(items[2]).map((item) => item.label),
-                ['wall'],
-            )
+            provider.resolveWebviewView({ webview, onDidChangeVisibility: () => disposable, onDidDispose: () => disposable } as unknown as vscode.WebviewView)
+            assert.match(webview.html, /Content-Security-Policy/)
+            assert.match(webview.html, /script-src 'nonce-/)
+            assert.match(webview.html, /role="tree"/)
+            assert.match(webview.html, /role="tooltip"/)
+            assert.match(webview.html, /dist\/customizer\.js/)
+            assert.match(webview.html, /dist\/customizer\.css/)
+            assert.match(webview.html, /id="scroll-host"/)
+            assert.equal(webview.options.localResourceRoots?.length, 2)
+            service.load('first.scad', 'size = [1, 2]; // [0:10]')
+            receive({ type: 'ready' })
+            const first = messages.at(-1)
+            receive({ type: 'set', target: first.target, revision: first.revision - 1, name: 'size', value: [7, 8] })
+            assert.deepEqual(service.getOverrides('first.scad'), {})
+            receive({ type: 'set', target: first.target, revision: first.revision, name: 'size', value: [3, 4] })
+            assert.deepEqual(service.getOverrides('first.scad'), { size: [3, 4] })
+            receive({ type: 'set', target: first.target, revision: first.revision, name: 'size', value: [3, 'unsafe'] })
+            assert.equal(messages.at(-1).type, 'error')
+            service.load('second.scad', 'size = [1, 2];')
+            receive({ type: 'set', target: first.target, revision: first.revision, name: 'size', value: [7, 8] })
+            assert.deepEqual(service.getOverrides('second.scad'), {})
+            const second = messages.at(-1)
+            receive({ type: 'set', target: second.target, revision: second.revision, name: 'size', value: [5, 6] })
+            receive({ type: 'reset', target: second.target, revision: second.revision })
+            assert.deepEqual(service.getOverrides('second.scad'), {})
         } finally {
-            tree.dispose()
+            provider.dispose()
         }
     })
 

@@ -5,10 +5,11 @@ import { resolveApplication } from '../../platform/runtime/platformDiscovery'
 import { RuntimeManager } from '../../core/runtime/RuntimeManager'
 import { sortRuntimesByVersion } from '../../core/runtime/sortRuntimes'
 import { UserWarning } from '../../core/feedback'
-import { detectRuntimeSystem, fetchRuntimeBuilds, type RuntimeBuild, type RuntimeSystem } from '../../platform/runtime/releases'
+import { classifyRuntimeRelease, detectRuntimeSystem, fetchRuntimeBuilds, fetchLatestRuntimeTag, type RuntimeBuild, type RuntimeSystem } from '../../platform/runtime/releases'
 import { installRuntimeArchive, installRuntimeBuild, removeRuntimeInstallation, installedRuntimeBuilds, managedRuntimePaths, type InstalledRuntimeBuild, type InstallProgress, type InstallOptions } from '../../platform/runtime/installation'
 import * as path from 'node:path'
 import { notifications } from '../../platform/notifications'
+import { loadLegacyRuntimeCatalogCache, readRuntimeCatalogCache, runtimeCatalogCacheKey, type RuntimeCatalogCache } from '../../platform/runtime/catalogCache'
 
 const section = 'scad-ai-ide'
 const workspaceTrustMessage = 'Trust this workspace to discover, add, or run OpenSCAD runtimes.'
@@ -32,11 +33,13 @@ export function registerRuntime(context: vscode.ExtensionContext, manager: Runti
     let pending: Promise<void> = Promise.resolve()
     let system: RuntimeSystem | undefined
     let builds: RuntimeBuild[] = []
+    let recommendedBuildId: number | undefined
     let installedBuilds: InstalledRuntimeBuild[] = []
     let buildsBusy = false
     let buildsError = ''
     let buildsLoaded = false
     let buildsPending: Promise<void> | undefined
+    let cacheRestorePending: Promise<void> | undefined
     let installing: InstallProgress | undefined
     let installationMessage = ''
     let installationError = ''
@@ -44,31 +47,61 @@ export function registerRuntime(context: vscode.ExtensionContext, manager: Runti
     let installationAbort: AbortController | undefined
     const runtimesRoot = vscode.Uri.joinPath(context.globalStorageUri, 'runtimes').fsPath
 
+    const persistBuildCache = async (cache: RuntimeCatalogCache) => {
+        try {
+            await context.globalState.update(runtimeCatalogCacheKey(system!), cache)
+        } catch (error) {
+            output.appendLine(`Could not save Runtime catalog cache: ${error instanceof Error ? error.message : String(error)}`)
+        }
+    }
+
+    const restoreBuildCache = (): Promise<void> => {
+        if (!system) return Promise.resolve()
+        const cached = readRuntimeCatalogCache(context.globalState.get(runtimeCatalogCacheKey(system)), system)
+        if (cached) {
+            builds = cached.builds
+            recommendedBuildId = cached.recommendedBuildId
+            return Promise.resolve()
+        }
+        // Import the previous file cache only when globalState has no usable catalog.
+        return (cacheRestorePending ??= (async () => {
+            const legacy = await loadLegacyRuntimeCatalogCache(context.globalStorageUri.fsPath, system!)
+            if (legacy) {
+                builds = legacy.builds
+                recommendedBuildId = legacy.recommendedBuildId
+                if (!disposed) changed.fire()
+                await persistBuildCache(legacy)
+            }
+        })())
+    }
+
     const loadBuilds = (force = false): Promise<void> => {
         if (buildsPending) {
             // A newly authorized account must refresh even if an anonymous request
             // was already running when the user connected GitHub.
             return force ? buildsPending.then(() => loadBuilds(true)) : buildsPending
         }
-        if (buildsLoaded && !force) {
-            return (async () => {
-                installedBuilds = await installedRuntimeBuilds(runtimesRoot, system!, builds)
-                if (!disposed) {
-                    changed.fire()
-                }
-            })()
-        }
         buildsBusy = true
         buildsError = ''
         changed.fire()
         buildsPending = (async () => {
             system ??= await detectRuntimeSystem()
+            await restoreBuildCache()
             if (!disposed) {
                 changed.fire()
             }
-            builds = await fetchRuntimeBuilds(system, request)
-            installedBuilds = await installedRuntimeBuilds(runtimesRoot, system, builds)
+            const [available, latestTag] = await Promise.all([fetchRuntimeBuilds(system, request), fetchLatestRuntimeTag(request)])
+            builds = available
+            recommendedBuildId = builds.find((build) => build.tag === latestTag && build.channel === 'Stable')?.id
             buildsLoaded = true
+            if (!disposed) changed.fire()
+            const cache: RuntimeCatalogCache = { version: 1, builds, recommendedBuildId }
+            await Promise.all([
+                persistBuildCache(cache),
+                installedRuntimeBuilds(runtimesRoot, system, builds).then((installed) => {
+                    installedBuilds = installed
+                }),
+            ])
         })()
             .catch((error) => {
                 buildsError = error instanceof Error ? error.message : String(error)
@@ -112,6 +145,7 @@ export function registerRuntime(context: vscode.ExtensionContext, manager: Runti
                 const configuredCommand = configuration.get<LaunchCommand | null>('runtimeCommand') ?? undefined
                 const bundledPath = vscode.Uri.joinPath(context.globalStorageUri, 'runtimes', `${process.platform}-${process.arch}`, process.platform === 'win32' ? 'openscad.com' : 'openscad').fsPath
                 system ??= await detectRuntimeSystem()
+                await restoreBuildCache()
                 await manager.refresh({
                     configuredPath,
                     configuredCommand,
@@ -378,7 +412,12 @@ export function registerRuntime(context: vscode.ExtensionContext, manager: Runti
         getActiveRuntime: () => manager.active,
         whenReady: () => pending,
         getState: () => ({
-            runtimes: sortRuntimesByVersion(manager.result.runtimes),
+            runtimes: sortRuntimesByVersion(manager.result.runtimes).map((runtime) => {
+                // Prefer the same Release classification shown in Available, then saved offline metadata.
+                const tag = runtime.tag?.replace(/^openscad-cli-/, 'openscad-')
+                const build = tag ? builds.find((build) => build.tag.replace(/^openscad-cli-/, 'openscad-') === tag) : undefined
+                return { ...runtime, channel: build?.channel ?? runtime.channel ?? classifyRuntimeRelease({ tag_name: runtime.tag ?? runtime.version }) }
+            }),
             activeId: manager.active?.id,
             busy,
             refreshingSilently,
@@ -388,6 +427,7 @@ export function registerRuntime(context: vscode.ExtensionContext, manager: Runti
             messageSeverity: vscode.workspace.isTrusted ? 'error' : 'warning',
             system,
             builds,
+            recommendedBuildId,
             buildsBusy,
             buildsError,
             buildsLoaded,

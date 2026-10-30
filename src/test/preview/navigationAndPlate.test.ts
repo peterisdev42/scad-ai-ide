@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { Box3, OrthographicCamera, PerspectiveCamera, Vector3 } from 'three'
-import { viewportPanDelta, viewportOrbit, ORBIT_RADIANS_PER_PIXEL } from '../../features/preview/webview/preview/rigs/DirectPointerNavigation'
+import { DirectPointerNavigation, viewportPanDelta, viewportOrbit, ORBIT_RADIANS_PER_PIXEL } from '../../features/preview/webview/preview/rigs/DirectPointerNavigation'
 import { buildPlateOffset, buildPlateResetBounds, BUILD_PLATE_SIZE } from '../../features/preview/webview/preview/managers/BuildPlateLayout'
 import { BuildPlateOrigin } from '../../features/preview/webview/contexts/ViewOptionsContext'
 
@@ -125,4 +125,45 @@ test('Turntable recovers rolled views and protects exact Top/Bottom without flip
     camera.lookAt(target)
     viewportOrbit(camera, target, 1, 1)
     assert.ok(Math.abs(new Vector3(1, 0, 0).applyQuaternion(camera.quaternion).z) < 1e-10)
+})
+
+test('Middle, right and modifier drags all pan by exactly the pointer displacement', () => {
+    for (const button of [0, 1, 2]) {
+        const callbacks = new Map<string, (event: unknown) => void>()
+        const camera = new PerspectiveCamera(45, 800 / 600, 0.1, 10000)
+        const target = new Vector3(12, -8, 5)
+        camera.position.copy(target).add(new Vector3(100, -100, 100))
+        camera.up.set(0, 0, 1)
+        const controls = {
+            enabled: true,
+            target,
+            handleResize() {},
+            dispatchEvent() {},
+            update() {
+                camera.lookAt(target)
+                camera.updateMatrixWorld()
+            },
+        }
+        controls.update()
+        const reference = target.clone()
+        const before = reference.clone().project(camera)
+        const element = {
+            addEventListener: (name: string, handler: (event: unknown) => void) => callbacks.set(name, handler),
+            removeEventListener: (name: string) => callbacks.delete(name),
+            getBoundingClientRect: () => ({ width: 800, height: 600 }),
+            setPointerCapture() {},
+            hasPointerCapture: () => true,
+            releasePointerCapture() {},
+        }
+        const navigation = new DirectPointerNavigation(controls as never, camera, () => camera, element as never)
+        const event = { pointerId: 1, pointerType: 'mouse', button, shiftKey: button === 0, clientX: 100, clientY: 100, preventDefault() {}, stopImmediatePropagation() {} }
+        callbacks.get('pointerdown')!(event)
+        callbacks.get('pointermove')!({ ...event, clientX: 190, clientY: 65 })
+        const after = reference.project(camera)
+        assert.ok(Math.abs((after.x - before.x) * 400 - 90) < 1e-8)
+        assert.ok(Math.abs(-(after.y - before.y) * 300 + 35) < 1e-8)
+        callbacks.get('pointerup')!(event)
+        navigation.dispose()
+        assert.equal(callbacks.size, 0)
+    }
 })

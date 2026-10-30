@@ -1,9 +1,12 @@
 import { anonymousGitHubRequest, type GitHubRequest } from '../github/client'
-import { sortRuntimesByVersion } from '../../core/runtime/sortRuntimes'
+import { parse } from 'yaml'
 import * as os from 'node:os'
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 import { describeRequestError, requestGitHub } from '../github/errors'
+import type { RuntimeReleaseChannel } from '../../core/runtime/types'
+
+export type { RuntimeReleaseChannel } from '../../core/runtime/types'
 
 export const releasesApi = 'https://api.github.com/repos/peterisdev42/openscad-cli-builder/releases'
 
@@ -25,14 +28,81 @@ export interface RuntimeBuild {
     downloadUrl: string
     checksumUrl?: string
     channel?: RuntimeReleaseChannel
+    upstreamCommit?: string
 }
 
-export type RuntimeReleaseChannel = 'Stable'
+interface ReleaseIdentity {
+    tag_name: string
+    body?: unknown
+    prerelease?: unknown
+    draft?: unknown
+}
 
-export function classifyRuntimeRelease(version: string): RuntimeReleaseChannel | undefined {
-    // Only a suffix-free version gets a badge; retain support for older YYYY.MM releases.
-    const normalized = version.trim().replace(/^OpenSCAD CLI\s+/i, '')
-    return /^(?:openscad(?:-cli)?-)?\d{4}\.\d{2}(?:\.\d{2})?$/i.test(normalized) ? 'Stable' : undefined
+interface ReleaseMetadata {
+    schemaVersion: 1
+    version: string
+    channel: 'stable' | 'rc' | 'test' | 'snapshot'
+    upstream: { repository: string; commit: string; snapshotUrl?: string }
+}
+
+const channelLabels: Record<ReleaseMetadata['channel'], RuntimeReleaseChannel> = { stable: 'Stable', rc: 'RC', test: 'Test', snapshot: 'Snapshot' }
+
+export function readReleaseMetadata(release: ReleaseIdentity): ReleaseMetadata | undefined {
+    const match = typeof release.body === 'string' && /^\s*```yaml\r?\n([\s\S]*?)\r?\n```/.exec(release.body)
+    if (!match) return undefined
+    try {
+        const data = parse(match[1]) as ReleaseMetadata | null
+        if (!data || data.schemaVersion !== 1 || !Object.hasOwn(channelLabels, data.channel) || typeof data.version !== 'string' || release.tag_name !== `openscad-${data.version}` || typeof data.upstream?.repository !== 'string' || !data.upstream.repository.trim() || typeof data.upstream.commit !== 'string' || !/^[a-f0-9]{40}$/i.test(data.upstream.commit) || typeof release.prerelease !== 'boolean' || release.prerelease !== (data.channel !== 'stable') || (data.upstream.snapshotUrl !== undefined && typeof data.upstream.snapshotUrl !== 'string')) {
+            return undefined
+        }
+        return data
+    } catch {
+        return undefined
+    }
+}
+
+export function classifyRuntimeRelease(release: ReleaseIdentity): RuntimeReleaseChannel {
+    if (release.draft) return 'Unknown'
+    const metadata = readReleaseMetadata(release)
+    if (metadata) return channelLabels[metadata.channel]
+    // Legacy releases have no structured metadata. A date alone never implies Snapshot.
+    if (/-RC\d+$/i.test(release.tag_name)) return 'RC'
+    if (/-TEST\d+$/i.test(release.tag_name)) return 'Test'
+    if (release.prerelease === false) return 'Stable'
+    return 'Unknown'
+}
+
+function releaseSortDate(build: RuntimeBuild): number {
+    const match = /^(?:OpenSCAD(?: CLI)?\s+)?(\d{4})\.(\d{2})\.(\d{2})(?:-|$)/i.exec(build.release.trim())
+    if (match) {
+        const [, year, month, day] = match
+        const timestamp = Date.UTC(+year, +month - 1, +day)
+        const date = new Date(timestamp)
+        if (date.getUTCFullYear() === +year && date.getUTCMonth() === +month - 1 && date.getUTCDate() === +day) return timestamp
+    }
+    // Builder publication time is only a fallback when the upstream date is unavailable.
+    return Date.parse(build.publishedAt) || 0
+}
+
+async function requestReleaseData(url: string, request: GitHubRequest): Promise<unknown> {
+    const response = await requestGitHub(request, url, {
+        headers: { Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', 'User-Agent': 'scad-ai-ide' },
+        signal: AbortSignal.timeout(15000),
+    })
+    try {
+        return await response.json()
+    } catch (error) {
+        throw new Error(`Invalid JSON response from GitHub API (HTTP ${response.status}).\nRequest: ${url}\n${describeRequestError(error)}`, { cause: error })
+    }
+}
+
+/** Recommendation comes from GitHub Latest, independently of the version list order. */
+export async function fetchLatestRuntimeTag(request: GitHubRequest = anonymousGitHubRequest): Promise<string | undefined> {
+    const release = await requestReleaseData(`${releasesApi}/latest`, request)
+    if (!release || typeof release !== 'object' || !('tag_name' in release) || typeof release.tag_name !== 'string') {
+        throw new Error('Invalid GitHub Latest Release response: expected a release with tag_name.')
+    }
+    return classifyRuntimeRelease({ ...release, tag_name: release.tag_name }) === 'Stable' ? release.tag_name : undefined
 }
 
 export function normalizeArchitecture(value: string): string {
@@ -117,12 +187,13 @@ export async function fetchRuntimeBuilds(system: RuntimeSystem, request: GitHubR
                     size: typeof asset.size === 'number' ? asset.size : 0,
                     downloadUrl: url.toString(),
                     checksumUrl,
-                    channel: classifyRuntimeRelease(typeof release.name === 'string' && release.name.trim() ? release.name : release.tag_name),
+                    channel: classifyRuntimeRelease(release),
+                    upstreamCommit: readReleaseMetadata(release)?.upstream.commit,
                 })
             }
         }
         if (!response.headers.get('link')?.includes('rel="next"')) {
-            return sortRuntimesByVersion(builds)
+            return builds.sort((a, b) => releaseSortDate(b) - releaseSortDate(a) || a.tag.localeCompare(b.tag) || a.id - b.id)
         }
     }
 }

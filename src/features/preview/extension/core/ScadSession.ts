@@ -7,6 +7,8 @@ import { ScadParser } from '../services/ScadParser'
 import { ScadRenderer } from '../services/ScadRenderer'
 import { FileWatcher } from '../services/ScadWatcher'
 import { ScadParameters } from './ScadParameters'
+import type { PreviewBackend } from '../../shared/types/PreviewBackend'
+import type { PreviewMode } from '../../shared/types/PreviewMode'
 
 /**
  * Represents a single SCAD document session.
@@ -17,8 +19,24 @@ export class ScadSession {
     private documentSubscription: Disposable
     private valuesSubscription: { dispose(): void }
     private initialized = false
+    private syncingCustomizer = false
     private renderTimer: ReturnType<typeof setTimeout> | undefined
     private disposed = false
+    public renderBackend: PreviewBackend = { kind: 'pending' }
+    private _onBackendChanged = new EventEmitter<PreviewBackend>()
+    public readonly onBackendChanged = this._onBackendChanged.event
+
+    private selectedPreviewMode?: PreviewMode
+
+    public get previewMode(): PreviewMode {
+        return this.selectedPreviewMode ?? workspace.getConfiguration('scad-ai-ide.preview', this.documentUri).get<PreviewMode>('renderMode', 'render')
+    }
+
+    public setPreviewMode(mode: PreviewMode) {
+        if (this.disposed || (mode !== 'preview' && mode !== 'render') || mode === this.previewMode) return
+        this.selectedPreviewMode = mode
+        this.refreshRender()
+    }
 
     public get documentUri(): Uri {
         return this.document.uri
@@ -33,7 +51,7 @@ export class ScadSession {
             this.initialized = true
             this.scadParameters.replaceOverrides(saved)
         }
-        this.scadRenderer.render(this.documentUri.fsPath, this.scadParameters.getOverrides())
+        this.scadRenderer.render(this.documentUri.fsPath, this.scadParameters.getOverrides(), this.previewMode)
     }
     private jsonWatcher?: FileWatcher
     private scadParameters: ScadParameters
@@ -50,7 +68,7 @@ export class ScadSession {
         parameters: ScadParameter[]
         parameterSets: Record<string, Record<string, string>>
         activeSetName: string | undefined
-        overrides: Record<string, string | number | boolean>
+        overrides: Record<string, string | number | boolean | number[]>
     }>()
     public readonly onParametersChanged = this._onParametersChanged.event
 
@@ -67,7 +85,13 @@ export class ScadSession {
         private readonly document: TextDocument,
         private readonly customizer: CustomizerService,
     ) {
+        if (/\.csg$/i.test(this.documentUri.path)) this.selectedPreviewMode = 'preview'
         this.scadRenderer = new ScadRenderer({
+            onBackendChange: (backend) => {
+                this.renderBackend = backend
+                this.customizer.setContinuousPreview(this.documentUri.toString(), this.previewMode === 'preview' && backend.kind === 'csg')
+                this._onBackendChanged.fire(backend)
+            },
             onStart: () => this._onRenderStarted.fire(),
             onComplete: (data) => this._onRenderCompleted.fire(data),
             onError: (err) => this._onRenderError.fire(err),
@@ -77,22 +101,35 @@ export class ScadSession {
         // Manager for current parameter values and overrides.
         this.scadParameters = new ScadParameters({
             onChange: (event) => {
-                if (this.initialized) {
+                if (this.initialized && !this.syncingCustomizer) {
                     this.customizer.replaceOverrides(this.documentUri.toString(), event.overrides)
                 }
                 this._onParametersChanged.fire(event)
             },
         })
 
-        this.valuesSubscription = customizer.onDidChangeValues((target) => {
+        // A preset can arrive before the asynchronous file watcher has read the source.
+        this.scadParameters.updateDefinitions(new ScadParser(document.getText()).parameters)
+        this.scadParameters.replaceOverrides(customizer.getOverrides(this.documentUri.toString()))
+
+        this.valuesSubscription = customizer.onDidChangeValues((target, reason) => {
             if (target !== this.documentUri.toString() || this.disposed) {
                 return
             }
             const values = customizer.getOverrides(target)
-            if (JSON.stringify(values) !== JSON.stringify(this.currentOverrides)) {
-                this.scadParameters.replaceOverrides(values)
-                this.refreshRender()
+            const changed = JSON.stringify(values) !== JSON.stringify(this.currentOverrides)
+            if (changed) {
+                this.syncingCustomizer = true
+                try {
+                    this.scadParameters.replaceOverrides(values)
+                } finally {
+                    this.syncingCustomizer = false
+                }
             }
+            if (reason === 'preset') this.refreshRender()
+            else if (reason === 'input') {
+                if (changed && this.customizer.canPreviewContinuously(target)) this.scadRenderer.renderLatest(this.documentUri.fsPath, this.scadParameters.getOverrides(), this.previewMode, 'input')
+            } else if (changed || reason === 'commit') this.scadRenderer.renderLatest(this.documentUri.fsPath, this.scadParameters.getOverrides(), this.previewMode, 'commit')
         })
 
         // Watcher for file changes.
@@ -138,7 +175,7 @@ export class ScadSession {
                                 this.scadParameters.setActiveSet(activeSetName)
 
                                 if (JSON.stringify(this.scadParameters.getOverrides()) !== oldValues) {
-                                    this.scadRenderer.render(this.documentUri.fsPath, this.scadParameters.getOverrides())
+                                    this.scadRenderer.render(this.documentUri.fsPath, this.scadParameters.getOverrides(), this.previewMode)
                                 }
                             }
                         }
@@ -168,7 +205,7 @@ export class ScadSession {
         return this.scadParameters.getParameters()
     }
 
-    public get currentOverrides(): Record<string, string | number | boolean> {
+    public get currentOverrides(): Record<string, string | number | boolean | number[]> {
         return this.scadParameters.getOverrides()
     }
 
@@ -180,10 +217,10 @@ export class ScadSession {
         return this.scadParameters.getParameterSets()
     }
 
-    public updateParameterValue(name: string, value: string | number | boolean | undefined) {
+    public updateParameterValue(name: string, value: string | number | boolean | number[] | undefined) {
         this.scadParameters.updateValue(name, value)
 
-        this.scadRenderer.render(this.documentUri.fsPath, this.scadParameters.getOverrides())
+        this.scadRenderer.renderLatest(this.documentUri.fsPath, this.scadParameters.getOverrides(), this.previewMode)
     }
 
     public async saveParameterSet(name: string) {
@@ -230,12 +267,12 @@ export class ScadSession {
 
     public applyParameterSet(name: string | undefined) {
         this.scadParameters.setActiveSet(name)
-        this.scadRenderer.render(this.documentUri.fsPath, this.scadParameters.getOverrides())
+        this.scadRenderer.render(this.documentUri.fsPath, this.scadParameters.getOverrides(), this.previewMode)
     }
 
     public refreshRender() {
         if (!this.disposed) {
-            this.scadRenderer.render(this.documentUri.fsPath, this.scadParameters.getOverrides())
+            this.scadRenderer.render(this.documentUri.fsPath, this.scadParameters.getOverrides(), this.previewMode)
         }
     }
 
@@ -253,6 +290,8 @@ export class ScadSession {
         ScadClient.cancelRender(this.documentUri.fsPath)
         this.scadWatcher.close()
         this.jsonWatcher?.close()
+        this.customizer.setContinuousPreview(this.documentUri.toString(), false)
+        this._onBackendChanged.dispose()
         this._onRenderStarted.dispose()
         this._onRenderCompleted.dispose()
         this._onRenderError.dispose()

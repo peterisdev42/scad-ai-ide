@@ -3,6 +3,7 @@ import { css, html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { CameraMode, BuildPlateOrigin, Environment, RenderMode, ViewOptions, ViewOptionsContext, viewOptionsContext } from '../../contexts/ViewOptionsContext'
 import type { IconButton } from '../atoms/IconButton'
+import { modelContext, type ModelContext } from '../../contexts/ModelContext'
 import '../atoms/Icon'
 import '../atoms/IconButton'
 
@@ -21,6 +22,9 @@ export class Options extends LitElement {
             right: 16px;
             display: flex;
             flex-direction: row;
+            flex-wrap: wrap;
+            max-width: calc(100% - 100px);
+            justify-content: flex-end;
             align-items: flex-start;
             gap: 8px;
             z-index: 10;
@@ -42,8 +46,17 @@ export class Options extends LitElement {
     @state()
     private viewSettings!: ViewOptionsContext
 
+    @consume({ context: modelContext, subscribe: true })
+    @state()
+    private model?: ModelContext
+
     private set<K extends keyof ViewOptions>(key: K, value: ViewOptions[K]) {
         this.viewSettings.set(key, value)
+    }
+
+    private setPreviewMode(mode: 'preview' | 'render', event: Event) {
+        ;(event.currentTarget as IconButton).checked = true
+        this.model?.setPreviewMode?.(mode)
     }
 
     private setPlateOrigin(origin: BuildPlateOrigin, event: Event) {
@@ -74,16 +87,23 @@ export class Options extends LitElement {
                 </scad-icon-button>
             </div>
 
+            ${
+                this.model?.setPreviewMode
+                    ? html`<div class="group">
+                          <scad-icon-button label="CSG preview" toggleable .checked=${this.model.previewMode === 'preview'} @change=${(event: Event) => this.setPreviewMode('preview', event)}>
+                              <scad-icon name="render-wireframe"></scad-icon>
+                          </scad-icon-button>
+                          <scad-icon-button label="Full mesh render" toggleable .checked=${this.model.previewMode === 'render'} @change=${(event: Event) => this.setPreviewMode('render', event)}>
+                              <scad-icon name="render-solid"></scad-icon>
+                          </scad-icon-button>
+                      </div>`
+                    : null
+            }
+
             <div class="group">
-                <scad-icon-button label="Solid" toggleable .checked=${get('renderMode') === RenderMode.Solid} @change=${() => this.set('renderMode', RenderMode.Solid)}>
-                    <scad-icon name="render-solid"></scad-icon>
-                </scad-icon-button>
-                <scad-icon-button label="X-Ray" toggleable .checked=${get('renderMode') === RenderMode.XRay} @change=${() => this.set('renderMode', RenderMode.XRay)}>
-                    <scad-icon name="render-xray"></scad-icon>
-                </scad-icon-button>
-                <scad-icon-button label="Wireframe" toggleable .checked=${get('renderMode') === RenderMode.Wireframe} @change=${() => this.set('renderMode', RenderMode.Wireframe)}>
-                    <scad-icon name="render-wireframe"></scad-icon>
-                </scad-icon-button>
+                <scad-icon-button label="Solid" toggleable .checked=${get('renderMode') === RenderMode.Solid} @change=${() => this.set('renderMode', RenderMode.Solid)}><scad-icon name="render-solid"></scad-icon></scad-icon-button>
+                <scad-icon-button label="X-Ray" toggleable .checked=${get('renderMode') === RenderMode.XRay} @change=${() => this.set('renderMode', RenderMode.XRay)}><scad-icon name="render-xray"></scad-icon></scad-icon-button>
+                <scad-icon-button label="Wireframe" toggleable .checked=${get('renderMode') === RenderMode.Wireframe} @change=${() => this.set('renderMode', RenderMode.Wireframe)}><scad-icon name="render-wireframe"></scad-icon></scad-icon-button>
             </div>
 
             <div class="group">

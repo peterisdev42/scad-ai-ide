@@ -1,7 +1,9 @@
 import { consume } from '@lit/context'
 import { css, html, LitElement, nothing } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
+import { customElement, query, state } from 'lit/decorators.js'
 import { ActiveTool, ActiveToolContext, activeToolContext } from '../../contexts/ActiveToolContext'
+import { viewOptionsContext, ViewOptionsContext } from '../../contexts/ViewOptionsContext'
+import { readPreviewTheme } from '../../preview/Theme'
 import type { IconButton } from '../atoms/IconButton'
 import type { IconName } from '../atoms/Icon'
 import '../atoms/Icon'
@@ -69,6 +71,14 @@ export class Toolbar extends LitElement {
             border: 1px solid var(--vscode-panel-border);
         }
 
+        input[type='color'] {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
         .group.horizontal {
             flex-direction: row;
         }
@@ -93,6 +103,13 @@ export class Toolbar extends LitElement {
     @consume({ context: activeToolContext, subscribe: true })
     @state()
     private activeToolContext!: ActiveToolContext
+
+    @consume({ context: viewOptionsContext, subscribe: true })
+    @state()
+    private viewSettings!: ViewOptionsContext
+
+    @query('#model-color')
+    private colorInput!: HTMLInputElement
 
     private rememberedVariants = new Map<ActiveTool, string>()
 
@@ -121,6 +138,13 @@ export class Toolbar extends LitElement {
                     </div>
                 `,
             )}
+            <div class="group" role="group" aria-label="Model color">
+                <scad-icon-button label="Choose model color" @change=${() => this.colorInput.click()}>
+                    <scad-icon name="model-color"></scad-icon>
+                </scad-icon-button>
+                <input id="model-color" type="color" tabindex="-1" aria-label="Model color" .value=${this.viewSettings?.get('modelColor') ?? `#${readPreviewTheme(getComputedStyle(document.body)).additive.getHexString()}`} @input=${(event: Event) => this.viewSettings.set('modelColor', (event.target as HTMLInputElement).value)} />
+                ${this.viewSettings?.get('modelColor') ? html`<scad-icon-button label="Restore default model color" @change=${() => this.viewSettings.set('modelColor', null)}><scad-icon name="color-reset"></scad-icon></scad-icon-button>` : nothing}
+            </div>
         `
     }
 

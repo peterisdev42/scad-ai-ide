@@ -1,7 +1,9 @@
 import { notifications, confirmDeleteParameterSet } from '../../../../platform/notifications'
 import { randomBytes } from 'node:crypto'
 import { ScadClient } from '../services/ScadClient'
+import { EmptyModelError } from '../services/previewEligibility'
 import { showRenderError } from '../services/renderError'
+import { syntaxErrorMessage } from '../services/renderDiagnostics'
 import { Disposable, Memento, ProgressLocation, Uri, Webview, WebviewPanel, env, window, workspace } from 'vscode'
 import * as os from 'os'
 import * as path from 'path'
@@ -9,13 +11,14 @@ import * as cp from 'child_process'
 import { ExtensionToWebviewMessage } from '../../shared/types/ExtensionToWebviewMessage'
 import { ModelFormat } from '../../shared/types/ModelFormat'
 import { WebviewToExtensionMessage } from '../../shared/types/WebviewToExtensionMessage'
-import { ScadSession } from '../core/ScadSession'
+import type { PreviewSession } from '../core/PreviewSession'
 
 export class ScadWebviewPanel {
     private readonly panel: WebviewPanel
     private disposables: Disposable[] = []
     private isWebviewReady: boolean = false
     private disposed = false
+    private previewMessage: { type: 'emptyModel' | 'renderError'; message: string } | undefined
     private lastRender: { base64Data: string; format: ModelFormat } | undefined
 
     private get sceneStateKey(): string {
@@ -25,7 +28,7 @@ export class ScadWebviewPanel {
     constructor(
         panel: WebviewPanel,
         private readonly extensionUri: Uri,
-        private readonly session: ScadSession,
+        private readonly session: PreviewSession,
         private readonly workspaceState: Memento,
     ) {
         this.panel = panel
@@ -48,27 +51,30 @@ export class ScadWebviewPanel {
                             this.isWebviewReady = true
                             this.pushInitialState()
                             return
+                        case 'setPreviewMode':
+                            if (message.mode === 'preview' || message.mode === 'render') this.session.setPreviewMode?.(message.mode)
+                            return
                         case 'parameterChanged':
-                            this.session.updateParameterValue(message.name, message.value)
+                            this.session.updateParameterValue?.(message.name, message.value)
                             return
                         case 'saveParameterSet':
-                            await this.session.saveParameterSet(message.name)
+                            await this.session.saveParameterSet?.(message.name)
                             return
                         case 'promptSaveParameterSet': {
                             const name = await window.showInputBox({ prompt: 'Enter new parameter set name:', placeHolder: 'Preset Name' })
                             if (name?.trim()) {
-                                await this.session.saveParameterSet(name.trim())
+                                await this.session.saveParameterSet?.(name.trim())
                             }
                             return
                         }
                         case 'deleteParameterSet': {
                             if (await confirmDeleteParameterSet(message.name)) {
-                                await this.session.deleteParameterSet(message.name)
+                                await this.session.deleteParameterSet?.(message.name)
                             }
                             return
                         }
                         case 'applyParameterSet':
-                            this.session.applyParameterSet(message.name)
+                            this.session.applyParameterSet?.(message.name)
                             return
                         case 'exportModel':
                             await this.exportModel()
@@ -91,13 +97,22 @@ export class ScadWebviewPanel {
             this.disposables,
         )
 
+        this.session.onBackendChanged?.(
+            (backend) => {
+                this.postMessage({ type: 'previewBackend', backend })
+            },
+            null,
+            this.disposables,
+        )
+
         // Subscribe to session events
         this.session.onRenderStarted(
             () => {
+                this.pushPreviewMode()
                 this.postMessage({
                     type: 'loadingState',
                     loading: true,
-                    message: 'Generating model...',
+                    message: this.session.sourceFormat ? 'Loading model...' : this.session.previewMode === 'preview' ? 'Generating CSG preview...' : 'Generating model...',
                 })
             },
             null,
@@ -106,7 +121,7 @@ export class ScadWebviewPanel {
 
         this.session.onRenderCompleted(
             ({ buffer, format }) => {
-                if (buffer.toString() === 'loading') {
+                if (buffer.length === 7 && buffer.toString() === 'loading') {
                     this.postMessage({
                         type: 'loadingState',
                         loading: true,
@@ -115,6 +130,7 @@ export class ScadWebviewPanel {
                     return
                 }
 
+                this.previewMessage = undefined
                 const base64Data = buffer.toString('base64')
                 this.lastRender = { base64Data, format }
                 this.postMessage({
@@ -129,6 +145,13 @@ export class ScadWebviewPanel {
 
         this.session.onRenderError(
             (err) => {
+                const syntaxMessage = this.session.sourceFormat ? undefined : syntaxErrorMessage(err)
+                if (err instanceof EmptyModelError || syntaxMessage) {
+                    this.lastRender = undefined
+                    this.previewMessage = { type: syntaxMessage ? 'renderError' : 'emptyModel', message: syntaxMessage ?? err.message }
+                    this.postMessage(this.previewMessage)
+                    return
+                }
                 // Clear the loading spinner so the webview doesn't hang indefinitely.
                 this.postMessage({
                     type: 'loadingState',
@@ -136,7 +159,8 @@ export class ScadWebviewPanel {
                 })
 
                 const msg = err.message
-                void showRenderError(err, () => ScadClient.outputChannel.show(), this.session.documentUri.toString())
+                if (this.session.sourceFormat) void notifications.previewError(err, this.session.documentUri.toString())
+                else void showRenderError(err, () => ScadClient.outputChannel.show(), this.session.documentUri.toString())
 
                 // Keep the full error and recovery guidance in the webview log panel.
                 if (this.isWebviewReady) {
@@ -229,6 +253,7 @@ export class ScadWebviewPanel {
     }
 
     private pushInitialState() {
+        this.pushPreviewMode()
         // Send the persisted scene snapshot first so the webview can hydrate
         // before any other state arrives. `null` means "no saved scene" — the
         // webview falls back to its built-in default scene.
@@ -255,6 +280,7 @@ export class ScadWebviewPanel {
         // both when the tab first loads (race condition where the render may have
         // completed before the webview was ready) and on tab re-focus (where
         // VSCode destroys and recreates the webview content).
+        if (this.previewMessage) this.postMessage(this.previewMessage)
         if (this.lastRender) {
             this.postMessage({
                 type: 'update',
@@ -264,20 +290,25 @@ export class ScadWebviewPanel {
         }
     }
 
+    private pushPreviewMode() {
+        if (this.session.renderBackend) this.postMessage({ type: 'previewBackend', backend: this.session.renderBackend })
+        if (this.session.setPreviewMode) this.postMessage({ type: 'previewMode', mode: this.session.previewMode ?? 'render' })
+    }
+
     private async exportModel() {
         const format = await window.showQuickPick(
             [
                 {
                     value: ModelFormat.ThreeMF,
                     label: '3MF',
-                    description: 'Supports colors but requires OpenSCAD Nightly.',
+                    description: this.session.sourceFormat ? 'Save a copy of the original 3MF model.' : 'Supports colors but requires OpenSCAD Nightly.',
                 },
                 {
                     value: ModelFormat.STL,
                     label: 'STL',
                     description: 'Universally supported.',
                 },
-            ] as const,
+            ].filter((option) => !this.session.sourceFormat || option.value === this.session.sourceFormat),
             {
                 title: 'Select Export Format',
             },
@@ -292,7 +323,7 @@ export class ScadWebviewPanel {
         const activeSetName = this.session.activeSetName
         const appendix = activeSetName ? ` - ${activeSetName.replace(/[^a-z0-9 _-]/gi, '_')}` : ''
 
-        const defaultUri = Uri.file(this.session.documentUri.fsPath.replace(/\.scad$/i, `${appendix}.${format.value}`))
+        const defaultUri = Uri.file(this.session.documentUri.fsPath.replace(/\.(?:scad|csg|stl|3mf)$/i, `${appendix}.${format.value}`))
 
         const filters = {
             [format.label]: [format.value],
@@ -337,7 +368,7 @@ export class ScadWebviewPanel {
                 async () => {
                     const config = workspace.getConfiguration('scad-ai-ide.preview')
                     const formatValue = config.get<string>('format') || 'stl'
-                    const format = formatValue === 'stl' ? ModelFormat.STL : ModelFormat.ThreeMF
+                    const format = this.session.sourceFormat ?? (formatValue === 'stl' ? ModelFormat.STL : ModelFormat.ThreeMF)
 
                     const buffer = await this.session.exportFormat(format)
 

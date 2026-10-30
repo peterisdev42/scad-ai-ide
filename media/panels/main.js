@@ -59,6 +59,13 @@ function element(tag, text, className) {
     return node
 }
 
+function appendRuntimeChannel(heading, channel) {
+    if (!['Stable', 'RC', 'Test', 'Snapshot'].includes(channel)) return
+    const badge = element('span', channel, channel === 'Stable' ? 'badge runtime-channel success' : 'badge runtime-channel')
+    badge.title = `Release channel: ${channel}`
+    heading.append(badge)
+}
+
 const sourceNames = {
     custom: 'Custom location',
     PATH: 'Found on PATH',
@@ -167,11 +174,11 @@ function render(state) {
             row.setAttribute('role', 'listitem')
             const content = element('div', undefined, 'version-info')
             const heading = element('div', undefined, 'version-heading')
-            const source = element('span', sourceNames[runtime.source] ?? runtime.source, 'badge source-badge')
-            source.title = 'How this OpenSCAD installation was discovered.'
-            heading.append(element('h3', `OpenSCAD ${runtime.version}`), source)
+            heading.append(element('h3', `OpenSCAD ${runtime.version}`))
+            appendRuntimeChannel(heading, runtime.channel)
             content.append(heading)
             const location = element('p', [runtime.command.executable, ...runtime.command.argsPrefix].join(' '), 'runtime-location path muted')
+            location.title = sourceNames[runtime.source] ?? runtime.source
             const selected = runtime.id === state.activeId
             const switching = state.selectingId === runtime.id
             const button = element('button', switching ? 'Switching…' : selected ? 'In Use' : 'Use This Version', selected ? 'secondary' : '')
@@ -217,11 +224,7 @@ function render(state) {
             const title = element('h3', build.release.replace(/^OpenSCAD CLI\b/i, 'OpenSCAD'))
             title.title = build.tag
             heading.append(title)
-            if (build.channel === 'Stable') {
-                const badge = element('span', 'Stable', 'badge success')
-                badge.title = 'Version name has no suffix.'
-                heading.append(badge)
-            }
+            appendRuntimeChannel(heading, build.channel)
             content.append(heading)
             const metadata = versionMetadata([['Download size', `${(build.size / 1024 / 1024).toFixed(1)} MB`]])
             const installed = state.installedBuildIds?.includes(build.id)
@@ -249,7 +252,7 @@ function render(state) {
 
 function renderRecommendedBuild(state, loading) {
     const builds = state.builds ?? []
-    const build = builds[0]
+    const build = builds.find((build) => build.id === state.recommendedBuildId)
     get('recommended-build').hidden = !build || !!state.buildsError
     get('all-versions-heading').hidden = !builds.length
     if (!build) return
@@ -257,7 +260,7 @@ function renderRecommendedBuild(state, loading) {
     const installing = state.installing?.buildId === build.id
     get('recommended-title').textContent = build.release.replace(/^OpenSCAD CLI\b/i, 'OpenSCAD')
     get('recommended-title').title = build.tag
-    const reason = 'Newest available build for your system.'
+    const reason = 'Latest Stable release for your system, as selected by GitHub.'
     get('recommended-description').textContent = installing ? state.installing.message : `${reason}${installed ? ' Already installed.' : ''}`
     const button = get('install-recommended')
     button.textContent = installing ? `Installing${state.installing.percent === undefined ? '…' : ` ${state.installing.percent}%`}` : installed ? 'View Installed' : 'Install Recommended'

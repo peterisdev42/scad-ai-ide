@@ -25,6 +25,17 @@ export class Parameters extends LitElement {
             overflow-y: auto;
         }
 
+        .vector-controls {
+            display: flex;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .vector-controls scad-number-field {
+            flex: 1;
+            min-width: 0;
+        }
+
         .preset-controls {
             display: flex;
             gap: 0.5rem;
@@ -160,36 +171,49 @@ export class Parameters extends LitElement {
             .join(' ')
     }
 
-    private getCompoundValue(param: ScadParameter): string | number | boolean {
-        const { parameterSets, activeSetName, overrides } = this.parameterContext
-        if (param.name in overrides) {
-            return overrides[param.name]
-        }
-        if (activeSetName && parameterSets && parameterSets[activeSetName] && param.name in parameterSets[activeSetName]) {
-            const rawStr = parameterSets[activeSetName][param.name]
-            if (typeof param.value === 'number') return Number(rawStr)
-            if (typeof param.value === 'boolean') return rawStr === 'true'
-            return rawStr
-        }
-        return param.value
+    private getCompoundValue(param: ScadParameter): string | number | boolean | number[] {
+        // Presets are parsed and validated by ScadParameters before reaching the UI.
+        return this.parameterContext.overrides[param.name] ?? param.value
     }
 
     private handleInputChange(name: string, value: unknown) {
         if (this.parameterContext.override) {
-            this.parameterContext.override(name, value as string | number | boolean)
+            this.parameterContext.override(name, value as string | number | boolean | number[])
         }
     }
 
     private renderInput(param: ScadParameter, currentValue: unknown) {
-        if (param.type === 'string' && 'options' in param && param.options) {
-            return html` <vscode-single-select .value=${currentValue} @change=${(e: Event) => this.handleInputChange(param.name, (e.target as HTMLSelectElement).value)}> ${param.options.map((opt) => html` <vscode-option value="${opt.value}">${opt.label || opt.value}</vscode-option> `)} </vscode-single-select> `
-        }
-
-        if (param.type === 'number' && 'options' in param && param.options) {
-            return html` <vscode-single-select .value=${currentValue?.toString()} @change=${(e: Event) => this.handleInputChange(param.name, parseFloat((e.target as HTMLSelectElement).value))}> ${param.options.map((opt) => html` <vscode-option value="${opt.value}">${opt.label || opt.value}</vscode-option> `)} </vscode-single-select> `
+        if ((param.type === 'string' || param.type === 'number') && param.options) {
+            const options = param.options
+            return html`<vscode-single-select
+                .value=${String(options.findIndex((option) => option.value === currentValue))}
+                @change=${(e: Event) => {
+                    const option = options[Number((e.target as HTMLSelectElement).value)]
+                    if (option) this.handleInputChange(param.name, option.value)
+                }}
+                >${options.map((option, index) => html`<vscode-option value=${String(index)}>${option.label ?? option.value}</vscode-option>`)}</vscode-single-select
+            >`
         }
 
         switch (param.type) {
+            case 'vector':
+                return html`<div class="vector-controls">
+                    ${(currentValue as number[]).map(
+                        (value, index) =>
+                            html`<scad-number-field
+                                aria-label=${`${param.name} ${index + 1}`}
+                                .value=${value}
+                                .min=${param.min}
+                                .max=${param.max}
+                                .step=${param.step}
+                                @change=${(e: NumberFieldChangeEvent) => {
+                                    const vector = [...(currentValue as number[])]
+                                    vector[index] = e.detail.value
+                                    this.handleInputChange(param.name, vector)
+                                }}
+                            ></scad-number-field>`,
+                    )}
+                </div>`
             case 'boolean':
                 return html` <vscode-checkbox ?indeterminate=${false} .checked=${currentValue} @change=${(e: Event) => this.handleInputChange(param.name, (e.target as HTMLInputElement).checked)}></vscode-checkbox> `
             case 'number':

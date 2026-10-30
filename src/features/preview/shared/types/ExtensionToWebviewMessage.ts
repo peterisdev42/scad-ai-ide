@@ -1,8 +1,14 @@
 import { ModelFormat } from './ModelFormat'
 import { ScadParameter } from './ScadParameter'
+import type { PreviewBackend } from './PreviewBackend'
+import type { PreviewMode } from './PreviewMode'
 
 export type ExtensionToWebviewMessage =
     | { type: 'ready' }
+    | { type: 'previewMode'; mode: PreviewMode }
+    | { type: 'previewBackend'; backend: PreviewBackend }
+    | { type: 'emptyModel'; message: string }
+    | { type: 'renderError'; message: string }
     | { type: 'loadingState'; loading: boolean; message?: string }
     | {
           type: 'update'
@@ -14,7 +20,7 @@ export type ExtensionToWebviewMessage =
           parameters: ScadParameter[]
           parameterSets: Record<string, Record<string, string>>
           activeSetName: string | undefined
-          overrides: Record<string, string | number | boolean>
+          overrides: Record<string, string | number | boolean | number[]>
       }
     | { type: 'error'; message: string }
     | { type: 'log'; message: string }
