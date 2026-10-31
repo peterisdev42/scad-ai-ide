@@ -91,7 +91,8 @@ test('existing build plate and grid buffers follow theme changes without replaci
         for (let i = 0; i < colors.count; i++) {
             assert.ok(colorDistance(new Color().setRGB(colors.getX(i), colors.getY(i), colors.getZ(i)), palette.plateGrid) < 1e-6)
         }
-        assert.equal(plate.material.depthWrite, false)
+        assert.equal(plate.material.depthWrite, true)
+        assert.equal(plate.material.depthTest, true)
         assert.equal(grid.material.depthWrite, false)
     }
     environment.setEnvironment(Environment.None)

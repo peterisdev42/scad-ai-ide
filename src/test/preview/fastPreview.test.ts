@@ -1,9 +1,11 @@
+import * as cliDependencies from '../../core/formats/dependencies'
+import { fontDirectoriesFromArgs } from '../../core/csg/fontDirectories'
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { readFileSync } from 'node:fs'
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { mkdtemp, readFile, rm, writeFile,stat } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { join, dirname } from 'node:path'
 import { createRequire } from 'node:module'
 import * as vm from 'node:vm'
 import { transformSync } from 'esbuild'
@@ -25,6 +27,10 @@ test('SCAD fast preview uses CSG tree with dirty text and parameter overrides; m
         module,
         Buffer,
         require: (name: string) => {
+            if (name.endsWith('/dependencies')) return cliDependencies
+            if (name.endsWith('/fontDirectories')) return { fontDirectoriesFromArgs }
+            if(name==='node:fs/promises')return {stat,mkdtemp,readFile,rm,writeFile}
+            if (name === 'node:path') return { dirname, join }
             if (name === 'vscode')
                 return {
                     workspace: { isTrusted: true, textDocuments: [{ uri: { fsPath: path }, isDirty: true, getText: () => source }], getConfiguration: () => ({ get: (_key: string, fallback: unknown) => fallback }) },
@@ -90,6 +96,10 @@ test('switching render mode suppresses obsolete results while selecting CSG or t
         module,
         AbortController,
         require: (name: string) => {
+            if (name.endsWith('/dependencies')) return cliDependencies
+            if (name.endsWith('/fontDirectories')) return { fontDirectoriesFromArgs }
+            if(name==='node:fs/promises')return {stat,mkdtemp,readFile,rm,writeFile}
+            if (name === 'node:path') return { dirname, join }
             if (name.endsWith('/csg/compile')) return { compileCsg: async () => Buffer.from('scene') }
             if (name === 'vscode') return { workspace: { getConfiguration: () => ({ get: () => ModelFormat.ThreeMF }) } }
             if (name.endsWith('/ModelFormat')) return { ModelFormat }
@@ -125,6 +135,10 @@ function queuedRenderer() {
         AbortController,
         Error,
         require: (name: string) => {
+            if (name.endsWith('/dependencies')) return cliDependencies
+            if (name.endsWith('/fontDirectories')) return { fontDirectoriesFromArgs }
+            if(name==='node:fs/promises')return {stat,mkdtemp,readFile,rm,writeFile}
+            if (name === 'node:path') return { dirname, join }
             if (name.endsWith('/csg/compile'))
                 return {
                     compileCsg: async (source: string) => {
@@ -200,32 +214,22 @@ test('an obsolete parameter error does not interrupt the latest queued value', a
     renderer.dispose()
 })
 
-test('fallback is explicit, discards queued drag values and waits for a final commit', async () => {
-    const { renderer, calls, backends, completed } = queuedRenderer()
-    renderer.renderLatest('/part.scad', { width: 0 }, 'preview')
-    calls[0].resolve(Buffer.from('supported'))
-    await flush()
-    assert.equal(backends.at(-1)?.kind, 'csg')
-    renderer.renderLatest('/part.scad', { width: 1 }, 'preview', 'input')
-    renderer.renderLatest('/part.scad', { width: 2 }, 'preview', 'input')
+test('unsupported CSG preserves the last frame and never requests a native mesh fallback', async () => {
+    const { renderer, calls, completed, errors } = queuedRenderer()
+    const first = renderer.render('/models/part.scad', {}, 'preview')
+    calls[0].resolve(Buffer.from('first'))
+    await first
+    renderer.renderLatest('/models/part.scad', { width: 2 }, 'preview')
     calls[1].resolve(Buffer.from('unsupported'))
     await flush()
-    assert.equal(backends.at(-1)?.kind, 'fallback')
-    assert.equal(backends.at(-1)?.reason, 'non-triangular polyhedron face')
-    assert.equal(calls[2].format, ModelFormat.STL)
-    renderer.renderLatest('/part.scad', { width: 3 }, 'preview', 'input')
-    calls[2].resolve(Buffer.from('fallback 1'))
+    assert.equal(calls.length, 2)
+    assert.deepEqual(completed, ['first'])
+    assert.match(errors[0], /Unsupported CSG operation/)
+    renderer.renderLatest('/models/part.scad', { width: 3 }, 'preview')
+    assert.equal(calls[2].format, ModelFormat.CSG)
+    calls[2].resolve(Buffer.from('valid'))
     await flush()
-    assert.equal(calls.length, 3, 'No intermediate drag job may run after fallback')
-    renderer.renderLatest('/part.scad', { width: 2 }, 'preview', 'commit')
-    assert.equal(calls.length, 4, 'The last released value still needs a render')
-    calls[3].resolve(Buffer.from('unsupported'))
-    await flush()
-    calls[4].resolve(Buffer.from('fallback 2'))
-    await flush()
-    assert.equal(backends.at(-1)?.kind, 'fallback')
-    assert.ok(backends.at(-1)!.elapsedMs! >= 0)
-    assert.deepEqual(completed, ['supported', 'fallback 1', 'fallback 2'])
+    assert.deepEqual(completed, ['first', 'valid'])
     renderer.dispose()
 })
 
@@ -239,5 +243,21 @@ test('ordinary rendering ignores intermediate requests and deduplicates a final 
     await flush()
     renderer.renderLatest('/part.scad', { width: 2 }, 'render', 'commit')
     assert.equal(calls.length, 1)
+    renderer.dispose()
+})
+
+
+test('mode switches immediately publish cached paths without a parameter edit or another CLI job',async()=>{
+    const {renderer,calls,completed,backends}=queuedRenderer()
+    const mesh=renderer.render('/part.scad',{},'render');calls[0].resolve(Buffer.from('mesh'));await mesh
+    const preview=renderer.render('/part.scad',{},'preview',true);calls[1].resolve(Buffer.from('csg'));await preview
+    await renderer.render('/part.scad',{},'render',true)
+    await renderer.render('/part.scad',{},'preview',true)
+    assert.equal(calls.length,2)
+    assert.deepEqual(completed,['mesh','csg','mesh','csg'])
+    assert.equal(backends.at(-1)?.cacheHit,true)
+    renderer.invalidateCache()
+    const changed=renderer.render('/part.scad',{},'preview',true);calls[2].resolve(Buffer.from('changed source'));await changed
+    assert.equal(completed.at(-1),'changed source')
     renderer.dispose()
 })

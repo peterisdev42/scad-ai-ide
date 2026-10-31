@@ -90,10 +90,10 @@ export class Options extends LitElement {
             ${
                 this.model?.setPreviewMode
                     ? html`<div class="group">
-                          <scad-icon-button label="CSG preview" toggleable .checked=${this.model.previewMode === 'preview'} @change=${(event: Event) => this.setPreviewMode('preview', event)}>
+                          <scad-icon-button label="CSG preview" .href=${this.model.modeLinks?.preview} toggleable .checked=${this.model.previewMode === 'preview'} @change=${(event: Event) => this.setPreviewMode('preview', event)}>
                               <scad-icon name="render-wireframe"></scad-icon>
                           </scad-icon-button>
-                          <scad-icon-button label="Full mesh render" toggleable .checked=${this.model.previewMode === 'render'} @change=${(event: Event) => this.setPreviewMode('render', event)}>
+                          <scad-icon-button label="Full mesh render" .href=${this.model.modeLinks?.render} toggleable .checked=${this.model.previewMode === 'render'} @change=${(event: Event) => this.setPreviewMode('render', event)}>
                               <scad-icon name="render-solid"></scad-icon>
                           </scad-icon-button>
                       </div>`

@@ -1,5 +1,6 @@
 import type { CustomizerService } from '../../../../core/customizer/CustomizerService'
-import { Disposable, EventEmitter, TextDocument, Uri, workspace } from 'vscode'
+import { Disposable, EventEmitter, RelativePattern, TextDocument, Uri, workspace } from 'vscode'
+import { dirname, basename } from 'node:path'
 import { ModelFormat } from '../../shared/types/ModelFormat'
 import { ScadParameter } from '../../shared/types/ScadParameter'
 import { ScadClient } from '../services/ScadClient'
@@ -7,7 +8,7 @@ import { ScadParser } from '../services/ScadParser'
 import { ScadRenderer } from '../services/ScadRenderer'
 import { FileWatcher } from '../services/ScadWatcher'
 import { ScadParameters } from './ScadParameters'
-import type { PreviewBackend } from '../../shared/types/PreviewBackend'
+import type { PreviewBackend, PreviewTimings } from '../../shared/types/PreviewBackend'
 import type { PreviewMode } from '../../shared/types/PreviewMode'
 
 /**
@@ -22,9 +23,65 @@ export class ScadSession {
     private syncingCustomizer = false
     private renderTimer: ReturnType<typeof setTimeout> | undefined
     private disposed = false
+    private dependencyWatchers = new Map<string, Disposable>()
+    private watchDependencies(buffer: Buffer, format: ModelFormat,dependencies?:{path:string;stamp:string}[]) {
+        if (format !== ModelFormat.CSG&&!dependencies?.length) {
+            for (const watcher of this.dependencyWatchers.values()) watcher.dispose()
+            this.dependencyWatchers.clear()
+            return
+        }
+        let paths: string[]
+        try {
+            paths = dependencies?.map(d=>d.path)??JSON.parse(buffer.toString('utf8')).dependencies.map((d: { path: string }) => d.path)
+        } catch {
+            return
+        }
+        for (const [path, watcher] of this.dependencyWatchers)
+            if (!paths.includes(path)) {
+                watcher.dispose()
+                this.dependencyWatchers.delete(path)
+            }
+        for (const path of paths)
+            if (!this.dependencyWatchers.has(path)) {
+                const watcher = workspace.createFileSystemWatcher(new RelativePattern(dirname(path), basename(path)))
+                const refresh = () => {
+                    this.scadRenderer.invalidateCache?.()
+                    clearTimeout(this.renderTimer)
+                    this.renderTimer = setTimeout(() => this.refreshRender(), 150)
+                }
+                const changed = watcher.onDidChange(refresh),
+                    created = watcher.onDidCreate(refresh),
+                    deleted = watcher.onDidDelete(refresh)
+                this.dependencyWatchers.set(
+                    path,
+                    new Disposable(() => {
+                        changed.dispose()
+                        created.dispose()
+                        deleted.dispose()
+                        watcher.dispose()
+                    }),
+                )
+            }
+    }
     public renderBackend: PreviewBackend = { kind: 'pending' }
     private _onBackendChanged = new EventEmitter<PreviewBackend>()
     public readonly onBackendChanged = this._onBackendChanged.event
+    public acceptPerformance(timings: PreviewTimings) {
+        if (this.disposed) return
+        const allowed: PreviewTimings = {}
+        for (const key of ['cliMs', 'resourcesMs', 'geometryMs', 'bvhMs', 'uploadMs', 'shaderMs', 'interactiveFrameMs'] as const) {
+            const value = timings?.[key]
+            if (typeof value === 'number' && Number.isFinite(value) && value >= 0) allowed[key] = value
+        }
+        this.renderBackend = { ...this.renderBackend, timings: { ...this.renderBackend.timings, ...allowed } }
+        this._onBackendChanged.fire(this.renderBackend)
+    }
+    public acceptFrame(graphics: 'webgpu' | 'webgl2', firstFrameMs: number) {
+        if (this.disposed) return
+        this.renderBackend = { ...this.renderBackend, graphics, firstFrameMs, frameReady: true }
+        this.customizer.setContinuousPreview(this.documentUri.toString(), this.previewMode === 'preview' && this.renderBackend.kind === 'csg')
+        this._onBackendChanged.fire(this.renderBackend)
+    }
 
     private selectedPreviewMode?: PreviewMode
 
@@ -35,7 +92,7 @@ export class ScadSession {
     public setPreviewMode(mode: PreviewMode) {
         if (this.disposed || (mode !== 'preview' && mode !== 'render') || mode === this.previewMode) return
         this.selectedPreviewMode = mode
-        this.refreshRender()
+        void this.scadRenderer.render(this.documentUri.fsPath,this.scadParameters.getOverrides(),mode,true)
     }
 
     public get documentUri(): Uri {
@@ -89,11 +146,14 @@ export class ScadSession {
         this.scadRenderer = new ScadRenderer({
             onBackendChange: (backend) => {
                 this.renderBackend = backend
-                this.customizer.setContinuousPreview(this.documentUri.toString(), this.previewMode === 'preview' && backend.kind === 'csg')
+                this.customizer.setContinuousPreview(this.documentUri.toString(), this.previewMode === 'preview' && backend.kind === 'csg' && backend.frameReady === true)
                 this._onBackendChanged.fire(backend)
             },
             onStart: () => this._onRenderStarted.fire(),
-            onComplete: (data) => this._onRenderCompleted.fire(data),
+            onComplete: (data) => {
+                this.watchDependencies(data.buffer, data.format,data.dependencies)
+                this._onRenderCompleted.fire(data)
+            },
             onError: (err) => this._onRenderError.fire(err),
             onLog: (chunk) => this._onLog.fire(chunk),
         })
@@ -140,6 +200,7 @@ export class ScadSession {
 
         this.documentSubscription = workspace.onDidChangeTextDocument((event) => {
             if (event.document !== this.document || !event.contentChanges.length) return
+            this.scadRenderer.invalidateCache?.()
             clearTimeout(this.renderTimer)
             this.renderTimer = setTimeout(() => this.refreshDocument(), 250)
         })
@@ -285,6 +346,8 @@ export class ScadSession {
         this.disposed = true
         clearTimeout(this.renderTimer)
         this.documentSubscription.dispose()
+        for (const watcher of this.dependencyWatchers.values()) watcher.dispose()
+        this.dependencyWatchers.clear()
         this.valuesSubscription.dispose()
         this.scadRenderer.dispose()
         ScadClient.cancelRender(this.documentUri.fsPath)

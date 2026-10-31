@@ -80,3 +80,17 @@ export function parseCsg(source: string): CsgNode[] {
     }
     return result
 }
+
+/** Native preview chooses the first root tag in depth-first order. */
+export function selectCsgRoots(trees: CsgNode[]): CsgNode[] {
+    const find = (nodes: CsgNode[]): CsgNode | undefined => {
+        for (const node of nodes) {
+            if (node.modifiers.includes('*')) continue
+            if (node.modifiers.includes('!')) return { ...node, modifiers: node.modifiers.replace(/!/g, '') }
+            const nested = find(node.children)
+            if (nested) return nested
+        }
+    }
+    const root = find(trees)
+    return root ? [root] : trees
+}

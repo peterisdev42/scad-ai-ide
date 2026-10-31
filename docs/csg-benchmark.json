@@ -1,0 +1,157 @@
+{
+  "gpu": [
+    {
+      "name": "hole",
+      "backend": "webgl2",
+      "width": 96,
+      "height": 96,
+      "initializationMs": 8.400000000372529,
+      "uploadMs": 1.7999999998137355,
+      "shaderMs": 50,
+      "firstFrameMs": 56.5,
+      "interactiveFramesMs": [
+        0.19999999925494194,
+        0.20000000018626451,
+        0.20000000018626451,
+        0.09999999962747097,
+        0.10000000055879354
+      ],
+      "interactiveFrameMs": 0.1599999999627471
+    },
+    {
+      "name": "hole",
+      "backend": "webgpu",
+      "width": 96,
+      "height": 96,
+      "initializationMs": 1.6000000005587935,
+      "uploadMs": 0.599999999627471,
+      "shaderMs": 96.29999999981374,
+      "firstFrameMs": 99.3999999994412,
+      "interactiveFramesMs": [
+        0.09999999962747097,
+        0.20000000018626451,
+        0.09999999962747097,
+        0,
+        0.20000000018626451
+      ],
+      "interactiveFrameMs": 0.11999999992549419
+    },
+    {
+      "name": "grid",
+      "backend": "webgl2",
+      "width": 96,
+      "height": 96,
+      "initializationMs": 4.2000000001862645,
+      "uploadMs": 0.20000000018626451,
+      "shaderMs": 50.90000000037253,
+      "firstFrameMs": 52.5,
+      "interactiveFramesMs": [
+        0.10000000055879354,
+        0.09999999962747097,
+        0.09999999962747097,
+        0.10000000055879354,
+        0.09999999962747097
+      ],
+      "interactiveFrameMs": 0.1
+    },
+    {
+      "name": "grid",
+      "backend": "webgpu",
+      "width": 96,
+      "height": 96,
+      "initializationMs": 1.2000000001862645,
+      "uploadMs": 0.09999999962747097,
+      "shaderMs": 224.80000000074506,
+      "firstFrameMs": 226.5,
+      "interactiveFramesMs": [
+        0,
+        0.20000000018626451,
+        0.09999999962747097,
+        0,
+        0
+      ],
+      "interactiveFrameMs": 0.059999999962747096
+    },
+    {
+      "name": "twist",
+      "backend": "webgl2",
+      "width": 96,
+      "height": 96,
+      "initializationMs": 4,
+      "uploadMs": 0.10000000055879354,
+      "shaderMs": 36.200000000186265,
+      "firstFrameMs": 40,
+      "interactiveFramesMs": [
+        0.09999999962747097,
+        0.10000000055879354,
+        0,
+        0.09999999962747097,
+        0.09999999962747097
+      ],
+      "interactiveFrameMs": 0.07999999988824129
+    },
+    {
+      "name": "twist",
+      "backend": "webgpu",
+      "width": 96,
+      "height": 96,
+      "initializationMs": 0.5,
+      "uploadMs": 0.20000000018626451,
+      "shaderMs": 86.19999999925494,
+      "firstFrameMs": 90.40000000037253,
+      "interactiveFramesMs": [
+        0.09999999962747097,
+        0,
+        0.10000000055879354,
+        0.09999999962747097,
+        0.10000000055879354
+      ],
+      "interactiveFrameMs": 0.0800000000745058
+    }
+  ],
+  "platform": "darwin",
+  "arch": "arm64",
+  "node": "v24.16.0",
+  "runtime": "OpenSCAD version 2026.10.27",
+  "samples": [
+    {
+      "name": "hole",
+      "cliMs": 23.792084000000003,
+      "workerMs": 47.75687500000001,
+      "geometryMs": 4.153875000000028,
+      "bvhMs": 1.2468749999999886,
+      "bvhCacheHits": 0,
+      "resourcesMs": 0.06733300000001918,
+      "operands": 2,
+      "triangles": 136,
+      "uniqueTriangles": 136,
+      "bytes": 24073
+    },
+    {
+      "name": "grid",
+      "cliMs": 22.904583000000002,
+      "workerMs": 48.71808400000003,
+      "geometryMs": 5.4850830000000315,
+      "bvhMs": 2.244665999999995,
+      "bvhCacheHits": 0,
+      "resourcesMs": 0.06429199999999469,
+      "operands": 128,
+      "triangles": 4608,
+      "uniqueTriangles": 72,
+      "bytes": 73010
+    },
+    {
+      "name": "twist",
+      "cliMs": 23.003999999999962,
+      "workerMs": 51.1035,
+      "geometryMs": 6.908749999999998,
+      "bvhMs": 2.8928750000000036,
+      "bvhCacheHits": 0,
+      "resourcesMs": 0.07629099999996924,
+      "operands": 1,
+      "triangles": 524,
+      "uniqueTriangles": 524,
+      "bytes": 98027
+    }
+  ]
+}

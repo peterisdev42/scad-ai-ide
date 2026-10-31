@@ -1,3 +1,5 @@
+import * as cliDependencies from '../../core/formats/dependencies'
+import { fontDirectoriesFromArgs } from '../../core/csg/fontDirectories'
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { readFileSync } from 'node:fs'
@@ -47,6 +49,8 @@ test('CLI empty results are distinct from failures; configuration skips executio
         module,
         Buffer,
         require: (id: string) => {
+            if (id.endsWith('/dependencies')) return cliDependencies
+            if (id.endsWith('/fontDirectories')) return { fontDirectoriesFromArgs }
             if (id.endsWith('/previewFile')) return previewFiles
             if (id === 'vscode')
                 return {
@@ -94,6 +98,8 @@ test('preview command opens configuration and model files without filtering or n
     vm.runInNewContext(transformSync(code, { loader: 'ts', format: 'cjs', target: 'es2022' }).code, {
         module,
         require: (id: string) => {
+            if (id.endsWith('/dependencies')) return cliDependencies
+            if (id.endsWith('/fontDirectories')) return { fontDirectoriesFromArgs }
             if (id.endsWith('/previewFile')) return previewFiles
             if (id === 'vscode')
                 return {

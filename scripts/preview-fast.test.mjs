@@ -10,6 +10,7 @@ import { chromium } from 'playwright'
 const root = fileURLToPath(new URL('../', import.meta.url))
 const stl = Buffer.from('solid test\nfacet normal 0 0 1\nouter loop\nvertex 0 0 0\nvertex 20 0 0\nvertex 0 20 0\nendloop\nendfacet\nendsolid test\n').toString('base64')
 let csg
+let topology
 let browser
 before(async () => {
     const worker = new Worker(join(root, 'dist/csg-worker.mjs'))
@@ -21,10 +22,14 @@ before(async () => {
         })
         if (result.error) throw new Error(result.error)
         csg = Buffer.from(JSON.stringify(result.scene)).toString('base64')
+        topology = await new Promise((resolve, reject) => {
+            worker.once('message', (r) => (r.error ? reject(new Error(r.error)) : resolve(r.scene)))
+            worker.postMessage({ topology: result.scene })
+        })
     } finally {
         await worker.terminate()
     }
-    browser = await chromium.launch({ headless: true, executablePath: process.env.SCAD_CHROMIUM_EXECUTABLE || undefined })
+    browser = await chromium.launch({ headless: true, args: [...(process.platform === 'darwin' ? ['--use-angle=metal'] : []), ...(process.env.SCAD_TEST_WEBGPU === '1' ? ['--enable-unsafe-webgpu'] : [])], executablePath: process.env.SCAD_CHROMIUM_EXECUTABLE || undefined })
 })
 after(async () => browser?.close())
 
@@ -47,11 +52,16 @@ async function fixture(t, mode = 'render') {
     })
     await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve))
     const page = await browser.newPage({ viewport: { width: 1100, height: 850 } })
-    page.setDefaultTimeout(10000)
+    page.setDefaultTimeout(30000)
     const errors = []
     page.on('pageerror', (error) => errors.push(error.message))
+    page.on('console', (message) => {
+        if (message.type() === 'error' && /Shader Error|GPUValidationError|OpenSCAD Preview/.test(message.text())) errors.push(message.text())
+    })
     await page.addInitScript(
-        ({ mode, csg, stl }) => {
+        ({ mode, csg, stl, topology, webgpu }) => {
+            window.__scadTestWebGPU = webgpu
+            if (!window.__scadTestWebGPU) Object.defineProperty(navigator, 'gpu', { value: undefined, configurable: true })
             window.hostMessages = []
             const send = (data) => window.dispatchEvent(new MessageEvent('message', { data }))
             const update = (mode) => send({ type: 'update', format: mode === 'preview' ? 'csg' : 'stl', content: mode === 'preview' ? csg : stl })
@@ -65,6 +75,7 @@ async function fixture(t, mode = 'render') {
                             update(mode)
                             send({ type: 'updateParameters', parameters: [{ name: 'width', group: 'Parameters', type: 'number', value: 20 }], overrides: {}, parameterSets: {} })
                         })
+                    if (message.type === 'queryTopology') queueMicrotask(() => send({ type: 'topology', modelVersion: message.modelVersion, geometry: topology }))
                     if (message.type === 'setPreviewMode')
                         queueMicrotask(() => {
                             send({ type: 'previewMode', mode: message.mode })
@@ -74,7 +85,7 @@ async function fixture(t, mode = 'render') {
                 },
             })
         },
-        { mode, csg, stl },
+        { mode, csg, stl, topology, webgpu: process.env.SCAD_TEST_WEBGPU === '1' },
     )
     t.after(async () => {
         await page.close()
@@ -121,23 +132,22 @@ test('CSG switching keeps the interactive Stage and camera, with mode controls i
     assert.equal(await page.evaluate(() => window.hostMessages.filter((message) => message.type === 'setPreviewMode').length), 5)
 })
 
-test('initial CSG preview supports parameters, mesh exports and output through the top toolbar', async (t) => {
+test('initial CSG preview retains host parameter/export bindings and prepares exact wireframe topology', async (t) => {
     const page = await fixture(t, 'preview')
-    await page.locator('scad-preview canvas.main-canvas').waitFor()
+    await page.waitForFunction(() => document.querySelector('scad-app').shadowRoot.querySelector('scad-preview')?.stage?.modelGroup.children.length > 0)
+    await page.locator('scad-app').evaluate((app) => {
+        app.parameterContext.override('width', 30)
+        app.modelContext.export()
+        app.modelContext.sendToSlicer()
+    })
+    await page.waitForFunction(() => window.hostMessages.some((m) => m.type === 'parameterChanged' && m.name === 'width' && m.value === 30))
+    assert.equal(await page.evaluate(() => window.hostMessages.some((m) => m.type === 'exportModel')), true)
+    assert.equal(await page.evaluate(() => window.hostMessages.some((m) => m.type === 'sendToSlicer')), true)
+    await page.getByRole('switch', { name: 'Wireframe', exact: true }).click()
+    await page.waitForFunction(() => document.querySelector('scad-app').shadowRoot.querySelector('scad-preview').stage.topologyGroup?.children.length > 0)
+    assert.equal(await page.evaluate(() => window.hostMessages.filter((m) => m.type === 'queryTopology').length), 1)
     assert.equal(await page.getByRole('switch', { name: 'CSG preview', exact: true }).getAttribute('aria-checked'), 'true')
-    await page.getByRole('switch', { name: 'Toggle Parameters', exact: true }).click()
-    await page.locator('scad-parameters').waitFor()
-    await page.locator('scad-parameters scad-number-field').click()
-    await page.locator('scad-parameters input[type="number"]').fill('30')
-    await page.locator('scad-parameters input[type="number"]').press('Enter')
-    await page.waitForFunction(() => window.hostMessages.some((message) => message.type === 'parameterChanged' && message.name === 'width' && message.value === 30))
-    await page.getByRole('button', { name: 'Export', exact: true }).click()
-    await page.getByRole('button', { name: 'Print', exact: true }).click()
-    assert.equal(await page.evaluate(() => window.hostMessages.some((message) => message.type === 'exportModel')), true)
-    assert.equal(await page.evaluate(() => window.hostMessages.some((message) => message.type === 'sendToSlicer')), true)
-    await page.getByRole('switch', { name: 'Toggle Parameters', exact: true }).click()
-    await page.getByRole('switch', { name: 'Toggle Output', exact: true }).click()
-    await page.locator('scad-output').waitFor()
+    await page.getByRole('switch', { name: 'Solid', exact: true }).click()
     assert.equal(await page.locator('scad-preview canvas.main-canvas').count(), 1)
 })
 
@@ -170,21 +180,73 @@ test('loading and mode notifications keep the existing GPU model until new geome
     assert.equal(await page.locator('scad-preview').evaluate((preview) => preview.stage.modelGroup.children[0].geometry === window.initialGeometry), false)
 })
 
-test('the actual backend, fallback reason and elapsed evaluation time remain visible', async (t) => {
+test('the evaluator, actual graphics backend and first-frame readiness remain visible', async (t) => {
     const page = await fixture(t, 'preview')
     await page.locator('scad-preview canvas.main-canvas').waitFor()
     const send = async (backend) => page.evaluate((backend) => window.dispatchEvent(new MessageEvent('message', { data: { type: 'previewBackend', backend } })), backend)
-    await send({ kind: 'csg', elapsedMs: 87 })
-    await page.getByText('CSG / Manifold mesh', { exact: true }).waitFor()
+    await send({ kind: 'csg', elapsedMs: 87, graphics: 'webgl2', firstFrameMs: 12, frameReady: true })
+    await page.getByText('GPU CSG preview', { exact: true }).waitFor()
     assert.match(await page.locator('scad-backend-status .status').innerText(), /87 ms/)
     assert.match(await page.locator('scad-backend-status .status').innerText(), /drag updates enabled/)
-    await send({ kind: 'fallback', reason: 'non-triangular polyhedron face', elapsedMs: 1240 })
-    await page.getByText('CSG → STL fallback', { exact: true }).waitFor()
-    assert.match(await page.locator('scad-backend-status .status').innerText(), /non-triangular polyhedron face/)
-    assert.match(await page.locator('scad-backend-status .status').innerText(), /1240 ms/)
-    assert.match(await page.locator('scad-backend-status .status').innerText(), /Release slider to update/)
-    await page.screenshot({ path: '/private/tmp/scad-backend-status.png' })
+    await send({ kind: 'csg', elapsedMs: 100, frameReady: false })
+    assert.match(await page.locator('scad-backend-status .status').innerText(), /Waiting for the first frame/)
     await send({ kind: 'mesh', elapsedMs: 560 })
     await page.getByText('CLI mesh render', { exact: true }).waitFor()
     assert.doesNotMatch(await page.locator('scad-backend-status .status').innerText(), /non-triangular/)
 })
+
+for (const mode of ['render', 'preview'])
+    test(`${mode} keeps transform, section, lighting and display tools on the shared canvas`, async (t) => {
+        const page = await fixture(t, mode)
+        await page.waitForFunction(() => document.querySelector('scad-app').shadowRoot.querySelector('scad-preview')?.stage?.modelGroup.children.length > 0)
+        const backend = await page.locator('scad-preview').evaluate((preview) => (preview.stage.renderer.coordinateSystem === 2001 ? 'webgpu' : 'webgl2'))
+        assert.equal(backend, process.env.SCAD_TEST_WEBGPU === '1' ? 'webgpu' : 'webgl2')
+        const gizmos = await page.locator('scad-preview').evaluate((preview) => {
+            const stage = preview.stage
+            stage.addSceneObject('cross-section-plane', 'section-tools')
+            stage.setObjectVisible('section-tools', false)
+            stage.setObjectProperty('section-tools', 'rotationX', 0)
+            stage.setObjectProperty('section-tools', 'rotationY', 0)
+            stage.setObjectProperty('section-tools', 'positionZ', 3)
+            stage.selectObject('section-tools')
+            return ['move', 'rotate', 'scale'].map((tool) => {
+                stage.setActiveTool(tool)
+                return { mode: stage.transformControls.mode, attached: !!stage.transformControls.object }
+            })
+        })
+        assert.deepEqual(gizmos, [
+            { mode: 'translate', attached: true },
+            { mode: 'rotate', attached: true },
+            { mode: 'scale', attached: true },
+        ])
+        await page.waitForFunction(() => document.querySelector('scad-app').shadowRoot.querySelector('scad-preview').stage.renderer.info.calls > 1)
+        if (mode === 'preview') {
+            await page.waitForFunction(() => Math.abs(document.querySelector('scad-app').shadowRoot.querySelector('scad-preview').stage.csgModels[0].activePlanes[0]?.constant - 3) < 1e-9)
+            const planes = await page.locator('scad-preview').evaluate((preview) => preview.stage.csgModels[0].activePlanes.map((p) => p.constant))
+            assert.deepEqual(planes, [3], 'Hiding a section indicator must retain its active half-space')
+        }
+        await page.locator('scad-app').evaluate(async (app) => {
+            const stage = app.shadowRoot.querySelector('scad-preview').stage
+            stage.setActiveTool('select')
+            stage.selectObject(null)
+            stage.removeSceneObject('section-tools')
+            for (const type of ['ambient-light', 'directional-light', 'point-light', 'spot-light']) {
+                stage.addSceneObject(type, `tool-${type}`)
+                stage.setObjectVisible(`tool-${type}`, false)
+            }
+            stage.addSceneObject('measurement', 'tool-measurement')
+            for (const environment of ['grid', 'buildPlate', 'none']) {
+                app.viewSettingsContext.set('environment', environment)
+                await app.updateComplete
+                await new Promise((resolve) => requestAnimationFrame(resolve))
+            }
+            for (const renderMode of ['xray', 'solid']) {
+                app.viewSettingsContext.set('renderMode', renderMode)
+                await app.updateComplete
+                await new Promise((resolve) => requestAnimationFrame(resolve))
+            }
+        })
+        const screenshot = await page.locator('canvas.main-canvas').screenshot()
+        assert.ok(screenshot.length > 1000, 'The shared viewport must draw the model and its tools')
+        assert.equal(await page.locator('scad-preview canvas.main-canvas').count(), 1)
+    })

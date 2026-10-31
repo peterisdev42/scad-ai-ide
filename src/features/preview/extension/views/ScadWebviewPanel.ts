@@ -12,14 +12,18 @@ import { ExtensionToWebviewMessage } from '../../shared/types/ExtensionToWebview
 import { ModelFormat } from '../../shared/types/ModelFormat'
 import { WebviewToExtensionMessage } from '../../shared/types/WebviewToExtensionMessage'
 import type { PreviewSession } from '../core/PreviewSession'
+import { compileCsgTopology, compileMeshTopology } from '../../../../core/csg/compile'
+import type { CsgScene } from '../../../../core/csg/types'
 
 export class ScadWebviewPanel {
     private readonly panel: WebviewPanel
     private disposables: Disposable[] = []
     private isWebviewReady: boolean = false
     private disposed = false
-    private previewMessage: { type: 'emptyModel' | 'renderError'; message: string } | undefined
-    private lastRender: { base64Data: string; format: ModelFormat } | undefined
+    private previewMessage: { type: 'emptyModel' | 'renderError' | 'previewIssue'; message: string } | undefined
+    private lastRender: { base64Data: string; format: ModelFormat; modelVersion: number } | undefined
+    private modelVersion = 0
+    private topologyController?: AbortController
 
     private get sceneStateKey(): string {
         return `openscad.scene.${this.session.documentUri.toString()}`
@@ -50,6 +54,25 @@ export class ScadWebviewPanel {
                         case 'ready':
                             this.isWebviewReady = true
                             this.pushInitialState()
+                            return
+                        case 'queryTopology': {
+                            const model = this.lastRender
+                            if (!model || model.modelVersion !== message.modelVersion) return
+                            this.topologyController?.abort()
+                            const controller = (this.topologyController = new AbortController())
+                            try {
+                                const geometry = model.format === ModelFormat.CSG ? await compileCsgTopology(JSON.parse(Buffer.from(model.base64Data, 'base64').toString('utf8')) as CsgScene, controller.signal, message.planes) : await compileMeshTopology(model.base64Data, model.format, controller.signal, message.planes)
+                                if (!controller.signal.aborted && this.lastRender === model) this.postMessage({ type: 'topology', modelVersion: message.modelVersion, geometry })
+                            } catch (error) {
+                                if (!controller.signal.aborted && this.lastRender === model) this.postMessage({ type: 'topology', modelVersion: message.modelVersion, error: error instanceof Error ? error.message : String(error) })
+                            }
+                            return
+                        }
+                        case 'previewPerformance':
+                            if (message.modelVersion === this.lastRender?.modelVersion) this.session.acceptPerformance?.(message.timings)
+                            return
+                        case 'frameReady':
+                            if (message.modelVersion === this.lastRender?.modelVersion && ['webgpu', 'webgl2'].includes(message.graphics) && Number.isFinite(message.elapsedMs)) this.session.acceptFrame?.(message.graphics, message.elapsedMs)
                             return
                         case 'setPreviewMode':
                             if (message.mode === 'preview' || message.mode === 'render') this.session.setPreviewMode?.(message.mode)
@@ -132,11 +155,14 @@ export class ScadWebviewPanel {
 
                 this.previewMessage = undefined
                 const base64Data = buffer.toString('base64')
-                this.lastRender = { base64Data, format }
+                const modelVersion = ++this.modelVersion
+                this.topologyController?.abort()
+                this.lastRender = { base64Data, format, modelVersion }
                 this.postMessage({
                     type: 'update',
                     content: base64Data,
                     format,
+                    modelVersion,
                 })
             },
             null,
@@ -146,6 +172,12 @@ export class ScadWebviewPanel {
         this.session.onRenderError(
             (err) => {
                 const syntaxMessage = this.session.sourceFormat ? undefined : syntaxErrorMessage(err)
+                if (!(err instanceof EmptyModelError) && this.session.previewMode === 'preview') {
+                    this.previewMessage = { type: 'previewIssue', message: syntaxMessage ?? err.message }
+                    this.postMessage({ type: 'loadingState', loading: false })
+                    this.postMessage(this.previewMessage)
+                    return
+                }
                 if (err instanceof EmptyModelError || syntaxMessage) {
                     this.lastRender = undefined
                     this.previewMessage = { type: syntaxMessage ? 'renderError' : 'emptyModel', message: syntaxMessage ?? err.message }
@@ -280,14 +312,16 @@ export class ScadWebviewPanel {
         // both when the tab first loads (race condition where the render may have
         // completed before the webview was ready) and on tab re-focus (where
         // VSCode destroys and recreates the webview content).
-        if (this.previewMessage) this.postMessage(this.previewMessage)
+        if (this.previewMessage && this.previewMessage.type !== 'previewIssue') this.postMessage(this.previewMessage)
         if (this.lastRender) {
             this.postMessage({
                 type: 'update',
                 content: this.lastRender.base64Data,
                 format: this.lastRender.format,
+                modelVersion: this.lastRender.modelVersion,
             })
         }
+        if (this.previewMessage?.type === 'previewIssue') this.postMessage(this.previewMessage)
     }
 
     private pushPreviewMode() {
@@ -403,6 +437,7 @@ export class ScadWebviewPanel {
     }
 
     public dispose() {
+        this.topologyController?.abort()
         if (this.disposed) return
         this.disposed = true
         this.panel.dispose()

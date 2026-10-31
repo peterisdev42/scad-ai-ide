@@ -353,6 +353,7 @@ export class App extends LitElement {
                 }
             }
             this.previewEl.stage.setActiveCamera(this.sceneContextValue.activeCameraId)
+            this.previewEl.stage.selectObject(this.sceneContextValue.selectedId)
             this.previewEl.stage.initializeView(!!this.pendingProperties?.has(this.sceneContextValue.activeCameraId))
             this.pendingProperties = null
         }
@@ -369,10 +370,10 @@ export class App extends LitElement {
     private handleMessage = (message: ExtensionToWebviewMessage) => {
         switch (message.type) {
             case 'previewBackend':
-                this.modelContext = { ...this.modelContext, backend: message.backend, loadingMessage: this.modelContext.isLoading && message.backend.kind === 'fallback' ? 'Generating STL fallback…' : this.modelContext.loadingMessage }
+                this.modelContext = { ...this.modelContext, backend: message.backend }
                 break
             case 'previewMode':
-                this.modelContext = { ...this.modelContext, previewMode: message.mode, setPreviewMode: (mode) => this.bridge.setPreviewMode(mode) }
+                this.modelContext = { ...this.modelContext, previewMode: message.mode,modeLinks:message.links, setPreviewMode: (mode) => this.bridge.setPreviewMode(mode) }
                 break
             case 'update':
                 if (message.content) {
@@ -380,11 +381,19 @@ export class App extends LitElement {
                         ...this.modelContext,
                         format: message.format,
                         base64Data: message.content,
+                        modelVersion: message.modelVersion,
+                        queryTopology: (planes) => this.bridge.queryTopology(message.modelVersion ?? 0, planes),
+                        reportPerformance: (timings) => this.bridge.reportPerformance(message.modelVersion ?? 0, timings),
+                        frameReady: (graphics, elapsedMs) => this.bridge.frameReady(message.modelVersion ?? 0, graphics, elapsedMs),
                         isLoading: false,
+                        previewError: undefined,
                     }
                 } else {
                     this.bridge.reportError('No content in update message')
                 }
+                break
+            case 'previewIssue':
+                this.modelContext = { ...this.modelContext, isLoading: false, previewError: message.message }
                 break
             case 'updateParameters':
                 if (message.parameters) {
@@ -471,7 +480,7 @@ export class App extends LitElement {
             <scad-split-layout split="horizontal" fixed-pane="end" handle-position=${bottomPanel ? this.debugPanelSize : '100%'} @vsc-split-layout-change=${(e: CustomEvent) => this.handleResize('bottom', e)}>
                 <scad-split-layout slot="start" split="vertical" fixed-pane="end" handle-position=${sidePanel ? this.parameterPanelSize : '100%'} @vsc-split-layout-change=${(e: CustomEvent) => this.handleResize('right', e)}>
                     <div slot="start" style="position:relative;width:100%;height:100%;">
-                        <scad-preview @stage-ready=${() => this.requestUpdate()}></scad-preview>
+                        <scad-preview @renderer-restarting=${(event:CustomEvent<{properties:Map<string,ObjectProperties>}>)=>{this.pendingProperties=event.detail.properties;this._stageWired=false;this.requestUpdate()}} @stage-ready=${() => this.requestUpdate()}></scad-preview>
                         <scad-toolbar @clear-measurements=${this.clearMeasurements}></scad-toolbar>
                         <scad-backend-status></scad-backend-status>
                         <scad-options @reset-view=${() => this.previewEl?.stage?.resetView()}></scad-options>

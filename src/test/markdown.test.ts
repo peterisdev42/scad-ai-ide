@@ -1,3 +1,4 @@
+import { renderOwnedMarkdown } from '../features/markdown/OwnedMarkdownRenderer'
 import * as assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
@@ -114,7 +115,7 @@ process.stdin.on('end', () => {
         const result = await readTrace()
         assert.equal(result.source, 'cube(20);')
         assert.equal(result.cwd, await import('node:fs/promises').then((fs) => fs.realpath(directory)))
-        assert.deepEqual(result.args, ['--fixture-prefix', '--export-format', 'stl', '-o', result.output, '-'])
+        assert.deepEqual(result.args, ['--fixture-prefix', '-d', path.join(path.dirname(result.output), 'model.d'), '--export-format', 'stl', '-o', result.output, '-'])
         await render('cube(20);', undefined, 'render')
         const full = await readTrace()
         assert.ok(full.args.includes('stl'))
@@ -372,5 +373,42 @@ test('switching CLI preview mode invalidates model results and recompiles with t
         assert.equal(mock.renders[1].mode, 'render')
     } finally {
         mock.dispose()
+    }
+})
+
+test('owned Markdown escapes source and diagnostics while preserving stable model slots', () => {
+    const source = '# Heading\n\n```scad\ncube(20); // <script>\n```\n\n![part](part.png)'
+    const render = (text: string) =>
+        renderOwnedMarkdown(
+            text,
+            (id) => ({ message: `<unsafe ${id}>` }),
+            (text) => text.replace(/</g, '&lt;').replace(/>/g, '&gt;'),
+            (url) => `webview:${url}`,
+        )
+    const before = render(source),
+        after = render(`Paragraph before heading\n\n${source}`)
+    assert.match(before, /data-scad-block="scad-owned-0"/)
+    assert.match(after, /data-scad-block="scad-owned-0"/)
+    assert.ok(!before.includes('<script>'))
+    assert.ok(!before.includes('<unsafe'))
+    assert.match(before, /src="webview:part.png"/)
+})
+
+test('editing Markdown keeps unchanged source cache entries and cancels removed work', async () => {
+    let calls = 0
+    const cache = new ScadModelCache(
+        async () => `model-${++calls}`,
+        () => {},
+    )
+    try {
+        cache.request('doc', 'cube(20);', '/docs')
+        cache.request('doc', 'sphere(5);', '/docs')
+        await waitFor(() => calls === 2)
+        cache.retainDocumentSources('doc', ['cube(20);'], '/docs')
+        assert.equal(cache.request('doc', 'cube(20);', '/docs').status, 'ready')
+        assert.equal(cache.request('doc', 'sphere(5);', '/docs').status, 'pending')
+        await waitFor(() => calls === 3)
+    } finally {
+        cache.dispose()
     }
 })

@@ -122,6 +122,12 @@
                 "category": "SCAD AI IDE",
                 "icon": "$(expand-all)",
                 "enablement": "scad-ai-ide.customizer.hasGroups"
+            },
+            {
+                "command": "scad-ai-ide.markdown.openPreview",
+                "title": "Open Markdown Preview with 3D Tools",
+                "category": "SCAD AI IDE",
+                "icon": "$(open-preview)"
             }
         ],
         "configuration": {
@@ -211,7 +217,7 @@
                         "render"
                     ],
                     "enumDescriptions": [
-                        "Interactive CSG tree preview. Evaluates the expanded tree in a worker; unsupported operations use the native mesh backend.",
+                        "GPU CSG boundary preview. The host prepares operands and local geometry; unsupported nodes report an error and retain the last valid frame.",
                         "Fully evaluated interactive 3D model using the selected STL/3MF format."
                     ],
                     "default": "render",
@@ -231,7 +237,7 @@
                 "scad-ai-ide.markdown.preview.enabled": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Show Preview and Source tabs for openscad and scad fenced code blocks in the built-in Markdown preview, with interactive 4:3 previews up to 800 × 600. Requires workspace trust and an available OpenSCAD runtime."
+                    "description": "Show Preview and Source tabs for OpenSCAD fenced blocks in built-in and extension-managed Markdown previews. Requires workspace trust and an available OpenSCAD runtime."
                 },
                 "scad-ai-ide.markdown.preview.renderMode": {
                     "type": "string",
@@ -243,7 +249,7 @@
                         "Interactive CSG tree preview, with $preview set to true.",
                         "Interactive native mesh render. Evaluates the final geometry, with $preview set to false."
                     ],
-                    "default": "preview",
+                    "default": "render",
                     "description": "OpenSCAD CLI mode used to generate interactive Markdown previews. Changing the mode refreshes cached previews."
                 }
             }
@@ -295,6 +301,10 @@
                 {
                     "command": "scad-ai-ide.customizer.expandAll",
                     "when": "false"
+                },
+                {
+                    "command": "scad-ai-ide.markdown.openPreview",
+                    "when": "editorLangId == markdown"
                 }
             ],
             "editor/title": [
@@ -307,6 +317,11 @@
                     "command": "scad-ai-ide.showSource",
                     "group": "navigation@2",
                     "when": "(activeCustomEditorId == 'scad-ai-ide.preview.editor' || activeCustomEditorId == 'scad-ai-ide.preview.mesh')"
+                },
+                {
+                    "command": "scad-ai-ide.markdown.openPreview",
+                    "group": "navigation@3",
+                    "when": "resourceLangId == markdown"
                 }
             ],
             "view/title": [
@@ -433,16 +448,23 @@
         "build:lsp": "node scripts/build-lsp.cjs",
         "prepare:lsp": "node scripts/prepare-lsp.cjs",
         "prepare:licenses": "node scripts/prepare-licenses.cjs",
+        "test:csg-coverage": "node scripts/csg-coverage.mjs --check",
+        "build:csg-kernel": "node scripts/build-csg-kernel.mjs",
+        "test:csg-gpu": "node --test scripts/csg-gpu.test.mjs",
+        "test:csg-native": "node esbuild.js && node --test scripts/csg-native.test.mjs",
         "test:preview": "node --import tsx --test src/test/preview/*.test.ts",
         "test:preview-editor": "npm run package && node scripts/test-preview-editor.mjs",
         "preview:sync": "node scripts/preview-sync.mjs",
-        "test:preview-sync": "node --test scripts/preview-sync/engine.test.mjs"
+        "test:preview-sync": "node --test scripts/preview-sync/engine.test.mjs",
+        "build:csg": "node scripts/build-csg-core.mjs",
+        "test:csg-package": "node scripts/verify-csg-package.mjs"
     },
     "devDependencies": {
         "@types/markdown-it": "^14.2.0",
         "@types/mocha": "^10.0.10",
         "@types/node": "24.x",
-        "@types/three": "^0.184.0",
+        "@types/pngjs": "6.0.5",
+        "@types/three": "0.186.0",
         "@types/vscode": "^1.140.0",
         "@types/vscode-webview": "^1.57.5",
         "@types/yauzl": "^3.4.0",
@@ -451,7 +473,6 @@
         "esbuild": "^0.28.1",
         "eslint": "^10.5.0",
         "eslint-config-prettier": "^10.1.8",
-        "fflate": "^0.8.3",
         "markdown-it": "^14.3.3",
         "monaco-editor": "0.57.0",
         "npm-run-all": "^4.1.5",
@@ -479,11 +500,18 @@
         "@lit/context": "^1.1.6",
         "@vscode-elements/elements": "^2.5.1",
         "@vscode/codicons": "^0.0.45",
+        "@zkl2333/freetype-wasm": "2.14.3",
+        "dxf-parser": "1.1.2",
+        "fflate": "0.8.3",
+        "harfbuzzjs": "1.6.4",
         "jsonc-parser": "^3.3.1",
+        "linkedom": "0.18.12",
         "lit": "^3.3.2",
         "manifold-3d": "^3.5.4",
+        "pngjs": "7.0.0",
+        "straight-skeleton": "3.0.0",
         "tar": "^7.5.22",
-        "three": "^0.184.0",
+        "three": "0.187.0",
         "vscode-languageclient": "^9.0.1",
         "vscode-oniguruma": "^2.0.1",
         "vscode-textmate": "^9.3.2",

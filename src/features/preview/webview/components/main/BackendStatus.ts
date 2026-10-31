@@ -26,12 +26,6 @@ export class BackendStatus extends LitElement {
             line-height: 1.5;
             overflow-wrap: anywhere;
         }
-        .fallback {
-            border-color: var(--vscode-editorWarning-foreground, var(--vscode-panel-border));
-        }
-        .fallback strong {
-            color: var(--vscode-editorWarning-foreground, var(--vscode-foreground));
-        }
         small {
             display: block;
             font-size: 11px;
@@ -52,10 +46,11 @@ export class BackendStatus extends LitElement {
     render() {
         const backend = this.model?.backend
         if (!backend) return null
-        const label = backend.kind === 'fallback' ? 'CSG → STL fallback' : backend.kind === 'csg' ? 'CSG / Manifold mesh' : backend.kind === 'mesh' ? 'CLI mesh render' : 'Checking preview backend…'
-        return html`<div class="status ${backend.kind === 'fallback' ? 'fallback' : ''}" role="status">
-            <strong>${label}</strong>${backend.elapsedMs === undefined ? '' : html`<span> · ${backend.elapsedMs} ms</span>`} ${backend.reason ? html`<small>${backend.reason}</small>` : ''}
-            <small>${backend.kind === 'csg' ? 'Mesh evaluation · drag updates enabled' : 'Release slider to update'}</small>
+        const label = backend.kind === 'csg' ? (backend.frameReady?'GPU CSG preview':'Preparing GPU CSG preview') : backend.kind === 'mesh' ? 'CLI mesh render' : 'Checking preview backend…'
+        return html`<div class="status" role="status">
+            <strong>${label}</strong>${backend.elapsedMs === undefined ? '' : html`<span> · ${backend.elapsedMs} ms</span>`}${backend.graphics ? html`<span> · ${backend.graphics === 'webgpu' ? 'WebGPU' : 'WebGL 2'}</span>` : ''} ${backend.reason ? html`<small>${backend.reason}</small>` : ''} ${backend.firstFrameMs === undefined ? '' : html`<small>Viewport first frame: ${backend.firstFrameMs} ms</small>`}
+            ${backend.timings?html`<small>CLI ${Math.round(backend.timings.cliMs??0)} · local ${Math.round(backend.timings.geometryMs??0)} · BVH ${Math.round(backend.timings.bvhMs??0)} · upload ${Math.round(backend.timings.uploadMs??0)} · shader ${Math.round(backend.timings.shaderMs??0)} ms${backend.cacheHit?' · cached':''}</small>`:''}
+            <small>${backend.kind === 'csg' && backend.frameReady ? 'Image-space CSG · drag updates enabled' : backend.kind === 'csg' ? 'Waiting for the first frame' : 'Release slider to update'}</small>
         </div>`
     }
 }

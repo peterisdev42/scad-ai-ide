@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import * as path from 'node:path'
+import { ModelFormat } from '../../features/preview/shared/types/ModelFormat'
 import { readFileSync } from 'node:fs'
 import { runInNewContext } from 'node:vm'
 import { transformSync } from 'esbuild'
@@ -8,7 +10,7 @@ import { ScadParser } from '../../features/preview/extension/services/ScadParser
 import { ScadParameters } from '../../features/preview/extension/core/ScadParameters'
 
 function fixture() {
-    let backend!: (state: { kind: 'pending' | 'csg' | 'mesh' | 'fallback'; reason?: string }) => void
+    let backend!: (state: { kind: 'pending' | 'csg' | 'mesh'; reason?: string; frameReady?: boolean }) => void
     const service = new CustomizerService()
     const source = 'width=0.5; // [0:0.1:1]'
     service.load('file:///model.scad', source)
@@ -22,6 +24,8 @@ function fixture() {
         setTimeout,
         clearTimeout,
         require: (name: string) => {
+            if (name === 'node:path') return path
+            if (name.endsWith('/ModelFormat')) return { ModelFormat }
             if (name === 'vscode')
                 return {
                     EventEmitter: class {
@@ -97,24 +101,24 @@ test('preset selection renders immediately before file initialization and ordina
     assert.equal(renders.length, 5)
 })
 
-test('continuous changes are accepted only for a proven CSG backend; release still renders after fallback', () => {
+test('continuous changes are accepted only for a proven CSG backend; release still renders after changing to mesh', () => {
     const { service, session, renders, backend } = fixture()
     service.set('width', 0.6, 'input')
     assert.equal(renders.length, 0)
     service.set('width', 0.6, 'commit')
     assert.equal(renders.length, 1, 'Release must render even if the value was already synchronized')
     session.setPreviewMode('preview')
-    backend({ kind: 'csg' })
+    backend({ kind: 'csg', frameReady: true })
     assert.equal(service.canPreviewContinuously(), true)
     service.set('width', 0.7, 'input')
     assert.equal(renders.length, 3)
-    backend({ kind: 'fallback', reason: 'non-triangular polyhedron face' })
+    backend({ kind: 'mesh' })
     assert.equal(service.canPreviewContinuously(), false)
     service.set('width', 0.8, 'input')
     assert.equal(renders.length, 3)
     service.set('width', 0.8, 'commit')
     assert.equal(renders.length, 4)
-    backend({ kind: 'csg' })
+    backend({ kind: 'csg', frameReady: true })
     session.dispose()
     assert.equal(service.canPreviewContinuously(), false)
 })

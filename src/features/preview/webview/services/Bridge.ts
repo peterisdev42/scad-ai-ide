@@ -1,5 +1,8 @@
+import type { PreviewTimings } from '../../shared/types/PreviewBackend'
+import type { CsgClipPlane } from '../../../../core/csg/types'
 import { ExtensionToWebviewMessage } from '../../shared/types/ExtensionToWebviewMessage'
 import type { PreviewMode } from '../../shared/types/PreviewMode'
+import type { CsgGeometry } from '../../../../core/csg/types'
 
 let vscode: ReturnType<typeof acquireVsCodeApi> | undefined
 const nativePost = (message: unknown) => {
@@ -14,6 +17,7 @@ export type MessageCallback = (message: ExtensionToWebviewMessage) => void
  */
 export class Bridge {
     private callbacks: Set<MessageCallback> = new Set()
+    private topology = new Map<number, { resolve: (geometry: CsgGeometry) => void; reject: (error: Error) => void; timer: ReturnType<typeof setTimeout> }>()
 
     constructor(
         private readonly post = nativePost,
@@ -23,6 +27,11 @@ export class Bridge {
     }
 
     public dispose() {
+        for (const pending of this.topology.values()) {
+            clearTimeout(pending.timer)
+            pending.reject(new Error('Preview closed.'))
+        }
+        this.topology.clear()
         window.removeEventListener('message', this.handleMessage)
         this.callbacks.clear()
     }
@@ -38,6 +47,29 @@ export class Bridge {
 
     public setPreviewMode(mode: PreviewMode) {
         this.post({ type: 'setPreviewMode', mode })
+    }
+
+    public queryTopology(modelVersion: number, planes?: CsgClipPlane[]): Promise<CsgGeometry> {
+        return new Promise((resolve, reject) => {
+            if (this.topology.has(modelVersion)) {
+                reject(new Error('Topology is already being prepared.'))
+                return
+            }
+            const timer = setTimeout(() => {
+                this.topology.delete(modelVersion)
+                reject(new Error('Topology request timed out.'))
+            }, 35000)
+            this.topology.set(modelVersion, { resolve, reject, timer })
+            this.post({ type: 'queryTopology', modelVersion, planes })
+        })
+    }
+
+    public reportPerformance(modelVersion: number, timings: PreviewTimings) {
+        this.post({ type: 'previewPerformance', modelVersion, timings })
+    }
+
+    public frameReady(modelVersion: number, graphics: 'webgpu' | 'webgl2', elapsedMs: number) {
+        this.post({ type: 'frameReady', modelVersion, graphics, elapsedMs })
     }
 
     public updateParameterOverride(name: string, value: string | number | boolean | number[] | undefined) {
@@ -85,6 +117,24 @@ export class Bridge {
     }
 
     public receive(message: ExtensionToWebviewMessage) {
+        if (message.type === 'topology') {
+            const pending = this.topology.get(message.modelVersion)
+            if (pending) {
+                clearTimeout(pending.timer)
+                this.topology.delete(message.modelVersion)
+                if (message.geometry) pending.resolve(message.geometry)
+                else pending.reject(new Error(message.error ?? 'Topology preparation failed.'))
+            }
+        }
+        if (message.type === 'update' || message.type === 'emptyModel' || message.type === 'renderError') {
+            for (const [version, pending] of this.topology) {
+                if (message.type !== 'update' || version !== message.modelVersion) {
+                    clearTimeout(pending.timer)
+                    pending.reject(new Error('Model changed.'))
+                    this.topology.delete(version)
+                }
+            }
+        }
         this.callbacks.forEach((cb) => cb(message))
     }
 }

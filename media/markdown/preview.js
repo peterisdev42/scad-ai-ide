@@ -1,17 +1,18 @@
 ;(() => {
     // Markdown loads contribution scripts again as content changes. Reuse listeners
     // and selection state, including across the refresh when a CLI render finishes.
-    const key = Symbol.for('scad-ai-ide.markdown.tabs')
+    const key = Symbol.for('scad-ai-ide.markdown.tabs.v2.blas')
     if (window[key]) {
         window[key].restore()
         return
     }
+    let hostVisible = true
     const selected = new Map()
     const viewers = new Map()
     const visible = new Set()
     const observed = new Set()
     const saved = new Map()
-    const engineKey = Symbol.for('scad-ai-ide.markdown.viewer')
+    const engineKey = Symbol.for('scad-ai-ide.markdown.viewer.v2.blas')
     const destroy = (block) => {
         const entry = viewers.get(block)
         if (!entry) return
@@ -21,7 +22,7 @@
         viewers.delete(block)
     }
     const updateViewers = () => {
-        const candidates = [...visible].filter((block) => block.isConnected && !document.hidden && !block.querySelector('[data-scad-panel="preview"]').hidden)
+        const candidates = [...visible].filter((block) => hostVisible && block.isConnected && !document.hidden && !block.querySelector('[data-scad-panel="preview"]').hidden)
         candidates.sort((a, b) => Math.abs(a.getBoundingClientRect().top) - Math.abs(b.getBoundingClientRect().top))
         const active = new Set(candidates.slice(0, 2))
         for (const [block, entry] of viewers) {
@@ -29,9 +30,18 @@
                 destroy(block)
                 continue
             }
-            if (!entry.control.isConnected() || block.querySelector('[data-scad-model]')?.dataset.scadModel !== entry.payload) {
+            const payload = block.querySelector('[data-scad-model]')?.dataset.scadModel
+            if (!entry.control.isConnected() || !payload) {
                 destroy(block)
                 continue
+            }
+            if (payload !== entry.payload) {
+                if (!entry.control.updateModel) {
+                    destroy(block)
+                    continue
+                }
+                entry.control.updateModel(JSON.parse(payload))
+                entry.payload = payload
             }
             const running = active.has(block)
             entry.control.setActive(running)
@@ -127,6 +137,10 @@
     contentObserver.observe(document, { childList: true, subtree: true })
     window.addEventListener('vscode.markdown.updateContent', restore)
     window.addEventListener('scad-markdown-viewer-ready', updateViewers)
+    window.addEventListener('scad-markdown-visibility', (event) => {
+        hostVisible = !!event.detail
+        updateViewers()
+    })
     document.addEventListener('visibilitychange', updateViewers)
     window.addEventListener(
         'pagehide',
