@@ -1,4 +1,4 @@
-import type { CsgBvhNode, CsgInstruction, CsgPreviewSceneV2, CsgBlas } from './types'
+import type { CsgBvhNode, CsgInstruction, CsgScene, CsgBlas } from './types'
 
 export function buildBvh(input: Float32Array): { triangles: Float32Array; nodes: CsgBvhNode[] } {
     const ids = Array.from({ length: input.length / 12 }, (_, i) => i)
@@ -92,10 +92,37 @@ export interface CsgClipPlane {
     normal: number[]
     constant: number
 }
-const triangleCache = new WeakMap<CsgBlas, Float32Array>()
+// Kept solely for CPU picking. None of these arrays enter a GPU material.
+const queryCache = new WeakMap<CsgScene, { blas: CsgBlas[]; tlas: CsgBvhNode[] }>()
+export function queryAcceleration(scene: CsgScene) {
+    let cached = queryCache.get(scene)
+    if (cached) return cached
+    const blas = scene.meshes.map((mesh, index) => {
+        const properties = decodeFloats(mesh.properties),
+            indices = decodeIndices(mesh.indices),
+            origin = scene.meshOrigins[index]
+        const triangles = new Float32Array(indices.length * 4),
+            min = [Infinity, Infinity, Infinity],
+            max = [-Infinity, -Infinity, -Infinity]
+        indices.forEach((vertex, i) => {
+            for (let d = 0; d < 3; d++) {
+                const x = properties[vertex * mesh.stride + d] - origin[d]
+                triangles[i * 4 + d] = x
+                min[d] = Math.min(min[d], x)
+                max[d] = Math.max(max[d], x)
+            }
+        })
+        const bvh = buildBvh(triangles)
+        return { triangles: bvh.triangles, bvh: bvh.nodes, origin, bounds: { min, max }, triangleCount: indices.length / 3 }
+    })
+    cached = { blas, tlas: buildBoundsBvh(scene.operands.map((o) => o.bounds)) }
+    queryCache.set(scene, cached)
+    return cached
+}
 
 /** Double precision reference for picking and GPU regression oracles. */
-export function traceCsg(scene: CsgPreviewSceneV2, origin: number[], direction: number[], root = scene.root, planes: CsgClipPlane[] = []): CsgRayHit[] {
+export function traceCsg(input: CsgScene, origin: number[], direction: number[], root = input.topologyRoot, planes: CsgClipPlane[] = []): CsgRayHit[] {
+    const scene = { ...input, ...queryAcceleration(input) }
     const events: { t: number; id: number; normal: [number, number, number]; enter: boolean }[] = []
     const cross = (a: number[], b: number[]) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]
     const dot = (a: number[], b: number[]) => a.reduce((s, v, d) => s + v * b[d], 0)
@@ -127,11 +154,7 @@ export function traceCsg(scene: CsgPreviewSceneV2, origin: number[], direction: 
         const id = instanceNode.first,
             operand = scene.operands[id],
             blas = scene.blas[operand.mesh]
-        let data = triangleCache.get(blas)
-        if (!data) {
-            data = decodeFloats(blas.triangles)
-            triangleCache.set(blas, data)
-        }
+        const data = blas.triangles
         const ro = transform(operand.inverse, sceneOrigin, 1),
             rd = transform(operand.inverse, direction, 0)
         for (let cursor = 0; cursor < blas.bvh.length;) {
@@ -247,4 +270,10 @@ export function traceCsg(scene: CsgPreviewSceneV2, origin: number[], direction: 
         if (end >= 0) clipped.push({ ...b, distance: end, normal: (upper < b.distance ? upperNormal : b.normal) as [number, number, number] })
     }
     return clipped
+}
+
+export function decodeIndices(encoded: string): Uint32Array {
+    const bytes = Uint8Array.from(atob(encoded), (c) => c.charCodeAt(0))
+    if (bytes.byteLength % 4) throw new Error('Invalid CSG index buffer.')
+    return new Uint32Array(bytes.buffer)
 }

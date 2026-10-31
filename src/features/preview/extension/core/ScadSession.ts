@@ -69,7 +69,7 @@ export class ScadSession {
     public acceptPerformance(timings: PreviewTimings) {
         if (this.disposed) return
         const allowed: PreviewTimings = {}
-        for (const key of ['cliMs', 'resourcesMs', 'geometryMs', 'bvhMs', 'uploadMs', 'shaderMs', 'interactiveFrameMs'] as const) {
+        for (const key of ['cliMs', 'resourcesMs', 'geometryMs', 'normalizationMs', 'uploadMs', 'shaderMs', 'interactiveFrameMs'] as const) {
             const value = timings?.[key]
             if (typeof value === 'number' && Number.isFinite(value) && value >= 0) allowed[key] = value
         }

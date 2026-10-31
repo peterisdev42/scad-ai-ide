@@ -2,7 +2,7 @@ export interface PreviewTimings {
     cliMs?: number
     resourcesMs?: number
     geometryMs?: number
-    bvhMs?: number
+    normalizationMs?: number
     uploadMs?: number
     shaderMs?: number
     interactiveFrameMs?: number

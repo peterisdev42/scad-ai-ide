@@ -14,13 +14,8 @@ type RegionMesh = Mesh<ReturnType<typeof cubeRegionGeometry>, MeshBasicMaterial>
 export class ViewCubeWidget {
     private readonly scene = new Scene()
     private readonly camera = new OrthographicCamera(-2.4, 2.4, 2.4, -2.4, 0.1, 20)
-    private readonly renderer = new WebGPURenderer({
-        antialias: true,
-        alpha: true,
-    })
-    public readonly ready = this.renderer.init().then(() => {
-        this.initialized = true
-    })
+    private readonly renderer: WebGPURenderer
+    public readonly ready: Promise<void>
     private initialized = false
     private readonly raycaster = new Raycaster()
     private readonly regions: RegionMesh[] = []
@@ -44,7 +39,12 @@ export class ViewCubeWidget {
         container: HTMLElement,
         private readonly onSelect: (direction: Vector3, kind: CubeRegion['kind']) => void,
         onRoll: (angle: number) => void,
+        options: { forceWebGL?: boolean } = {},
     ) {
+        this.renderer = new WebGPURenderer({ antialias: true, alpha: true, forceWebGL: options.forceWebGL })
+        this.ready = this.renderer.init().then(() => {
+            if (!this.disposed) this.initialized = true
+        })
         const canvas = this.renderer.domElement
         this.renderer.setPixelRatio(Math.min(Math.max(window.devicePixelRatio || 1, 2), 3))
         this.renderer.setSize(192, 192)

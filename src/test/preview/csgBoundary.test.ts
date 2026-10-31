@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { before, test } from 'node:test'
 import type { ManifoldToplevel } from 'manifold-3d'
 import { evaluateCsg } from '../../core/csg/evaluate.mjs'
-import { evaluateProgram, traceCsg } from '../../core/csg/acceleration'
+import { evaluateProgram, traceCsg, queryAcceleration } from '../../core/csg/acceleration'
 import { validateCsgScene } from '../../core/csg/validate'
 
 let module: ManifoldToplevel
@@ -20,7 +20,7 @@ test('ordinary boolean compilation preserves the DAG and never calls whole-solid
         }
     try {
         const scene = compile('difference(){cube(size=[20,20,20],center=true);sphere(r=5,$fn=16);}')
-        assert.equal(scene.version, 2)
+        assert.equal(scene.version, 3)
         assert.equal(scene.operands.length, 2)
         assert.equal(scene.program[scene.root].op, 'difference')
         assert.equal(evaluateProgram(scene.program, [1, 1], scene.root), false)
@@ -66,16 +66,16 @@ test('valid open faces remain surfaces and malformed transport cannot enter GPU 
     assert.ok(scene.diagnostics.length)
     assert.equal(traceCsg(scene, [1, 1, 5], [0, 0, -1])[0].distance, 5)
     const broken = structuredClone(scene)
-    broken.tlas[0].escape = 0
+    broken.products[0].intersections[0] = 999
     assert.throws(() => validateCsgScene(broken), /Invalid CSG/)
     assert.throws(() => compile('future_geometry();'), /Unsupported/)
 })
 
-test('BLAS is shared across translated, mirrored and non-uniformly scaled instances', () => {
+test('CPU picking BLAS is built lazily and shared across translated, mirrored and non-uniformly scaled instances', () => {
     const scene = compile('union(){cube(size=[2,2,2],center=true);multmatrix([[-2,0,0,5],[0,.5,0,0],[0,0,3,0],[0,0,0,1]])color([1,0,0])cube(size=[2,2,2],center=true);}')
     assert.equal(scene.meshes.length, 1)
-    assert.equal(scene.blas.length, 1)
-    assert.equal(scene.triangleCount, scene.blas[0].triangleCount * 2)
+    assert.equal(queryAcceleration(scene).blas.length, 1)
+    assert.equal(scene.triangleCount, queryAcceleration(scene).blas[0].triangleCount * 2)
     const hits = traceCsg(scene, [5, -4, 0], [0, 1, 0])
     assert.deepEqual(
         hits.map((h) => h.distance),
@@ -84,6 +84,36 @@ test('BLAS is shared across translated, mirrored and non-uniformly scaled instan
     assert.deepEqual(
         hits[0].normal.map((v) => v + 0),
         [0, -1, 0],
+    )
+    validateCsgScene(scene)
+})
+
+test('nested background flags are excluded before Difference operand selection', () => {
+    const scene = compile('difference(){color([.2,.4,.8])multmatrix([[1,0,0,5],[0,1,0,0],[0,0,1,0],[0,0,0,1]])%cube(size=[10,10,10],center=true);cube(size=[30,30,30],center=true);}')
+    assert.equal(scene.program[scene.root].op, 'leaf')
+    assert.equal(scene.overlays[0].kind, 'background')
+    assert.deepEqual(
+        traceCsg(scene, [0, -60, 0], [0, 1, 0]).map((hit) => hit.distance),
+        [45, 75],
+    )
+    validateCsgScene(scene)
+})
+
+test('highlighting a Difference base highlights its result, not the uncut operand', () => {
+    const scene = compile('difference(){#cube(size=[30,30,30],center=true);cube(size=[10,40,10],center=true);}')
+    assert.equal(scene.overlays.length, 1)
+    assert.equal(scene.overlays[0].root, scene.root)
+    assert.equal(scene.program[scene.overlays[0].root].op, 'difference')
+    assert.deepEqual(traceCsg(scene, [0, -60, 0], [0, 1, 0]), [])
+})
+
+test('highlight Union debug drawing retains the complete physical root for topology and picking', () => {
+    const scene = compile('union(){#cube(size=[10,10,10],center=true);multmatrix([[1,0,0,20],[0,1,0,0],[0,0,1,0],[0,0,0,1]])cube(size=[10,10,10],center=true);}')
+    assert.equal(scene.program[scene.root].op, 'leaf')
+    assert.equal(scene.program[scene.topologyRoot].op, 'union')
+    assert.deepEqual(
+        traceCsg(scene, [0, -30, 0], [0, 1, 0]).map((hit) => hit.distance),
+        [25, 35],
     )
     validateCsgScene(scene)
 })

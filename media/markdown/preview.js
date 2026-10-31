@@ -1,7 +1,7 @@
 ;(() => {
     // Markdown loads contribution scripts again as content changes. Reuse listeners
     // and selection state, including across the refresh when a CLI render finishes.
-    const key = Symbol.for('scad-ai-ide.markdown.tabs.v2.blas')
+    const key = Symbol.for('scad-ai-ide.markdown.tabs.v3.raster')
     if (window[key]) {
         window[key].restore()
         return
@@ -12,7 +12,7 @@
     const visible = new Set()
     const observed = new Set()
     const saved = new Map()
-    const engineKey = Symbol.for('scad-ai-ide.markdown.viewer.v2.blas')
+    const engineKey = Symbol.for('scad-ai-ide.markdown.viewer.v3.raster')
     const destroy = (block) => {
         const entry = viewers.get(block)
         if (!entry) return

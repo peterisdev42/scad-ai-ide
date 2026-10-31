@@ -104,7 +104,7 @@ test('CSG color and debug/background modifiers remain visible without entering b
 test('unsupported operations fail explicitly, cancellation stops the worker, and malformed inputs never execute', async () => {
     await assert.rejects(compileCsg('union(){cube(size=[1,1,1]);import(file="part.stl");}'), /ENOENT/)
     const text = await compileCsg('text(text="hello");')
-    assert.equal(JSON.parse(text.toString()).version, 2)
+    assert.equal(JSON.parse(text.toString()).version, 3)
     await assert.rejects(compileCsg('cube(size=process.exit());'), /literal CSG|Invalid CSG token/)
     const controller = new AbortController()
     const pending = compileCsg('sphere(r=100,$fn=2000);', controller.signal)
@@ -179,7 +179,8 @@ test('3MF import keeps physical units, materials and closed topology', async () 
     const scene = JSON.parse((await compileCsg('import(file="colored.3mf");', undefined, { cwd: directory })).toString()) as CsgScene
     assert.ok(scene.operands[0].closed)
     assert.ok(scene.bounds.max.every((v) => Math.abs(v - 25.4) < 1e-4))
-    const rgba = Buffer.from(scene.blas[0].triangleColors, 'base64')
+    const firstVertex = Buffer.from(scene.meshes[0].indices, 'base64').readUInt32LE(0)
+    const rgba = Buffer.from(scene.meshes[0].properties, 'base64').subarray(firstVertex * scene.meshes[0].stride * 4 + 12)
     assert.equal(rgba.readFloatLE(0), 1)
     assert.equal(rgba.readFloatLE(4), 0)
     assert.equal(rgba.readFloatLE(8), 0)
@@ -192,11 +193,11 @@ test('root tags select the first subtree before unused resources are read', asyn
     assert.deepEqual(scene.bounds.max, [2, 3, 4])
 })
 
-test('worker cache reuses mesh BLAS across transform and color edits', async () => {
+test('worker cache reuses operand geometry across transform and color edits', async () => {
     const source = 'cube(size=[7,9,11]);'
     await compileCsg(source)
     const scene = JSON.parse((await compileCsg(`multmatrix([[1,0,0,50],[0,1,0,0],[0,0,1,0],[0,0,0,1]])color([1,0,0])${source}`)).toString()) as CsgScene
-    assert.equal(scene.timings.bvhCacheHits, 1)
+    assert.equal(scene.timings.geometryCacheHits, 1)
     assert.deepEqual(scene.bounds.min, [50, 0, 0])
 })
 

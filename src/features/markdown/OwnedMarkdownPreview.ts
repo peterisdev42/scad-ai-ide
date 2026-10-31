@@ -37,7 +37,7 @@ class OwnedMarkdownPreview implements vscode.Disposable {
     private timer?: ReturnType<typeof setTimeout>
     private version = 0
     private mode?: PreviewMode
-    private readonly blockModes=new Map<string,PreviewMode>()
+    private readonly blockModes = new Map<string, PreviewMode>()
     private runtimeIdentity = ''
 
     constructor(
@@ -48,14 +48,14 @@ class OwnedMarkdownPreview implements vscode.Disposable {
     ) {
         this.runtimeIdentity = JSON.stringify(runtime.getActiveRuntime()?.command ?? null)
         this.cache = new ScadModelCache(
-            async (source, cwd, signal,_publish,_document,variant) => {
+            async (source, cwd, signal, _publish, _document, variant) => {
                 await runtime.whenReady()
                 signal.throwIfAborted()
                 if (!vscode.workspace.isTrusted) throw new Error('Trust this workspace to run OpenSCAD.')
                 const active = runtime.getActiveRuntime()
                 if (!active) throw new Error('Select an OpenSCAD runtime to generate this preview.')
                 // No publish callback: ordinary fast previews do not precompute topology.
-                return renderScadModel(active.command, source, cwd, signal, (variant as PreviewMode)??this.renderMode)
+                return renderScadModel(active.command, source, cwd, signal, (variant as PreviewMode) ?? this.renderMode)
             },
             () => this.refresh(),
         )
@@ -124,9 +124,9 @@ class OwnedMarkdownPreview implements vscode.Disposable {
                 if (!vscode.workspace.getConfiguration('scad-ai-ide.markdown.preview').get<boolean>('enabled', true)) return { disabled: true, message: 'OpenSCAD Markdown previews are disabled in settings.' }
                 present.add(id)
                 sources.add(source)
-                const state = this.cache.request(this.document.uri.toString(), source, dirname(this.document.uri.fsPath),this.blockModes.get(id)??this.renderMode),
+                const state = this.cache.request(this.document.uri.toString(), source, dirname(this.document.uri.fsPath), this.blockModes.get(id) ?? this.renderMode),
                     previous = this.records.get(id)
-                if (state.status !== 'ready') return { model: previous ? this.model(id, previous) : undefined, message: state.status === 'pending' ? 'Updating preview…' : `OpenSCAD: ${state.message}` }
+                if (state.status !== 'ready') return { model: previous ? this.model(id, previous, state.status === 'pending') : undefined, message: state.status === 'pending' ? 'Updating preview…' : `OpenSCAD: ${state.message}` }
                 const model = JSON.parse(state.model) as PreviewModel
                 let record = previous
                 if (!record || record.model.content !== model.content || record.model.format !== model.format) {
@@ -157,8 +157,8 @@ class OwnedMarkdownPreview implements vscode.Disposable {
             }
         void this.panel.webview.postMessage({ type: 'markdownBody', html, mode: this.renderMode })
     }
-    private model(id: string, record: BlockRecord): PreviewModel {
-        return { ...record.model,previewMode:this.blockModes.get(id)??this.renderMode, host: { blockId: id, modelVersion: record.version } }
+    private model(id: string, record: BlockRecord, pending = false): PreviewModel {
+        return { ...record.model, pending, previewMode: this.blockModes.get(id) ?? this.renderMode, host: { blockId: id, modelVersion: record.version } }
     }
     private watch(path: string) {
         if (this.watchers.has(path)) return
@@ -178,8 +178,10 @@ class OwnedMarkdownPreview implements vscode.Disposable {
             this.render()
             return
         }
-        if(message.type==='setPreviewMode'&&message.blockId&&this.records.has(message.blockId)&&(message.mode==='preview'||message.mode==='render')){
-            this.blockModes.set(message.blockId,message.mode);this.refresh();return
+        if (message.type === 'setPreviewMode' && message.blockId && this.records.has(message.blockId) && (message.mode === 'preview' || message.mode === 'render')) {
+            this.blockModes.set(message.blockId, message.mode)
+            this.refresh()
+            return
         }
         if (message.type === 'setMarkdownMode' && (message.mode === 'preview' || message.mode === 'render')) {
             this.mode = message.mode

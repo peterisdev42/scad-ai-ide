@@ -1,0 +1,98 @@
+{
+  "browser": "150.0.7871.250",
+  "note": "CustomizerService.set(width, value, input) in the real extension host → actual CLI → worker → VS Code Webview → GPU completion → two rAF → host frameReady acknowledgement. Includes the acknowledgement/polling overhead, not DOM gesture dispatch. Ten uncached dimension changes; actual canvas dimensions are recorded per sample.",
+  "p50Ms": 101,
+  "p95Ms": 170.39999999999998,
+  "samples": [
+    {
+      "value": 31,
+      "vscodeVersion": "1.144.0",
+      "latencyMs": 120,
+      "backend": "webgpu",
+      "width": 1690,
+      "height": 1352,
+      "modelVersion": 2
+    },
+    {
+      "value": 32,
+      "vscodeVersion": "1.144.0",
+      "latencyMs": 183,
+      "backend": "webgpu",
+      "width": 1690,
+      "height": 1352,
+      "modelVersion": 3
+    },
+    {
+      "value": 33,
+      "vscodeVersion": "1.144.0",
+      "latencyMs": 105,
+      "backend": "webgpu",
+      "width": 1690,
+      "height": 1352,
+      "modelVersion": 4
+    },
+    {
+      "value": 34,
+      "vscodeVersion": "1.144.0",
+      "latencyMs": 155,
+      "backend": "webgpu",
+      "width": 1690,
+      "height": 1352,
+      "modelVersion": 5
+    },
+    {
+      "value": 35,
+      "vscodeVersion": "1.144.0",
+      "latencyMs": 101,
+      "backend": "webgpu",
+      "width": 1690,
+      "height": 1352,
+      "modelVersion": 6
+    },
+    {
+      "value": 36,
+      "vscodeVersion": "1.144.0",
+      "latencyMs": 100,
+      "backend": "webgpu",
+      "width": 1690,
+      "height": 1352,
+      "modelVersion": 7
+    },
+    {
+      "value": 37,
+      "vscodeVersion": "1.144.0",
+      "latencyMs": 101,
+      "backend": "webgpu",
+      "width": 1690,
+      "height": 1352,
+      "modelVersion": 8
+    },
+    {
+      "value": 38,
+      "vscodeVersion": "1.144.0",
+      "latencyMs": 101,
+      "backend": "webgpu",
+      "width": 1690,
+      "height": 1352,
+      "modelVersion": 9
+    },
+    {
+      "value": 39,
+      "vscodeVersion": "1.144.0",
+      "latencyMs": 99,
+      "backend": "webgpu",
+      "width": 1690,
+      "height": 1352,
+      "modelVersion": 10
+    },
+    {
+      "value": 40,
+      "vscodeVersion": "1.144.0",
+      "latencyMs": 98,
+      "backend": "webgpu",
+      "width": 1690,
+      "height": 1352,
+      "modelVersion": 11
+    }
+  ]
+}

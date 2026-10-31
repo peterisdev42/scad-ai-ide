@@ -14,7 +14,7 @@
 
 SCAD 会话支持 `preview`（CLI 导出 CSG 树、工作线程求值）和 `render`（CLI 完整 STL/3MF 网格）。顶部透视/正交组右侧的 CSG preview / Full mesh render 切换只影响当前文件会话，切换保留同一个 Stage 与相机位置；没有底部模式按钮。`scad-ai-ide.preview.renderMode` 决定初始模式，默认完整网格。CSG 导出显式传入 `$preview=true`，保留 Runtime 前缀、dirty stdin、cwd、参数覆盖与取消机制。网格导出使用独立任务并计算完整几何。
 
-`src/core/csg/` 解析 CLI 展开后的字面量树，不执行 SCAD/JavaScript；Manifold WASM 在每任务独立的 Node Worker 中求值，取消或超时会终止线程。支持基础几何、布尔运算、变换、挤出、颜色及调试/背景修饰符。未支持的节点（例如 import、text、扭转挤出、非三角 polyhedron）明确报出节点并回退至原生 CLI STL，保留 `$preview=true`；不静默遗漏几何。此实现并非原生 OpenCSG 的图像空间 GPU 算法，复杂布尔模型仍有求值成本。`.csg` 文件可直接走相同工作线程，受支持的树无需 CLI；原生回退和完整网格仍需选定 Runtime。
+`src/core/csg/` 解析 CLI 展开后的字面量树，不执行 SCAD/JavaScript；每任务独立的 Node Worker 只准备操作数和必要局部几何。普通三维布尔规范化为 Product，通过共享 WebGPURenderer 的 Depth/Stencil 多 Pass 光栅化求可见表面；基础 F5 不生成最终 Boolean 网格。挤出、hull、minkowski、render 等局部屏障保留 WASM 几何求值。错误保留最后有效画面，不自动回退 STL。`.csg` 可直接进入同一管线。精确 Wireframe、测量、X-Ray 和封口剖切按用户选择请求最终拓扑，Full Render 和导出保持独立。详细算法、兼容性和测量见 [CSG Preview](csg-preview.md)。
 
 Markdown 使用同一套 Lit App / Three.js Stage，直接挂载于内置 Markdown DOM，保持严格 CSP，不额外允许 iframe、Worker、网络连接或浏览器 WASM。宿主通过同步 markdown-it 缓存队列异步生成 CSG/网格数据；`scad-ai-ide.markdown.preview.renderMode` 控制该路径。每块有独立 Preview/Source Tab，最大 800 × 600、4:3。只有进入视口且选中 Preview 的块才挂载，同时最多两个实例；不可见时立即暂停 rAF，2 秒后释放 Stage/GPU 资源，再进入时恢复场景和相机。Markdown 刷新、关闭和切换 Tab 均处理实例清理。修改配置取消旧任务并清除缓存，临时文件在成功、错误和取消后清理。
 
@@ -70,7 +70,7 @@ Markdown 白屏回归额外使用 `SCAD_VSCODE_EXECUTABLE=... npm run test:markd
 
 ## 中性棚拍预览风格
 
-模型外观参考 Apple RealityKit / macOS Preview 的中性产品预览风格，属于 Three.js 中的视觉近似，不复用 Apple 的渲染器或私有参数。默认模型在浅/深色主题均保持亮灰白底色，使用非金属、适度粗糙的表面；本地生成 RoomEnvironment，经 PMREM 提供宽高光和柔和暗部填充，配合 NeutralToneMapping 控制高光，不下载外部 HDR 资源。环境贴图对齐 OpenSCAD 的 Z-up，并随 Stage 释放 GPU 资源。
+Full Render 的模型外观参考 Apple RealityKit / macOS Preview 的中性产品预览风格，属于 Three.js 中的视觉近似，不复用 Apple 的渲染器或私有参数。默认模型在浅/深色主题均保持亮灰白底色，使用非金属、适度粗糙的表面；本地生成 RoomEnvironment，经 PMREM 提供宽高光和柔和暗部填充，配合 NeutralToneMapping 控制高光，不下载外部 HDR 资源。环境贴图对齐 OpenSCAD 的 Z-up，并随 Stage 释放 GPU 资源。
 
 背景、网格与纯色打印板继续由 VS Code 主题变量驱动，打印板保持无光照、无阴影的平面显示。模型选色及 3MF 原有材质保留；不再用文字的 3:1 对比度要求强制把浅色主题的模型压成深灰。
 

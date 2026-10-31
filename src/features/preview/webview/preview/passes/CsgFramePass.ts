@@ -1,49 +1,64 @@
 import { Camera, RenderTarget, Scene, Vector2 } from 'three'
 import { MeshBasicNodeMaterial, QuadMesh, type WebGPURenderer } from 'three/webgpu'
 import { texture } from 'three/tsl'
+import { withRenderer } from './RendererJobs'
+import { beginGpuValidation } from './GpuValidation'
 
-/** Submit bounded tiles and publish only a complete frame. Each fence gives the
- * GPU a bounded command buffer instead of one full-resolution CSG dispatch. */
+/** A single complete frame, published after GPU completion. Raster CSG owns its
+ * passes; the viewer never schedules tiles or waits between ordinary draws. */
 export class CsgFramePass {
-    private readonly target=new RenderTarget(1,1,{depthBuffer:true,stencilBuffer:true,samples:4})
-    private readonly material=new MeshBasicNodeMaterial({depthTest:false,depthWrite:false,toneMapped:false})
-    private readonly quad:QuadMesh
-    private disposed=false
-    private tileSize=32
-    constructor(){this.material.fragmentNode=texture(this.target.texture);this.quad=new QuadMesh(this.material)}
-
-    async render(renderer:WebGPURenderer,scene:Scene,camera:Camera,draw:(camera:Camera)=>void,current:()=>boolean):Promise<boolean>{
-        const dimensions=renderer.getDrawingBufferSize(new Vector2()),width=dimensions.x,height=dimensions.y
-        if(this.target.width!==width||this.target.height!==height)this.target.setSize(width,height)
-        const target=renderer.getRenderTarget(),autoClear=renderer.autoClear,view=camera.clone()
-        const shadows:Array<{shadow:{autoUpdate:boolean};autoUpdate:boolean}>=[]
-        scene.traverse(object=>{const shadow=(object as unknown as {shadow?:{autoUpdate:boolean}}).shadow;if(shadow)shadows.push({shadow,autoUpdate:shadow.autoUpdate})})
-        let first=true
-        try{
-            this.target.scissorTest=false;renderer.setRenderTarget(this.target);renderer.clear();renderer.autoClear=false
-            for(let y=0;y<height;){
-                const row=Math.min(this.tileSize,height-y)
-                for(let x=0;x<width;){
-                    if(this.disposed||!current())return false
-                    const size=Math.min(this.tileSize,width-x),started=performance.now()
-                    this.target.scissorTest=true;this.target.scissor.set(x,y,size,row)
-                    renderer.setRenderTarget(this.target);draw(view);renderer.setRenderTarget(target)
-                    await renderer.waitForGPU()
-                    const elapsed=performance.now()-started
-                    if(!first&&size<=16&&elapsed>250)throw new Error('CSG exceeded the GPU execution budget for a 16-pixel tile. The last complete frame is retained; choose Full mesh render for this model.')
-                    if(!first){if(elapsed>12)this.tileSize=Math.max(16,this.tileSize/2);else if(elapsed<2)this.tileSize=Math.min(128,this.tileSize*2)}
-                    first=false;for(const entry of shadows)entry.shadow.autoUpdate=false
-                    x+=size
-                }
-                y+=row
-            }
-            if(this.disposed||!current())return false
-            renderer.setRenderTarget(target);this.quad.render(renderer)
+    private readonly target = new RenderTarget(1, 1, { depthBuffer: true, stencilBuffer: true, samples: 0 })
+    private readonly material = new MeshBasicNodeMaterial({ depthTest: false, depthWrite: false, toneMapped: false })
+    private readonly quad: QuadMesh
+    private disposed = false
+    private busy = false
+    constructor() {
+        this.material.fragmentNode = texture(this.target.texture)
+        this.quad = new QuadMesh(this.material)
+    }
+    render(renderer: WebGPURenderer, scene: Scene, camera: Camera, draw: (camera: Camera) => unknown | Promise<unknown>, current: () => boolean): Promise<boolean> {
+        return withRenderer(renderer, () => this.renderNow(renderer, scene, camera, draw, current))
+    }
+    private async renderNow(renderer: WebGPURenderer, _scene: Scene, camera: Camera, draw: (camera: Camera) => unknown | Promise<unknown>, current: () => boolean): Promise<boolean> {
+        if (this.disposed || !current()) return false
+        const output = renderer.getRenderTarget(),
+            autoClear = renderer.autoClear
+        const dimensions = output ? new Vector2(output.width, output.height) : renderer.getDrawingBufferSize(new Vector2())
+        if (this.target.width !== dimensions.x || this.target.height !== dimensions.y) this.target.setSize(dimensions.x, dimensions.y)
+        this.busy = true
+        const validate = beginGpuValidation(renderer, 'frame')
+        try {
+            renderer.setRenderTarget(this.target)
+            renderer.autoClear = true
+            // The live camera may move while nonconvex layers await a scalar
+            // query. Every pass in this frame must use the same camera matrices.
+            await draw(camera.clone())
+            await renderer.readRenderTargetPixelsAsync(this.target, Math.floor(dimensions.x / 2), Math.floor(dimensions.y / 2), 1, 1)
+            await validate()
+            if (this.disposed || !current()) return false
+            renderer.setRenderTarget(output)
+            renderer.autoClear = false
+            this.quad.render(renderer)
             return true
-        }finally{
-            for(const entry of shadows)entry.shadow.autoUpdate=entry.autoUpdate
-            if(!this.disposed){renderer.setRenderTarget(target);renderer.autoClear=autoClear}
+        } finally {
+            // Also close scopes on cancellation, readback or drawing failure.
+            try {
+                await validate()
+            } finally {
+                this.busy = false
+                renderer.setRenderTarget(output)
+                renderer.autoClear = autoClear
+                if (this.disposed) this.release()
+            }
         }
     }
-    dispose(){if(this.disposed)return;this.disposed=true;this.target.dispose();this.material.dispose()}
+    private release() {
+        this.target.dispose()
+        this.material.dispose()
+    }
+    dispose() {
+        if (this.disposed) return
+        this.disposed = true
+        if (!this.busy) this.release()
+    }
 }

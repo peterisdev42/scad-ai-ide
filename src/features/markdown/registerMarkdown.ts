@@ -1,5 +1,5 @@
 import { basename, dirname, join } from 'node:path'
-import { createHash,randomUUID } from 'node:crypto'
+import { createHash, randomUUID } from 'node:crypto'
 import * as vscode from 'vscode'
 import type MarkdownIt from 'markdown-it'
 import { RuntimeUnavailableError } from '../../core/runtime/errors'
@@ -15,23 +15,44 @@ const section = 'scad-ai-ide.markdown.preview'
 
 export function registerMarkdown(context: vscode.ExtensionContext, runtime: ReturnType<typeof registerRuntime>) {
     let disposed = false
-    interface ModeRecord {token:string;document:string;source:string;cwd:string;mode?:PreviewMode;last?:PreviewModel}
-    const records=new Map<string,ModeRecord>(),tokens=new Map<string,ModeRecord>()
-    const recordFor=(document:string,source:string,cwd:string)=>{
-        const key=JSON.stringify([document,source,cwd])
-        let record=records.get(key)
-        if(!record){record={document,source,cwd,token:randomUUID()};records.set(key,record);tokens.set(record.token,record)}
-        while(records.size>128){const oldest=records.keys().next().value!;tokens.delete(records.get(oldest)!.token);records.delete(oldest)}
+    interface ModeRecord {
+        token: string
+        document: string
+        source: string
+        cwd: string
+        mode?: PreviewMode
+        last?: PreviewModel
+    }
+    const records = new Map<string, ModeRecord>(),
+        tokens = new Map<string, ModeRecord>()
+    const recordFor = (document: string, source: string, cwd: string) => {
+        const key = JSON.stringify([document, source, cwd])
+        let record = records.get(key)
+        if (!record) {
+            record = { document, source, cwd, token: randomUUID() }
+            records.set(key, record)
+            tokens.set(record.token, record)
+        }
+        while (records.size > 128) {
+            const oldest = records.keys().next().value!
+            tokens.delete(records.get(oldest)!.token)
+            records.delete(oldest)
+        }
         return record
     }
-    const modeFor=(record:ModeRecord)=>record.mode??vscode.workspace.getConfiguration(section).get<PreviewMode>('renderMode','render')
-    const handler=vscode.window.registerUriHandler?.({handleUri(uri){
-        if(disposed||uri.path!=='/markdown-mode'||!vscode.workspace.isTrusted)return
-        const values=new URLSearchParams(uri.query),record=tokens.get(values.get('token')??''),mode=values.get('mode')
-        if(!record||(mode!=='preview'&&mode!=='render'))return
-        record.mode=mode;refresh()
-    }})
-    if(handler)context.subscriptions.push(handler)
+    const modeFor = (record: ModeRecord) => record.mode ?? vscode.workspace.getConfiguration(section).get<PreviewMode>('renderMode', 'render')
+    const handler = vscode.window.registerUriHandler?.({
+        handleUri(uri) {
+            if (disposed || uri.path !== '/markdown-mode' || !vscode.workspace.isTrusted) return
+            const values = new URLSearchParams(uri.query),
+                record = tokens.get(values.get('token') ?? ''),
+                mode = values.get('mode')
+            if (!record || (mode !== 'preview' && mode !== 'render')) return
+            record.mode = mode
+            refresh()
+        },
+    })
+    if (handler) context.subscriptions.push(handler)
 
     const highlighter = new ScadHighlighter()
     const initialized = highlighter.initialize(join(context.extensionPath, 'dist', 'onig.wasm'))
@@ -54,13 +75,13 @@ export function registerMarkdown(context: vscode.ExtensionContext, runtime: Retu
     const reportThemeError = (error: unknown) => console.error('OpenSCAD Markdown highlighting failed:', error)
     const ready = updateTheme(false).catch(reportThemeError)
     const resourceWatchers = new Map<string, vscode.Disposable>()
-    const cache = new ScadModelCache(async (source, cwd, signal, publish,document,variant) => {
+    const cache = new ScadModelCache(async (source, cwd, signal, publish, document, variant) => {
         await runtime.whenReady()
         signal.throwIfAborted()
         if (!vscode.workspace.isTrusted) throw new Error('Trust this workspace to run OpenSCAD.')
         const active = runtime.getActiveRuntime()
         if (!active) throw new RuntimeUnavailableError()
-        const mode=(variant as PreviewMode)??modeFor(recordFor(document,source,cwd))
+        const mode = (variant as PreviewMode) ?? modeFor(recordFor(document, source, cwd))
         const model = await renderScadModel(active.command, source, cwd, signal, mode, publish)
         const dependencies = JSON.parse(model).dependencies as { path: string }[] | undefined
         for (const dependency of dependencies ?? [])
@@ -93,7 +114,8 @@ export function registerMarkdown(context: vscode.ExtensionContext, runtime: Retu
                 cache.dispose()
                 for (const watcher of resourceWatchers.values()) watcher.dispose()
                 highlighter.dispose()
-                records.clear();tokens.clear()
+                records.clear()
+                tokens.clear()
             },
         },
         runtime.onDidChange(() => {
@@ -158,14 +180,14 @@ export function registerMarkdown(context: vscode.ExtensionContext, runtime: Retu
                 if (!vscode.workspace.isTrusted) {
                     preview = '<p class="scad-markdown-status" role="status">Trust this workspace to render OpenSCAD code blocks.</p>'
                 } else {
-                    const record=recordFor(uri.toString(),token.content,dirname(uri.fsPath)),mode=modeFor(record)
-                    const state = cache.request(uri.toString(), token.content, dirname(uri.fsPath),mode)
-                    if(state.status==='ready')record.last=JSON.parse(state.model) as PreviewModel
-                    const message=state.status==='pending'?'Rendering OpenSCAD…':state.status==='error'?`OpenSCAD: ${state.message}`:''
-                    const base=`${vscode.env?.uriScheme??'vscode'}://${context.extension?.id??'undefined_publisher.scad-ai-ide'}/markdown-mode?token=${encodeURIComponent(record.token)}&mode=`
-                    const model=record.last?{...record.last,previewMode:mode,modeLinks:{preview:base+'preview',render:base+'render'}}:undefined
-                    preview=(model?`<div class="scad-markdown-viewer" data-scad-model="${escape(JSON.stringify(model))}" aria-label="Interactive OpenSCAD preview"></div>`:'')+(message?`<p class="scad-markdown-status" role="status">${escape(message)}</p>`:'')
-
+                    const record = recordFor(uri.toString(), token.content, dirname(uri.fsPath)),
+                        mode = modeFor(record)
+                    const state = cache.request(uri.toString(), token.content, dirname(uri.fsPath), mode)
+                    if (state.status === 'ready') record.last = JSON.parse(state.model) as PreviewModel
+                    const message = state.status === 'pending' ? 'Rendering OpenSCAD…' : state.status === 'error' ? `OpenSCAD: ${state.message}` : ''
+                    const base = `${vscode.env?.uriScheme ?? 'vscode'}://${context.extension?.id ?? 'undefined_publisher.scad-ai-ide'}/markdown-mode?token=${encodeURIComponent(record.token)}&mode=`
+                    const model = record.last ? { ...record.last, pending: state.status === 'pending', previewMode: mode, modeLinks: { preview: base + 'preview', render: base + 'render' } } : undefined
+                    preview = (model ? `<div class="scad-markdown-viewer" data-scad-model="${escape(JSON.stringify(model))}" aria-label="Interactive OpenSCAD preview"></div>` : '') + (message ? `<p class="scad-markdown-status" role="status">${escape(message)}</p>` : '')
                 }
                 const sourceMap = token.map ? ` data-line="${token.map[0]}"` : ''
                 return `<div class="scad-markdown-block code-line" data-scad-block="${id}"${sourceMap}>

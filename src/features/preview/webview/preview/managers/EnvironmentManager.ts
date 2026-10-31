@@ -1,6 +1,5 @@
 import { BufferGeometry, GridHelper, Group, Mesh } from 'three'
-import { MeshBasicNodeMaterial as MeshBasicMaterial, type Node } from 'three/webgpu'
-import { materialColor, positionWorld } from 'three/tsl'
+import { MeshBasicNodeMaterial as MeshBasicMaterial } from 'three/webgpu'
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js'
 import { BuildPlateOrigin, Environment } from '../../contexts/ViewOptionsContext'
 import buildPlate from '../assets/models/buildPlate.stl'
@@ -11,17 +10,6 @@ import { BUILD_PLATE_SIZE, buildPlateOffset } from './BuildPlateLayout'
 export class EnvironmentManager {
     public group: Group
     private infiniteGrid?: InfiniteGrid
-    private shadowProvider?: (world: Node<'vec3'>) => Node<'float'>
-    public setShadowProvider(provider?: (world: Node<'vec3'>) => Node<'float'>) {
-        if (this.shadowProvider === provider) return
-        this.shadowProvider = provider
-        this.applyShadowProvider()
-    }
-    private applyShadowProvider() {
-        if (!this.buildPlate) return
-        this.buildPlate.mesh.material.colorNode = this.shadowProvider ? materialColor.rgb.mul(this.shadowProvider(positionWorld)) : null
-        this.buildPlate.mesh.material.needsUpdate = true
-    }
     private plateOrigin = BuildPlateOrigin.Center
     private buildPlate?: {
         mesh: Mesh<BufferGeometry, MeshBasicMaterial>
@@ -84,7 +72,6 @@ export class EnvironmentManager {
             this.group.add(this.infiniteGrid.mesh)
         } else if (this.environment === Environment.BuildPlate) {
             this.buildPlate = this.initBuildPlate()
-            this.applyShadowProvider()
         }
     }
 

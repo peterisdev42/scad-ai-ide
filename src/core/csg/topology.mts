@@ -1,8 +1,8 @@
 import type { Manifold, ManifoldToplevel, Mat4, Vec3 } from 'manifold-3d'
-import type { CsgClipPlane, CsgGeometry, CsgPreviewSceneV2 } from './types.js'
+import type { CsgClipPlane, CsgGeometry, CsgScene } from './types.js'
 
 /** Only explicit geometry barriers and topology tools materialize a boolean result. */
-export function materializeTopology(scene: CsgPreviewSceneV2, module: ManifoldToplevel, planes: CsgClipPlane[] = []): CsgGeometry {
+export function materializeTopology(scene: CsgScene, module: ManifoldToplevel, planes: CsgClipPlane[] = []): CsgGeometry {
     const owned = new Set<Manifold>()
     const own = (solid: Manifold) => {
         owned.add(solid)
@@ -32,7 +32,7 @@ export function materializeTopology(scene: CsgPreviewSceneV2, module: ManifoldTo
             values.push(instruction.op === 'empty' ? own(new module.Manifold(new module.Mesh({ numProp: 3, vertProperties: new Float32Array(), triVerts: new Uint32Array() }))) : instruction.op === 'leaf' ? leaves[instruction.operand] : own(module.Manifold[instruction.op]([values[instruction.left], values[instruction.right]])))
         }
         if (planes.length > 8) throw new Error('Topology clipping plane budget exceeded.')
-        let result = values[scene.root]
+        let result = values[scene.topologyRoot]
         for (const plane of planes) {
             if (plane.normal.length !== 3 || ![...plane.normal, plane.constant].every(Number.isFinite) || Math.hypot(...plane.normal) < 1e-12) throw new Error('Invalid topology clipping plane.')
             result = own(result.trimByPlane(plane.normal as Vec3, -plane.constant - plane.normal.reduce((sum, n, d) => sum + n * scene.origin[d], 0)))

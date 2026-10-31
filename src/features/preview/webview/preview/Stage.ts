@@ -1,4 +1,6 @@
-import {CsgFramePass} from './passes/CsgFramePass'
+import { GpuCompletion } from './passes/GpuCompletion'
+import { rendererBusy } from './passes/RendererJobs'
+import { CsgFramePass } from './passes/CsgFramePass'
 import { ModelRepresentation } from './models/ModelRepresentation'
 import { threeMfMillimeterScale } from '../../../../core/formats/threeMf'
 import { Box3, BufferGeometry, Color, Float32BufferAttribute, FogExp2, Group, Mesh, MeshStandardMaterial, Object3D, PCFShadowMap, Plane, Raycaster, Scene, Uint32BufferAttribute, Vector2, Vector3 } from 'three'
@@ -76,11 +78,12 @@ export class Stage {
     private modelContext?: ModelContext
     private topologyGroup?: Group
     private topologyPending?: Promise<void>
-    private topologyRequested = false
     private topologyKey?: string
     private onToolStatus?: (status: string) => void
-    private onDeviceLoss?:(reason:string)=>void
-    public setDeviceLossCallback(callback:(reason:string)=>void){this.onDeviceLoss=callback}
+    private onDeviceLoss?: (reason: string) => void
+    public setDeviceLossCallback(callback: (reason: string) => void) {
+        this.onDeviceLoss = callback
+    }
     private onError?: (error: string) => void
     private failedGeneration?: number
     public setErrorCallback(callback: (error: string) => void) {
@@ -88,14 +91,16 @@ export class Stage {
     }
     private performancePending = false
     private performanceSampledAt = 0
-    private readonly csgFramePass=new CsgFramePass()
-    private csgFrameBusy=false
-    private csgFrameDirty=false
+    private readonly csgFramePass = new CsgFramePass()
+    private readonly gpuCompletion = new GpuCompletion()
+    private csgFrameBusy = false
+    private csgFrameDirty = false
     private firstFrame?: { generation: number; start: number; notify?: ModelContext['frameReady']; submitted: boolean }
     public setToolStatusCallback(callback: (status: string) => void) {
         this.onToolStatus = callback
     }
 
+    private inactiveModel?: { format: ModelFormat; data: string; representation: ModelRepresentation; csg: CsgModel[] }
     private modelRepresentation?: ModelRepresentation
     private preparationController?: AbortController
     private modelGroup: Group
@@ -130,7 +135,7 @@ export class Stage {
 
     private onPersist: (() => void) | null = null
 
-    constructor(container: HTMLElement, theme: Theme,options:{forceWebGL?:boolean}={}) {
+    constructor(container: HTMLElement, theme: Theme, options: { forceWebGL?: boolean } = {}) {
         this.container = container
         this.theme = theme
         this.raycaster = new Raycaster()
@@ -142,9 +147,13 @@ export class Stage {
 
         // 2. Renderers
         const { clientWidth: width, clientHeight: height } = container
-        this.renderer = new WebGPURenderer({ antialias: true, stencil: true,forceWebGL:options.forceWebGL })
+        this.renderer = new WebGPURenderer({ antialias: true, stencil: true, forceWebGL: options.forceWebGL })
         this.renderer.onDeviceLost = (info) => {
-            if(!this.disposed){this.setActive(false);if(this.onDeviceLoss)this.onDeviceLoss(info.message);else this.onError?.(`Graphics device lost: ${info.message}`)}
+            if (!this.disposed) {
+                this.setActive(false)
+                if (this.onDeviceLoss) this.onDeviceLoss(info.message)
+                else this.onError?.(`Graphics device lost: ${info.message}`)
+            }
         }
         this.renderer.setPixelRatio(window.devicePixelRatio)
         this.renderer.setSize(width || 1, height || 1)
@@ -187,6 +196,7 @@ export class Stage {
                 else this.activeCameraRig.orientTo(direction)
             },
             (angle) => this.activeCameraRig.roll(angle),
+            { forceWebGL: options.forceWebGL },
         )
 
         // 5. Shared TransformControls
@@ -263,6 +273,7 @@ export class Stage {
         this.cameraHandles.clear()
         this.xrayPass.dispose()
         this.csgFramePass.dispose()
+        this.gpuCompletion.dispose()
         this.viewCube.dispose()
         this.clearModel()
         this.environmentRig.setEnvironment(Environment.None)
@@ -276,6 +287,7 @@ export class Stage {
 
     public setActive(active: boolean) {
         if (this.disposed || active === !this.paused) return
+        this.renderSignature = undefined
         this.paused = !active
         if (!active) {
             if (this.animationFrameId !== null) cancelAnimationFrame(this.animationFrameId)
@@ -318,7 +330,7 @@ export class Stage {
         this.scene.fog = new FogExp2(this.theme.fog, viewOptions.get('fogDensity'))
         this.materialManager.setTheme(this.modelGroup, this.theme, viewOptions.get('modelColor'))
         this.materialManager.applyToGroup(this.modelGroup, viewOptions)
-        if (viewOptions.is('renderMode', RenderMode.Wireframe)) this.ensureTopology()
+        if (viewOptions.is('renderMode', RenderMode.Wireframe) || viewOptions.is('renderMode', RenderMode.XRay)) this.ensureTopology()
 
         // Enable clipping whenever any cross-section plane exists and is visible
     }
@@ -341,8 +353,19 @@ export class Stage {
             bytes[i] = binaryString.charCodeAt(i)
         }
 
-        let preparedCsg: CsgModel[] = []
-        if (format === ModelFormat.CSG) {
+        const preparedCsg: CsgModel[] = []
+        let cachedCandidate: ModelRepresentation | undefined
+        if (this.inactiveModel?.format === format) {
+            const inactive = this.inactiveModel
+            this.inactiveModel = undefined
+            if (inactive.data === base64Data) {
+                cachedCandidate = inactive.representation
+                cachedCandidate.rebind(modelContext.modelVersion ?? generation, modelContext.queryTopology)
+                preparedCsg.push(...inactive.csg)
+                cachedCandidate.attach(nextGroup)
+            } else inactive.representation.dispose()
+        }
+        if (!cachedCandidate && format === ModelFormat.CSG) {
             const scene = JSON.parse(new TextDecoder().decode(bytes)) as CsgScene
             if (this.modelRepresentation?.update(scene, modelContext.modelVersion ?? generation, modelContext.queryTopology)) {
                 if (this.topologyGroup) {
@@ -358,7 +381,7 @@ export class Stage {
                 })
                 this.rebuildModelClipping()
                 this.fitInitialModelIfReady()
-                if (this.viewOptions?.is('renderMode', RenderMode.Wireframe) || (this.toolManager.activeTool instanceof MeasureTool && this.toolVariant !== 'face')) this.ensureTopology()
+                if (this.viewOptions?.is('renderMode', RenderMode.Wireframe) || this.viewOptions?.is('renderMode', RenderMode.XRay) || (this.toolManager.activeTool instanceof MeasureTool && this.toolVariant !== 'face')) this.ensureTopology()
                 return
             }
             try {
@@ -371,7 +394,7 @@ export class Stage {
         }
         if (format === ModelFormat.CSG) {
             for (const model of preparedCsg) nextGroup.add(model.mesh)
-        } else if (format === ModelFormat.ThreeMF) {
+        } else if (!cachedCandidate && format === ModelFormat.ThreeMF) {
             const loader = new ThreeMFLoader()
             try {
                 const group = loader.parse(bytes.buffer)
@@ -396,7 +419,7 @@ export class Stage {
                 this.disposeModelGroup(nextGroup)
                 throw new Error(`Failed to parse 3MF: ${String(e)}`)
             }
-        } else {
+        } else if (!cachedCandidate) {
             const loader = new STLLoader()
             try {
                 const geometry = loader.parse(bytes.buffer)
@@ -418,7 +441,7 @@ export class Stage {
 
         this.materialManager.setTheme(nextGroup, this.theme, this.viewOptions?.get('modelColor'))
 
-        const candidate = new ModelRepresentation(nextGroup, preparedCsg, modelContext.modelVersion ?? generation, modelContext.queryTopology)
+        const candidate = cachedCandidate ?? new ModelRepresentation(nextGroup, preparedCsg, modelContext.modelVersion ?? generation, modelContext.queryTopology)
         try {
             await this.ready
             if (!this.disposed && generation === this.modelGeneration) {
@@ -436,7 +459,14 @@ export class Stage {
             candidate.dispose()
             return
         }
-        this.clearModel()
+        if (this.modelRepresentation && this.modelContext?.format && this.modelContext.format !== format && this.modelContext.base64Data && this.modelContext.base64Data.length <= 8 * 1048576) {
+            this.inactiveModel?.representation.dispose()
+            this.inactiveModel = { format: this.modelContext.format, data: this.modelContext.base64Data, representation: this.modelRepresentation, csg: this.csgModels }
+            this.modelRepresentation.detach()
+            this.modelRepresentation = undefined
+            this.csgModels = []
+        }
+        this.clearModel(true)
         this.modelContext = modelContext
         this.modelRepresentation = candidate
         this.csgModels = preparedCsg
@@ -459,7 +489,7 @@ export class Stage {
         })
         this.rebuildModelClipping()
         this.fitInitialModelIfReady()
-        if (this.viewOptions?.is('renderMode', RenderMode.Wireframe) || (this.toolManager.activeTool instanceof MeasureTool && (this.toolVariant === 'vertex' || this.toolVariant === 'edge'))) this.ensureTopology()
+        if (this.viewOptions?.is('renderMode', RenderMode.Wireframe) || this.viewOptions?.is('renderMode', RenderMode.XRay) || (this.toolManager.activeTool instanceof MeasureTool && (this.toolVariant === 'vertex' || this.toolVariant === 'edge'))) this.ensureTopology()
     }
 
     private disposeModelGroup(group: Group) {
@@ -476,14 +506,16 @@ export class Stage {
         group.clear()
     }
 
-    private clearModel() {
+    private clearModel(preserveInactive = false) {
+        if (!preserveInactive) {
+            this.inactiveModel?.representation.dispose()
+            this.inactiveModel = undefined
+        }
         this.modelRepresentation?.dispose()
         this.modelRepresentation = undefined
-        this.environmentRig.setShadowProvider()
         this.csgModels = []
         this.topologyGroup = undefined
         this.topologyPending = undefined
-        this.topologyRequested = false
         this.topologyKey = undefined
         this.firstFrame = undefined
         this.onToolStatus?.('')
@@ -496,13 +528,16 @@ export class Stage {
         return planes
     }
 
+    private requiresTopology() {
+        return !!this.topologyPlanes().length || this.viewOptions?.is('renderMode', RenderMode.Wireframe) || this.viewOptions?.is('renderMode', RenderMode.XRay) || (this.toolManager.activeTool instanceof MeasureTool && (this.toolVariant === 'edge' || this.toolVariant === 'vertex'))
+    }
+
     public refreshTopology() {
-        if (this.topologyRequested) this.ensureTopology()
+        if (this.requiresTopology()) this.ensureTopology()
     }
 
     private ensureTopology() {
         if (!this.csgModels.length) return
-        this.topologyRequested = true
         const planes = this.topologyPlanes(),
             key = JSON.stringify(planes)
         if (this.topologyGroup && this.topologyKey === key) return
@@ -520,7 +555,7 @@ export class Stage {
         }
         const generation = this.modelGeneration
         this.topologyKey = key
-        this.onToolStatus?.('Preparing edges and vertices…')
+        this.onToolStatus?.('Preparing exact geometry for the selected tool…')
         const task = provider(planes)
             .then(({ value: geometry }) => {
                 if (this.disposed || generation !== this.modelGeneration || key !== JSON.stringify(this.topologyPlanes())) return
@@ -533,6 +568,7 @@ export class Stage {
                 this.materialManager.setTheme(group, this.theme, this.viewOptions?.get('modelColor'))
                 this.rebuildModelClipping()
                 this.onToolStatus?.('')
+                this.renderSignature = undefined
             })
             .catch((error) => {
                 if (!this.disposed && generation === this.modelGeneration) this.onToolStatus?.(error instanceof Error ? error.message : String(error))
@@ -581,8 +617,9 @@ export class Stage {
         const frame = this.firstFrame
         if (!frame || frame.submitted) return
         frame.submitted = true
-        void this.renderer
-            .waitForGPU()
+        void this.gpuCompletion
+            .wait(this.renderer)
+            .then(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))))
             .then(() => {
                 if (!this.disposed && this.firstFrame === frame && frame.generation === this.modelGeneration) frame.notify?.(this.renderer.coordinateSystem === 2001 ? 'webgpu' : 'webgl2', Math.round(performance.now() - frame.start))
             })
@@ -763,7 +800,7 @@ export class Stage {
     }
 
     private rebuildModelClipping(): void {
-        if (this.topologyRequested) this.ensureTopology()
+        if (this.requiresTopology()) this.ensureTopology()
         const planes: Plane[] = []
         for (const handle of this.handles.values()) {
             if (handle instanceof CrossSectionRig && handle.active) {
@@ -956,6 +993,7 @@ export class Stage {
     }
 
     private renderFrame(force = true) {
+        if (rendererBusy(this.renderer)) return
         let signature: string | undefined
         if (this.csgModels.length) {
             this.scene.updateMatrixWorld(true)
@@ -985,11 +1023,11 @@ export class Stage {
                 generation = this.modelGeneration,
                 report = this.modelContext?.reportPerformance
             this.drawFrame()
-            if (!this.csgModels.length&&report && !this.performancePending && this.firstFrame?.submitted && start - this.performanceSampledAt >= 1000) {
+            if (!this.csgModels.length && report && !this.performancePending && this.firstFrame?.submitted && start - this.performanceSampledAt >= 1000) {
                 this.performancePending = true
                 this.performanceSampledAt = start
-                void this.renderer
-                    .waitForGPU()
+                void this.gpuCompletion
+                    .wait(this.renderer)
                     .then(() => {
                         if (!this.disposed && generation === this.modelGeneration) report({ interactiveFrameMs: performance.now() - start })
                     })
@@ -1009,15 +1047,19 @@ export class Stage {
         const camera = this.activeCameraRig.activeCamera
 
         if (this.csgModels.length) {
-            if(this.csgFrameBusy){this.csgFrameDirty=true;return}
-            this.environmentRig.setShadowProvider(this.csgModels[0].shadowAt)
-            const wireframe = this.viewOptions?.is('renderMode', RenderMode.Wireframe) && !!this.topologyGroup
-            if (this.topologyGroup) this.topologyGroup.visible = !!wireframe
-            this.csgModels.forEach((model) => {
-                model.mesh.visible = !wireframe
-            })
+            if (this.csgFrameBusy) {
+                this.csgFrameDirty = true
+                return
+            }
             const planes: Plane[] = []
             for (const handle of this.handles.values()) if (handle instanceof CrossSectionRig && handle.active) planes.push(handle.plane)
+            const advanced = !!planes.length || this.viewOptions?.is('renderMode', RenderMode.Wireframe) || this.viewOptions?.is('renderMode', RenderMode.XRay)
+            if (advanced) {
+                this.ensureTopology()
+                if (!this.topologyGroup) return
+            }
+            if (this.topologyGroup) this.topologyGroup.visible = !!advanced
+            this.csgModels.forEach((model) => (model.mesh.visible = !advanced))
             const lights: CsgLight[] = []
             const ambient = new Color(0.15, 0.15, 0.15)
             this.scene.traverseVisible((object) => {
@@ -1025,15 +1067,54 @@ export class Stage {
                 else if (object instanceof DirectionalLight) lights.push({ position: object.getWorldPosition(new Vector3()).sub(object.target.getWorldPosition(new Vector3())), color: object.color.clone().multiplyScalar(object.intensity), directional: true, castShadow: object.castShadow })
                 else if (object instanceof PointLight || object instanceof SpotLight) lights.push({ position: object.getWorldPosition(new Vector3()), color: object.color.clone().multiplyScalar(object.intensity), directional: false, castShadow: object.castShadow, distance: object.distance, decay: object.decay, ...(object instanceof SpotLight ? { direction: object.target.getWorldPosition(new Vector3()).sub(object.getWorldPosition(new Vector3())).normalize(), cone: Math.cos(object.angle), penumbra: Math.cos(object.angle * (1 - object.penumbra)) } : {}) })
             })
-            const representation=this.modelRepresentation,generation=this.modelGeneration
-            if(!representation)return
-            const frame={color:this.viewOptions?.get('modelColor')?new Color(this.viewOptions.get('modelColor')!):this.theme.additive,overrideColor:!!this.viewOptions?.get('modelColor'),mode:this.viewOptions?.get('renderMode')??RenderMode.Solid,planes,webgpu:this.renderer.coordinateSystem===2001,shadows:this.viewOptions?.get('shadows')??true,lights,ambient}
-            this.csgFrameBusy=true
-            const frameStarted=performance.now()
-            void this.csgFramePass.render(this.renderer,this.scene,camera,view=>{representation.render(this.renderer,this.scene,view,frame)},()=>!this.disposed&&!this.paused&&generation===this.modelGeneration)
-                .then(complete=>{if(complete){this.reportFirstFrame();if(frameStarted-this.performanceSampledAt>=1000){this.performanceSampledAt=frameStarted;this.modelContext?.reportPerformance?.({interactiveFrameMs:performance.now()-frameStarted})}}})
-                .catch(error=>{if(!this.disposed&&generation===this.modelGeneration){this.failedGeneration=generation;this.onError?.(String(error))}})
-                .finally(()=>{this.csgFrameBusy=false;if(this.csgFrameDirty){this.csgFrameDirty=false;this.renderSignature=undefined}})
+            const representation = this.modelRepresentation,
+                generation = this.modelGeneration
+            if (!representation) return
+            const frame = { color: this.viewOptions?.get('modelColor') ? new Color(this.viewOptions.get('modelColor')!) : this.theme.additive, overrideColor: !!this.viewOptions?.get('modelColor'), mode: this.viewOptions?.get('renderMode') ?? RenderMode.Solid, planes, webgpu: this.renderer.coordinateSystem === 2001, shadows: this.viewOptions?.get('shadows') ?? true, lights, ambient }
+            this.csgFrameBusy = true
+            const frameStarted = performance.now()
+            void this.csgFramePass
+                .render(
+                    this.renderer,
+                    this.scene,
+                    camera,
+                    async (view) => {
+                        if (advanced && this.topologyGroup) {
+                            if (this.viewOptions?.is('renderMode', RenderMode.XRay)) {
+                                this.topologyGroup.visible = false
+                                await representation.render(this.renderer, this.scene, view, frame)
+                                this.topologyGroup.visible = true
+                                this.xrayPass.render(this.renderer, this.topologyGroup, view)
+                            } else await representation.render(this.renderer, this.scene, view, frame)
+                            return
+                        }
+                        return representation.render(this.renderer, this.scene, view, frame)
+                    },
+                    () => !this.disposed && !this.paused && generation === this.modelGeneration,
+                )
+                .then((complete) => {
+                    if (!complete) this.csgFrameDirty = true
+                    if (complete) {
+                        this.reportFirstFrame()
+                        if (frameStarted - this.performanceSampledAt >= 1000) {
+                            this.performanceSampledAt = frameStarted
+                            this.modelContext?.reportPerformance?.({ interactiveFrameMs: performance.now() - frameStarted })
+                        }
+                    }
+                })
+                .catch((error) => {
+                    if (!this.disposed && generation === this.modelGeneration) {
+                        this.failedGeneration = generation
+                        this.onError?.(String(error))
+                    }
+                })
+                .finally(() => {
+                    this.csgFrameBusy = false
+                    if (this.csgFrameDirty) {
+                        this.csgFrameDirty = false
+                        this.renderSignature = undefined
+                    }
+                })
 
             return
         }

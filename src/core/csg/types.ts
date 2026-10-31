@@ -24,6 +24,9 @@ export interface CsgOperand {
     defaultColor: boolean
     source: string
     closed: boolean
+    /** Proven convex primitive; other operands are peeled until GPU exhaustion. */
+    convex: boolean
+    convexity: number
     inverse: number[]
     normalMatrix: number[]
     bounds: { min: number[]; max: number[] }
@@ -39,9 +42,8 @@ export interface CsgBvhNode {
 }
 
 export interface CsgBlas {
-    /** Local mesh coordinates, rebased by origin. B.w indexes triangleColors. */
-    triangles: string
-    triangleColors: string
+    /** CPU query triangles, never transported to or used by the GPU. */
+    triangles: Float32Array
     bvh: CsgBvhNode[]
     origin: [number, number, number]
     bounds: { min: number[]; max: number[] }
@@ -49,25 +51,31 @@ export interface CsgBlas {
 }
 export interface CsgCachedGeometry {
     mesh: CsgMesh
-    blas: CsgBlas
 }
 
-export interface CsgPreviewSceneV2 {
-    version: 2
+export interface CsgProduct {
+    intersections: number[]
+    subtractions: number[]
+}
+
+export interface CsgPreviewSceneV3 {
+    version: 3
     meshes: CsgMesh[]
     operands: CsgOperand[]
     geometryKeys: string[]
     diagnostics: string[]
     program: CsgInstruction[]
     root: number
-    overlays: { root: number; kind: 'highlight' | 'background' }[]
-    blas: CsgBlas[]
-    tlas: CsgBvhNode[]
+    /** Physical solid semantics, independent of debug-only Union drawing. */
+    topologyRoot: number
+    products: CsgProduct[]
+    overlays: { root: number; kind: 'highlight' | 'background'; products: CsgProduct[] }[]
+    meshOrigins: [number, number, number][]
     triangleCount: number
     origin: [number, number, number]
     bounds: { min: number[]; max: number[] }
     dependencies: { path: string; stamp: string }[]
-    timings: { geometryMs: number; bvhMs: number; resourcesMs?: number; bvhCacheHits?: number }
+    timings: { geometryMs: number; normalizationMs: number; resourcesMs?: number; geometryCacheHits?: number }
 }
 
-export type CsgScene = CsgPreviewSceneV2
+export type CsgScene = CsgPreviewSceneV3

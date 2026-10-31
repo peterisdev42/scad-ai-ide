@@ -2,6 +2,8 @@ import { Box3, Camera, Color, Group, Mesh, Plane, Raycaster, Scene, Vector3, typ
 import type { WebGPURenderer } from 'three/webgpu'
 import type { CsgClipPlane, CsgGeometry, CsgScene } from '../../../../../core/csg/types'
 import { CsgModel, type CsgLight } from '../csg/CsgModel'
+import { withRenderer } from '../passes/RendererJobs'
+import { beginGpuValidation } from '../passes/GpuValidation'
 
 export interface ModelResult<T> {
     modelVersion: number
@@ -27,7 +29,7 @@ export interface PreviewModelRepresentation {
     readonly modelVersion: number
     prepare(renderer: WebGPURenderer, camera: Camera, scene: Scene, signal?: AbortSignal): Promise<ModelResult<ModelPreparation>>
     update(scene: CsgScene, modelVersion: number, topology?: TopologyProvider): boolean
-    render(renderer: WebGPURenderer, scene: Scene, camera: Camera, frame?: ModelFrame): ModelResult<void>
+    render(renderer: WebGPURenderer, scene: Scene, camera: Camera, frame?: ModelFrame): ModelResult<void> | Promise<ModelResult<void>>
     pick(raycaster: Raycaster): ModelResult<Intersection[]>
     queryTopology(planes?: CsgClipPlane[], signal?: AbortSignal): Promise<ModelResult<CsgGeometry>>
     dispose(): void
@@ -47,44 +49,24 @@ export class ModelRepresentation implements PreviewModelRepresentation {
         this.roots = [...group.children]
     }
 
-    private static readonly preparations = new WeakMap<WebGPURenderer, Promise<unknown>>()
     prepare(renderer: WebGPURenderer, camera: Camera, scene: Scene, signal?: AbortSignal) {
-        // GPU error scopes are a device stack; serialize candidates on this renderer.
-        const previous = ModelRepresentation.preparations.get(renderer) ?? Promise.resolve()
-        const pending = previous.catch(() => {}).then(() => this.prepareNow(renderer, camera, scene, signal))
-        ModelRepresentation.preparations.set(renderer, pending)
-        void pending
-            .finally(() => {
-                if (ModelRepresentation.preparations.get(renderer) === pending) ModelRepresentation.preparations.delete(renderer)
-            })
-            .catch(() => {})
-        return pending
+        return withRenderer(renderer, () => this.prepareNow(renderer, camera, scene, signal))
     }
     private async prepareNow(renderer: WebGPURenderer, camera: Camera, scene: Scene, signal?: AbortSignal) {
         signal?.throwIfAborted()
         this.check()
-        const device = (renderer.backend as unknown as { device?: { pushErrorScope: (kind: 'validation' | 'out-of-memory') => void; popErrorScope: () => Promise<{ message: string } | null> } }).device
-        device?.pushErrorScope('out-of-memory')
-        device?.pushErrorScope('validation')
-        const previous = renderer.debug.onShaderError
-        let shaderError: Error | undefined
-        renderer.debug.onShaderError = (gl, program, vertex, fragment) => {
-            shaderError = new Error(`Preview shader compilation failed: ${[gl.getProgramInfoLog(program), gl.getShaderInfoLog(vertex), gl.getShaderInfoLog(fragment)].filter(Boolean).join('\n').slice(0, 4000)}`)
-        }
-        const start = performance.now(),
-            parents = this.roots.map((root) => root.parent)
+        const validate = beginGpuValidation(renderer, 'preparation')
+        const parents = this.roots.map((root) => root.parent)
         let failure: unknown,
             uploadMs = 0,
             shaderMs = 0
         try {
-            for (const model of this.csgModels) model.upload(renderer)
-            if (this.csgModels.length) await renderer.waitForGPU()
-            uploadMs = performance.now() - start
             const shaderStarted = performance.now(),
                 candidate = new Group()
             candidate.add(...this.roots)
             await renderer.compileAsync(candidate, camera, scene)
-            shaderMs = performance.now() - shaderStarted
+            for (const model of this.csgModels) uploadMs += (await model.prepare(renderer, camera)).uploadMs
+            shaderMs = performance.now() - shaderStarted - uploadMs
         } catch (error) {
             failure = error
         } finally {
@@ -92,15 +74,13 @@ export class ModelRepresentation implements PreviewModelRepresentation {
                 root.removeFromParent()
                 parents[i]?.add(root)
             })
-            renderer.debug.onShaderError = previous
-            if (device) {
-                const validation = await device.popErrorScope(),
-                    memory = await device.popErrorScope()
-                if (validation || memory) failure = new Error(`Preview GPU preparation failed: ${(validation ?? memory)!.message}`)
+            try {
+                await validate()
+            } catch (error) {
+                failure = error
             }
         }
         if (failure) throw failure
-        if (shaderError) throw shaderError
         signal?.throwIfAborted()
         this.check()
         return { modelVersion: this.modelVersion, value: { uploadMs, shaderMs } }
@@ -124,6 +104,17 @@ export class ModelRepresentation implements PreviewModelRepresentation {
                 model.setLights(frame.lights, frame.ambient)
             }
         renderer.render(scene, camera)
+        if (this.csgModels.length) return this.renderCsg(renderer, camera)
+        return { modelVersion: this.modelVersion, value: undefined }
+    }
+    private async renderCsg(renderer: WebGPURenderer, camera: Camera) {
+        const autoClear = renderer.autoClear
+        renderer.autoClear = false
+        try {
+            for (const model of this.csgModels) await model.render(renderer, camera)
+        } finally {
+            renderer.autoClear = autoClear
+        }
         return { modelVersion: this.modelVersion, value: undefined }
     }
 
@@ -179,6 +170,20 @@ export class ModelRepresentation implements PreviewModelRepresentation {
             })
         }
         return { version: 1, origin: origin.toArray(), meshes }
+    }
+
+    attach(group: Group) {
+        for (const root of this.roots) group.add(root)
+    }
+    detach() {
+        for (const root of this.roots) root.removeFromParent()
+    }
+    rebind(modelVersion: number, topology?: TopologyProvider) {
+        this.check()
+        this.modelVersion = modelVersion
+        this.topology = topology
+        this.topologyCache.clear()
+        for (const model of this.csgModels) model.setTopology(undefined)
     }
 
     private check() {

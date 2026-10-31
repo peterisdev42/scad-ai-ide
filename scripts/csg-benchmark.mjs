@@ -32,7 +32,7 @@ try {
             await worker.terminate()
         }
         scenes.push({ name, scene })
-        samples.push({ name, cliMs, workerMs: performance.now() - workerStarted, ...scene.timings, operands: scene.operands.length, triangles: scene.triangleCount, uniqueTriangles: scene.blas.reduce((n, b) => n + b.triangleCount, 0), bytes: Buffer.byteLength(JSON.stringify(scene)) })
+        samples.push({ name, cliMs, workerMs: performance.now() - workerStarted, ...scene.timings, operands: scene.operands.length, triangles: scene.triangleCount, uniqueTriangles: scene.meshes.reduce((n, m) => n + Buffer.from(m.indices, 'base64').length / 12, 0), bytes: Buffer.byteLength(JSON.stringify(scene)) })
     }
     const version = spawnSync(executable, ['--version'], { encoding: 'utf8' })
     const gpu = process.argv.includes('--gpu') ? await benchmarkGpu(scenes) : undefined

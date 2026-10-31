@@ -5,7 +5,7 @@ import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 
-/** Small shared-backend viewport: timings include GPU completion, not only submission. */
+/** Full HD shared-backend viewport: timings include GPU completion, not only submission. */
 export async function benchmarkGpu(scenes) {
     const directory = await mkdtemp(join(tmpdir(), 'scad-gpu-bench-'))
     let server, browser
@@ -18,19 +18,19 @@ export async function benchmarkGpu(scenes) {
             import { CsgModel } from './src/features/preview/webview/preview/csg/CsgModel';
             import { ModelRepresentation } from './src/features/preview/webview/preview/models/ModelRepresentation';
             window.measure=async(data,forceWebGL)=>{
-                const renderer=new WebGPURenderer({forceWebGL,antialias:false});renderer.setSize(96,96);
+                const renderer=new WebGPURenderer({forceWebGL,antialias:false});renderer.setSize(1920,1080);
                 const initializationStarted=performance.now();await renderer.init();const initializationMs=performance.now()-initializationStarted;
-                const started=performance.now(),model=new CsgModel(data),group=new Group(),scene=new Scene();group.add(model.mesh);scene.add(group,new AmbientLight(0xffffff,1));scene.background=new Color(0,0,0);const target=new RenderTarget(96,96);renderer.setRenderTarget(target);
+                const started=performance.now(),model=new CsgModel(data),group=new Group(),scene=new Scene();group.add(model.mesh);scene.add(group,new AmbientLight(0xffffff,1));scene.background=new Color(0,0,0);const target=new RenderTarget(1920,1080);renderer.setRenderTarget(target);
                 const center=new Vector3(...data.origin),size=new Vector3(...data.bounds.max).sub(new Vector3(...data.bounds.min)),diagonal=size.length();
-                const camera=new PerspectiveCamera(45,1,diagonal*.001,diagonal*10);camera.up.set(0,0,1);camera.position.copy(center).add(new Vector3(-1,-1,1).normalize().multiplyScalar(diagonal*1.8));camera.lookAt(center);camera.updateMatrixWorld();
+                const camera=new PerspectiveCamera(45,1920/1080,diagonal*.001,diagonal*10);camera.up.set(0,0,1);camera.position.copy(center).add(new Vector3(-1,-1,1).normalize().multiplyScalar(diagonal*1.8));camera.lookAt(center);camera.updateMatrixWorld();
                 const representation=new ModelRepresentation(group,[model],1);
                 model.update(camera,new Color(.8,.8,.8),false,'solid',[],!forceWebGL,false);
                 model.setLights([],new Color(1,1,1));
                 const {value:prepared}=await representation.prepare(renderer,camera,scene);
-                representation.render(renderer,scene,camera);await renderer.waitForGPU();const firstFrameMs=performance.now()-started,frames=[];
-                for(let i=0;i<5;i++){camera.position.x+=diagonal*.01;camera.lookAt(center);camera.updateMatrixWorld();const frame=performance.now();representation.render(renderer,scene,camera);await renderer.waitForGPU();frames.push(performance.now()-frame)}
-                const backend=renderer.coordinateSystem===2001?'webgpu':'webgl2';const pixels=await renderer.readRenderTargetPixelsAsync(target,0,0,96,96);if(!pixels.some((value,index)=>index%4!==3&&value>20))throw new Error('Benchmark rendered no visible CSG pixels');representation.dispose();target.dispose();await renderer.dispose();
-                return {backend,width:96,height:96,initializationMs,...prepared,firstFrameMs,interactiveFramesMs:frames,interactiveFrameMs:frames.reduce((a,b)=>a+b,0)/frames.length};
+                await representation.render(renderer,scene,camera);await renderer.readRenderTargetPixelsAsync(target,960,540,1,1);const firstFrameMs=performance.now()-started,frames=[];
+                for(let i=0;i<5;i++){camera.position.x+=diagonal*.01;camera.lookAt(center);camera.updateMatrixWorld();const frame=performance.now();await representation.render(renderer,scene,camera);await renderer.readRenderTargetPixelsAsync(target,960,540,1,1);frames.push(performance.now()-frame)}
+                const backend=renderer.coordinateSystem===2001?'webgpu':'webgl2';const pixels=await renderer.readRenderTargetPixelsAsync(target,0,0,1920,1080);if(!pixels.some((value,index)=>index%4!==3&&value>20))throw new Error('Benchmark rendered no visible CSG pixels');representation.dispose();target.dispose();await renderer.dispose();
+                return {backend,width:1920,height:1080,initializationMs,...prepared,firstFrameMs,interactiveFramesMs:frames,interactiveFrameMs:frames.reduce((a,b)=>a+b,0)/frames.length};
             };
         `,
                 resolveDir: process.cwd(),

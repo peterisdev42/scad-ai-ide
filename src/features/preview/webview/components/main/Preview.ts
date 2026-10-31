@@ -112,10 +112,10 @@ export class Preview extends LitElement {
 
     @state() private toolStatus = ''
     @state() private previewIssue = ''
-    @state() private preparing=false
+    @state() private preparing = false
     public stage?: Stage
-    private recovering=false
-    private forceWebGL=false
+    private recovering = false
+    private forceWebGL = false
     private loadedModel?: Pick<ModelContext, 'format' | 'base64Data' | 'modelVersion'>
     private resizeObserver: ResizeObserver | null = null
     private themeObserver: MutationObserver | null = null
@@ -128,14 +128,19 @@ export class Preview extends LitElement {
     }
 
     async initStage() {
-        const stage = (this.stage = new Stage(this.container, this.theme,{forceWebGL:this.forceWebGL}))
+        const stage = (this.stage = new Stage(this.container, this.theme, { forceWebGL: this.forceWebGL }))
         stage.setToolStatusCallback((status) => {
             this.toolStatus = status
         })
         stage.setErrorCallback((error) => {
-            if(this.stage===stage&&!this.recovering){this.previewIssue = error;this.preparing=false}
+            if (this.stage === stage && !this.recovering) {
+                this.previewIssue = error
+                this.preparing = false
+            }
         })
-        stage.setDeviceLossCallback(reason=>{void this.recoverRenderer(reason)})
+        stage.setDeviceLossCallback((reason) => {
+            void this.recoverRenderer(reason)
+        })
         try {
             await stage.ready
         } catch (error) {
@@ -149,22 +154,42 @@ export class Preview extends LitElement {
             this.stage.applySettings(this.viewSettingsContext)
         }
 
-        if(this.activeToolContext){stage.setActiveTool(this.activeToolContext.activeTool);stage.setToolVariant(this.activeToolContext.variant)}
+        if (this.activeToolContext) {
+            stage.setActiveTool(this.activeToolContext.activeTool)
+            stage.setToolVariant(this.activeToolContext.variant)
+        }
         this.loadModel()
         this.dispatchEvent(new CustomEvent('stage-ready', { bubbles: true, composed: true }))
         return stage
     }
 
-    private async recoverRenderer(reason:string){
-        if(this.recovering||!this.stage)return
-        if(this.forceWebGL){this.previewIssue=`Graphics recovery failed: ${reason}`;return}
-        this.recovering=true
-        const previous=this.stage,views=previous.captureCameraViews(),properties=previous.serializeProperties()
-        this.dispatchEvent(new CustomEvent('renderer-restarting',{detail:{properties},bubbles:true,composed:true}))
-        this.previewIssue='WebGPU device lost. Restoring the view with WebGL 2…'
-        previous.dispose();this.stage=undefined;this.loadedModel=undefined;this.container.replaceChildren();this.forceWebGL=true
-        try{const replacement=await this.initStage();replacement?.restoreCameraViews(views);this.previewIssue=''}catch(error){this.previewIssue=`Graphics recovery failed: ${String(error)}`}
-        finally{this.recovering=false}
+    private async recoverRenderer(reason: string) {
+        if (this.recovering || !this.stage) return
+        if (this.forceWebGL) {
+            this.previewIssue = `Graphics recovery failed: ${reason}`
+            return
+        }
+        this.recovering = true
+        const previous = this.stage,
+            views = previous.captureCameraViews(),
+            properties = previous.serializeProperties()
+        this.dispatchEvent(new CustomEvent('renderer-restarting', { detail: { properties }, bubbles: true, composed: true }))
+        this.previewIssue = 'WebGPU device lost. Restoring the view with WebGL 2…'
+        previous.dispose()
+        this.stage = undefined
+        this.loadedModel = undefined
+        this.container.replaceChildren()
+        this.forceWebGL = true
+        try {
+            const replacement = await this.initStage()
+            if (!replacement) throw new Error('Renderer initialization failed')
+            replacement.restoreCameraViews(views)
+            this.previewIssue = ''
+        } catch (error) {
+            this.previewIssue = `Graphics recovery failed: ${String(error)}`
+        } finally {
+            this.recovering = false
+        }
     }
 
     // Bridging the declarative Lit cycle with the imperative Three.js cycle
@@ -188,13 +213,23 @@ export class Preview extends LitElement {
         if (!this.stage || !model) return
         if (this.loadedModel?.format === model.format && this.loadedModel.base64Data === model.base64Data && this.loadedModel.modelVersion === model.modelVersion) return
         this.previewIssue = ''
-        const stage=this.stage
-        this.preparing=!!model.base64Data
-        void stage.loadModelData({...model,frameReady:(graphics,elapsed)=>{if(this.stage===stage&&this.modelContext.modelVersion===model.modelVersion){this.preparing=false;model.frameReady?.(graphics,elapsed)}}}).catch((error) => {
-            if(this.stage!==stage||this.modelContext.modelVersion!==model.modelVersion||this.modelContext.base64Data!==model.base64Data||this.recovering)return
-            this.previewIssue = error instanceof Error ? error.message : String(error)
-            this.preparing=false
-        })
+        const stage = this.stage
+        this.preparing = !!model.base64Data
+        void stage
+            .loadModelData({
+                ...model,
+                frameReady: (graphics, elapsed) => {
+                    if (this.stage === stage && this.modelContext.modelVersion === model.modelVersion) {
+                        this.preparing = false
+                        model.frameReady?.(graphics, elapsed)
+                    }
+                },
+            })
+            .catch((error) => {
+                if (this.stage !== stage || this.modelContext.modelVersion !== model.modelVersion || this.modelContext.base64Data !== model.base64Data || this.recovering) return
+                this.previewIssue = error instanceof Error ? error.message : String(error)
+                this.preparing = false
+            })
         this.loadedModel = { format: model.format, base64Data: model.base64Data, modelVersion: model.modelVersion }
     }
 
@@ -244,11 +279,11 @@ export class Preview extends LitElement {
     render() {
         return html`
             ${
-                this.modelContext?.isLoading ||this.preparing|| !this.modelContext?.base64Data
+                this.modelContext?.isLoading || this.preparing || !this.modelContext?.base64Data
                     ? html`
-                          <div id="loading-overlay" class=${this.modelContext?.isLoading||this.preparing ? '' : 'empty'}>
-                              ${this.modelContext?.isLoading||this.preparing ? html`<div class="spinner"></div>` : ''}
-                              <div>${this.preparing?(this.modelContext?.format==='csg'?'Preparing CSG shaders and first complete frame…':'Preparing mesh and first frame…'):(this.modelContext?.loadingMessage ?? 'Rendering SCAD...')}</div>
+                          <div id="loading-overlay" class=${this.modelContext?.isLoading || this.preparing ? '' : 'empty'}>
+                              ${this.modelContext?.isLoading || this.preparing ? html`<div class="spinner"></div>` : ''}
+                              <div>${this.preparing ? (this.modelContext?.format === 'csg' ? 'Preparing CSG shaders and first complete frame…' : 'Preparing mesh and first frame…') : (this.modelContext?.loadingMessage ?? 'Rendering SCAD...')}</div>
                           </div>
                       `
                     : ''

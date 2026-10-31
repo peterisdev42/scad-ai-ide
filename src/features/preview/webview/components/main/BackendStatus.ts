@@ -49,7 +49,7 @@ export class BackendStatus extends LitElement {
         const label = backend.kind === 'csg' ? (backend.frameReady?'GPU CSG preview':'Preparing GPU CSG preview') : backend.kind === 'mesh' ? 'CLI mesh render' : 'Checking preview backend…'
         return html`<div class="status" role="status">
             <strong>${label}</strong>${backend.elapsedMs === undefined ? '' : html`<span> · ${backend.elapsedMs} ms</span>`}${backend.graphics ? html`<span> · ${backend.graphics === 'webgpu' ? 'WebGPU' : 'WebGL 2'}</span>` : ''} ${backend.reason ? html`<small>${backend.reason}</small>` : ''} ${backend.firstFrameMs === undefined ? '' : html`<small>Viewport first frame: ${backend.firstFrameMs} ms</small>`}
-            ${backend.timings?html`<small>CLI ${Math.round(backend.timings.cliMs??0)} · local ${Math.round(backend.timings.geometryMs??0)} · BVH ${Math.round(backend.timings.bvhMs??0)} · upload ${Math.round(backend.timings.uploadMs??0)} · shader ${Math.round(backend.timings.shaderMs??0)} ms${backend.cacheHit?' · cached':''}</small>`:''}
+            ${backend.timings?html`<small>CLI ${Math.round(backend.timings.cliMs??0)} · local ${Math.round(backend.timings.geometryMs??0)} · normalize ${Math.round(backend.timings.normalizationMs??0)} · upload ${Math.round(backend.timings.uploadMs??0)} · shader ${Math.round(backend.timings.shaderMs??0)} ms${backend.cacheHit?' · cached':''}</small>`:''}
             <small>${backend.kind === 'csg' && backend.frameReady ? 'Image-space CSG · drag updates enabled' : backend.kind === 'csg' ? 'Waiting for the first frame' : 'Release slider to update'}</small>
         </div>`
     }

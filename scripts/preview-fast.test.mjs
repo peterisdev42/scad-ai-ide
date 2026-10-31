@@ -11,6 +11,7 @@ const root = fileURLToPath(new URL('../', import.meta.url))
 const stl = Buffer.from('solid test\nfacet normal 0 0 1\nouter loop\nvertex 0 0 0\nvertex 20 0 0\nvertex 0 20 0\nendloop\nendfacet\nendsolid test\n').toString('base64')
 let csg
 let topology
+let denserCsg
 let browser
 before(async () => {
     const worker = new Worker(join(root, 'dist/csg-worker.mjs'))
@@ -26,6 +27,13 @@ before(async () => {
             worker.once('message', (r) => (r.error ? reject(new Error(r.error)) : resolve(r.scene)))
             worker.postMessage({ topology: result.scene })
         })
+        const dense = await new Promise((resolve, reject) => {
+            worker.once('message', resolve)
+            worker.once('error', reject)
+            worker.postMessage('sphere(r=9,$fn=48);')
+        })
+        if (dense.error) throw new Error(dense.error)
+        denserCsg = Buffer.from(JSON.stringify(dense.scene)).toString('base64')
     } finally {
         await worker.terminate()
     }
@@ -59,9 +67,10 @@ async function fixture(t, mode = 'render') {
         if (message.type() === 'error' && /Shader Error|GPUValidationError|OpenSCAD Preview/.test(message.text())) errors.push(message.text())
     })
     await page.addInitScript(
-        ({ mode, csg, stl, topology, webgpu }) => {
+        ({ mode, csg, stl, topology, webgpu, denserCsg }) => {
             window.__scadTestWebGPU = webgpu
             if (!window.__scadTestWebGPU) Object.defineProperty(navigator, 'gpu', { value: undefined, configurable: true })
+            window.denserCsg = denserCsg
             window.hostMessages = []
             const send = (data) => window.dispatchEvent(new MessageEvent('message', { data }))
             const update = (mode) => send({ type: 'update', format: mode === 'preview' ? 'csg' : 'stl', content: mode === 'preview' ? csg : stl })
@@ -85,7 +94,7 @@ async function fixture(t, mode = 'render') {
                 },
             })
         },
-        { mode, csg, stl, topology, webgpu: process.env.SCAD_TEST_WEBGPU === '1' },
+        { mode, csg, stl, topology, denserCsg, webgpu: process.env.SCAD_TEST_WEBGPU === '1' },
     )
     t.after(async () => {
         await page.close()
@@ -157,7 +166,7 @@ test('native mesh previews keep their interactive viewer without SCAD mode contr
     assert.equal(await page.getByRole('switch', { name: 'CSG preview', exact: true }).count(), 0)
 })
 
-test('loading and mode notifications keep the existing GPU model until new geometry arrives', async (t) => {
+test('loading keeps the visible model and inactive mode resources are released when the Stage closes', async (t) => {
     const page = await fixture(t, 'preview')
     await page.locator('scad-preview canvas.main-canvas').waitFor()
     await page.waitForFunction(() => document.querySelector('scad-app').shadowRoot.querySelector('scad-preview')?.stage?.modelGroup.children.length > 0)
@@ -176,8 +185,11 @@ test('loading and mode notifications keep the existing GPU model until new geome
     assert.equal(await page.locator('scad-preview').evaluate((preview) => preview.stage.modelGroup.children[0].geometry === window.initialGeometry), true)
     assert.equal(await page.evaluate(() => window.geometryDisposed), false)
     await page.evaluate((content) => window.dispatchEvent(new MessageEvent('message', { data: { type: 'update', format: 'stl', content } })), stl)
-    await page.waitForFunction(() => window.geometryDisposed)
+    await page.waitForFunction(() => document.querySelector('scad-app').shadowRoot.querySelector('scad-preview').stage.modelGroup.children[0].geometry !== window.initialGeometry)
+    assert.equal(await page.evaluate(() => window.geometryDisposed), false)
     assert.equal(await page.locator('scad-preview').evaluate((preview) => preview.stage.modelGroup.children[0].geometry === window.initialGeometry), false)
+    await page.locator('scad-preview').evaluate((preview) => preview.stage.dispose())
+    assert.equal(await page.evaluate(() => window.geometryDisposed), true)
 })
 
 test('the evaluator, actual graphics backend and first-frame readiness remain visible', async (t) => {
@@ -250,3 +262,74 @@ for (const mode of ['render', 'preview'])
         assert.ok(screenshot.length > 1000, 'The shared viewport must draw the model and its tools')
         assert.equal(await page.locator('scad-preview canvas.main-canvas').count(), 1)
     })
+
+test('CSG publishes a complete pixel frame and recovers a lost device without another host render', async (t) => {
+    const page = await fixture(t, 'preview')
+    await page.waitForFunction(() => window.hostMessages.some((message) => message.type === 'frameReady'))
+    const state = await page.locator('scad-preview').evaluate((preview) => {
+        const stage = preview.stage
+        window.beforeLoss = stage
+        const app = document.querySelector('scad-app')
+        app.sceneContextValue.addObject('cross-section-plane')
+        window.recoveredPlane = app.sceneContextValue.objects.at(-1).id
+        stage.setObjectProperty(window.recoveredPlane, 'positionZ', 2)
+        stage.setObjectVisible(window.recoveredPlane, false)
+        return { camera: stage.serializeProperties().get('camera-default'), messages: window.hostMessages.filter((m) => m.type === 'setPreviewMode').length }
+    })
+    const image = await page.locator('canvas.main-canvas').screenshot()
+    assert.ok(image.length > 1500)
+    await page.locator('scad-preview').evaluate((preview) => preview.stage.renderer.onDeviceLost({ reason: 'unknown', message: 'simulated Metal device recovery' }))
+    await page.waitForFunction(() => {
+        const stage = document.querySelector('scad-app').shadowRoot.querySelector('scad-preview')?.stage
+        return stage && stage !== window.beforeLoss && stage.renderer.coordinateSystem === 2000 && stage.modelGroup.children.length > 0 && window.hostMessages.filter((m) => m.type === 'frameReady').length >= 2
+    })
+    assert.equal(await page.evaluate(() => window.beforeLoss.disposed), true)
+    assert.deepEqual(await page.locator('scad-preview').evaluate((preview) => preview.stage.serializeProperties().get('camera-default')), state.camera)
+    assert.equal(await page.locator('scad-preview').evaluate((preview) => preview.stage.serializeProperties().get(window.recoveredPlane).positionZ), 2)
+    assert.equal(await page.evaluate(() => window.hostMessages.filter((m) => m.type === 'setPreviewMode').length), state.messages)
+    assert.equal(await page.locator('scad-preview canvas.main-canvas').count(), 1)
+})
+
+test('changing tessellation replaces shared operand buffers while retaining the raster renderer', async (t) => {
+    const page = await fixture(t, 'preview')
+    await page.waitForFunction(() => window.hostMessages.some((message) => message.type === 'frameReady'))
+    const original = await page.locator('canvas.main-canvas').screenshot()
+    await page.locator('scad-preview').evaluate((preview) => {
+        window.retainedCsg = preview.stage.csgModels[0]
+        window.retainedMaterial = window.retainedCsg.mesh.material
+        window.originalVertexCount = window.retainedCsg.operands[0].geometry.getAttribute('position').count
+    })
+    await page.evaluate(() => window.dispatchEvent(new MessageEvent('message', { data: { type: 'update', format: 'csg', content: window.denserCsg, modelVersion: 15 } })))
+    await page.waitForFunction(() => window.hostMessages.some((message) => message.type === 'frameReady' && message.modelVersion === 15))
+    assert.equal(await page.locator('scad-preview').evaluate((preview) => preview.stage.csgModels[0] === window.retainedCsg && preview.stage.csgModels[0].mesh.material === window.retainedMaterial), true)
+    assert.equal(await page.evaluate(() => window.retainedCsg.operands[0].geometry.getAttribute('position').count > window.originalVertexCount), true)
+    assert.notDeepEqual(await page.locator('canvas.main-canvas').screenshot(), original)
+})
+
+test('rapid model updates and camera motion publish only the latest prepared version', async (t) => {
+    const page = await fixture(t, 'preview')
+    await page.waitForFunction(() => window.hostMessages.some((m) => m.type === 'frameReady'))
+    await page.evaluate(async () => {
+        for (let i = 0; i < 6; i++) {
+            window.dispatchEvent(new MessageEvent('message', { data: { type: 'update', format: 'csg', content: window.denserCsg, modelVersion: 40 + i } }))
+            const stage = document.querySelector('scad-app').shadowRoot.querySelector('scad-preview').stage
+            stage.activeCameraRig.activeCamera.position.x += 0.1
+            await new Promise((r) => setTimeout(r, 2))
+        }
+    })
+    await page.waitForFunction(() => window.hostMessages.some((m) => m.type === 'frameReady' && m.modelVersion === 45))
+    assert.equal(await page.locator('scad-preview').evaluate((preview) => preview.stage.modelRepresentation.modelVersion), 45)
+    assert.equal(await page.locator('scad-preview').evaluate((preview) => preview.stage.csgModels[0].scene.operands[0].source), 'sphere')
+})
+
+test('returning to Solid keeps exact topology off the ordinary update path', async (t) => {
+    const page = await fixture(t, 'preview')
+    await page.waitForFunction(() => window.hostMessages.some((m) => m.type === 'frameReady'))
+    await page.getByRole('switch', { name: 'Wireframe', exact: true }).click()
+    await page.waitForFunction(() => document.querySelector('scad-app').shadowRoot.querySelector('scad-preview').stage.topologyGroup?.children.length > 0)
+    await page.getByRole('switch', { name: 'Solid', exact: true }).click()
+    const requests = await page.evaluate(() => window.hostMessages.filter((m) => m.type === 'queryTopology').length)
+    await page.evaluate(() => window.dispatchEvent(new MessageEvent('message', { data: { type: 'update', format: 'csg', content: window.denserCsg, modelVersion: 70 } })))
+    await page.waitForFunction(() => window.hostMessages.some((m) => m.type === 'frameReady' && m.modelVersion === 70))
+    assert.equal(await page.evaluate(() => window.hostMessages.filter((m) => m.type === 'queryTopology').length), requests)
+})

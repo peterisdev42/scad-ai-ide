@@ -55,7 +55,7 @@ cube(20);
 Markdown 源码编辑器和预览中的 Source Tab 均支持 `openscad` / `scad`（大小写不敏感）的语法高亮，复用扩展的 OpenSCAD 语法规则；高亮不依赖 CLI，也可在关闭模型预览时使用。
 Source Tab 同时读取当前 VS Code 主题及 `editor.tokenColorCustomizations`，按完整语法 scope 匹配颜色、粗体、斜体和下划线；切换主题或修改自定义规则后自动更新。
 
-Markdown 的 Preview 直接嵌入交互视口。标准路径由选中的 OpenSCAD CLI 导出 **STL / 3MF**；快速路径导出 **CSG 树**（`$preview=true`），宿主 Node Worker 准备操作数、局部几何和布尔程序，GPU 沿像素射线求结果边界。普通三维布尔不在快速首帧生成最终边界网格。两条路径共享 Three.js **WebGPURenderer**，自动选择 WebGPU 或 WebGL 2。
+Markdown 的 Preview 直接嵌入交互视口。标准路径由选中的 OpenSCAD CLI 导出 **STL / 3MF**；快速路径导出 **CSG 树**（`$preview=true`），宿主 Node Worker 准备操作数、局部几何和规范化 Product，GPU 通过光栅化、Depth/Stencil 与多 Pass 求结果表面。普通三维布尔不在快速首帧生成最终边界网格。两条路径共享 Three.js **WebGPURenderer**，自动选择 WebGPU 或 WebGL 2。
 
 只有进入视口且选中 Preview 的代码块才创建交互实例，同时最多保留两个；离开视口或切到 Source 后暂停绘制，2 秒后释放 GPU 资源，再次进入时恢复视角。CLI/CSG 编译结果按代码块缓存，相对资源以 Markdown 文件所在目录为基准。浏览器不执行 WASM、不读取本地模型文件。快速模式失败会显示原因，编辑器保留最后有效帧，不再暗中导出 STL。通过 `scad-ai-ide.markdown.preview.enabled` 可关闭 Markdown 预览。
 

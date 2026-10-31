@@ -101,7 +101,7 @@ async function main() {
         bundle: true,
         format: 'iife',
         // Markdown may reload contribution scripts when its content changes.
-        banner: { js: "(()=>{if(window[Symbol.for('scad-ai-ide.markdown.viewer.v2')]){window.dispatchEvent(new Event('scad-markdown-viewer-ready'));return;}" },
+        banner: { js: "(()=>{if(window[Symbol.for('scad-ai-ide.markdown.viewer.v3.raster')]){window.dispatchEvent(new Event('scad-markdown-viewer-ready'));return;}" },
         footer: { js: '})();' },
         platform: 'browser',
         outfile: 'dist/markdown-preview.js',

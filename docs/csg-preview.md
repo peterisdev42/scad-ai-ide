@@ -1,97 +1,105 @@
-# Three.js 双路径预览
+# 光栅化 CSG 快速预览
 
-实现使用 Three.js 0.187.0，类型包锁定当前可用的 0.186.0；r187 的 `overrideNodes` 类型在 `tsl-r187.d.ts` 中补充。兼容源码基线为 OpenSCAD `fe482c342ea48bbe749563315741d0e58cdfd57f`。编辑器和 Markdown 默认使用标准 `render`；快速模式值仍为 `preview`。直接打开 `.csg` 默认读取其布尔树。
+普通 F5 准备操作数几何和布尔 Product，由 GPU 光栅化求可见表面。使用 Three.js **0.187.0** 的 `three/webgpu`，默认 WebGPU，自动回退 WebGL 2；`forceWebGL:true` 使用同一个算法。没有传统 WebGLRenderer、Compute Shader、GPU BVH、射线求交或最终布尔网格前置步骤。
+
+完整 STL/3MF Render 保持独立。编辑器和 Markdown 的默认模式保持原配置；`.csg` 直接进入快速管线。
 
 ```mermaid
 flowchart LR
-  CLI[OpenSCAD CLI] -->|标准 STL / 3MF| Mesh[网格表示]
-  CLI -->|快速 CSG| Worker[宿主 Node Worker]
-  Worker --> Prepare[资源解析 / 局部几何 WASM]
-  Prepare --> DAG[布尔 DAG / 网格 BLAS / 实例 TLAS]
-  Mesh --> Model[统一模型接口]
-  DAG --> Model
-  Model --> Stage[共享 Stage / WebGPURenderer]
-  Stage --> GPU[WebGPU / 自动 WebGL 2 回退]
+  SCAD[SCAD / Customizer] --> CLI[OpenSCAD CLI]
+  CLI -->|CSG / preview=true| Parser[原 CSG Parser]
+  Parser --> Geometry[局部操作数几何 / 缓存]
+  Geometry --> Normalize[精确规范化]
+  Normalize --> Products[CSG Products]
+  Products --> Raster[光栅化 / Depth / Stencil / 多 Pass]
+  Raster --> Viewer[共享 Three.js Viewer]
+  CLI -->|STL / 3MF| Full[独立 Full Render]
+  Full --> Viewer
+  Products -. 用户选择精确工具 .-> Topology[按需结果拓扑]
+  Topology --> Viewer
 ```
 
-## 独立核心与传输
+官方源码与 API 实验依据见 [F5 审计](csg-preview-research.md)。本实现对应官方的局部 GeometryEvaluator、CSGTreeNormalizer、CSGProducts、OpenCSG 深度求值和表面重绘；不是把 CLI 导出的 CSG 文本当成已准备好的 VBO。
 
-`src/core/csg/` 不依赖 VS Code、Lit 或浏览器 DOM。`CsgResourceResolver` 注入读取、字体匹配、依赖状态及三角化能力；默认 Node 适配器使用宿主 XML 解析器。字体、导入、surface 和全部 WASM 都在宿主 Worker 完成。浏览器接收版本化 `CsgPreviewSceneV2`，不调用 CLI、浏览器 Worker 或 WASM。
+## 算法
 
-| 模块                                               | 责任                                                          |
-| -------------------------------------------------- | ------------------------------------------------------------- |
-| parser.ts                                          | 已展开字面量 CSG、修饰符与根选择；不执行 SCAD/JavaScript      |
-| resources.mts / font.mts / fontResolver.mts        | 文件、字体目录、HarfBuzz shaping、FreeType 轮廓及依赖摘要     |
-| svg.mts / dxf.mts / nef.mts                        | 导入适配、单位/图层/轮廓与有界 ASCII NEF3                     |
-| evaluate.mts                                       | 普通布尔 DAG、实例变换、颜色继承、来源与诊断                  |
-| geometry.mts / extrude.mts / curved.mts / roof.mts | 分面几何、强制求值及最小几何屏障                              |
-| prepare.mts / acceleration.ts                      | 局部 BLAS、实例 TLAS、重定位与 CPU 边界查询                   |
-| validate.ts                                        | 布尔地址、实例矩阵、纹理数据和 BVH 逃逸链接验证               |
-| topology.mts                                       | 按需结果拓扑、半空间剖切与封口                                |
-| compile.ts / worker.mts                            | 取消、超时、堆预算与网格/BLAS 缓存                            |
-| webview/preview/csg/CsgModel.ts                    | 两种后端共用的 TSL 边界、法线、材质、深度和阴影查询           |
-| webview/preview/models/ModelRepresentation.ts      | 带模型版本的 prepare/update/render/pick/queryTopology/dispose |
+采用 **分层 Goldfeather 奇偶分类**。所有表面产生与内部判定都来自三角形光栅化：
 
-普通三维 union/difference/intersection 首帧只准备叶操作数，不调用整体实体布尔。`render()`、挤出、hull、minkowski、offset、projection、resize、fill 和 roof 等屏障仅实体化其局部子树。顶层二维显示厚度为 1，中心位于 Z=0。非闭合 polyhedron 保留表面和诊断；直接参与实体布尔会明确拒绝未定义的体积分类。hull 可直接使用开放表面的顶点集。
+1. 每个操作数保留共享 BufferGeometry、双精度实例变换、颜色、来源、闭合性和凸性信息。普通 union/difference/intersection 保持为布尔 DAG。挤出、hull、minkowski、render、导入等屏障仅求值自己的局部子树。
+2. Normalizer 使用补集下推、De Morgan 和分配律生成精确 DNF Product。Product 包含 intersection/subtraction 操作数引用，不复制网格。随机表达式穷举真值表测试覆盖代数变换，禁止近似规则。
+3. 对候选操作数 A，准备整个表达式的两个共因子 `F(A=true)`、`F(A=false)`。保留为两个 Product 集合，在 GPU 上求成员状态，避免再展开两者的差/XOR 而导致条件数量膨胀。
+4. 光栅化候选正面和背面，将候选深度写到独立 Depth32Float 附件。非凸候选按深度剥离；已知凸基础图元只需一层正面和一层背面。
+5. 对 Product 的每个其他操作数，光栅化其所有正反面，丢弃候选深度之前的片元，对通过的片元翻转 Stencil 位。奇偶状态判断候选点是否在该实体内。每批最多八个谓词，失败的组合清除工作可见性；Product 间以最大值混合实现 OR。
+6. 将候选**内部一侧**的 `F(A=true)` 成员状态写入 R，将**外部一侧**的 `F(A=false)` 写入 G。近侧采用包含相等深度的计数，远侧采用严格深度计数。只有 `R != G` 才是真正的结果边界。这同时去除内部相机看到的 Union 内部面，并按组处理重合和接触边界。减法内壁根据成员状态反转着色法线。
+7. 阶段 A 将有效候选表面合并到结果深度。阶段 B 保留同一结果深度附件，以 `EqualDepth` 重绘真实操作数表面，应用来源颜色、顶点颜色和基础光照。正交与透视共用这套流程。
 
-基础几何使用 `$fn/$fa/$fs/$fe` 分面参数。SVG 包含 viewport、DPI、ID/图层选择、开路径 stroke、圆角矩形和原生椭圆采样相位；字体目录读取实际字体元数据，包括集合 face index。依赖包含导入、字体、surface 及同次 CLI `-d` 输出的 include/use 清单，返回结果前复核状态。
+非凸层数不依赖用户正确填写 `convexity`。每个操作数维护独立的层预算，以额外一层验证是否仍有表面；光栅化最大值归约后，批量读回每操作数一个字节的**深度复杂度元数据**。只有溢出的操作数扩展预算。CPU 不读取或计算整幅可见性，不逐像素遍历三角形。超过 64 个正面/背面层时明确报错，保留最后完整帧。
 
-## GPU 边界和资源
+互不相交、没有剩余布尔约束的边界直接批量绘制原始操作数。普通相机运动不调用 CLI、Geometry Kernel、Normalizer 或最终拓扑服务。
 
-射线流式寻找有序事件、合并同位置的进出状态并执行布尔程序，不展开并积式，不使用 SDF。射线先经过实例 TLAS，再转换至共享网格 BLAS；局部方向不归一化，以保持事件距离。逆转置矩阵处理非均匀缩放和镜像。相邻三角形使用射线对齐的边函数，BVH 包围盒在局部坐标扩张后求交。
+## 模块与数据
 
-实体模式取第一个有效边界，X-ray 累计布尔结果的区间厚度。差集反转切面法线，剖切作为半空间运算生成封口。位置、法线、来源 ID、颜色和深度作为 TSL 边界输出，`depthNode` 写入真实深度。标准 Three.js 材料节点和环境光照使用实际结果表面；阴影查询相同布尔实体。隐藏剖切平面指示器不关闭剖切效果。
+| 模块 | 责任 |
+| --- | --- |
+| `src/core/csg/parser.ts` | 原字面量 CSG Parser、参数/数组、`# % ! *` 和根选择 |
+| `evaluate.mts`、几何/资源适配器 | 局部几何、变换/颜色、修饰符、依赖跟踪 |
+| `normalize.ts` | 精确 Product 生成与边界共因子，显式复杂度限制 |
+| `prepare.mts` | 操作数包围盒、双精度原点、相对变换；不构建 BVH |
+| `types.ts`、`validate.ts` | 版本 **3** 的 Geometry/Product 传输与输入验证 |
+| `compile.ts`、`worker.mts` | 64 MB 几何 LRU、依赖复核、取消、30 秒超时和 512 MB Worker 堆限制 |
+| `acceleration.ts` | 第一次 CPU 面拾取时才构建加速结构；不生成 GPU 数据 |
+| `topology.mts` | 用户请求的精确拓扑、测量、剖切封口 |
+| `CsgModel.ts` | 共享 BufferGeometry、模型版本/缓存和 Viewer 接口 |
+| `RasterCsgRenderer.ts` | 候选深度、Stencil 分类、双侧成员状态和表面着色 |
+| `RasterOccupancy.ts` | 非凸层数验证所需的光栅化归约 |
+| `CsgFramePass.ts` | 完整帧发布与 GPU 完成确认，无 Tile 调度 |
+| `RendererJobs.ts` | 串行化异步帧和候选准备，保护共享渲染状态与错误作用域 |
+| `Stage.ts`、`ModelRepresentation.ts` | 相机、交互、设置、模型更新、错误与生命周期 |
 
-模型和相机使用重定位坐标，视图矩阵在 CPU 双精度中重定位。事件推进不增加固定步长，以免跳过薄壁。事件循环的完整上界来自实例三角形总数；遍历使用栈无关逃逸链接，因此没有猜测的事件数组/遍历栈容量。不会通过截断显示部分结果。
+Preview 消息不再携带 BLAS/TLAS、重复的三角形纹理或 Hit Event 程序。CPU 查询所需 BVH 仍保留，但完全按需、仅驻留 CPU。相同几何键的变换/颜色更新复用 BufferGeometry；细分变化替换相应缓冲并保留可复用的光栅化 Renderer。共享几何具有引用计数，供主模型和修饰符共用。
 
-当前显式预算：2,048 个操作数、8,192 条布尔指令、200 万独立三角形、800 万实例三角形、16 个灯光和 8 个剖切平面。数据纹理上限 256 MB，并检查实际设备的二维纹理尺寸。候选管线准备捕获 WebGPU validation/OOM 和 WebGL 着色编译错误。超出预算明确报错。Worker 超时 30 秒，JS 堆和本地 Voronoi WASM 各有 512 MB 上限；这些上限不保证所有设备都有足够资源或达到交互帧率。
+删除了旧 GPU Buffer 打包器 `buffers.ts`、射线 Shader、逐 Tile `waitForGPU()`、射线阴影和对应环境阴影钩子，以及不再需要的 `overrideNodes` 类型补丁。没有运行时算法选择项，也没有第二套长期维护的 CSG GPU 管线。
 
-## 生命周期和工具
+## 交互与高级工具
 
-Stage 异步初始化，候选模型上传并编译完成后替换有效画面。版本号、取消、首帧确认和性能消息贯穿宿主与浏览器，过期结果不会替换当前模型。快速失败保留最后有效帧并显示原因，无隐藏 STL 回退。保留一个活动任务和一个最新等待值的调度；首帧确认后启用参数连续拖动。
+- 基础实体模式仅使用操作数光栅化。支持颜色、Highlight/Background、相机旋转/缩放/平移、参数及代码更新。
+- 基础光照支持最多 16 个方向/点/聚光源和环境光。CSG 不再投射射线阴影或原始操作数假阴影；完整模型阴影和 PBR 外观使用 Full Render。
+- 精确 Wireframe、边/顶点测量、X-Ray 和带封口剖切在用户启用时请求最终拓扑。切回普通实体模式后，后续更新不会因历史工具请求继续触发最终 Boolean。
+- 面拾取使用懒创建的 CPU 加速查询；模型/剖切版本变化使精确拓扑缓存失效。过期任务不能替换新模型。
+- 结果提交前验证 GPU 完成，失败保留最后完整帧。首帧通知再等待两次 rAF；设备丢失后保留模型与相机，尝试受控 WebGL 2 恢复。相机在异步帧内使用快照，候选准备和帧绘制不交错修改同一 Renderer。
+- 编辑器和自管 Markdown 有按需拓扑消息通道。内置 Markdown 没有该通道，普通 F5 不再后台自动生成完整 Boolean；选择精确工具会提示使用 **Open Markdown Preview with 3D Tools**。基础交互、模式切换和错误保留继续工作，CSP 不开放浏览器 Worker/WASM。
 
-两种模式共享相机、场景快照和工具设置。CPU 面拾取执行相同布尔程序。顶点/边吸附和精确线框通过宿主 Worker 按需生成结果拓扑，等待时显示状态，模型/剖切变化后失效，不改变模式。拓扑顶点相对独立双精度原点保存，保留大坐标附近的小特征。标准网格通过相同接口返回表面拓扑；带剖切查询复用已有 STL/3MF 字节，在宿主 Worker 生成封口，不重新调用 CLI。
+## 有界失败与兼容范围
 
-64 MB LRU 同时缓存叶网格和局部 BLAS。实例只保存变换和材质，共享三角形不重复上传。兼容的参数更新复用管线和纹理，仅上传变化区间。相机移动只更新视图；静止 CSG 场景跳过重复绘制。
+限制包括 2,048 个操作数、8,192 条 DAG 指令、200 万独立/800 万实例三角形；规范化最多 4,096 个 Product、65,536 个文字项和 100 万工作量。边界共因子和绘制 Pass 也独立限额。CSG 自有附件及完整帧按 512 MB 预算约束，不含 Three.js 默认帧缓冲和驱动开销。非凸层溢出明确诊断，不截断显示部分结果。
 
-## 两种 Markdown 入口
+开放表面可单独显示，但不能作为闭合 Boolean 体参与分类。自相交/特殊非流形资源、全部 OpenSCAD 库及所有预览修饰符组合没有完整验证。透明材质/修饰符采用基础表面混合，不承诺任意交错透明层的精确排序。未实现基础路径的 CSG 阴影、HDR 环境 PBR 或抗锯齿优化。输入 Float32 几何与浮点深度仍有精度边界；通过大平移、薄壁用例不代表任意尺度组合均可靠。
 
-保留内置 Markdown 预览；新增 **SCAD AI IDE: Open Markdown Preview with 3D Tools**，也可从 Markdown 编辑器标题栏打开。新增入口由扩展管理 Webview，具有公开宿主消息通道，按需请求拓扑及剖切封口。普通文字修改保留未变化模型的画布、相机和工具状态；模型更新/错误保留最后有效帧。模式可在顶部切换。
+本机验证覆盖 Apple Metal 上 Chromium 的两种后端。Safari、Firefox、Windows/Linux、独立显卡及真正设备复位后的驱动差异仍需扩展。官方对照使用 CLI 的 **OpenCSG F5 渲染路径**；没有测量 Qt IDE 连续旋转帧率，不能将进程导出 PNG 的时间视为 Qt IDE F5 帧率。完整 F5 兼容性尚未宣称达成。
 
-内置预览继续通过原贡献脚本显示模型。由于它没有本扩展的直接消息通道，其完整拓扑在首帧发布后由宿主串行准备并通过缓存刷新送达；剖切后的精确拓扑工具提示使用新增入口。这是两个入口的明确差异。
-
-两种入口最多两个活动实例，离屏、Source 标签或隐藏状态暂停绘制，2 秒后释放 GPU 资源。缓存命名空间随 V2 BLAS 布局更新。CSP 不增加浏览器 Worker/WASM 权限；自管入口显式设置 `worker-src 'none'`。它使用 MarkdownIt 安全渲染，不执行 Markdown 内嵌 HTML。
-
-## 验证、基准和打包
+## 复现
 
 ```sh
 npm test
 npm run package
-node scripts/csg-coverage.mjs --check
-SCAD_OPENSCAD_CSG_EXECUTABLE=/path/to/openscad npm run test:csg-native
 SCAD_OPENSCAD_CSG_EXECUTABLE=/path/to/openscad npm run test:csg-gpu
-node --test scripts/preview-fast.test.mjs
+SCAD_GPU_WIDTH=3840 SCAD_GPU_HEIGHT=2160 node --test scripts/csg-raster.test.mjs
 SCAD_TEST_WEBGPU=1 node --test scripts/preview-fast.test.mjs
-node --test scripts/markdown-preview.test.mjs
-SCAD_VSCODE_EXECUTABLE=/path/to/code node --test scripts/markdown-webview.test.mjs
-SCAD_OPENSCAD_CSG_EXECUTABLE=/path/to/openscad node scripts/csg-benchmark.mjs docs/csg-benchmark.json --gpu
-node scripts/verify-csg-package.mjs /path/to/extension.vsix
+node --test scripts/preview-fast.test.mjs
+SCAD_OPENSCAD_CSG_EXECUTABLE=/path/to/openscad npm run test:csg-native
+SCAD_OPENSCAD_CSG_EXECUTABLE=/path/to/openscad node scripts/csg-raster-benchmark.mjs docs/csg-raster-1080p.json
+SCAD_BENCH_WIDTH=3840 SCAD_BENCH_HEIGHT=2160 SCAD_OPENSCAD_CSG_EXECUTABLE=/path/to/openscad node scripts/csg-raster-benchmark.mjs docs/csg-raster-4k.json
+SCAD_VSCODE_EXECUTABLE=/path/to/code SCAD_OPENSCAD_CSG_EXECUTABLE=/path/to/openscad SCAD_CUSTOMIZER_REPORT=docs/csg-customizer-latency.json node --test scripts/csg-customizer-latency.test.mjs
 ```
 
-GPU 回归读取 WebGPU 和 `forceWebGL` 的实际像素，覆盖穿孔、深度遮挡、内部视角、正交投影、封口、结果厚度、镜像、共享 BLAS 材质、薄壁和大坐标。固定相机 F5 对照覆盖穿孔、非对称差集、交集和扭转挤出：使用相同分面参数和 FOV，比对几何轮廓，排除 2 像素光栅边缘带；颜色/光照不作逐像素比较。
+基线复测可将 `SCAD_BENCH_SOURCE_ROOT` 和 `SCAD_BENCH_WORKER` 指向重构前独立检出的源码和构建产物。同一基准同时支持版本化源码快照，不将旧实现加入当前运行时。
 
-共享 Stage 的两套浏览器回归覆盖模式/相机保留、参数/导出绑定、精确线框、移动/旋转/缩放 gizmo、活动剖切、灯光、环境、测量显示和 X-ray。真实 VS Code Webview 回归验证内置/自管 Markdown、宿主剖切拓扑和内容更新。原生几何对照覆盖 47 个模型；本机运行时未启用 roof 和 3MF 导入，这两项明确跳过，不能据此声称原生验收已通过。roof 和 3MF 另有本地单元测试。
+GPU 像素测试比较实际轮廓和深度，包含九通孔（跨八位 Stencil 批次）、嵌套、内壁、内部相机、正交/透视、非凸和挤出、凹多面体、镜像/非均匀缩放、接触/重合、大坐标、薄壁、遮挡、颜色及修饰符。深度比较采用参考表面两像素邻域与 3e-6 深度容差，容纳交线处不同三角化的光栅边缘。另验证超过 64 层的受控失败。
 
-`native/coverage.json` 从固定子模块提取 22 个序列化方法及离散化字段，是来源清单，尚不代表每一参数组合均已验收。新增原生用例包含凹多边形 polyhedron、开放表面 hull、非凸 Minkowski、projection cut、挤出参数、字体方向/字形、SVG 图层/圆角/椭圆、DXF、PNG/文本 surface 及多格式导入。
+官方 F5 对照固定相机、22.5° 透视 FOV、1920×1080 和分面参数；比较八个模型的轮廓，排除两像素边缘带，不逐像素比较光照/颜色。原始记录和截图：
 
-`docs/csg-benchmark.json` 记录 CLI、局部几何、BVH、上传、着色准备、首帧和交互帧。GPU 样本仅为 96×96、无阴影的独立视口，每次采样等待 GPU 完成，不能外推为编辑器全尺寸帧率。重复网格样本有 4,608 个实例三角形，仅 72 个独立三角形；这验证 BLAS 共享效果。
+- [WebGPU F5 记录](csg-f5-1080p-webgpu.json)、[WebGL 2 F5 记录](csg-f5-1080p-webgl2.json)
+- [官方 F5](csg-f5-1080p-throughHole-official.png)、[WebGPU](csg-f5-1080p-throughHole-webgpu.png)、[WebGL 2](csg-f5-1080p-throughHole-webgl2.png)
+- [修改前首次基线](csg-ray-baseline-initial-1080p.json)、[20 帧旧快照](csg-ray-baseline-1080p.json)、[20 帧新实现](csg-raster-1080p.json)
 
-WASM、字体及许可证随构建复制至 dist/resources/licenses。`resources/csg/PROVENANCE.md` 固定内核源码、工具链及许可来源；本地重建命令为 `npm run build:csg-kernel`。运行时不读取子模块源码。`npm run build:csg` 可独立构建宿主库 `.build/csg/csg.cjs`，提供编译和按需拓扑 API；VSIX 内附可重建的独立源码归档，并根据实际打包依赖图准备原始许可证。VSIX 冒烟测试在独立临时目录解包，执行布尔、字体及本地 roof 内核，并检查资产和许可证。
-
-## 尚未达到的完整发布门槛
-
-- 全部合法资源变体的原生兼容仍需扩展：例如特殊/无界 NEF3、复杂 DXF 图元、SVG 外部样式/use 组合及字体回退差异；不支持的情况应明确报错。
-- 尚未完成每个序列化参数的逐项验收，以及共面/相切/深层差集、多剖切、透明叠加和阴影的完整双后端像素矩阵。
-- 当前使用精确数量的流式事件上界和显式设备预算，尚未实现计划所述的设备自适应分档策略。
-
-当前实现提供可运行的双路径核心、自管 Markdown 和真实 GPU/宿主回归，不能作为“全部 OpenSCAD F5 兼容性与验收完成”的发布声明。
+性能及最终测试汇总见 [验收记录](csg-preview-validation.md)。

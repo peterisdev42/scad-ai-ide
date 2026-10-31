@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import type { CsgScene, CsgGeometry, CsgCachedGeometry, CsgClipPlane } from './types'
 const geometryCache = new Map<string, CsgCachedGeometry>()
 let cachedBytes = 0
-const entryBytes = (entry: CsgCachedGeometry) => entry.mesh.properties.length + entry.mesh.indices.length + entry.blas.triangles.length + entry.blas.triangleColors.length + entry.blas.bvh.length * 96
+const entryBytes = (entry: CsgCachedGeometry) => entry.mesh.properties.length + entry.mesh.indices.length
 const cacheBudget = 64 * 1024 * 1024
 
 let workerPath = join(__dirname, 'csg-worker.mjs')
@@ -18,7 +18,7 @@ export function compileCsg(source: string, signal?: AbortSignal, options: { cwd?
     return runCsgWorker({ source, ...options, cached: Object.fromEntries(geometryCache) }, signal).then((buffer) => {
         const scene = JSON.parse(buffer.toString('utf8')) as CsgScene
         scene.geometryKeys.forEach((key, i) => {
-            const entry = { mesh: scene.meshes[i], blas: scene.blas[i] },
+            const entry = { mesh: scene.meshes[i] },
                 previous = geometryCache.get(key)
             if (previous) {
                 geometryCache.delete(key)

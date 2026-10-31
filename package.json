@@ -217,7 +217,7 @@
                         "render"
                     ],
                     "enumDescriptions": [
-                        "GPU CSG boundary preview. The host prepares operands and local geometry; unsupported nodes report an error and retain the last valid frame.",
+                        "Raster CSG boolean preview. The host prepares operands and local geometry; unsupported nodes report an error and retain the last valid frame.",
                         "Fully evaluated interactive 3D model using the selected STL/3MF format."
                     ],
                     "default": "render",
