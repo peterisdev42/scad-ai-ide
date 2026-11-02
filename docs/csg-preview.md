@@ -52,7 +52,7 @@ flowchart LR
 | `CsgModel.ts` | 共享 BufferGeometry、模型版本/缓存和 Viewer 接口 |
 | `RasterCsgRenderer.ts` | 候选深度、Stencil 分类、双侧成员状态和表面着色 |
 | `RasterOccupancy.ts` | 非凸层数验证所需的光栅化归约 |
-| `CsgFramePass.ts` | 完整帧发布与 GPU 完成确认，无 Tile 调度 |
+| `CsgFramePass.ts` | 交互帧按 GPU 提交顺序发布，静止/完整质量帧保留 GPU 完成确认；无 Tile 调度 |
 | `RendererJobs.ts` | 串行化异步帧和候选准备，保护共享渲染状态与错误作用域 |
 | `Stage.ts`、`ModelRepresentation.ts` | 相机、交互、设置、模型更新、错误与生命周期 |
 
@@ -66,7 +66,9 @@ Preview 消息不再携带 BLAS/TLAS、重复的三角形纹理或 Hit Event 程
 - 基础光照支持最多 16 个方向/点/聚光源和环境光。CSG 不再投射射线阴影或原始操作数假阴影；完整模型阴影和 PBR 外观使用 Full Render。
 - 精确 Wireframe、边/顶点测量、X-Ray 和带封口剖切在用户启用时请求最终拓扑。切回普通实体模式后，后续更新不会因历史工具请求继续触发最终 Boolean。
 - 面拾取使用懒创建的 CPU 加速查询；模型/剖切版本变化使精确拓扑缓存失效。过期任务不能替换新模型。
-- 结果提交前验证 GPU 完成，失败保留最后完整帧。首帧通知再等待两次 rAF；设备丢失后保留模型与相机，尝试受控 WebGL 2 恢复。相机在异步帧内使用快照，候选准备和帧绘制不交错修改同一 Renderer。
+- 相机拖动时，CSG 视口临时以最多每 CSS 像素一个设备像素渲染（Retina DPR=2 时像素工作量通常降为四分之一）；松开后恢复原设备 DPR 和完整质量。分辨率变更只发生在 Renderer 无在途任务时，不会每个鼠标事件重新分配帧缓冲。
+- 拖动中的 CSG 帧不执行原有的 **每帧 1×1 GPU readback fence**，在同一 GPU 提交队列内完成候选帧与屏幕合成；静止/完整质量帧仍保留 GPU 完成检查和错误作用域。非凸深度复杂度判断所需的标量读回仍按算法要求执行，不能直接删除。首帧 `frameReady` 仍单独等待 GPU 完成和两次 rAF；设备丢失后保留模型与相机并尝试 WebGL 2 恢复。
+- `interactiveFrameMs` 不把省略 GPU fence 的交互帧 CPU 提交时间误报成 GPU 帧耗时；仍由带 GPU 完成确认的帧提供。相机属性 UI 从 `TrackballControls` 的 change 事件更新，避免每个 rAF 重复写入 Lit Context 和触发持久化防抖。相机在异步帧内使用快照，候选准备和帧绘制不交错修改同一 Renderer。
 - 编辑器和自管 Markdown 有按需拓扑消息通道。内置 Markdown 没有该通道，普通 F5 不再后台自动生成完整 Boolean；选择精确工具会提示使用 **Open Markdown Preview with 3D Tools**。基础交互、模式切换和错误保留继续工作，CSP 不开放浏览器 Worker/WASM。
 
 ## 有界失败与兼容范围
@@ -76,6 +78,12 @@ Preview 消息不再携带 BLAS/TLAS、重复的三角形纹理或 Hit Event 程
 开放表面可单独显示，但不能作为闭合 Boolean 体参与分类。自相交/特殊非流形资源、全部 OpenSCAD 库及所有预览修饰符组合没有完整验证。透明材质/修饰符采用基础表面混合，不承诺任意交错透明层的精确排序。未实现基础路径的 CSG 阴影、HDR 环境 PBR 或抗锯齿优化。输入 Float32 几何与浮点深度仍有精度边界；通过大平移、薄壁用例不代表任意尺度组合均可靠。
 
 本机验证覆盖 Apple Metal 上 Chromium 的两种后端。Safari、Firefox、Windows/Linux、独立显卡及真正设备复位后的驱动差异仍需扩展。官方对照使用 CLI 的 **OpenCSG F5 渲染路径**；没有测量 Qt IDE 连续旋转帧率，不能将进程导出 PNG 的时间视为 Qt IDE F5 帧率。完整 F5 兼容性尚未宣称达成。
+
+## 相机交互回归
+
+`node --test scripts/preview-fast.test.mjs` 的 Retina DPR=2 拖拽用例覆盖以下行为：拖动时降低渲染分辨率，免除每交互帧 GPU 读回；松开时恢复 DPR 和验证帧；相机拖动不会改变 CSG 模型版本。设置 `SCAD_TEST_WEBGPU=1` 可在相应浏览器环境中检查 WebGPU 路径，默认浏览器测试会强制 WebGL 2。
+
+**性能注意：** 这是缩短拖拽延迟的帧调度优化，不代表 GPU CSG 本身不再逐帧执行多 Pass。非凸操作数仍可能进行深度层数 readback；高 DPR 的静止全分辨率帧仍有成本。需要在真实 VS Code/Electron 的 Webview 中重新测量连续拖拽的输入到画面延迟、完成帧率与内存，不能直接拿省略 fence 后的 CPU 提交耗时与旧基准比较。
 
 ## 复现
 
