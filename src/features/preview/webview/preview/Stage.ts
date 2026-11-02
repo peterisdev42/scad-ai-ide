@@ -612,7 +612,11 @@ export class Stage {
             .catch((error) => {
                 if (!this.disposed && generation === this.modelGeneration) {
                     const message = error instanceof Error ? error.message : String(error)
-                    this.onToolStatus?.(this.complexCsgFallback ? `Exact mesh fallback failed: ${message}. Try Full Render.` : message)
+                    if (this.complexCsgFallback) {
+                        // End the loading state instead of leaving the preview
+                        // permanently waiting for a mesh that cannot be built.
+                        this.onError?.(`Complex CSG exact-mesh fallback failed: ${message}. Use Full Render or simplify the model.`)
+                    } else this.onToolStatus?.(message)
                 }
             })
             .finally(() => {
