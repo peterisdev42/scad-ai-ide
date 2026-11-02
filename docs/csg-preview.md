@@ -88,7 +88,7 @@ OpenCSG-style Raster 并非模型越大就一定比 GPU Raycasting 更快。当�
 - 正常模型继续使用 F5 风格 GPU 光栅化 CSG；移动相机不会调用 OpenSCAD CLI。
 - 如果模型超出交互工作量阈值，且宿主支持 `queryTopology`，Stage **明确切换为精确 Mesh 模式**：跳过本来就不会使用的 Raster GPU Shader 编译和操作数上传，只对当前模型进行一次完整 Boolean 几何求值，缓存结果并用普通 Three.js Mesh 实时旋转；不是偷偷用原始操作数假装显示正确的 CSG。
 - 如果少数模型在光栅化运行时才突破硬预算，捕获对应预算错误并切换到相同的精确 Mesh 路径；交互帧连续出现明显的 CPU 提交卡顿时也可触发该模式。
-- UI 提示 `Complex CSG: displaying a cached exact mesh`，以免用户误以为这仍是纯 F5 图像空间算法。模型变化后失效并重新评估；后续相机变化不重复执行 CLI 或 Boolean Kernel。
+- 该自动降级是正常内部行为，不弹出成功或进行中的提示；只有降级不可用、精确几何计算失败等真正错误才会在视口显示信息。模型变化后失效并重新评估；后续相机变化不重复执行 CLI 或 Boolean Kernel。
 - 某些只提供静态嵌入视图的 Webview 没有按需拓扑服务，这种视图不能执行上述降级，仍会给出明确限制/错误。
 - 精确拓扑计算可能较慢，也可能因超时、模型过大或非流形几何失败。失败时停止加载状态，明确建议 Full Render；不能提高预算后长时间阻塞 Webview。
 
