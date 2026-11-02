@@ -18,7 +18,6 @@ import './aside/SidePanel'
 import './atoms/SplitLayout'
 import './footer/Output'
 import './main/Options'
-import './main/BackendStatus'
 import './main/Preview'
 import './main/Toolbar'
 
@@ -482,7 +481,6 @@ export class App extends LitElement {
                     <div slot="start" style="position:relative;width:100%;height:100%;">
                         <scad-preview @renderer-restarting=${(event:CustomEvent<{properties:Map<string,ObjectProperties>}>)=>{this.pendingProperties=event.detail.properties;this._stageWired=false;this.requestUpdate()}} @stage-ready=${() => this.requestUpdate()}></scad-preview>
                         <scad-toolbar @clear-measurements=${this.clearMeasurements}></scad-toolbar>
-                        <scad-backend-status></scad-backend-status>
                         <scad-options @reset-view=${() => this.previewEl?.stage?.resetView()}></scad-options>
                     </div>
                     <div slot="end">${sidePanel ? html`<scad-side-panel></scad-side-panel>` : nothing}</div>
