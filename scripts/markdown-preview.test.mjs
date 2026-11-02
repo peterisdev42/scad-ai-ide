@@ -371,6 +371,19 @@ test('late Markdown DOM replacement mounts ready previews without an updateConte
     await page.waitForFunction(() => document.querySelector('scad-app')?.shadowRoot.querySelector('scad-preview')?.stage?.modelGroup?.children.length > 0)
 })
 
+test('embedded OpenSCAD code blocks share the unified Preview status surface', async (t) => {
+    const { blocks } = await fixture(t)
+    const first = blocks.first()
+    await first.locator('scad-preview canvas.main-canvas').waitFor()
+    const status = first.locator('scad-preview #preview-status')
+    await status.waitFor()
+    assert.equal(await status.count(), 1)
+    assert.equal(await first.locator('scad-app > scad-backend-status').count(), 0, 'No independent bottom-left backend overlay in Markdown')
+    assert.equal(await status.locator('scad-backend-status').count(), 1)
+    await status.locator('summary').click()
+    assert.equal(await status.locator('details[open]').count(), 1)
+})
+
 test('built-in Markdown CSG embed consumes precomputed exact topology without an extension message bridge', async (t) => {
     const { page, blocks } = await fixture(t, { cachedTopology: true })
     const preview = blocks.first().locator('scad-preview')
