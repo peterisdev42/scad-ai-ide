@@ -178,7 +178,7 @@ test('CSG camera drag uses interactive resolution without a per-frame readback f
     await page.mouse.move(canvas.x + canvas.width / 2 + 90, canvas.y + canvas.height / 2 + 40, { steps: 10 })
     await page.waitForFunction(() => {
         const stage = document.querySelector('scad-app')?.shadowRoot?.querySelector('scad-preview')?.stage
-        return stage?.previewNavigating && stage.renderer.getPixelRatio() === 1 && !stage.csgFrameBusy && window.csgNavigationFrames > 0
+        return stage?.previewNavigating && stage.renderer.getPixelRatio() === 1 && !stage.csgFrameBusy && window.csgNavigationFrames > 0 && stage.renderSignature?.startsWith('camera:')
     })
     assert.equal(await page.evaluate(() => window.csgInteractionReadbacks), 0, 'Navigation must not fence the GPU after each CSG frame')
 
@@ -186,7 +186,7 @@ test('CSG camera drag uses interactive resolution without a per-frame readback f
     await page.waitForFunction(() => {
         const stage = document.querySelector('scad-app')?.shadowRoot?.querySelector('scad-preview')?.stage
         return stage && !stage.previewNavigating && stage.renderer.getPixelRatio() === 2 &&
-            window.csgInteractionReadbacks > 0
+            window.csgInteractionReadbacks > 0 && stage.renderSignature?.startsWith('[')
     })
     const after = await page.locator('scad-preview').evaluate((preview) => preview.stage.modelGeneration)
     assert.equal(after, before.version, 'Camera navigation must not regenerate the CSG scene')
