@@ -193,7 +193,7 @@ test('CSG camera drag uses interactive resolution without a per-frame readback f
 })
 
 test('complex CSG preview switches to one cached exact mesh instead of retrying over-budget raster passes', async (t) => {
-    const page = await fixture(t, 'preview')
+    const page = await fixture(t, 'preview', 2)
     await page.waitForFunction(() => {
         const preview = document.querySelector('scad-app')?.shadowRoot?.querySelector('scad-preview')
         return preview?.stage?.csgModels?.length === 1 && !preview.preparing && !preview.stage.csgFrameBusy
@@ -223,7 +223,9 @@ test('complex CSG preview switches to one cached exact mesh instead of retrying 
         version: preview.stage.modelGeneration,
         fallback: preview.stage.complexCsgFallback,
         geometryVisible: preview.stage.topologyGroup?.visible,
+        pixelRatio: preview.stage.renderer.getPixelRatio(),
     }))
+    assert.equal(state.pixelRatio, 2, 'Cached exact meshes must retain native DPR during navigation')
     assert.equal(state.version, initialVersion, 'Camera changes must not re-run CSG preparation')
     assert.equal(state.fallback, true)
     assert.equal(state.geometryVisible, true)
