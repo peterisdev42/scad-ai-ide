@@ -192,6 +192,44 @@ test('CSG camera drag uses interactive resolution without a per-frame readback f
     assert.equal(after, before.version, 'Camera navigation must not regenerate the CSG scene')
 })
 
+test('complex CSG preview switches to one cached exact mesh instead of retrying over-budget raster passes', async (t) => {
+    const page = await fixture(t, 'preview')
+    await page.waitForFunction(() => {
+        const preview = document.querySelector('scad-app')?.shadowRoot?.querySelector('scad-preview')
+        return preview?.stage?.csgModels?.length === 1 && !preview.preparing && !preview.stage.csgFrameBusy
+    })
+    const initialVersion = await page.locator('scad-preview').evaluate((preview) => {
+        const stage = preview.stage
+        // Simulate a real model's large, independently computed raster estimate.
+        // The fallback must not invoke a single raster pass for this scene.
+        Object.defineProperty(stage.csgModels[0], 'estimatedRasterWork', { configurable: true, value: 100000 })
+        stage.maybeFallbackForRasterCost()
+        return stage.modelGeneration
+    })
+    await page.waitForFunction(() => {
+        const stage = document.querySelector('scad-app')?.shadowRoot?.querySelector('scad-preview')?.stage
+        return stage?.complexCsgFallback && stage.topologyGroup?.children.length > 0 &&
+            stage.topologyGroup.visible && !stage.csgModels[0].mesh.visible
+    })
+    const initialTopologyQueries = await page.evaluate(() => window.hostMessages.filter((m) => m.type === 'queryTopology').length)
+    assert.equal(initialTopologyQueries, 1, 'Exact geometry should be prepared only once')
+    const canvas = await page.locator('scad-preview canvas.main-canvas').boundingBox()
+    await page.mouse.move(canvas.x + canvas.width / 2, canvas.y + canvas.height / 2)
+    await page.mouse.down()
+    await page.mouse.move(canvas.x + canvas.width / 2 + 45, canvas.y + canvas.height / 2 + 25, { steps: 5 })
+    await page.mouse.up()
+    await page.waitForTimeout(100)
+    const state = await page.locator('scad-preview').evaluate((preview) => ({
+        version: preview.stage.modelGeneration,
+        fallback: preview.stage.complexCsgFallback,
+        geometryVisible: preview.stage.topologyGroup?.visible,
+    }))
+    assert.equal(state.version, initialVersion, 'Camera changes must not re-run CSG preparation')
+    assert.equal(state.fallback, true)
+    assert.equal(state.geometryVisible, true)
+    assert.equal(await page.evaluate(() => window.hostMessages.filter((m) => m.type === 'queryTopology').length), 1)
+})
+
 test('initial CSG preview retains host parameter/export bindings and prepares exact wireframe topology', async (t) => {
     const page = await fixture(t, 'preview')
     await page.waitForFunction(() => document.querySelector('scad-app').shadowRoot.querySelector('scad-preview')?.stage?.modelGroup.children.length > 0)
