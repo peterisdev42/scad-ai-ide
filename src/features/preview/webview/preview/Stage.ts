@@ -457,14 +457,20 @@ export class Stage {
         this.materialManager.setTheme(nextGroup, this.theme, this.viewOptions?.get('modelColor'))
 
         const candidate = cachedCandidate ?? new ModelRepresentation(nextGroup, preparedCsg, modelContext.modelVersion ?? generation, modelContext.queryTopology)
+        const skipRasterWarmup = format === ModelFormat.CSG && !!modelContext.queryTopology &&
+            preparedCsg.reduce((sum, model) => sum + model.estimatedRasterWork, 0) > CSG_INTERACTIVE_WORK_LIMIT
         try {
             await this.ready
             if (!this.disposed && generation === this.modelGeneration) {
                 const camera = this.activeCameraRig.activeCamera
                 const planes = this.topologyPlanes().map((plane) => new Plane(new Vector3(...plane.normal), plane.constant))
                 for (const model of preparedCsg) model.update(camera, this.viewOptions?.get('modelColor') ? new Color(this.viewOptions.get('modelColor')!) : this.theme.additive, !!this.viewOptions?.get('modelColor'), this.viewOptions?.get('renderMode') ?? RenderMode.Solid, planes, this.renderer.coordinateSystem === 2001, this.viewOptions?.get('shadows') ?? true)
-                const prepared = await candidate.prepare(this.renderer, this.activeCameraRig.activeCamera, this.scene, preparationController.signal)
-                if (generation === this.modelGeneration) modelContext.reportPerformance?.(prepared.value)
+                // Large CSG models will immediately use cached exact geometry.
+                // Do not compile/upload the expensive raster path that never runs.
+                if (!skipRasterWarmup) {
+                    const prepared = await candidate.prepare(this.renderer, this.activeCameraRig.activeCamera, this.scene, preparationController.signal)
+                    if (generation === this.modelGeneration) modelContext.reportPerformance?.(prepared.value)
+                }
             }
         } catch (error) {
             candidate.dispose()
