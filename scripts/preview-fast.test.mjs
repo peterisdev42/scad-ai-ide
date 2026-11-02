@@ -41,7 +41,7 @@ before(async () => {
 })
 after(async () => browser?.close())
 
-async function fixture(t, mode = 'render') {
+async function fixture(t, mode = 'render', deviceScaleFactor = 1) {
     const server = createServer((request, response) => {
         const path = new URL(request.url, 'http://fixture').pathname
         if (path === '/') {
@@ -59,7 +59,7 @@ async function fixture(t, mode = 'render') {
         }
     })
     await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve))
-    const page = await browser.newPage({ viewport: { width: 1100, height: 850 } })
+    const page = await browser.newPage({ viewport: { width: 1100, height: 850 }, deviceScaleFactor })
     page.setDefaultTimeout(30000)
     const errors = []
     page.on('pageerror', (error) => errors.push(error.message))
@@ -139,6 +139,47 @@ test('CSG switching keeps the interactive Stage and camera, with mode controls i
         }
     }
     assert.equal(await page.evaluate(() => window.hostMessages.filter((message) => message.type === 'setPreviewMode').length), 5)
+})
+
+test('CSG camera drag uses interactive resolution without a per-frame readback fence, then restores full quality', async (t) => {
+    const page = await fixture(t, 'preview', 2)
+    await page.waitForFunction(() => {
+        const preview = document.querySelector('scad-app')?.shadowRoot?.querySelector('scad-preview')
+        return preview?.stage?.csgModels?.length === 1 && preview.preparing === false && !preview.stage.csgFrameBusy
+    })
+    const before = await page.locator('scad-preview').evaluate((preview) => ({
+        ratio: preview.stage.renderer.getPixelRatio(),
+        version: preview.stage.modelGeneration,
+    }))
+    assert.equal(before.ratio, 2)
+    await page.locator('scad-preview').evaluate((preview) => {
+        const renderer = preview.stage.renderer
+        const original = renderer.readRenderTargetPixelsAsync.bind(renderer)
+        window.csgInteractionReadbacks = 0
+        renderer.readRenderTargetPixelsAsync = (...args) => {
+            window.csgInteractionReadbacks++
+            return original(...args)
+        }
+    })
+
+    const canvas = await page.locator('scad-preview canvas.main-canvas').boundingBox()
+    await page.mouse.move(canvas.x + canvas.width / 2, canvas.y + canvas.height / 2)
+    await page.mouse.down()
+    await page.mouse.move(canvas.x + canvas.width / 2 + 90, canvas.y + canvas.height / 2 + 40, { steps: 10 })
+    await page.waitForFunction(() => {
+        const stage = document.querySelector('scad-app')?.shadowRoot?.querySelector('scad-preview')?.stage
+        return stage?.previewNavigating && stage.renderer.getPixelRatio() === 1 && !stage.csgFrameBusy
+    })
+    assert.equal(await page.evaluate(() => window.csgInteractionReadbacks), 0, 'Navigation must not fence the GPU after each CSG frame')
+
+    await page.mouse.up()
+    await page.waitForFunction(() => {
+        const stage = document.querySelector('scad-app')?.shadowRoot?.querySelector('scad-preview')?.stage
+        return stage && !stage.previewNavigating && stage.renderer.getPixelRatio() === 2 &&
+            window.csgInteractionReadbacks > 0
+    })
+    const after = await page.locator('scad-preview').evaluate((preview) => preview.stage.modelGeneration)
+    assert.equal(after, before.version, 'Camera navigation must not regenerate the CSG scene')
 })
 
 test('initial CSG preview retains host parameter/export bindings and prepares exact wireframe topology', async (t) => {
