@@ -1,187 +1,192 @@
-import type { Manifold, CrossSection, ManifoldToplevel, Vec2, Vec3, Mat3, Mat4 } from 'manifold-3d'
-import { parseCsg, type CsgNode, type CsgValue } from './parser.js'
-import type { CsgScene } from './types.js'
+import { Matrix4, Color } from 'three'
+import { createHash } from 'node:crypto'
+import type { ManifoldToplevel } from 'manifold-3d'
+import { evaluateGeometry } from './geometry.mjs'
+import { parseCsg, selectCsgRoots, type CsgNode } from './parser.js'
+import { prepareGeometry } from './prepare.mjs'
+import { normalizeCsg } from './normalize.js'
+import type { CsgMesh, CsgOperand, CsgInstruction, CsgScene, CsgCachedGeometry } from './types.js'
+import { polyhedronMesh } from './polyhedron.mjs'
 
-type Shape = { solid: Manifold } | { section: CrossSection }
-type Paint = { rgba: number[]; defaultColor: boolean }
+export function serializeCsg(node: CsgNode): string {
+    const params = Object.entries(node.params)
+        .map(([name, value]) => `${name.startsWith('$') && /^\$\d+$/.test(name) ? '' : name + '='}${JSON.stringify(value)}`)
+        .join(',')
+    return `${node.modifiers}${node.name}(${params}){${node.children.map(serializeCsg).join('')}}`
+}
 
-/** CSG evaluation runs only inside a cancellable Node worker, never the UI thread. */
-export function evaluateCsg(source: string, module: ManifoldToplevel): CsgScene {
-    const { Manifold: M, CrossSection: C } = module
-    const owned = new Set<{ delete(): void }>()
-    const own = <T extends { delete(): void }>(value: T): T => {
-        owned.add(value)
-        return value
+/** Compile preview data. Ordinary 3D boolean nodes never enter the geometry kernel. */
+export function evaluateCsg(source: string, module: ManifoldToplevel, cached: Record<string, CsgCachedGeometry> = {}): CsgScene {
+    const started = performance.now()
+    const meshes: CsgMesh[] = [],
+        operands: CsgOperand[] = [],
+        program: CsgInstruction[] = []
+    const overlays: CsgScene['overlays'] = []
+    let geometryCacheHits = 0
+    const cache = new Map<string, number>()
+    const geometryKeys: string[] = []
+    const diagnostics: string[] = []
+    const emit = (instruction: CsgInstruction) => {
+        if (instruction.op !== 'leaf' && instruction.op !== 'empty') {
+            const leftEmpty = program[instruction.left].op === 'empty',
+                rightEmpty = program[instruction.right].op === 'empty'
+            if (instruction.op === 'union' && leftEmpty) return instruction.right
+            if (instruction.op === 'union' && rightEmpty) return instruction.left
+            if (instruction.op === 'difference' && (leftEmpty || rightEmpty)) return instruction.left
+            if (instruction.op === 'intersection' && (leftEmpty || rightEmpty)) return leftEmpty ? instruction.left : instruction.right
+        }
+        program.push(instruction)
+        return program.length - 1
     }
-    const overlays: Manifold[] = []
-    const num = (params: Record<string, CsgValue>, name: string, fallback = 0): number => (typeof params[name] === 'number' ? (params[name] as number) : fallback)
-    const vector = (value: CsgValue | undefined, fallback: number[], size = fallback.length): number[] => {
-        if (typeof value === 'number') return Array(size).fill(value)
-        if (!Array.isArray(value) || value.length !== size || !value.every((n) => typeof n === 'number' && Number.isFinite(n))) return fallback
-        return value as number[]
+    const empty = () => emit({ op: 'empty' })
+    // Match CSGTreeEvaluator's propagation of background/highlight terms. Keep
+    // the original solid DAG root for topology: debug Union drawing may remove
+    // a highlighted child from the ordinary product without removing its solid.
+    const flags = new Map<number, { highlight: boolean; background: boolean }>(),
+        semantics = new Map<number, number>(),
+        overlayKeys = new Set<string>()
+    const getFlags = (id: number) => flags.get(id) ?? { highlight: false, background: false }
+    const solidRoot = (id: number) => semantics.get(id) ?? id
+    const addOverlay = (root: number, kind: 'highlight' | 'background') => {
+        const key = kind + root
+        if (!overlayKeys.has(key)) {
+            overlayKeys.add(key)
+            overlays.push({ root, kind, products: [] })
+        }
     }
-    const segments = (p: Record<string, CsgValue>, radius: number): number => {
-        const count = Math.max(3, Math.floor(num(p, '$fn') > 0 ? num(p, '$fn') : Math.max(5, Math.ceil(Math.min(360 / Math.max(num(p, '$fa', 12), 0.01), (2 * Math.PI * Math.abs(radius)) / Math.max(num(p, '$fs', 2), 0.01))))))
-        if (count > 4096) throw new Error('Unsupported CSG operation: fragment count above 4096')
-        return count
-    }
-    const painted = (solid: Manifold, paint: Paint): Shape => ({
-        solid: own(
-            solid.setProperties(5, (props) => {
-                for (let i = 0; i < 4; i++) props[i] = paint.rgba[i]
-                props[4] = paint.defaultColor ? 1 : 0
-            }),
-        ),
-    })
-    const combine = (items: Shape[], operation: 'union' | 'difference' | 'intersection' = 'union'): Shape | undefined => {
-        if (!items.length) return undefined
-        if (items.every((s) => 'solid' in s)) return { solid: own(M[operation](items.map((s) => s.solid))) }
-        if (items.every((s) => 'section' in s)) return { section: own(C[operation](items.map((s) => s.section))) }
-        throw new Error('Unsupported CSG operation: mixed 2D and 3D geometry')
-    }
-    const visit = (node: CsgNode, paint: Paint): Shape | undefined => {
-        if (node.modifiers.includes('*')) return undefined
-        if (node.modifiers.includes('!')) throw new Error('Unsupported CSG operation: root modifier')
-        if (node.modifiers.includes('%') || node.modifiers.includes('#')) {
-            const highlight = { rgba: node.modifiers.includes('#') ? [1, 0.2, 0.1, 0.65] : [0.6, 0.6, 0.6, 0.35], defaultColor: false }
-            const result = visit({ ...node, modifiers: node.modifiers.replace(/[%#]/g, '') }, highlight)
-            if (result && 'section' in result) throw new Error('Unsupported CSG operation: 2D preview modifier')
-            if (result && 'solid' in result) {
-                const overlay = painted(result.solid, highlight)
-                if ('solid' in overlay) overlays.push(overlay.solid)
+    const combine = (ids: number[], op: 'union' | 'intersection' | 'difference' = 'union') => {
+        if (!ids.length) return empty()
+        let left = ids[0]
+        for (const right of ids.slice(1)) {
+            const a = getFlags(left),
+                b = getFlags(right)
+            let root: number, solid: number
+            if (b.background) {
+                addOverlay(right, 'background')
+                root = left
+                solid = solidRoot(left)
+            } else if (a.background) {
+                addOverlay(left, 'background')
+                root = right
+                solid = solidRoot(right)
+            } else {
+                root = emit({ op, left, right })
+                solid = solidRoot(left) === left && solidRoot(right) === right ? root : emit({ op, left: solidRoot(left), right: solidRoot(right) })
             }
-            if (node.modifiers.includes('%')) return undefined
-            return visit({ ...node, modifiers: node.modifiers.replace(/[%#]/g, '') }, paint)
-        }
-        const p = node.params
-        if (node.name === 'color') {
-            const color = p.c ?? p.$0
-            const rgba = vector(Array.isArray(color) && color.length === 3 ? [...color, 1] : color, paint.rgba, 4)
-            if (typeof p.c === 'string' || typeof p.$0 === 'string') throw new Error('Unsupported CSG operation: named color')
-            return combine(node.children.map((child) => visit(child, { rgba: [...rgba.slice(0, 3), num(p, 'alpha', rgba[3])], defaultColor: false })).filter((s): s is Shape => !!s))
-        }
-        if (node.name === 'cube') {
-            const size = vector(p.size ?? p.$0, [1, 1, 1]) as Vec3
-            return size.some((n) => n <= 0) ? undefined : painted(own(M.cube(size, p.center === true)), paint)
-        }
-        if (node.name === 'sphere') {
-            const r = num(p, 'r', num(p, 'd', 2) / 2)
-            if (r <= 0) return undefined
-            if (p.style !== undefined && p.style !== 'orig') throw new Error('Unsupported CSG operation: sphere style')
-            // Latitude rings preserve OpenSCAD's half-step pole/equator placement.
-            const count = segments(p, r),
-                rings = Math.floor((count + 1) / 2)
-            if (count * rings > 1000000) throw new Error('Unsupported CSG operation: sphere above one million vertices')
-            const points: number[] = [],
-                faces: number[] = []
-            for (let row = 0; row < rings; row++) {
-                const latitude = (Math.PI * (row + 0.5)) / rings
-                for (let column = 0; column < count; column++) {
-                    const longitude = (2 * Math.PI * column) / count
-                    points.push(r * Math.sin(latitude) * Math.cos(longitude), r * Math.sin(latitude) * Math.sin(longitude), r * Math.cos(latitude))
-                    if (row < rings - 1) {
-                        const a = row * count + column,
-                            b = row * count + ((column + 1) % count)
-                        faces.push(a, a + count, b + count, a, b + count, b)
-                    }
+            if (op === 'difference') {
+                if (root !== left && a.highlight) flags.set(root, { ...getFlags(root), highlight: true })
+                else if (root !== right && b.highlight) addOverlay(right, 'highlight')
+            } else if (op === 'intersection') {
+                if (program[root].op !== 'empty' && root !== left && root !== right && a.highlight && b.highlight) flags.set(root, { ...getFlags(root), highlight: true })
+                else {
+                    if (root !== left && a.highlight) addOverlay(left, 'highlight')
+                    if (root !== right && b.highlight) addOverlay(right, 'highlight')
+                }
+            } else {
+                if (root !== left && root !== right && a.highlight && b.highlight) flags.set(root, { ...getFlags(root), highlight: true })
+                else if (root !== left && a.highlight) {
+                    addOverlay(left, 'highlight')
+                    root = right
+                } else if (root !== right && b.highlight) {
+                    addOverlay(right, 'highlight')
+                    root = left
                 }
             }
-            const bottom = (rings - 1) * count
-            for (let column = 1; column < count - 1; column++) faces.push(0, column, column + 1, bottom, bottom + column + 1, bottom + column)
-            return painted(own(new M(new module.Mesh({ numProp: 3, vertProperties: new Float32Array(points), triVerts: new Uint32Array(faces) }))), paint)
+            if (solid !== root) semantics.set(root, solid)
+            left = root
         }
-        if (node.name === 'cylinder') {
-            const r = num(p, 'r', num(p, 'd', 2) / 2),
-                r1 = num(p, 'r1', num(p, 'd1', r * 2) / 2),
-                r2 = num(p, 'r2', num(p, 'd2', r * 2) / 2)
-            if (num(p, 'h', 1) <= 0 || r1 < 0 || r2 < 0 || (r1 === 0 && r2 === 0)) return undefined
-            return painted(own(M.cylinder(num(p, 'h', 1), r1, r2, segments(p, Math.max(r1, r2)), p.center === true)), paint)
-        }
-        if (node.name === 'square') return { section: own(C.square(vector(p.size ?? p.$0, [1, 1]) as Vec2, p.center === true)) }
-        if (node.name === 'circle') {
-            const r = num(p, 'r', num(p, 'd', 2) / 2)
-            return { section: own(C.circle(r, segments(p, r))) }
-        }
-        if (node.name === 'polygon') {
-            const points = p.points as number[][],
-                paths = p.paths as number[][] | null
-            if (!Array.isArray(points)) throw new Error('Invalid CSG polygon.')
-            const contours = paths?.length ? paths.map((path) => path.map((i) => points[i] as Vec2)) : [points as Vec2[]]
-            return { section: own(new C(contours, 'EvenOdd')) }
-        }
-        if (node.name === 'polyhedron') {
-            const points = p.points as number[][],
-                faces = (p.faces ?? p.triangles) as number[][]
-            if (!Array.isArray(points) || !Array.isArray(faces)) throw new Error('Invalid CSG polyhedron.')
-            const triangles: number[] = []
-            for (const face of faces) {
-                // OpenSCAD's polyhedron faces use clockwise winding viewed from outside.
-                const contour = [...face].reverse().map((i) => points[i] as Vec3)
-                if (face.length === 3) triangles.push(...[...face].reverse())
-                else throw new Error('Unsupported CSG operation: non-triangular polyhedron face')
-                if (!contour.every((v) => Array.isArray(v) && v.length === 3)) throw new Error('Invalid CSG polyhedron vertices.')
+        return left
+    }
+    type Paint = { color: [number, number, number, number]; defaultColor: boolean }
+    const leaf = (node: CsgNode, matrix: Matrix4, paint: Paint) => {
+        const source = serializeCsg(node)
+        const key = createHash('sha256').update(source).digest('hex')
+        let index = cache.get(key)
+        const surface = node.name === 'polyhedron' ? polyhedronMesh(node, module) : undefined
+        if (index === undefined) {
+            if (cached[key]) geometryCacheHits++
+            let geometry
+            try {
+                geometry = surface ? { meshes: [surface.mesh] } : cached[key] ? { meshes: [cached[key].mesh] } : evaluateGeometry(source, module)
+            } catch (error) {
+                if (error instanceof Error && error.message === 'CSG model is empty.') return empty()
+                throw error
             }
-            return painted(own(new M(new module.Mesh({ numProp: 3, vertProperties: new Float32Array(points.flat()), triVerts: new Uint32Array(triangles) }))), paint)
+            if (geometry.meshes.length !== 1) throw new Error('A geometry barrier produced unexpected overlay geometry.')
+            index = meshes.length
+            meshes.push(geometry.meshes[0])
+            geometryKeys.push(key)
+            cache.set(key, index)
         }
-        if (!['group', 'union', 'render', 'difference', 'intersection', 'hull', 'multmatrix', 'linear_extrude', 'rotate_extrude', 'offset', 'minkowski'].includes(node.name)) throw new Error(`Unsupported CSG operation: ${node.name}`)
-        const overlayStart = overlays.length
-        const evaluated = node.children.map((child) => visit(child, paint))
-        const operands = evaluated.filter((_shape, index) => !/[%*]/.test(node.children[index].modifiers))
-        if (node.name === 'difference' && !operands[0]) return undefined
-        if (node.name === 'intersection' && operands.some((shape) => !shape)) return undefined
-        const children = operands.filter((s): s is Shape => !!s)
-        if (['group', 'union', 'render'].includes(node.name)) return combine(children)
-        if (node.name === 'difference' || node.name === 'intersection') return combine(children, node.name)
-        const child = combine(children)
-        if (node.name === 'hull') {
-            if (children.every((s) => 'solid' in s)) return { solid: own(M.hull(children.map((s) => s.solid))) }
-            if (children.every((s) => 'section' in s)) return { section: own(C.hull(children.map((s) => s.section))) }
+        const id = operands.length
+        if (surface && !surface.closed) diagnostics.push('A non-closed polyhedron is shown as a surface; it has no solid volume.')
+        operands.push({ mesh: index, matrix: matrix.toArray(), color: paint.color, defaultColor: paint.defaultColor, source: node.name, closed: surface?.closed ?? true, convex: ['cube', 'sphere', 'cylinder', 'hull'].includes(node.name), convexity: typeof node.params.convexity === 'number' ? Math.max(1, Math.ceil(node.params.convexity)) : 1, inverse: [], normalMatrix: [], bounds: { min: [], max: [] } })
+        return emit({ op: 'leaf', operand: id })
+    }
+    const visit = (node: CsgNode, matrix: Matrix4, paint: Paint): number => {
+        if (node.modifiers.includes('*')) return empty()
+        if (/[#%]/.test(node.modifiers)) {
+            const root = visit({ ...node, modifiers: node.modifiers.replace(/[#%]/g, '') }, matrix, paint)
+            const previous = getFlags(root)
+            flags.set(root, { highlight: previous.highlight || node.modifiers.includes('#'), background: previous.background || node.modifiers.includes('%') })
+            return root
         }
         if (node.name === 'multmatrix') {
-            const matrix = (p.m ?? p.$0) as number[][]
-            if (!Array.isArray(matrix) || matrix.length !== 4 || matrix.some((row) => !Array.isArray(row) || row.length !== 4 || row.some((n) => !Number.isFinite(n)))) throw new Error('Invalid CSG transform.')
-            const transform = matrix[0].map((_, column) => matrix.map((row) => row[column])).flat() as Mat4
-            for (let i = overlayStart; i < overlays.length; i++) overlays[i] = own(overlays[i].transform(transform))
-            if (!child) return undefined
-            if ('solid' in child) return { solid: own(child.solid.transform(transform)) }
-            return { section: own(child.section.transform([matrix[0][0], matrix[1][0], 0, matrix[0][1], matrix[1][1], 0, matrix[0][3], matrix[1][3], 1] as Mat3)) }
+            const rows = node.params.m ?? node.params.$0
+            if (!Array.isArray(rows) || rows.length !== 4 || rows.some((r) => !Array.isArray(r) || r.length !== 4 || r.some((v) => typeof v !== 'number' || !Number.isFinite(v)))) throw new Error('Invalid CSG transform.')
+            const transform = new Matrix4().fromArray((rows as number[][]).flat()).transpose()
+            return combine(node.children.map((child) => visit(child, matrix.clone().multiply(transform), paint)))
         }
-        if (!child) return undefined
-        if (node.name === 'linear_extrude' && 'section' in child) {
-            if (num(p, 'twist') !== 0) throw new Error('Unsupported CSG operation: twisted extrusion')
-            if (p.v !== undefined && JSON.stringify(p.v) !== '[0,0,1]') throw new Error('Unsupported CSG operation: directed extrusion')
-            const solid = own(child.section.extrude(num(p, 'height', 1), Math.max(0, num(p, 'slices', 1) - 1), -num(p, 'twist'), vector(p.scale, [1, 1]) as Vec2))
-            return painted(p.center ? own(solid.translate([0, 0, -num(p, 'height', 1) / 2])) : solid, paint)
+        if (node.name === 'color') {
+            if (!paint.defaultColor) return combine(node.children.map((child) => visit(child, matrix, paint)))
+            const c = node.params.c ?? node.params.$0
+            const rgba: [number, number, number, number] = [...paint.color]
+            if (typeof c === 'string') {
+                const rgb = new Color(c)
+                rgba.splice(0, 3, rgb.r, rgb.g, rgb.b)
+            } else if (Array.isArray(c)) for (let i = 0; i < Math.min(c.length, 4); i++) if (typeof c[i] === 'number') rgba[i] = c[i] as number
+            if (typeof node.params.alpha === 'number') rgba[3] = node.params.alpha
+            return combine(node.children.map((child) => visit(child, matrix, { color: rgba, defaultColor: c === null || c === undefined })))
         }
-        if (node.name === 'rotate_extrude' && 'section' in child) {
-            const angle = num(p, 'angle', 360),
-                bounds = child.section.bounds()
-            if (angle <= 0 || angle > 360 || bounds.min[0] < 0) throw new Error('Unsupported CSG operation: signed rotational extrusion')
-            const count = Math.max(1, Math.ceil((segments(p, bounds.max[0]) * angle) / 360))
-            return painted(own(own(child.section.revolve(count, angle)).rotate([0, 0, num(p, 'start')])), paint)
+        if (['group', 'union', 'intersection', 'difference'].includes(node.name)) {
+            // Background terms keep their flag through transforms/color. They
+            // are removed by combine before choosing Difference's first solid.
+            const children = node.children.filter((child) => !child.modifiers.includes('*'))
+            return combine(
+                children.map((child) => visit(child, matrix, paint)),
+                node.name === 'difference' || node.name === 'intersection' ? node.name : 'union',
+            )
         }
-        if (node.name === 'offset' && 'section' in child) return { section: own(child.section.offset(num(p, 'r', num(p, 'delta', 1)), p.chamfer ? 'Square' : p.r === undefined ? 'Miter' : 'Round', 2, segments(p, Math.abs(num(p, 'r', 1))))) }
-        if (node.name === 'minkowski' && 'solid' in child && children.every((s) => 'solid' in s)) {
-            let solid = children[0].solid
-            for (const next of children.slice(1)) solid = own(solid.minkowskiSum(next.solid))
-            return { solid }
-        }
-        throw new Error(`Unsupported CSG operation: ${node.name}`)
+        return leaf(node, matrix, paint)
     }
-    try {
-        const trees = parseCsg(source)
-        const shape = combine(trees.map((node) => visit(node, { rgba: [1, 1, 1, 1], defaultColor: true })).filter((s): s is Shape => !!s))
-        const solids = [...(shape ? ['solid' in shape ? shape.solid : own(shape.section.extrude(0.01))] : []), ...overlays]
-        const meshes: CsgScene['meshes'] = []
-        for (const solid of solids) {
-            const status = solid.status()
-            if (status !== 'NoError') throw new Error(`CSG geometry error: ${status}`)
-            const mesh = solid.getMesh()
-            if (mesh.triVerts.length) meshes.push({ properties: Buffer.from(mesh.vertProperties.buffer, mesh.vertProperties.byteOffset, mesh.vertProperties.byteLength).toString('base64'), indices: Buffer.from(mesh.triVerts.buffer, mesh.triVerts.byteOffset, mesh.triVerts.byteLength).toString('base64'), stride: mesh.numProp })
-        }
-        if (!meshes.length) throw new Error('CSG model is empty.')
-        return { version: 1, meshes }
-    } finally {
-        for (const object of owned) object.delete()
+    const trees = selectCsgRoots(parseCsg(source))
+    let root = combine(trees.map((tree) => visit(tree, new Matrix4(), { color: [1, 1, 1, 1], defaultColor: true })))
+    let topologyRoot = solidRoot(root)
+    if (getFlags(root).highlight) addOverlay(root, 'highlight')
+    if (getFlags(root).background) {
+        addOverlay(root, 'background')
+        root = empty()
+        topologyRoot = root
     }
+    if (!operands.length || (program[root].op === 'empty' && !overlays.length)) throw new Error('CSG model is empty.')
+    for (const expression of [root, ...overlays.map((o) => o.root)])
+        if (!['leaf', 'empty'].includes(program[expression].op)) {
+            const pending = [expression],
+                seen = new Set<number>()
+            while (pending.length) {
+                const id = pending.pop()!
+                if (seen.has(id)) continue
+                seen.add(id)
+                const instruction = program[id]
+                if (instruction.op === 'leaf') {
+                    if (!operands[instruction.operand].closed) throw new Error('A non-closed surface cannot be classified as a CSG boolean solid.')
+                } else if (instruction.op !== 'empty') pending.push(instruction.left, instruction.right)
+            }
+        }
+    const prepared = prepareGeometry(meshes, operands)
+    const geometryMs = performance.now() - started,
+        normalizationStarted = performance.now()
+    const products = normalizeCsg(program, root)
+    for (const overlay of overlays) overlay.products = normalizeCsg(program, overlay.root)
+    return { version: 3, meshes, operands, geometryKeys, diagnostics, program, root, topologyRoot, products, overlays, ...prepared, dependencies: [], timings: { geometryMs, normalizationMs: performance.now() - normalizationStarted, geometryCacheHits } }
 }

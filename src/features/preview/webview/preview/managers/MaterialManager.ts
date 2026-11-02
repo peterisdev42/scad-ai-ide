@@ -7,7 +7,7 @@ export class MaterialManager {
     /** Use theme defaults or a user override; reset restores source material and vertex colors. */
     public setTheme(group: Group, theme: Theme, override: string | null = null) {
         group.traverse((child) => {
-            if (!(child instanceof Mesh)) return
+            if (!(child instanceof Mesh) || child.userData.csg) return
             const flags = child.geometry.getAttribute('scadDefaultColor')
             const colors = child.geometry.getAttribute('color')
             if (flags && colors) {
@@ -37,7 +37,7 @@ export class MaterialManager {
 
     public applyToGroup(group: Group, settings: ViewOptionsContext) {
         group.traverse((child) => {
-            if (child instanceof Mesh) {
+            if (child instanceof Mesh && !child.userData.csg) {
                 child.castShadow = settings.get('shadows')
                 child.receiveShadow = settings.get('shadows')
                 this.applyToMesh(child, settings)

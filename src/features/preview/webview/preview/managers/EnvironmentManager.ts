@@ -1,4 +1,5 @@
-import { BufferGeometry, GridHelper, Group, Mesh, MeshBasicMaterial } from 'three'
+import { BufferGeometry, GridHelper, Group, Mesh } from 'three'
+import { MeshBasicNodeMaterial as MeshBasicMaterial } from 'three/webgpu'
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js'
 import { BuildPlateOrigin, Environment } from '../../contexts/ViewOptionsContext'
 import buildPlate from '../assets/models/buildPlate.stl'
@@ -80,8 +81,8 @@ export class EnvironmentManager {
 
         const material = new MeshBasicMaterial({
             color: this.theme.plate,
-            depthTest: false,
-            depthWrite: false,
+            depthTest: true,
+            depthWrite: true,
             fog: false,
             toneMapped: false,
         })
@@ -93,7 +94,7 @@ export class EnvironmentManager {
         const grid = new GridHelper(BUILD_PLATE_SIZE, 25, this.theme.plateGrid, this.theme.plateGrid)
         grid.renderOrder = -1
         grid.rotateX(Math.PI / 2)
-        grid.material.depthTest = false
+        grid.material.depthTest = true
         grid.material.depthWrite = false
         grid.material.fog = false
         this.group.add(grid)

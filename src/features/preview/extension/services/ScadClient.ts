@@ -1,3 +1,5 @@
+import { readCliDependencies, type FileDependency } from '../../../../core/formats/dependencies'
+import { fontDirectoriesFromArgs } from '../../../../core/csg/fontDirectories'
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process'
 import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -13,9 +15,21 @@ export class ScadClient {
     private static tickets = new Map<string, symbol>()
     private static activeProcesses = new Map<string, ChildProcessWithoutNullStreams>()
     public static readonly outputChannel = window.createOutputChannel('SCAD AI IDE Preview')
+    private static lastCommand?: LaunchCommand
+    static async getCsgFontDirectories() {
+        const configured = workspace.getConfiguration('scad-ai-ide').get<LaunchCommand>('runtimeCommand')
+        let current: LaunchCommand | undefined
+        try {
+            current = await this.resolveCommand?.()
+        } catch {
+            /* Direct CSG remains usable without a CLI runtime. */
+        }
+        return fontDirectoriesFromArgs(current?.argsPrefix ?? configured?.argsPrefix ?? this.lastCommand?.argsPrefix ?? [])
+    }
     private static resolveCommand: (() => Promise<LaunchCommand>) | undefined
 
     static configure(resolve: () => Promise<LaunchCommand>) {
+        this.lastCommand = undefined
         this.resolveCommand = resolve
     }
     static dispose() {
@@ -24,6 +38,7 @@ export class ScadClient {
         }
         this.activeProcesses.clear()
         this.tickets.clear()
+        this.lastCommand = undefined
         this.resolveCommand = undefined
     }
     static cancelRender(key: string) {
@@ -34,7 +49,7 @@ export class ScadClient {
             process.kill()
         }
     }
-    static async render(scadPath: string, parameters: Record<string, string | number | boolean | number[]> = {}, format: ModelFormat = ModelFormat.STL, onStderr?: (chunk: string) => void, key = scadPath): Promise<Buffer> {
+    static async render(scadPath: string, parameters: Record<string, string | number | boolean | number[]> = {}, format: ModelFormat = ModelFormat.STL, onStderr?: (chunk: string) => void, key = scadPath, onDependencies?: (dependencies: FileDependency[]) => void): Promise<Buffer> {
         this.cancelRender(key)
         const ticket = Symbol(key)
         this.tickets.set(key, ticket)
@@ -62,11 +77,13 @@ export class ScadClient {
         if (!workspace.isTrusted) {
             throw new Error('Trust this workspace to run OpenSCAD.')
         }
+        this.lastCommand = command
         const directory = await mkdtemp(join(tmpdir(), 'scad-ai-preview-'))
         try {
             check()
             const output = join(directory, `model.${format}`)
-            const args = [...command.argsPrefix, '--export-format', format, ...(workspace.getConfiguration('scad-ai-ide.preview').get<boolean>('enableLazyUnion', false) ? ['--enable', 'lazy-union'] : []), '-o', output, ...Object.entries(parameters).flatMap(([name, value]) => ['-D', `${name}=${JSON.stringify(value)}`]), ...(format === ModelFormat.CSG ? ['-D', '$preview=true'] : []), source === undefined ? scadPath : '-']
+            const dependencyFile = join(directory, 'model.d')
+            const args = [...command.argsPrefix, '-d',dependencyFile, '--export-format', format, ...(workspace.getConfiguration('scad-ai-ide.preview').get<boolean>('enableLazyUnion', false) ? ['--enable', 'lazy-union'] : []), '-o', output, ...Object.entries(parameters).flatMap(([name, value]) => ['-D', `${name}=${JSON.stringify(value)}`]), ...(format === ModelFormat.CSG ? ['-D', '$preview=true'] : []), source === undefined ? scadPath : '-']
             this.outputChannel.appendLine(`[OpenSCAD] ${JSON.stringify([command.executable, ...args])}`)
             await new Promise<void>((resolve, reject) => {
                 const child = spawn(command.executable, args, { cwd: dirname(scadPath), ...(format === ModelFormat.CSG ? { timeout: 30000, killSignal: 'SIGKILL' as const } : {}) })
@@ -100,7 +117,9 @@ export class ScadClient {
                 })
             })
             const buffer = await readFile(output)
+            const dependencies = await readCliDependencies(dependencyFile, dirname(scadPath), [scadPath])
             check()
+            onDependencies?.(dependencies)
 
             return buffer
         } finally {

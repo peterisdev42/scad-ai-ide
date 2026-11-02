@@ -1,11 +1,12 @@
 import { consume } from '@lit/context'
-import { css, html, LitElement } from 'lit'
+import { css, html, LitElement, nothing } from 'lit'
 import { customElement, query, state } from 'lit/decorators.js'
 import { activeToolContext, ActiveToolContext } from '../../contexts/ActiveToolContext'
 import { modelContext, ModelContext } from '../../contexts/ModelContext'
 import { viewOptionsContext, ViewOptionsContext } from '../../contexts/ViewOptionsContext'
 import { Stage } from '../../preview/Stage'
 import { readPreviewTheme, Theme } from '../../preview/Theme'
+import './BackendStatus'
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -36,45 +37,68 @@ export class Preview extends LitElement {
             height: 100% !important;
         }
 
-        #loading-overlay {
+        /* One status surface for loading, notices, errors and backend details.
+         * No independent position/z-index rules for individual messages. */
+        #preview-status {
             position: absolute;
-            bottom: 1rem;
-            left: 1rem;
+            left: 16px;
+            bottom: 16px;
+            z-index: 20;
+            box-sizing: border-box;
+            width: max-content;
+            max-width: min(480px, calc(100% - 32px));
+            max-height: min(45%, 360px);
+            overflow: auto;
+            padding: 9px 12px;
+            border: 1px solid var(--vscode-panel-border);
+            border-radius: 8px;
+            color: var(--vscode-foreground);
+            background: var(--vscode-editorWidget-background, var(--vscode-editor-background));
+            box-shadow: 0 4px 16px var(--vscode-widget-shadow, transparent);
+            font-family: var(--vscode-font-family);
+            font-size: var(--vscode-font-size, 12px);
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+        #preview-status .primary {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            z-index: 1000;
-            color: var(--vscode-foreground);
-            background: rgba(0, 0, 0, 0.15);
-            border-radius: 0.25rem;
-            padding: 0.75rem 1rem 0.75rem 0.75rem;
-            pointer-events: none;
+            gap: 8px;
+            min-width: 0;
         }
-
+        #preview-status .primary.error {
+            color: var(--vscode-errorForeground, var(--vscode-foreground));
+        }
+        #preview-status .backend {
+            min-width: 0;
+        }
+        #preview-status .primary + .backend {
+            border-top: 1px solid var(--vscode-panel-border);
+            margin-top: 6px;
+            padding-top: 6px;
+        }
+        /* No model loaded: centered placeholder, never a second bottom-left notice. */
         #loading-overlay.empty {
+            position: absolute;
             top: 50%;
             left: 50%;
-            bottom: auto;
             transform: translate(-50%, -50%);
+            z-index: 9;
             width: max-content;
             max-width: calc(100% - 2rem);
             box-sizing: border-box;
             padding: 1.25rem 1.75rem;
             color: var(--vscode-editorWidget-foreground, var(--vscode-foreground));
             background: var(--vscode-editorWidget-background, var(--vscode-editor-background));
-            background: color-mix(in srgb, var(--vscode-editorWidget-background, var(--vscode-editor-background)) 80%, transparent);
-            border: 1px solid var(--vscode-contrastBorder, var(--vscode-editorWidget-border, var(--vscode-panel-border, color-mix(in srgb, var(--vscode-foreground) 20%, transparent))));
+            border: 1px solid var(--vscode-panel-border);
             border-radius: 0.75rem;
             box-shadow: 0 8px 24px var(--vscode-widget-shadow, transparent);
-            -webkit-backdrop-filter: blur(14px) saturate(130%);
-            backdrop-filter: blur(14px) saturate(130%);
-            font-family: var(--vscode-font-family);
             font-size: max(18px, calc(var(--vscode-font-size, 13px) * 1.4));
             font-weight: 500;
             line-height: 1.5;
             text-align: center;
+            pointer-events: none;
         }
-
         .spinner {
             border: 2px solid var(--vscode-editorGhostText-border, rgba(255, 255, 255, 0.1));
             border-top: 2px solid var(--vscode-button-background);
@@ -110,8 +134,13 @@ export class Preview extends LitElement {
     @query('#canvas-container')
     private container!: HTMLElement
 
+    @state() private toolStatus = ''
+    @state() private previewIssue = ''
+    @state() private preparing = false
     public stage?: Stage
-    private loadedModel?: Pick<ModelContext, 'format' | 'base64Data'>
+    private recovering = false
+    private forceWebGL = false
+    private loadedModel?: Pick<ModelContext, 'format' | 'base64Data' | 'modelVersion'>
     private resizeObserver: ResizeObserver | null = null
     private themeObserver: MutationObserver | null = null
     private theme: Theme = readPreviewTheme(getComputedStyle(document.body))
@@ -122,16 +151,69 @@ export class Preview extends LitElement {
         this.setupThemeObserver()
     }
 
-    initStage() {
-        this.stage = new Stage(this.container, this.theme)
+    async initStage() {
+        const stage = (this.stage = new Stage(this.container, this.theme, { forceWebGL: this.forceWebGL }))
+        stage.setToolStatusCallback((status) => {
+            this.toolStatus = status
+        })
+        stage.setErrorCallback((error) => {
+            if (this.stage === stage && !this.recovering) {
+                this.previewIssue = error
+                this.preparing = false
+            }
+        })
+        stage.setDeviceLossCallback((reason) => {
+            void this.recoverRenderer(reason)
+        })
+        try {
+            await stage.ready
+        } catch (error) {
+            this.dispatchEvent(new CustomEvent('preview-error', { detail: String(error), bubbles: true, composed: true }))
+            return
+        }
+        if (!this.isConnected || this.stage !== stage) return
 
         // Process any state that arrived before initialization
         if (this.viewSettingsContext) {
             this.stage.applySettings(this.viewSettingsContext)
         }
 
+        if (this.activeToolContext) {
+            stage.setActiveTool(this.activeToolContext.activeTool)
+            stage.setToolVariant(this.activeToolContext.variant)
+        }
         this.loadModel()
         this.dispatchEvent(new CustomEvent('stage-ready', { bubbles: true, composed: true }))
+        return stage
+    }
+
+    private async recoverRenderer(reason: string) {
+        if (this.recovering || !this.stage) return
+        if (this.forceWebGL) {
+            this.previewIssue = `Graphics recovery failed: ${reason}`
+            return
+        }
+        this.recovering = true
+        const previous = this.stage,
+            views = previous.captureCameraViews(),
+            properties = previous.serializeProperties()
+        this.dispatchEvent(new CustomEvent('renderer-restarting', { detail: { properties }, bubbles: true, composed: true }))
+        this.previewIssue = 'WebGPU device lost. Restoring the view with WebGL 2…'
+        previous.dispose()
+        this.stage = undefined
+        this.loadedModel = undefined
+        this.container.replaceChildren()
+        this.forceWebGL = true
+        try {
+            const replacement = await this.initStage()
+            if (!replacement) throw new Error('Renderer initialization failed')
+            replacement.restoreCameraViews(views)
+            this.previewIssue = ''
+        } catch (error) {
+            this.previewIssue = `Graphics recovery failed: ${String(error)}`
+        } finally {
+            this.recovering = false
+        }
     }
 
     // Bridging the declarative Lit cycle with the imperative Three.js cycle
@@ -153,9 +235,26 @@ export class Preview extends LitElement {
     private loadModel() {
         const model = this.modelContext
         if (!this.stage || !model) return
-        if (this.loadedModel?.format === model.format && this.loadedModel.base64Data === model.base64Data) return
-        this.stage.loadModelData(model)
-        this.loadedModel = { format: model.format, base64Data: model.base64Data }
+        if (this.loadedModel?.format === model.format && this.loadedModel.base64Data === model.base64Data && this.loadedModel.modelVersion === model.modelVersion) return
+        this.previewIssue = ''
+        const stage = this.stage
+        this.preparing = !!model.base64Data
+        void stage
+            .loadModelData({
+                ...model,
+                frameReady: (graphics, elapsed) => {
+                    if (this.stage === stage && this.modelContext.modelVersion === model.modelVersion) {
+                        this.preparing = false
+                        model.frameReady?.(graphics, elapsed)
+                    }
+                },
+            })
+            .catch((error) => {
+                if (this.stage !== stage || this.modelContext.modelVersion !== model.modelVersion || this.modelContext.base64Data !== model.base64Data || this.recovering) return
+                this.previewIssue = error instanceof Error ? error.message : String(error)
+                this.preparing = false
+            })
+        this.loadedModel = { format: model.format, base64Data: model.base64Data, modelVersion: model.modelVersion }
     }
 
     disconnectedCallback() {
@@ -202,17 +301,28 @@ export class Preview extends LitElement {
     }
 
     render() {
+        const loading = !!(this.modelContext?.isLoading || this.preparing)
+        const error = this.modelContext?.previewError || (!this.recovering ? this.previewIssue : '')
+        const loadingMessage = this.preparing
+            ? this.modelContext?.format === 'csg' ? 'Preparing CSG preview and first frame…' : 'Preparing mesh and first frame…'
+            : (this.modelContext?.loadingMessage ?? 'Rendering SCAD...')
+        // Severity order: error > renderer recovery > loading > tool notice > backend.
+        const primary = error || (this.recovering ? this.previewIssue : '') || (loading ? loadingMessage : this.toolStatus)
+        const backend = !!this.modelContext?.backend
+        const empty = !this.modelContext?.base64Data && !loading && !error
         return html`
-            ${
-                this.modelContext?.isLoading || !this.modelContext?.base64Data
-                    ? html`
-                          <div id="loading-overlay" class=${this.modelContext?.isLoading ? '' : 'empty'}>
-                              ${this.modelContext?.isLoading ? html`<div class="spinner"></div>` : ''}
-                              <div>${this.modelContext?.loadingMessage ?? 'Rendering SCAD...'}</div>
-                          </div>
-                      `
-                    : ''
-            }
+            ${empty ? html`<div id="loading-overlay" class="empty">${this.modelContext?.loadingMessage ?? 'Rendering SCAD...'}</div>` : nothing}
+            ${primary || backend ? html`
+                <div id="preview-status" role=${error ? 'alert' : 'status'} aria-label="Preview status">
+                    ${primary ? html`
+                        <div id=${error ? 'tool-status' : 'preview-message'} class="primary ${error ? 'error' : ''}">
+                            ${loading && !error ? html`<div class="spinner" aria-hidden="true"></div>` : nothing}
+                            <span>${primary}</span>
+                        </div>
+                    ` : nothing}
+                    ${backend ? html`<div class="backend"><scad-backend-status></scad-backend-status></div>` : nothing}
+                </div>
+            ` : nothing}
             <div id="canvas-container"></div>
         `
     }

@@ -14,7 +14,8 @@ export class IconButton extends LitElement {
             display: inline-flex;
         }
 
-        button {
+        button,a {
+            text-decoration:none;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -30,21 +31,21 @@ export class IconButton extends LitElement {
             outline-width: 1px;
         }
 
-        button:not(:disabled):hover {
+        button:not(:disabled):hover,a:hover {
             background: var(--vscode-toolbar-hoverBackground);
         }
 
-        button:disabled {
+        button:disabled,a[aria-disabled="true"] {
             opacity: 0.4;
             cursor: default;
         }
 
-        button:focus-visible {
+        button:focus-visible,a:focus-visible {
             outline-color: var(--vscode-focusBorder);
             outline-style: solid;
         }
 
-        button.checked {
+        button.checked,a.checked {
             background: var(--vscode-inputOption-activeBackground);
             outline: 1px solid var(--vscode-inputOption-activeBorder);
             color: var(--vscode-inputOption-activeForeground);
@@ -55,12 +56,14 @@ export class IconButton extends LitElement {
         }
     `
 
+    @property() href?:string
     @property() label = ''
     @property({ type: Boolean, reflect: true }) disabled = false
     @property({ type: Boolean, reflect: true }) toggleable = false
     @property({ type: Boolean, reflect: true }) checked = false
 
     render() {
+        if(this.href&&!this.disabled)return html`<a href=${this.href} aria-label=${this.label||nothing} title=${this.label||nothing} role=${this.toggleable?'switch':nothing} aria-checked=${this.toggleable?this.checked:nothing} class=${this.toggleable&&this.checked?'checked':''} @click=${this.handleClick}><slot></slot></a>`
         return html`
             <button ?disabled=${this.disabled} aria-label=${this.label || nothing} title=${this.label || nothing} role=${this.toggleable ? 'switch' : nothing} aria-checked=${this.toggleable ? this.checked : nothing} class=${this.toggleable && this.checked ? 'checked' : ''} @click=${this.handleClick}>
                 <slot></slot>

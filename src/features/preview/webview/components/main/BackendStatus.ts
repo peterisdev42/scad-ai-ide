@@ -8,54 +8,62 @@ import { modelContext, type ModelContext } from '../../contexts/ModelContext'
 export class BackendStatus extends LitElement {
     static styles = css`
         :host {
-            position: absolute;
-            left: 16px;
-            bottom: 16px;
-            z-index: 11;
-            max-width: calc(100% - 150px);
-            pointer-events: none;
-        }
-        .status {
-            padding: 7px 10px;
-            border: 1px solid var(--vscode-panel-border);
-            border-radius: 5px;
-            color: var(--vscode-foreground);
-            background: var(--vscode-editor-background);
+            display: block;
+            min-width: 0;
             font-family: var(--vscode-font-family);
             font-size: var(--vscode-font-size, 12px);
-            line-height: 1.5;
+            color: var(--vscode-foreground);
+        }
+        .status {
+            line-height: 1.45;
             overflow-wrap: anywhere;
         }
-        .fallback {
-            border-color: var(--vscode-editorWarning-foreground, var(--vscode-panel-border));
+        .headline {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 0 5px;
         }
-        .fallback strong {
-            color: var(--vscode-editorWarning-foreground, var(--vscode-foreground));
+        details {
+            margin-top: 3px;
+            color: var(--vscode-descriptionForeground);
+        }
+        summary {
+            cursor: pointer;
+            width: max-content;
+            font-size: 11px;
+        }
+        summary:focus-visible {
+            outline: 1px solid var(--vscode-focusBorder);
         }
         small {
             display: block;
             font-size: 11px;
             color: var(--vscode-descriptionForeground);
         }
-        :host([loading]) {
-            bottom: 80px;
-        }
     `
     @consume({ context: modelContext, subscribe: true })
     @state()
     private model?: ModelContext
 
-    updated() {
-        this.toggleAttribute('loading', !!this.model?.isLoading)
-    }
-
     render() {
         const backend = this.model?.backend
         if (!backend) return null
-        const label = backend.kind === 'fallback' ? 'CSG → STL fallback' : backend.kind === 'csg' ? 'CSG / Manifold mesh' : backend.kind === 'mesh' ? 'CLI mesh render' : 'Checking preview backend…'
-        return html`<div class="status ${backend.kind === 'fallback' ? 'fallback' : ''}" role="status">
-            <strong>${label}</strong>${backend.elapsedMs === undefined ? '' : html`<span> · ${backend.elapsedMs} ms</span>`} ${backend.reason ? html`<small>${backend.reason}</small>` : ''}
-            <small>${backend.kind === 'csg' ? 'Mesh evaluation · drag updates enabled' : 'Release slider to update'}</small>
+        const label = backend.kind === 'csg' ? (backend.frameReady ? 'GPU CSG preview' : 'Preparing GPU CSG preview') : backend.kind === 'mesh' ? 'CLI mesh render' : 'Checking preview backend…'
+        return html`<div class="status">
+            <div class="headline">
+                <strong>${label}</strong>
+                ${backend.elapsedMs === undefined ? '' : html`<span>· ${backend.elapsedMs} ms</span>`}
+                ${backend.graphics ? html`<span>· ${backend.graphics === 'webgpu' ? 'WebGPU' : 'WebGL 2'}</span>` : ''}
+            </div>
+            <details>
+                <summary>Performance details</summary>
+                ${backend.reason ? html`<small>${backend.reason}</small>` : ''}
+                ${backend.firstFrameMs === undefined ? '' : html`<small>Viewport first frame: ${backend.firstFrameMs} ms</small>`}
+                ${backend.timings ? html`<small>CLI ${Math.round(backend.timings.cliMs ?? 0)} · local ${Math.round(backend.timings.geometryMs ?? 0)} · normalize ${Math.round(backend.timings.normalizationMs ?? 0)} · upload ${Math.round(backend.timings.uploadMs ?? 0)} · shader ${Math.round(backend.timings.shaderMs ?? 0)} ms${backend.cacheHit ? ' · cached' : ''}</small>` : ''}
+                ${backend.timings?.topologyRequestMs !== undefined ? html`<small>Topology request: ${Math.round(backend.timings.topologyRequestMs)} ms</small>` : ''}
+                <small>${backend.kind === 'csg' && backend.frameReady ? 'Image-space CSG · drag updates enabled' : backend.kind === 'csg' ? 'Waiting for the first frame' : 'Release slider to update'}</small>
+            </details>
         </div>`
     }
 }

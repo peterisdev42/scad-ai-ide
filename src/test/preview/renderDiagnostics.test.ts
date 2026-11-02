@@ -34,6 +34,7 @@ function panelFixture() {
     vm.runInNewContext(transformSync(source, { loader: 'ts', format: 'cjs', target: 'es2022' }).code, {
         module,
         require: (id: string) => {
+            if (id.endsWith('/csg/compile')) return { compileCsgTopology: async () => ({ version: 1, meshes: [] }) }
             if (id.endsWith('/platform/notifications')) return { notifications: { previewError: (error: Error) => notices.push(error) } }
             if (id.endsWith('/renderError')) return { showRenderError: (error: Error) => notices.push(error) }
             if (id.endsWith('/renderDiagnostics')) return { syntaxErrorMessage }

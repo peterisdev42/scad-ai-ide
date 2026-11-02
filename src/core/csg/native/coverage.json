@@ -1,0 +1,239 @@
+{
+  "revision": "fe482c342ea48bbe749563315741d0e58cdfd57f",
+  "discretization": [
+    "$fa",
+    "$fe",
+    "$fn",
+    "$fs"
+  ],
+  "serializers": [
+    {
+      "nodeClass": "CgalAdvNode",
+      "file": "CgalAdvNode.cc",
+      "line": 115,
+      "parameters": [
+        "auto",
+        "convexity",
+        "newsize"
+      ],
+      "serializer": "std::string CgalAdvNode::toString() const\n{\n  std::ostringstream stream;\n\n  stream << this->name();\n  switch (type) {\n  case CgalAdvType::MINKOWSKI: stream << \"(convexity = \" << this->convexity << \")\"; break;\n  case CgalAdvType::HULL:\n  case CgalAdvType::FILL:      stream << \"()\"; break;\n  case CgalAdvType::RESIZE:\n    stream << \"(newsize = [\" << this->newsize[0] << \",\" << this->newsize[1] << \",\" << this->newsize[2]\n           << \"]\" << \", auto = [\" << this->autosize[0] << \",\" << this->autosize[1] << \",\"\n           << this->autosize[2] << \"]\" << \", convexity = \" << this->convexity << \")\";\n    break;\n  default: assert(false);\n  }\n\n  return stream.str();\n}"
+    },
+    {
+      "nodeClass": "ColorNode",
+      "file": "ColorNode.cc",
+      "line": 90,
+      "parameters": [],
+      "serializer": "std::string ColorNode::toString() const\n{\n  return STR(\"color([\", this->color.r(), \", \", this->color.g(), \", \", this->color.b(), \", \",\n             this->color.a(), \"])\");\n}"
+    },
+    {
+      "nodeClass": "CsgOpNode",
+      "file": "CsgOpNode.cc",
+      "line": 62,
+      "parameters": [],
+      "serializer": "std::string CsgOpNode::toString() const\n{\n  return this->name() + \"()\";\n}"
+    },
+    {
+      "nodeClass": "ImportNode",
+      "file": "ImportNode.cc",
+      "line": 263,
+      "parameters": [
+        "center",
+        "convexity",
+        "dpi",
+        "file",
+        "id",
+        "layer",
+        "origin",
+        "scale",
+        "timestamp",
+        "type"
+      ],
+      "serializer": "std::string ImportNode::toString() const\n{\n  std::ostringstream stream;\n  fs::path path((std::string)this->filename);\n\n  stream << this->name();\n  stream << \"(file = \" << this->filename;\n  if (this->id) {\n    stream << \", id = \" << QuotedString(this->id.get());\n  }\n  if (this->layer) {\n    stream << \", layer = \" << QuotedString(this->layer.get());\n  }\n  stream << \", origin = [\" << std::dec << this->origin_x << \", \" << this->origin_y << \"]\";\n  if (this->type == ImportType::SVG) {\n    stream << \", dpi = \" << this->dpi;\n  }\n  stream << \", scale = \" << this->scale << \", center = \" << (this->center ? \"true\" : \"false\")\n         << \", convexity = \" << this->convexity << \", \" << this->discretizer\n         << \", timestamp = \" << fs_timestamp(path) << \")\";\n\n  return stream.str();\n}"
+    },
+    {
+      "nodeClass": "LinearExtrudeNode",
+      "file": "LinearExtrudeNode.cc",
+      "line": 111,
+      "parameters": [
+        "center",
+        "convexity",
+        "height",
+        "scale",
+        "segments",
+        "slices",
+        "twist",
+        "v"
+      ],
+      "serializer": "std::string LinearExtrudeNode::toString() const\n{\n  std::ostringstream stream;\n\n  stream << this->name() << \"(\";\n  double height = this->height.norm();\n  stream << \"height = \" << height;\n  if (height > 0) {\n    Vector3d v = this->height / height;\n    if (v[2] < 1) {\n      stream << \", v = [ \" << v[0] << \", \" << v[1] << \", \" << v[2] << \"]\";\n    }\n  }\n  if (this->center) {\n    stream << \", center = true\";\n  }\n  if (this->has_twist) {\n    stream << \", twist = \" << this->twist;\n  }\n  if (this->has_slices) {\n    stream << \", slices = \" << this->slices;\n  }\n  if (this->has_segments) {\n    stream << \", segments = \" << this->segments;\n  }\n\n  if (this->scale_x != this->scale_y) {\n    stream << \", scale = [\" << this->scale_x << \", \" << this->scale_y << \"]\";\n  } else if (this->scale_x != 1.0) {\n    stream << \", scale = \" << this->scale_x;\n  }\n\n  if (!(this->has_slices && this->has_segments)) {\n    stream << \", \" << this->discretizer;\n  }\n  if (this->convexity > 1) {\n    stream << \", convexity = \" << this->convexity;\n  }\n  stream << \")\";\n  return stream.str();\n}"
+    },
+    {
+      "nodeClass": "OffsetNode",
+      "file": "OffsetNode.cc",
+      "line": 76,
+      "parameters": [
+        "chamfer",
+        "delta",
+        "isRadius",
+        "join_type",
+        "r",
+        "var"
+      ],
+      "serializer": "std::string OffsetNode::toString() const\n{\n  std::ostringstream stream;\n\n  bool isRadius = this->join_type == Clipper2Lib::JoinType::Round;\n  auto var = isRadius ? \"(r = \" : \"(delta = \";\n\n  stream << this->name() << var << std::dec << this->delta;\n  if (!isRadius) {\n    stream << \", chamfer = \" << (this->chamfer ? \"true\" : \"false\");\n  }\n  stream << \", \" << this->discretizer << \")\";\n\n  return stream.str();\n}"
+    },
+    {
+      "nodeClass": "ProjectionNode",
+      "file": "ProjectionNode.cc",
+      "line": 56,
+      "parameters": [
+        "convexity",
+        "cut"
+      ],
+      "serializer": "std::string ProjectionNode::toString() const\n{\n  return STR(\"projection(cut = \", (this->cut_mode ? \"true\" : \"false\"), \", convexity = \", this->convexity,\n             \")\");\n}"
+    },
+    {
+      "nodeClass": "RenderNode",
+      "file": "RenderNode.cc",
+      "line": 53,
+      "parameters": [
+        "convexity"
+      ],
+      "serializer": "std::string RenderNode::toString() const\n{\n  return STR(this->name(), \"(convexity = \", convexity, \")\");\n}"
+    },
+    {
+      "nodeClass": "RoofNode",
+      "file": "RoofNode.cc",
+      "line": 48,
+      "parameters": [
+        "convexity",
+        "method"
+      ],
+      "serializer": "std::string RoofNode::toString() const\n{\n  std::stringstream stream;\n\n  stream << \"roof(method = \\\"\" << this->method << \"\\\"\" << \", \" << discretizer\n         << \", convexity = \" << this->convexity << \")\";\n\n  return stream.str();\n}"
+    },
+    {
+      "nodeClass": "RotateExtrudeNode",
+      "file": "RotateExtrudeNode.cc",
+      "line": 82,
+      "parameters": [
+        "angle",
+        "convexity",
+        "start"
+      ],
+      "serializer": "std::string RotateExtrudeNode::toString() const\n{\n  std::ostringstream stream;\n\n  stream << this->name()\n         << \"(\"\n            \"angle = \"\n         << this->angle\n         << \", \"\n            \"start = \"\n         << this->start\n         << \", \"\n            \"convexity = \"\n         << this->convexity << \", \" << discretizer << \")\";\n\n  return stream.str();\n}"
+    },
+    {
+      "nodeClass": "SelectedObject",
+      "file": "Selection.cc",
+      "line": 30,
+      "parameters": [
+        "type"
+      ],
+      "serializer": "std::string SelectedObject::toString() const\n{\n  if (type == SelectionType::SELECTION_LINE) {\n    return Vector3dtoString(p1) + \" to \" + Vector3dtoString(p2);\n  }\n  return Vector3dtoString(p1);\n}"
+    },
+    {
+      "nodeClass": "SurfaceNode",
+      "file": "SurfaceNode.cc",
+      "line": 314,
+      "parameters": [
+        "center",
+        "file",
+        "invert",
+        "timestamp"
+      ],
+      "serializer": "std::string SurfaceNode::toString() const\n{\n  std::ostringstream stream;\n  fs::path path{static_cast<std::string>(this->filename)};  // gcc-4.6\n\n  stream << this->name() << \"(file = \" << this->filename\n         << \", center = \" << (this->center ? \"true\" : \"false\")\n         << \", invert = \" << (this->invert ? \"true\" : \"false\")\n         << \", \"\n            \"timestamp = \"\n         << fs_timestamp(path) << \")\";\n\n  return stream.str();\n}"
+    },
+    {
+      "nodeClass": "TextNode",
+      "file": "TextNode.cc",
+      "line": 65,
+      "parameters": [],
+      "serializer": "std::string TextNode::toString() const\n{\n  return STR(name(), \"(\", this->params, \")\");\n}"
+    },
+    {
+      "nodeClass": "TransformNode",
+      "file": "TransformNode.cc",
+      "line": 252,
+      "parameters": [],
+      "serializer": "std::string TransformNode::toString() const\n{\n  std::ostringstream stream;\n\n  stream << \"multmatrix([\";\n  for (int j = 0; j < 4; ++j) {\n    stream << \"[\";\n    for (int i = 0; i < 4; ++i) {\n      stream << this->matrix(j, i);\n      if (i != 3) stream << \", \";\n    }\n    stream << \"]\";\n    if (j != 3) stream << \", \";\n  }\n  stream << \"])\";\n\n  return stream.str();\n}"
+    },
+    {
+      "nodeClass": "Value",
+      "file": "Value.cc",
+      "line": 513,
+      "parameters": [],
+      "serializer": "std::string Value::toString() const\n{\n  return std::visit(tostring_visitor(), this->value);\n}"
+    },
+    {
+      "nodeClass": "AbstractNode",
+      "file": "node.cc",
+      "line": 48,
+      "parameters": [],
+      "serializer": "std::string AbstractNode::toString() const\n{\n  return this->name() + \"()\";\n}"
+    },
+    {
+      "nodeClass": "AbstractIntersectionNode",
+      "file": "node.cc",
+      "line": 148,
+      "parameters": [],
+      "serializer": "std::string AbstractIntersectionNode::toString() const\n{\n  return this->name() + \"()\";\n}"
+    },
+    {
+      "nodeClass": "SphereNode",
+      "file": "primitives.cc",
+      "line": 170,
+      "parameters": [
+        "r",
+        "style"
+      ],
+      "serializer": "std::string SphereNode::toString() const\n{\n  std::ostringstream stream;\n  stream << \"sphere(\" << discretizer << \", r = \" << r << \", style = \\\"\" << style << \"\\\")\";\n  return stream.str();\n}"
+    },
+    {
+      "nodeClass": "CylinderNode",
+      "file": "primitives.cc",
+      "line": 444,
+      "parameters": [
+        "center",
+        "h",
+        "r1",
+        "r2"
+      ],
+      "serializer": "std::string CylinderNode::toString() const\n{\n  std::ostringstream stream;\n  stream << \"cylinder(\" << discretizer << \", h = \" << h << \", r1 = \" << r1 << \", r2 = \" << r2\n         << \", center = \" << (center ? \"true\" : \"false\") << \")\";\n  return stream.str();\n}"
+    },
+    {
+      "nodeClass": "PolyhedronNode",
+      "file": "primitives.cc",
+      "line": 563,
+      "parameters": [
+        "convexity",
+        "faces",
+        "firstFace",
+        "firstIndex",
+        "firstPoint",
+        "points"
+      ],
+      "serializer": "std::string PolyhedronNode::toString() const\n{\n  std::ostringstream stream;\n  stream << \"polyhedron(points = [\";\n  bool firstPoint = true;\n  for (const auto& point : this->points) {\n    if (firstPoint) {\n      firstPoint = false;\n    } else {\n      stream << \", \";\n    }\n    stream << \"[\" << point[0] << \", \" << point[1] << \", \" << point[2] << \"]\";\n  }\n  stream << \"], faces = [\";\n  bool firstFace = true;\n  for (const auto& face : this->faces) {\n    if (firstFace) {\n      firstFace = false;\n    } else {\n      stream << \", \";\n    }\n    stream << \"[\";\n    bool firstIndex = true;\n    for (const auto& index : face) {\n      if (firstIndex) {\n        firstIndex = false;\n      } else {\n        stream << \", \";\n      }\n      stream << index;\n    }\n    stream << \"]\";\n  }\n  stream << \"], convexity = \" << this->convexity << \")\";\n  return stream.str();\n}"
+    },
+    {
+      "nodeClass": "CircleNode",
+      "file": "primitives.cc",
+      "line": 744,
+      "parameters": [
+        "r"
+      ],
+      "serializer": "std::string CircleNode::toString() const\n{\n  std::ostringstream stream;\n  stream << \"circle(\" << discretizer << \", r = \" << r << \")\";\n  return stream.str();\n}"
+    },
+    {
+      "nodeClass": "PolygonNode",
+      "file": "primitives.cc",
+      "line": 784,
+      "parameters": [
+        "convexity",
+        "firstIndex",
+        "firstPath",
+        "firstPoint",
+        "paths",
+        "points"
+      ],
+      "serializer": "std::string PolygonNode::toString() const\n{\n  std::ostringstream stream;\n  stream << \"polygon(points = [\";\n  bool firstPoint = true;\n  for (const auto& point : this->points) {\n    if (firstPoint) {\n      firstPoint = false;\n    } else {\n      stream << \", \";\n    }\n    stream << \"[\" << point[0] << \", \" << point[1] << \"]\";\n  }\n  stream << \"], paths = \";\n  if (this->paths.empty()) {\n    stream << \"undef\";\n  } else {\n    stream << \"[\";\n    bool firstPath = true;\n    for (const auto& path : this->paths) {\n      if (firstPath) {\n        firstPath = false;\n      } else {\n        stream << \", \";\n      }\n      stream << \"[\";\n      bool firstIndex = true;\n      for (const auto& index : path) {\n        if (firstIndex) {\n          firstIndex = false;\n        } else {\n          stream << \", \";\n        }\n        stream << index;\n      }\n      stream << \"]\";\n    }\n    stream << \"]\";\n  }\n  stream << \", convexity = \" << this->convexity << \")\";\n  return stream.str();\n}"
+    }
+  ]
+}

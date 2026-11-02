@@ -36,7 +36,8 @@ export async function run() {
 if [ "$1" = "--fixture-prefix" ] && [ "$2" = "--version" ]; then echo "OpenSCAD version 2026.10.TEST"; exit 0; fi
 /bin/cat > '${trace}'
 /bin/pwd > '${trace}.cwd'
-for arg in "$@"; do /usr/bin/printf '%s\\n' "$arg"; done > '${trace}.args'
+for arg in "$@"; do /usr/bin/printf '%s\\n' "$arg"; done > '${trace}.args.'$$
+/bin/cp '${trace}.args.'$$ '${trace}.args'
 # Put the invocation in its own valid STL solid name: concurrent preview jobs
 # may overwrite the shared diagnostic trace after an export completes.
 fixture_label="test"
@@ -46,6 +47,8 @@ while [ "$#" -gt 0 ]; do
   if [ "$1" = "--export-format" ]; then shift; format="$1"; fi
   shift
 done
+# Each format retains its own invocation; a cache hit need not launch a CLI.
+/bin/cp '${trace}.args.'$$ '${trace}.args.'"$format"
 if [ "$format" = "csg" ]; then
   /usr/bin/printf 'cube(size=[20,20,20],center=false);' > "$output"
   exit 0
@@ -137,10 +140,10 @@ fi
             shared.setPreviewMode('preview')
             await waitFor(() => results.some((result) => result.format === ModelFormat.CSG))
             assert.equal(JSON.parse(results.at(-1)!.buffer.toString()).meshes.length, 1)
-            assert.match(await readFile(trace + '.args', 'utf8'), /--export-format\ncsg\n/)
-            assert.match(await readFile(trace + '.args', 'utf8'), /\$preview=true/)
-            await shared.exportFormat(ModelFormat.STL)
-            assert.doesNotMatch(await readFile(trace + '.args', 'utf8'), /\$preview=true/)
+            assert.match(await readFile(trace + '.args.csg', 'utf8'), /--export-format\ncsg\n/)
+            assert.match(await readFile(trace + '.args.csg', 'utf8'), /\$preview=true/)
+            const exported = await shared.exportFormat(ModelFormat.STL)
+            assert.doesNotMatch(exported.toString(), /\$preview=true/)
             assert.equal(shared.previewMode, 'preview', 'Exporting must preserve the current quick-preview mode')
             results.length = 0
             shared.setPreviewMode('render')
@@ -167,21 +170,21 @@ fi
             assert.equal(JSON.parse(realResults.at(-1)!.buffer.toString()).meshes.length, 1)
             realSubscription.dispose()
             console.log('PASS: real selected OpenSCAD runtime exports STL and a CSG tree evaluated by the interactive preview worker')
-            const fallbackUri = vscode.Uri.file(path.join(directory, 'fallback.scad'))
-            await writeFile(fallbackUri.fsPath, 'polyhedron(points=[[0,0,0],[20,0,0],[20,20,0],[0,20,0],[0,0,20],[20,0,20],[20,20,20],[0,20,20]],faces=[[0,1,2,3],[4,7,6,5],[0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0]]);')
-            const fallbackDocument = await vscode.workspace.openTextDocument(fallbackUri)
-            const fallbackSession = api.preview.getOrCreateSession(fallbackDocument)
-            const fallbackResults: { buffer: Buffer; format: ModelFormat }[] = []
-            const fallbackSubscription = fallbackSession.onRenderCompleted((result) => fallbackResults.push(result))
-            fallbackSession.setPreviewMode('preview')
-            await waitFor(() => fallbackResults.some((result) => result.format === ModelFormat.STL))
-            assert.equal(fallbackSession.renderBackend.kind, 'fallback')
-            assert.match(fallbackSession.renderBackend.reason!, /non-triangular polyhedron face/)
-            assert.equal(api.customizer.canPreviewContinuously(fallbackUri.toString()), false)
-            assert.ok(fallbackSession.renderBackend.elapsedMs! >= 0)
-            fallbackSubscription.dispose()
-            api.preview.removeSession(fallbackUri)
-            console.log('PASS: real quad polyhedron falls back visibly to STL and disables continuous parameter previews')
+            const polyhedronUri = vscode.Uri.file(path.join(directory, 'polyhedron.scad'))
+            await writeFile(polyhedronUri.fsPath, 'polyhedron(points=[[0,0,0],[20,0,0],[20,20,0],[0,20,0],[0,0,20],[20,0,20],[20,20,20],[0,20,20]],faces=[[0,1,2,3],[4,7,6,5],[0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0]]);')
+            const polyhedronDocument = await vscode.workspace.openTextDocument(polyhedronUri)
+            const polyhedronSession = api.preview.getOrCreateSession(polyhedronDocument)
+            const polyhedronResults: { buffer: Buffer; format: ModelFormat }[] = []
+            const polyhedronSubscription = polyhedronSession.onRenderCompleted((result) => polyhedronResults.push(result))
+            polyhedronSession.setPreviewMode('preview')
+            await waitFor(() => polyhedronResults.some((result) => result.format === ModelFormat.CSG))
+            assert.equal(polyhedronSession.renderBackend.kind, 'csg')
+            assert.equal(JSON.parse(polyhedronResults.at(-1)!.buffer.toString()).version, 3)
+            assert.equal(api.customizer.canPreviewContinuously(polyhedronUri.toString()), false)
+            assert.ok(polyhedronSession.renderBackend.elapsedMs! >= 0)
+            polyhedronSubscription.dispose()
+            api.preview.removeSession(polyhedronUri)
+            console.log('PASS: real quad polyhedron stays on the CSG path; continuous preview waits for a canvas acknowledgment')
         }
         const csgUri = vscode.Uri.file(path.join(directory, 'tree.CSG'))
         const csgSource = 'difference(){cube(size=[20,20,20],center=true);sphere(r=5,$fn=16);}'

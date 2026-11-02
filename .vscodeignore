@@ -23,3 +23,6 @@ scripts/**
 .preview-sync/**
 sources/**
 .gitmodules
+
+logs/**
+tsconfig.webview.json

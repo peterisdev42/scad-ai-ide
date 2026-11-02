@@ -1,0 +1,819 @@
+{
+  "implementation": "ray-baseline",
+  "width": 1920,
+  "height": 1080,
+  "frames": 3,
+  "cpu": "Apple M4 Pro",
+  "samples": [
+    {
+      "name": "sphereDifference",
+      "cliMs": 23.645541999999978,
+      "workerMs": 55.84612500000003,
+      "geometryMs": 5.945042000000001,
+      "bvhMs": 4.931124999999952,
+      "bvhCacheHits": 0,
+      "resourcesMs": 0.06383299999998826,
+      "bytes": 192459,
+      "operands": 2,
+      "triangles": 1032,
+      "uploadMs": 2,
+      "shaderMs": 32.20000000111759,
+      "initializationMs": 2.800000000745058,
+      "firstFrameMs": 167.5,
+      "firstPresentedMs": 174.7999999988824,
+      "p50Ms": 57.90000000037253,
+      "p95Ms": 58.40000000037253,
+      "framesMs": [
+        57.40000000037253,
+        57.90000000037253,
+        58.40000000037253
+      ],
+      "memory": {
+        "attributes": 3,
+        "attributesSize": 348,
+        "geometries": 2,
+        "indexAttributes": 1,
+        "indexAttributesSize": 72,
+        "indirectStorageAttributes": 0,
+        "indirectStorageAttributesSize": 0,
+        "programs": 6,
+        "programsSize": 73774,
+        "readbackBuffers": 0,
+        "readbackBuffersSize": 0,
+        "renderTargets": 3,
+        "storageAttributes": 0,
+        "storageAttributesSize": 0,
+        "textures": 12,
+        "texturesSize": 58291200,
+        "uniformBuffers": 8,
+        "uniformBuffersSize": 1552,
+        "total": 58366946
+      },
+      "backend": "webgpu",
+      "consoleErrors": [
+        {
+          "message": "THREE.Renderer: waitForGPU() has been removed. Read https://github.com/mrdoob/three.js/issues/32012 for more information.",
+          "count": 2072
+        }
+      ]
+    },
+    {
+      "name": "sphereDifference",
+      "cliMs": 23.645541999999978,
+      "workerMs": 55.84612500000003,
+      "geometryMs": 5.945042000000001,
+      "bvhMs": 4.931124999999952,
+      "bvhCacheHits": 0,
+      "resourcesMs": 0.06383299999998826,
+      "bytes": 192459,
+      "operands": 2,
+      "triangles": 1032,
+      "uploadMs": 1.799999998882413,
+      "shaderMs": 49.90000000037253,
+      "initializationMs": 9.100000001490116,
+      "firstFrameMs": 174.39999999850988,
+      "firstPresentedMs": 187.39999999850988,
+      "p50Ms": 74.90000000037253,
+      "p95Ms": 75.29999999888241,
+      "framesMs": [
+        73,
+        74.90000000037253,
+        75.29999999888241
+      ],
+      "memory": {
+        "attributes": 3,
+        "attributesSize": 348,
+        "geometries": 2,
+        "indexAttributes": 1,
+        "indexAttributesSize": 72,
+        "indirectStorageAttributes": 0,
+        "indirectStorageAttributesSize": 0,
+        "programs": 6,
+        "programsSize": 86301,
+        "readbackBuffers": 0,
+        "readbackBuffersSize": 0,
+        "renderTargets": 3,
+        "storageAttributes": 0,
+        "storageAttributesSize": 0,
+        "textures": 12,
+        "texturesSize": 58291200,
+        "uniformBuffers": 8,
+        "uniformBuffersSize": 1952,
+        "total": 58379873
+      },
+      "backend": "webgl2",
+      "consoleErrors": [
+        {
+          "message": "THREE.Renderer: waitForGPU() has been removed. Read https://github.com/mrdoob/three.js/issues/32012 for more information.",
+          "count": 2072
+        }
+      ]
+    },
+    {
+      "name": "nested",
+      "cliMs": 28.484874999999874,
+      "workerMs": 57.75441599999999,
+      "geometryMs": 7.095708000000059,
+      "bvhMs": 6.007416000000148,
+      "bvhCacheHits": 0,
+      "resourcesMs": 0.065166999999974,
+      "bytes": 318795,
+      "operands": 4,
+      "triangles": 1616,
+      "uploadMs": 1.900000000372529,
+      "shaderMs": 31.09999999962747,
+      "initializationMs": 2.699999999254942,
+      "firstFrameMs": 139.30000000074506,
+      "firstPresentedMs": 146,
+      "p50Ms": 65.30000000074506,
+      "p95Ms": 65.59999999962747,
+      "framesMs": [
+        64.90000000037253,
+        65.30000000074506,
+        65.59999999962747
+      ],
+      "memory": {
+        "attributes": 3,
+        "attributesSize": 348,
+        "geometries": 2,
+        "indexAttributes": 1,
+        "indexAttributesSize": 72,
+        "indirectStorageAttributes": 0,
+        "indirectStorageAttributesSize": 0,
+        "programs": 6,
+        "programsSize": 74168,
+        "readbackBuffers": 0,
+        "readbackBuffersSize": 0,
+        "renderTargets": 3,
+        "storageAttributes": 0,
+        "storageAttributesSize": 0,
+        "textures": 12,
+        "texturesSize": 58356736,
+        "uniformBuffers": 8,
+        "uniformBuffersSize": 1552,
+        "total": 58432876
+      },
+      "backend": "webgpu",
+      "consoleErrors": [
+        {
+          "message": "THREE.Renderer: waitForGPU() has been removed. Read https://github.com/mrdoob/three.js/issues/32012 for more information.",
+          "count": 2072
+        }
+      ]
+    },
+    {
+      "name": "nested",
+      "cliMs": 28.484874999999874,
+      "workerMs": 57.75441599999999,
+      "geometryMs": 7.095708000000059,
+      "bvhMs": 6.007416000000148,
+      "bvhCacheHits": 0,
+      "resourcesMs": 0.065166999999974,
+      "bytes": 318795,
+      "operands": 4,
+      "triangles": 1616,
+      "uploadMs": 1.900000000372529,
+      "shaderMs": 51.5,
+      "initializationMs": 6.400000000372529,
+      "firstFrameMs": 195.59999999962747,
+      "firstPresentedMs": 208,
+      "p50Ms": 99.09999999962747,
+      "p95Ms": 100.09999999962747,
+      "framesMs": [
+        92.70000000111759,
+        99.09999999962747,
+        100.09999999962747
+      ],
+      "memory": {
+        "attributes": 3,
+        "attributesSize": 348,
+        "geometries": 2,
+        "indexAttributes": 1,
+        "indexAttributesSize": 72,
+        "indirectStorageAttributes": 0,
+        "indirectStorageAttributesSize": 0,
+        "programs": 6,
+        "programsSize": 86675,
+        "readbackBuffers": 0,
+        "readbackBuffersSize": 0,
+        "renderTargets": 3,
+        "storageAttributes": 0,
+        "storageAttributesSize": 0,
+        "textures": 12,
+        "texturesSize": 58356736,
+        "uniformBuffers": 8,
+        "uniformBuffersSize": 1952,
+        "total": 58445783
+      },
+      "backend": "webgl2",
+      "consoleErrors": [
+        {
+          "message": "THREE.Renderer: waitForGPU() has been removed. Read https://github.com/mrdoob/three.js/issues/32012 for more information.",
+          "count": 2072
+        }
+      ]
+    },
+    {
+      "name": "holes",
+      "cliMs": 30.928457999999864,
+      "workerMs": 48.891999999999825,
+      "geometryMs": 4.405250000000251,
+      "bvhMs": 1.244083000000046,
+      "bvhCacheHits": 0,
+      "resourcesMs": 0.07012500000018917,
+      "bytes": 23090,
+      "operands": 10,
+      "triangles": 840,
+      "uploadMs": 1.800000000745058,
+      "shaderMs": 32.79999999888241,
+      "initializationMs": 2.400000000372529,
+      "firstFrameMs": 119.5,
+      "firstPresentedMs": 128.2000000011176,
+      "p50Ms": 53.19999999925494,
+      "p95Ms": 53.80000000074506,
+      "framesMs": [
+        53.09999999962747,
+        53.19999999925494,
+        53.80000000074506
+      ],
+      "memory": {
+        "attributes": 3,
+        "attributesSize": 348,
+        "geometries": 2,
+        "indexAttributes": 1,
+        "indexAttributesSize": 72,
+        "indirectStorageAttributes": 0,
+        "indirectStorageAttributesSize": 0,
+        "programs": 6,
+        "programsSize": 75267,
+        "readbackBuffers": 0,
+        "readbackBuffersSize": 0,
+        "renderTargets": 3,
+        "storageAttributes": 0,
+        "storageAttributesSize": 0,
+        "textures": 12,
+        "texturesSize": 58225664,
+        "uniformBuffers": 8,
+        "uniformBuffersSize": 1552,
+        "total": 58302903
+      },
+      "backend": "webgpu",
+      "consoleErrors": [
+        {
+          "message": "THREE.Renderer: waitForGPU() has been removed. Read https://github.com/mrdoob/three.js/issues/32012 for more information.",
+          "count": 2072
+        }
+      ]
+    },
+    {
+      "name": "holes",
+      "cliMs": 30.928457999999864,
+      "workerMs": 48.891999999999825,
+      "geometryMs": 4.405250000000251,
+      "bvhMs": 1.244083000000046,
+      "bvhCacheHits": 0,
+      "resourcesMs": 0.07012500000018917,
+      "bytes": 23090,
+      "operands": 10,
+      "triangles": 840,
+      "uploadMs": 2.100000001490116,
+      "shaderMs": 49.899999998509884,
+      "initializationMs": 6.299999998882413,
+      "firstFrameMs": 152.5,
+      "firstPresentedMs": 163.2000000011176,
+      "p50Ms": 66.70000000111759,
+      "p95Ms": 66.79999999888241,
+      "framesMs": [
+        66.69999999925494,
+        66.70000000111759,
+        66.79999999888241
+      ],
+      "memory": {
+        "attributes": 3,
+        "attributesSize": 348,
+        "geometries": 2,
+        "indexAttributes": 1,
+        "indexAttributesSize": 72,
+        "indirectStorageAttributes": 0,
+        "indirectStorageAttributesSize": 0,
+        "programs": 6,
+        "programsSize": 87714,
+        "readbackBuffers": 0,
+        "readbackBuffersSize": 0,
+        "renderTargets": 3,
+        "storageAttributes": 0,
+        "storageAttributesSize": 0,
+        "textures": 12,
+        "texturesSize": 58225664,
+        "uniformBuffers": 8,
+        "uniformBuffersSize": 1952,
+        "total": 58315750
+      },
+      "backend": "webgl2",
+      "consoleErrors": [
+        {
+          "message": "THREE.Renderer: waitForGPU() has been removed. Read https://github.com/mrdoob/three.js/issues/32012 for more information.",
+          "count": 2072
+        }
+      ]
+    },
+    {
+      "name": "repeated",
+      "cliMs": 29.012250000000222,
+      "workerMs": 52.196334000000206,
+      "geometryMs": 5.424499999999625,
+      "bvhMs": 2.34704099999999,
+      "bvhCacheHits": 0,
+      "resourcesMs": 0.06912499999998545,
+      "bytes": 93579,
+      "operands": 200,
+      "triangles": 2400,
+      "backend": "webgpu",
+      "error": "Error: page.evaluate: Error: Preview GPU preparation failed: Error while parsing WGSL: :1757:259 error: maximum parser recursive depth reached\n      if ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( nodeVar0[ 0u ] > 0 ) || ( nodeVar0[ 1u ] > 0 ) ) || ( nodeVar0[ 2u ] > 0 ) ) || ( nodeVar0[ 3u ] > 0 ) ) || ( nodeVar0[ 4u ] > 0 ) ) || ( nodeVar0[ 5u ] > 0 ) ) || ( nodeVar0[ 6u ] > 0 ) ) || ( nodeVar0[ 7u ] > 0 ) ) || ( nodeVar0[ 8u ] > 0 ) ) || ( nodeVar0[ 9u ] > 0 ) ) || ( nodeVar0[ 10u ] > 0 ) ) || ( nodeVar0[ 11u ] > 0 ) ) || ( nodeVar0[ 12u ] > 0 ) ) || ( nodeVar0[ 13u ] > 0 ) ) || ( nodeVar0[ 14u ] > 0 ) ) || ( nodeVar0[ 15u ] > 0 ) ) || ( nodeVar0[ 16u ] > 0 ) ) || ( nodeVar0[ 17u ] > 0 ) ) || ( nodeVar0[ 18u ] > 0 ) ) || ( nodeVar0[ 19u ] > 0 ) ) || ( nodeVar0[ 20u ] > 0 ) ) || ( nodeVar0[ 21u ] > 0 ) ) || ( nodeVar0[ 22u ] > 0 ) ) || ( nodeVar0[ 23u ] > 0 ) ) || ( nodeVar0[ 24u ] > 0 ) ) || ( nodeVar0[ 25u ] > 0 ) ) || ( nodeVar0[ 26u ] > 0 ) ) || ( nodeVar0[ 27u ] > 0 ) ) || ( nodeVar0[ 28u ] > 0 ) ) || ( nodeVar0[ 29u ] > 0 ) ) || ( nodeVar0[ 30u ] > 0 ) ) || ( nodeVar0[ 31u ] > 0 ) ) || ( nodeVar0[ 32u ] > 0 ) ) || ( nodeVar0[ 33u ] > 0 ) ) || ( nodeVar0[ 34u ] > 0 ) ) || ( nodeVar0[ 35u ] > 0 ) ) || ( nodeVar0[ 36u ] > 0 ) ) || ( nodeVar0[ 37u ] > 0 ) ) || ( nodeVar0[ 38u ] > 0 ) ) || ( nodeVar0[ 39u ] > 0 ) ) || ( nodeVar0[ 40u ] > 0 ) ) || ( nodeVar0[ 41u ] > 0 ) ) || ( nodeVar0[ 42u ] > 0 ) ) || ( nodeVar0[ 43u ] > 0 ) ) || ( nodeVar0[ 44u ] > 0 ) ) || ( nodeVar0[ 45u ] > 0 ) ) || ( nodeVar0[ 46u ] > 0 ) ) || ( nodeVar0[ 47u ] > 0 ) ) || ( nodeVar0[ 48u ] > 0 ) ) || ( nodeVar0[ 49u ] > 0 ) ) || ( nodeVar0[ 50u ] > 0 ) ) || ( nodeVar0[ 51u ] > 0 ) ) || ( nodeVar0[ 52u ] > 0 ) ) || ( nodeVar0[ 53u ] > 0 ) ) || ( nodeVar0[ 54u ] > 0 ) ) || ( nodeVar0[ 55u ] > 0 ) ) || ( nodeVar0[ 56u ] > 0 ) ) || ( nodeVar0[ 57u ] > 0 ) ) || ( nodeVar0[ 58u ] > 0 ) ) || ( nodeVar0[ 59u ] > 0 ) ) || ( nodeVar0[ 60u ] > 0 ) ) || ( nodeVar0[ 61u ] > 0 ) ) || ( nodeVar0[ 62u ] > 0 ) ) || ( nodeVar0[ 63u ] > 0 ) ) || ( nodeVar0[ 64u ] > 0 ) ) || ( nodeVar0[ 65u ] > 0 ) ) || ( nodeVar0[ 66u ] > 0 ) ) || ( nodeVar0[ 67u",
+      "consoleErrors": [
+        {
+          "message": "THREE.Renderer: waitForGPU() has been removed. Read https://github.com/mrdoob/three.js/issues/32012 for more information.",
+          "count": 1
+        },
+        {
+          "message": "THREE.WebGPURenderer: Async render pipeline creation failed (renderPipeline_MeshStandardNodeMaterial_14): [Invalid ShaderModule \"fragment\"] is invalid due to a previous error.\n - While validating fragment stage ([Invalid ShaderModule \"fragment\"], entryPoint: \"main\").\n - While validating fragment state.\n",
+          "count": 1
+        },
+        {
+          "message": "THREE.WebGPURenderer [renderPipeline_MeshStandardNodeMaterial_14 / fragment error] at line 1757:259: maximum parser recursive depth reached\n  \t\t\tif ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( ( nodeVar0[ 0u ] > 0 ) || ( nodeVar0[ 1u ] > 0 ) ) || ( nodeVar0[ 2u ] > 0 ) ) || ( nodeVar0[ 3u ] > 0 ) ) || ( nodeVar0[ 4u ] > 0 ) ) || ( nodeVar0[ 5u ] > 0 ) ) || ( nodeVar0[ 6u ] > 0 ) ) || ( nodeVar0[ 7u ] > 0 ) ) || ( nodeVar0[ 8u ] > 0 ) ) || ( nodeVar0[ 9u ] > 0 ) ) || ( nodeVar0[ 10u ] > 0 ) ) || ( nodeVar0[ 11u ] > 0 ) ) || ( nodeVar0[ 12u ] > 0 ) ) || ( nodeVar0[ 13u ] > 0 ) ) || ( nodeVar0[ 14u ] > 0 ) ) || ( nodeVar0[ 15u ] > 0 ) ) || ( nodeVar0[ 16u ] > 0 ) ) || ( nodeVar0[ 17u ] > 0 ) ) || ( nodeVar0[ 18u ] > 0 ) ) || ( nodeVar0[ 19u ] > 0 ) ) || ( nodeVar0[ 20u ] > 0 ) ) || ( nodeVar0[ 21u ] > 0 ) ) || ( nodeVar0[ 22u ] > 0 ) ) || ( nodeVar0[ 23u ] > 0 ) ) || ( nodeVar0[ 24u ] > 0 ) ) || ( nodeVar0[ 25u ] > 0 ) ) || ( nodeVar0[ 26u ] > 0 ) ) || ( nodeVar0[ 27u ] > 0 ) ) || ( nodeVar0[ 28u ] > 0 ) ) || ( nodeVar0[ 29u ] > 0 ) ) || ( nodeVar0[ 30u ] > 0 ) ) || ( nodeVar0[ 31u ] > 0 ) ) || ( nodeVar0[ 32u ] > 0 ) ) || ( nodeVar0[ 33u ] > 0 ) ) || ( nodeVar0[ 34u ] > 0 ) ) || ( nodeVar0[ 35u ] > 0 ) ) || ( nodeVar0[ 36u ] > 0 ) ) || ( nodeVar0[ 37u ] > 0 ) ) || ( nodeVar0[ 38u ] > 0 ) ) || ( nodeVar0[ 39u ] > 0 ) ) || ( nodeVar0[ 40u ] > 0 ) ) || ( nodeVar0[ 41u ] > 0 ) ) || ( nodeVar0[ 42u ] > 0 ) ) || ( nodeVar0[ 43u",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "repeated",
+      "cliMs": 29.012250000000222,
+      "workerMs": 52.196334000000206,
+      "geometryMs": 5.424499999999625,
+      "bvhMs": 2.34704099999999,
+      "bvhCacheHits": 0,
+      "resourcesMs": 0.06912499999998545,
+      "bytes": 93579,
+      "operands": 200,
+      "triangles": 2400,
+      "uploadMs": 1.900000000372529,
+      "shaderMs": 74.90000000037253,
+      "initializationMs": 6.799999998882413,
+      "firstFrameMs": 183.5,
+      "firstPresentedMs": 196.5,
+      "p50Ms": 58.29999999888241,
+      "p95Ms": 58.600000001490116,
+      "framesMs": [
+        58.20000000111759,
+        58.29999999888241,
+        58.600000001490116
+      ],
+      "memory": {
+        "attributes": 3,
+        "attributesSize": 348,
+        "geometries": 2,
+        "indexAttributes": 1,
+        "indexAttributesSize": 72,
+        "indirectStorageAttributes": 0,
+        "indirectStorageAttributesSize": 0,
+        "programs": 6,
+        "programsSize": 122113,
+        "readbackBuffers": 0,
+        "readbackBuffersSize": 0,
+        "renderTargets": 3,
+        "storageAttributes": 0,
+        "storageAttributesSize": 0,
+        "textures": 12,
+        "texturesSize": 58225664,
+        "uniformBuffers": 8,
+        "uniformBuffersSize": 1952,
+        "total": 58350149
+      },
+      "backend": "webgl2",
+      "consoleErrors": [
+        {
+          "message": "THREE.Renderer: waitForGPU() has been removed. Read https://github.com/mrdoob/three.js/issues/32012 for more information.",
+          "count": 2072
+        }
+      ]
+    },
+    {
+      "name": "nonconvex",
+      "cliMs": 28.196207999999842,
+      "workerMs": 56.381832999999915,
+      "geometryMs": 7.180041999999958,
+      "bvhMs": 3.834957999999915,
+      "bvhCacheHits": 0,
+      "resourcesMs": 0.06316700000024866,
+      "bytes": 129780,
+      "operands": 2,
+      "triangles": 604,
+      "uploadMs": 2,
+      "shaderMs": 30.899999998509884,
+      "initializationMs": 2.799999998882413,
+      "firstFrameMs": 114.90000000037253,
+      "firstPresentedMs": 123.5,
+      "p50Ms": 46.40000000037253,
+      "p95Ms": 47,
+      "framesMs": [
+        46.20000000111759,
+        46.40000000037253,
+        47
+      ],
+      "memory": {
+        "attributes": 3,
+        "attributesSize": 348,
+        "geometries": 2,
+        "indexAttributes": 1,
+        "indexAttributesSize": 72,
+        "indirectStorageAttributes": 0,
+        "indirectStorageAttributesSize": 0,
+        "programs": 6,
+        "programsSize": 73774,
+        "readbackBuffers": 0,
+        "readbackBuffersSize": 0,
+        "renderTargets": 3,
+        "storageAttributes": 0,
+        "storageAttributesSize": 0,
+        "textures": 12,
+        "texturesSize": 58225664,
+        "uniformBuffers": 8,
+        "uniformBuffersSize": 1552,
+        "total": 58301410
+      },
+      "backend": "webgpu",
+      "consoleErrors": [
+        {
+          "message": "THREE.Renderer: waitForGPU() has been removed. Read https://github.com/mrdoob/three.js/issues/32012 for more information.",
+          "count": 2072
+        }
+      ]
+    },
+    {
+      "name": "nonconvex",
+      "cliMs": 28.196207999999842,
+      "workerMs": 56.381832999999915,
+      "geometryMs": 7.180041999999958,
+      "bvhMs": 3.834957999999915,
+      "bvhCacheHits": 0,
+      "resourcesMs": 0.06316700000024866,
+      "bytes": 129780,
+      "operands": 2,
+      "triangles": 604,
+      "uploadMs": 1.800000000745058,
+      "shaderMs": 49.79999999888241,
+      "initializationMs": 6.400000000372529,
+      "firstFrameMs": 136.59999999962747,
+      "firstPresentedMs": 149.80000000074506,
+      "p50Ms": 50.09999999962747,
+      "p95Ms": 50.09999999962747,
+      "framesMs": [
+        49.90000000037253,
+        50.09999999962747,
+        50.09999999962747
+      ],
+      "memory": {
+        "attributes": 3,
+        "attributesSize": 348,
+        "geometries": 2,
+        "indexAttributes": 1,
+        "indexAttributesSize": 72,
+        "indirectStorageAttributes": 0,
+        "indirectStorageAttributesSize": 0,
+        "programs": 6,
+        "programsSize": 86301,
+        "readbackBuffers": 0,
+        "readbackBuffersSize": 0,
+        "renderTargets": 3,
+        "storageAttributes": 0,
+        "storageAttributesSize": 0,
+        "textures": 12,
+        "texturesSize": 58225664,
+        "uniformBuffers": 8,
+        "uniformBuffersSize": 1952,
+        "total": 58314337
+      },
+      "backend": "webgl2",
+      "consoleErrors": [
+        {
+          "message": "THREE.Renderer: waitForGPU() has been removed. Read https://github.com/mrdoob/three.js/issues/32012 for more information.",
+          "count": 2072
+        }
+      ]
+    },
+    {
+      "name": "extrude",
+      "cliMs": 24.086500000000342,
+      "workerMs": 53.97112500000003,
+      "geometryMs": 8.460332999999991,
+      "bvhMs": 4.121624999999767,
+      "bvhCacheHits": 0,
+      "resourcesMs": 0.07012500000018917,
+      "bytes": 164724,
+      "operands": 2,
+      "triangles": 868,
+      "uploadMs": 1.900000000372529,
+      "shaderMs": 30.699999999254942,
+      "initializationMs": 2.600000001490116,
+      "firstFrameMs": 117.39999999850988,
+      "firstPresentedMs": 123.39999999850988,
+      "p50Ms": 49.399999998509884,
+      "p95Ms": 50.100000001490116,
+      "framesMs": [
+        49.19999999925494,
+        49.399999998509884,
+        50.100000001490116
+      ],
+      "memory": {
+        "attributes": 3,
+        "attributesSize": 348,
+        "geometries": 2,
+        "indexAttributes": 1,
+        "indexAttributesSize": 72,
+        "indirectStorageAttributes": 0,
+        "indirectStorageAttributesSize": 0,
+        "programs": 6,
+        "programsSize": 73774,
+        "readbackBuffers": 0,
+        "readbackBuffersSize": 0,
+        "renderTargets": 3,
+        "storageAttributes": 0,
+        "storageAttributesSize": 0,
+        "textures": 12,
+        "texturesSize": 58258432,
+        "uniformBuffers": 8,
+        "uniformBuffersSize": 1552,
+        "total": 58334178
+      },
+      "backend": "webgpu",
+      "consoleErrors": [
+        {
+          "message": "THREE.Renderer: waitForGPU() has been removed. Read https://github.com/mrdoob/three.js/issues/32012 for more information.",
+          "count": 2072
+        }
+      ]
+    },
+    {
+      "name": "extrude",
+      "cliMs": 24.086500000000342,
+      "workerMs": 53.97112500000003,
+      "geometryMs": 8.460332999999991,
+      "bvhMs": 4.121624999999767,
+      "bvhCacheHits": 0,
+      "resourcesMs": 0.07012500000018917,
+      "bytes": 164724,
+      "operands": 2,
+      "triangles": 868,
+      "uploadMs": 1.900000000372529,
+      "shaderMs": 48.09999999962747,
+      "initializationMs": 6.400000000372529,
+      "firstFrameMs": 128.5,
+      "firstPresentedMs": 141.59999999962747,
+      "p50Ms": 50,
+      "p95Ms": 50.09999999962747,
+      "framesMs": [
+        50,
+        50,
+        50.09999999962747
+      ],
+      "memory": {
+        "attributes": 3,
+        "attributesSize": 348,
+        "geometries": 2,
+        "indexAttributes": 1,
+        "indexAttributesSize": 72,
+        "indirectStorageAttributes": 0,
+        "indirectStorageAttributesSize": 0,
+        "programs": 6,
+        "programsSize": 86301,
+        "readbackBuffers": 0,
+        "readbackBuffersSize": 0,
+        "renderTargets": 3,
+        "storageAttributes": 0,
+        "storageAttributesSize": 0,
+        "textures": 12,
+        "texturesSize": 58258432,
+        "uniformBuffers": 8,
+        "uniformBuffersSize": 1952,
+        "total": 58347105
+      },
+      "backend": "webgl2",
+      "consoleErrors": [
+        {
+          "message": "THREE.Renderer: waitForGPU() has been removed. Read https://github.com/mrdoob/three.js/issues/32012 for more information.",
+          "count": 2072
+        }
+      ]
+    },
+    {
+      "name": "polyhedron",
+      "cliMs": 25.934790999999677,
+      "workerMs": 52.53016699999989,
+      "geometryMs": 5.705208000000312,
+      "bvhMs": 3.6655420000006416,
+      "bvhCacheHits": 0,
+      "resourcesMs": 0.06895900000017718,
+      "bytes": 125176,
+      "operands": 2,
+      "triangles": 578,
+      "uploadMs": 1.800000000745058,
+      "shaderMs": 30.799999998882413,
+      "initializationMs": 2.599999999627471,
+      "firstFrameMs": 117.80000000074506,
+      "firstPresentedMs": 129.7000000011176,
+      "p50Ms": 51,
+      "p95Ms": 51.09999999962747,
+      "framesMs": [
+        50.59999999962747,
+        51,
+        51.09999999962747
+      ],
+      "memory": {
+        "attributes": 3,
+        "attributesSize": 348,
+        "geometries": 2,
+        "indexAttributes": 1,
+        "indexAttributesSize": 72,
+        "indirectStorageAttributes": 0,
+        "indirectStorageAttributesSize": 0,
+        "programs": 6,
+        "programsSize": 73774,
+        "readbackBuffers": 0,
+        "readbackBuffersSize": 0,
+        "renderTargets": 3,
+        "storageAttributes": 0,
+        "storageAttributesSize": 0,
+        "textures": 12,
+        "texturesSize": 58225664,
+        "uniformBuffers": 8,
+        "uniformBuffersSize": 1552,
+        "total": 58301410
+      },
+      "backend": "webgpu",
+      "consoleErrors": [
+        {
+          "message": "THREE.Renderer: waitForGPU() has been removed. Read https://github.com/mrdoob/three.js/issues/32012 for more information.",
+          "count": 2072
+        }
+      ]
+    },
+    {
+      "name": "polyhedron",
+      "cliMs": 25.934790999999677,
+      "workerMs": 52.53016699999989,
+      "geometryMs": 5.705208000000312,
+      "bvhMs": 3.6655420000006416,
+      "bvhCacheHits": 0,
+      "resourcesMs": 0.06895900000017718,
+      "bytes": 125176,
+      "operands": 2,
+      "triangles": 578,
+      "uploadMs": 2,
+      "shaderMs": 54.69999999925494,
+      "initializationMs": 6.5,
+      "firstFrameMs": 141.90000000037253,
+      "firstPresentedMs": 154.59999999962747,
+      "p50Ms": 50.20000000111759,
+      "p95Ms": 52,
+      "framesMs": [
+        49.899999998509884,
+        50.20000000111759,
+        52
+      ],
+      "memory": {
+        "attributes": 3,
+        "attributesSize": 348,
+        "geometries": 2,
+        "indexAttributes": 1,
+        "indexAttributesSize": 72,
+        "indirectStorageAttributes": 0,
+        "indirectStorageAttributesSize": 0,
+        "programs": 6,
+        "programsSize": 86301,
+        "readbackBuffers": 0,
+        "readbackBuffersSize": 0,
+        "renderTargets": 3,
+        "storageAttributes": 0,
+        "storageAttributesSize": 0,
+        "textures": 12,
+        "texturesSize": 58225664,
+        "uniformBuffers": 8,
+        "uniformBuffersSize": 1952,
+        "total": 58314337
+      },
+      "backend": "webgl2",
+      "consoleErrors": [
+        {
+          "message": "THREE.Renderer: waitForGPU() has been removed. Read https://github.com/mrdoob/three.js/issues/32012 for more information.",
+          "count": 2072
+        }
+      ]
+    },
+    {
+      "name": "roundedEnclosure",
+      "cliMs": 26.265917000000627,
+      "workerMs": 51.19879199999923,
+      "geometryMs": 7.78308399999969,
+      "bvhMs": 2.047625000000153,
+      "bvhCacheHits": 0,
+      "resourcesMs": 0.06316700000024866,
+      "bytes": 51957,
+      "operands": 4,
+      "triangles": 400,
+      "uploadMs": 1.900000000372529,
+      "shaderMs": 31.300000000745058,
+      "initializationMs": 2.400000000372529,
+      "firstFrameMs": 131.5,
+      "firstPresentedMs": 143.69999999925494,
+      "p50Ms": 60.19999999925494,
+      "p95Ms": 60.40000000037253,
+      "framesMs": [
+        59.69999999925494,
+        60.19999999925494,
+        60.40000000037253
+      ],
+      "memory": {
+        "attributes": 3,
+        "attributesSize": 348,
+        "geometries": 2,
+        "indexAttributes": 1,
+        "indexAttributesSize": 72,
+        "indirectStorageAttributes": 0,
+        "indirectStorageAttributesSize": 0,
+        "programs": 6,
+        "programsSize": 74168,
+        "readbackBuffers": 0,
+        "readbackBuffersSize": 0,
+        "renderTargets": 3,
+        "storageAttributes": 0,
+        "storageAttributesSize": 0,
+        "textures": 12,
+        "texturesSize": 58225664,
+        "uniformBuffers": 8,
+        "uniformBuffersSize": 1552,
+        "total": 58301804
+      },
+      "backend": "webgpu",
+      "consoleErrors": [
+        {
+          "message": "THREE.Renderer: waitForGPU() has been removed. Read https://github.com/mrdoob/three.js/issues/32012 for more information.",
+          "count": 2072
+        }
+      ]
+    },
+    {
+      "name": "roundedEnclosure",
+      "cliMs": 26.265917000000627,
+      "workerMs": 51.19879199999923,
+      "geometryMs": 7.78308399999969,
+      "bvhMs": 2.047625000000153,
+      "bvhCacheHits": 0,
+      "resourcesMs": 0.06316700000024866,
+      "bytes": 51957,
+      "operands": 4,
+      "triangles": 400,
+      "uploadMs": 2,
+      "shaderMs": 49.29999999888241,
+      "initializationMs": 6.5,
+      "firstFrameMs": 176.19999999925494,
+      "firstPresentedMs": 189,
+      "p50Ms": 84.09999999962747,
+      "p95Ms": 91.59999999962747,
+      "framesMs": [
+        82.80000000074506,
+        84.09999999962747,
+        91.59999999962747
+      ],
+      "memory": {
+        "attributes": 3,
+        "attributesSize": 348,
+        "geometries": 2,
+        "indexAttributes": 1,
+        "indexAttributesSize": 72,
+        "indirectStorageAttributes": 0,
+        "indirectStorageAttributesSize": 0,
+        "programs": 6,
+        "programsSize": 86675,
+        "readbackBuffers": 0,
+        "readbackBuffersSize": 0,
+        "renderTargets": 3,
+        "storageAttributes": 0,
+        "storageAttributesSize": 0,
+        "textures": 12,
+        "texturesSize": 58225664,
+        "uniformBuffers": 8,
+        "uniformBuffersSize": 1952,
+        "total": 58314711
+      },
+      "backend": "webgl2",
+      "consoleErrors": [
+        {
+          "message": "THREE.Renderer: waitForGPU() has been removed. Read https://github.com/mrdoob/three.js/issues/32012 for more information.",
+          "count": 2072
+        }
+      ]
+    }
+  ],
+  "browser": "149.0.7827.55",
+  "note": "Recorded before replacement using the working tree. Only 3 rotating frames per case: P95 is the maximum sample, not a stable percentile estimate. Completion uses one-pixel readback, not removed waitForGPU(). Repeated console errors are aggregated without hiding their count."
+}

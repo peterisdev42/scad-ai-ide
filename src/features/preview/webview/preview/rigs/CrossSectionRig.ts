@@ -1,7 +1,7 @@
 import { AlwaysStencilFunc, BackSide, Box3, Color, DecrementWrapStencilOp, DoubleSide, FrontSide, Group, IncrementWrapStencilOp, Material, Mesh, MeshBasicMaterial, MeshStandardMaterial, NotEqualStencilFunc, Object3D, Plane, PlaneGeometry, Raycaster, ReplaceStencilOp, Vector2, Vector3 } from 'three'
-import { Line2 } from 'three/examples/jsm/lines/Line2.js'
+import { Line2 } from 'three/examples/jsm/lines/webgpu/Line2.js'
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js'
-import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js'
+import { Line2NodeMaterial as LineMaterial } from 'three/webgpu'
 import { CrossSectionPlaneProperties } from '../../contexts/SelectedObjectContext'
 import { Theme } from '../Stage'
 import { Rig } from './Rig'
@@ -162,7 +162,7 @@ export class CrossSectionRig extends Rig {
 
     public setActive(active: boolean): void {
         this._active = active
-        this.capMesh.visible = active
+        this.capMesh.visible = active && !this.imageSpace
         this.stencilGroup.visible = active && this.pivot.visible
     }
 
@@ -171,7 +171,7 @@ export class CrossSectionRig extends Rig {
     public enable(modelGroup: Group): void {
         this.pivot.visible = true
         this.visPlane.visible = this._visible
-        this.capMesh.visible = this._active
+        this.capMesh.visible = this._active && !this.imageSpace
         this.stencilGroup.visible = this._active
         this.modelBox.setFromObject(modelGroup)
         this.updateVisPlaneSize()
@@ -236,9 +236,7 @@ export class CrossSectionRig extends Rig {
         this.pivot.rotation.z = Math.round(this.pivot.rotation.z / snap) * snap
     }
 
-    public resize(width: number, height: number): void {
-        ;(this.visOutline.material as LineMaterial).resolution.set(width, height)
-    }
+    public resize(width: number, height: number): void {}
 
     public setTheme(theme: Theme): void {
         ;(this.capMesh.material as MeshStandardMaterial).color.copy(theme.accent)
@@ -283,7 +281,16 @@ export class CrossSectionRig extends Rig {
         this.visPlane.position.set((minU + maxU) / 2 - this.pivot.position.dot(u), (minV + maxV) / 2 - this.pivot.position.dot(v), 0)
     }
 
+    private imageSpace = false
     private rebuildStencilMeshes(modelGroup: Group): void {
+        // CSG computes clipping and caps against the actual boolean solid.
+        // Proxy boxes must never enter the mesh stencil path.
+        const imageSpace = (this.imageSpace = modelGroup.children.some((child) => !!child.userData.csg))
+        this.capMesh.visible = this._active && !imageSpace
+        if (imageSpace) {
+            this.clearStencilMeshes()
+            return
+        }
         this.clearStencilMeshes()
         modelGroup.updateMatrixWorld(true)
 
