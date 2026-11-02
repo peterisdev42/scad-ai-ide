@@ -2,46 +2,10 @@ import { AlwaysStencilFunc, BackSide, Camera, Color, DepthTexture, DoubleSide, E
 import { MeshBasicNodeMaterial, QuadMesh, type Node, type WebGPURenderer } from 'three/webgpu'
 import { RasterOccupancy } from './RasterOccupancy'
 import type { CsgLight } from './CsgModel'
-import type { CsgProduct } from '../../../../../core/csg/types'
+import { estimateRasterWork, CSG_RASTER_WORK_LIMIT, type RasterBoundary } from '../../../../../core/csg/rasterWork'
+export { CSG_INTERACTIVE_WORK_LIMIT, CSG_RASTER_WORK_LIMIT, estimateRasterWork } from '../../../../../core/csg/rasterWork'
+export type { RasterBoundary } from '../../../../../core/csg/rasterWork'
 import { Discard, Fn, If, attribute, float, depth, dot, normalFlat, faceDirection, normalize, length, max, pow, smoothstep, positionView, screenCoordinate, select, textureLoad, uniform, vec2, vec3, vec4 } from 'three/tsl'
-
-export interface RasterBoundary {
-    operand: number
-    inside: CsgProduct[]
-    outside: CsgProduct[]
-    convex: boolean
-}
-
-/** Conservative raster submission estimate, independent of viewport and GPU.
- * Keep the budget in one place so the viewer can choose a safe rendering mode
- * before it starts scheduling thousands of passes. */
-export function estimateRasterWork(boundaries: readonly RasterBoundary[], layerBudgets: ReadonlyMap<number, number> = new Map()) {
-    let work = 0
-    let hasDirect = false
-    for (const boundary of boundaries) {
-        const direct = boundary.inside.length === 1 &&
-            boundary.inside[0].intersections.length === 0 &&
-            boundary.inside[0].subtractions.length === 0 &&
-            boundary.outside.length === 0
-        if (direct) {
-            // All unconstrained operands share one directScene renderer.render()
-            // submission regardless of how many separate parts are present.
-            hasDirect = true
-            continue
-        }
-        const layers = boundary.convex ? 1 : layerBudgets.get(boundary.operand) ?? 1
-        const products = [...boundary.inside, ...boundary.outside]
-        const perSide = products.reduce((count, product) =>
-            count + 3 + (product.intersections.length + product.subtractions.length) * 2, 0)
-        work += layers * 2 * (1 + perSide)
-    }
-    return work + Number(hasDirect)
-}
-
-/** More than this many serial raster operations is not an interactive F5 path.
- * The viewer requests the existing exact-topology service instead of hanging. */
-export const CSG_INTERACTIVE_WORK_LIMIT = 400
-export const CSG_RASTER_WORK_LIMIT = 50000
 
 /** Goldfeather candidate surfaces and stencil parity classification.
  * All visibility work is triangle rasterization. No rays or geometry booleans.
