@@ -602,6 +602,7 @@ export class Stage {
             return
         }
         const generation = this.modelGeneration
+        const topologyStarted = performance.now()
         this.topologyKey = key
         // Topology preparation is a normal internal operation; report only
         // failures, not progress or successful fallback as popup messages.
@@ -609,6 +610,7 @@ export class Stage {
             .then(({ value: geometry }) => {
                 if (this.disposed || generation !== this.modelGeneration || key !== JSON.stringify(this.topologyPlanes())) return
                 const group = this.createTopologyGroup(geometry)
+                this.modelContext?.reportPerformance?.({ topologyMs: performance.now() - topologyStarted })
                 this.topologyGroup = group
                 group.visible = false
                 this.modelGroup.add(group)
