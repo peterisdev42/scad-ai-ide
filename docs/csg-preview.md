@@ -79,6 +79,21 @@ Preview 消息不再携带 BLAS/TLAS、重复的三角形纹理或 Hit Event 程
 
 本机验证覆盖 Apple Metal 上 Chromium 的两种后端。Safari、Firefox、Windows/Linux、独立显卡及真正设备复位后的驱动差异仍需扩展。官方对照使用 CLI 的 **OpenCSG F5 渲染路径**；没有测量 Qt IDE 连续旋转帧率，不能将进程导出 PNG 的时间视为 Qt IDE F5 帧率。完整 F5 兼容性尚未宣称达成。
 
+## 大模型光栅化工作量与降级
+
+OpenCSG-style Raster 并非模型越大就一定比 GPU Raycasting 更快。当前算法对每个候选边界、正反面、非凸深度层、Boolean Product 和谓词进行多轮 GPU Raster Pass；大量相互重叠的操作数会导致 Pass 工作量成倍增加。原有 `CSG raster pass budget exceeded` 表示光栅化复杂度超过安全上限，不能通过简单提高上限解决流畅度问题。
+
+`estimateRasterWork()` 在执行 GPU 帧前从 CSG 边界计算保守的 Raster 工作量（基础交互阈值 400，硬限制 50,000）；互不约束的直接操作数合并计算为单一 Draw 提交，避免零件多但彼此独立时错误触发降级。非凸模型使用已探测的深度层预算，GPU 工作量增长时仍保留硬保护。
+
+- 正常模型继续使用 F5 风格 GPU 光栅化 CSG；移动相机不会调用 OpenSCAD CLI。
+- 如果模型超出交互工作量阈值，且宿主支持 `queryTopology`，Stage **明确切换为精确 Mesh 模式**：只对当前模型进行一次完整 Boolean 几何求值，缓存结果并用普通 Three.js Mesh 实时旋转；不是偷偷用原始操作数假装显示正确的 CSG。
+- 如果少数模型在光栅化运行时才突破硬预算，捕获对应预算错误并切换到相同的精确 Mesh 路径；交互帧连续出现明显的 CPU 提交卡顿时也可触发该模式。
+- UI 提示 `Complex CSG: displaying a cached exact mesh`，以免用户误以为这仍是纯 F5 图像空间算法。模型变化后失效并重新评估；后续相机变化不重复执行 CLI 或 Boolean Kernel。
+- 某些只提供静态嵌入视图的 Webview 没有按需拓扑服务，这种视图不能执行上述降级，仍会给出明确限制/错误。
+- 精确拓扑计算可能较慢，也可能因超时、模型过大或非流形几何失败。失败时停止加载状态，明确建议 Full Render；不能提高预算后长时间阻塞 Webview。
+
+这一策略解决的是复杂模型拖拽与预算失败的**产品级可用性**，不是声称现有光栅化算法已经具有可扩展到任意规模布尔 DAG 的运行复杂度。需要继续以大量重叠操作数的真实模型做 GPU Profiler，考虑更好的布尔表达式因子化和重复谓词分类，才可能把这些模型恢复为纯 F5 实时渲染。
+
 ## 相机交互回归
 
 `node --test scripts/preview-fast.test.mjs` 的 Retina DPR=2 拖拽用例覆盖以下行为：拖动时降低渲染分辨率，免除每交互帧 GPU 读回；松开时恢复 DPR、完整场景签名和验证帧；相机拖动不会改变 CSG 模型版本。设置 `SCAD_TEST_WEBGPU=1` 可在相应浏览器环境中检查 WebGPU 路径，默认浏览器测试会强制 WebGL 2。
