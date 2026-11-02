@@ -5,6 +5,8 @@ export interface PreviewTimings {
     normalizationMs?: number
     uploadMs?: number
     shaderMs?: number
+    /** Exact-mesh fallback evaluation, reported separately from GPU raster time. */
+    topologyMs?: number
     interactiveFrameMs?: number
 }
 
