@@ -304,7 +304,7 @@ export class Preview extends LitElement {
         const loading = !!(this.modelContext?.isLoading || this.preparing)
         const error = this.modelContext?.previewError || (!this.recovering ? this.previewIssue : '')
         const loadingMessage = this.preparing
-            ? this.modelContext?.format === 'csg' ? 'Preparing CSG shaders and first complete frame…' : 'Preparing mesh and first frame…'
+            ? this.modelContext?.format === 'csg' ? 'Preparing CSG preview and first frame…' : 'Preparing mesh and first frame…'
             : (this.modelContext?.loadingMessage ?? 'Rendering SCAD...')
         // Severity order: error > renderer recovery > loading > tool notice > backend.
         const primary = error || (this.recovering ? this.previewIssue : '') || (loading ? loadingMessage : this.toolStatus)
@@ -313,7 +313,7 @@ export class Preview extends LitElement {
         return html`
             ${empty ? html`<div id="loading-overlay" class="empty">${this.modelContext?.loadingMessage ?? 'Rendering SCAD...'}</div>` : nothing}
             ${primary || backend ? html`
-                <div id="preview-status" role="status" aria-label="Preview status">
+                <div id="preview-status" role=${error ? 'alert' : 'status'} aria-label="Preview status">
                     ${primary ? html`
                         <div id=${error ? 'tool-status' : 'preview-message'} class="primary ${error ? 'error' : ''}">
                             ${loading && !error ? html`<div class="spinner" aria-hidden="true"></div>` : nothing}
