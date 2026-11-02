@@ -5,15 +5,16 @@ import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { LaunchCommand } from '../../core/runtime/types'
-import { compileCsg } from '../../core/csg/compile'
-import type { CsgScene } from '../../core/csg/types'
+import { compileCsg, compileCsgTopology } from '../../core/csg/compile'
+import { CSG_INTERACTIVE_WORK_LIMIT, estimateSceneRasterWork } from '../../core/csg/rasterWork'
+import type { CsgGeometry, CsgScene } from '../../core/csg/types'
 import { ModelFormat } from '../preview/shared/types/ModelFormat'
 import type { PreviewMode } from '../preview/shared/types/PreviewMode'
 
 import type { PreviewModel } from '../preview/shared/types/PreviewModel'
 
 /** Markdown shares the native preview's CSG/mesh transport, never a screenshot. */
-export async function renderScadModel(command: LaunchCommand, source: string, cwd: string, signal: AbortSignal, mode: PreviewMode = 'render', _publish?: (model: string) => void): Promise<string> {
+export async function renderScadModel(command: LaunchCommand, source: string, cwd: string, signal: AbortSignal, mode: PreviewMode = 'render', _publish?: (model: string) => void, options: { prepareComplexTopology?: boolean } = {}): Promise<string> {
     const started = Date.now()
     signal.throwIfAborted()
     const directory = await mkdtemp(join(tmpdir(), 'scad-markdown-model-'))
@@ -39,10 +40,33 @@ export async function renderScadModel(command: LaunchCommand, source: string, cw
             buffer = await compileCsg(buffer.toString('utf8'), signal, { cwd, dependencies, fontDirectories: fontDirectoriesFromArgs(command.argsPrefix) })
         }
         const csg = format === ModelFormat.CSG ? (JSON.parse(buffer.toString('utf8')) as CsgScene) : undefined
-        const model: PreviewModel = {previewMode:mode, format, content: buffer.toString('base64'), dependencies: csg?.dependencies ?? dependencies, backend: { kind: format === ModelFormat.CSG ? 'csg' : 'mesh', elapsedMs: Date.now() - started, timings: { cliMs, ...csg?.timings } } }
-        // Built-in Markdown has no extension request channel. Ordinary F5 must
-        // never enqueue a final boolean mesh. Exact tools use the managed
-        // Markdown viewer, which has an explicit on-demand topology channel.
+        const model: PreviewModel = { previewMode: mode, format, content: buffer.toString('base64'), dependencies: csg?.dependencies ?? dependencies, backend: { kind: format === ModelFormat.CSG ? 'csg' : 'mesh', elapsedMs: Date.now() - started, timings: { cliMs, ...csg?.timings } } }
+        // VS Code's built-in Markdown host cannot answer queryTopology messages.
+        // For those code blocks only, make the *same* work-budget decision as
+        // the interactive Stage, then attach one precomputed exact mesh.
+        // Small/ordinary CSG blocks remain purely symbolic F5 previews.
+        if (csg && options.prepareComplexTopology) {
+            let shouldPrecompute = false
+            try {
+                shouldPrecompute = estimateSceneRasterWork(csg) > CSG_INTERACTIVE_WORK_LIMIT
+            } catch {
+                // Boundary-normalization failure also makes raster CSG unusable.
+                shouldPrecompute = true
+            }
+            if (shouldPrecompute) {
+                const topologyStarted = Date.now()
+                try {
+                    const topology: CsgGeometry = await compileCsgTopology(csg, signal)
+                    signal.throwIfAborted()
+                    model.topology = topology
+                } catch (error) {
+                    signal.throwIfAborted()
+                    model.topologyError = error instanceof Error ? error.message : String(error)
+                }
+                model.backend!.timings = { ...model.backend!.timings, topologyMs: Date.now() - topologyStarted }
+            }
+        }
+        model.backend!.elapsedMs = Date.now() - started
         return JSON.stringify(model)
     } finally {
         await rm(directory, { recursive: true, force: true })
