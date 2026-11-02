@@ -7,6 +7,8 @@ export interface PreviewTimings {
     shaderMs?: number
     /** Exact-mesh fallback evaluation, reported separately from GPU raster time. */
     topologyMs?: number
+    /** Time to request/receive an already prepared or on-demand exact mesh in a viewer. */
+    topologyRequestMs?: number
     interactiveFrameMs?: number
 }
 
