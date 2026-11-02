@@ -4,7 +4,7 @@ import type { CsgScene } from '../../../../../core/csg/types'
 import { validateCsgScene } from '../../../../../core/csg/validate'
 import { decodeFloats, decodeIndices, traceCsg } from '../../../../../core/csg/acceleration'
 import { boundaryCofactors } from '../../../../../core/csg/normalize'
-import { RasterCsgRenderer, type RasterBoundary } from './RasterCsgRenderer'
+import { RasterCsgRenderer, estimateRasterWork, type RasterBoundary } from './RasterCsgRenderer'
 
 export interface CsgLight {
     position: Vector3
@@ -124,6 +124,10 @@ export class CsgModel {
                 return boundary
             })
             .filter((b) => b.inside.length || b.outside.length)
+    }
+
+    get estimatedRasterWork() {
+        return estimateRasterWork(this.boundaries)
     }
 
     setTopology(meshes: Mesh[] | undefined) {
