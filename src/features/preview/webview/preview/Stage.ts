@@ -577,7 +577,9 @@ export class Stage {
         this.complexCsgFallback = true
         this.slowCsgFrames = 0
         this.renderSignature = undefined
-        this.onToolStatus?.(`Complex CSG: preparing an exact mesh for smooth navigation (${reason})…`)
+        // An automatic renderer fallback is not an error or an actionable
+        // warning. Do not surface a persistent overlay for normal operation.
+        this.onToolStatus?.('')
         this.ensureTopology()
     }
 
@@ -595,12 +597,14 @@ export class Stage {
         if (this.topologyPending) return
         const provider = this.modelRepresentation ? this.modelRepresentation.queryTopology.bind(this.modelRepresentation) : undefined
         if (!provider) {
-            this.onToolStatus?.(this.complexCsgFallback ? 'Exact-mesh fallback is unavailable in this view. Select Full Render.' : 'Exact topology is not available in this preview.')
+            const message = this.complexCsgFallback ? 'Exact-mesh fallback is unavailable in this view. Select Full Render.' : 'Exact topology is not available in this preview.'
+            this.onError?.(message)
             return
         }
         const generation = this.modelGeneration
         this.topologyKey = key
-        this.onToolStatus?.(this.complexCsgFallback ? 'Complex CSG: calculating an exact mesh for smooth navigation…' : 'Preparing exact geometry for the selected tool…')
+        // Topology preparation is a normal internal operation; report only
+        // failures, not progress or successful fallback as popup messages.
         const task = provider(planes)
             .then(({ value: geometry }) => {
                 if (this.disposed || generation !== this.modelGeneration || key !== JSON.stringify(this.topologyPlanes())) return
@@ -612,7 +616,7 @@ export class Stage {
                 if (this.viewOptions) this.materialManager.applyToGroup(group, this.viewOptions)
                 this.materialManager.setTheme(group, this.theme, this.viewOptions?.get('modelColor'))
                 this.rebuildModelClipping()
-                this.onToolStatus?.(this.complexCsgFallback ? 'Complex CSG: displaying a cached exact mesh (instead of F5 raster passes).' : '')
+                this.onToolStatus?.('')
                 this.renderSignature = undefined
             })
             .catch((error) => {
@@ -622,7 +626,7 @@ export class Stage {
                         // End the loading state instead of leaving the preview
                         // permanently waiting for a mesh that cannot be built.
                         this.onError?.(`Complex CSG exact-mesh fallback failed: ${message}. Use Full Render or simplify the model.`)
-                    } else this.onToolStatus?.(message)
+                    } else this.onError?.(message)
                 }
             })
             .finally(() => {
