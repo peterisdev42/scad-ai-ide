@@ -12,6 +12,29 @@ export interface RasterBoundary {
     convex: boolean
 }
 
+/** Conservative raster submission estimate, independent of viewport and GPU.
+ * Keep the budget in one place so the viewer can choose a safe rendering mode
+ * before it starts scheduling thousands of passes. */
+export function estimateRasterWork(boundaries: readonly RasterBoundary[], layerBudgets: ReadonlyMap<number, number> = new Map()) {
+    return boundaries.reduce((sum, boundary) => {
+        const direct = boundary.inside.length === 1 &&
+            boundary.inside[0].intersections.length === 0 &&
+            boundary.inside[0].subtractions.length === 0 &&
+            boundary.outside.length === 0
+        if (direct) return sum + 1
+        const layers = boundary.convex ? 1 : layerBudgets.get(boundary.operand) ?? 1
+        const products = [...boundary.inside, ...boundary.outside]
+        const work = products.reduce((count, product) =>
+            count + 3 + (product.intersections.length + product.subtractions.length) * 2, 0)
+        return sum + layers * 2 * (1 + work)
+    }, 0)
+}
+
+/** More than this many serial raster operations is not an interactive F5 path.
+ * The viewer requests the existing exact-topology service instead of hanging. */
+export const CSG_INTERACTIVE_WORK_LIMIT = 800
+export const CSG_RASTER_WORK_LIMIT = 50000
+
 /** Goldfeather candidate surfaces and stencil parity classification.
  * All visibility work is triangle rasterization. No rays or geometry booleans.
  * Scratch depth is sampled only while a different attachment is being written.
@@ -142,8 +165,8 @@ export class RasterCsgRenderer {
         // Scratch attachments and completed frame stay within a bounded budget.
         if (size.x * size.y * 36 > 512 * 1048576) throw new Error('CSG viewport resource budget exceeded (512 MB). Reduce the viewport size or display scaling.')
         const checkPassBudget = () => {
-            const work = boundaries.reduce((sum, b) => sum + (b.convex ? 1 : (this.layerBudgets.get(b.operand) ?? 1)) * [...b.inside, ...b.outside].reduce((n, p) => n + 3 + (p.intersections.length + p.subtractions.length) * 2, 0), 0)
-            if (work > 50000) throw new Error('CSG raster pass budget exceeded. Simplify the model or use Full Render.')
+            const work = estimateRasterWork(boundaries, this.layerBudgets)
+            if (work > CSG_RASTER_WORK_LIMIT) throw new Error(`CSG raster pass budget exceeded (${work} estimated passes). Use the exact-mesh fallback or Full Render.`)
         }
         checkPassBudget()
         if (this.candidate.width !== size.x || this.candidate.height !== size.y) {
