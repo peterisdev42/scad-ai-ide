@@ -1190,9 +1190,13 @@ export class Stage {
                         // Many raster operations can stall CPU submission even
                         // when navigation skips the GPU-completion readback.
                         const elapsed = performance.now() - frameStarted
-                        if (interactive && elapsed > 45 && ++this.slowCsgFrames >= 2)
-                            this.beginComplexCsgFallback(`two orbit frames above 45 ms CPU submission (${Math.round(elapsed)} ms latest)`)
-                        else if (interactive && elapsed <= 45) this.slowCsgFrames = 0
+                        const established = this.firstFrame?.submitted === true
+                        const slow = interactive ? elapsed > 45 : established && elapsed > 80
+                        if (slow && ++this.slowCsgFrames >= 2) {
+                            this.beginComplexCsgFallback(`repeated slow GPU raster frames (${Math.round(elapsed)} ms latest)`)
+                        } else if (interactive || established) {
+                            if (!slow) this.slowCsgFrames = 0
+                        }
                         this.reportFirstFrame()
                         // Navigation intentionally skips the GPU completion fence.
                         // Do not report its CPU submission time as a GPU-complete frame.
