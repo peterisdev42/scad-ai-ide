@@ -68,7 +68,7 @@ Preview 消息不再携带 BLAS/TLAS、重复的三角形纹理或 Hit Event 程
 - 面拾取使用懒创建的 CPU 加速查询；模型/剖切版本变化使精确拓扑缓存失效。过期任务不能替换新模型。
 - 相机拖动时，CSG 视口临时以最多每 CSS 像素一个设备像素渲染（Retina DPR=2 时像素工作量通常降为四分之一）；松开后恢复原设备 DPR 和完整质量。分辨率变更只发生在 Renderer 无在途任务时，不会每个鼠标事件重新分配帧缓冲。
 - 拖动中的 CSG 帧不执行原有的 **每帧 1×1 GPU readback fence**，在同一 GPU 提交队列内完成候选帧与屏幕合成；静止/完整质量帧仍保留 GPU 完成检查和错误作用域。非凸深度复杂度判断所需的标量读回仍按算法要求执行，不能直接删除。首帧 `frameReady` 仍单独等待 GPU 完成和两次 rAF；设备丢失后保留模型与相机并尝试 WebGL 2 恢复。
-- `interactiveFrameMs` 不把省略 GPU fence 的交互帧 CPU 提交时间误报成 GPU 帧耗时；仍由带 GPU 完成确认的帧提供。相机属性 UI 从 `TrackballControls` 的 change 事件更新，避免每个 rAF 重复写入 Lit Context 和触发持久化防抖。相机在异步帧内使用快照，候选准备和帧绘制不交错修改同一 Renderer。
+- `interactiveFrameMs` 不把省略 GPU fence 的交互帧 CPU 提交时间误报成 GPU 帧耗时；仍由带 GPU 完成确认的帧提供。拖动时签名检查只比较 Camera/模型版本，避免每个 rAF 遍历、序列化整个 Scene；松开后恢复完整场景状态检查，其他配置变化仍按现有失效机制触发刷新。相机属性 UI 从 `TrackballControls` 的 change 事件更新，避免每个 rAF 重复写入 Lit Context 和触发持久化防抖。相机在异步帧内使用快照，候选准备和帧绘制不交错修改同一 Renderer。
 - 编辑器和自管 Markdown 有按需拓扑消息通道。内置 Markdown 没有该通道，普通 F5 不再后台自动生成完整 Boolean；选择精确工具会提示使用 **Open Markdown Preview with 3D Tools**。基础交互、模式切换和错误保留继续工作，CSP 不开放浏览器 Worker/WASM。
 
 ## 有界失败与兼容范围
@@ -81,7 +81,7 @@ Preview 消息不再携带 BLAS/TLAS、重复的三角形纹理或 Hit Event 程
 
 ## 相机交互回归
 
-`node --test scripts/preview-fast.test.mjs` 的 Retina DPR=2 拖拽用例覆盖以下行为：拖动时降低渲染分辨率，免除每交互帧 GPU 读回；松开时恢复 DPR 和验证帧；相机拖动不会改变 CSG 模型版本。设置 `SCAD_TEST_WEBGPU=1` 可在相应浏览器环境中检查 WebGPU 路径，默认浏览器测试会强制 WebGL 2。
+`node --test scripts/preview-fast.test.mjs` 的 Retina DPR=2 拖拽用例覆盖以下行为：拖动时降低渲染分辨率，免除每交互帧 GPU 读回；松开时恢复 DPR、完整场景签名和验证帧；相机拖动不会改变 CSG 模型版本。设置 `SCAD_TEST_WEBGPU=1` 可在相应浏览器环境中检查 WebGPU 路径，默认浏览器测试会强制 WebGL 2。
 
 **性能注意：** 这是缩短拖拽延迟的帧调度优化，不代表 GPU CSG 本身不再逐帧执行多 Pass。非凸操作数仍可能进行深度层数 readback；高 DPR 的静止全分辨率帧仍有成本。需要在真实 VS Code/Electron 的 Webview 中重新测量连续拖拽的输入到画面延迟、完成帧率与内存，不能直接拿省略 fence 后的 CPU 提交耗时与旧基准比较。
 
