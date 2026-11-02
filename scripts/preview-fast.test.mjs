@@ -200,6 +200,11 @@ test('complex CSG preview switches to one cached exact mesh instead of retrying 
     })
     const initialVersion = await page.locator('scad-preview').evaluate((preview) => {
         const stage = preview.stage
+        window.csgFallbackStatuses = []
+        stage.setToolStatusCallback((status) => {
+            window.csgFallbackStatuses.push(status)
+            preview.toolStatus = status
+        })
         // Simulate a real model's large, independently computed raster estimate.
         // The fallback must not invoke a single raster pass for this scene.
         Object.defineProperty(stage.csgModels[0], 'estimatedRasterWork', { configurable: true, value: 100000 })
@@ -229,7 +234,30 @@ test('complex CSG preview switches to one cached exact mesh instead of retrying 
     assert.equal(state.version, initialVersion, 'Camera changes must not re-run CSG preparation')
     assert.equal(state.fallback, true)
     assert.equal(state.geometryVisible, true)
+    assert.deepEqual(await page.evaluate(() => window.csgFallbackStatuses.filter(Boolean)), [], 'Normal fallback must not display a status popup')
+    assert.equal(await page.locator('scad-preview').evaluate((preview) => preview.shadowRoot.querySelector('#tool-status') !== null), false, 'Successful fallback must not leave a notice overlay')
     assert.equal(await page.evaluate(() => window.hostMessages.filter((m) => m.type === 'queryTopology').length), 1)
+})
+
+test('exact-mesh fallback failure remains visible as an error', async (t) => {
+    const page = await fixture(t, 'preview')
+    await page.waitForFunction(() => {
+        const preview = document.querySelector('scad-app')?.shadowRoot?.querySelector('scad-preview')
+        return preview?.stage?.csgModels?.length === 1 && !preview.preparing && !preview.stage.csgFrameBusy
+    })
+    await page.locator('scad-preview').evaluate((preview) => {
+        const stage = preview.stage
+        Object.defineProperty(stage.csgModels[0], 'estimatedRasterWork', { configurable: true, value: 100000 })
+        stage.modelRepresentation.queryTopology = async () => {
+            throw new Error('test-topology-failure')
+        }
+        stage.maybeFallbackForRasterCost()
+    })
+    await page.waitForFunction(() => {
+        const preview = document.querySelector('scad-app')?.shadowRoot?.querySelector('scad-preview')
+        return preview?.previewIssue?.includes('test-topology-failure') && preview.shadowRoot.querySelector('#tool-status') !== null
+    })
+    assert.match(await page.locator('scad-preview').evaluate((preview) => preview.previewIssue), /exact-mesh fallback failed.*test-topology-failure/i)
 })
 
 test('initial CSG preview retains host parameter/export bindings and prepares exact wireframe topology', async (t) => {
