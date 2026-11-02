@@ -610,7 +610,7 @@ export class Stage {
             .then(({ value: geometry }) => {
                 if (this.disposed || generation !== this.modelGeneration || key !== JSON.stringify(this.topologyPlanes())) return
                 const group = this.createTopologyGroup(geometry)
-                this.modelContext?.reportPerformance?.({ topologyMs: performance.now() - topologyStarted })
+                this.modelContext?.reportPerformance?.({ topologyRequestMs: performance.now() - topologyStarted })
                 this.topologyGroup = group
                 group.visible = false
                 this.modelGroup.add(group)
