@@ -14,6 +14,7 @@ const root = fileURLToPath(new URL('../', import.meta.url))
 const require = createRequire(import.meta.url)
 const { darkMarkdownTheme, lightMarkdownTheme } = require('../out/test/fixtures/markdownTheme.js')
 let model
+let modelWithTopology
 let browser
 before(async () => {
     const worker = new Worker(join(root, 'dist/csg-worker.mjs'))
@@ -25,6 +26,12 @@ before(async () => {
         })
         if (result.error) throw new Error(result.error)
         model = JSON.stringify({ format: 'csg', content: Buffer.from(JSON.stringify(result.scene)).toString('base64') })
+        const topology = await new Promise((resolve, reject) => {
+            worker.once('message', (r) => (r.error ? reject(new Error(r.error)) : resolve(r.scene)))
+            worker.once('error', reject)
+            worker.postMessage({ topology: result.scene })
+        })
+        modelWithTopology = JSON.stringify({ ...JSON.parse(model), topology })
     } finally {
         await worker.terminate()
     }
@@ -32,7 +39,7 @@ before(async () => {
 })
 after(async () => browser?.close())
 
-async function fixture(t, { trusted = true, broken = false, sourceText } = {}) {
+async function fixture(t, { trusted = true, broken = false, sourceText, cachedTopology = false } = {}) {
     const { ScadHighlighter } = require('../out/features/markdown/ScadHighlighter.js')
     const highlighter = new ScadHighlighter()
     await highlighter.initialize(require.resolve('vscode-oniguruma/release/onig.wasm'))
@@ -79,7 +86,7 @@ async function fixture(t, { trusted = true, broken = false, sourceText } = {}) {
                 return {
                     renderScadModel: async () => {
                         if (broken) throw new Error('Parser error: <unsafe>')
-                        return model
+                        return cachedTopology ? modelWithTopology : model
                     },
                 }
             return name.startsWith('.') ? require(resolve(dirname(file), name)) : require(name)
@@ -362,4 +369,33 @@ test('late Markdown DOM replacement mounts ready previews without an updateConte
     }, html)
     await blocks.nth(0).locator('scad-preview canvas.main-canvas').waitFor()
     await page.waitForFunction(() => document.querySelector('scad-app')?.shadowRoot.querySelector('scad-preview')?.stage?.modelGroup?.children.length > 0)
+})
+
+test('built-in Markdown CSG embed consumes precomputed exact topology without an extension message bridge', async (t) => {
+    const { page, blocks } = await fixture(t, { cachedTopology: true })
+    const preview = blocks.first().locator('scad-preview')
+    await preview.locator('canvas.main-canvas').waitFor()
+    await page.waitForFunction(() => {
+        const stage = document.querySelector('scad-app')?.shadowRoot?.querySelector('scad-preview')?.stage
+        return stage?.csgModels?.length === 1 && !stage.csgFrameBusy
+    })
+    await preview.evaluate((element) => {
+        const stage = element.stage
+        Object.defineProperty(stage.csgModels[0], 'estimatedRasterWork', { configurable: true, value: 100000 })
+        stage.maybeFallbackForRasterCost()
+    })
+    await page.waitForFunction(() => {
+        const preview = document.querySelector('scad-app')?.shadowRoot?.querySelector('scad-preview')
+        return preview?.stage?.complexCsgFallback && preview.stage.topologyGroup?.children.length > 0 &&
+            !preview.stage.csgModels[0].mesh.visible && preview.stage.topologyGroup.visible
+    })
+    assert.equal(await preview.evaluate((element) => element.previewIssue), '')
+    assert.equal(await preview.evaluate((element) => !!element.shadowRoot.querySelector('#tool-status')), false, 'Normal complex-model fallback should be silent')
+    const before = await preview.evaluate((element) => element.stage.modelGeneration)
+    const box = await preview.locator('canvas.main-canvas').boundingBox()
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+    await page.mouse.down()
+    await page.mouse.move(box.x + box.width / 2 + 30, box.y + box.height / 2 + 25, { steps: 4 })
+    await page.mouse.up()
+    assert.equal(await preview.evaluate((element) => element.stage.modelGeneration), before)
 })
