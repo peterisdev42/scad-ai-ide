@@ -95,6 +95,8 @@ export class Stage {
     private readonly gpuCompletion = new GpuCompletion()
     private csgFrameBusy = false
     private csgFrameDirty = false
+    private previewNavigating = false
+    private renderPixelRatio = 1
     private firstFrame?: { generation: number; start: number; notify?: ModelContext['frameReady']; submitted: boolean }
     public setToolStatusCallback(callback: (status: string) => void) {
         this.onToolStatus = callback
@@ -155,7 +157,8 @@ export class Stage {
                 else this.onError?.(`Graphics device lost: ${info.message}`)
             }
         }
-        this.renderer.setPixelRatio(window.devicePixelRatio)
+        this.renderPixelRatio = window.devicePixelRatio > 0 ? window.devicePixelRatio : 1
+        this.renderer.setPixelRatio(this.renderPixelRatio)
         this.renderer.setSize(width || 1, height || 1)
         this.renderer.shadowMap.type = PCFShadowMap
         this.renderer.shadowMap.enabled = true
@@ -288,6 +291,7 @@ export class Stage {
     public setActive(active: boolean) {
         if (this.disposed || active === !this.paused) return
         this.renderSignature = undefined
+        if (!active) this.previewNavigating = false
         this.paused = !active
         if (!active) {
             if (this.animationFrameId !== null) cancelAnimationFrame(this.animationFrameId)
@@ -750,6 +754,7 @@ export class Stage {
         this.activeCameraRig.getControls().enabled = false
         this.activeCameraRig.setIsActiveCamera(false)
         this.activeCameraRig = handle
+        this.previewNavigating = false
         this.activeCameraRig.getControls().enabled = true
         this.activeCameraRig.setIsActiveCamera(true)
         this.transformControls.camera = this.activeCameraRig.getPerspectiveCamera()
@@ -897,7 +902,19 @@ export class Stage {
     private createCameraRig(id: string): CameraRig {
         const size = this.renderer.getSize(new Vector2())
         const rig = new CameraRig(id, size.x, size.y, this.renderer.domElement, this.theme.foreground)
-        rig.getControls().addEventListener('change', () => this.onPersist?.())
+        const controls = rig.getControls()
+        controls.addEventListener('start', () => {
+            if (this.activeCameraRig === rig) this.previewNavigating = true
+        })
+        controls.addEventListener('end', () => {
+            if (this.activeCameraRig === rig) this.previewNavigating = false
+        })
+        controls.addEventListener('change', () => {
+            this.onPersist?.()
+            // The property panel should follow actual camera changes, not every rAF.
+            if (this.selectedId === id) this.onPropertiesChange?.(rig.getProperties())
+            if (this.csgFrameBusy && this.activeCameraRig === rig) this.csgFrameDirty = true
+        })
         this.cameraHandles.set(id, rig)
         this.handles.set(id, rig)
         this.scene.add(rig.getPerspectiveCamera())
@@ -980,16 +997,20 @@ export class Stage {
         this.handles.forEach((h) => {
             if (h instanceof CrossSectionRig) h.update()
         })
-        // Camera position/rotation change every frame while orbiting — keep the
-        // properties panel in sync if a camera is currently selected.
-        if (this.selectedId) {
-            const handle = this.handles.get(this.selectedId)
-            if (handle instanceof CameraRig) {
-                this.onPropertiesChange?.(handle.getProperties())
-            }
-        }
+        this.updateInteractiveResolution()
         this.renderFrame(false)
         this.css2dRenderer.render(this.scene, this.activeCameraRig.activeCamera)
+    }
+
+    /** Reduce fill-rate and multipass CSG work during navigation; restore native
+     * device resolution after release. Do not resize while a frame owns GPU state. */
+    private updateInteractiveResolution() {
+        const nativeRatio = window.devicePixelRatio > 0 ? window.devicePixelRatio : 1
+        const wanted = this.csgModels.length && this.previewNavigating ? Math.min(nativeRatio, 1) : nativeRatio
+        if (wanted === this.renderPixelRatio || this.csgFrameBusy || rendererBusy(this.renderer)) return
+        this.renderer.setPixelRatio(wanted)
+        this.renderPixelRatio = wanted
+        this.renderSignature = undefined
     }
 
     private renderFrame(force = true) {
@@ -1091,6 +1112,7 @@ export class Stage {
                         return representation.render(this.renderer, this.scene, view, frame)
                     },
                     () => !this.disposed && !this.paused && generation === this.modelGeneration,
+                    this.previewNavigating,
                 )
                 .then((complete) => {
                     if (!complete) this.csgFrameDirty = true
