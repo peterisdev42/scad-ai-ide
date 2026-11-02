@@ -1027,24 +1027,31 @@ export class Stage {
         if (rendererBusy(this.renderer)) return
         let signature: string | undefined
         if (this.csgModels.length) {
-            this.scene.updateMatrixWorld(true)
             const camera = this.activeCameraRig.activeCamera
             camera.updateMatrixWorld(true)
-            const state: unknown[] = [this.modelGeneration, this.selectedId, this.viewOptions?.options, camera.matrixWorld.elements, camera.projectionMatrix.elements]
-            this.scene.traverse((object) => {
-                if (object instanceof Mesh) {
-                    const material = Array.isArray(object.material) ? object.material : [object.material]
-                    state.push(
-                        object.id,
-                        object.visible,
-                        object.matrixWorld.elements,
-                        object.geometry.id,
-                        object.geometry.getAttribute('position')?.version,
-                        material.map((m) => [m.id, m.version]),
-                    )
-                } else state.push(object.id, object.visible, object.matrixWorld.elements)
-            })
-            signature = JSON.stringify(state)
+            if (this.previewNavigating && !force) {
+                // During an orbit the camera is the only continuously changing
+                // input. Avoid walking/serializing the entire scene every rAF.
+                // When navigation ends, the full scene signature is evaluated.
+                signature = `camera:${this.modelGeneration}:${this.selectedId}:${camera.matrixWorld.elements.join(',')}:${camera.projectionMatrix.elements.join(',')}`
+            } else {
+                this.scene.updateMatrixWorld(true)
+                const state: unknown[] = [this.modelGeneration, this.selectedId, this.viewOptions?.options, camera.matrixWorld.elements, camera.projectionMatrix.elements]
+                this.scene.traverse((object) => {
+                    if (object instanceof Mesh) {
+                        const material = Array.isArray(object.material) ? object.material : [object.material]
+                        state.push(
+                            object.id,
+                            object.visible,
+                            object.matrixWorld.elements,
+                            object.geometry.id,
+                            object.geometry.getAttribute('position')?.version,
+                            material.map((m) => [m.id, m.version]),
+                        )
+                    } else state.push(object.id, object.visible, object.matrixWorld.elements)
+                })
+                signature = JSON.stringify(state)
+            }
             if (!force && signature === this.renderSignature) return
         }
         this.renderSignature = signature
