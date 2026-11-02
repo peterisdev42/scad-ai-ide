@@ -1215,7 +1215,7 @@ export class Stage {
                 .catch((error) => {
                     if (!this.disposed && generation === this.modelGeneration) {
                         const message = String(error)
-                        if (/CSG (?:raster pass budget|depth probing pass budget|depth complexity|viewport resource budget) exceeds?/.test(message) && this.modelContext?.queryTopology) {
+                        if (/CSG (?:raster pass budget|depth probing pass budget|depth complexity|viewport resource budget) exceed(?:ed|s)/.test(message) && this.modelContext?.queryTopology) {
                             this.beginComplexCsgFallback(message)
                         } else {
                             this.failedGeneration = generation
