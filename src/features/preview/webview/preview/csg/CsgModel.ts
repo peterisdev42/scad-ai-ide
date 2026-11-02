@@ -3,7 +3,7 @@ import type { WebGPURenderer } from 'three/webgpu'
 import type { CsgScene } from '../../../../../core/csg/types'
 import { validateCsgScene } from '../../../../../core/csg/validate'
 import { decodeFloats, decodeIndices, traceCsg } from '../../../../../core/csg/acceleration'
-import { boundaryCofactors } from '../../../../../core/csg/normalize'
+import { prepareRasterBoundaries } from '../../../../../core/csg/rasterWork'
 import { RasterCsgRenderer, estimateRasterWork, type RasterBoundary } from './RasterCsgRenderer'
 
 export interface CsgLight {
@@ -101,29 +101,7 @@ export class CsgModel {
     }
 
     private prepareBoundaries(scene: CsgScene) {
-        const products = this.root === scene.root ? scene.products : (scene.overlays.find((o) => o.root === this.root)?.products ?? [])
-        const ids = new Set(products.flatMap((p) => [...p.intersections, ...p.subtractions]))
-        if (ids.size * scene.program.length > 2000000) throw new Error('CSG boundary normalization budget exceeded. Simplify the expression or use Full Render.')
-        let literals = 0,
-            terms = 0
-        return [...ids]
-            .map((id) => {
-                const box = scene.operands[id].bounds,
-                    constants = new Map<number, boolean>()
-                for (const other of ids)
-                    if (other !== id) {
-                        const b = scene.operands[other].bounds
-                        if (box.min.some((x, d) => x > b.max[d]) || box.max.some((x, d) => x < b.min[d])) constants.set(other, false)
-                    }
-                const boundary = { operand: id, ...boundaryCofactors(scene.program, this.root, id, constants), convex: scene.operands[id].convex }
-                for (const term of [...boundary.inside, ...boundary.outside]) {
-                    terms++
-                    literals += term.intersections.length + term.subtractions.length
-                }
-                if (terms > 16384 || literals > 131072) throw new Error('CSG boundary product budget exceeded. Simplify the expression or use Full Render.')
-                return boundary
-            })
-            .filter((b) => b.inside.length || b.outside.length)
+        return prepareRasterBoundaries(scene, this.root)
     }
 
     get estimatedRasterWork() {
