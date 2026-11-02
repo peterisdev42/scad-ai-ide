@@ -110,6 +110,15 @@ OpenCSG-style Raster 并非模型越大就一定比 GPU Raycasting 更快。当�
 
 用户实测约 5s 并不能单凭总数字归因于 CLI、WebGPU 或算法；须先确认是否进入 exact-mesh 降级，并观察上述分项。复杂 Markdown 嵌入模型预计算会增加首次数据就绪时间，虽然之后旋转较流畅。
 
+## Preview 状态消息统一展示
+
+普通 SCAD Preview 和 Markdown 内嵌 OpenSCAD Viewer 共用 `Preview.ts` 中唯一的 `#preview-status` 左下角状态容器。`App.ts` 不再单独悬浮定位后端卡片，`BackendStatus.ts` 变为内联可展开的性能详情，加载提示也不再建立独立左下角浮层。
+
+- 主状态按 **错误 > 图形设备恢复 > 加载进度 > 工具通知 > 后端摘要** 优先级展示，避免多个状态分别绝对定位、叠加或相互遮挡。
+- 同一容器内显示简明的运行后端（CSG/mesh、WebGPU/WebGL2、主要耗时）；完整 CLI、几何、规范化、Shader、拓扑等性能分项默认折叠，点击 `Performance details` 可查看。
+- 只有真正错误使用 `alert` 语义；正常降级和自动性能策略不会产生成功/进度弹窗。消息面板有限宽、限高，在嵌入 Markdown 的窄预览中可滚动。
+- 没有模型时仍可使用中央空状态占位；它不属于左下角状态消息。历史日志保持在 Output 面板，不再在视口内增加另一份状态卡片。
+- `scripts/preview-fast.test.mjs` 验证加载、报错、工具提示和后端信息共享一个容器；`scripts/markdown-preview.test.mjs` 验证内嵌代码块采用相同容器。
 ## 相机交互回归
 
 `node --test scripts/preview-fast.test.mjs` 的 Retina DPR=2 拖拽用例覆盖以下行为：拖动时降低渲染分辨率，免除每交互帧 GPU 读回；松开时恢复 DPR、完整场景签名和验证帧；相机拖动不会改变 CSG 模型版本。设置 `SCAD_TEST_WEBGPU=1` 可在相应浏览器环境中检查 WebGPU 路径，默认浏览器测试会强制 WebGL 2。
