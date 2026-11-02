@@ -353,6 +353,13 @@ test('Preview combines backend, loading, tool notices and errors in one bottom-l
     await dock.getByText('Measure tool: choose an edge').waitFor()
     assert.equal(await dock.locator('#tool-status').count(), 0, 'Non-error tool notices must not masquerade as errors')
     assert.equal(await dock.count(), 1)
+    await send({ type: 'renderError', message: 'OpenSCAD compile failed.' })
+    await dock.getByText('OpenSCAD compile failed.').waitFor()
+    assert.equal(await dock.getAttribute('role'), 'alert')
+    assert.equal(await page.locator('scad-preview #loading-overlay').count(), 0, 'CLI errors must not use the empty-model placeholder')
+    await send({ type: 'emptyModel', message: 'Model contains no solids.' })
+    await page.locator('scad-preview #loading-overlay.empty').getByText('Model contains no solids.').waitFor()
+    assert.equal(await dock.locator('#tool-status').count(), 0, 'The empty-model state is not a rendering error')
 })
 
 for (const mode of ['render', 'preview'])
