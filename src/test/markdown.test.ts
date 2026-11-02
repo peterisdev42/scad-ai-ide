@@ -147,7 +147,7 @@ async function mockMarkdown() {
         listeners.set(name, handler)
         return { dispose() {} }
     }
-    const renders: { command: LaunchCommand; source: string; cwd: string; mode: PreviewMode }[] = []
+    const renders: { command: LaunchCommand; source: string; cwd: string; mode: PreviewMode; prepareComplexTopology?: boolean }[] = []
     const state = { trusted: true, enabled: true, renderMode: 'preview' as PreviewMode, active: { id: 'managed', version: '1', command: { executable: '/managed/openscad', argsPrefix: ['--prefix'] } }, runtime: { busy: false } }
     let refreshes = 0
     const mock = {
@@ -186,8 +186,8 @@ async function mockMarkdown() {
                 }
             if (id === './ScadModelRenderer')
                 return {
-                    renderScadModel: async (command: LaunchCommand, source: string, cwd: string, _signal: AbortSignal, mode: PreviewMode) => {
-                        renders.push({ command, source, cwd, mode })
+                    renderScadModel: async (command: LaunchCommand, source: string, cwd: string, _signal: AbortSignal, mode: PreviewMode, _publish?: unknown, options?: { prepareComplexTopology?: boolean }) => {
+                        renders.push({ command, source, cwd, mode, prepareComplexTopology: options?.prepareComplexTopology })
                         if (source.includes('broken')) throw new Error('Parser error: <script>alert(1)</script>')
                         return JSON.stringify({ format: 'stl', content: mesh.toString('base64') })
                     },
@@ -235,6 +235,7 @@ test('Markdown fences support both aliases and capitalization, preserve code and
         assert.equal(mock.renders[0].cwd, '/workspace/docs')
         assert.equal(mock.renders[0].command, mock.state.active.command)
         assert.equal(mock.renders[0].mode, 'preview')
+        assert.equal(mock.renders[0].prepareComplexTopology, true, 'Built-in Markdown must prepare complex-model fallback without a request channel')
         mock.listeners.get('runtime')!()
         render()
         assert.equal(mock.renders.length, 2, 'Unchanged Runtime does not invalidate cached models')
