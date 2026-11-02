@@ -1093,6 +1093,7 @@ export class Stage {
             if (!representation) return
             const frame = { color: this.viewOptions?.get('modelColor') ? new Color(this.viewOptions.get('modelColor')!) : this.theme.additive, overrideColor: !!this.viewOptions?.get('modelColor'), mode: this.viewOptions?.get('renderMode') ?? RenderMode.Solid, planes, webgpu: this.renderer.coordinateSystem === 2001, shadows: this.viewOptions?.get('shadows') ?? true, lights, ambient }
             this.csgFrameBusy = true
+            const interactive = this.previewNavigating
             const frameStarted = performance.now()
             void this.csgFramePass
                 .render(
@@ -1112,13 +1113,15 @@ export class Stage {
                         return representation.render(this.renderer, this.scene, view, frame)
                     },
                     () => !this.disposed && !this.paused && generation === this.modelGeneration,
-                    this.previewNavigating,
+                    interactive,
                 )
                 .then((complete) => {
                     if (!complete) this.csgFrameDirty = true
                     if (complete) {
                         this.reportFirstFrame()
-                        if (frameStarted - this.performanceSampledAt >= 1000) {
+                        // Navigation intentionally skips the GPU completion fence.
+                        // Do not report its CPU submission time as a GPU-complete frame.
+                        if (!interactive && frameStarted - this.performanceSampledAt >= 1000) {
                             this.performanceSampledAt = frameStarted
                             this.modelContext?.reportPerformance?.({ interactiveFrameMs: performance.now() - frameStarted })
                         }
