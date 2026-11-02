@@ -408,9 +408,14 @@ export class App extends LitElement {
                 }
                 break
             case 'emptyModel':
+                this.logController.processLoadingState(false)
+                this.modelContext = { ...this.modelContext, base64Data: null, format: null, isLoading: false, loadingMessage: message.message, previewError: undefined }
+                break
             case 'renderError':
                 this.logController.processLoadingState(false)
-                this.modelContext = { ...this.modelContext, base64Data: null, format: null, isLoading: false, loadingMessage: message.message }
+                // A real rendering error belongs to the same status dock as
+                // viewer errors, not the non-error empty-model placeholder.
+                this.modelContext = { ...this.modelContext, base64Data: null, format: null, isLoading: false, previewError: message.message }
                 break
             case 'loadingState':
                 this.logController.processLoadingState(message.loading)
