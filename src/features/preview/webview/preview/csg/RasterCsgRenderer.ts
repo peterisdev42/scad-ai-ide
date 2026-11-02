@@ -16,23 +16,31 @@ export interface RasterBoundary {
  * Keep the budget in one place so the viewer can choose a safe rendering mode
  * before it starts scheduling thousands of passes. */
 export function estimateRasterWork(boundaries: readonly RasterBoundary[], layerBudgets: ReadonlyMap<number, number> = new Map()) {
-    return boundaries.reduce((sum, boundary) => {
+    let work = 0
+    let hasDirect = false
+    for (const boundary of boundaries) {
         const direct = boundary.inside.length === 1 &&
             boundary.inside[0].intersections.length === 0 &&
             boundary.inside[0].subtractions.length === 0 &&
             boundary.outside.length === 0
-        if (direct) return sum + 1
+        if (direct) {
+            // All unconstrained operands share one directScene renderer.render()
+            // submission regardless of how many separate parts are present.
+            hasDirect = true
+            continue
+        }
         const layers = boundary.convex ? 1 : layerBudgets.get(boundary.operand) ?? 1
         const products = [...boundary.inside, ...boundary.outside]
-        const work = products.reduce((count, product) =>
+        const perSide = products.reduce((count, product) =>
             count + 3 + (product.intersections.length + product.subtractions.length) * 2, 0)
-        return sum + layers * 2 * (1 + work)
-    }, 0)
+        work += layers * 2 * (1 + perSide)
+    }
+    return work + Number(hasDirect)
 }
 
 /** More than this many serial raster operations is not an interactive F5 path.
  * The viewer requests the existing exact-topology service instead of hanging. */
-export const CSG_INTERACTIVE_WORK_LIMIT = 800
+export const CSG_INTERACTIVE_WORK_LIMIT = 400
 export const CSG_RASTER_WORK_LIMIT = 50000
 
 /** Goldfeather candidate surfaces and stencil parity classification.
