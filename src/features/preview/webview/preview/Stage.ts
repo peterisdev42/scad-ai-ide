@@ -1054,7 +1054,7 @@ export class Stage {
      * device resolution after release. Do not resize while a frame owns GPU state. */
     private updateInteractiveResolution() {
         const nativeRatio = window.devicePixelRatio > 0 ? window.devicePixelRatio : 1
-        const wanted = this.csgModels.length && this.previewNavigating ? Math.min(nativeRatio, 1) : nativeRatio
+        const wanted = this.csgModels.length && !this.complexCsgFallback && this.previewNavigating ? Math.min(nativeRatio, 1) : nativeRatio
         if (wanted === this.renderPixelRatio || this.csgFrameBusy || rendererBusy(this.renderer)) return
         this.renderer.setPixelRatio(wanted)
         this.renderPixelRatio = wanted
