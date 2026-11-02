@@ -5,6 +5,7 @@ import { ModelRepresentation } from './models/ModelRepresentation'
 import { threeMfMillimeterScale } from '../../../../core/formats/threeMf'
 import { Box3, BufferGeometry, Color, Float32BufferAttribute, FogExp2, Group, Mesh, MeshStandardMaterial, Object3D, PCFShadowMap, Plane, Raycaster, Scene, Uint32BufferAttribute, Vector2, Vector3 } from 'three'
 import { CsgModel, type CsgLight } from './csg/CsgModel'
+import { CSG_INTERACTIVE_WORK_LIMIT } from './csg/RasterCsgRenderer'
 import { AmbientLight, DirectionalLight, PointLight, SpotLight } from 'three'
 import { WebGPURenderer } from 'three/webgpu'
 import type { CsgScene, CsgGeometry } from '../../../../core/csg/types'
@@ -95,6 +96,9 @@ export class Stage {
     private readonly gpuCompletion = new GpuCompletion()
     private csgFrameBusy = false
     private csgFrameDirty = false
+    /** Large models use the existing exact-topology service once, then orbit a normal mesh. */
+    private complexCsgFallback = false
+    private slowCsgFrames = 0
     private previewNavigating = false
     private cameraPointerActive = false
     private renderPixelRatio = 1
@@ -384,6 +388,9 @@ export class Stage {
                 this.topologyPending = undefined
                 this.modelContext = modelContext
                 this.firstFrame = { generation, start: started, notify: modelContext.frameReady, submitted: false }
+                this.complexCsgFallback = false
+                this.slowCsgFrames = 0
+                this.maybeFallbackForRasterCost()
                 this.handles.forEach((handle) => {
                     if (handle instanceof CrossSectionRig) handle.rebuildForModel(this.modelGroup)
                 })
@@ -480,6 +487,7 @@ export class Stage {
         this.csgModels = preparedCsg
         this.modelGroup.add(...nextGroup.children)
         this.firstFrame = { generation, start: started, notify: modelContext.frameReady, submitted: false }
+        this.maybeFallbackForRasterCost()
         // Pick an absorption coefficient so a ray traversing the model's full
         // diagonal in material reads as ~95% opaque (1 - exp(-3) ≈ 0.95).
         const bounds = new Box3().setFromObject(this.modelGroup)
@@ -515,6 +523,8 @@ export class Stage {
     }
 
     private clearModel(preserveInactive = false) {
+        this.complexCsgFallback = false
+        this.slowCsgFrames = 0
         if (!preserveInactive) {
             this.inactiveModel?.representation.dispose()
             this.inactiveModel = undefined
@@ -544,6 +554,27 @@ export class Stage {
         if (this.requiresTopology()) this.ensureTopology()
     }
 
+    /** Work is estimated before a GPU frame so the 50k-pass emergency limit
+     * never becomes an expensive attempted render in supported editor views. */
+    private maybeFallbackForRasterCost() {
+        if (!this.csgModels.length || !this.modelContext?.queryTopology) return
+        const work = this.csgModels.reduce((sum, model) => sum + model.estimatedRasterWork, 0)
+        if (work > CSG_INTERACTIVE_WORK_LIMIT) this.beginComplexCsgFallback(`${work} estimated raster operations`)
+    }
+
+    private beginComplexCsgFallback(reason: string) {
+        if (this.complexCsgFallback || !this.csgModels.length) return
+        if (!this.modelContext?.queryTopology) {
+            this.onError?.(`Complex CSG cannot use exact-mesh fallback in this view: ${reason}. Select Full Render.`)
+            return
+        }
+        this.complexCsgFallback = true
+        this.slowCsgFrames = 0
+        this.renderSignature = undefined
+        this.onToolStatus?.(`Complex CSG: preparing an exact mesh for smooth navigation (${reason})…`)
+        this.ensureTopology()
+    }
+
     private ensureTopology() {
         if (!this.csgModels.length) return
         const planes = this.topologyPlanes(),
@@ -558,12 +589,12 @@ export class Stage {
         if (this.topologyPending) return
         const provider = this.modelRepresentation ? this.modelRepresentation.queryTopology.bind(this.modelRepresentation) : undefined
         if (!provider) {
-            this.onToolStatus?.('Exact topology is not available in this preview.')
+            this.onToolStatus?.(this.complexCsgFallback ? 'Exact-mesh fallback is unavailable in this view. Select Full Render.' : 'Exact topology is not available in this preview.')
             return
         }
         const generation = this.modelGeneration
         this.topologyKey = key
-        this.onToolStatus?.('Preparing exact geometry for the selected tool…')
+        this.onToolStatus?.(this.complexCsgFallback ? 'Complex CSG: calculating an exact mesh for smooth navigation…' : 'Preparing exact geometry for the selected tool…')
         const task = provider(planes)
             .then(({ value: geometry }) => {
                 if (this.disposed || generation !== this.modelGeneration || key !== JSON.stringify(this.topologyPlanes())) return
@@ -575,11 +606,14 @@ export class Stage {
                 if (this.viewOptions) this.materialManager.applyToGroup(group, this.viewOptions)
                 this.materialManager.setTheme(group, this.theme, this.viewOptions?.get('modelColor'))
                 this.rebuildModelClipping()
-                this.onToolStatus?.('')
+                this.onToolStatus?.(this.complexCsgFallback ? 'Complex CSG: displaying a cached exact mesh (instead of F5 raster passes).' : '')
                 this.renderSignature = undefined
             })
             .catch((error) => {
-                if (!this.disposed && generation === this.modelGeneration) this.onToolStatus?.(error instanceof Error ? error.message : String(error))
+                if (!this.disposed && generation === this.modelGeneration) {
+                    const message = error instanceof Error ? error.message : String(error)
+                    this.onToolStatus?.(this.complexCsgFallback ? `Exact mesh fallback failed: ${message}. Try Full Render.` : message)
+                }
             })
             .finally(() => {
                 if (this.topologyPending === task) {
@@ -1084,6 +1118,20 @@ export class Stage {
         if (this.paused || this.disposed || !this.initialized) return
         const camera = this.activeCameraRig.activeCamera
 
+        if (this.csgModels.length && this.complexCsgFallback) {
+            // Do not attempt the raster budget again while the exact-mesh
+            // fallback is being prepared. It is a one-time CPU Boolean, then
+            // ordinary GPU mesh rendering on camera movement.
+            if (!this.topologyGroup) return
+            this.csgModels.forEach((model) => (model.mesh.visible = false))
+            this.topologyGroup.visible = true
+            if (!this.requiresTopology()) {
+                this.renderer.render(this.scene, camera)
+                this.reportFirstFrame()
+                return
+            }
+        }
+
         if (this.csgModels.length) {
             if (this.csgFrameBusy) {
                 this.csgFrameDirty = true
@@ -1135,6 +1183,12 @@ export class Stage {
                 .then((complete) => {
                     if (!complete) this.csgFrameDirty = true
                     if (complete) {
+                        // Many raster operations can stall CPU submission even
+                        // when navigation skips the GPU-completion readback.
+                        const elapsed = performance.now() - frameStarted
+                        if (interactive && elapsed > 45 && ++this.slowCsgFrames >= 2)
+                            this.beginComplexCsgFallback(`two orbit frames above 45 ms CPU submission (${Math.round(elapsed)} ms latest)`)
+                        else if (interactive && elapsed <= 45) this.slowCsgFrames = 0
                         this.reportFirstFrame()
                         // Navigation intentionally skips the GPU completion fence.
                         // Do not report its CPU submission time as a GPU-complete frame.
@@ -1146,8 +1200,13 @@ export class Stage {
                 })
                 .catch((error) => {
                     if (!this.disposed && generation === this.modelGeneration) {
-                        this.failedGeneration = generation
-                        this.onError?.(String(error))
+                        const message = String(error)
+                        if (/CSG (?:raster pass budget|depth probing pass budget) exceeded/.test(message) && this.modelContext?.queryTopology) {
+                            this.beginComplexCsgFallback(message)
+                        } else {
+                            this.failedGeneration = generation
+                            this.onError?.(message)
+                        }
                     }
                 })
                 .finally(() => {
