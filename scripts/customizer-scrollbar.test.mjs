@@ -167,9 +167,9 @@ async function fixture(t, extraSource = '') {
         Buffer,
         AbortController,
         require: (name) => {
+            if (name.startsWith('node:')) return require(name)
             if (name === 'vscode') return api
             if (name.endsWith('/ScadClient')) return { ScadClient: { render: async (_path, values) => Buffer.from(JSON.stringify(values)) } }
-            if (name.endsWith('/csg/compile')) return { compileCsg: async (buffer) => buffer }
             if (name.endsWith('/ModelFormat')) return require('../out/features/preview/shared/types/ModelFormat.js')
             if (name.endsWith('/previewEligibility')) return { EmptyModelError: class extends Error {} }
             throw new Error(`Unexpected renderer dependency: ${name}`)
@@ -179,10 +179,13 @@ async function fixture(t, extraSource = '') {
     runInNewContext(transformSync(readFileSync(join(root, 'src/features/preview/extension/core/ScadSession.ts'), 'utf8'), { loader: 'ts', format: 'cjs' }).code, {
         module: sessionModule,
         Buffer,
+        performance,
         setTimeout,
         clearTimeout,
         require: (name) => {
+            if (name.startsWith('node:')) return require(name)
             if (name === 'vscode') return api
+            if (name.endsWith('/core/preview/performance')) return require('../out/core/preview/performance.js')
             if (name.endsWith('/ScadClient')) return { ScadClient: { cancelRender() {} } }
             if (name.endsWith('/ScadParser')) return require('../out/features/preview/extension/services/ScadParser.js')
             if (name.endsWith('/ScadParameters')) return require('../out/features/preview/extension/core/ScadParameters.js')
@@ -193,6 +196,7 @@ async function fixture(t, extraSource = '') {
                         close() {}
                     },
                 }
+            if (name.endsWith('/ModelFormat')) return require('../out/features/preview/shared/types/ModelFormat.js')
             throw new Error(`Unexpected session dependency: ${name}`)
         },
     })

@@ -1,8 +1,9 @@
 import { consume } from '@lit/context'
-import { css, html, LitElement, nothing } from 'lit'
+import { css, html, LitElement, nothing, type PropertyValues } from 'lit'
 import { customElement, query, state } from 'lit/decorators.js'
 import { ActiveTool, ActiveToolContext, activeToolContext } from '../../contexts/ActiveToolContext'
 import { viewOptionsContext, ViewOptionsContext } from '../../contexts/ViewOptionsContext'
+import { modelContext, type ModelContext } from '../../contexts/ModelContext'
 import { readPreviewTheme } from '../../preview/Theme'
 import type { IconButton } from '../atoms/IconButton'
 import type { IconName } from '../atoms/Icon'
@@ -108,10 +109,26 @@ export class Toolbar extends LitElement {
     @state()
     private viewSettings!: ViewOptionsContext
 
+    @consume({ context: modelContext, subscribe: true })
+    @state()
+    private model?: ModelContext
+
+    protected updated(changed: PropertyValues) {
+        if (changed.has('model') && this.activeToolContext?.activeTool === ActiveTool.Measure) {
+            const previous = changed.get('model') as ModelContext | undefined
+            if (previous?.format !== this.model?.format) this.activeToolContext.setVariant(this.model?.format === 'csgp' ? 'face' : (this.rememberedVariants.get(ActiveTool.Measure) ?? 'vertex'))
+        }
+    }
+
     @query('#model-color')
     private colorInput!: HTMLInputElement
 
     private rememberedVariants = new Map<ActiveTool, string>()
+
+    private setModelColor(color: string | null) {
+        this.viewSettings.set('partColors', false)
+        this.viewSettings.set('modelColor', color)
+    }
 
     render() {
         return html`
@@ -142,8 +159,11 @@ export class Toolbar extends LitElement {
                 <scad-icon-button label="Choose model color" @change=${() => this.colorInput.click()}>
                     <scad-icon name="model-color"></scad-icon>
                 </scad-icon-button>
-                <input id="model-color" type="color" tabindex="-1" aria-label="Model color" .value=${this.viewSettings?.get('modelColor') ?? `#${readPreviewTheme(getComputedStyle(document.body)).additive.getHexString()}`} @input=${(event: Event) => this.viewSettings.set('modelColor', (event.target as HTMLInputElement).value)} />
-                ${this.viewSettings?.get('modelColor') ? html`<scad-icon-button label="Restore default model color" @change=${() => this.viewSettings.set('modelColor', null)}><scad-icon name="color-reset"></scad-icon></scad-icon-button>` : nothing}
+                <scad-icon-button label="Color parts separately" toggleable .checked=${!!this.viewSettings?.get('partColors')} @change=${() => this.viewSettings.set('partColors', !this.viewSettings.get('partColors'))}>
+                    <scad-icon name="part-colors"></scad-icon>
+                </scad-icon-button>
+                <input id="model-color" type="color" tabindex="-1" aria-label="Model color" .value=${this.viewSettings?.get('modelColor') ?? `#${readPreviewTheme(getComputedStyle(document.body)).additive.getHexString()}`} @input=${(event: Event) => this.setModelColor((event.target as HTMLInputElement).value)} />
+                ${this.viewSettings?.get('modelColor') ? html`<scad-icon-button label="Restore default model color" @change=${() => this.setModelColor(null)}><scad-icon name="color-reset"></scad-icon></scad-icon-button>` : nothing}
             </div>
         `
     }
@@ -171,27 +191,29 @@ export class Toolbar extends LitElement {
                         ? html`
                               <div class="variants">
                                   <div class="group horizontal">
-                                      ${tool.variants.map(
-                                          (variant) => html`
-                                              <scad-icon-button
-                                                  label=${variant.label}
-                                                  toggleable
-                                                  .checked=${this.activeToolContext?.activeTool === tool.id && activeVariant === variant.id}
-                                                  @change=${(event: Event) => {
-                                                      ;(event.currentTarget as IconButton).checked = true
-                                                      this.rememberedVariants.set(tool.id, variant.id)
-                                                      if (this.activeToolContext.activeTool === tool.id) {
-                                                          this.activeToolContext.setVariant(variant.id)
-                                                      } else {
-                                                          this.activeToolContext.setActiveTool(tool.id, variant.id)
-                                                      }
-                                                      this.requestUpdate()
-                                                  }}
-                                              >
-                                                  <scad-icon name=${variant.icon}></scad-icon>
-                                              </scad-icon-button>
-                                          `,
-                                      )}
+                                      ${tool.variants
+                                          .filter((variant) => this.model?.format !== 'csgp' || variant.id === 'face')
+                                          .map(
+                                              (variant) => html`
+                                                  <scad-icon-button
+                                                      label=${variant.label}
+                                                      toggleable
+                                                      .checked=${this.activeToolContext?.activeTool === tool.id && activeVariant === variant.id}
+                                                      @change=${(event: Event) => {
+                                                          ;(event.currentTarget as IconButton).checked = true
+                                                          this.rememberedVariants.set(tool.id, variant.id)
+                                                          if (this.activeToolContext.activeTool === tool.id) {
+                                                              this.activeToolContext.setVariant(variant.id)
+                                                          } else {
+                                                              this.activeToolContext.setActiveTool(tool.id, variant.id)
+                                                          }
+                                                          this.requestUpdate()
+                                                      }}
+                                                  >
+                                                      <scad-icon name=${variant.icon}></scad-icon>
+                                                  </scad-icon-button>
+                                              `,
+                                          )}
                                   </div>
                               </div>
                           `
@@ -203,6 +225,7 @@ export class Toolbar extends LitElement {
 
     private getActiveVariant(tool: Tool): string | undefined {
         if (!tool.variants) return undefined
+        if (this.model?.format === 'csgp') return 'face'
         return this.rememberedVariants.get(tool.id) ?? tool.defaultVariant
     }
 }

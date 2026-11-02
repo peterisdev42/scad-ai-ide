@@ -6,15 +6,16 @@
 
 - `registerPreview.ts` 在现有扩展入口注册 CustomTextEditorProvider；命令和 viewType 使用 `scad-ai-ide` 前缀，语言 ID 使用已有 `openscad`。沿用 VS Code 内置 Markdown 使用的 `reopenActiveEditorWith` 标签替换方式，升级 VS Code 时应重跑宿主测试。
 - `ScadClient` 使用统一 Runtime 的 executable/argsPrefix，检查工作区信任，不自行探测 OpenSCAD。源码未保存时走 stdin，cwd 为源码目录，字符串通过 JSON 字面量编码后作为独立 `-D` 参数传递，不使用 shell。
+- STL 网格预览（含 Markdown）显式使用 CLI `--export-format binstl`，以 Binary STL 作为中间格式；临时文件扩展名和前端格式标识仍为 `stl`，原始二进制经 Base64 传给 STLLoader。同一 CLI 路径的 STL 导出也使用二进制格式。
 - 每文件一个会话；新的预览取消旧预览，导出有独立任务标识，不取消预览。会话关闭取消等待中的/运行中的预览，释放 watcher 和事件；临时渲染目录在成功、失败、取消后回收。
 - 文件监视使用 VS Code FileSystemWatcher，无需 chokidar。配置与 Runtime 变化刷新已打开的预览。3MF 和 lazy-union 能力由选择的 OpenSCAD 提供，默认 STL 不假定安装 nightly。
 - `ScadParser` 是既有 `parseCustomizer` 的 UI schema 适配器；原生侧栏与预览共用 `CustomizerService` 每文件覆盖值，通过订阅同步。只给 CLI 传显式覆盖值，表达式继续由 OpenSCAD 计算。Customizer 侧栏通过独立的预设文件控制器支持显式打开 JSON、新建/保存/删除/切换、导入导出；未选择文件时不绑定同名 JSON，新建首个预设需选择保存位置。模型名使用 `WebviewView.description`，全局动作通过 `view/title` 命令和折叠状态 context keys 管理；预设标题只保留打开、保存、更多三个动作。预设序列化与校验集中在 `core/customizer/CustomizerPresets.ts`。参数修改始终自动更新 Preview；显式预设选择通过 `preset` 变更原因触发对应 `ScadSession` 的优先重绘，并抑制共享值的重复回写。场景与测量交互保留在迁入模块中。
 
 ## 空模型与预览入口
 
-SCAD 会话支持 `preview`（CLI 导出 CSG 树、工作线程求值）和 `render`（CLI 完整 STL/3MF 网格）。顶部透视/正交组右侧的 CSG preview / Full mesh render 切换只影响当前文件会话，切换保留同一个 Stage 与相机位置；没有底部模式按钮。`scad-ai-ide.preview.renderMode` 决定初始模式，默认完整网格。CSG 导出显式传入 `$preview=true`，保留 Runtime 前缀、dirty stdin、cwd、参数覆盖与取消机制。网格导出使用独立任务并计算完整几何。
+SCAD 会话支持 `preview`（独立 Preview Exporter 导出 `.csgp`，GPU 图像空间 Boolean）和 `render`（普通 CLI 完整 STL/3MF 网格）。顶部 CSG preview / Full mesh render 切换保留 Stage 和相机；初始模式由 `scad-ai-ide.preview.renderMode` 控制，默认完整网格。快速模式使用 `$preview=true`、未保存文本、参数覆盖、原文件 cwd 和依赖 watcher；不调用旧 CSG Parser、Manifold 快速求值或最终网格物化。算法、计时和限制见 [当前架构](preview-exporter-architecture.md)。
 
-`src/core/csg/` 解析 CLI 展开后的字面量树，不执行 SCAD/JavaScript；Manifold WASM 在每任务独立的 Node Worker 中求值，取消或超时会终止线程。支持基础几何、布尔运算、变换、挤出、颜色及调试/背景修饰符。未支持的节点（例如 import、text、扭转挤出、非三角 polyhedron）明确报出节点并回退至原生 CLI STL，保留 `$preview=true`；不静默遗漏几何。此实现并非原生 OpenCSG 的图像空间 GPU 算法，复杂布尔模型仍有求值成本。`.csg` 文件可直接走相同工作线程，受支持的树无需 CLI；原生回退和完整网格仍需选定 Runtime。
+快速模式提供拾取和表面点测量；精确边/顶点测量与投影阴影使用 Full Render。裁剪、线框和 XRay 入口继续隐藏。错误保留上一张有效画面，不静默回退其他后端；macOS ARM64 以外的平台明确报告 Exporter 不可用。
 
 Markdown 使用同一套 Lit App / Three.js Stage，直接挂载于内置 Markdown DOM，保持严格 CSP，不额外允许 iframe、Worker、网络连接或浏览器 WASM。宿主通过同步 markdown-it 缓存队列异步生成 CSG/网格数据；`scad-ai-ide.markdown.preview.renderMode` 控制该路径。每块有独立 Preview/Source Tab，最大 800 × 600、4:3。只有进入视口且选中 Preview 的块才挂载，同时最多两个实例；不可见时立即暂停 rAF，2 秒后释放 Stage/GPU 资源，再进入时恢复场景和相机。Markdown 刷新、关闭和切换 Tab 均处理实例清理。修改配置取消旧任务并清除缓存，临时文件在成功、错误和取消后清理。
 
@@ -24,17 +25,17 @@ Markdown 使用同一套 Lit App / Three.js Stage，直接挂载于内置 Markdo
 
 ## 滑块与连续参数更新
 
-Customizer 的 range 控件仅在宿主确认当前文件 CSG 后端成功时于 `input` 提交有效值；普通网格、首次确认前及回退状态只在 `change` 松手时提交最终值。消息显式区分 input/commit，宿主与 Session 双重检查资格，避免陈旧 UI 状态绕过限制。拖动期间忽略旧状态对滑块值的回写，防止滑块倒退。显式预设选择采用优先重绘。
+Customizer 的 range 控件仅在宿主确认当前文件 CSG 后端成功时于 `input` 提交有效值；普通网格、首次确认前及错误状态只在 `change` 松手时提交最终值。消息显式区分 input/commit，宿主与 Session 双重检查资格，避免陈旧 UI 状态绕过限制。拖动期间忽略旧状态对滑块值的回写，防止滑块倒退。显式预设选择采用优先重绘。
 
-实际后端经 `PreviewBackend`、Session 事件和 Webview 消息传递，与请求的 mode 分开。`pending/csg/mesh/fallback`、原因与总求值耗时显示在常驻状态卡，回退开始即发布状态，STL 完成后补充耗时。Markdown 模型载荷携带同样元数据。
+实际后端经 `PreviewBackend`、Session 事件和 Webview 消息传递，与请求的 mode 分开。`pending/csg/mesh`、原因与耗时显示在常驻状态卡；快速模式左下角提供完整阶段表与原始 JSON。Markdown 模型载荷携带同样元数据。
 
-参数变化使用 `ScadRenderer.renderLatest`：最多一个运行任务及一个等待的最新参数，允许已运行任务完成并显示中间结果，再开始最新值。源码、预览模式或显式刷新使用优先 `render`，清除等待的参数任务并取消旧代；关闭会话丢弃等待工作。回退时丢弃等待的 input 请求，保留 commit；未知或普通后端拒绝连续请求，最终提交去重但不能因先前已同步参数而丢失。旧参数错误在存在较新请求时不打断更新。Preview 仅在格式或数据变化时更新网格，loading/mode 通知不重复解码和上传旧网格。
+参数变化使用 `ScadRenderer.renderLatest`：最多一个运行任务及一个等待的最新参数，允许已运行任务完成并显示中间结果，再开始最新值。源码、预览模式或显式刷新使用优先 `render`，清除等待的参数任务并取消旧代；关闭会话丢弃等待工作。后端未就绪时只接收最终提交；未知或普通后端拒绝连续请求，最终提交去重但不能因先前已同步参数而丢失。旧参数错误在存在较新请求时不打断更新。Preview 仅在格式或数据变化时更新网格，loading/mode 通知不重复解码和上传旧网格。
 
-该调度修复连续输入不提交或不断取消的问题，并未实现原生 OpenCSG；复杂几何仍须等待每次 CSG/网格求值。`fastPreview.test.ts` 覆盖合并、持续完成、模式切换、错误及释放，Customizer 浏览器回归使用鼠标按住拖动验证松手前宿主已收到中间值。
+参数变化需要重新调用 Exporter；相机变化只执行 Goldfeather GPU 绘制，不重新请求几何。`fastPreview.test.ts` 覆盖合并、持续完成、模式切换、错误及释放，Customizer 浏览器回归使用鼠标按住拖动验证松手前宿主已收到中间值。
 
 ## 构建与发布
 
-扩展宿主与浏览器分别使用 `tsconfig.json` 和 `tsconfig.webview.json`。`esbuild.js` 输出 `dist/extension.js`、`dist/preview.js`、`dist/markdown-preview.js`、`dist/csg-worker.mjs`，并复制 `dist/manifold.wasm`，将 shader 和 STL 嵌入浏览器 bundle，并复制 codicon CSS/字体到 `dist/codicons/`。VSIX 不依赖运行时的 node_modules 或 src 目录。Webview 仅允许 dist 本地资源，脚本使用 nonce CSP，字体不请求外部 CDN。
+扩展宿主与浏览器分别使用 `tsconfig.json` 和 `tsconfig.webview.json`。`esbuild.js` 输出 `dist/extension.js`、`dist/preview.js`、`dist/markdown-preview.js`、`dist/mesh-topology-worker.mjs`，并复制 `dist/manifold.wasm`，将 shader 和 STL 嵌入浏览器 bundle，并复制 codicon CSS/字体到 `dist/codicons/`。VSIX 不依赖运行时的 node_modules 或 src 目录。Webview 仅允许 dist 本地资源，脚本使用 nonce CSP，字体不请求外部 CDN。
 
 原有语言高亮、snippets、LSP 不重复迁入。
 
@@ -46,9 +47,9 @@ Customizer 的 range 控件仅在宿主确认当前文件 CSG 后端成功时于
 
 可设置 `SCAD_OPENSCAD_EXECUTABLE` 为支持 3MF 的真实 OpenSCAD 路径，随 `test:preview-editor` 额外执行 STL/3MF 导出烟测；默认测试仍使用假 CLI，无需安装 OpenSCAD。
 
-真实运行时还会验证 CSG 导出与工作线程求值。未编译 3MF 导出能力的 CLI 可通过 `SCAD_OPENSCAD_CSG_EXECUTABLE` 验收 STL 与 CSG。`npm run test:fast-preview` 验证 CSG 会话和顶部切换，`npm run test:markdown` 检查严格 CSP 下的交互嵌入、Tab、尺寸、主题及视口暂停/恢复。
+真实运行时验证独立 Exporter 的原始 Products 与普通 CLI 网格导出。未编译 3MF 导出能力的 CLI 可通过 `SCAD_OPENSCAD_CSG_EXECUTABLE` 验收 STL 与 CSG。`npm run test:fast-preview` 验证 CSG 会话和顶部切换，`npm run test:markdown` 检查严格 CSP 下的交互嵌入、Tab、尺寸、主题及视口暂停/恢复。
 
-Markdown 白屏回归额外使用 `SCAD_VSCODE_EXECUTABLE=... npm run test:markdown-host`，通过 CDP 访问真实 VS Code Markdown Webview，检查缓存 CSG 的首帧、连续绘制、宿主刷新和 Tab 切换；HTML 生成成功不能替代实际画布验收。初始化同时监听正文 DOM 的异步替换，避免首次替换没有 `updateContent` 事件时漏挂载。CSG 与原生快速预览的边界及 polyhedron 回退实验见 [调查报告](csg-preview-research.md)。
+Markdown 白屏回归额外使用 `SCAD_VSCODE_EXECUTABLE=... npm run test:markdown-host`，通过 CDP 访问真实 VS Code Markdown Webview，检查缓存 CSG 的首帧、连续绘制、宿主刷新和 Tab 切换；HTML 生成成功不能替代实际画布验收。初始化同时监听正文 DOM 的异步替换，避免首次替换没有 `updateContent` 事件时漏挂载。当前快速预览的 `.csgp` → Goldfeather 深度/模板 → 着色合并路径见 [架构说明](preview-exporter-architecture.md)。
 
 ## 手动双向同步
 
@@ -70,7 +71,7 @@ Markdown 白屏回归额外使用 `SCAD_VSCODE_EXECUTABLE=... npm run test:markd
 
 ## 中性棚拍预览风格
 
-模型外观参考 Apple RealityKit / macOS Preview 的中性产品预览风格，属于 Three.js 中的视觉近似，不复用 Apple 的渲染器或私有参数。默认模型在浅/深色主题均保持亮灰白底色，使用非金属、适度粗糙的表面；本地生成 RoomEnvironment，经 PMREM 提供宽高光和柔和暗部填充，配合 NeutralToneMapping 控制高光，不下载外部 HDR 资源。环境贴图对齐 OpenSCAD 的 Z-up，并随 Stage 释放 GPU 资源。
+Full Render 的模型外观参考 Apple RealityKit / macOS Preview 的中性产品预览风格，属于 Three.js 中的视觉近似，不复用 Apple 的渲染器或私有参数。默认模型在浅/深色主题均保持亮灰白底色，使用非金属、适度粗糙的表面；本地生成 RoomEnvironment，经 PMREM 提供宽高光和柔和暗部填充，配合 NeutralToneMapping 控制高光，不下载外部 HDR 资源。环境贴图对齐 OpenSCAD 的 Z-up，并随 Stage 释放 GPU 资源。
 
 背景、网格与纯色打印板继续由 VS Code 主题变量驱动，打印板保持无光照、无阴影的平面显示。模型选色及 3MF 原有材质保留；不再用文字的 3:1 对比度要求强制把浅色主题的模型压成深灰。
 

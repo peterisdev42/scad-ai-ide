@@ -2,6 +2,7 @@ const esbuild = require('esbuild')
 
 const production = process.argv.includes('--production')
 const watch = process.argv.includes('--watch')
+const bundledPackages = new Set()
 
 /**
  * @type {import('esbuild').Plugin}
@@ -10,6 +11,7 @@ const esbuildProblemMatcherPlugin = {
     name: 'esbuild-problem-matcher',
 
     setup(build) {
+        build.initialOptions.metafile = true
         build.onStart(() => {
             console.log('[watch] build started')
         })
@@ -18,6 +20,10 @@ const esbuildProblemMatcherPlugin = {
                 console.error(`✘ [ERROR] ${text}`)
                 console.error(`    ${location.file}:${location.line}:${location.column}:`)
             })
+            for (const input of Object.keys(result.metafile?.inputs ?? {})) {
+                const matches = [...input.matchAll(/(?:^|\/)node_modules\/(?:@[^/]+\/)?[^/]+/g)]
+                if (matches.length) bundledPackages.add(input.slice(0, matches[matches.length - 1].index + matches[matches.length - 1][0].length))
+            }
             console.log('[watch] build finished')
         })
     },
@@ -43,8 +49,10 @@ async function main() {
     })
     const fs = require('node:fs/promises')
     await fs.mkdir('dist', { recursive: true })
-    await fs.copyFile('node_modules/vscode-oniguruma/release/onig.wasm', 'dist/onig.wasm')
+    for (const name of ['csg-worker.mjs', 'csg-worker.mjs.map', 'csg-kernel.mjs', 'csg-kernel.wasm', 'harfbuzz.wasm', 'freetype.wasm', 'fonts']) await fs.rm(`dist/${name}`, { recursive: true, force: true })
+    // Full STL/3MF clipping only. Fast Preview never loads this worker or WASM.
     await fs.copyFile('node_modules/manifold-3d/manifold.wasm', 'dist/manifold.wasm')
+    await fs.copyFile('node_modules/vscode-oniguruma/release/onig.wasm', 'dist/onig.wasm')
     await fs.mkdir('dist/codicons', { recursive: true })
     for (const file of ['codicon.css', 'codicon.ttf']) {
         await fs.copyFile(`node_modules/@vscode/codicons/dist/${file}`, `dist/codicons/${file}`)
@@ -72,24 +80,24 @@ async function main() {
         legalComments: 'linked',
         plugins: [esbuildProblemMatcherPlugin],
     })
-    const csgWorker = await esbuild.context({
-        entryPoints: ['src/core/csg/worker.mts'],
+    const meshTopology = await esbuild.context({
+        entryPoints: ['src/core/formats/meshTopologyWorker.mts'],
         bundle: true,
         format: 'esm',
         platform: 'node',
-        outfile: 'dist/csg-worker.mjs',
+        outfile: 'dist/mesh-topology-worker.mjs',
+        banner: { js: "import { createRequire as meshRequireFactory } from 'node:module'; const require = meshRequireFactory(import.meta.url);" },
         minify: production,
         sourcemap: !production,
-        legalComments: 'linked',
         plugins: [esbuildProblemMatcherPlugin],
     })
     const markdownPreview = await esbuild.context({
-        entryPoints: ['src/features/preview/webview/markdown.ts'],
+        entryPoints: ['src/features/preview/webview/markdown-entry.ts'],
         tsconfig: 'tsconfig.webview.json',
         bundle: true,
         format: 'iife',
         // Markdown may reload contribution scripts when its content changes.
-        banner: { js: "(()=>{if(window[Symbol.for('scad-ai-ide.markdown.viewer')]){window.dispatchEvent(new Event('scad-markdown-viewer-ready'));return;}" },
+        banner: { js: "(()=>{if(window[Symbol.for('scad-ai-ide.markdown.viewer.v3.raster')]){window.dispatchEvent(new Event('scad-markdown-viewer-ready'));return;}" },
         footer: { js: '})();' },
         platform: 'browser',
         outfile: 'dist/markdown-preview.js',
@@ -98,13 +106,26 @@ async function main() {
         loader: { '.stl': 'binary', '.glsl': 'text' },
         plugins: [esbuildProblemMatcherPlugin],
     })
+    const markdownOwned = await esbuild.context({
+        entryPoints: ['src/features/preview/webview/markdown-owned.ts'],
+        tsconfig: 'tsconfig.webview.json',
+        bundle: true,
+        format: 'iife',
+        platform: 'browser',
+        outfile: 'dist/markdown-owned.js',
+        minify: production,
+        sourcemap: !production,
+        loader: { '.stl': 'binary', '.glsl': 'text' },
+        plugins: [esbuildProblemMatcherPlugin],
+    })
     if (watch) {
-        await Promise.all([ctx.watch(), webview.watch(), customizer.watch(), csgWorker.watch(), markdownPreview.watch()])
+        await Promise.all([ctx.watch(), webview.watch(), customizer.watch(), meshTopology.watch(), markdownPreview.watch(), markdownOwned.watch()])
     } else {
         try {
-            await Promise.all([ctx.rebuild(), webview.rebuild(), customizer.rebuild(), csgWorker.rebuild(), markdownPreview.rebuild()])
+            await Promise.all([ctx.rebuild(), webview.rebuild(), customizer.rebuild(), meshTopology.rebuild(), markdownPreview.rebuild(), markdownOwned.rebuild()])
+            await fs.writeFile('dist/bundled-packages.json', JSON.stringify([...bundledPackages].sort(), null, 2) + '\n')
         } finally {
-            await Promise.all([ctx.dispose(), webview.dispose(), customizer.dispose(), csgWorker.dispose(), markdownPreview.dispose()])
+            await Promise.all([ctx.dispose(), webview.dispose(), customizer.dispose(), meshTopology.dispose(), markdownPreview.dispose(), markdownOwned.dispose()])
         }
     }
 }

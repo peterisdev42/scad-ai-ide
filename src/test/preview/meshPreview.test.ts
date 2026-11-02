@@ -1,3 +1,4 @@
+import { validPreviewTimings } from '../../core/preview/performance'
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { readFileSync } from 'node:fs'
@@ -41,7 +42,9 @@ function fixture(format: ModelFormat) {
     vm.runInNewContext(transformSync(code, { loader: 'ts', format: 'cjs' }).code, {
         module,
         Buffer,
+        performance,
         require: (id: string) => {
+            if (id.endsWith('/preview/performance')) return { validPreviewTimings }
             if (id === 'node:path') return { basename: (path: string) => path.split('/').at(-1), dirname: () => '/models' }
             if (id === 'vscode') return { EventEmitter: Emitter, RelativePattern: class {}, workspace: { fs: { readFile: () => read() }, createFileSystemWatcher: () => watcher } }
             throw new Error(`Mesh preview must not depend on a Runtime or text editor: ${id}`)
@@ -69,6 +72,14 @@ for (const format of [ModelFormat.STL, ModelFormat.ThreeMF]) {
         })
         await mock.document.refreshRender()
         assert.deepEqual([...models[0]], [0, 255, 128, 3])
+        assert.equal(mock.document.renderBackend.source, 'mesh-file')
+        assert.ok(Number.isFinite(mock.document.renderBackend.timings?.meshReadMs))
+        mock.document.acceptPerformance({ encodeMs: 0.15, meshParseMs: 0.23 })
+        mock.document.acceptFrame('webgl2', 0.5)
+        assert.equal(mock.document.renderBackend.frameReady, true)
+        assert.equal(mock.document.renderBackend.timings?.meshParseMs, 0.23)
+        assert.ok(Number.isFinite(mock.document.renderBackend.timings?.totalPreviewMs))
+        assert.equal(mock.document.renderBackend.timings?.meshExportMs, undefined)
         const replacement = Buffer.from([80, 75, 0, 255, 131])
         mock.setRead(async () => replacement)
         mock.trigger('change')

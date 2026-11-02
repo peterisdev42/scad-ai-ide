@@ -1,7 +1,8 @@
-import { Color, Group, MathUtils, Mesh, PerspectiveCamera, Raycaster, Scene, Vector2, Vector3, WebGLRenderer } from 'three'
-import { Line2 } from 'three/examples/jsm/lines/Line2.js'
+import { Color, Group, MathUtils, Mesh, PerspectiveCamera, Raycaster, Scene, Vector2, Vector3 } from 'three'
+import type { WebGPURenderer } from 'three/webgpu'
+import { Line2 } from 'three/examples/jsm/lines/webgpu/Line2.js'
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js'
-import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js'
+import { Line2NodeMaterial as LineMaterial } from 'three/webgpu'
 import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js'
 import { SceneObjectType } from '../../contexts/SceneContext'
 import { MeasurementRig } from '../rigs/MeasurementRig'
@@ -20,9 +21,10 @@ const SNAP_PIXELS = 20
 export interface MeasureToolContext {
     raycaster: Raycaster
     camera: () => PerspectiveCamera | import('three').OrthographicCamera
-    renderer: WebGLRenderer
+    renderer: WebGPURenderer
     css2dRenderer: CSS2DRenderer
     modelGroup: Group
+    pickModel?: (raycaster: Raycaster) => import('three').Intersection[]
     scene: Scene
     color: Color
     variant: () => string | null
@@ -68,7 +70,6 @@ export class MeasureTool implements Tool {
             worldUnits: false,
         })
         const canvas = ctx.renderer.domElement
-        material.resolution.set(canvas.clientWidth, canvas.clientHeight)
         this.previewLine = new Line2(geo, material)
         this.previewLine.frustumCulled = false
         this.previewLine.renderOrder = 1000
@@ -146,7 +147,7 @@ export class MeasureTool implements Tool {
         const mouse = new Vector2(((event.clientX - rect.left) / rect.width) * 2 - 1, -((event.clientY - rect.top) / rect.height) * 2 + 1)
         this.ctx.raycaster.setFromCamera(mouse, this.ctx.camera())
 
-        const intersects = this.ctx.raycaster.intersectObject(this.ctx.modelGroup, true)
+        const intersects = this.ctx.pickModel?.(this.ctx.raycaster) ?? this.ctx.raycaster.intersectObject(this.ctx.modelGroup, true)
         if (intersects.length === 0) return null
 
         const intersection = intersects[0]
@@ -154,9 +155,9 @@ export class MeasureTool implements Tool {
         const threshold = this.snapThresholdAt(intersection.point)
         const variant = this.ctx.variant()
 
-        if (variant === SnappingMode.Vertex && intersection.object instanceof Mesh) {
+        if (variant === SnappingMode.Vertex && intersection.object instanceof Mesh && !intersection.object.userData.csg) {
             snapped = this.snapToVertex(intersection.object, intersection.point, threshold)
-        } else if (variant === SnappingMode.Edge && intersection.object instanceof Mesh) {
+        } else if (variant === SnappingMode.Edge && intersection.object instanceof Mesh && !intersection.object.userData.csg) {
             snapped = this.snapToEdge(intersection.object, intersection.point, threshold)
         }
 

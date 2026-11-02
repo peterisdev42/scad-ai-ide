@@ -1,3 +1,5 @@
+> 历史审计快照：本文描述 Preview 集成和 Runtime 在线安装完成前的状态，包含当时的路径、问题和验证结果，不代表当前实现。当前目录和开发流程见 [开发说明](../CONTRIBUTING.md)，当前功能文档见 [文档索引](README.md)。
+
 # SCAD AI IDE 当前功能架构与代码架构研究
 
 研究日期：2026-10-21。范围为当前 `sources/scad-ai-ide` 工作区源码，并追查相邻 `openscad-LSP` 中决定集成能力的实现。该子仓库 HEAD 为 `358b38a36bd608a6375c35092bb826cb6a7a2bde`；当前存在大量已修改与未跟踪文件，因此本文描述的是**工作区快照，而非该提交的干净版本**。本次仅新增此研究文档；未改动业务代码。事实来源以源码为准，链接行号对应研究时快照；架构评价与建议明确标为分析。
@@ -163,7 +165,7 @@ TypeScript 使用 strict、Node16 模块解析和 ES2022；esbuild 把入口及�
 | F5                    | 先 prepare:lsp，再 tsc/esbuild watch，然后 Extension Development Host     | 调试启动禁用其他已安装扩展；[任务](../.vscode/tasks.json#L6)、[launch](../.vscode/launch.json#L8)                  |
 | `vscode:prepublish`   | build:lsp 后 package                                                      | 正式打包要求源码构建 LSP，不能把 prepare 的缓存回退当作发布路径；[scripts](../package.json#L211)                   |
 
-相邻 LSP 源码版本是 2.0.3；当前 `darwin-arm64` 目录的 provenance 记录开发缓存为 OpenSCAD-LSP 2.0.1。不能仅凭源码版本认定实际进程也是 2.0.3；provenance 是暂存记录，实际运行版本还需结合最终选中的程序核验。`.vscodeignore` 排除了 src、测试产物、构建脚本与 `.build`，而不是排除运行所需的 media 或 server。[源码版本](../sources/openscad-LSP/Cargo.toml#L1)、[当前缓存记录](../server/darwin-arm64/provenance.json#L2)、[回退 provenance](../scripts/prepare-lsp.cjs#L38)、[打包排除](../.vscodeignore#L1)
+相邻 LSP 源码版本是 2.0.3；当前 `darwin-arm64` 目录的 provenance 记录开发缓存为 OpenSCAD-LSP 2.0.1。不能仅凭源码版本认定实际进程也是 2.0.3；provenance 是暂存记录，实际运行版本还需结合最终选中的程序核验。`.vscodeignore` 排除了 src、测试产物、构建脚本与 `.build`，而不是排除运行所需的 media 或 server。[源码版本](../sources/openscad-LSP/Cargo.toml#L1)、`server/darwin-arm64/provenance.json`（历史生成文件，不随仓库保存）、[回退 provenance](../scripts/prepare-lsp.cjs#L38)、[打包排除](../.vscodeignore#L1)
 
 **发布分析**：二进制是宿主平台产物，现有 build:lsp 并非交叉编译或自动多平台流水线；远程 Linux extension host 不能使用 macOS LSP bundle。正式交付应按目标平台构建、验证并确认 VSIX 内文件，而不能只验证 JavaScript package 命令成功。[平台目录](../scripts/build-lsp.cjs#L15)、[宿主定位](../src/features/language/registerLanguage.ts#L29)、[发布说明](../README.md#L54)
 

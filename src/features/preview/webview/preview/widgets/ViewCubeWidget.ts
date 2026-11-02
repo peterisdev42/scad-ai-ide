@@ -1,9 +1,10 @@
-import { ArrowHelper, Group, Sprite, SpriteMaterial, Camera, CanvasTexture, Color, EdgesGeometry, LineBasicMaterial, LineSegments, Material, Mesh, MeshBasicMaterial, OrthographicCamera, PlaneGeometry, Raycaster, Scene, SRGBColorSpace, Vector2, Vector3, WebGLRenderer } from 'three'
+import { ArrowHelper, Group, Sprite, SpriteMaterial, Camera, CanvasTexture, Color, EdgesGeometry, LineBasicMaterial, LineSegments, Material, Mesh, MeshBasicMaterial, OrthographicCamera, PlaneGeometry, Raycaster, Scene, SRGBColorSpace, Vector2, Vector3 } from 'three'
+import { WebGPURenderer } from 'three/webgpu'
 import { createCubeRegions, cubeRegionGeometry, cubeLabelQuaternion, CubeRegion } from './ViewCubeGeometry'
 
-import { Line2 } from 'three/examples/jsm/lines/Line2.js'
+import { Line2 } from 'three/examples/jsm/lines/webgpu/Line2.js'
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js'
-import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js'
+import { Line2NodeMaterial as LineMaterial } from 'three/webgpu'
 
 import { AXIS_COLORS } from './AxisColors'
 
@@ -13,10 +14,9 @@ type RegionMesh = Mesh<ReturnType<typeof cubeRegionGeometry>, MeshBasicMaterial>
 export class ViewCubeWidget {
     private readonly scene = new Scene()
     private readonly camera = new OrthographicCamera(-2.4, 2.4, 2.4, -2.4, 0.1, 20)
-    private readonly renderer = new WebGLRenderer({
-        antialias: true,
-        alpha: true,
-    })
+    private readonly renderer: WebGPURenderer
+    public readonly ready: Promise<void>
+    private initialized = false
     private readonly raycaster = new Raycaster()
     private readonly regions: RegionMesh[] = []
     private readonly textures: CanvasTexture[] = []
@@ -39,7 +39,12 @@ export class ViewCubeWidget {
         container: HTMLElement,
         private readonly onSelect: (direction: Vector3, kind: CubeRegion['kind']) => void,
         onRoll: (angle: number) => void,
+        options: { forceWebGL?: boolean } = {},
     ) {
+        this.renderer = new WebGPURenderer({ antialias: true, alpha: true, forceWebGL: options.forceWebGL })
+        this.ready = this.renderer.init().then(() => {
+            if (!this.disposed) this.initialized = true
+        })
         const canvas = this.renderer.domElement
         this.renderer.setPixelRatio(Math.min(Math.max(window.devicePixelRatio || 1, 2), 3))
         this.renderer.setSize(192, 192)
@@ -158,7 +163,7 @@ export class ViewCubeWidget {
         canvas.height = 1024
         const texture = new CanvasTexture(canvas)
         texture.colorSpace = SRGBColorSpace
-        texture.anisotropy = this.renderer.capabilities.getMaxAnisotropy()
+        texture.anisotropy = 1
         this.textures.push(texture)
         const label = new Mesh(
             new PlaneGeometry(1.5, 1.5),
@@ -249,6 +254,7 @@ export class ViewCubeWidget {
     }
 
     update(mainCamera: Camera) {
+        if (!this.initialized || this.disposed) return
         // Copy rotation, including roll, instead of lookAt at the Z-up poles.
         this.camera.quaternion.copy(mainCamera.quaternion)
         this.camera.position.set(0, 0, 6).applyQuaternion(mainCamera.quaternion)
@@ -296,7 +302,7 @@ export class ViewCubeWidget {
         for (const label of this.axisLabels) label.material.dispose()
         for (const texture of this.textures) texture.dispose()
         this.renderer.dispose()
-        this.renderer.forceContextLoss()
+
         this.rollControls.remove()
         canvas.remove()
     }

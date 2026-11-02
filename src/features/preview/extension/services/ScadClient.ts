@@ -1,5 +1,9 @@
+import type { PreviewTimings } from '../../../../core/preview/performance'
+import { readCliDependencies, type FileDependency } from '../../../../core/formats/dependencies'
+import { runExporter } from '../../../../platform/previewExporter/runtime'
+import { resolvePreviewExporter } from './PreviewExporter'
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process'
-import { mkdtemp, readFile, rm } from 'node:fs/promises'
+import { mkdtemp, readFile, rm, stat } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { window, workspace } from 'vscode'
@@ -10,6 +14,7 @@ import { ModelFormat } from '../../shared/types/ModelFormat'
 
 /** All preview/export execution goes through the IDE's selected runtime. */
 export class ScadClient {
+    private static exporterControllers = new Map<string, AbortController>()
     private static tickets = new Map<string, symbol>()
     private static activeProcesses = new Map<string, ChildProcessWithoutNullStreams>()
     public static readonly outputChannel = window.createOutputChannel('SCAD AI IDE Preview')
@@ -22,11 +27,15 @@ export class ScadClient {
         for (const process of this.activeProcesses.values()) {
             process.kill()
         }
+        for (const controller of this.exporterControllers.values()) controller.abort()
+        this.exporterControllers.clear()
         this.activeProcesses.clear()
         this.tickets.clear()
         this.resolveCommand = undefined
     }
     static cancelRender(key: string) {
+        this.exporterControllers.get(key)?.abort()
+        this.exporterControllers.delete(key)
         this.tickets.delete(key)
         const process = this.activeProcesses.get(key)
         if (process) {
@@ -34,7 +43,7 @@ export class ScadClient {
             process.kill()
         }
     }
-    static async render(scadPath: string, parameters: Record<string, string | number | boolean | number[]> = {}, format: ModelFormat = ModelFormat.STL, onStderr?: (chunk: string) => void, key = scadPath): Promise<Buffer> {
+    static async render(scadPath: string, parameters: Record<string, string | number | boolean | number[]> = {}, format: ModelFormat | 'csg' = ModelFormat.STL, onStderr?: (chunk: string) => void, key = scadPath, onDependencies?: (dependencies: FileDependency[]) => void, signal?: AbortSignal, onTimings?: (timings: PreviewTimings) => void): Promise<Buffer> {
         this.cancelRender(key)
         const ticket = Symbol(key)
         this.tickets.set(key, ticket)
@@ -46,15 +55,35 @@ export class ScadClient {
         if (!workspace.isTrusted) {
             throw new Error('Trust this workspace to run OpenSCAD.')
         }
+        const sourceStarted = performance.now()
         const document = workspace.textDocuments.find((doc) => doc.uri.fsPath === scadPath)
         const text = document?.getText() ?? (await readFile(scadPath, 'utf8'))
         if (!canPreviewSource(text)) throw new EmptyModelError()
-        if (format === ModelFormat.CSG && /\.csg$/i.test(scadPath)) {
-            this.tickets.delete(key)
-            return Buffer.from(text)
+        onTimings?.({ sourceMs: performance.now() - sourceStarted })
+        if (format === ModelFormat.PreviewScene) {
+            const controller = new AbortController()
+            this.exporterControllers.set(key, controller)
+            const exporterSignal = signal ? AbortSignal.any([signal, controller.signal]) : controller.signal
+            try {
+                const selectionStarted = performance.now()
+                const executable = await resolvePreviewExporter()
+                onTimings?.({ selectionMs: performance.now() - selectionStarted })
+                check()
+                const buffer = await runExporter(executable, text, dirname(scadPath), parameters, exporterSignal, scadPath, onStderr, onTimings)
+                check()
+                const resultStarted = performance.now()
+                onDependencies?.(JSON.parse(buffer.toString()).dependencies)
+                onTimings?.({ resultParseMs: performance.now() - resultStarted })
+                return buffer
+            } finally {
+                if (this.exporterControllers.get(key) === controller) this.exporterControllers.delete(key)
+                if (this.tickets.get(key) === ticket) this.tickets.delete(key)
+            }
         }
         const source = document?.isDirty ? text : undefined
+        const selectionStarted = performance.now()
         const command = await this.resolveCommand?.()
+        onTimings?.({ runtimeSelectionMs: performance.now() - selectionStarted })
         check()
         if (!command) {
             throw new RuntimeUnavailableError()
@@ -66,10 +95,13 @@ export class ScadClient {
         try {
             check()
             const output = join(directory, `model.${format}`)
-            const args = [...command.argsPrefix, '--export-format', format, ...(workspace.getConfiguration('scad-ai-ide.preview').get<boolean>('enableLazyUnion', false) ? ['--enable', 'lazy-union'] : []), '-o', output, ...Object.entries(parameters).flatMap(([name, value]) => ['-D', `${name}=${JSON.stringify(value)}`]), ...(format === ModelFormat.CSG ? ['-D', '$preview=true'] : []), source === undefined ? scadPath : '-']
+            const dependencyFile = join(directory, 'model.d')
+            const exportFormat = format === ModelFormat.STL ? 'binstl' : format
+            const args = [...command.argsPrefix, '-d', dependencyFile, '--export-format', exportFormat, ...(workspace.getConfiguration('scad-ai-ide.preview').get<boolean>('enableLazyUnion', false) ? ['--enable', 'lazy-union'] : []), '-o', output, ...Object.entries(parameters).flatMap(([name, value]) => ['-D', `${name}=${JSON.stringify(value)}`]), source === undefined ? scadPath : '-']
             this.outputChannel.appendLine(`[OpenSCAD] ${JSON.stringify([command.executable, ...args])}`)
+            const renderStarted = performance.now()
             await new Promise<void>((resolve, reject) => {
-                const child = spawn(command.executable, args, { cwd: dirname(scadPath), ...(format === ModelFormat.CSG ? { timeout: 30000, killSignal: 'SIGKILL' as const } : {}) })
+                const child = spawn(command.executable, args, { cwd: dirname(scadPath), signal })
                 this.activeProcesses.set(key, child)
                 let stderr = ''
                 child.stdin.on('error', () => {})
@@ -99,15 +131,26 @@ export class ScadClient {
                     }
                 })
             })
+            onTimings?.({ meshExportMs: performance.now() - renderStarted })
+            const readStarted = performance.now()
+            if (format === 'csg' && (await stat(output)).size > 2 * 1048576) throw new Error('CSG color metadata exceeds 2 MiB.')
             const buffer = await readFile(output)
+            onTimings?.({ meshReadMs: performance.now() - readStarted })
+            if (!buffer.length) throw new Error(`OpenSCAD produced an empty ${format} output. The selected runtime may not support this format.`)
+            const dependenciesStarted = performance.now()
+            const dependencies = await readCliDependencies(dependencyFile, dirname(scadPath), [scadPath])
+            onTimings?.({ dependenciesMs: performance.now() - dependenciesStarted })
             check()
+            onDependencies?.(dependencies)
 
             return buffer
         } finally {
             if (this.tickets.get(key) === ticket) {
                 this.tickets.delete(key)
             }
+            const cleanupStarted = performance.now()
             await rm(directory, { recursive: true, force: true })
+            onTimings?.({ cleanupMs: performance.now() - cleanupStarted })
         }
     }
 }

@@ -1,3 +1,4 @@
+import { registerOwnedMarkdownPreview } from './features/markdown/OwnedMarkdownPreview'
 import { notifications } from './platform/notifications'
 import { registerGitHub } from './features/github/registerGitHub'
 import * as vscode from 'vscode'
@@ -22,6 +23,7 @@ export async function activate(context: vscode.ExtensionContext) {
     const runtime = registerRuntime(context, new RuntimeManager(discover), github.request)
     const customizer = new CustomizerService()
     const preview = registerPreview(context, runtime, customizer)
+    registerOwnedMarkdownPreview(context, runtime)
     const { ready: markdownReady, ...markdown } = registerMarkdown(context, runtime)
     const customizerView = new CustomizerViewProvider(customizer, context.extensionUri)
     const panels = new PanelManager(context.extensionUri, runtime, github)

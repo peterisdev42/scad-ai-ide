@@ -8,6 +8,11 @@ declare global {
 }
 
 const icons = {
+    'part-colors': svg`
+    <rect x="1.5" y="2" width="6" height="6" rx="1" fill="#e3a34c" stroke="currentColor" stroke-width=".7"/>
+    <rect x="8.5" y="2" width="6" height="6" rx="1" fill="#599fd6" stroke="currentColor" stroke-width=".7"/>
+    <rect x="5" y="9" width="6" height="5" rx="1" fill="#85b85a" stroke="currentColor" stroke-width=".7"/>
+  `,
     'color-reset': svg`
     <path d="M3 5a5.5 5.5 0 1 1-.2 5M3 2v3.5h3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
   `,

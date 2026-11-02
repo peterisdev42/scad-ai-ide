@@ -1,0 +1,686 @@
+{
+  "date": "2026-11-02",
+  "platform": "macOS / Apple M4 Pro / Metal",
+  "three": "0.187.0",
+  "browser": "149.0.7827.55",
+  "vscode": "1.144.0",
+  "vscodeChromium": "150.0.7871.250",
+  "note": "Final successful runs after fixing subtraction back-face material specialization and stale integration/package schema assertions. Actual native 3MF export and physical GPU reset were not tested.",
+  "runs": [
+    {
+      "command": "npm test",
+      "result": "129 基础 + 84 Preview = 213 通过",
+      "counters": {
+        "tests": [
+          129,
+          84
+        ],
+        "pass": [
+          129,
+          84
+        ],
+        "fail": [
+          0,
+          0
+        ],
+        "skipped": [
+          0,
+          0
+        ]
+      },
+      "assertions": [
+        "✔ parses scalar parameters, groups, descriptions, ranges and enum labels without evaluating code",
+        "✔ comments and quoted delimiters do not create parameters or corrupt annotations",
+        "✔ validates finite numbers, types, ranges, steps and enum values",
+        "✔ overrides are per file, use CLI argument arrays, reset to defaults and preserve source",
+        "✔ runtime manager selects a valid result and respects invalid explicit overrides",
+        "✔ official widget hints cover max-only sliders, steps, text lengths and all vector sizes",
+        "✔ scanner supports multiline literals, multiple statements and library directives without evaluating code",
+        "✔ groups, Hidden, Global, block descriptions and malformed hints stay isolated",
+        "✔ vectors and text constraints validate at the host boundary and reset without changing source",
+        "✔ OpenSCAD string escapes, hex numbers and trailing vector commas preserve literal values",
+        "✔ decimal controls infer precision and preserve explicit steps",
+        "✔ later assignments invalidate obsolete controls, including Hidden and assignments after geometry",
+        "✔ compound headings, Unicode identifiers, mixed enums and unlisted defaults remain editable",
+        "✔ OpenSCAD preset files round-trip every widget, mixed enums and hidden metadata",
+        "✔ preset changes notify their target even when selecting the same values again",
+        "✔ GitHub client uses the current token, preserves request headers and remains anonymous after logout",
+        "✔ concurrent GitHub requests share an in-flight session lookup without caching tokens across later requests",
+        "✔ GitHub tokens are never attached to insecure, lookalike or non-GitHub URLs",
+        "✔ host fetch preserves same-origin authentication and strips it on cross-origin download redirects",
+        "✔ authenticated and anonymous API requests keep the host network path instead of forcing manual redirects",
+        "✔ explicit redirect options and request signals are delegated to the host fetch unchanged",
+        "✔ unavailable GitHub authentication falls back to anonymous requests and reports the authentication error",
+        "✔ VS Code GitHub adapter uses silent Authentication API access and never passes tokens into logs",
+        "✔ VS Code GitHub sign-in is interactive only when Connect is explicitly called",
+        "✔ failed or cancelled authorization explains VS Code sign-in and preserves anonymous requests",
+        "✔ release pagination, runtime downloads and checksums all use the shared authenticated GitHub client",
+        "✔ More GitHub state follows authorized sessions and logout without serializing the access token",
+        "✔ More exposes authentication failure reasons and continues anonymous GitHub access",
+        "✔ a late stale authentication check cannot overwrite the current More connection state",
+        "✔ anonymous GitHub failures suggest sign-in without consuming responses or replacing the original error",
+        "✔ More retains the shared sign-in hint across anonymous checks and clears it after connecting",
+        "✔ panel navigation shares GitHub guidance and opens requested Runtime tabs before and after readiness",
+        "✔ background GitHub session checks preserve the connected UI without showing interactive loading",
+        "✔ release checksum is downloaded and verified when present, and skipped only when absent",
+        "✔ installation verifies, extracts, probes and discovers all managed versions from disk",
+        "✔ failed or cancelled installs never publish a partial runtime and clean staging",
+        "✔ Windows ZIP installation preserves dependency files and discovers openscad.exe",
+        "✔ archive extraction rejects traversal and escaping symlinks",
+        "✔ local archive imports copy, verify and discover a renamed package offline, without retaining archives or duplicate imports",
+        "✔ local Windows ZIP imports preserve dependencies and their source archives",
+        "✔ failed validation in staging or at the final path removes all imported files and keeps the original archive",
+        "✔ local cancelled copies, invalid archives and wrong-platform packages leave no installation or copied archive",
+        "✔ Available installation detection reads asset directories and imported release metadata, including damaged runtimes",
+        "✔ reinstall removes matching offline imports before downloading and preserves other versions and the original ZIP",
+        "✔ runtime deletion removes only the selected managed installation and rejects paths outside its ownership",
+        "✔ indentation rules handle SCAD blocks, vectors, calls and comment lines",
+        "✔ single-statement bodies indent once without treating complete statements or expressions as headers",
+        "✔ block comment Enter rules continue stars and leave completed comments",
+        "✔ fold markers accept regions and do not treat geometry or customizer headers as markers",
+        "✔ language contributions resolve packaged assets and preserve editor pairs",
+        "✔ TextMate tokenization distinguishes declarations, paths, numbers and multiline strings/comments",
+        "✔ TextMate scopes distinguish multiline parameters, nested defaults, named arguments and variable references",
+        "✔ server resolution uses bundle before PATH and rejects an invalid explicit override",
+        "✔ model cache deduplicates blocks, serializes CLI work and caches errors until invalidated",
+        "✔ invalidating a running model aborts it, skips queued work and suppresses stale updates",
+        "✔ Mesh CLI rendering preserves command prefixes, stdin and relative working directory; cleans up on errors and cancellation",
+        "✔ Markdown fences support both aliases and capitalization, preserve code and other languages, and embed cached interactive models",
+        "✔ preview highlighting reuses OpenSCAD scopes, preserves multiline state and escapes code",
+        "✔ preview resolves the selected theme includes and user token overrides instead of hard-coded colors",
+        "✔ Markdown rendering respects trust, disabled settings and document context; compiler errors are escaped",
+        "✔ tab containers keep the Markdown source mapping visible without changing cached fence tokens",
+        "✔ switching CLI preview mode invalidates model results and recompiles with the selected mode",
+        "✔ owned Markdown escapes source and diagnostics while preserving stable model slots",
+        "✔ editing Markdown keeps unchanged source cache entries and cancels removed work",
+        "✔ concurrent producers and dismissed persistent issues aggregate until recovery",
+        "✔ transient notifications distinguish file and error and reappear after cooldown",
+        "✔ UI and action failures are contained and permit retry",
+        "✔ recovery and disposal invalidate actions in old UI prompts",
+        "✔ catalog merges missing Runtime from startup, rendering, export and slicer",
+        "✔ language failure is aggregated independently and resets on successful start",
+        "✔ compiler failures preserve full error identity even when their visible summary matches",
+        "✔ transient problem remains aggregated while its UI is open beyond the cooldown",
+        "✔ all runtime lists sort by release name year, month, day and natural suffix without changing discovery priority",
+        "✔ equal versions ignore source, path, runtime ID and git metadata when sorting",
+        "✔ explicit override precedes PATH, ignores relative PATH entries and deduplicates",
+        "✔ Windows prefers console launchers and honors Scoop environment roots",
+        "✔ registry matches OpenSCAD installations and extracts console paths from quoted icons",
+        "✔ Flatpak preserves branches and installation scopes as argument arrays",
+        "✔ version parser accepts release and snapshot output and rejects unrelated binaries",
+        "✔ discovery resolves aliases, retains separate Flatpak branches and explicit errors",
+        "✔ Scoop launches the physical version directory and Snap preserves dispatcher identity",
+        "✔ bundled CLI is discovered and unavailable candidates do not stop the scan",
+        "✔ real process validation captures stderr and safely handles paths with shell characters",
+        "✔ process runner times out stuck commands and rejects nonzero exits",
+        "✔ macOS app metadata resolves custom executable names and rejects path traversal",
+        "✔ selecting a discovered installation preserves its source label",
+        "✔ runtime build matching requires the exact OS and architecture and excludes checksum files",
+        "✔ release listing follows pagination and includes stable and prerelease matching archives only",
+        "✔ release listing handles empty results, API failures, invalid payloads and untrusted downloads",
+        "✔ system detection returns the extension host platform, version and normalized architecture",
+        "✔ managed macOS app and wrapper appear once, preserving PATH installations and separate builds",
+        "✔ explicitly selected app keeps priority when merged into its managed launcher, including canonical storage aliases",
+        "✔ managed launchers on PATH retain managed metadata and distinct argument prefixes",
+        "✔ an unusable managed wrapper does not hide a working app entry",
+        "✔ Windows PATH and repeated registry entries merge .com/.exe launchers case-insensitively",
+        "✔ Windows falls back to .exe when the .com launcher fails without duplicating registry results",
+        "✔ Windows managed packages merge PATH, registry, root and bin launchers while preserving selected priority and other builds",
+        "✔ Windows Scoop junction aliases merge with physical paths without merging separate launch arguments",
+        "✔ release channels use validated YAML and never infer Stable or Snapshot from a date",
+        "✔ invalid or inconsistent release metadata is rejected safely",
+        "✔ GitHub Latest chooses the recommended stable tag independently of snapshots",
+        "✔ available builds sort by upstream title date, then tag, with publication time only as fallback",
+        "✔ GitHub rate-limit failures preserve the upstream message, status, reset time and request metadata",
+        "✔ GitHub permission errors are distinct from rate limits and plain upstream failures keep their response",
+        "✔ GitHub network failures expose DNS, TLS, timeout and aggregate connection causes",
+        "✔ invalid GitHub response content retains the request and parsing error or unexpected payload",
+        "✔ startup waits for discovery and offers Runtime Available once when no runtime exists",
+        "✔ startup stays quiet when a usable runtime is discovered",
+        "✔ dismissing startup guidance leaves Runtime closed",
+        "✔ startup defers missing-runtime guidance until the workspace is trusted",
+        "✔ discovery failures do not claim that OpenSCAD is missing",
+        "✔ Installed scans silently, coalesces repeated visits and publishes only changed discovery results",
+        "✔ silent scan failures publish the actual reason and clear stale runtime results",
+        "✔ switching runtime exposes only the selected ID while validating silently and clears it after success",
+        "✔ failed runtime selection clears its button state, preserves the active runtime and returns the actual error",
+        "✔ installation publishes completion even when discovery is unchanged and cancellation is not an error",
+        "✔ workspace trust prerequisites are panel warnings and do not start runtime operations",
+        "✔ deleting an active managed runtime clears its saved selection and keeps the fallback; failed deletion preserves it",
+        "✔ discovery shares missing Runtime with preview and rearms only after successful recovery",
+        "✔ Runtime recommendation uses Latest Stable while keeping snapshots first in Available",
+        "✔ Runtime catalog persists across restarts, restores Installed channels without GitHub and survives failed refreshes",
+        "✔ Runtime catalog cache rejects corrupt data, foreign platforms and untrusted download URLs",
+        "✔ legacy file catalog migrates into globalState without GitHub access",
+        "✔ each Runtime panel load shows cached data while GitHub refresh is pending, then replaces UI and globalState",
+        "✔ CSG parser accepts evaluated literals and modifiers, rejects executable expressions and excessive nesting",
+        "✔ worker evaluates boolean geometry, holes, transforms and extrusions rather than displaying uncut operands",
+        "✔ CSG preserves the original sphere bounds and partial revolve segmentation",
+        "✔ CSG color and debug/background modifiers remain visible without entering boolean operands",
+        "✔ unsupported operations fail explicitly, cancellation stops the worker, and malformed inputs never execute",
+        "✔ Markdown CSG transport preserves $preview and never silently invokes a mesh fallback",
+        "✔ host resolves relative surfaces, SVG and OFF imports and records dependencies",
+        "✔ topology queries apply result half-spaces and preserve material properties",
+        "✔ straight and Voronoi roof kernels produce closed local geometry and keep an outer GPU boolean",
+        "✔ 3MF import keeps physical units, materials and closed topology",
+        "✔ root tags select the first subtree before unused resources are read",
+        "✔ worker cache reuses operand geometry across transform and color edits",
+        "✔ host font directories resolve metadata instead of filenames and preserve dependencies",
+        "✔ standard STL topology reuses existing bytes for exact clipped caps without CLI",
+        "✔ on-demand topology preserves small features around a large model origin",
+        "✔ ordinary boolean compilation preserves the DAG and never calls whole-solid boolean kernels",
+        "✔ boundary picking sweeps non-convex intervals, flips subtraction normals and handles internal views",
+        "✔ coincident operands cancel without phantom boundaries and disjoint union keeps every interval",
+        "✔ valid open faces remain surfaces and malformed transport cannot enter GPU traversal",
+        "✔ CPU picking BLAS is built lazily and shared across translated, mirrored and non-uniformly scaled instances",
+        "✔ nested background flags are excluded before Difference operand selection",
+        "✔ highlighting a Difference base highlights its result, not the uncut operand",
+        "✔ highlight Union debug drawing retains the complete physical root for topology and picking",
+        "✔ CLI include dependencies preserve escaped filenames and reject stale resource stamps",
+        "✔ normalization and boundary cofactors preserve exhaustive Boolean truth tables",
+        "✔ difference of difference and intersection use De Morgan algebra exactly",
+        "✔ empty, repeated, contradictory and invalid instructions are bounded",
+        "✔ large left-deep trees use an explicit stack",
+        "✔ Cube edges snap to exact 45-degree views after every corner (perspective)",
+        "✔ Cube edges snap to exact 45-degree views after every corner (orthographic)",
+        "✔ All 26 cube views converge from every other view, including opposites and rolled cameras",
+        "✔ An edge selection interrupts an unfinished corner animation and stays at the selected edge",
+        "✔ Initial Top–Left–Front fit keeps tall and wide models in frame in both projections",
+        "✔ preset selection renders immediately before file initialization and ordinary edits always update Preview",
+        "✔ continuous changes are accepted only for a proven CSG backend; release still renders after changing to mesh",
+        "✔ configuration detection handles expressions, comments, strings and multiline vectors",
+        "✔ geometry, includes, module calls and unknown or incomplete syntax stay eligible",
+        "✔ empty model classification preserves real compiler failures",
+        "✔ CLI empty results are distinct from failures; configuration skips execution and dirty geometry is rendered",
+        "✔ preview command opens configuration and model files without filtering or notifications",
+        "✔ SCAD fast preview uses CSG tree with dirty text and parameter overrides; mesh exports keep full evaluation",
+        "✔ switching render mode suppresses obsolete results while selecting CSG or the configured mesh format",
+        "✔ continuous parameter changes show completed frames and retain only the latest waiting value",
+        "✔ switching mode cancels waiting drag values and suppresses old results; disposal drops waiting work",
+        "✔ an obsolete parameter error does not interrupt the latest queued value",
+        "✔ unsupported CSG preserves the last frame and never requests a native mesh fallback",
+        "✔ ordinary rendering ignores intermediate requests and deduplicates a final commit already in flight",
+        "✔ mode switches immediately publish cached paths without a parameter edit or another CLI job",
+        "✔ Key light shadow camera covers small, large and displaced models",
+        "✔ Mesh stl preview preserves raw bytes, reloads file changes and disposes its watcher without a Runtime",
+        "✔ Mesh 3mf preview preserves raw bytes, reloads file changes and disposes its watcher without a Runtime",
+        "✔ Older or disposed mesh reads cannot overwrite newer results, and read errors are reported",
+        "✔ Source, binary editors and both preview types share toggle commands",
+        "✔ Mouse panning maps CSS pixel displacement 1:1 in both camera modes",
+        "✔ Build plate center and printable lower-left origins align correctly",
+        "✔ Print-plate reset frames the plate for fitting XY models and the model for oversized XY",
+        "✔ Turntable yaw/pitch use fixed angular gain, preserve target/distance and avoid accumulated roll",
+        "✔ Turntable recovers rolled views and protects exact Top/Bottom without flipping",
+        "✔ Middle, right and modifier drags all pan by exactly the pointer displacement",
+        "✔ preview adapts the IDE parser without overriding expressions or hidden values",
+        "✔ presets retain explicit values, reject invalid numbers, and reset overrides",
+        "✔ shared customizer notifies both editors and isolates file overrides and subscriptions",
+        "✔ vectors and text limits survive preview synchronization, presets and definition changes",
+        "✔ syntax diagnostics retain the file and line without CLI output noise",
+        "✔ syntax failures replace stale models with a persistent centered message and recover after a successful render",
+        "✔ syntax failures before webview readiness are replayed, while empty models and other errors keep their handling",
+        "✔ missing Runtime offers simple installation guidance and opens Available",
+        "✔ compiler failures still show output and do not open Runtime management",
+        "✔ dismissing missing-Runtime guidance does not open another panel",
+        "✔ startup and multiple preview failures share one unresolved Runtime problem",
+        "✔ opening Runtime or refreshing release lists does not rerender an unchanged or missing Runtime",
+        "✔ Runtime discovery, switching and removal refresh previews once after settling",
+        "✔ reinstalling the same active Runtime retries rendering once, without retrying missing-Runtime errors",
+        "✔ theme-derived model, build plate and grids remain distinct in light, dark and low-contrast custom themes",
+        "✔ theme refresh updates existing default materials and preserves explicit 3MF colors",
+        "✔ existing build plate and grid buffers follow theme changes without replacing geometry or origin",
+        "✔ Default model is neutral and user color survives theme switches until reset",
+        "✔ Plate palette stays charcoal across bright, dark and strongly tinted custom themes",
+        "✔ View cube exposes exactly 6 face, 12 edge and 8 corner directions",
+        "✔ All 26 cube regions are independently pickable by outward-facing geometry",
+        "✔ Face labels follow OpenSCAD Z-up coordinates and pole directions are exact",
+        "✔ Face labels have fixed, outward-facing orientations tied to the requested adjacent faces",
+        "✔ Every cube target has a valid reference pose",
+        "✔ Side, edge and corner clicks restore Z-up while poles retain the nearest local roll"
+      ]
+    },
+    {
+      "command": "SCAD_OPENSCAD_CSG_EXECUTABLE=… npm run test:csg-gpu",
+      "result": "46 通过：44 光栅测试 + 2 后端 × 10 官方模型",
+      "counters": {
+        "tests": [
+          46
+        ],
+        "pass": [
+          46
+        ],
+        "fail": [
+          0
+        ],
+        "skipped": [
+          0
+        ]
+      },
+      "assertions": [
+        "✔ union raster pixels on WebGPU at 1920x1080",
+        "✔ intersection raster pixels on WebGPU at 1920x1080",
+        "✔ difference raster pixels on WebGPU at 1920x1080",
+        "✔ three operand difference raster pixels on WebGPU at 1920x1080",
+        "✔ three operand intersection raster pixels on WebGPU at 1920x1080",
+        "✔ nine cylinder holes raster pixels on WebGPU at 1920x1080",
+        "✔ complex concave polyhedron raster pixels on WebGPU at 1920x1080",
+        "✔ nested differences raster pixels on WebGPU at 1920x1080",
+        "✔ nonconvex operand raster pixels on WebGPU at 1920x1080",
+        "✔ extrude operand raster pixels on WebGPU at 1920x1080",
+        "✔ mirrored nonuniform scale raster pixels on WebGPU at 1920x1080",
+        "✔ camera inside raster pixels on WebGPU at 1920x1080",
+        "✔ camera inside union raster pixels on WebGPU at 1920x1080",
+        "✔ perspective cavity raster pixels on WebGPU at 1920x1080",
+        "✔ coincident empty difference raster pixels on WebGPU at 1920x1080",
+        "✔ touching union inside raster pixels on WebGPU at 1920x1080",
+        "✔ large coordinates raster pixels on WebGPU at 1920x1080",
+        "✔ depth occlusion raster pixels on WebGPU at 1920x1080",
+        "✔ thin wall raster pixels on WebGPU at 1920x1080",
+        "✔ union raster pixels on WebGL2 at 1920x1080",
+        "✔ intersection raster pixels on WebGL2 at 1920x1080",
+        "✔ difference raster pixels on WebGL2 at 1920x1080",
+        "✔ three operand difference raster pixels on WebGL2 at 1920x1080",
+        "✔ three operand intersection raster pixels on WebGL2 at 1920x1080",
+        "✔ nine cylinder holes raster pixels on WebGL2 at 1920x1080",
+        "✔ complex concave polyhedron raster pixels on WebGL2 at 1920x1080",
+        "✔ nested differences raster pixels on WebGL2 at 1920x1080",
+        "✔ nonconvex operand raster pixels on WebGL2 at 1920x1080",
+        "✔ extrude operand raster pixels on WebGL2 at 1920x1080",
+        "✔ mirrored nonuniform scale raster pixels on WebGL2 at 1920x1080",
+        "✔ camera inside raster pixels on WebGL2 at 1920x1080",
+        "✔ camera inside union raster pixels on WebGL2 at 1920x1080",
+        "✔ perspective cavity raster pixels on WebGL2 at 1920x1080",
+        "✔ coincident empty difference raster pixels on WebGL2 at 1920x1080",
+        "✔ touching union inside raster pixels on WebGL2 at 1920x1080",
+        "✔ large coordinates raster pixels on WebGL2 at 1920x1080",
+        "✔ depth occlusion raster pixels on WebGL2 at 1920x1080",
+        "✔ thin wall raster pixels on WebGL2 at 1920x1080",
+        "✔ source color, Highlight and Background on WebGPU",
+        "✔ source color, Highlight and Background on WebGL2",
+        "✔ nonconvex layer overflow reports a controlled error on WebGPU",
+        "✔ nonconvex layer overflow reports a controlled error on WebGL2",
+        "✔ subtraction wall normals face out of the result on WebGPU",
+        "✔ subtraction wall normals face out of the result on WebGL2",
+        "✔ official OpenCSG F5 reference at 1080p on WebGPU",
+        "✔ official OpenCSG F5 reference at 1080p on WebGL2"
+      ]
+    },
+    {
+      "command": "SCAD_GPU_WIDTH=3840 SCAD_GPU_HEIGHT=2160 node --test scripts/csg-raster.test.mjs",
+      "result": "44 通过",
+      "counters": {
+        "tests": [
+          44
+        ],
+        "pass": [
+          44
+        ],
+        "fail": [
+          0
+        ],
+        "skipped": [
+          0
+        ]
+      },
+      "assertions": [
+        "✔ union raster pixels on WebGPU at 3840x2160",
+        "✔ intersection raster pixels on WebGPU at 3840x2160",
+        "✔ difference raster pixels on WebGPU at 3840x2160",
+        "✔ three operand difference raster pixels on WebGPU at 3840x2160",
+        "✔ three operand intersection raster pixels on WebGPU at 3840x2160",
+        "✔ nine cylinder holes raster pixels on WebGPU at 3840x2160",
+        "✔ complex concave polyhedron raster pixels on WebGPU at 3840x2160",
+        "✔ nested differences raster pixels on WebGPU at 3840x2160",
+        "✔ nonconvex operand raster pixels on WebGPU at 3840x2160",
+        "✔ extrude operand raster pixels on WebGPU at 3840x2160",
+        "✔ mirrored nonuniform scale raster pixels on WebGPU at 3840x2160",
+        "✔ camera inside raster pixels on WebGPU at 3840x2160",
+        "✔ camera inside union raster pixels on WebGPU at 3840x2160",
+        "✔ perspective cavity raster pixels on WebGPU at 3840x2160",
+        "✔ coincident empty difference raster pixels on WebGPU at 3840x2160",
+        "✔ touching union inside raster pixels on WebGPU at 3840x2160",
+        "✔ large coordinates raster pixels on WebGPU at 3840x2160",
+        "✔ depth occlusion raster pixels on WebGPU at 3840x2160",
+        "✔ thin wall raster pixels on WebGPU at 3840x2160",
+        "✔ union raster pixels on WebGL2 at 3840x2160",
+        "✔ intersection raster pixels on WebGL2 at 3840x2160",
+        "✔ difference raster pixels on WebGL2 at 3840x2160",
+        "✔ three operand difference raster pixels on WebGL2 at 3840x2160",
+        "✔ three operand intersection raster pixels on WebGL2 at 3840x2160",
+        "✔ nine cylinder holes raster pixels on WebGL2 at 3840x2160",
+        "✔ complex concave polyhedron raster pixels on WebGL2 at 3840x2160",
+        "✔ nested differences raster pixels on WebGL2 at 3840x2160",
+        "✔ nonconvex operand raster pixels on WebGL2 at 3840x2160",
+        "✔ extrude operand raster pixels on WebGL2 at 3840x2160",
+        "✔ mirrored nonuniform scale raster pixels on WebGL2 at 3840x2160",
+        "✔ camera inside raster pixels on WebGL2 at 3840x2160",
+        "✔ camera inside union raster pixels on WebGL2 at 3840x2160",
+        "✔ perspective cavity raster pixels on WebGL2 at 3840x2160",
+        "✔ coincident empty difference raster pixels on WebGL2 at 3840x2160",
+        "✔ touching union inside raster pixels on WebGL2 at 3840x2160",
+        "✔ large coordinates raster pixels on WebGL2 at 3840x2160",
+        "✔ depth occlusion raster pixels on WebGL2 at 3840x2160",
+        "✔ thin wall raster pixels on WebGL2 at 3840x2160",
+        "✔ source color, Highlight and Background on WebGPU",
+        "✔ source color, Highlight and Background on WebGL2",
+        "✔ nonconvex layer overflow reports a controlled error on WebGPU",
+        "✔ nonconvex layer overflow reports a controlled error on WebGL2",
+        "✔ subtraction wall normals face out of the result on WebGPU",
+        "✔ subtraction wall normals face out of the result on WebGL2"
+      ]
+    },
+    {
+      "command": "node --test scripts/preview-fast.test.mjs",
+      "result": "11 通过（WebGL 2）",
+      "counters": {
+        "tests": [
+          11
+        ],
+        "pass": [
+          11
+        ],
+        "fail": [
+          0
+        ],
+        "skipped": [
+          0
+        ]
+      },
+      "assertions": [
+        "✔ CSG switching keeps the interactive Stage and camera, with mode controls immediately after projection",
+        "✔ initial CSG preview retains host parameter/export bindings and prepares exact wireframe topology",
+        "✔ native mesh previews keep their interactive viewer without SCAD mode controls",
+        "✔ loading keeps the visible model and inactive mode resources are released when the Stage closes",
+        "✔ the evaluator, actual graphics backend and first-frame readiness remain visible",
+        "✔ render keeps transform, section, lighting and display tools on the shared canvas",
+        "✔ preview keeps transform, section, lighting and display tools on the shared canvas",
+        "✔ CSG publishes a complete pixel frame and recovers a lost device without another host render",
+        "✔ changing tessellation replaces shared operand buffers while retaining the raster renderer",
+        "✔ rapid model updates and camera motion publish only the latest prepared version",
+        "✔ returning to Solid keeps exact topology off the ordinary update path"
+      ]
+    },
+    {
+      "command": "SCAD_TEST_WEBGPU=1 node --test scripts/preview-fast.test.mjs",
+      "result": "11 通过（WebGPU）",
+      "counters": {
+        "tests": [
+          11
+        ],
+        "pass": [
+          11
+        ],
+        "fail": [
+          0
+        ],
+        "skipped": [
+          0
+        ]
+      },
+      "assertions": [
+        "✔ CSG switching keeps the interactive Stage and camera, with mode controls immediately after projection",
+        "✔ initial CSG preview retains host parameter/export bindings and prepares exact wireframe topology",
+        "✔ native mesh previews keep their interactive viewer without SCAD mode controls",
+        "✔ loading keeps the visible model and inactive mode resources are released when the Stage closes",
+        "✔ the evaluator, actual graphics backend and first-frame readiness remain visible",
+        "✔ render keeps transform, section, lighting and display tools on the shared canvas",
+        "✔ preview keeps transform, section, lighting and display tools on the shared canvas",
+        "✔ CSG publishes a complete pixel frame and recovers a lost device without another host render",
+        "✔ changing tessellation replaces shared operand buffers while retaining the raster renderer",
+        "✔ rapid model updates and camera motion publish only the latest prepared version",
+        "✔ returning to Solid keeps exact topology off the ordinary update path"
+      ]
+    },
+    {
+      "command": "SCAD_OPENSCAD_CSG_EXECUTABLE=… node --test scripts/csg-native.test.mjs",
+      "result": "45 通过，2 跳过（当前 CLI 无 roof / 3MF import）",
+      "counters": {
+        "tests": [
+          47
+        ],
+        "pass": [
+          45
+        ],
+        "fail": [
+          0
+        ],
+        "skipped": [
+          2
+        ]
+      },
+      "assertions": [
+        "✔ native geometry parity: hullOpenSurface",
+        "✔ native geometry parity: concavePolyhedron",
+        "✔ native geometry parity: polygonContours",
+        "✔ native geometry parity: scaledTwist",
+        "✔ native geometry parity: autoScaleTwist",
+        "✔ native geometry parity: projectionCut",
+        "✔ native geometry parity: fill",
+        "✔ native geometry parity: chamferOffset",
+        "✔ native geometry parity: svgRounded",
+        "✔ native geometry parity: svgEllipse",
+        "✔ native geometry parity: svgLayer",
+        "✔ native geometry parity: dxfCircle",
+        "✔ native geometry parity: surfacePng",
+        "✔ native geometry parity: surfaceData",
+        "✔ native geometry parity: meshImportStl",
+        "✔ native geometry parity: meshImportOff",
+        "✔ native geometry parity: meshImportObj",
+        "﹣ native geometry parity: meshImport3mf (83.652833ms) # WARNING: Import from 3MF format was not enabled when building the application, import() at line 1",
+        "✔ native geometry parity: difference",
+        "✔ native geometry parity: sphere",
+        "✔ native geometry parity: octa",
+        "✔ native geometry parity: revolve",
+        "✔ native geometry parity: lowSphere",
+        "✔ native geometry parity: cone",
+        "✔ native geometry parity: holes",
+        "✔ native geometry parity: twist",
+        "✔ native geometry parity: directed",
+        "✔ native geometry parity: projection",
+        "✔ native geometry parity: resize",
+        "✔ native geometry parity: minkowski",
+        "✔ native geometry parity: hull",
+        "✔ native geometry parity: nonconvexMinkowski",
+        "✔ native geometry parity: offset",
+        "✔ native geometry parity: renderBarrier",
+        "✔ native geometry parity: modifiers",
+        "✔ native geometry parity: colors",
+        "✔ native geometry parity: feather",
+        "✔ native geometry parity: svgNoViewBox",
+        "✔ native geometry parity: svgViewBox",
+        "✔ native geometry parity: svgStroke",
+        "✔ native geometry parity: nefImport",
+        "✔ native geometry parity: ligatureText",
+        "✔ native geometry parity: boldText",
+        "✔ native geometry parity: rtlText",
+        "﹣ native geometry parity: roof (58.142458ms) # WARNING: Ignoring unknown module 'roof' in file <stdin>, line 1",
+        "✔ native geometry parity: verticalText",
+        "✔ native geometry parity: text"
+      ]
+    },
+    {
+      "command": "npm run test:preview-sync",
+      "result": "19 通过",
+      "counters": {
+        "tests": [
+          19
+        ],
+        "pass": [
+          19
+        ],
+        "fail": [
+          0
+        ],
+        "skipped": [
+          0
+        ]
+      },
+      "assertions": [
+        "✔ initial paired baselines preserve intentional host differences and exclude bootstrap",
+        "✔ forward then reverse sync transfers only later edits while retaining host adaptations",
+        "✔ unsent destination edits remain pending and can be reverse-synced after importing",
+        "✔ dry-run preserves working files; stale plans cannot apply over later edits",
+        "✔ conflict rejects the entire plan, then accepts an explicitly resolved artifact",
+        "✔ unresolved markers are rejected even after resolved=true; skipped conflicts stay pending",
+        "✔ adds and deletes synchronize in both directions; binary divergence requires a choice",
+        "✔ edit/delete does not silently remove an adapter",
+        "✔ unmapped host metadata changes are reported, never copied",
+        "✔ symlinks and traversal cannot write outside the mapped roots",
+        "✔ a failed write rolls back earlier files and keeps the old baseline",
+        "✔ only one synchronization may hold the lock",
+        "✔ format-only differences and mapped test imports normalize and serialize reversibly",
+        "✔ missing checkout refuses synchronization instead of deleting all mapped files",
+        "✔ host acknowledgement clears warnings without hiding pending source changes",
+        "✔ resolving a working conflict retains the independent destination delta for reverse sync",
+        "✔ a baseline change invalidates an already reviewed plan",
+        "✔ current repository snapshot round-trips a real viewport change without copying adapters",
+        "✔ standalone IDE owns baselines and accepts a relocated external checkout"
+      ]
+    },
+    {
+      "command": "SCAD_VSCODE_EXECUTABLE=… SCAD_OPENSCAD_CSG_EXECUTABLE=… node scripts/test-preview-editor.mjs",
+      "result": "6 组集成断言通过，实际 STL / CSG、3MF 文件夹具",
+      "counters": {
+        "tests": [],
+        "pass": [],
+        "fail": [],
+        "skipped": []
+      },
+      "assertions": [
+        "PASS: SCAD sessions switch between CSG trees and interactive mesh, while exports keep full evaluation",
+        "PASS: real selected OpenSCAD runtime exports STL and a CSG tree evaluated by the interactive preview worker",
+        "PASS: real quad polyhedron stays on the CSG path; continuous preview waits for a canvas acknowledgment",
+        "PASS: CSG files open directly as interactive previews and preserve their source",
+        "PASS: ASCII STL, binary STL and 3MF share tab replacement, repeated toggles and Open With without invoking the CLI",
+        "PASS: tab replacement, repeated toggles, dirty text, CLI stdin/cwd/prefix, Open With, shared Customizer, presets and export"
+      ]
+    },
+    {
+      "command": "SCAD_VSCODE_EXECUTABLE=… SCAD_OPENSCAD_CSG_EXECUTABLE=… node --test scripts/preview-switch-webview.test.mjs",
+      "result": "1 通过（实际 VS Code）",
+      "counters": {
+        "tests": [
+          1
+        ],
+        "pass": [
+          1
+        ],
+        "fail": [
+          0
+        ],
+        "skipped": [
+          0
+        ]
+      },
+      "assertions": [
+        "✔ real Preview switches $preview geometry and reuses both modes without editing parameters"
+      ]
+    },
+    {
+      "command": "SCAD_VSCODE_EXECUTABLE=… SCAD_OPENSCAD_CSG_EXECUTABLE=… node --test scripts/csg-customizer-latency.test.mjs",
+      "result": "1 通过，10 次实际尺寸修改",
+      "counters": {
+        "tests": [
+          1
+        ],
+        "pass": [
+          1
+        ],
+        "fail": [
+          0
+        ],
+        "skipped": [
+          0
+        ]
+      },
+      "assertions": [
+        "✔ real VS Code Customizer input reaches a presented CSG frame through CLI, worker and Webview"
+      ]
+    },
+    {
+      "command": "SCAD_VSCODE_EXECUTABLE=… node --test scripts/markdown-webview.test.mjs",
+      "result": "2 通过（实际 VS Code 内置及自管）",
+      "counters": {
+        "tests": [
+          2
+        ],
+        "pass": [
+          2
+        ],
+        "fail": [
+          0
+        ],
+        "skipped": [
+          0
+        ]
+      },
+      "assertions": [
+        "✔ actual VS Code built-in Markdown Webview mounts cached CSG previews and survives host refresh",
+        "✔ actual VS Code extension-owned Markdown Webview mounts cached CSG previews and survives host refresh"
+      ]
+    },
+    {
+      "command": "node --test scripts/markdown-preview.test.mjs",
+      "result": "8 通过",
+      "counters": {
+        "tests": [
+          8
+        ],
+        "pass": [
+          8
+        ],
+        "fail": [
+          0
+        ],
+        "skipped": [
+          0
+        ]
+      },
+      "assertions": [
+        "✔ tabs switch independently with mouse and keyboard and survive Markdown refresh and script reload",
+        "✔ previews keep a 4:3 aspect ratio, fit narrow windows and use live VS Code theme variables",
+        "✔ Source tabs display distinct OpenSCAD token colors in dark and light themes",
+        "✔ source remains accessible with an untrusted workspace",
+        "✔ source remains accessible with a compiler error",
+        "✔ embedded native Preview rotates independently, pauses outside the viewport, disposes and restores its camera",
+        "✔ three visible Markdown blocks never allocate more than two native viewer instances",
+        "✔ late Markdown DOM replacement mounts ready previews without an updateContent event"
+      ]
+    },
+    {
+      "command": "npm run test:csg-coverage",
+      "result": "22 个固定 serializer 检查通过",
+      "counters": {
+        "tests": [],
+        "pass": [],
+        "fail": [],
+        "skipped": []
+      },
+      "assertions": []
+    },
+    {
+      "command": "npm run package",
+      "result": "类型、lint、production bundle、许可证准备通过",
+      "counters": {
+        "tests": [],
+        "pass": [],
+        "fail": [],
+        "skipped": []
+      },
+      "assertions": []
+    },
+    {
+      "command": "node scripts/verify-csg-package.mjs .build/artifacts/scad-ai-ide-raster-preview.vsix",
+      "result": "隔离 VSIX Worker / Product、无 GPU BLAS/TLAS、字体、roof、许可证检查通过",
+      "counters": {
+        "tests": [],
+        "pass": [],
+        "fail": [],
+        "skipped": []
+      },
+      "assertions": [
+        "VSIX CSG smoke check passed: isolated operands, fonts, local roof WASM and licenses."
+      ]
+    }
+  ]
+}

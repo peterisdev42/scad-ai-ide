@@ -14,11 +14,6 @@ const ADD_MENU_ITEMS: {
 }[] = [
     { label: sceneObjectMeta['camera'].label, value: 'camera' },
     { separator: true },
-    {
-        label: sceneObjectMeta['cross-section-plane'].label,
-        value: 'cross-section-plane',
-    },
-    { separator: true },
     { label: sceneObjectMeta['ambient-light'].label, value: 'ambient-light' },
     {
         label: sceneObjectMeta['directional-light'].label,
@@ -148,7 +143,7 @@ export class SceneTree extends LitElement {
                     ></vscode-context-menu>
                 </div>
             </div>
-            <div class="object-list">${this.sceneContext?.objects.length ? this.sceneContext.objects.map((obj) => this.renderRow(obj)) : nothing}</div>
+            <div class="object-list">${this.sceneContext?.objects.length ? this.sceneContext.objects.filter((obj) => obj.type !== 'cross-section-plane').map((obj) => this.renderRow(obj)) : nothing}</div>
         `
     }
 

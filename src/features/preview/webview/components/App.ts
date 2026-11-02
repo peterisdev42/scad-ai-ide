@@ -18,7 +18,6 @@ import './aside/SidePanel'
 import './atoms/SplitLayout'
 import './footer/Output'
 import './main/Options'
-import './main/BackendStatus'
 import './main/Preview'
 import './main/Toolbar'
 
@@ -80,6 +79,7 @@ export class App extends LitElement {
             renderMode: RenderMode.Solid,
             camera: CameraMode.Perspective,
             modelColor: null,
+            partColors: false,
             shadows: true,
             fogDensity: 0,
         },
@@ -94,6 +94,11 @@ export class App extends LitElement {
                 },
             }
             if (key === 'modelColor') this.schedulePersist()
+            if (key === 'partColors' && !value && this.modelContext.csgPartsAvailable) {
+                this.bridge.setPartColors(false, this.modelContext.modelVersion ?? 0)
+                this.partHintsRequested = undefined
+                clearTimeout(this.partHintsTimer)
+            }
         },
     }
 
@@ -292,7 +297,17 @@ export class App extends LitElement {
 
     private _stageWired = false
 
+    private partHintsRequested?: number
+    private partHintsTimer?: ReturnType<typeof setTimeout>
     updated() {
+        const model = this.modelContext
+        if (this.viewSettingsContext.get('partColors') && model.csgPartsAvailable && model.csgPartHints === undefined && model.modelVersion !== this.partHintsRequested) {
+            clearTimeout(this.partHintsTimer)
+            this.partHintsRequested = model.modelVersion
+            this.partHintsTimer = setTimeout(() => {
+                if (this.viewSettingsContext.get('partColors') && this.modelContext.modelVersion === model.modelVersion) this.bridge.setPartColors(true, model.modelVersion ?? 0)
+            }, 150)
+        }
         if (!this._stageWired && this.previewEl?.stage && this.sceneLoaded) {
             this._stageWired = true
             this.previewEl.stage.setSelectionCallbacks(
@@ -353,6 +368,7 @@ export class App extends LitElement {
                 }
             }
             this.previewEl.stage.setActiveCamera(this.sceneContextValue.activeCameraId)
+            this.previewEl.stage.selectObject(this.sceneContextValue.selectedId)
             this.previewEl.stage.initializeView(!!this.pendingProperties?.has(this.sceneContextValue.activeCameraId))
             this.pendingProperties = null
         }
@@ -361,6 +377,7 @@ export class App extends LitElement {
     disconnectedCallback() {
         if (this.persistTimer !== null) window.clearTimeout(this.persistTimer)
         this.persistScene()
+        clearTimeout(this.partHintsTimer)
         this.dispatchEvent(new Event('preview-disconnecting'))
         super.disconnectedCallback()
         this.unsubscribe?.()
@@ -368,11 +385,14 @@ export class App extends LitElement {
 
     private handleMessage = (message: ExtensionToWebviewMessage) => {
         switch (message.type) {
+            case 'partHints':
+                if (message.modelVersion === this.modelContext.modelVersion) this.modelContext = { ...this.modelContext, csgPartHints: message.hints }
+                break
             case 'previewBackend':
-                this.modelContext = { ...this.modelContext, backend: message.backend, loadingMessage: this.modelContext.isLoading && message.backend.kind === 'fallback' ? 'Generating STL fallback…' : this.modelContext.loadingMessage }
+                this.modelContext = { ...this.modelContext, backend: message.backend }
                 break
             case 'previewMode':
-                this.modelContext = { ...this.modelContext, previewMode: message.mode, setPreviewMode: (mode) => this.bridge.setPreviewMode(mode) }
+                this.modelContext = { ...this.modelContext, previewMode: message.mode,modeLinks:message.links, setPreviewMode: (mode) => this.bridge.setPreviewMode(mode) }
                 break
             case 'update':
                 if (message.content) {
@@ -380,11 +400,21 @@ export class App extends LitElement {
                         ...this.modelContext,
                         format: message.format,
                         base64Data: message.content,
+                        modelVersion: message.modelVersion,
+                        csgPartsAvailable: message.csgPartsAvailable,
+                        csgPartHints: undefined,
+                        queryTopology: (planes) => this.bridge.queryTopology(message.modelVersion ?? 0, planes),
+                        reportPerformance: (timings) => this.bridge.reportPerformance(message.modelVersion ?? 0, timings),
+                        frameReady: (graphics, elapsedMs) => this.bridge.frameReady(message.modelVersion ?? 0, graphics, elapsedMs),
                         isLoading: false,
+                        previewError: undefined,
                     }
                 } else {
                     this.bridge.reportError('No content in update message')
                 }
+                break
+            case 'previewIssue':
+                this.modelContext = { ...this.modelContext, isLoading: false, previewError: message.message }
                 break
             case 'updateParameters':
                 if (message.parameters) {
@@ -400,9 +430,14 @@ export class App extends LitElement {
                 }
                 break
             case 'emptyModel':
+                this.logController.processLoadingState(false)
+                this.modelContext = { ...this.modelContext, base64Data: null, format: null, isLoading: false, loadingMessage: message.message, previewError: undefined }
+                break
             case 'renderError':
                 this.logController.processLoadingState(false)
-                this.modelContext = { ...this.modelContext, base64Data: null, format: null, isLoading: false, loadingMessage: message.message }
+                // A real rendering error belongs to the same status dock as
+                // viewer errors, not the non-error empty-model placeholder.
+                this.modelContext = { ...this.modelContext, base64Data: null, format: null, isLoading: false, previewError: message.message }
                 break
             case 'loadingState':
                 this.logController.processLoadingState(message.loading)
@@ -471,9 +506,8 @@ export class App extends LitElement {
             <scad-split-layout split="horizontal" fixed-pane="end" handle-position=${bottomPanel ? this.debugPanelSize : '100%'} @vsc-split-layout-change=${(e: CustomEvent) => this.handleResize('bottom', e)}>
                 <scad-split-layout slot="start" split="vertical" fixed-pane="end" handle-position=${sidePanel ? this.parameterPanelSize : '100%'} @vsc-split-layout-change=${(e: CustomEvent) => this.handleResize('right', e)}>
                     <div slot="start" style="position:relative;width:100%;height:100%;">
-                        <scad-preview @stage-ready=${() => this.requestUpdate()}></scad-preview>
+                        <scad-preview @renderer-restarting=${(event:CustomEvent<{properties:Map<string,ObjectProperties>}>)=>{this.pendingProperties=event.detail.properties;this._stageWired=false;this.requestUpdate()}} @stage-ready=${() => this.requestUpdate()}></scad-preview>
                         <scad-toolbar @clear-measurements=${this.clearMeasurements}></scad-toolbar>
-                        <scad-backend-status></scad-backend-status>
                         <scad-options @reset-view=${() => this.previewEl?.stage?.resetView()}></scad-options>
                     </div>
                     <div slot="end">${sidePanel ? html`<scad-side-panel></scad-side-panel>` : nothing}</div>

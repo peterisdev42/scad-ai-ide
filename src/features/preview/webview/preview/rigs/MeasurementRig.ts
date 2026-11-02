@@ -1,7 +1,7 @@
 import { Color, Group, Object3D, Vector2, Vector3 } from 'three'
-import { Line2 } from 'three/examples/jsm/lines/Line2.js'
+import { Line2 } from 'three/examples/jsm/lines/webgpu/Line2.js'
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js'
-import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js'
+import { Line2NodeMaterial as LineMaterial } from 'three/webgpu'
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js'
 import { MeasurementProperties, ObjectProperties } from '../../contexts/SelectedObjectContext'
 import { Rig } from './Rig'
@@ -39,7 +39,6 @@ export class MeasurementRig extends Rig {
             depthTest: false,
             worldUnits: false,
         })
-        material.resolution.set(window.innerWidth, window.innerHeight)
         this.line = new Line2(geometry, material)
         this.line.frustumCulled = false
         // Render last so the line is drawn on top of everything else, including
@@ -60,9 +59,7 @@ export class MeasurementRig extends Rig {
     }
 
     /** Update LineMaterial resolution when the canvas resizes. */
-    public setResolution(size: Vector2): void {
-        ;(this.line.material as LineMaterial).resolution.copy(size)
-    }
+    public setResolution(size: Vector2): void {}
 
     private createMarker(): CSS2DObject {
         const el = document.createElement('div')

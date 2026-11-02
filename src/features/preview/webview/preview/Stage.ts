@@ -1,5 +1,14 @@
-import { Box3, BufferGeometry, Color, Float32BufferAttribute, FogExp2, Group, Mesh, MeshStandardMaterial, Object3D, PCFShadowMap, Plane, Raycaster, Scene, Uint32BufferAttribute, Vector2, Vector3, WebGLRenderer } from 'three'
-import type { CsgScene } from '../../../../core/csg/types'
+import type { CsgPartHint } from '../../../../core/preview/csgParts'
+import { GpuCompletion } from './passes/GpuCompletion'
+import { rendererBusy, withRenderer } from './passes/RendererJobs'
+import { validatePreviewScene } from '../../../../core/preview/validate'
+import { GoldfeatherRenderer } from './csg/GoldfeatherRenderer'
+import type { PreviewScene } from '../../../../core/preview/types'
+import { beginGpuValidation } from './passes/GpuValidation'
+import { ModelRepresentation } from './models/ModelRepresentation'
+import { threeMfMillimeterScale } from '../../../../core/formats/threeMf'
+import { Box3, Color, FogExp2, Group, Mesh, MeshStandardMaterial, Object3D, PCFShadowMap, Plane, Raycaster, Scene, Vector2, Vector3 } from 'three'
+import { WebGPURenderer } from 'three/webgpu'
 
 // OpenSCAD uses Z-up; align Three.js to match so models load without reorientation.
 // Setting DEFAULT_UP before any Object3D is constructed makes every camera, light,
@@ -50,8 +59,10 @@ const ROTATION_SNAP = Math.PI / 36
 
 export class Stage {
     private container: HTMLElement
-    private studioEnvironment: ReturnType<typeof createStudioEnvironment>
-    private renderer: WebGLRenderer
+    private studioEnvironment?: ReturnType<typeof createStudioEnvironment>
+    private renderer: WebGPURenderer
+    public readonly ready: Promise<void>
+    private initialized = false
     private css2dRenderer: CSS2DRenderer
     private scene: Scene
 
@@ -62,10 +73,44 @@ export class Stage {
     private toolManager: ToolManager
     private xrayPass: XRayPass
 
+    private modelGeneration = 0
+    private modelContext?: ModelContext
+    private partHints?: { version: number | undefined; hints?: CsgPartHint[] }
+    private get csgPartHints() {
+        return this.partHints?.version === this.modelContext?.modelVersion ? this.partHints?.hints : undefined
+    }
+    public setCsgPartHints(version: number | undefined, hints?: CsgPartHint[]) {
+        if (this.partHints?.version === version && this.partHints?.hints === hints) return
+        this.partHints = { version, hints }
+        if (version === this.modelContext?.modelVersion && this.viewOptions) this.applySettings(this.viewOptions)
+    }
+
+    private onToolStatus?: (status: string) => void
+    private onDeviceLoss?: (reason: string) => void
+    public setDeviceLossCallback(callback: (reason: string) => void) {
+        this.onDeviceLoss = callback
+    }
+    private onError?: (error: string) => void
+    private failedGeneration?: number
+    public setErrorCallback(callback: (error: string) => void) {
+        this.onError = callback
+    }
+    private performancePending = false
+    private performanceSampledAt = 0
+    private readonly gpuCompletion = new GpuCompletion()
+    private firstFrame?: { generation: number; start: number; notify?: ModelContext['frameReady']; submitted: boolean; validate?: () => Promise<void> }
+    public setToolStatusCallback(callback: (status: string) => void) {
+        this.onToolStatus = callback
+    }
+
+    private inactiveModel?: { format: ModelFormat; data: string; representation: ModelRepresentation }
+    private modelRepresentation?: ModelRepresentation
+    private preparationController?: AbortController
     private modelGroup: Group
     private viewCube: ViewCubeWidget
     private viewOptions?: ViewOptionsContext
     private fitInitialModel = false
+    private viewTouched = false
 
     // Scene object registry
     private handles = new Map<string, Rig>()
@@ -75,7 +120,7 @@ export class Stage {
 
     // Shared TransformControls — one instance, attaches to selected object's pivot
     private transformControls: TransformControls
-    private gizmoMode: 'translate' | 'rotate' | null = null
+    private gizmoMode: 'translate' | 'rotate' | 'scale' | null = null
     private gizmoJustInteracted = false
     private snapEnabled = false
 
@@ -93,7 +138,7 @@ export class Stage {
 
     private onPersist: (() => void) | null = null
 
-    constructor(container: HTMLElement, theme: Theme) {
+    constructor(container: HTMLElement, theme: Theme, options: { forceWebGL?: boolean } = {}) {
         this.container = container
         this.theme = theme
         this.raycaster = new Raycaster()
@@ -105,13 +150,19 @@ export class Stage {
 
         // 2. Renderers
         const { clientWidth: width, clientHeight: height } = container
-        this.renderer = new WebGLRenderer({ antialias: true, stencil: true })
-        this.renderer.setPixelRatio(window.devicePixelRatio)
+        this.renderer = new WebGPURenderer({ antialias: true, stencil: true, forceWebGL: options.forceWebGL })
+        this.renderer.highPrecision = true
+        this.renderer.onDeviceLost = (info) => {
+            if (!this.disposed) {
+                this.setActive(false)
+                if (this.onDeviceLoss) this.onDeviceLoss(info.message)
+                else this.onError?.(`Graphics device lost: ${info.message}`)
+            }
+        }
+        this.renderer.setPixelRatio(window.devicePixelRatio > 0 ? window.devicePixelRatio : 1)
         this.renderer.setSize(width || 1, height || 1)
         this.renderer.shadowMap.type = PCFShadowMap
         this.renderer.shadowMap.enabled = true
-        this.studioEnvironment = createStudioEnvironment(this.renderer)
-        this.scene.environment = this.studioEnvironment.texture
         this.scene.environmentIntensity = 0.45
         // The studio environment is Y-up; OpenSCAD and this scene are Z-up.
         this.scene.environmentRotation.x = Math.PI / 2
@@ -149,6 +200,7 @@ export class Stage {
                 else this.activeCameraRig.orientTo(direction)
             },
             (angle) => this.activeCameraRig.roll(angle),
+            { forceWebGL: options.forceWebGL },
         )
 
         // 5. Shared TransformControls
@@ -171,6 +223,11 @@ export class Stage {
             }, 0)
         })
         this.transformControls.addEventListener('change', () => {
+            const selected = this.selectedId ? this.handles.get(this.selectedId) : undefined
+            if (selected instanceof CrossSectionRig) {
+                selected.update()
+                this.rebuildModelClipping()
+            }
             // Broadcast updated properties to the SelectedObjectContext on every frame
             if (this.selectedId) {
                 const handle = this.handles.get(this.selectedId)
@@ -191,12 +248,22 @@ export class Stage {
         this.toolManager.switchTo(new SelectTool())
 
         // 9. Start
-        this.startAnimationLoop()
+        this.ready = this.renderer.init().then(async () => {
+            if (this.disposed) return
+            this.studioEnvironment = createStudioEnvironment(this.renderer)
+            this.scene.environment = this.studioEnvironment.texture
+            await this.viewCube.ready
+            if (this.disposed) return
+            this.initialized = true
+            this.startAnimationLoop()
+        })
     }
 
     public dispose() {
         if (this.disposed) return
         this.disposed = true
+        this.modelGeneration++
+        this.preparationController?.abort()
         if (this.animationFrameId !== null) cancelAnimationFrame(this.animationFrameId)
 
         this.renderer.domElement.removeEventListener('click', this.handleCanvasClick)
@@ -209,14 +276,14 @@ export class Stage {
         this.handles.clear()
         this.cameraHandles.clear()
         this.xrayPass.dispose()
+        this.gpuCompletion.dispose()
         this.viewCube.dispose()
         this.clearModel()
         this.environmentRig.setEnvironment(Environment.None)
 
         this.scene.environment = null
-        this.studioEnvironment.dispose()
+        this.studioEnvironment?.dispose()
         this.renderer.dispose()
-        this.renderer.forceContextLoss()
         this.renderer.domElement.remove()
         this.css2dRenderer.domElement.remove()
     }
@@ -236,7 +303,7 @@ export class Stage {
         this.environmentRig.setTheme(theme)
         this.xrayPass.setColor(theme.foreground)
         if (this.scene.fog) this.scene.fog.color.copy(theme.fog)
-        this.materialManager.setTheme(this.modelGroup, theme, this.viewOptions?.get('modelColor'))
+        this.materialManager.setTheme(this.modelGroup, theme, this.viewOptions?.get('modelColor'), !!this.viewOptions?.get('partColors'), this.csgPartHints)
         this.handles.forEach((h) => {
             if (h instanceof CrossSectionRig) h.setTheme(theme)
         })
@@ -256,68 +323,76 @@ export class Stage {
         this.renderFrame()
     }
 
+    private get materialSettings(): ViewOptionsContext | undefined {
+        const settings = this.viewOptions
+        if (!settings) return settings
+        const options = { ...settings.options, renderMode: RenderMode.Solid }
+        return { ...settings, options, get: (key) => options[key], is: (key, value) => options[key] === value }
+    }
     public applySettings(viewOptions: ViewOptionsContext) {
         this.viewOptions = viewOptions
         this.environmentRig.setEnvironment(viewOptions.get('environment'), viewOptions.get('buildPlateOrigin'))
         this.activeCameraRig.setMode(viewOptions.get('camera'))
         this.renderer.shadowMap.enabled = viewOptions.get('shadows')
         this.scene.fog = new FogExp2(this.theme.fog, viewOptions.get('fogDensity'))
-        this.materialManager.setTheme(this.modelGroup, this.theme, viewOptions.get('modelColor'))
-        this.materialManager.applyToGroup(this.modelGroup, viewOptions)
+        this.materialManager.setTheme(this.modelGroup, this.theme, viewOptions.get('modelColor'), !!viewOptions.get('partColors'), this.csgPartHints)
+        this.materialManager.applyToGroup(this.modelGroup, this.materialSettings!)
 
-        // Enable clipping whenever any cross-section plane exists and is visible
-        this.renderer.localClippingEnabled = this.handles.size > 0
+        // The visible preview exposes only the solid display mode.
     }
 
-    public loadModelData(modelContext: ModelContext) {
+    public async loadModelData(modelContext: ModelContext) {
+        this.preparationController?.abort()
+        const preparationController = (this.preparationController = new AbortController())
+        const generation = ++this.modelGeneration
+        const started = performance.now()
+        const nextGroup = new Group()
         const { format, base64Data } = modelContext
         if (!base64Data || !format) {
             this.clearModel()
             return
         }
 
+        const decodeStarted = performance.now()
         const binaryString = window.atob(base64Data)
         const bytes = new Uint8Array(binaryString.length)
         for (let i = 0; i < binaryString.length; i++) {
             bytes[i] = binaryString.charCodeAt(i)
         }
 
-        this.clearModel()
-
-        if (format === ModelFormat.CSG) {
-            const scene = JSON.parse(new TextDecoder().decode(bytes)) as CsgScene
-            if (scene.version !== 1 || !Array.isArray(scene.meshes)) throw new Error('Invalid CSG scene payload.')
-            const decode = (text: string) => Uint8Array.from(window.atob(text), (c) => c.charCodeAt(0)).buffer
-            for (const data of scene.meshes) {
-                const properties = new Float32Array(decode(data.properties))
-                const indices = new Uint32Array(decode(data.indices))
-                if (data.stride < 3 || data.stride > 8 || properties.length % data.stride || indices.length % 3) throw new Error('Invalid CSG mesh buffers.')
-                const count = properties.length / data.stride
-                if (indices.some((i) => i >= count)) throw new Error('Invalid CSG triangle index.')
-                const positions = new Float32Array(count * 3),
-                    colors = new Float32Array(count * 4),
-                    defaults = new Float32Array(count)
-                let transparent = false
-                for (let i = 0; i < count; i++) {
-                    positions.set(properties.subarray(i * data.stride, i * data.stride + 3), i * 3)
-                    const rgba = data.stride === 8 ? properties.subarray(i * 8 + 3, i * 8 + 7) : [1, 1, 1, 1]
-                    colors.set(rgba, i * 4)
-                    defaults[i] = data.stride === 8 ? properties[i * 8 + 7] : 1
-                    transparent ||= rgba[3] < 1
-                }
-                const geometry = new BufferGeometry()
-                geometry.setAttribute('position', new Float32BufferAttribute(positions, 3))
-                geometry.setAttribute('color', new Float32BufferAttribute(colors, 4))
-                geometry.setAttribute('scadDefaultColor', new Float32BufferAttribute(defaults, 1))
-                geometry.setIndex(new Uint32BufferAttribute(indices, 1))
-                geometry.computeVertexNormals()
-                this.modelGroup.add(new Mesh(geometry, new MeshStandardMaterial({ color: 0xffffff, vertexColors: true, transparent, flatShading: true, ...studioSurface, fog: false })))
-            }
-            if (this.viewOptions) this.materialManager.applyToGroup(this.modelGroup, this.viewOptions)
-        } else if (format === ModelFormat.ThreeMF) {
+        modelContext.reportPerformance?.({ decodeMs: performance.now() - decodeStarted })
+        let imageCsg: GoldfeatherRenderer | undefined
+        let cachedCandidate: ModelRepresentation | undefined
+        if (this.inactiveModel?.format === format) {
+            const inactive = this.inactiveModel
+            this.inactiveModel = undefined
+            if (inactive.data === base64Data) {
+                cachedCandidate = inactive.representation
+                cachedCandidate.rebind(modelContext.modelVersion ?? generation, modelContext.queryTopology)
+                cachedCandidate.attach(nextGroup)
+            } else inactive.representation.dispose()
+        }
+        if (cachedCandidate) modelContext.reportPerformance?.(format === ModelFormat.PreviewScene ? { viewerParseMs: 0, viewerValidationMs: 0, resourcePreparationMs: 0 } : { meshParseMs: 0, resourcePreparationMs: 0 })
+        if (!cachedCandidate && format === ModelFormat.PreviewScene) {
+            let phase = performance.now()
+            const scene = JSON.parse(new TextDecoder().decode(bytes)) as PreviewScene
+            modelContext.reportPerformance?.({ viewerParseMs: performance.now() - phase })
+            phase = performance.now()
+            validatePreviewScene(scene)
+            modelContext.reportPerformance?.({ viewerValidationMs: performance.now() - phase })
+            phase = performance.now()
+            imageCsg = new GoldfeatherRenderer(scene)
+            imageCsg.updateAppearance(this.theme.additive, false, this.scene, this.theme.subtractive, !!this.viewOptions?.get('partColors'), this.csgPartHints)
+            nextGroup.add(imageCsg.root)
+            modelContext.reportPerformance?.({ resourcePreparationMs: performance.now() - phase })
+        } else if (!cachedCandidate && format === ModelFormat.ThreeMF) {
             const loader = new ThreeMFLoader()
             try {
+                const parseStarted = performance.now()
                 const group = loader.parse(bytes.buffer)
+                modelContext.reportPerformance?.({ meshParseMs: performance.now() - parseStarted })
+                const resourcesStarted = performance.now()
+                group.scale.multiplyScalar(threeMfMillimeterScale(bytes))
                 group.traverse((child) => {
                     if (child instanceof Mesh) {
                         const materials = Array.isArray(child.material) ? child.material : [child.material]
@@ -333,14 +408,19 @@ export class Stage {
                         if (this.viewOptions) this.materialManager.applyToGroup(group, this.viewOptions)
                     }
                 })
-                this.modelGroup.add(group)
+                nextGroup.add(group)
+                modelContext.reportPerformance?.({ resourcePreparationMs: performance.now() - resourcesStarted })
             } catch (e) {
-                console.error('Failed to parse 3MF:', e)
+                this.disposeModelGroup(nextGroup)
+                throw new Error(`Failed to parse 3MF: ${String(e)}`)
             }
-        } else {
+        } else if (!cachedCandidate) {
             const loader = new STLLoader()
             try {
+                const parseStarted = performance.now()
                 const geometry = loader.parse(bytes.buffer)
+                modelContext.reportPerformance?.({ meshParseMs: performance.now() - parseStarted })
+                const resourcesStarted = performance.now()
                 const material = new MeshStandardMaterial({
                     color: this.theme.additive,
                     flatShading: false,
@@ -349,15 +429,47 @@ export class Stage {
                 })
                 material.userData.previewThemeColor = 'additive'
                 const mesh = new Mesh(geometry, material)
-                this.modelGroup.add(mesh)
-                if (this.viewOptions) this.materialManager.applyToGroup(this.modelGroup, this.viewOptions)
+                nextGroup.add(mesh)
+                if (this.viewOptions) this.materialManager.applyToGroup(nextGroup, this.viewOptions)
+                modelContext.reportPerformance?.({ resourcePreparationMs: performance.now() - resourcesStarted })
             } catch (e) {
-                console.error('Failed to parse STL:', e)
+                this.disposeModelGroup(nextGroup)
+                throw new Error(`Failed to parse STL: ${String(e)}`)
             }
         }
 
-        this.materialManager.setTheme(this.modelGroup, this.theme, this.viewOptions?.get('modelColor'))
+        this.materialManager.setTheme(nextGroup, this.theme, this.viewOptions?.get('modelColor'), !!this.viewOptions?.get('partColors'), this.partHints?.version === modelContext.modelVersion ? this.partHints?.hints : undefined)
 
+        const candidate = cachedCandidate ?? new ModelRepresentation(nextGroup, modelContext.modelVersion ?? generation, modelContext.queryTopology, imageCsg)
+        try {
+            await this.ready
+            if (!this.disposed && generation === this.modelGeneration) {
+                candidate.imageCsg?.updateAppearance(this.viewOptions?.get('modelColor') ? new Color(this.viewOptions.get('modelColor')!) : this.theme.additive, !!this.viewOptions?.get('modelColor'), this.scene, this.theme.subtractive, !!this.viewOptions?.get('partColors'), this.csgPartHints)
+                modelContext.reportPerformance?.({ viewerPreparationMs: performance.now() - started })
+                const prepared = await candidate.prepare(this.renderer, this.activeCameraRig.activeCamera, this.scene, preparationController.signal)
+                if (generation === this.modelGeneration) modelContext.reportPerformance?.(prepared.value)
+            }
+        } catch (error) {
+            candidate.dispose()
+            throw error
+        }
+        if (this.disposed || generation !== this.modelGeneration) {
+            candidate.dispose()
+            return
+        }
+        if (this.modelRepresentation && this.modelContext?.format && this.modelContext.format !== format && this.modelContext.base64Data && this.modelContext.base64Data.length <= 8 * 1048576) {
+            this.inactiveModel?.representation.dispose()
+            this.inactiveModel = { format: this.modelContext.format, data: this.modelContext.base64Data, representation: this.modelRepresentation }
+            this.modelRepresentation.detach()
+            this.modelRepresentation = undefined
+        }
+        this.clearModel(true)
+        this.modelContext = modelContext
+        this.modelRepresentation = candidate
+        if (this.materialSettings) this.materialManager.applyToGroup(nextGroup, this.materialSettings)
+        this.modelGroup.add(...nextGroup.children)
+        if (this.csgPartHints && this.viewOptions) this.applySettings(this.viewOptions)
+        this.firstFrame = { generation, start: started, notify: modelContext.frameReady, submitted: false }
         // Pick an absorption coefficient so a ray traversing the model's full
         // diagonal in material reads as ~95% opaque (1 - exp(-3) ≈ 0.95).
         const bounds = new Box3().setFromObject(this.modelGroup)
@@ -377,19 +489,54 @@ export class Stage {
         this.fitInitialModelIfReady()
     }
 
-    private clearModel() {
-        this.modelGroup.traverse((child) => {
+    private disposeModelGroup(group: Group) {
+        group.traverse((child) => {
             if (!(child instanceof Mesh)) return
             child.geometry.dispose()
             const materials = Array.isArray(child.material) ? child.material : [child.material]
             for (const material of materials) material.dispose()
         })
-        this.modelGroup.clear()
+        group.clear()
+    }
+
+    private clearModel(preserveInactive = false) {
+        if (!preserveInactive) {
+            this.inactiveModel?.representation.dispose()
+            this.inactiveModel = undefined
+        }
+        this.modelRepresentation?.dispose()
+        this.modelRepresentation = undefined
+        this.firstFrame = undefined
+        this.onToolStatus?.('')
+        this.disposeModelGroup(this.modelGroup)
+    }
+
+    private reportFirstFrame() {
+        const frame = this.firstFrame
+        if (!frame || frame.submitted) return
+        frame.submitted = true
+        const gpuStarted = performance.now()
+        void withRenderer(this.renderer, async () => {
+            await this.gpuCompletion.wait(this.renderer)
+            await frame.validate?.()
+            if (this.firstFrame === frame) this.modelContext?.reportPerformance?.({ gpuCompleteMs: performance.now() - gpuStarted })
+        })
+            .then(async () => {
+                const presentStarted = performance.now()
+                await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
+                if (this.firstFrame === frame) this.modelContext?.reportPerformance?.({ presentationMs: performance.now() - presentStarted, firstFrameMs: performance.now() - frame.start })
+            })
+            .then(() => {
+                if (!this.disposed && this.firstFrame === frame && frame.generation === this.modelGeneration) frame.notify?.(this.renderer.coordinateSystem === 2001 ? 'webgpu' : 'webgl2', performance.now() - frame.start)
+            })
+            .catch((error) => {
+                if (!this.disposed && frame.generation === this.modelGeneration) this.onError?.(String(error))
+            })
     }
 
     /** Scene hydration decides whether to restore a saved pose or fit the first model. */
     public initializeView(hasSavedCamera: boolean): void {
-        this.fitInitialModel = !hasSavedCamera
+        this.fitInitialModel = !hasSavedCamera && !this.viewTouched
         this.fitInitialModelIfReady()
     }
 
@@ -561,9 +708,7 @@ export class Stage {
     private rebuildModelClipping(): void {
         const planes: Plane[] = []
         for (const handle of this.handles.values()) {
-            if (handle instanceof CrossSectionRig && handle.active) {
-                planes.push(handle.plane)
-            }
+            if (handle instanceof CrossSectionRig) handle.getSceneRoot().visible = false
         }
 
         // Apply all active planes to every model mesh, and place the model between
@@ -587,12 +732,10 @@ export class Stage {
         // Clip each cap by every other rig's plane so caps don't bleed into
         // geometry that a sibling plane has cut away.
         for (const handle of this.handles.values()) {
-            if (handle instanceof CrossSectionRig && handle.visible) {
+            if (handle instanceof CrossSectionRig && handle.active) {
                 handle.setCapClippingPlanes(planes.filter((p) => p !== handle.plane))
             }
         }
-
-        this.renderer.localClippingEnabled = planes.length > 0
     }
 
     private reassignTiers(): void {
@@ -607,6 +750,10 @@ export class Stage {
     public setObjectProperty(id: string, key: string, value: number): void {
         const handle = this.handles.get(id)
         handle?.setProperty(key, value)
+        if (handle instanceof CrossSectionRig) {
+            handle.update()
+            this.rebuildModelClipping()
+        }
         if (handle instanceof DirectionalLightRig) fitDirectionalShadow(handle.light, new Box3().setFromObject(this.modelGroup))
     }
 
@@ -653,7 +800,12 @@ export class Stage {
     private createCameraRig(id: string): CameraRig {
         const size = this.renderer.getSize(new Vector2())
         const rig = new CameraRig(id, size.x, size.y, this.renderer.domElement, this.theme.foreground)
-        rig.getControls().addEventListener('change', () => this.onPersist?.())
+        const controls = rig.getControls()
+        controls.addEventListener('change', () => {
+            this.onPersist?.()
+            // The property panel should follow actual camera changes, not every rAF.
+            if (this.selectedId === id) this.onPropertiesChange?.(rig.getProperties())
+        })
         this.cameraHandles.set(id, rig)
         this.handles.set(id, rig)
         this.scene.add(rig.getPerspectiveCamera())
@@ -675,7 +827,7 @@ export class Stage {
     // ============= Tool =============
 
     public setActiveTool(tool: ActiveTool): void {
-        this.gizmoMode = tool === ActiveTool.Move ? 'translate' : tool === ActiveTool.Rotate ? 'rotate' : null
+        this.gizmoMode = tool === ActiveTool.Move ? 'translate' : tool === ActiveTool.Rotate ? 'rotate' : tool === ActiveTool.Scale ? 'scale' : null
 
         if (this.gizmoMode === null) {
             this.transformControls.detach()
@@ -710,6 +862,7 @@ export class Stage {
                     renderer: this.renderer,
                     css2dRenderer: this.css2dRenderer,
                     modelGroup: this.modelGroup,
+                    pickModel: (raycaster) => this.modelRepresentation?.pick(raycaster).value ?? [],
                     scene: this.scene,
                     color: this.theme.accent,
                     variant: () => this.toolVariant,
@@ -725,7 +878,7 @@ export class Stage {
     // ============= Animation loop =============
 
     private startAnimationLoop = () => {
-        if (this.paused || this.disposed) return
+        if (this.paused || this.disposed || !this.initialized) return
         this.animationFrameId = requestAnimationFrame(this.startAnimationLoop)
         this.activeCameraRig.update()
         this.viewCube.update(this.activeCameraRig.activeCamera)
@@ -734,35 +887,53 @@ export class Stage {
         this.handles.forEach((h) => {
             if (h instanceof CrossSectionRig) h.update()
         })
-        // Camera position/rotation change every frame while orbiting — keep the
-        // properties panel in sync if a camera is currently selected.
-        if (this.selectedId) {
-            const handle = this.handles.get(this.selectedId)
-            if (handle instanceof CameraRig) {
-                this.onPropertiesChange?.(handle.getProperties())
-            }
-        }
         this.renderFrame()
         this.css2dRenderer.render(this.scene, this.activeCameraRig.activeCamera)
     }
 
     private renderFrame() {
-        if (this.paused || this.disposed) return
+        if (rendererBusy(this.renderer)) return
+        if (this.failedGeneration === this.modelGeneration) return
+        try {
+            const start = performance.now(),
+                generation = this.modelGeneration,
+                report = this.modelContext?.reportPerformance
+            this.drawFrame()
+            if (report && !this.performancePending && this.firstFrame?.submitted && start - this.performanceSampledAt >= 1000) {
+                this.performancePending = true
+                this.performanceSampledAt = start
+                void this.gpuCompletion
+                    .wait(this.renderer)
+                    .then(() => {
+                        if (!this.disposed && generation === this.modelGeneration) report({ interactiveFrameMs: performance.now() - start })
+                    })
+                    .catch(() => {})
+                    .finally(() => {
+                        this.performancePending = false
+                    })
+            }
+        } catch (error) {
+            const validate = this.firstFrame?.validate
+            if (validate) void withRenderer(this.renderer, validate).catch(() => {})
+            this.failedGeneration = this.modelGeneration
+            this.onError?.(error instanceof Error ? error.message : String(error))
+        }
+    }
+
+    private drawFrame() {
+        if (this.paused || this.disposed || !this.initialized) return
         const camera = this.activeCameraRig.activeCamera
 
-        if (this.viewOptions?.is('renderMode', RenderMode.XRay)) {
-            // Hide the model from the main pass so the environment/grid render
-            // unoccluded, then accumulate thickness from the model alone and
-            // composite that on top with density-driven opacity.
-            const modelVisible = this.modelGroup.visible
-            this.modelGroup.visible = false
-            this.renderer.render(this.scene, camera)
-            this.modelGroup.visible = modelVisible
-            this.xrayPass.render(this.renderer, this.modelGroup, camera)
-            return
-        }
-
-        this.renderer.render(this.scene, camera)
+        const first = this.firstFrame
+        if (first && !first.submitted && !first.validate) first.validate = beginGpuValidation(this.renderer, 'first frame')
+        const image = this.modelRepresentation?.imageCsg
+        image?.updateAppearance(this.viewOptions?.get('modelColor') ? new Color(this.viewOptions.get('modelColor')!) : this.theme.additive, !!this.viewOptions?.get('modelColor'), this.scene, this.theme.subtractive, !!this.viewOptions?.get('partColors'), this.csgPartHints)
+        const meshStarted = first && !first.submitted && !image ? performance.now() : undefined
+        if (this.modelRepresentation) this.modelRepresentation.render(this.renderer, this.scene, camera)
+        else this.renderer.render(this.scene, camera)
+        if (image && first && !first.submitted) this.modelContext?.reportPerformance?.(image.lastTimings)
+        if (meshStarted !== undefined) this.modelContext?.reportPerformance?.({ meshSubmitMs: performance.now() - meshStarted })
+        this.reportFirstFrame()
     }
 
     // ============= Input handlers =============
@@ -783,6 +954,7 @@ export class Stage {
         // Raycast against all registered handles
         const selectables: { id: string; obj: import('three').Object3D }[] = []
         for (const [id, handle] of this.handles) {
+            if (handle instanceof CrossSectionRig) continue
             for (const obj of handle.getSelectableObjects()) {
                 selectables.push({ id, obj })
             }
@@ -799,6 +971,9 @@ export class Stage {
     }
 
     private handlePointerDown = (e: PointerEvent) => {
+        // A user-adjusted view takes precedence over the first asynchronous fit.
+        this.fitInitialModel = false
+        this.viewTouched = true
         this.pointerDownX = e.clientX
         this.pointerDownY = e.clientY
     }

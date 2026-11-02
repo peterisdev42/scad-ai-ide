@@ -26,6 +26,9 @@ export async function run() {
     const config = vscode.workspace.getConfiguration('scad-ai-ide')
     const oldExecutable = config.inspect('runtimeCommand')?.globalValue
     const oldFormat = config.inspect('preview.format')?.globalValue
+    const oldExporter = config.inspect('preview.exporterPath')?.globalValue
+    const exporter = process.env.SCAD_PREVIEW_EXPORTER
+    assert.ok(exporter, 'Set SCAD_PREVIEW_EXPORTER for the independent native preview integration test.')
     const oldMode = config.inspect('preview.renderMode')?.globalValue
     try {
         // Exercise the real extension host and subprocess boundary without needing
@@ -36,7 +39,8 @@ export async function run() {
 if [ "$1" = "--fixture-prefix" ] && [ "$2" = "--version" ]; then echo "OpenSCAD version 2026.10.TEST"; exit 0; fi
 /bin/cat > '${trace}'
 /bin/pwd > '${trace}.cwd'
-for arg in "$@"; do /usr/bin/printf '%s\\n' "$arg"; done > '${trace}.args'
+for arg in "$@"; do /usr/bin/printf '%s\\n' "$arg"; done > '${trace}.args.'$$
+/bin/cp '${trace}.args.'$$ '${trace}.args'
 # Put the invocation in its own valid STL solid name: concurrent preview jobs
 # may overwrite the shared diagnostic trace after an export completes.
 fixture_label="test"
@@ -46,16 +50,15 @@ while [ "$#" -gt 0 ]; do
   if [ "$1" = "--export-format" ]; then shift; format="$1"; fi
   shift
 done
-if [ "$format" = "csg" ]; then
-  /usr/bin/printf 'cube(size=[20,20,20],center=false);' > "$output"
-  exit 0
-fi
+# Each format retains its own invocation; a cache hit need not launch a CLI.
+/bin/cp '${trace}.args.'$$ '${trace}.args.'"$format"
 /usr/bin/printf 'solid %s\\nfacet normal 0 0 1\\nouter loop\\nvertex 0 0 0\\nvertex 1 0 0\\nvertex 0 1 0\\nendloop\\nendfacet\\nendsolid %s\\n' "$fixture_label" "$fixture_label" > "$output"
 `,
             { mode: 0o755 },
         )
         await writeFile(uri.fsPath, 'width = 1;\ncube(width);\n')
         await config.update('runtimeCommand', { executable: cli, argsPrefix: ['--fixture-prefix'] }, vscode.ConfigurationTarget.Global)
+        await config.update('preview.exporterPath', exporter, vscode.ConfigurationTarget.Global)
         await config.update('preview.format', 'stl', vscode.ConfigurationTarget.Global)
         await config.update('preview.renderMode', 'render', vscode.ConfigurationTarget.Global)
         const extension = vscode.extensions.all.find((item) => item.packageJSON.name === 'scad-ai-ide')
@@ -135,19 +138,18 @@ fi
         for (let turn = 0; turn < 2; turn++) {
             results.length = 0
             shared.setPreviewMode('preview')
-            await waitFor(() => results.some((result) => result.format === ModelFormat.CSG))
+            await waitFor(() => results.some((result) => result.format === ModelFormat.PreviewScene))
             assert.equal(JSON.parse(results.at(-1)!.buffer.toString()).meshes.length, 1)
-            assert.match(await readFile(trace + '.args', 'utf8'), /--export-format\ncsg\n/)
-            assert.match(await readFile(trace + '.args', 'utf8'), /\$preview=true/)
-            await shared.exportFormat(ModelFormat.STL)
-            assert.doesNotMatch(await readFile(trace + '.args', 'utf8'), /\$preview=true/)
+            assert.equal(JSON.parse(results.at(-1)!.buffer.toString()).version, 'preview-scene-1')
+            const exported = await shared.exportFormat(ModelFormat.STL)
+            assert.doesNotMatch(exported.toString(), /\$preview=true/)
             assert.equal(shared.previewMode, 'preview', 'Exporting must preserve the current quick-preview mode')
             results.length = 0
             shared.setPreviewMode('render')
             await waitFor(() => results.some((result) => result.format === ModelFormat.STL))
         }
         renderSubscription.dispose()
-        console.log('PASS: SCAD sessions switch between CSG trees and interactive mesh, while exports keep full evaluation')
+        console.log('PASS: SCAD sessions switch between prepared Boolean scenes and interactive mesh, while exports keep full evaluation')
         const realExecutable = process.env.SCAD_OPENSCAD_EXECUTABLE || process.env.SCAD_OPENSCAD_CSG_EXECUTABLE
         if (realExecutable) {
             await config.update('runtimeCommand', { executable: realExecutable, argsPrefix: [] }, vscode.ConfigurationTarget.Global)
@@ -155,33 +157,37 @@ fi
             const stl = await shared.exportFormat(ModelFormat.STL)
             assert.ok(stl.length > 84, 'Real OpenSCAD must produce STL geometry')
             if (process.env.SCAD_OPENSCAD_EXECUTABLE) {
-                const threeMF = await shared.exportFormat(ModelFormat.ThreeMF)
-                assert.equal(threeMF.subarray(0, 2).toString(), 'PK', 'Real OpenSCAD must produce a 3MF archive')
+                const info = JSON.parse(await readFile(path.join(path.dirname(path.dirname(realExecutable)), 'build-info.json'), 'utf8').catch(() => '{}'))
+                if (info.lib3mf === false) await assert.rejects(shared.exportFormat(ModelFormat.ThreeMF), /3mf|3MF/, 'A runtime without lib3mf must report an actionable export error')
+                else {
+                    const threeMF = await shared.exportFormat(ModelFormat.ThreeMF)
+                    assert.equal(threeMF.subarray(0, 2).toString(), 'PK', 'Real OpenSCAD must produce a 3MF archive')
+                }
             }
-            const csg = await shared.exportFormat(ModelFormat.CSG)
-            assert.match(csg.toString(), /cube\(/)
+            const csg = await shared.exportFormat(ModelFormat.PreviewScene)
+            assert.equal(JSON.parse(csg.toString()).version, 'preview-scene-1')
             const realResults: { buffer: Buffer; format: ModelFormat }[] = []
             const realSubscription = shared.onRenderCompleted((result) => realResults.push(result))
             shared.setPreviewMode('preview')
-            await waitFor(() => realResults.some((result) => result.format === ModelFormat.CSG))
+            await waitFor(() => realResults.some((result) => result.format === ModelFormat.PreviewScene))
             assert.equal(JSON.parse(realResults.at(-1)!.buffer.toString()).meshes.length, 1)
             realSubscription.dispose()
-            console.log('PASS: real selected OpenSCAD runtime exports STL and a CSG tree evaluated by the interactive preview worker')
-            const fallbackUri = vscode.Uri.file(path.join(directory, 'fallback.scad'))
-            await writeFile(fallbackUri.fsPath, 'polyhedron(points=[[0,0,0],[20,0,0],[20,20,0],[0,20,0],[0,0,20],[20,0,20],[20,20,20],[0,20,20]],faces=[[0,1,2,3],[4,7,6,5],[0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0]]);')
-            const fallbackDocument = await vscode.workspace.openTextDocument(fallbackUri)
-            const fallbackSession = api.preview.getOrCreateSession(fallbackDocument)
-            const fallbackResults: { buffer: Buffer; format: ModelFormat }[] = []
-            const fallbackSubscription = fallbackSession.onRenderCompleted((result) => fallbackResults.push(result))
-            fallbackSession.setPreviewMode('preview')
-            await waitFor(() => fallbackResults.some((result) => result.format === ModelFormat.STL))
-            assert.equal(fallbackSession.renderBackend.kind, 'fallback')
-            assert.match(fallbackSession.renderBackend.reason!, /non-triangular polyhedron face/)
-            assert.equal(api.customizer.canPreviewContinuously(fallbackUri.toString()), false)
-            assert.ok(fallbackSession.renderBackend.elapsedMs! >= 0)
-            fallbackSubscription.dispose()
-            api.preview.removeSession(fallbackUri)
-            console.log('PASS: real quad polyhedron falls back visibly to STL and disables continuous parameter previews')
+            console.log('PASS: ordinary OpenSCAD exports STL and independent Preview Exporter supplies the prepared scene')
+            const polyhedronUri = vscode.Uri.file(path.join(directory, 'polyhedron.scad'))
+            await writeFile(polyhedronUri.fsPath, 'polyhedron(points=[[0,0,0],[20,0,0],[20,20,0],[0,20,0],[0,0,20],[20,0,20],[20,20,20],[0,20,20]],faces=[[0,1,2,3],[4,7,6,5],[0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0]]);')
+            const polyhedronDocument = await vscode.workspace.openTextDocument(polyhedronUri)
+            const polyhedronSession = api.preview.getOrCreateSession(polyhedronDocument)
+            const polyhedronResults: { buffer: Buffer; format: ModelFormat }[] = []
+            const polyhedronSubscription = polyhedronSession.onRenderCompleted((result) => polyhedronResults.push(result))
+            polyhedronSession.setPreviewMode('preview')
+            await waitFor(() => polyhedronResults.some((result) => result.format === ModelFormat.PreviewScene))
+            assert.equal(polyhedronSession.renderBackend.kind, 'csg')
+            assert.equal(JSON.parse(polyhedronResults.at(-1)!.buffer.toString()).version, 'preview-scene-1')
+            assert.equal(api.customizer.canPreviewContinuously(polyhedronUri.toString()), false)
+            assert.ok(polyhedronSession.renderBackend.elapsedMs! >= 0)
+            polyhedronSubscription.dispose()
+            api.preview.removeSession(polyhedronUri)
+            console.log('PASS: real quad polyhedron stays on the CSG path; continuous preview waits for a canvas acknowledgment')
         }
         const csgUri = vscode.Uri.file(path.join(directory, 'tree.CSG'))
         const csgSource = 'difference(){cube(size=[20,20,20],center=true);sphere(r=5,$fn=16);}'
@@ -191,7 +197,7 @@ fi
         const csgResults: { buffer: Buffer; format: ModelFormat }[] = []
         const csgSubscription = csgSession.onRenderCompleted((result) => csgResults.push(result))
         csgSession.refreshRender()
-        await waitFor(() => csgResults.some((result) => result.format === ModelFormat.CSG))
+        await waitFor(() => csgResults.some((result) => result.format === ModelFormat.PreviewScene))
         await vscode.window.showTextDocument(csgDocument)
         await vscode.commands.executeCommand('scad-ai-ide.togglePreview')
         await waitFor(() => vscode.window.tabGroups.activeTabGroup.activeTab?.input instanceof vscode.TabInputCustom)
@@ -255,6 +261,7 @@ fi
     } finally {
         await config.update('runtimeCommand', oldExecutable, vscode.ConfigurationTarget.Global)
         await config.update('preview.format', oldFormat, vscode.ConfigurationTarget.Global)
+        await config.update('preview.exporterPath', oldExporter, vscode.ConfigurationTarget.Global)
         await config.update('preview.renderMode', oldMode, vscode.ConfigurationTarget.Global)
         await vscode.commands.executeCommand('workbench.action.files.revert')
         await vscode.commands.executeCommand('workbench.action.closeAllEditors')

@@ -1,70 +1,29 @@
-import { AddEquation, Camera, Color, CustomBlending, DoubleSide, FloatType, Group, Mesh, OneFactor, OrthographicCamera, PlaneGeometry, Plane, RGBAFormat, Scene, ShaderMaterial, WebGLRenderTarget, WebGLRenderer } from 'three'
+import { AddEquation, Camera, Color, CustomBlending, DoubleSide, FloatType, Group, Mesh, NearestFilter, OneFactor, OrthographicCamera, PlaneGeometry, Plane, RGBAFormat, Scene, RenderTarget } from 'three'
 
-const thicknessVert = /* glsl */ `
-#include <clipping_planes_pars_vertex>
-varying float vDepth;
-void main() {
-  vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-  vDepth = -mvPosition.z;
-  gl_Position = projectionMatrix * mvPosition;
-  #include <clipping_planes_vertex>
-}
-`
-
-// Front faces subtract their depth, back faces add — the per-pixel sum equals
-// the total ray length that lay inside material, regardless of how many shells
-// or concavities the ray crossed.
-const thicknessFrag = /* glsl */ `
-#include <clipping_planes_pars_fragment>
-varying float vDepth;
-void main() {
-  #include <clipping_planes_fragment>
-  float contrib = gl_FrontFacing ? -vDepth : vDepth;
-  gl_FragColor = vec4(contrib, 0.0, 0.0, 1.0);
-}
-`
-
-const compositeVert = /* glsl */ `
-varying vec2 vUv;
-void main() {
-  vUv = uv;
-  gl_Position = vec4(position.xy * 2.0, 0.0, 1.0);
-}
-`
-
-// Beer-Lambert: thicker material → more absorption → higher alpha. Density
-// occludes the background proportionally instead of pure additive brightening.
-const compositeFrag = /* glsl */ `
-uniform sampler2D tThickness;
-uniform vec3 uColor;
-uniform float uAbsorption;
-varying vec2 vUv;
-void main() {
-  float thickness = abs(texture2D(tThickness, vUv).r);
-  float alpha = 1.0 - exp(-uAbsorption * thickness);
-  gl_FragColor = vec4(uColor, alpha);
-}
-`
+import { MeshBasicNodeMaterial, WebGPURenderer } from 'three/webgpu'
+import { abs, exp, faceDirection, float, positionView, texture, uniform, uv, vec4 } from 'three/tsl'
 
 export class XRayPass {
-    private renderTarget: WebGLRenderTarget
-    private thicknessMaterial: ShaderMaterial
-    private compositeMaterial: ShaderMaterial
+    private renderTarget: RenderTarget
+    private thicknessMaterial: MeshBasicNodeMaterial
+    private compositeMaterial: MeshBasicNodeMaterial
+    private color = uniform(new Color(0xffffff))
+    private absorption = uniform(0.05)
     private compositeMesh: Mesh
     private compositeScene: Scene
     private compositeCamera: OrthographicCamera
 
     constructor(width: number, height: number) {
-        this.renderTarget = new WebGLRenderTarget(width, height, {
+        this.renderTarget = new RenderTarget(width, height, {
             type: FloatType,
             format: RGBAFormat,
+            minFilter: NearestFilter,
+            magFilter: NearestFilter,
             depthBuffer: false,
             stencilBuffer: false,
         })
 
-        this.thicknessMaterial = new ShaderMaterial({
-            vertexShader: thicknessVert,
-            fragmentShader: thicknessFrag,
+        this.thicknessMaterial = new MeshBasicNodeMaterial({
             side: DoubleSide,
             transparent: false,
             depthTest: false,
@@ -76,21 +35,17 @@ export class XRayPass {
             blendEquationAlpha: AddEquation,
             blendSrcAlpha: OneFactor,
             blendDstAlpha: OneFactor,
-            clipping: true,
         })
 
-        this.compositeMaterial = new ShaderMaterial({
-            vertexShader: compositeVert,
-            fragmentShader: compositeFrag,
-            uniforms: {
-                tThickness: { value: this.renderTarget.texture },
-                uColor: { value: new Color(0xffffff) },
-                uAbsorption: { value: 0.05 },
-            },
+        this.thicknessMaterial.fragmentNode = vec4(positionView.z.mul(faceDirection), 0, 0, 0)
+
+        this.compositeMaterial = new MeshBasicNodeMaterial({
             transparent: true,
             depthTest: false,
             depthWrite: false,
         })
+
+        this.compositeMaterial.fragmentNode = vec4(this.color, float(1).sub(exp(abs(texture(this.renderTarget.texture, uv()).r).mul(this.absorption).negate())))
 
         this.compositeCamera = new OrthographicCamera(-1, 1, 1, -1, 0, 1)
         this.compositeMesh = new Mesh(new PlaneGeometry(1, 1), this.compositeMaterial)
@@ -104,11 +59,11 @@ export class XRayPass {
     }
 
     public setColor(color: Color) {
-        ;(this.compositeMaterial.uniforms.uColor.value as Color).copy(color)
+        this.color.value.copy(color)
     }
 
     public setAbsorption(k: number) {
-        this.compositeMaterial.uniforms.uAbsorption.value = k
+        this.absorption.value = k
     }
 
     public setClippingPlanes(planes: Plane[]) {
@@ -116,7 +71,7 @@ export class XRayPass {
         this.thicknessMaterial.needsUpdate = true
     }
 
-    public render(renderer: WebGLRenderer, modelGroup: Group, camera: Camera) {
+    public render(renderer: WebGPURenderer, modelGroup: Group, camera: Camera) {
         // Pass 1: accumulate signed depth into the float RT. Walk the model once,
         // swap each mesh's material for the thickness shader, render the group,
         // then put the originals back. We don't use scene.overrideMaterial because
