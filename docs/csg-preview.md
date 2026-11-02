@@ -89,10 +89,26 @@ OpenCSG-style Raster 并非模型越大就一定比 GPU Raycasting 更快。当�
 - 如果模型超出交互工作量阈值，且宿主支持 `queryTopology`，Stage **明确切换为精确 Mesh 模式**：跳过本来就不会使用的 Raster GPU Shader 编译和操作数上传，只对当前模型进行一次完整 Boolean 几何求值，缓存结果并用普通 Three.js Mesh 实时旋转；不是偷偷用原始操作数假装显示正确的 CSG。
 - 如果少数模型在光栅化运行时才突破硬预算，捕获对应预算错误并切换到相同的精确 Mesh 路径；交互帧连续出现明显的 CPU 提交卡顿时也可触发该模式。
 - 该自动降级是正常内部行为，不弹出成功或进行中的提示；只有降级不可用、精确几何计算失败等真正错误才会在视口显示信息。模型变化后失效并重新评估；后续相机变化不重复执行 CLI 或 Boolean Kernel。
-- 某些只提供静态嵌入视图的 Webview 没有按需拓扑服务，这种视图不能执行上述降级，仍会给出明确限制/错误。
+- **内置 Markdown 的 `scad` / `openscad` 代码块**没有 `queryTopology` 双向扩展消息通道，但现在扩展端与 Stage 共用 `src/core/csg/rasterWork.ts` 的边界/Pass 估算逻辑：如果预计超出 400 次交互渲染工作量，先通过 `compileCsgTopology` 生成一次精确网格，随模型载荷的 `topology` 字段传给嵌入式 Three.js 预览；代码块随后可直接完成缓存网格降级，不再报需要打开 3D Tools。简单 CSG 代码块仍只导出并处理 CSG，不预先计算最终网格。专用 Markdown with 3D Tools 则继续使用已有的按需双向请求机制。
+- 无法在初始 CSG 估算阶段预测的动态非凸深度层爆炸，仍有可能在内置 Markdown 的 GPU 光栅化阶段触发预算错误；离线拓扑预计算不是任意模型保证成功的办法。遇到这类场景需要继续改进准确的 CPU 复杂度判定，而不是无限提高 Pass 上限。
 - 精确拓扑计算可能较慢，也可能因超时、模型过大或非流形几何失败。失败时停止加载状态，明确建议 Full Render；不能提高预算后长时间阻塞 Webview。
 
 这一策略解决的是复杂模型拖拽与预算失败的**产品级可用性**，不是声称现有光栅化算法已经具有可扩展到任意规模布尔 DAG 的运行复杂度。需要继续以大量重叠操作数的真实模型做 GPU Profiler，考虑更好的布尔表达式因子化和重复谓词分类，才可能把这些模型恢复为纯 F5 实时渲染。
+
+## 首帧耗时与“真正 F5”判定
+
+**真正的 F5-style 路径：** `OpenSCAD CLI -D '$preview=true' --export-format csg` 导出实例化 CSG 树，扩展端 Worker 生成局部几何和 Boolean Products，然后 Three.js `WebGPURenderer` 在 WebGPU 或 WebGL2 上执行 Raster CSG Pass。相机变化只重新绘制 GPU Pass，不应重新运行 CLI 或解析 CSG 树。`*.csg` 文件本身不是 WebGPU 可直接消费的 GPU Buffer，仍需要上述准备和规范化。
+
+**复杂度降级路径：** Raster 工作量超出交互阈值，或持续出现昂贵帧时，按需计算一次最终 Boolean 网格，并以普通 Mesh 绘制后续视角。这不是纯 F5。扩展端预览和专用 Markdown 使用按需拓扑请求；内置 Markdown 无动态请求能力，只在复杂度预判命中时预计算并将拓扑与模型一起传输。
+
+首帧整体耗时应分别统计：
+- `cliMs`：CLI 启动、模型实例化及 CSG 导出（不包含后续 Worker 计算）。
+- `geometryMs` / `normalizationMs` / `resourcesMs`：局部几何、Boolean 规范化及资源准备。
+- `uploadMs` / `shaderMs`：Webview 首次 GPU 上传和 Shader 预热。
+- `topologyMs`：按需或 Markdown 预计算的完整精确网格处理时间，**不能与 GPU Raster F5 的耗时混为一谈**。
+- `firstFrameMs` / `interactiveFrameMs`：请区分扩展端总耗时、Stage 的首帧上传渲染时间以及 GPU 已完成帧时间；本地离线 1080p 数据不等同于 VS Code Electron 真实画面呈现耗时。
+
+用户实测约 5s 并不能单凭总数字归因于 CLI、WebGPU 或算法；须先确认是否进入 exact-mesh 降级，并观察上述分项。复杂 Markdown 嵌入模型预计算会增加首次数据就绪时间，虽然之后旋转较流畅。
 
 ## 相机交互回归
 
