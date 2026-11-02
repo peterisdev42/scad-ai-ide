@@ -96,6 +96,7 @@ export class Stage {
     private csgFrameBusy = false
     private csgFrameDirty = false
     private previewNavigating = false
+    private cameraPointerActive = false
     private renderPixelRatio = 1
     private firstFrame?: { generation: number; start: number; notify?: ModelContext['frameReady']; submitted: boolean }
     public setToolStatusCallback(callback: (status: string) => void) {
@@ -291,7 +292,10 @@ export class Stage {
     public setActive(active: boolean) {
         if (this.disposed || active === !this.paused) return
         this.renderSignature = undefined
-        if (!active) this.previewNavigating = false
+        if (!active) {
+            this.previewNavigating = false
+            this.cameraPointerActive = false
+        }
         this.paused = !active
         if (!active) {
             if (this.animationFrameId !== null) cancelAnimationFrame(this.animationFrameId)
@@ -755,6 +759,7 @@ export class Stage {
         this.activeCameraRig.setIsActiveCamera(false)
         this.activeCameraRig = handle
         this.previewNavigating = false
+        this.cameraPointerActive = false
         this.activeCameraRig.getControls().enabled = true
         this.activeCameraRig.setIsActiveCamera(true)
         this.transformControls.camera = this.activeCameraRig.getPerspectiveCamera()
@@ -904,12 +909,17 @@ export class Stage {
         const rig = new CameraRig(id, size.x, size.y, this.renderer.domElement, this.theme.foreground)
         const controls = rig.getControls()
         controls.addEventListener('start', () => {
-            if (this.activeCameraRig === rig) this.previewNavigating = true
+            if (this.activeCameraRig === rig) this.cameraPointerActive = true
         })
         controls.addEventListener('end', () => {
-            if (this.activeCameraRig === rig) this.previewNavigating = false
+            if (this.activeCameraRig === rig) {
+                this.cameraPointerActive = false
+                this.previewNavigating = false
+            }
         })
         controls.addEventListener('change', () => {
+            // A click without camera motion must not resize GPU render targets.
+            if (this.activeCameraRig === rig && this.cameraPointerActive) this.previewNavigating = true
             this.onPersist?.()
             // The property panel should follow actual camera changes, not every rAF.
             if (this.selectedId === id) this.onPropertiesChange?.(rig.getProperties())
