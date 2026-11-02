@@ -82,7 +82,7 @@ export function registerMarkdown(context: vscode.ExtensionContext, runtime: Retu
         const active = runtime.getActiveRuntime()
         if (!active) throw new RuntimeUnavailableError()
         const mode = (variant as PreviewMode) ?? modeFor(recordFor(document, source, cwd))
-        const model = await renderScadModel(active.command, source, cwd, signal, mode, publish)
+        const model = await renderScadModel(active.command, source, cwd, signal, mode, publish, { prepareComplexTopology: true })
         const dependencies = JSON.parse(model).dependencies as { path: string }[] | undefined
         for (const dependency of dependencies ?? [])
             if (!resourceWatchers.has(dependency.path)) {
