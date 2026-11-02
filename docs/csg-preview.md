@@ -105,7 +105,7 @@ OpenCSG-style Raster 并非模型越大就一定比 GPU Raycasting 更快。当�
 - `cliMs`：CLI 启动、模型实例化及 CSG 导出（不包含后续 Worker 计算）。
 - `geometryMs` / `normalizationMs` / `resourcesMs`：局部几何、Boolean 规范化及资源准备。
 - `uploadMs` / `shaderMs`：Webview 首次 GPU 上传和 Shader 预热。
-- `topologyMs`：按需或 Markdown 预计算的完整精确网格处理时间，**不能与 GPU Raster F5 的耗时混为一谈**。
+- `topologyMs`：内置 Markdown 在扩展端预计算完整精确网格的时间；`topologyRequestMs`：预览组件请求/接收拓扑及本地构建网格所用时间。普通 Preview 若由宿主按需生成网格，计算时间包含在 `topologyRequestMs` 中；**不能与 GPU Raster F5 的耗时混为一谈**。
 - `firstFrameMs` / `interactiveFrameMs`：请区分扩展端总耗时、Stage 的首帧上传渲染时间以及 GPU 已完成帧时间；本地离线 1080p 数据不等同于 VS Code Electron 真实画面呈现耗时。
 
 用户实测约 5s 并不能单凭总数字归因于 CLI、WebGPU 或算法；须先确认是否进入 exact-mesh 降级，并观察上述分项。复杂 Markdown 嵌入模型预计算会增加首次数据就绪时间，虽然之后旋转较流畅。
