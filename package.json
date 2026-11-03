@@ -128,6 +128,16 @@
                 "title": "Open Markdown Preview with 3D Tools",
                 "category": "SCAD AI IDE",
                 "icon": "$(open-preview)"
+            },
+            {
+                "command": "scad-ai-ide.installPreviewExporter",
+                "title": "Install Preview Exporter",
+                "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai-ide.selectPreviewExporter",
+                "title": "Select Preview Exporter",
+                "category": "SCAD AI IDE"
             }
         ],
         "configuration": {
@@ -217,11 +227,11 @@
                         "render"
                     ],
                     "enumDescriptions": [
-                        "Raster CSG boolean preview. The host prepares operands and local geometry; unsupported nodes report an error and retain the last valid frame.",
-                        "Fully evaluated interactive 3D model using the selected STL/3MF format."
+                        "Image-based Boolean preview using the independent Preview Exporter and Goldfeather depth/stencil rendering (macOS ARM64).",
+                        "Standard interactive mesh preview using the selected OpenSCAD CLI."
                     ],
                     "default": "render",
-                    "description": "Initial preview mode for SCAD files. Switch between CSG preview and full mesh render in the top toolbar; mesh exports always evaluate the full geometry."
+                    "description": "Fast image-based preview or Full Render. Both support camera navigation."
                 },
                 "scad-ai-ide.preview.slicerExecutable": {
                     "type": "string",
@@ -246,11 +256,17 @@
                         "render"
                     ],
                     "enumDescriptions": [
-                        "Interactive CSG tree preview, with $preview set to true.",
-                        "Interactive native mesh render. Evaluates the final geometry, with $preview set to false."
+                        "Image-based Boolean preview using the independent Preview Exporter and Goldfeather depth/stencil rendering (macOS ARM64).",
+                        "Standard interactive mesh preview using the selected OpenSCAD CLI."
                     ],
                     "default": "render",
-                    "description": "OpenSCAD CLI mode used to generate interactive Markdown previews. Changing the mode refreshes cached previews."
+                    "description": "Fast image-based preview or Full Render. Both support camera navigation."
+                },
+                "scad-ai-ide.preview.exporterPath": {
+                    "type": "string",
+                    "default": "",
+                    "scope": "machine",
+                    "description": "Independent bin/openscad-preview-exporter wrapper (macOS ARM64, openscad-2026.11-RC0, Schema v1). Empty discovers the managed installation and PATH. Full Render uses the separately selected OpenSCAD CLI."
                 }
             }
         },
@@ -441,23 +457,20 @@
         "test:customizer": "npm run compile-tests && node esbuild.js && node --test scripts/customizer-scrollbar.test.mjs",
         "test:markdown": "npm run compile && npm run compile-tests && node --test out/test/markdown.test.js && node --test scripts/markdown-preview.test.mjs",
         "test:markdown-host": "npm run compile && node --test scripts/markdown-webview.test.mjs",
-        "test:fast-preview": "npm run compile && node --import tsx --test src/test/preview/fastPreview.test.ts src/test/preview/csg.test.ts && node --test scripts/preview-fast.test.mjs",
+        "test:fast-preview": "npm run compile && node --import tsx --test src/test/preview/preparedScene.test.ts src/test/preview/fastPreview.test.ts && node --test scripts/preview-fast.test.mjs",
         "test:integration": "npm run compile-tests && npm run compile && vscode-test",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "build:lsp": "node scripts/build-lsp.cjs",
         "prepare:lsp": "node scripts/prepare-lsp.cjs",
         "prepare:licenses": "node scripts/prepare-licenses.cjs",
-        "test:csg-coverage": "node scripts/csg-coverage.mjs --check",
-        "build:csg-kernel": "node scripts/build-csg-kernel.mjs",
-        "test:csg-gpu": "node --test scripts/csg-gpu.test.mjs",
-        "test:csg-native": "node esbuild.js && node --test scripts/csg-native.test.mjs",
-        "test:preview": "node --import tsx --test src/test/preview/*.test.ts",
+        "test:preview": "node esbuild.js && node --import tsx --test src/test/preview/*.test.ts",
         "test:preview-editor": "npm run package && node scripts/test-preview-editor.mjs",
         "preview:sync": "node scripts/preview-sync.mjs",
         "test:preview-sync": "node --test scripts/preview-sync/engine.test.mjs",
-        "build:csg": "node scripts/build-csg-core.mjs",
-        "test:csg-package": "node scripts/verify-csg-package.mjs"
+        "test:preview-exporter": "node --import tsx --test src/test/preview/exporter.test.ts",
+        "test:preview-gpu": "node --test scripts/prepared-preview-gpu.test.mjs",
+        "benchmark:preview": "node scripts/preview-pipeline-benchmark.mjs"
     },
     "devDependencies": {
         "@types/markdown-it": "^14.2.0",
@@ -500,16 +513,12 @@
         "@lit/context": "^1.1.6",
         "@vscode-elements/elements": "^2.5.1",
         "@vscode/codicons": "^0.0.45",
-        "@zkl2333/freetype-wasm": "2.14.3",
-        "dxf-parser": "1.1.2",
         "fflate": "0.8.3",
-        "harfbuzzjs": "1.6.4",
         "jsonc-parser": "^3.3.1",
         "linkedom": "0.18.12",
         "lit": "^3.3.2",
         "manifold-3d": "^3.5.4",
         "pngjs": "7.0.0",
-        "straight-skeleton": "3.0.0",
         "tar": "^7.5.22",
         "three": "0.187.0",
         "vscode-languageclient": "^9.0.1",

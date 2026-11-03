@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { join, dirname, resolve } from 'node:path'
 import { runInNewContext } from 'node:vm'
 import MarkdownIt from 'markdown-it'
-import { Worker } from 'node:worker_threads'
+import { preparedTestModels } from './helpers/prepared-test-models.mjs'
 import { chromium } from 'playwright'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
@@ -17,24 +17,9 @@ let model
 let modelWithTopology
 let browser
 before(async () => {
-    const worker = new Worker(join(root, 'dist/csg-worker.mjs'))
-    try {
-        const result = await new Promise((resolve, reject) => {
-            worker.once('message', resolve)
-            worker.once('error', reject)
-            worker.postMessage('difference(){cube(size=[20,20,20],center=true);cylinder(h=30,r1=5,r2=5,center=true,$fn=32);}')
-        })
-        if (result.error) throw new Error(result.error)
-        model = JSON.stringify({ format: 'csg', content: Buffer.from(JSON.stringify(result.scene)).toString('base64') })
-        const topology = await new Promise((resolve, reject) => {
-            worker.once('message', (r) => (r.error ? reject(new Error(r.error)) : resolve(r.scene)))
-            worker.once('error', reject)
-            worker.postMessage({ topology: result.scene })
-        })
-        modelWithTopology = JSON.stringify({ ...JSON.parse(model), topology })
-    } finally {
-        await worker.terminate()
-    }
+    const models = await preparedTestModels()
+    model = JSON.stringify({ format: 'csgp', content: models.difference })
+    modelWithTopology = JSON.stringify({ ...JSON.parse(model), topology: models.differenceTopology })
     browser = await chromium.launch({ headless: true, args: process.platform === 'darwin' ? ['--use-angle=metal'] : [], executablePath: process.env.SCAD_CHROMIUM_EXECUTABLE || undefined })
 })
 after(async () => browser?.close())
@@ -179,21 +164,21 @@ test('tabs switch independently with mouse and keyboard and survive Markdown ref
     assert.equal(await first.locator('[data-scad-panel="source"]').isVisible(), false)
     await first.getByRole('tab', { name: 'Source', exact: true }).click()
     assert.equal(await first.locator('[data-scad-panel="preview"]').isVisible(), false)
-    assert.equal(await first.locator('pre').isVisible(), true)
+    assert.equal(await first.locator('[data-scad-panel="source"] pre').isVisible(), true)
     assert.equal(await second.locator('[data-scad-panel="preview"]').isVisible(), true)
     assert.equal(await first.getByRole('tab', { name: 'Source' }).getAttribute('aria-selected'), 'true')
     await page.evaluate((html) => {
         document.querySelector('main').innerHTML = html
         window.dispatchEvent(new CustomEvent('vscode.markdown.updateContent'))
     }, html)
-    assert.equal(await first.locator('pre').isVisible(), true, 'CLI completion refresh must retain the Source tab')
+    assert.equal(await first.locator('[data-scad-panel="source"] pre').isVisible(), true, 'CLI completion refresh must retain the Source tab')
     await page.evaluate(() => {
         const script = document.createElement('script')
         script.nonce = 'test'
         script.src = '/preview.js'
         document.body.append(script)
     })
-    assert.equal(await first.locator('pre').isVisible(), true)
+    assert.equal(await first.locator('[data-scad-panel="source"] pre').isVisible(), true)
     await page.evaluate(
         () =>
             new Promise((resolve) => {
@@ -207,13 +192,13 @@ test('tabs switch independently with mouse and keyboard and survive Markdown ref
     await first.getByRole('tab', { name: 'Source' }).focus()
     await page.keyboard.press('ArrowRight')
     assert.equal(await first.getByRole('tab', { name: 'Preview' }).evaluate((tab) => document.activeElement === tab), true)
-    assert.equal(await first.locator('pre').isVisible(), false)
+    assert.equal(await first.locator('[data-scad-panel="source"] pre').isVisible(), false)
     await page.keyboard.press('End')
-    assert.equal(await first.locator('pre').isVisible(), true)
+    assert.equal(await first.locator('[data-scad-panel="source"] pre').isVisible(), true)
     await page.keyboard.press('Home')
-    assert.equal(await first.locator('pre').isVisible(), false)
+    assert.equal(await first.locator('[data-scad-panel="source"] pre').isVisible(), false)
     await page.keyboard.press('ArrowLeft')
-    assert.equal(await first.locator('pre').isVisible(), true)
+    assert.equal(await first.locator('[data-scad-panel="source"] pre').isVisible(), true)
     assert.equal(await first.locator('[tabindex="0"][role="tab"]').count(), 1)
 })
 
@@ -270,7 +255,7 @@ test('Source tabs display distinct OpenSCAD token colors in dark and light theme
     await setTheme(lightMarkdownTheme)
     assert.deepEqual(await colors(), { keyword: 'rgb(0, 0, 255)', title: 'rgb(121, 94, 38)', params: 'rgb(0, 16, 128)', number: 'rgb(9, 134, 88)', string: 'rgb(163, 21, 21)', comment: 'rgb(0, 128, 0)' })
     await setTheme({ settings: [...lightMarkdownTheme.settings, { scope: 'entity.name.function.call.openscad', settings: { foreground: '#123456', fontStyle: 'bold italic underline' } }] })
-    assert.equal(await blocks.nth(0).locator('pre').isVisible(), true)
+    assert.equal(await blocks.nth(0).locator('[data-scad-panel="source"] pre').isVisible(), true)
     const call = blocks.nth(0).locator('.hljs-title').filter({ hasText: 'cube' })
     assert.deepEqual(
         await call.evaluate((node) => {
@@ -286,7 +271,7 @@ for (const mode of [{ trusted: false }, { broken: true }]) {
         const { blocks } = await fixture(t, mode)
         assert.match(await blocks.nth(0).locator('[role="status"]').innerText(), mode.trusted === false ? /Trust/ : /Parser error: <unsafe>/)
         await blocks.nth(0).getByRole('tab', { name: 'Source' }).click()
-        assert.equal(await blocks.nth(0).locator('pre').isVisible(), true)
+        assert.equal(await blocks.nth(0).locator('[data-scad-panel="source"] pre').isVisible(), true)
         assert.equal(await blocks.nth(0).locator('[role="status"]').isVisible(), false)
     })
 }
@@ -297,7 +282,7 @@ test('embedded native Preview rotates independently, pauses outside the viewport
     await first.locator('scad-preview canvas.main-canvas').waitFor()
     await page.waitForFunction(() => document.querySelector('scad-app')?.shadowRoot.querySelector('scad-preview')?.stage?.modelGroup.children.length > 0)
     assert.equal(await first.locator('iframe, img').count(), 0)
-    assert.equal(await first.getByRole('switch', { name: 'CSG preview', exact: true }).count(), 1)
+    assert.equal(await first.getByRole('switch', { name: 'CSG preview', exact: true }).count(), 0)
     const second = blocks.nth(1)
     await second.locator('scad-preview canvas.main-canvas').waitFor()
     await page.waitForFunction(() => Array.from(document.querySelectorAll('scad-app')).every((app) => app.shadowRoot.querySelector('scad-preview')?.stage?.modelGroup.children.length > 0))
@@ -332,14 +317,14 @@ test('embedded native Preview rotates independently, pauses outside the viewport
     })
     // The recreated viewer must finish its first frame before testing pause;
     // a canvas can exist while shader/geometry preparation is still in flight.
-    await page.waitForFunction(() => window.embeddedStage.firstFrame?.submitted && !window.embeddedStage.csgFrameBusy)
+    await page.waitForFunction(() => window.embeddedStage.firstFrame?.submitted)
     await page.evaluate(() => {
         const spacer = document.createElement('div')
         spacer.style.height = '2000px'
         document.body.append(spacer)
         window.scrollTo(0, document.body.scrollHeight)
     })
-    await page.waitForFunction(() => window.embeddedStage.paused && !window.embeddedStage.csgFrameBusy)
+    await page.waitForFunction(() => window.embeddedStage.paused)
     const offscreenFrames = await page.evaluate(() => window.embeddedStage.renderer.info.calls)
     await page.waitForTimeout(150)
     assert.equal(await page.evaluate(() => window.embeddedStage.renderer.info.calls), offscreenFrames)
@@ -374,32 +359,20 @@ test('late Markdown DOM replacement mounts ready previews without an updateConte
     await page.waitForFunction(() => document.querySelector('scad-app')?.shadowRoot.querySelector('scad-preview')?.stage?.modelGroup?.children.length > 0)
 })
 
-test('embedded OpenSCAD code blocks share the unified Preview status surface', async (t) => {
-    const { blocks } = await fixture(t)
-    const first = blocks.first()
-    await first.locator('scad-preview canvas.main-canvas').waitFor()
-    const status = first.locator('scad-preview #preview-status')
-    await status.waitFor()
-    assert.equal(await status.count(), 1)
-    assert.equal(await first.locator('scad-app > scad-backend-status').count(), 0, 'No independent bottom-left backend overlay in Markdown')
-    assert.equal(await status.locator('scad-backend-status').count(), 1)
-    await status.locator('summary').click()
-    assert.equal(await status.locator('details[open]').count(), 1)
+test('embedded previews hide quick entry and performance details', async (t) => {
+    const { page, blocks } = await fixture(t)
+    await blocks.first().locator('canvas.main-canvas').waitFor()
+    await page.waitForFunction(() => document.querySelector('scad-app')?.shadowRoot.querySelector('scad-preview')?.stage?.firstFrame?.submitted)
+    assert.equal(await blocks.first().locator('scad-backend-status').count(), 0)
+    assert.equal(await blocks.first().getByRole('switch', { name: 'CSG preview', exact: true }).count(), 0)
 })
 
-test('built-in Markdown keeps raster CSG symbolic even when cached topology is available', async (t) => {
+test('built-in Markdown consumes prepared Products and keeps advanced display modes hidden', async (t) => {
     const { page, blocks } = await fixture(t, { cachedTopology: true })
     const preview = blocks.first().locator('scad-preview')
     await preview.locator('canvas.main-canvas').waitFor()
-    await page.waitForFunction(() => {
-        const stage = document.querySelector('scad-app')?.shadowRoot?.querySelector('scad-preview')?.stage
-        return stage?.csgModels?.length === 1 && !stage.csgFrameBusy
-    })
-    assert.equal(await preview.evaluate(element => !!element.stage.topologyGroup), false)
-    assert.equal(await preview.evaluate(element => element.stage.csgModels[0].mesh.visible), true)
-    // Legacy cached payloads may still provide topology, but only an explicit tool consumes it.
-    await blocks.first().getByRole('switch', {name: 'Wireframe', exact: true}).click()
-    await page.waitForFunction(() => document.querySelector('scad-app').shadowRoot.querySelector('scad-preview').stage.topologyGroup?.visible)
-    await blocks.first().getByRole('switch', {name: 'Solid', exact: true}).click()
-    await page.waitForFunction(() => document.querySelector('scad-app').shadowRoot.querySelector('scad-preview').stage.csgModels[0].mesh.visible)
+    await page.waitForFunction(() => document.querySelector('scad-app')?.shadowRoot?.querySelector('scad-preview')?.stage?.modelGroup.children.length > 0)
+    assert.equal(await preview.evaluate((element) => 'csgModels' in element.stage), false)
+    assert.equal(await blocks.first().getByRole('switch', { name: 'Wireframe', exact: true }).count(), 0)
+    assert.equal(await blocks.first().getByRole('switch', { name: 'X-Ray', exact: true }).count(), 0)
 })

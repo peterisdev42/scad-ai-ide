@@ -12,8 +12,7 @@ import { ExtensionToWebviewMessage } from '../../shared/types/ExtensionToWebview
 import { ModelFormat } from '../../shared/types/ModelFormat'
 import { WebviewToExtensionMessage } from '../../shared/types/WebviewToExtensionMessage'
 import type { PreviewSession } from '../core/PreviewSession'
-import { compileCsgTopology, compileMeshTopology } from '../../../../core/csg/compile'
-import type { CsgScene } from '../../../../core/csg/types'
+import { queryMeshTopology } from '../../../../core/formats/meshTopology'
 
 export class ScadWebviewPanel {
     private readonly panel: WebviewPanel
@@ -22,6 +21,7 @@ export class ScadWebviewPanel {
     private disposed = false
     private previewMessage: { type: 'emptyModel' | 'renderError' | 'previewIssue'; message: string } | undefined
     private lastRender: { base64Data: string; format: ModelFormat; modelVersion: number } | undefined
+    private awaitingRender = false
     private modelVersion = 0
     private topologyController?: AbortController
 
@@ -61,7 +61,8 @@ export class ScadWebviewPanel {
                             this.topologyController?.abort()
                             const controller = (this.topologyController = new AbortController())
                             try {
-                                const geometry = model.format === ModelFormat.CSG ? await compileCsgTopology(JSON.parse(Buffer.from(model.base64Data, 'base64').toString('utf8')) as CsgScene, controller.signal, message.planes) : await compileMeshTopology(model.base64Data, model.format, controller.signal, message.planes)
+                                if (model.format === ModelFormat.PreviewScene) throw new Error('Image-based preview has no final edge/vertex topology. Use Full Render.')
+                                const geometry = await queryMeshTopology(model.base64Data, model.format, controller.signal, message.planes)
                                 if (!controller.signal.aborted && this.lastRender === model) this.postMessage({ type: 'topology', modelVersion: message.modelVersion, geometry })
                             } catch (error) {
                                 if (!controller.signal.aborted && this.lastRender === model) this.postMessage({ type: 'topology', modelVersion: message.modelVersion, error: error instanceof Error ? error.message : String(error) })
@@ -69,10 +70,10 @@ export class ScadWebviewPanel {
                             return
                         }
                         case 'previewPerformance':
-                            if (message.modelVersion === this.lastRender?.modelVersion) this.session.acceptPerformance?.(message.timings)
+                            if (!this.awaitingRender && message.modelVersion === this.lastRender?.modelVersion) this.session.acceptPerformance?.(message.timings)
                             return
                         case 'frameReady':
-                            if (message.modelVersion === this.lastRender?.modelVersion && ['webgpu', 'webgl2'].includes(message.graphics) && Number.isFinite(message.elapsedMs)) this.session.acceptFrame?.(message.graphics, message.elapsedMs)
+                            if (!this.awaitingRender && message.modelVersion === this.lastRender?.modelVersion && ['webgpu', 'webgl2'].includes(message.graphics) && Number.isFinite(message.elapsedMs)) this.session.acceptFrame?.(message.graphics, message.elapsedMs)
                             return
                         case 'setPreviewMode':
                             if (message.mode === 'preview' || message.mode === 'render') this.session.setPreviewMode?.(message.mode)
@@ -131,6 +132,7 @@ export class ScadWebviewPanel {
         // Subscribe to session events
         this.session.onRenderStarted(
             () => {
+                this.awaitingRender = true
                 this.pushPreviewMode()
                 this.postMessage({
                     type: 'loadingState',
@@ -153,8 +155,11 @@ export class ScadWebviewPanel {
                     return
                 }
 
+                this.awaitingRender = false
                 this.previewMessage = undefined
+                const encodeStarted = performance.now()
                 const base64Data = buffer.toString('base64')
+                this.session.acceptPerformance?.({ encodeMs: performance.now() - encodeStarted })
                 const modelVersion = ++this.modelVersion
                 this.topologyController?.abort()
                 this.lastRender = { base64Data, format, modelVersion }

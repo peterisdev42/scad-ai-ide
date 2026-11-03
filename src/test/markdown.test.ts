@@ -14,7 +14,9 @@ import type { registerMarkdown } from '../features/markdown/registerMarkdown'
 import { ScadHighlighter } from '../features/markdown/ScadHighlighter'
 import { darkMarkdownTheme } from './fixtures/markdownTheme'
 
-const mesh = Buffer.from('solid test\nfacet normal 0 0 1\nouter loop\nvertex 0 0 0\nvertex 20 0 0\nvertex 0 20 0\nendloop\nendfacet\nendsolid test\n')
+const mesh = Buffer.alloc(134)
+mesh.writeUInt32LE(1, 80)
+for (const [index, value] of [0, 0, 1, 0, 0, 0, 20, 0, 0, 0, 20, 0].entries()) mesh.writeFloatLE(value, 84 + index * 4)
 
 async function waitFor(check: () => boolean | Promise<boolean>) {
     for (let i = 0; i < 200; i++) {
@@ -78,7 +80,7 @@ test('invalidating a running model aborts it, skips queued work and suppresses s
     assert.equal(cache.request('doc', 'cube(2);', '/docs').status, 'error')
 })
 
-test('Mesh CLI rendering preserves command prefixes, stdin and relative working directory; cleans up on errors and cancellation', async () => {
+test('Mesh CLI rendering requests binary STL, preserves command prefixes, stdin and cwd; cleans up on errors and cancellation', async () => {
     const directory = await mkdtemp(path.join(tmpdir(), 'scad-markdown-test-'))
     const script = path.join(directory, 'cli.cjs')
     const trace = path.join(directory, 'trace.json')
@@ -112,13 +114,16 @@ process.stdin.on('end', () => {
         assert.equal(model.content, mesh.toString('base64'))
         assert.equal(model.backend.kind, 'mesh')
         assert.ok(model.backend.elapsedMs >= 0)
+        for (const phase of ['meshExportMs', 'meshReadMs', 'dependenciesMs', 'encodeMs', 'cleanupMs', 'cliMs']) assert.ok(Number.isFinite(model.backend.timings[phase]), phase)
+        assert.equal(model.backend.timings.exporterMs, undefined)
         const result = await readTrace()
         assert.equal(result.source, 'cube(20);')
         assert.equal(result.cwd, await import('node:fs/promises').then((fs) => fs.realpath(directory)))
-        assert.deepEqual(result.args, ['--fixture-prefix', '-d', path.join(path.dirname(result.output), 'model.d'), '--export-format', 'stl', '-o', result.output, '-'])
+        assert.deepEqual(result.args, ['--fixture-prefix', '-d', path.join(path.dirname(result.output), 'model.d'), '--export-format', 'binstl', '-o', result.output, '-'])
+        assert.equal(path.extname(result.output), '.stl')
         await render('cube(20);', undefined, 'render')
         const full = await readTrace()
-        assert.ok(full.args.includes('stl'))
+        assert.ok(full.args.includes('binstl'))
         assert.ok(!full.args.includes('$preview=true'))
         await assertCleaned()
         await assert.rejects(render('broken'), /Parser error <unsafe>/)
@@ -358,7 +363,7 @@ test('tab containers keep the Markdown source mapping visible without changing c
     }
 })
 
-test('switching CLI preview mode invalidates model results and recompiles with the selected mode', async () => {
+test('switching between image-based and full rendering invalidates Markdown models', async () => {
     const mock = await mockMarkdown()
     try {
         const render = () => mock.md.render('```scad\ncube(20);\n```', { currentDocument: mock.uri })

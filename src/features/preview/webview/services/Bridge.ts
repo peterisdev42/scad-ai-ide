@@ -1,8 +1,8 @@
 import type { PreviewTimings } from '../../shared/types/PreviewBackend'
-import type { CsgClipPlane } from '../../../../core/csg/types'
+import type { ClipPlane } from '../../../../core/preview/types'
 import { ExtensionToWebviewMessage } from '../../shared/types/ExtensionToWebviewMessage'
 import type { PreviewMode } from '../../shared/types/PreviewMode'
-import type { CsgGeometry } from '../../../../core/csg/types'
+import type { GeometryData } from '../../../../core/preview/types'
 
 let vscode: ReturnType<typeof acquireVsCodeApi> | undefined
 const nativePost = (message: unknown) => {
@@ -17,7 +17,7 @@ export type MessageCallback = (message: ExtensionToWebviewMessage) => void
  */
 export class Bridge {
     private callbacks: Set<MessageCallback> = new Set()
-    private topology = new Map<number, { resolve: (geometry: CsgGeometry) => void; reject: (error: Error) => void; timer: ReturnType<typeof setTimeout> }>()
+    private topology = new Map<number, { resolve: (geometry: GeometryData) => void; reject: (error: Error) => void; timer: ReturnType<typeof setTimeout> }>()
 
     constructor(
         private readonly post = nativePost,
@@ -49,7 +49,7 @@ export class Bridge {
         this.post({ type: 'setPreviewMode', mode })
     }
 
-    public queryTopology(modelVersion: number, planes?: CsgClipPlane[]): Promise<CsgGeometry> {
+    public queryTopology(modelVersion: number, planes?: ClipPlane[]): Promise<GeometryData> {
         return new Promise((resolve, reject) => {
             if (this.topology.has(modelVersion)) {
                 reject(new Error('Topology is already being prepared.'))

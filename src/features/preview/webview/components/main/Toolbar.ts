@@ -1,8 +1,9 @@
 import { consume } from '@lit/context'
-import { css, html, LitElement, nothing } from 'lit'
+import { css, html, LitElement, nothing, type PropertyValues } from 'lit'
 import { customElement, query, state } from 'lit/decorators.js'
 import { ActiveTool, ActiveToolContext, activeToolContext } from '../../contexts/ActiveToolContext'
 import { viewOptionsContext, ViewOptionsContext } from '../../contexts/ViewOptionsContext'
+import { modelContext, type ModelContext } from '../../contexts/ModelContext'
 import { readPreviewTheme } from '../../preview/Theme'
 import type { IconButton } from '../atoms/IconButton'
 import type { IconName } from '../atoms/Icon'
@@ -108,6 +109,17 @@ export class Toolbar extends LitElement {
     @state()
     private viewSettings!: ViewOptionsContext
 
+    @consume({ context: modelContext, subscribe: true })
+    @state()
+    private model?: ModelContext
+
+    protected updated(changed: PropertyValues) {
+        if (changed.has('model') && this.activeToolContext?.activeTool === ActiveTool.Measure) {
+            const previous = changed.get('model') as ModelContext | undefined
+            if (previous?.format !== this.model?.format) this.activeToolContext.setVariant(this.model?.format === 'csgp' ? 'face' : (this.rememberedVariants.get(ActiveTool.Measure) ?? 'vertex'))
+        }
+    }
+
     @query('#model-color')
     private colorInput!: HTMLInputElement
 
@@ -171,27 +183,29 @@ export class Toolbar extends LitElement {
                         ? html`
                               <div class="variants">
                                   <div class="group horizontal">
-                                      ${tool.variants.map(
-                                          (variant) => html`
-                                              <scad-icon-button
-                                                  label=${variant.label}
-                                                  toggleable
-                                                  .checked=${this.activeToolContext?.activeTool === tool.id && activeVariant === variant.id}
-                                                  @change=${(event: Event) => {
-                                                      ;(event.currentTarget as IconButton).checked = true
-                                                      this.rememberedVariants.set(tool.id, variant.id)
-                                                      if (this.activeToolContext.activeTool === tool.id) {
-                                                          this.activeToolContext.setVariant(variant.id)
-                                                      } else {
-                                                          this.activeToolContext.setActiveTool(tool.id, variant.id)
-                                                      }
-                                                      this.requestUpdate()
-                                                  }}
-                                              >
-                                                  <scad-icon name=${variant.icon}></scad-icon>
-                                              </scad-icon-button>
-                                          `,
-                                      )}
+                                      ${tool.variants
+                                          .filter((variant) => this.model?.format !== 'csgp' || variant.id === 'face')
+                                          .map(
+                                              (variant) => html`
+                                                  <scad-icon-button
+                                                      label=${variant.label}
+                                                      toggleable
+                                                      .checked=${this.activeToolContext?.activeTool === tool.id && activeVariant === variant.id}
+                                                      @change=${(event: Event) => {
+                                                          ;(event.currentTarget as IconButton).checked = true
+                                                          this.rememberedVariants.set(tool.id, variant.id)
+                                                          if (this.activeToolContext.activeTool === tool.id) {
+                                                              this.activeToolContext.setVariant(variant.id)
+                                                          } else {
+                                                              this.activeToolContext.setActiveTool(tool.id, variant.id)
+                                                          }
+                                                          this.requestUpdate()
+                                                      }}
+                                                  >
+                                                      <scad-icon name=${variant.icon}></scad-icon>
+                                                  </scad-icon-button>
+                                              `,
+                                          )}
                                   </div>
                               </div>
                           `
@@ -203,6 +217,7 @@ export class Toolbar extends LitElement {
 
     private getActiveVariant(tool: Tool): string | undefined {
         if (!tool.variants) return undefined
+        if (this.model?.format === 'csgp') return 'face'
         return this.rememberedVariants.get(tool.id) ?? tool.defaultVariant
     }
 }

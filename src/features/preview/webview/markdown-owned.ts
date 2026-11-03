@@ -1,11 +1,11 @@
 import './markdown'
-import type { CsgClipPlane, CsgGeometry } from '../../../core/csg/types'
+import type { ClipPlane, GeometryData } from '../../../core/preview/types'
 
 const api = acquireVsCodeApi()
 interface Pending {
     blockId: string
     version: number
-    resolve: (geometry: CsgGeometry) => void
+    resolve: (geometry: GeometryData) => void
     reject: (error: Error) => void
     timer: ReturnType<typeof setTimeout>
 }
@@ -14,8 +14,10 @@ let requestId = 0
 const key = Symbol.for('scad-ai-ide.markdown.host')
 const host = window as unknown as Record<symbol, unknown>
 host[key] = {
-    setPreviewMode(blockId:string,modelVersion:number,mode:'preview'|'render'){api.postMessage({type:'setPreviewMode',blockId,modelVersion,mode})},
-    queryTopology(blockId: string, version: number, planes: CsgClipPlane[] = []): Promise<CsgGeometry> {
+    setPreviewMode(blockId: string, modelVersion: number, mode: 'preview' | 'render') {
+        api.postMessage({ type: 'setPreviewMode', blockId, modelVersion, mode })
+    },
+    queryTopology(blockId: string, version: number, planes: ClipPlane[] = []): Promise<GeometryData> {
         const id = ++requestId
         return new Promise((resolve, reject) => {
             const timer = setTimeout(() => {

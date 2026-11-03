@@ -19,11 +19,12 @@ function mockPreview(initialRuntime?: Runtime) {
         require: (id: string) => {
             if (id === 'vscode')
                 return {
-                    Uri: { joinPath: () => ({ fsPath: '/dist/csg-worker.mjs' }) },
+                    Uri: { joinPath: () => ({ fsPath: '/dist/mesh-topology-worker.mjs' }) },
                     window: { registerCustomEditorProvider: () => disposable },
                     workspace: { onDidChangeConfiguration: () => disposable },
                 }
-            if (id.endsWith('/csg/compile')) return { configureCsgWorker() {} }
+            if (id.endsWith('/formats/meshTopology')) return { configureMeshTopologyWorker() {} }
+            if (id.endsWith('/PreviewExporter')) return { registerPreviewExporter() {}, resolvePreviewExporter() {} }
             if (id.endsWith('/runtime/errors')) return { RuntimeUnavailableError }
             if (id.endsWith('/ScadSessionManager'))
                 return {

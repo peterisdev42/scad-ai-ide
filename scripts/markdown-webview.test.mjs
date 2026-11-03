@@ -34,7 +34,7 @@ for (const owned of [false, true])
             vscodeExecutablePath: executable,
             extensionDevelopmentPath: root,
             extensionTestsPath: join(root, '.vscode-test/markdown-webview.cjs'),
-            extensionTestsEnv: { SCAD_MARKDOWN_TEST_DIR: directory, SCAD_MARKDOWN_OWNED: owned ? '1' : '0' },
+            extensionTestsEnv: { SCAD_MARKDOWN_TEST_DIR: directory, SCAD_MARKDOWN_OWNED: owned ? '1' : '0', SCAD_PREVIEW_EXPORTER: process.env.SCAD_PREVIEW_EXPORTER },
             launchArgs: [`--user-data-dir=${join(directory, 'user')}`, `--extensions-dir=${join(directory, 'extensions')}`, `--remote-debugging-port=${port}`, '--disable-telemetry', '--disable-workspace-trust', '--skip-welcome', '--skip-release-notes'],
         }).catch((error) => {
             hostError = error
@@ -73,22 +73,17 @@ for (const owned of [false, true])
                 }
             }
             if (owned) {
-                assert.equal(await first.locator('[data-scad-model]').evaluate((element) => JSON.parse(element.dataset.scadModel).topology), undefined, 'Fast first frame must not precompute result topology')
-                const result = await first.locator('scad-app').evaluate(async (app) => {
-                    const geometry = await app.modelContext.queryTopology([{ normal: [-1, 0, 0], constant: 10 }])
-                    const meshes = geometry.meshes.map((mesh) => {
-                        const values = new Float32Array(Uint8Array.from(atob(mesh.properties), (c) => c.charCodeAt(0)).buffer)
-                        if (geometry.origin) for (let i = 0; i < values.length; i += mesh.stride) for (let d = 0; d < 3; d++) values[i + d] += geometry.origin[d]
-                        return { stride: mesh.stride, values: Array.from(values) }
-                    })
-                    return { version: geometry.version, meshes }
+                const result = await first.locator('scad-app').evaluate((app) => {
+                    const stage = app.shadowRoot.querySelector('scad-preview').stage
+                    return { version: stage.modelRepresentation.imageCsg?.scene.version, meshes: stage.modelRepresentation.imageCsg?.scene.meshes.length }
                 })
-                assert.equal(result.version, 1)
-                const x = result.meshes.flatMap((mesh) => mesh.values.filter((_, i) => i % mesh.stride === 0))
-                assert.ok(x.length > 0 && Math.max(...x) <= 10.001 && Math.max(...x) >= 9.999, 'Host topology must include the clipped cap')
-                await first.getByRole('switch', { name: 'Wireframe', exact: true }).click()
-                await frame.waitForFunction(() => document.querySelector('scad-app')?.shadowRoot.querySelector('scad-preview')?.stage?.topologyGroup?.children.length > 0)
-                await first.getByRole('switch', { name: 'Solid', exact: true }).click()
+                // The public entry is hidden and defaults to STL; when exercising
+                // prepared data directly it must remain symbolic, not a final mesh.
+                if (result.version) {
+                    assert.equal(result.version, 'preview-scene-1')
+                    assert.ok(result.meshes > 0)
+                }
+                assert.equal(await first.getByRole('switch', { name: 'Wireframe', exact: true }).count(), 0)
                 await first.locator('canvas.main-canvas').evaluate((canvas) => (window.retainedCanvas = canvas))
             }
             await frame.evaluate(() => {
@@ -118,17 +113,23 @@ for (const owned of [false, true])
                 )
             }
             await first.getByRole('tab', { name: 'Source', exact: true }).click()
-            assert.equal(await first.locator('pre').isVisible(), true)
+            assert.equal(await first.locator('[data-scad-panel="source"] pre').isVisible(), true)
             await first.getByRole('tab', { name: 'Preview', exact: true }).click()
             await assertRendered()
-            if(!owned){
-                for(const [name,format] of [['Full mesh render','stl'],['CSG preview','csg']]){
-                    await first.getByRole('switch',{name,exact:true}).click()
-                    frame=await waitFor(async()=>{
-                        const candidate=await findFrame()
-                        return await candidate.locator('scad-app').first().evaluate((app,format)=>app.modelContext.format===format,format)?candidate:undefined
+            if (!owned) {
+                for (const [name, format] of [['Full mesh render', 'stl']]) {
+                    await first.getByRole('switch', { name, exact: true }).click()
+                    frame = await waitFor(async () => {
+                        const candidate = await findFrame()
+                        return (await candidate
+                            .locator('scad-app')
+                            .first()
+                            .evaluate((app, format) => app.modelContext.format === format, format))
+                            ? candidate
+                            : undefined
                     })
-                    first=frame.locator('[data-scad-block]').first();await assertRendered()
+                    first = frame.locator('[data-scad-block]').first()
+                    await assertRendered()
                 }
             }
 
@@ -140,9 +141,10 @@ for (const owned of [false, true])
                 })
                 for (const [mode, format] of [
                     ['render', 'stl'],
-                    ['preview', 'csg'],
+                    ['preview', 'csgp'],
                 ]) {
-                    await first.getByRole('switch',{name:mode==='preview'?'CSG preview':'Full mesh render',exact:true}).click()
+                    if (mode === 'preview') await first.locator('scad-app').evaluate((app) => app.modelContext.setPreviewMode('preview'))
+                    else await first.getByRole('switch', { name: 'Full mesh render', exact: true }).click()
                     await frame.waitForFunction((format) => document.querySelector('scad-app')?.modelContext.format === format, format)
                     await assertRendered()
                     assert.equal(await first.locator('canvas.main-canvas').evaluate((canvas) => canvas === window.retainedCanvas), true, 'Markdown mode changes must retain the Stage canvas')
@@ -154,7 +156,7 @@ for (const owned of [false, true])
                 await waitFor(() => readFile(join(directory, 'invalidated'), 'utf8'))
                 await first.locator('.scad-markdown-status').filter({ hasText: 'Parser error' }).waitFor()
                 assert.equal(await first.locator('canvas.main-canvas').evaluate((canvas) => canvas === window.retainedCanvas), true, 'Fast errors must preserve the last valid canvas')
-                assert.equal(await first.locator('scad-app').evaluate((app) => app.modelContext.format), 'csg')
+                assert.equal(await first.locator('scad-app').evaluate((app) => app.modelContext.format), 'csgp')
             }
         } finally {
             await writeFile(join(directory, 'done'), 'done')

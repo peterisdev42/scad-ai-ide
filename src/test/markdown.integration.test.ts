@@ -53,6 +53,7 @@ suite('Markdown preview integration', () => {
         const previousPath = config.inspect('openscadPath')?.globalValue
         const previousCommand = config.inspect('runtimeCommand')?.globalValue
         const previousEnabled = config.inspect('markdown.preview.enabled')?.globalValue
+        const previousExporter = config.inspect('preview.exporterPath')?.globalValue
         const previousMode = config.inspect('markdown.preview.renderMode')?.globalValue
         const source = '```openscad\ncube(20);\n```\n\n```scad\ncube(20);\n```\n'
         const shellQuote = (value: string) => `'${value.replace(/'/g, `'\\''`)}'`
@@ -69,7 +70,7 @@ while [ "$#" -gt 0 ]; do
     if [ "$1" = "-o" ]; then shift; output="$1"; fi
     shift
 done
-printf 'cube(size=[20,20,20],center=false);' > "$output"
+printf 'solid cube\nendsolid cube\n' > "$output"
 `,
                 { mode: 0o755 },
             )
@@ -77,7 +78,7 @@ printf 'cube(size=[20,20,20],center=false);' > "$output"
             await config.update('openscadPath', '', vscode.ConfigurationTarget.Global)
             await config.update('runtimeCommand', { executable: cli, argsPrefix: ['--fixture-prefix'] }, vscode.ConfigurationTarget.Global)
             await config.update('markdown.preview.enabled', true, vscode.ConfigurationTarget.Global)
-            await config.update('markdown.preview.renderMode', 'preview', vscode.ConfigurationTarget.Global)
+            await config.update('markdown.preview.renderMode', 'render', vscode.ConfigurationTarget.Global)
             const extension = vscode.extensions.all.find((item) => item.packageJSON.name === 'scad-ai-ide')
             assert.ok(extension)
             const api = (await extension.activate()) as Awaited<ReturnType<typeof activate>>
@@ -104,9 +105,22 @@ printf 'cube(size=[20,20,20],center=false);' > "$output"
             assert.equal(await readFile(trace, 'utf8'), 'cube(20);\n')
             assert.equal((await readFile(trace + '.cwd', 'utf8')).trim(), directory)
             assert.match(await readFile(trace + '.args', 'utf8'), /^--fixture-prefix\n/)
-            assert.match(await readFile(trace + '.args', 'utf8'), /--export-format\ncsg\n/)
-            assert.match(await readFile(trace + '.args', 'utf8'), /\$preview=true/)
+            assert.match(await readFile(trace + '.args', 'utf8'), /--export-format\nbinstl\n/)
+            assert.doesNotMatch(await readFile(trace + '.args', 'utf8'), /\$preview=true/)
             assert.doesNotMatch(await readFile(trace + '.args', 'utf8'), /--render\n/)
+            const exporter = process.env.SCAD_PREVIEW_EXPORTER
+            assert.ok(exporter, 'Set SCAD_PREVIEW_EXPORTER for native Markdown preview integration.')
+            const fullArguments = await readFile(trace + '.args', 'utf8')
+            await config.update('preview.exporterPath', exporter, vscode.ConfigurationTarget.Global)
+            await config.update('markdown.preview.renderMode', 'preview', vscode.ConfigurationTarget.Global)
+            const previewDeadline = Date.now() + 10000
+            do {
+                html = (await vscode.commands.executeCommand<string>('markdown.api.render', document)) ?? ''
+                if (html.includes('&quot;format&quot;:&quot;csgp&quot;')) break
+                await new Promise((resolve) => setTimeout(resolve, 50))
+            } while (Date.now() < previewDeadline)
+            assert.match(html, /&quot;format&quot;:&quot;csgp&quot;/)
+            assert.equal(await readFile(trace + '.args', 'utf8'), fullArguments, 'Prepared previews must never invoke the ordinary CLI')
             assert.ok(extension.packageJSON.contributes['markdown.previewScripts'].includes('./dist/markdown-preview.js'))
             assert.equal(await readFile(uri.fsPath, 'utf8'), source, 'Preview must preserve the Markdown source')
         } finally {
@@ -114,6 +128,7 @@ printf 'cube(size=[20,20,20],center=false);' > "$output"
             await config.update('openscadPath', previousPath, vscode.ConfigurationTarget.Global)
             await config.update('runtimeCommand', previousCommand, vscode.ConfigurationTarget.Global)
             await config.update('markdown.preview.enabled', previousEnabled, vscode.ConfigurationTarget.Global)
+            await config.update('preview.exporterPath', previousExporter, vscode.ConfigurationTarget.Global)
             await config.update('markdown.preview.renderMode', previousMode, vscode.ConfigurationTarget.Global)
             await rm(directory, { recursive: true, force: true })
         }

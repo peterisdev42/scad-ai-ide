@@ -1,3 +1,4 @@
+import { validPreviewTimings } from '../../core/preview/performance'
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import * as path from 'node:path'
@@ -21,9 +22,11 @@ function fixture() {
     runInNewContext(transformSync(readFileSync(new URL('../../features/preview/extension/core/ScadSession.ts', import.meta.url), 'utf8'), { loader: 'ts', format: 'cjs' }).code, {
         module,
         Buffer,
+        performance,
         setTimeout,
         clearTimeout,
         require: (name: string) => {
+            if (name.endsWith('/preview/performance')) return { validPreviewTimings }
             if (name === 'node:path') return path
             if (name.endsWith('/ModelFormat')) return { ModelFormat }
             if (name === 'vscode')

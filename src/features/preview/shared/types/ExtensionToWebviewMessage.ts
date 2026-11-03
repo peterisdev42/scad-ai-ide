@@ -2,13 +2,13 @@ import { ModelFormat } from './ModelFormat'
 import { ScadParameter } from './ScadParameter'
 import type { PreviewBackend } from './PreviewBackend'
 import type { PreviewMode } from './PreviewMode'
-import type { CsgGeometry } from '../../../../core/csg/types'
+import type { GeometryData } from '../../../../core/preview/types'
 
 export type ExtensionToWebviewMessage =
     | { type: 'ready' }
-    | { type: 'previewMode'; mode: PreviewMode;links?:Record<PreviewMode,string> }
+    | { type: 'previewMode'; mode: PreviewMode; links?: Record<PreviewMode, string> }
     | { type: 'previewBackend'; backend: PreviewBackend }
-    | { type: 'topology'; modelVersion: number; geometry?: CsgGeometry; error?: string }
+    | { type: 'topology'; modelVersion: number; geometry?: GeometryData; error?: string }
     | { type: 'emptyModel'; message: string }
     | { type: 'renderError'; message: string }
     | { type: 'previewIssue'; message: string }

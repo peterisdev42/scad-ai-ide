@@ -167,9 +167,9 @@ async function fixture(t, extraSource = '') {
         Buffer,
         AbortController,
         require: (name) => {
+            if (name.startsWith('node:')) return require(name)
             if (name === 'vscode') return api
             if (name.endsWith('/ScadClient')) return { ScadClient: { render: async (_path, values) => Buffer.from(JSON.stringify(values)) } }
-            if (name.endsWith('/csg/compile')) return { compileCsg: async (buffer) => buffer }
             if (name.endsWith('/ModelFormat')) return require('../out/features/preview/shared/types/ModelFormat.js')
             if (name.endsWith('/previewEligibility')) return { EmptyModelError: class extends Error {} }
             throw new Error(`Unexpected renderer dependency: ${name}`)
@@ -182,6 +182,7 @@ async function fixture(t, extraSource = '') {
         setTimeout,
         clearTimeout,
         require: (name) => {
+            if (name.startsWith('node:')) return require(name)
             if (name === 'vscode') return api
             if (name.endsWith('/ScadClient')) return { ScadClient: { cancelRender() {} } }
             if (name.endsWith('/ScadParser')) return require('../out/features/preview/extension/services/ScadParser.js')
@@ -193,6 +194,7 @@ async function fixture(t, extraSource = '') {
                         close() {}
                     },
                 }
+            if (name.endsWith('/ModelFormat')) return require('../out/features/preview/shared/types/ModelFormat.js')
             throw new Error(`Unexpected session dependency: ${name}`)
         },
     })

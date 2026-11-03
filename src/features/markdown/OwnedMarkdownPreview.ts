@@ -4,8 +4,8 @@ import * as vscode from 'vscode'
 import type { registerRuntime } from '../runtime/registerRuntime'
 import type { PreviewModel } from '../preview/shared/types/PreviewModel'
 import type { PreviewMode } from '../preview/shared/types/PreviewMode'
-import type { CsgClipPlane, CsgScene } from '../../core/csg/types'
-import { compileCsgTopology, compileMeshTopology } from '../../core/csg/compile'
+import type { ClipPlane } from '../../core/preview/types'
+import { queryMeshTopology } from '../../core/formats/meshTopology'
 import { ScadHighlighter } from './ScadHighlighter'
 import { ScadModelCache } from './ScadModelCache'
 import { renderScadModel } from './ScadModelRenderer'
@@ -53,9 +53,9 @@ class OwnedMarkdownPreview implements vscode.Disposable {
                 signal.throwIfAborted()
                 if (!vscode.workspace.isTrusted) throw new Error('Trust this workspace to run OpenSCAD.')
                 const active = runtime.getActiveRuntime()
-                if (!active) throw new Error('Select an OpenSCAD runtime to generate this preview.')
+                if (!active && ((variant as PreviewMode) ?? this.renderMode) !== 'preview') throw new Error('Select an OpenSCAD runtime for Full Render.')
                 // No publish callback: ordinary fast previews do not precompute topology.
-                return renderScadModel(active.command, source, cwd, signal, (variant as PreviewMode) ?? this.renderMode)
+                return renderScadModel(active?.command, source, cwd, signal, (variant as PreviewMode) ?? this.renderMode)
             },
             () => this.refresh(),
         )
@@ -76,7 +76,7 @@ class OwnedMarkdownPreview implements vscode.Disposable {
                 }
             }),
             vscode.workspace.onDidChangeConfiguration((event) => {
-                if (event.affectsConfiguration('scad-ai-ide.markdown.preview')) this.invalidate()
+                if (event.affectsConfiguration('scad-ai-ide.markdown.preview') || event.affectsConfiguration('scad-ai-ide.preview.exporterPath')) this.invalidate()
                 if (event.affectsConfiguration('editor.tokenColorCustomizations') || event.affectsConfiguration('workbench.colorTheme')) void this.theme()
             }),
             vscode.window.onDidChangeActiveColorTheme(() => {
@@ -170,7 +170,7 @@ class OwnedMarkdownPreview implements vscode.Disposable {
         const subscriptions = [watcher, watcher.onDidChange(changed), watcher.onDidCreate(changed), watcher.onDidDelete(changed)]
         this.watchers.set(path, { dispose: () => subscriptions.forEach((s) => s.dispose()) })
     }
-    private async receive(message: { type?: string; blockId?: string; modelVersion?: number; requestId?: number; planes?: CsgClipPlane[]; mode?: string; href?: string }) {
+    private async receive(message: { type?: string; blockId?: string; modelVersion?: number; requestId?: number; planes?: ClipPlane[]; mode?: string; href?: string }) {
         if (this.disposed) return
         if (message.type === 'ready') {
             this.ready = true
@@ -206,7 +206,8 @@ class OwnedMarkdownPreview implements vscode.Disposable {
         record.controller?.abort()
         const controller = (record.controller = new AbortController())
         try {
-            const geometry = record.model.format === 'csg' ? await compileCsgTopology(JSON.parse(Buffer.from(record.model.content, 'base64').toString('utf8')) as CsgScene, controller.signal, message.planes) : await compileMeshTopology(record.model.content, record.model.format, controller.signal, message.planes)
+            if (record.model.format === 'csgp') throw new Error('Image-based preview has no final edge/vertex topology. Use Full Render.')
+            const geometry = await queryMeshTopology(record.model.content, record.model.format, controller.signal, message.planes)
             if (!this.disposed && !controller.signal.aborted && this.records.get(message.blockId!) === record) void this.panel.webview.postMessage({ type: 'ownedTopology', blockId: message.blockId, modelVersion: record.version, requestId: message.requestId, geometry })
         } catch (error) {
             if (!this.disposed && !controller.signal.aborted) void this.panel.webview.postMessage({ type: 'ownedTopology', blockId: message.blockId, modelVersion: record.version, requestId: message.requestId, error: error instanceof Error ? error.message : String(error) })

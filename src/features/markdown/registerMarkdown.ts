@@ -40,7 +40,7 @@ export function registerMarkdown(context: vscode.ExtensionContext, runtime: Retu
         }
         return record
     }
-    const modeFor = (record: ModeRecord) => record.mode ?? vscode.workspace.getConfiguration(section).get<PreviewMode>('renderMode', 'render')
+    const modeFor = (record: ModeRecord): PreviewMode => record.mode ?? vscode.workspace.getConfiguration(section).get<PreviewMode>('renderMode', 'render')
     const handler = vscode.window.registerUriHandler?.({
         handleUri(uri) {
             if (disposed || uri.path !== '/markdown-mode' || !vscode.workspace.isTrusted) return
@@ -80,9 +80,9 @@ export function registerMarkdown(context: vscode.ExtensionContext, runtime: Retu
         signal.throwIfAborted()
         if (!vscode.workspace.isTrusted) throw new Error('Trust this workspace to run OpenSCAD.')
         const active = runtime.getActiveRuntime()
-        if (!active) throw new RuntimeUnavailableError()
         const mode = (variant as PreviewMode) ?? modeFor(recordFor(document, source, cwd))
-        const model = await renderScadModel(active.command, source, cwd, signal, mode, publish)
+        if (!active && mode !== 'preview') throw new RuntimeUnavailableError()
+        const model = await renderScadModel(active?.command, source, cwd, signal, mode, publish)
         const dependencies = JSON.parse(model).dependencies as { path: string }[] | undefined
         for (const dependency of dependencies ?? [])
             if (!resourceWatchers.has(dependency.path)) {

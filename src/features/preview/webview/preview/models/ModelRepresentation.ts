@@ -1,50 +1,41 @@
-import { Box3, Camera, Color, Group, Mesh, Plane, Raycaster, Scene, Vector3, type Intersection, type Object3D } from 'three'
+import type { GoldfeatherRenderer } from '../csg/GoldfeatherRenderer'
+import { Box3, Camera, Group, Mesh, Raycaster, Scene, Vector3, type Intersection, type Object3D } from 'three'
 import type { WebGPURenderer } from 'three/webgpu'
-import type { CsgClipPlane, CsgGeometry, CsgScene } from '../../../../../core/csg/types'
-import { CsgModel, type CsgLight } from '../csg/CsgModel'
+import type { ClipPlane, GeometryData } from '../../../../../core/preview/types'
 import { withRenderer } from '../passes/RendererJobs'
+import { measureBufferUploads } from '../passes/BufferUploadTiming'
 import { beginGpuValidation } from '../passes/GpuValidation'
 
 export interface ModelResult<T> {
     modelVersion: number
     value: T
 }
-export interface ModelFrame {
-    color: Color
-    overrideColor: boolean
-    mode: 'solid' | 'wireframe' | 'xray'
-    planes: Plane[]
-    webgpu: boolean
-    shadows: boolean
-    lights: CsgLight[]
-    ambient: Color
-}
 export interface ModelPreparation {
     uploadMs: number
     shaderMs: number
+    gpuWarmupMs?: number
 }
-type TopologyProvider = (planes?: CsgClipPlane[]) => Promise<CsgGeometry>
+type TopologyProvider = (planes?: ClipPlane[]) => Promise<GeometryData>
 
 export interface PreviewModelRepresentation {
     readonly modelVersion: number
     prepare(renderer: WebGPURenderer, camera: Camera, scene: Scene, signal?: AbortSignal): Promise<ModelResult<ModelPreparation>>
-    update(scene: CsgScene, modelVersion: number, topology?: TopologyProvider): boolean
-    render(renderer: WebGPURenderer, scene: Scene, camera: Camera, frame?: ModelFrame): ModelResult<void> | Promise<ModelResult<void>>
+    render(renderer: WebGPURenderer, scene: Scene, camera: Camera): ModelResult<void> | Promise<ModelResult<void>>
     pick(raycaster: Raycaster): ModelResult<Intersection[]>
-    queryTopology(planes?: CsgClipPlane[], signal?: AbortSignal): Promise<ModelResult<CsgGeometry>>
+    queryTopology(planes?: ClipPlane[], signal?: AbortSignal): Promise<ModelResult<GeometryData>>
     dispose(): void
 }
 
-/** Owns either prepared mesh roots or GPU CSG roots behind one versioned seam. */
+/** Versioned model ownership for standard STL/3MF meshes and image-based CSG products. */
 export class ModelRepresentation implements PreviewModelRepresentation {
     private disposed = false
     private readonly roots: Object3D[]
-    private readonly topologyCache = new Map<string, Promise<ModelResult<CsgGeometry>>>()
+    private readonly topologyCache = new Map<string, Promise<ModelResult<GeometryData>>>()
     constructor(
         group: Group,
-        public readonly csgModels: CsgModel[],
         public modelVersion: number,
         private topology?: TopologyProvider,
+        public readonly imageCsg?: GoldfeatherRenderer,
     ) {
         this.roots = [...group.children]
     }
@@ -56,20 +47,33 @@ export class ModelRepresentation implements PreviewModelRepresentation {
         signal?.throwIfAborted()
         this.check()
         const validate = beginGpuValidation(renderer, 'preparation')
+        const finishUploads = this.imageCsg ? () => 0 : measureBufferUploads(renderer)
         const parents = this.roots.map((root) => root.parent)
         let failure: unknown,
             uploadMs = 0,
-            shaderMs = 0
+            shaderMs = 0,
+            gpuWarmupMs = 0
         try {
-            const shaderStarted = performance.now(),
-                candidate = new Group()
-            candidate.add(...this.roots)
-            await renderer.compileAsync(candidate, camera, scene)
-            for (const model of this.csgModels) uploadMs += (await model.prepare(renderer, camera)).uploadMs
-            shaderMs = performance.now() - shaderStarted - uploadMs
+            if (this.imageCsg) {
+                const result = await this.imageCsg.prepare(renderer, camera)
+                uploadMs = result.uploadMs
+                shaderMs = result.shaderMs
+                gpuWarmupMs = result.gpuWarmupMs
+            } else {
+                const shaderStarted = performance.now(),
+                    candidate = new Group()
+                candidate.add(...this.roots)
+                await renderer.compileAsync(candidate, camera, scene)
+                shaderMs = performance.now() - shaderStarted
+            }
         } catch (error) {
             failure = error
         } finally {
+            const uploads = finishUploads()
+            if (!this.imageCsg) {
+                uploadMs = uploads
+                shaderMs = Math.max(0, shaderMs - uploads)
+            }
             this.roots.forEach((root, i) => {
                 root.removeFromParent()
                 parents[i]?.add(root)
@@ -83,55 +87,31 @@ export class ModelRepresentation implements PreviewModelRepresentation {
         if (failure) throw failure
         signal?.throwIfAborted()
         this.check()
-        return { modelVersion: this.modelVersion, value: { uploadMs, shaderMs } }
+        return { modelVersion: this.modelVersion, value: { uploadMs, shaderMs, gpuWarmupMs } }
     }
 
-    update(scene: CsgScene, modelVersion: number, topology?: TopologyProvider) {
+    render(renderer: WebGPURenderer, scene: Scene, camera: Camera) {
         this.check()
-        if (this.csgModels.length !== scene.overlays.length + 1 || !this.csgModels.every((model) => model.canReuse(scene))) return false
-        for (const model of this.csgModels) model.updateScene(scene)
-        this.modelVersion = modelVersion
-        this.topology = topology
-        this.topologyCache.clear()
-        return true
-    }
-
-    render(renderer: WebGPURenderer, scene: Scene, camera: Camera, frame?: ModelFrame) {
-        this.check()
-        if (frame)
-            for (const model of this.csgModels) {
-                model.update(camera, frame.color, frame.overrideColor, frame.mode, frame.planes, frame.webgpu, frame.shadows)
-                model.setLights(frame.lights, frame.ambient)
-            }
-        renderer.render(scene, camera)
-        if (this.csgModels.length) return this.renderCsg(renderer, camera)
-        return { modelVersion: this.modelVersion, value: undefined }
-    }
-    private async renderCsg(renderer: WebGPURenderer, camera: Camera) {
-        const autoClear = renderer.autoClear
-        renderer.autoClear = false
-        try {
-            for (const model of this.csgModels) await model.render(renderer, camera)
-        } finally {
-            renderer.autoClear = autoClear
-        }
+        if (this.imageCsg) this.imageCsg.render(renderer, camera, scene)
+        else renderer.render(scene, camera)
         return { modelVersion: this.modelVersion, value: undefined }
     }
 
     pick(raycaster: Raycaster) {
         this.check()
-        return { modelVersion: this.modelVersion, value: raycaster.intersectObjects(this.roots, true) }
+        return { modelVersion: this.modelVersion, value: this.imageCsg ? this.imageCsg.pick(raycaster) : raycaster.intersectObjects(this.roots, true).filter((hit) => !hit.object.userData.previewOverlay) }
     }
 
-    async queryTopology(planes: CsgClipPlane[] = [], signal?: AbortSignal) {
+    async queryTopology(planes: ClipPlane[] = [], signal?: AbortSignal) {
         this.check()
         signal?.throwIfAborted()
         const version = this.modelVersion,
             key = JSON.stringify(planes)
+        if (this.imageCsg) throw new Error('Image-based preview has no final edge/vertex topology. Use Full Render.')
         let pending = this.topologyCache.get(key)
         if (!pending) {
             pending = (async () => {
-                const geometry = this.csgModels.length || planes.length ? await this.topology?.(planes) : this.meshTopology(planes)
+                const geometry = planes.length ? await this.topology?.(planes) : this.meshTopology(planes)
                 if (!geometry) throw new Error('Exact topology is not available in this preview.')
                 if (this.disposed || this.modelVersion !== version) throw new Error('Model changed during topology preparation.')
                 return { modelVersion: version, value: geometry }
@@ -147,11 +127,11 @@ export class ModelRepresentation implements PreviewModelRepresentation {
         return result
     }
 
-    private meshTopology(_planes: CsgClipPlane[]): CsgGeometry {
+    private meshTopology(_planes: ClipPlane[]): GeometryData {
         const bounds = new Box3()
         for (const root of this.roots) bounds.expandByObject(root)
         const origin = bounds.getCenter(new Vector3())
-        const meshes: CsgGeometry['meshes'] = [],
+        const meshes: GeometryData['meshes'] = [],
             encode = (bytes: Uint8Array) => {
                 let binary = ''
                 for (let i = 0; i < bytes.length; i += 8192) binary += String.fromCharCode(...bytes.subarray(i, i + 8192))
@@ -160,7 +140,7 @@ export class ModelRepresentation implements PreviewModelRepresentation {
         for (const root of this.roots) {
             root.updateWorldMatrix(true, true)
             root.traverse((object) => {
-                if (!(object instanceof Mesh)) return
+                if (!(object instanceof Mesh) || object.userData.csg) return
                 const position = object.geometry.getAttribute('position'),
                     index = object.geometry.getIndex(),
                     properties = new Float32Array(position.count * 3)
@@ -183,7 +163,6 @@ export class ModelRepresentation implements PreviewModelRepresentation {
         this.modelVersion = modelVersion
         this.topology = topology
         this.topologyCache.clear()
-        for (const model of this.csgModels) model.setTopology(undefined)
     }
 
     private check() {
@@ -193,16 +172,13 @@ export class ModelRepresentation implements PreviewModelRepresentation {
         if (this.disposed) return
         this.disposed = true
         this.topologyCache.clear()
+        this.imageCsg?.dispose()
         const geometries = new Set(),
             materials = new Set()
         for (const root of this.roots) {
             root.removeFromParent()
             root.traverse((object) => {
-                if (!(object instanceof Mesh)) return
-                if (object.userData.csg instanceof CsgModel) {
-                    object.userData.csg.dispose()
-                    return
-                }
+                if (!(object instanceof Mesh) || object.userData.csg) return
                 if (!geometries.has(object.geometry)) {
                     geometries.add(object.geometry)
                     object.geometry.dispose()

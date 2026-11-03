@@ -1,3 +1,4 @@
+import { validPreviewTimings } from '../../../../core/preview/performance'
 import type { CustomizerService } from '../../../../core/customizer/CustomizerService'
 import { Disposable, EventEmitter, RelativePattern, TextDocument, Uri, workspace } from 'vscode'
 import { dirname, basename } from 'node:path'
@@ -24,15 +25,15 @@ export class ScadSession {
     private renderTimer: ReturnType<typeof setTimeout> | undefined
     private disposed = false
     private dependencyWatchers = new Map<string, Disposable>()
-    private watchDependencies(buffer: Buffer, format: ModelFormat,dependencies?:{path:string;stamp:string}[]) {
-        if (format !== ModelFormat.CSG&&!dependencies?.length) {
+    private watchDependencies(buffer: Buffer, format: ModelFormat, dependencies?: { path: string; stamp: string }[]) {
+        if (format !== ModelFormat.PreviewScene && !dependencies?.length) {
             for (const watcher of this.dependencyWatchers.values()) watcher.dispose()
             this.dependencyWatchers.clear()
             return
         }
         let paths: string[]
         try {
-            paths = dependencies?.map(d=>d.path)??JSON.parse(buffer.toString('utf8')).dependencies.map((d: { path: string }) => d.path)
+            paths = dependencies?.map((d) => d.path) ?? JSON.parse(buffer.toString('utf8')).dependencies.map((d: { path: string }) => d.path)
         } catch {
             return
         }
@@ -66,19 +67,19 @@ export class ScadSession {
     public renderBackend: PreviewBackend = { kind: 'pending' }
     private _onBackendChanged = new EventEmitter<PreviewBackend>()
     public readonly onBackendChanged = this._onBackendChanged.event
+    private requestStartedAt = 0
     public acceptPerformance(timings: PreviewTimings) {
         if (this.disposed) return
-        const allowed: PreviewTimings = {}
-        for (const key of ['cliMs', 'resourcesMs', 'geometryMs', 'normalizationMs', 'uploadMs', 'shaderMs', 'topologyRequestMs', 'interactiveFrameMs'] as const) {
-            const value = timings?.[key]
-            if (typeof value === 'number' && Number.isFinite(value) && value >= 0) allowed[key] = value
-        }
+        const allowed = validPreviewTimings(timings)
         this.renderBackend = { ...this.renderBackend, timings: { ...this.renderBackend.timings, ...allowed } }
         this._onBackendChanged.fire(this.renderBackend)
     }
     public acceptFrame(graphics: 'webgpu' | 'webgl2', firstFrameMs: number) {
         if (this.disposed) return
-        this.renderBackend = { ...this.renderBackend, graphics, firstFrameMs, frameReady: true }
+        this.renderBackend = { ...this.renderBackend, graphics, firstFrameMs, frameReady: true, timings: { ...this.renderBackend.timings, totalPreviewMs: Math.max(0, Date.now() - this.requestStartedAt) } }
+        const total = this.renderBackend.timings?.totalPreviewMs ?? 0
+        this.renderBackend.timings = { ...this.renderBackend.timings, firstFrameMs, transferSchedulingMs: Math.max(0, total - (this.renderBackend.timings?.cliMs ?? 0) - (this.renderBackend.timings?.watcherMs ?? 0) - (this.renderBackend.timings?.encodeMs ?? 0) - firstFrameMs) }
+        if (this.renderBackend.kind === 'csg' || this.renderBackend.kind === 'mesh') ScadClient.outputChannel?.appendLine(`[Preview pipeline] ${JSON.stringify({ requestStartedAt: this.requestStartedAt, document: this.documentUri.toString(), kind: this.renderBackend.kind, graphics, cacheHit: !!this.renderBackend.cacheHit, timings: this.renderBackend.timings })}`)
         this.customizer.setContinuousPreview(this.documentUri.toString(), this.previewMode === 'preview' && this.renderBackend.kind === 'csg')
         this._onBackendChanged.fire(this.renderBackend)
     }
@@ -92,7 +93,7 @@ export class ScadSession {
     public setPreviewMode(mode: PreviewMode) {
         if (this.disposed || (mode !== 'preview' && mode !== 'render') || mode === this.previewMode) return
         this.selectedPreviewMode = mode
-        void this.scadRenderer.render(this.documentUri.fsPath,this.scadParameters.getOverrides(),mode,true)
+        void this.scadRenderer.render(this.documentUri.fsPath, this.scadParameters.getOverrides(), mode, true)
     }
 
     public get documentUri(): Uri {
@@ -149,9 +150,14 @@ export class ScadSession {
                 this.customizer.setContinuousPreview(this.documentUri.toString(), this.previewMode === 'preview' && backend.kind === 'csg' && backend.frameReady === true)
                 this._onBackendChanged.fire(backend)
             },
-            onStart: () => this._onRenderStarted.fire(),
+            onStart: () => {
+                this.requestStartedAt = Date.now()
+                this._onRenderStarted.fire()
+            },
             onComplete: (data) => {
-                this.watchDependencies(data.buffer, data.format,data.dependencies)
+                const watchersStarted = performance.now()
+                this.watchDependencies(data.buffer, data.format, data.dependencies)
+                this.acceptPerformance({ watcherMs: performance.now() - watchersStarted })
                 this._onRenderCompleted.fire(data)
             },
             onError: (err) => this._onRenderError.fire(err),

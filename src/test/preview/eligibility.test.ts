@@ -1,5 +1,6 @@
+import type { PreviewTimings } from '../../core/preview/performance'
+import type { ScadClient } from '../../features/preview/extension/services/ScadClient'
 import * as cliDependencies from '../../core/formats/dependencies'
-import { fontDirectoriesFromArgs } from '../../core/csg/fontDirectories'
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { readFileSync } from 'node:fs'
@@ -42,15 +43,20 @@ test('CLI empty results are distinct from failures; configuration skips executio
     let source = 'module unused() { cube(1); }'
     let mode = 'empty'
     let executions = 0
+    const mesh = Buffer.alloc(134)
+    mesh.writeUInt32LE(1, 80)
+    for (const [index, value] of [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0].entries()) mesh.writeFloatLE(value, 84 + index * 4)
     const sourceFile = readFileSync(new URL('../../features/preview/extension/services/ScadClient.ts', import.meta.url), 'utf8')
-    const module = { exports: {} as { ScadClient: { configure: (resolve: () => Promise<unknown>) => void; render: (path: string) => Promise<Buffer>; dispose: () => void } } }
+    const module = { exports: {} as { ScadClient: typeof ScadClient } }
     const require = createRequire(import.meta.url)
     vm.runInNewContext(transformSync(sourceFile, { loader: 'ts', format: 'cjs', target: 'es2022' }).code, {
         module,
         Buffer,
+        performance,
         require: (id: string) => {
             if (id.endsWith('/dependencies')) return cliDependencies
-            if (id.endsWith('/fontDirectories')) return { fontDirectoriesFromArgs }
+            if (id.endsWith('/previewExporter/runtime')) return {}
+            if (id.endsWith('/PreviewExporter')) return {}
             if (id.endsWith('/previewFile')) return previewFiles
             if (id === 'vscode')
                 return {
@@ -70,13 +76,16 @@ test('CLI empty results are distinct from failures; configuration skips executio
     })
     try {
         await writeFile(path, 'only_config = 1;')
-        await writeFile(cli, `const fs = require('node:fs'); const mode = process.argv[2]; process.stdin.resume(); process.stdin.on('end', () => { if (mode === 'geometry') { fs.writeFileSync(process.argv[process.argv.indexOf('-o')+1], 'solid fixture'); } else { process.stderr.write(${JSON.stringify(empty)}); if (mode === 'error') process.stderr.write('ERROR: assertion failed\\n'); process.exitCode = 1; } });`)
+        await writeFile(cli, `const fs = require('node:fs'); const assert = require('node:assert/strict'); const mode = process.argv[2]; process.stdin.resume(); process.stdin.on('end', () => { assert.equal(process.argv[process.argv.indexOf('--export-format')+1], 'binstl'); const output = process.argv[process.argv.indexOf('-o')+1]; assert.equal(require('node:path').extname(output), '.stl'); if (mode === 'geometry') { fs.writeFileSync(output, Buffer.from(${JSON.stringify(mesh.toString('base64'))}, 'base64')); } else { process.stderr.write(${JSON.stringify(empty)}); if (mode === 'error') process.stderr.write('ERROR: assertion failed\\n'); process.exitCode = 1; } });`)
         await assert.rejects(client.render(path), EmptyModelError)
         mode = 'error'
         await assert.rejects(client.render(path), (error: Error) => error.name !== 'EmptyModelError' && error.message.includes('assertion failed'))
         mode = 'geometry'
         source = 'cube(1);'
-        assert.equal((await client.render(path)).toString(), 'solid fixture')
+        const timings: PreviewTimings = {}
+        assert.deepEqual(await client.render(path, {}, ModelFormat.STL, undefined, path, undefined, undefined, (value) => Object.assign(timings, value)), mesh)
+        for (const phase of ['sourceMs', 'runtimeSelectionMs', 'meshExportMs', 'meshReadMs', 'dependenciesMs', 'cleanupMs'] as const) assert.ok(Number.isFinite(timings[phase]), phase)
+        assert.equal(timings.exporterMs, undefined)
         source = 'width=1;'
         const previous = executions
         await assert.rejects(client.render(path), EmptyModelError)
@@ -97,9 +106,11 @@ test('preview command opens configuration and model files without filtering or n
     const code = readFileSync(new URL('../../features/preview/extension/commands/showPanel.ts', import.meta.url), 'utf8')
     vm.runInNewContext(transformSync(code, { loader: 'ts', format: 'cjs', target: 'es2022' }).code, {
         module,
+        performance,
         require: (id: string) => {
             if (id.endsWith('/dependencies')) return cliDependencies
-            if (id.endsWith('/fontDirectories')) return { fontDirectoriesFromArgs }
+            if (id.endsWith('/previewExporter/runtime')) return {}
+            if (id.endsWith('/PreviewExporter')) return {}
             if (id.endsWith('/previewFile')) return previewFiles
             if (id === 'vscode')
                 return {

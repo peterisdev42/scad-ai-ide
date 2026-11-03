@@ -1,4 +1,4 @@
-import type { CsgClipPlane, CsgGeometry } from '../../../core/csg/types'
+import type { ClipPlane, GeometryData } from '../../../core/preview/types'
 import '@vscode-elements/elements'
 import { App } from './components/App'
 import { Bridge } from './services/Bridge'
@@ -6,23 +6,23 @@ import type { PreviewModel } from '../shared/types/PreviewModel'
 import type { SceneSnapshot } from './contexts/SceneContext'
 import type { CameraViewState } from './preview/rigs/CameraRig'
 
-const key = Symbol.for('scad-ai-ide.markdown.viewer.v3.raster')
+const key = Symbol.for('scad-ai-ide.markdown.viewer.v5.goldfeather')
 const host = window as unknown as Record<symbol, unknown>
 host[key] = {
     mount(container: HTMLElement, model: PreviewModel, saved?: { scene?: SceneSnapshot; cameras?: Map<string, CameraViewState> }) {
-        const transport = (window as unknown as Record<symbol, unknown>)[Symbol.for('scad-ai-ide.markdown.host')] as { setPreviewMode: (blockId: string, modelVersion: number, mode: 'preview' | 'render') => void; queryTopology: (blockId: string, version: number, planes?: CsgClipPlane[]) => Promise<CsgGeometry>; disposeBlock: (blockId: string, version: number) => void } | undefined
+        const transport = (window as unknown as Record<symbol, unknown>)[Symbol.for('scad-ai-ide.markdown.host')] as { setPreviewMode: (blockId: string, modelVersion: number, mode: 'preview' | 'render') => void; queryTopology: (blockId: string, version: number, planes?: ClipPlane[]) => Promise<GeometryData>; disposeBlock: (blockId: string, version: number) => void } | undefined
         const app = new App()
         app.setAttribute('embedded', '')
         app.modelContext = { ...app.modelContext, exportEnabled: false }
         let active = true
-        let backend = model.backend ?? { kind: model.format === 'csg' ? ('csg' as const) : ('mesh' as const), reason: model.note }
+        let backend = model.backend ?? { kind: model.format === 'csgp' ? ('csg' as const) : ('mesh' as const), reason: model.note }
         let scene = saved?.scene
         let cameras = saved?.cameras
         const bridge = new Bridge((raw) => {
-            const message = raw as { type: string; snapshot?: SceneSnapshot; modelVersion?: number; planes?: import('../../../core/csg/types').CsgClipPlane[] }
+            const message = raw as { type: string; snapshot?: SceneSnapshot; modelVersion?: number; planes?: import('../../../core/preview/types').ClipPlane[] }
             if (message.type === 'ready')
                 queueMicrotask(() => {
-                    bridge.receive({ type: 'previewMode', mode: model.previewMode ?? (model.format === 'csg' ? 'preview' : 'render'), links: model.modeLinks })
+                    bridge.receive({ type: 'previewMode', mode: model.previewMode ?? (model.format === 'csgp' ? 'preview' : 'render'), links: model.modeLinks })
                     bridge.receive({ type: 'loadScene', snapshot: scene ?? null })
                     bridge.receive({ type: 'previewBackend', backend })
                     bridge.receive({ type: 'update', format: model.format, content: model.content, modelVersion: model.host?.modelVersion ?? 0 })
@@ -44,7 +44,7 @@ host[key] = {
             if (message.type === 'persistScene') scene = message.snapshot
             if (message.type === 'frameReady') {
                 const frame = raw as { graphics: 'webgpu' | 'webgl2'; elapsedMs: number }
-                backend = { ...backend, graphics: frame.graphics, firstFrameMs: frame.elapsedMs, frameReady: true }
+                backend = { ...backend, graphics: frame.graphics, firstFrameMs: frame.elapsedMs, frameReady: true, timings: { ...backend.timings, firstFrameMs: frame.elapsedMs } }
                 bridge.receive({ type: 'previewBackend', backend })
             }
             if (message.type === 'queryTopology') {
@@ -54,7 +54,7 @@ host[key] = {
                         (geometry) => bridge.receive({ type: 'topology', modelVersion: target.modelVersion, geometry }),
                         (error) => bridge.receive({ type: 'topology', modelVersion: target.modelVersion, error: error instanceof Error ? error.message : String(error) }),
                     )
-                } else bridge.receive({ type: 'topology', modelVersion: message.modelVersion ?? 0, geometry: message.planes?.length ? undefined : model.topology, error: message.planes?.length ? 'Clipped topology is available in Open Markdown Preview with 3D Tools.' : (model.topologyError ?? 'Exact topology tools require Open Markdown Preview with 3D Tools.') })
+                } else bridge.receive({ type: 'topology', modelVersion: message.modelVersion ?? 0, error: 'Clipped topology is available in Open Markdown Preview with 3D Tools.' })
             }
         }, false)
         app.bridge = bridge
@@ -74,12 +74,11 @@ host[key] = {
                 const changed = next.format !== model.format || next.content !== model.content || next.host?.modelVersion !== model.host?.modelVersion
                 if (changed && model.host) transport?.disposeBlock(model.host.blockId, model.host.modelVersion)
                 model = next
-                const evaluated = model.backend ?? { kind: model.format === 'csg' ? ('csg' as const) : ('mesh' as const), reason: model.note }
+                const evaluated = model.backend ?? { kind: model.format === 'csgp' ? ('csg' as const) : ('mesh' as const), reason: model.note }
                 backend = changed ? evaluated : { ...backend, ...evaluated, timings: { ...evaluated.timings, ...backend.timings } }
-                bridge.receive({ type: 'previewMode', mode: model.previewMode ?? (model.format === 'csg' ? 'preview' : 'render'), links: model.modeLinks })
+                bridge.receive({ type: 'previewMode', mode: model.previewMode ?? (model.format === 'csgp' ? 'preview' : 'render'), links: model.modeLinks })
                 bridge.receive({ type: 'previewBackend', backend })
                 if (changed) bridge.receive({ type: 'update', format: model.format, content: model.content, modelVersion: model.host?.modelVersion ?? 0 })
-                else if (model.topology) void app.updateComplete.then(() => app.shadowRoot?.querySelector('scad-preview')?.stage?.refreshTopology())
                 bridge.receive({ type: 'loadingState', loading: !!model.pending, message: model.pending ? 'Generating the requested preview mode…' : undefined })
             },
             isConnected() {

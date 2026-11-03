@@ -23,6 +23,8 @@ test('syntax diagnostics retain the file and line without CLI output noise', () 
 function panelFixture() {
     const messages: ExtensionToWebviewMessage[] = []
     const notices: Error[] = []
+    const timings: unknown[] = [],
+        frames: unknown[] = []
     let ready!: (message: { type: 'ready' }) => void
     let start!: () => void
     let complete!: (result: { buffer: Buffer; format: ModelFormat }) => void
@@ -33,8 +35,9 @@ function panelFixture() {
     const source = readFileSync(new URL('../../features/preview/extension/views/ScadWebviewPanel.ts', import.meta.url), 'utf8')
     vm.runInNewContext(transformSync(source, { loader: 'ts', format: 'cjs', target: 'es2022' }).code, {
         module,
+        performance,
         require: (id: string) => {
-            if (id.endsWith('/csg/compile')) return { compileCsgTopology: async () => ({ version: 1, meshes: [] }) }
+            if (id.endsWith('/formats/meshTopology')) return { queryMeshTopology: async () => ({ version: 1, meshes: [] }) }
             if (id.endsWith('/platform/notifications')) return { notifications: { previewError: (error: Error) => notices.push(error) } }
             if (id.endsWith('/renderError')) return { showRenderError: (error: Error) => notices.push(error) }
             if (id.endsWith('/renderDiagnostics')) return { syntaxErrorMessage }
@@ -66,11 +69,13 @@ function panelFixture() {
         onRenderError: (listener: typeof fail) => {
             fail = listener
         },
+        acceptPerformance: (value: unknown) => timings.push(value),
+        acceptFrame: (...values: unknown[]) => frames.push(values),
         onParametersChanged: () => disposable,
         onLog: () => disposable,
     }
     new module.exports.ScadWebviewPanel(panel as never, '/extension' as never, session as never, { get: () => null } as never)
-    return { messages, notices, ready: () => ready({ type: 'ready' }), start: () => start(), complete: () => complete({ buffer: Buffer.from('model'), format: ModelFormat.STL }), fail: (error: Error) => fail(error) }
+    return { messages, notices, timings, frames, receive: (message: unknown) => ready(message as never), ready: () => ready({ type: 'ready' }), start: () => start(), complete: () => complete({ buffer: Buffer.from('model'), format: ModelFormat.STL }), fail: (error: Error) => fail(error) }
 }
 
 test('syntax failures replace stale models with a persistent centered message and recover after a successful render', () => {
@@ -110,4 +115,32 @@ test('syntax failures before webview readiness are replayed, while empty models 
     const error = new Error('ERROR: assertion failed')
     mock.fail(error)
     assert.deepEqual(mock.notices, [error])
+})
+
+test('a superseded canvas cannot overwrite timings or acknowledge the next host request', () => {
+    const mock = panelFixture()
+    mock.ready()
+    mock.complete()
+    mock.timings.length = 0
+    const first = mock.messages.find((m) => m.type === 'update') as { modelVersion: number }
+    const profile = (version: number) => mock.receive({ type: 'previewPerformance', modelVersion: version, timings: { shaderMs: 1.25 } })
+    const frame = (version: number) => mock.receive({ type: 'frameReady', modelVersion: version, graphics: 'webgpu', elapsedMs: 12 })
+    profile(first.modelVersion)
+    frame(first.modelVersion)
+    assert.equal(mock.timings.length, 1)
+    assert.equal(mock.frames.length, 1)
+    mock.start()
+    profile(first.modelVersion)
+    frame(first.modelVersion)
+    assert.equal(mock.timings.length, 1)
+    assert.equal(mock.frames.length, 1)
+    mock.complete()
+    mock.timings.length = 1
+    profile(first.modelVersion)
+    frame(first.modelVersion)
+    assert.equal(mock.timings.length, 1)
+    profile(first.modelVersion + 1)
+    frame(first.modelVersion + 1)
+    assert.equal(mock.timings.length, 2)
+    assert.equal(mock.frames.length, 2)
 })

@@ -48,12 +48,14 @@ case "$output" in
 ${stl}
 SCAD_TEST_STL
 ;;
-*) printf 'cube(size=[20,20,20],center=false);' > "$output";;
+*) echo 'Unsupported fixture export format' >&2; exit 1;;
 esac
 `,
         { mode: 0o755 },
     )
     const config = vscode.workspace.getConfiguration('scad-ai-ide')
+    if (!process.env.SCAD_PREVIEW_EXPORTER) throw new Error('Set SCAD_PREVIEW_EXPORTER for native Markdown Webview tests.')
+    await config.update('preview.exporterPath', process.env.SCAD_PREVIEW_EXPORTER, vscode.ConfigurationTarget.Global)
     await config.update('runtimeCommand', { executable: cli, argsPrefix: [] }, vscode.ConfigurationTarget.Global)
     await config.update('languageServer.enabled', false, vscode.ConfigurationTarget.Global)
     await config.update('markdown.preview.renderMode', 'preview', vscode.ConfigurationTarget.Global)
@@ -94,7 +96,7 @@ esac
         if (owned && !invalidated && (await readFile(join(directory, 'invalid'), 'utf8').catch(() => '')) === 'invalid') {
             invalidated = true
             const edit = new vscode.WorkspaceEdit()
-            edit.replace(uri, new vscode.Range(document.positionAt(0), document.positionAt(document.getText().length)), document.getText().replace('cube(20);', 'BROKEN;'))
+            edit.replace(uri, new vscode.Range(document.positionAt(0), document.positionAt(document.getText().length)), document.getText().replace('cube(20);', 'cube(;'))
             await vscode.workspace.applyEdit(edit)
             await writeFile(join(directory, 'invalidated'), 'invalidated')
         }

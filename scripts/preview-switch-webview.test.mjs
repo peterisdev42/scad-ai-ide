@@ -18,7 +18,7 @@ const waitFor = async (check) => {
     }
     throw new Error('Timed out waiting for the actual Preview frame.')
 }
-test('real Preview switches $preview geometry and reuses both modes without editing parameters', { skip: !executable || !cli, timeout: 120000 }, async () => {
+test('real Preview switches image-based CSG and full STL while advanced controls stay hidden', { skip: !executable || !cli, timeout: 120000 }, async () => {
     const directory = await mkdtemp(join(tmpdir(), 'scad-switch-canvas-')),
         server = createServer()
     await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve))
@@ -26,7 +26,7 @@ test('real Preview switches $preview geometry and reuses both modes without edit
     await new Promise((resolve) => server.close(resolve))
     await build({ entryPoints: ['src/test/editor/canvas.ts'], bundle: true, platform: 'node', format: 'cjs', external: ['vscode'], outfile: '.vscode-test/canvas.cjs' })
     let hostError
-    const running = runTests({ vscodeExecutablePath: executable, extensionDevelopmentPath: process.cwd(), extensionTestsPath: resolve('.vscode-test/canvas.cjs'), extensionTestsEnv: { SCAD_CANVAS_TEST_DIR: directory, SCAD_OPENSCAD_CSG_EXECUTABLE: cli }, launchArgs: [`--user-data-dir=${join(directory, 'user')}`, `--extensions-dir=${join(directory, 'extensions')}`, `--remote-debugging-port=${port}`, '--disable-telemetry', '--disable-workspace-trust', '--skip-welcome', '--skip-release-notes'] }).catch((error) => (hostError = error))
+    const running = runTests({ vscodeExecutablePath: executable, extensionDevelopmentPath: process.cwd(), extensionTestsPath: resolve('.vscode-test/canvas.cjs'), extensionTestsEnv: { SCAD_CANVAS_TEST_DIR: directory, SCAD_OPENSCAD_CSG_EXECUTABLE: cli, SCAD_PREVIEW_EXPORTER: process.env.SCAD_PREVIEW_EXPORTER }, launchArgs: [`--user-data-dir=${join(directory, 'user')}`, `--extensions-dir=${join(directory, 'extensions')}`, `--remote-debugging-port=${port}`, '--disable-telemetry', '--disable-workspace-trust', '--skip-welcome', '--skip-release-notes'] }).catch((error) => (hostError = error))
     try {
         const browser = await waitFor(() => chromium.connectOverCDP(`http://127.0.0.1:${port}`))
         await waitFor(() => readFile(join(directory, 'ready'), 'utf8'))
@@ -44,6 +44,16 @@ test('real Preview switches $preview geometry and reuses both modes without edit
                 { timeout: 45000 },
             )
         await ready('stl')
+        const checkMeshProfile = async () => {
+            const profile = await frame.locator('scad-app').evaluate((app) => app.modelContext.backend)
+            for (const key of ['sourceMs', 'runtimeSelectionMs', 'meshExportMs', 'meshReadMs', 'dependenciesMs', 'cleanupMs', 'watcherMs', 'encodeMs', 'decodeMs', 'meshParseMs', 'resourcePreparationMs', 'uploadMs', 'shaderMs', 'meshSubmitMs', 'gpuCompleteMs', 'presentationMs', 'firstFrameMs', 'totalPreviewMs', 'transferSchedulingMs']) assert.ok(Number.isFinite(profile.timings[key]), key + ' must be recorded for Full Render')
+            assert.equal(await frame.locator('scad-backend-status').count(), 0)
+            if (process.env.SCAD_MESH_PROFILE_OUTPUT) {
+                await writeFile(process.env.SCAD_MESH_PROFILE_OUTPUT, JSON.stringify(profile, null, 2) + '\n')
+                await frame.locator('scad-app').screenshot({ path: process.env.SCAD_MESH_PROFILE_OUTPUT.replace(/\.json$/, '.png') })
+            }
+        }
+        await checkMeshProfile()
         const cubeSize = () =>
             frame.locator('scad-preview').evaluate((preview) => {
                 const mesh = preview.stage.modelGroup.children[0]
@@ -51,21 +61,40 @@ test('real Preview switches $preview geometry and reuses both modes without edit
                 return mesh.geometry.boundingBox.max.x - mesh.geometry.boundingBox.min.x
             })
         assert.equal(await cubeSize(), 10)
-        const camera = await frame.locator('scad-preview').evaluate((preview) => preview.stage.serializeProperties().get('camera-default'))
-        const original = await frame.locator('canvas.main-canvas').screenshot()
-        for (const [name, format, size] of [
-            ['CSG preview', 'csg', 30],
-            ['Full mesh render', 'stl', 10],
-            ['CSG preview', 'csg', 30],
+        for (const name of ['Wireframe', 'X-Ray']) assert.equal(await frame.getByRole('switch', { name, exact: true }).count(), 0)
+        await frame.locator('scad-app').evaluate((app) => {
+            if (!app.panelContext.panels.sidePanel) app.panelContext.toggle('sidePanel')
+        })
+        const menu = await frame.locator('scad-scene-tree').evaluate((tree) => tree.shadowRoot.querySelector('vscode-context-menu').data)
+        assert.ok(menu.every((item) => item.value !== 'cross-section-plane'))
+        const camera = await frame.locator('scad-preview').evaluate((p) => p.stage.serializeProperties().get('camera-default'))
+        for (const [name, format] of [
+            ['CSG preview', 'csgp'],
+            ['Full mesh render', 'stl'],
+            ['CSG preview', 'csgp'],
         ]) {
-            await frame.getByRole('switch', { name, exact: true }).click()
+            if (format === 'csgp') await frame.locator('scad-app').evaluate((app) => app.modelContext.setPreviewMode('preview'))
+            else await frame.getByRole('switch', { name, exact: true }).click()
             await ready(format)
-            assert.equal(await cubeSize(), size)
-            assert.deepEqual(await frame.locator('scad-preview').evaluate((preview) => preview.stage.serializeProperties().get('camera-default')), camera)
-            if (format === 'stl') assert.equal(await frame.locator('scad-app').evaluate((app) => app.modelContext.backend.cacheHit), true)
-            if (format === 'csg') assert.notDeepEqual(await frame.locator('canvas.main-canvas').screenshot(), original)
+            if (format === 'csgp') {
+                const scene = await frame.locator('scad-preview').evaluate((p) => p.stage.modelRepresentation.imageCsg.scene)
+                assert.equal(scene.version, 'preview-scene-1')
+                assert.equal(scene.bounds.max[0] - scene.bounds.min[0], 30)
+                const profile = await frame.locator('scad-app').evaluate((app) => app.modelContext.backend)
+                assert.ok(profile.timings.booleanPasses > 0)
+                for (const key of ['sourceMs', 'selectionMs', 'runtimeMs', 'exporterMs', 'readMs', 'jsonParseMs', 'validationMs', 'conversionMs', 'dependenciesMs', 'serializationMs', 'resultParseMs', 'cleanupMs', 'watcherMs', 'encodeMs', 'decodeMs', 'viewerParseMs', 'viewerValidationMs', 'resourcePreparationMs', 'shaderMs', 'uploadMs', 'gpuWarmupMs', 'booleanSubmitMs', 'colorSubmitMs', 'gpuCompleteMs', 'presentationMs', 'firstFrameMs', 'totalPreviewMs', 'transferSchedulingMs']) assert.ok(Number.isFinite(profile.timings[key]), key + ' must be recorded')
+                if (process.env.SCAD_PREVIEW_PROFILE_OUTPUT) {
+                    await writeFile(process.env.SCAD_PREVIEW_PROFILE_OUTPUT, JSON.stringify(profile, null, 2) + '\n')
+                    await frame.locator('scad-app').screenshot({ path: process.env.SCAD_PREVIEW_PROFILE_OUTPUT.replace(/\.json$/, '.png') })
+                }
+            } else {
+                assert.equal(await cubeSize(), 10)
+                await checkMeshProfile()
+            }
+            assert.deepEqual(await frame.locator('scad-preview').evaluate((p) => p.stage.serializeProperties().get('camera-default')), camera)
         }
-        assert.equal(await readFile(join(directory, 'switch.scad'), 'utf8'), 'cube($preview ? 30 : 10,center=true);\n')
+        assert.ok((await frame.locator('canvas.main-canvas').screenshot()).length > 1000)
+        assert.equal(await readFile(join(directory, 'switch.scad'), 'utf8'), 'difference(){cube($preview ? 30 : 10,center=true);cylinder(h=40,r=2,center=true,$fn=24); }\n')
     } finally {
         await writeFile(join(directory, 'done'), 'done')
         await running

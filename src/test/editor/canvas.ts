@@ -7,6 +7,7 @@ export async function run() {
         executable = process.env.SCAD_OPENSCAD_CSG_EXECUTABLE!
     const configuration = vscode.workspace.getConfiguration('scad-ai-ide')
     const parameterBenchmark = process.env.SCAD_CANVAS_CUSTOMIZER_BENCH === '1'
+    await configuration.update('preview.exporterPath', process.env.SCAD_PREVIEW_EXPORTER, vscode.ConfigurationTarget.Global)
     await configuration.update('runtimeCommand', { executable, argsPrefix: [] }, vscode.ConfigurationTarget.Global)
     await configuration.update('languageServer.enabled', false, vscode.ConfigurationTarget.Global)
     await configuration.update('preview.renderMode', parameterBenchmark ? 'preview' : 'render', vscode.ConfigurationTarget.Global)
@@ -14,7 +15,7 @@ export async function run() {
     const api = (await extension.activate()) as Awaited<ReturnType<typeof activate>>
     await api.refresh()
     const uri = vscode.Uri.file(join(directory, 'switch.scad'))
-    await writeFile(uri.fsPath, parameterBenchmark ? 'width=30; // [20:1:40]\ndifference(){cube(width,center=true);cylinder(h=50,r=5,center=true,$fn=32);}\n' : 'cube($preview ? 30 : 10,center=true);\n')
+    await writeFile(uri.fsPath, parameterBenchmark ? 'width=30; // [20:1:40]\ndifference(){cube(width,center=true);cylinder(h=50,r=5,center=true,$fn=32);}\n' : 'difference(){cube($preview ? 30 : 10,center=true);cylinder(h=40,r=2,center=true,$fn=24); }\n')
     await vscode.commands.executeCommand('vscode.openWith', uri, 'scad-ai-ide.preview.editor')
     await writeFile(join(directory, 'ready'), 'ready')
     let consumed = -1

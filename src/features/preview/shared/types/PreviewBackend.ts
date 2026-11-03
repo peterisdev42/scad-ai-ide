@@ -1,19 +1,11 @@
-export interface PreviewTimings {
-    cliMs?: number
-    resourcesMs?: number
-    geometryMs?: number
-    normalizationMs?: number
-    uploadMs?: number
-    shaderMs?: number
-    /** Time to request/receive an already prepared or on-demand exact mesh in a viewer. */
-    topologyRequestMs?: number
-    interactiveFrameMs?: number
-}
+import type { PreviewTimings } from '../../../../core/preview/performance'
+export type { PreviewTimings } from '../../../../core/preview/performance'
 
 /** Actual evaluator, independent of the user's requested mode. */
 export interface PreviewBackend {
-    cacheHit?:boolean
-    kind: 'pending' | 'csg' | 'mesh'
+    cacheHit?: boolean
+    source?: 'mesh-file'
+    kind: 'pending' | 'csg' | 'mesh' | 'unavailable'
     reason?: string
     elapsedMs?: number
     graphics?: 'webgpu' | 'webgl2'

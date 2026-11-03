@@ -1,6 +1,6 @@
 import { execFile } from 'node:child_process'
 import { constants } from 'node:fs'
-import { access, realpath } from 'node:fs/promises'
+import { readFile, access, realpath } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import * as os from 'node:os'
 import * as path from 'node:path'
@@ -120,6 +120,21 @@ export async function probe(candidate: Candidate): Promise<Runtime> {
     const { executable, argsPrefix } = candidate.command
     if (!path.isAbsolute(executable)) {
         throw new Error('Use an absolute executable path')
+    }
+    if (path.basename(executable) === 'openscad-preview-exporter') throw new Error('Preview Exporter is a separate capability. Use Select Preview Exporter.')
+    let directory = path.dirname(executable)
+    for (let depth = 0; depth < 5; depth++, directory = path.dirname(directory)) {
+        const metadata = await readFile(path.join(directory, 'build-info.json'), 'utf8').catch(() => undefined)
+        if (metadata) {
+            let exporter = false
+            try {
+                exporter = JSON.parse(metadata).preview_exporter === true
+            } catch {
+                /* Ordinary CLI metadata remains optional. */
+            }
+            if (exporter) throw new Error('Preview Exporter cannot be selected as an ordinary OpenSCAD runtime.')
+            break
+        }
     }
     await access(executable, process.platform === 'win32' ? constants.F_OK : constants.X_OK)
     const version = parseVersion(await runCommand(executable, [...argsPrefix, '--version']))

@@ -1,13 +1,13 @@
 import { GpuCompletion } from './passes/GpuCompletion'
-import { rendererBusy } from './passes/RendererJobs'
-import { CsgFramePass } from './passes/CsgFramePass'
+import { rendererBusy, withRenderer } from './passes/RendererJobs'
+import { validatePreviewScene } from '../../../../core/preview/validate'
+import { GoldfeatherRenderer } from './csg/GoldfeatherRenderer'
+import type { PreviewScene } from '../../../../core/preview/types'
+import { beginGpuValidation } from './passes/GpuValidation'
 import { ModelRepresentation } from './models/ModelRepresentation'
 import { threeMfMillimeterScale } from '../../../../core/formats/threeMf'
-import { Box3, BufferGeometry, Color, Float32BufferAttribute, FogExp2, Group, Mesh, MeshStandardMaterial, Object3D, PCFShadowMap, Plane, Raycaster, Scene, Uint32BufferAttribute, Vector2, Vector3 } from 'three'
-import { CsgModel, type CsgLight } from './csg/CsgModel'
-import { AmbientLight, DirectionalLight, PointLight, SpotLight } from 'three'
+import { Box3, Color, FogExp2, Group, Mesh, MeshStandardMaterial, Object3D, PCFShadowMap, Plane, Raycaster, Scene, Vector2, Vector3 } from 'three'
 import { WebGPURenderer } from 'three/webgpu'
-import type { CsgScene, CsgGeometry } from '../../../../core/csg/types'
 
 // OpenSCAD uses Z-up; align Three.js to match so models load without reorientation.
 // Setting DEFAULT_UP before any Object3D is constructed makes every camera, light,
@@ -72,13 +72,8 @@ export class Stage {
     private toolManager: ToolManager
     private xrayPass: XRayPass
 
-    private csgModels: CsgModel[] = []
-    private renderSignature?: string
     private modelGeneration = 0
     private modelContext?: ModelContext
-    private topologyGroup?: Group
-    private topologyPending?: Promise<void>
-    private topologyKey?: string
     private onToolStatus?: (status: string) => void
     private onDeviceLoss?: (reason: string) => void
     public setDeviceLossCallback(callback: (reason: string) => void) {
@@ -91,19 +86,13 @@ export class Stage {
     }
     private performancePending = false
     private performanceSampledAt = 0
-    private readonly csgFramePass = new CsgFramePass()
     private readonly gpuCompletion = new GpuCompletion()
-    private csgFrameBusy = false
-    private csgFrameDirty = false
-    private previewNavigating = false
-    private cameraPointerActive = false
-    private renderPixelRatio = 1
-    private firstFrame?: { generation: number; start: number; notify?: ModelContext['frameReady']; submitted: boolean }
+    private firstFrame?: { generation: number; start: number; notify?: ModelContext['frameReady']; submitted: boolean; validate?: () => Promise<void> }
     public setToolStatusCallback(callback: (status: string) => void) {
         this.onToolStatus = callback
     }
 
-    private inactiveModel?: { format: ModelFormat; data: string; representation: ModelRepresentation; csg: CsgModel[] }
+    private inactiveModel?: { format: ModelFormat; data: string; representation: ModelRepresentation }
     private modelRepresentation?: ModelRepresentation
     private preparationController?: AbortController
     private modelGroup: Group
@@ -151,6 +140,7 @@ export class Stage {
         // 2. Renderers
         const { clientWidth: width, clientHeight: height } = container
         this.renderer = new WebGPURenderer({ antialias: true, stencil: true, forceWebGL: options.forceWebGL })
+        this.renderer.highPrecision = true
         this.renderer.onDeviceLost = (info) => {
             if (!this.disposed) {
                 this.setActive(false)
@@ -158,8 +148,7 @@ export class Stage {
                 else this.onError?.(`Graphics device lost: ${info.message}`)
             }
         }
-        this.renderPixelRatio = window.devicePixelRatio > 0 ? window.devicePixelRatio : 1
-        this.renderer.setPixelRatio(this.renderPixelRatio)
+        this.renderer.setPixelRatio(window.devicePixelRatio > 0 ? window.devicePixelRatio : 1)
         this.renderer.setSize(width || 1, height || 1)
         this.renderer.shadowMap.type = PCFShadowMap
         this.renderer.shadowMap.enabled = true
@@ -276,7 +265,6 @@ export class Stage {
         this.handles.clear()
         this.cameraHandles.clear()
         this.xrayPass.dispose()
-        this.csgFramePass.dispose()
         this.gpuCompletion.dispose()
         this.viewCube.dispose()
         this.clearModel()
@@ -291,11 +279,6 @@ export class Stage {
 
     public setActive(active: boolean) {
         if (this.disposed || active === !this.paused) return
-        this.renderSignature = undefined
-        if (!active) {
-            this.previewNavigating = false
-            this.cameraPointerActive = false
-        }
         this.paused = !active
         if (!active) {
             if (this.animationFrameId !== null) cancelAnimationFrame(this.animationFrameId)
@@ -329,18 +312,22 @@ export class Stage {
         this.renderFrame()
     }
 
+    private get materialSettings(): ViewOptionsContext | undefined {
+        const settings = this.viewOptions
+        if (!settings) return settings
+        const options = { ...settings.options, renderMode: RenderMode.Solid }
+        return { ...settings, options, get: (key) => options[key], is: (key, value) => options[key] === value }
+    }
     public applySettings(viewOptions: ViewOptionsContext) {
-        this.renderSignature = undefined
         this.viewOptions = viewOptions
         this.environmentRig.setEnvironment(viewOptions.get('environment'), viewOptions.get('buildPlateOrigin'))
         this.activeCameraRig.setMode(viewOptions.get('camera'))
         this.renderer.shadowMap.enabled = viewOptions.get('shadows')
         this.scene.fog = new FogExp2(this.theme.fog, viewOptions.get('fogDensity'))
         this.materialManager.setTheme(this.modelGroup, this.theme, viewOptions.get('modelColor'))
-        this.materialManager.applyToGroup(this.modelGroup, viewOptions)
-        if (viewOptions.is('renderMode', RenderMode.Wireframe) || viewOptions.is('renderMode', RenderMode.XRay)) this.ensureTopology()
+        this.materialManager.applyToGroup(this.modelGroup, this.materialSettings!)
 
-        // Enable clipping whenever any cross-section plane exists and is visible
+        // The visible preview exposes only the solid display mode.
     }
 
     public async loadModelData(modelContext: ModelContext) {
@@ -355,13 +342,15 @@ export class Stage {
             return
         }
 
+        const decodeStarted = performance.now()
         const binaryString = window.atob(base64Data)
         const bytes = new Uint8Array(binaryString.length)
         for (let i = 0; i < binaryString.length; i++) {
             bytes[i] = binaryString.charCodeAt(i)
         }
 
-        const preparedCsg: CsgModel[] = []
+        modelContext.reportPerformance?.({ decodeMs: performance.now() - decodeStarted })
+        let imageCsg: GoldfeatherRenderer | undefined
         let cachedCandidate: ModelRepresentation | undefined
         if (this.inactiveModel?.format === format) {
             const inactive = this.inactiveModel
@@ -369,43 +358,29 @@ export class Stage {
             if (inactive.data === base64Data) {
                 cachedCandidate = inactive.representation
                 cachedCandidate.rebind(modelContext.modelVersion ?? generation, modelContext.queryTopology)
-                preparedCsg.push(...inactive.csg)
                 cachedCandidate.attach(nextGroup)
             } else inactive.representation.dispose()
         }
-        if (!cachedCandidate && format === ModelFormat.CSG) {
-            const scene = JSON.parse(new TextDecoder().decode(bytes)) as CsgScene
-            if (this.modelRepresentation?.update(scene, modelContext.modelVersion ?? generation, modelContext.queryTopology)) {
-                if (this.topologyGroup) {
-                    this.modelGroup.remove(this.topologyGroup)
-                    this.disposeModelGroup(this.topologyGroup)
-                }
-                this.topologyGroup = undefined
-                this.topologyPending = undefined
-                this.modelContext = modelContext
-                this.firstFrame = { generation, start: started, notify: modelContext.frameReady, submitted: false }
-                this.handles.forEach((handle) => {
-                    if (handle instanceof CrossSectionRig) handle.rebuildForModel(this.modelGroup)
-                })
-                this.rebuildModelClipping()
-                this.fitInitialModelIfReady()
-                if (this.viewOptions?.is('renderMode', RenderMode.Wireframe) || this.viewOptions?.is('renderMode', RenderMode.XRay) || (this.toolManager.activeTool instanceof MeasureTool && this.toolVariant !== 'face')) this.ensureTopology()
-                return
-            }
-            try {
-                preparedCsg.push(new CsgModel(scene))
-                for (const overlay of scene.overlays) preparedCsg.push(new CsgModel(scene, overlay.root, overlay.kind))
-            } catch (error) {
-                preparedCsg.forEach((model) => model.dispose())
-                throw error
-            }
-        }
-        if (format === ModelFormat.CSG) {
-            for (const model of preparedCsg) nextGroup.add(model.mesh)
+        if (cachedCandidate) modelContext.reportPerformance?.(format === ModelFormat.PreviewScene ? { viewerParseMs: 0, viewerValidationMs: 0, resourcePreparationMs: 0 } : { meshParseMs: 0, resourcePreparationMs: 0 })
+        if (!cachedCandidate && format === ModelFormat.PreviewScene) {
+            let phase = performance.now()
+            const scene = JSON.parse(new TextDecoder().decode(bytes)) as PreviewScene
+            modelContext.reportPerformance?.({ viewerParseMs: performance.now() - phase })
+            phase = performance.now()
+            validatePreviewScene(scene)
+            modelContext.reportPerformance?.({ viewerValidationMs: performance.now() - phase })
+            phase = performance.now()
+            imageCsg = new GoldfeatherRenderer(scene)
+            imageCsg.updateAppearance(this.theme.additive, false, this.scene, this.theme.subtractive)
+            nextGroup.add(imageCsg.root)
+            modelContext.reportPerformance?.({ resourcePreparationMs: performance.now() - phase })
         } else if (!cachedCandidate && format === ModelFormat.ThreeMF) {
             const loader = new ThreeMFLoader()
             try {
+                const parseStarted = performance.now()
                 const group = loader.parse(bytes.buffer)
+                modelContext.reportPerformance?.({ meshParseMs: performance.now() - parseStarted })
+                const resourcesStarted = performance.now()
                 group.scale.multiplyScalar(threeMfMillimeterScale(bytes))
                 group.traverse((child) => {
                     if (child instanceof Mesh) {
@@ -423,6 +398,7 @@ export class Stage {
                     }
                 })
                 nextGroup.add(group)
+                modelContext.reportPerformance?.({ resourcePreparationMs: performance.now() - resourcesStarted })
             } catch (e) {
                 this.disposeModelGroup(nextGroup)
                 throw new Error(`Failed to parse 3MF: ${String(e)}`)
@@ -430,7 +406,10 @@ export class Stage {
         } else if (!cachedCandidate) {
             const loader = new STLLoader()
             try {
+                const parseStarted = performance.now()
                 const geometry = loader.parse(bytes.buffer)
+                modelContext.reportPerformance?.({ meshParseMs: performance.now() - parseStarted })
+                const resourcesStarted = performance.now()
                 const material = new MeshStandardMaterial({
                     color: this.theme.additive,
                     flatShading: false,
@@ -441,6 +420,7 @@ export class Stage {
                 const mesh = new Mesh(geometry, material)
                 nextGroup.add(mesh)
                 if (this.viewOptions) this.materialManager.applyToGroup(nextGroup, this.viewOptions)
+                modelContext.reportPerformance?.({ resourcePreparationMs: performance.now() - resourcesStarted })
             } catch (e) {
                 this.disposeModelGroup(nextGroup)
                 throw new Error(`Failed to parse STL: ${String(e)}`)
@@ -449,13 +429,12 @@ export class Stage {
 
         this.materialManager.setTheme(nextGroup, this.theme, this.viewOptions?.get('modelColor'))
 
-        const candidate = cachedCandidate ?? new ModelRepresentation(nextGroup, preparedCsg, modelContext.modelVersion ?? generation, modelContext.queryTopology)
+        const candidate = cachedCandidate ?? new ModelRepresentation(nextGroup, modelContext.modelVersion ?? generation, modelContext.queryTopology, imageCsg)
         try {
             await this.ready
             if (!this.disposed && generation === this.modelGeneration) {
-                const camera = this.activeCameraRig.activeCamera
-                const planes = this.topologyPlanes().map((plane) => new Plane(new Vector3(...plane.normal), plane.constant))
-                for (const model of preparedCsg) model.update(camera, this.viewOptions?.get('modelColor') ? new Color(this.viewOptions.get('modelColor')!) : this.theme.additive, !!this.viewOptions?.get('modelColor'), this.viewOptions?.get('renderMode') ?? RenderMode.Solid, planes, this.renderer.coordinateSystem === 2001, this.viewOptions?.get('shadows') ?? true)
+                candidate.imageCsg?.updateAppearance(this.viewOptions?.get('modelColor') ? new Color(this.viewOptions.get('modelColor')!) : this.theme.additive, !!this.viewOptions?.get('modelColor'), this.scene, this.theme.subtractive)
+                modelContext.reportPerformance?.({ viewerPreparationMs: performance.now() - started })
                 const prepared = await candidate.prepare(this.renderer, this.activeCameraRig.activeCamera, this.scene, preparationController.signal)
                 if (generation === this.modelGeneration) modelContext.reportPerformance?.(prepared.value)
             }
@@ -469,15 +448,14 @@ export class Stage {
         }
         if (this.modelRepresentation && this.modelContext?.format && this.modelContext.format !== format && this.modelContext.base64Data && this.modelContext.base64Data.length <= 8 * 1048576) {
             this.inactiveModel?.representation.dispose()
-            this.inactiveModel = { format: this.modelContext.format, data: this.modelContext.base64Data, representation: this.modelRepresentation, csg: this.csgModels }
+            this.inactiveModel = { format: this.modelContext.format, data: this.modelContext.base64Data, representation: this.modelRepresentation }
             this.modelRepresentation.detach()
             this.modelRepresentation = undefined
-            this.csgModels = []
         }
         this.clearModel(true)
         this.modelContext = modelContext
         this.modelRepresentation = candidate
-        this.csgModels = preparedCsg
+        if (this.materialSettings) this.materialManager.applyToGroup(nextGroup, this.materialSettings)
         this.modelGroup.add(...nextGroup.children)
         this.firstFrame = { generation, start: started, notify: modelContext.frameReady, submitted: false }
         // Pick an absorption coefficient so a ray traversing the model's full
@@ -497,16 +475,11 @@ export class Stage {
         })
         this.rebuildModelClipping()
         this.fitInitialModelIfReady()
-        if (this.viewOptions?.is('renderMode', RenderMode.Wireframe) || this.viewOptions?.is('renderMode', RenderMode.XRay) || (this.toolManager.activeTool instanceof MeasureTool && (this.toolVariant === 'vertex' || this.toolVariant === 'edge'))) this.ensureTopology()
     }
 
     private disposeModelGroup(group: Group) {
         group.traverse((child) => {
             if (!(child instanceof Mesh)) return
-            if (child.userData.csg instanceof CsgModel) {
-                child.userData.csg.dispose()
-                return
-            }
             child.geometry.dispose()
             const materials = Array.isArray(child.material) ? child.material : [child.material]
             for (const material of materials) material.dispose()
@@ -521,121 +494,28 @@ export class Stage {
         }
         this.modelRepresentation?.dispose()
         this.modelRepresentation = undefined
-        this.csgModels = []
-        this.topologyGroup = undefined
-        this.topologyPending = undefined
-        this.topologyKey = undefined
         this.firstFrame = undefined
         this.onToolStatus?.('')
         this.disposeModelGroup(this.modelGroup)
-    }
-
-    private topologyPlanes() {
-        const planes: { normal: [number, number, number]; constant: number }[] = []
-        for (const handle of this.handles.values()) if (handle instanceof CrossSectionRig && handle.active) planes.push({ normal: handle.plane.normal.toArray(), constant: handle.plane.constant })
-        return planes
-    }
-
-    private requiresTopology() {
-        return !!this.topologyPlanes().length || this.viewOptions?.is('renderMode', RenderMode.Wireframe) || this.viewOptions?.is('renderMode', RenderMode.XRay) || (this.toolManager.activeTool instanceof MeasureTool && (this.toolVariant === 'edge' || this.toolVariant === 'vertex'))
-    }
-
-    public refreshTopology() {
-        if (this.requiresTopology()) this.ensureTopology()
-    }
-
-    private ensureTopology() {
-        if (!this.csgModels.length) return
-        const planes = this.topologyPlanes(),
-            key = JSON.stringify(planes)
-        if (this.topologyGroup && this.topologyKey === key) return
-        if (this.topologyGroup) {
-            this.modelGroup.remove(this.topologyGroup)
-            this.disposeModelGroup(this.topologyGroup)
-            this.topologyGroup = undefined
-            this.csgModels.forEach((m) => m.setTopology(undefined))
-        }
-        if (this.topologyPending) return
-        const provider = this.modelRepresentation ? this.modelRepresentation.queryTopology.bind(this.modelRepresentation) : undefined
-        if (!provider) {
-            this.onError?.('Exact topology is not available in this preview.')
-            return
-        }
-        const generation = this.modelGeneration
-        const topologyStarted = performance.now()
-        this.topologyKey = key
-        // Topology preparation is a normal internal operation; report only
-        // failures, not progress or success as popup messages.
-        const task = provider(planes)
-            .then(({ value: geometry }) => {
-                if (this.disposed || generation !== this.modelGeneration || !this.requiresTopology() || key !== JSON.stringify(this.topologyPlanes())) return
-                const group = this.createTopologyGroup(geometry)
-                this.modelContext?.reportPerformance?.({ topologyRequestMs: performance.now() - topologyStarted })
-                this.topologyGroup = group
-                group.visible = false
-                this.modelGroup.add(group)
-                this.csgModels[0]?.setTopology(group.children.filter((c): c is Mesh => c instanceof Mesh))
-                if (this.viewOptions) this.materialManager.applyToGroup(group, this.viewOptions)
-                this.materialManager.setTheme(group, this.theme, this.viewOptions?.get('modelColor'))
-                this.rebuildModelClipping()
-                this.onToolStatus?.('')
-                this.renderSignature = undefined
-            })
-            .catch((error) => {
-                if (!this.disposed && generation === this.modelGeneration && this.requiresTopology() && key === JSON.stringify(this.topologyPlanes())) {
-                    const message = error instanceof Error ? error.message : String(error)
-                    this.onError?.(`Exact geometry preparation failed: ${message}`)
-                }
-            })
-            .finally(() => {
-                if (this.topologyPending === task) {
-                    this.topologyPending = undefined
-                    if (!this.disposed && generation === this.modelGeneration && this.requiresTopology() && key !== JSON.stringify(this.topologyPlanes())) this.ensureTopology()
-                }
-            })
-        this.topologyPending = task
-    }
-
-    private createTopologyGroup(geometry: CsgGeometry): Group {
-        const group = new Group()
-        if (geometry.origin) group.position.set(...geometry.origin)
-        const decode = (s: string) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0)).buffer
-        for (const mesh of geometry.meshes) {
-            const properties = new Float32Array(decode(mesh.properties)),
-                indices = new Uint32Array(decode(mesh.indices))
-            const positions = new Float32Array((properties.length / mesh.stride) * 3)
-            for (let i = 0; i < properties.length / mesh.stride; i++) positions.set(properties.subarray(i * mesh.stride, i * mesh.stride + 3), i * 3)
-            const data = new BufferGeometry()
-            data.setAttribute('position', new Float32BufferAttribute(positions, 3))
-            if (mesh.stride >= 8) {
-                const colors = new Float32Array((positions.length / 3) * 4),
-                    flags = new Float32Array(positions.length / 3)
-                for (let i = 0; i < flags.length; i++) {
-                    colors.set(properties.subarray(i * mesh.stride + 3, i * mesh.stride + 7), i * 4)
-                    flags[i] = properties[i * mesh.stride + 7]
-                }
-                data.setAttribute('color', new Float32BufferAttribute(colors, 4))
-                data.setAttribute('scadDefaultColor', new Float32BufferAttribute(flags, 1))
-            }
-            data.setIndex(new Uint32BufferAttribute(indices, 1))
-            data.computeVertexNormals()
-            const material = new MeshStandardMaterial({ color: mesh.stride >= 8 ? 0xffffff : this.theme.additive, vertexColors: mesh.stride >= 8, transparent: mesh.stride >= 8, ...studioSurface })
-            if (mesh.stride < 8) material.userData.previewThemeColor = 'additive'
-            group.add(new Mesh(data, material))
-        }
-        group.updateMatrixWorld(true)
-        return group
     }
 
     private reportFirstFrame() {
         const frame = this.firstFrame
         if (!frame || frame.submitted) return
         frame.submitted = true
-        void this.gpuCompletion
-            .wait(this.renderer)
-            .then(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))))
+        const gpuStarted = performance.now()
+        void withRenderer(this.renderer, async () => {
+            await this.gpuCompletion.wait(this.renderer)
+            await frame.validate?.()
+            if (this.firstFrame === frame) this.modelContext?.reportPerformance?.({ gpuCompleteMs: performance.now() - gpuStarted })
+        })
+            .then(async () => {
+                const presentStarted = performance.now()
+                await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
+                if (this.firstFrame === frame) this.modelContext?.reportPerformance?.({ presentationMs: performance.now() - presentStarted, firstFrameMs: performance.now() - frame.start })
+            })
             .then(() => {
-                if (!this.disposed && this.firstFrame === frame && frame.generation === this.modelGeneration) frame.notify?.(this.renderer.coordinateSystem === 2001 ? 'webgpu' : 'webgl2', Math.round(performance.now() - frame.start))
+                if (!this.disposed && this.firstFrame === frame && frame.generation === this.modelGeneration) frame.notify?.(this.renderer.coordinateSystem === 2001 ? 'webgpu' : 'webgl2', performance.now() - frame.start)
             })
             .catch((error) => {
                 if (!this.disposed && frame.generation === this.modelGeneration) this.onError?.(String(error))
@@ -764,8 +644,6 @@ export class Stage {
         this.activeCameraRig.getControls().enabled = false
         this.activeCameraRig.setIsActiveCamera(false)
         this.activeCameraRig = handle
-        this.previewNavigating = false
-        this.cameraPointerActive = false
         this.activeCameraRig.getControls().enabled = true
         this.activeCameraRig.setIsActiveCamera(true)
         this.transformControls.camera = this.activeCameraRig.getPerspectiveCamera()
@@ -816,18 +694,15 @@ export class Stage {
     }
 
     private rebuildModelClipping(): void {
-        if (this.requiresTopology()) this.ensureTopology()
         const planes: Plane[] = []
         for (const handle of this.handles.values()) {
-            if (handle instanceof CrossSectionRig && handle.active) {
-                planes.push(handle.plane)
-            }
+            if (handle instanceof CrossSectionRig) handle.getSceneRoot().visible = false
         }
 
         // Apply all active planes to every model mesh, and place the model between
         // tier 0 and tier 1 so all caps except tier 0 can depth-test against it.
         this.modelGroup.traverse((child) => {
-            if (!(child instanceof Mesh) || child.userData.csg) return
+            if (!(child instanceof Mesh)) return
             const mats = Array.isArray(child.material) ? child.material : [child.material]
             for (const mat of mats) {
                 mat.clippingPlanes = [...planes]
@@ -914,22 +789,10 @@ export class Stage {
         const size = this.renderer.getSize(new Vector2())
         const rig = new CameraRig(id, size.x, size.y, this.renderer.domElement, this.theme.foreground)
         const controls = rig.getControls()
-        controls.addEventListener('start', () => {
-            if (this.activeCameraRig === rig) this.cameraPointerActive = true
-        })
-        controls.addEventListener('end', () => {
-            if (this.activeCameraRig === rig) {
-                this.cameraPointerActive = false
-                this.previewNavigating = false
-            }
-        })
         controls.addEventListener('change', () => {
-            // A click without camera motion must not resize GPU render targets.
-            if (this.activeCameraRig === rig && this.cameraPointerActive) this.previewNavigating = true
             this.onPersist?.()
             // The property panel should follow actual camera changes, not every rAF.
             if (this.selectedId === id) this.onPropertiesChange?.(rig.getProperties())
-            if (this.csgFrameBusy && this.activeCameraRig === rig) this.csgFrameDirty = true
         })
         this.cameraHandles.set(id, rig)
         this.handles.set(id, rig)
@@ -998,7 +861,6 @@ export class Stage {
 
     public setToolVariant(variant: string | null): void {
         this.toolVariant = variant
-        if (this.toolManager.activeTool instanceof MeasureTool && (variant === 'edge' || variant === 'vertex')) this.ensureTopology()
     }
 
     // ============= Animation loop =============
@@ -1013,61 +875,19 @@ export class Stage {
         this.handles.forEach((h) => {
             if (h instanceof CrossSectionRig) h.update()
         })
-        this.updateInteractiveResolution()
-        this.renderFrame(false)
+        this.renderFrame()
         this.css2dRenderer.render(this.scene, this.activeCameraRig.activeCamera)
     }
 
-    /** Reduce fill-rate and multipass CSG work during navigation; restore native
-     * device resolution after release. Do not resize while a frame owns GPU state. */
-    private updateInteractiveResolution() {
-        const nativeRatio = window.devicePixelRatio > 0 ? window.devicePixelRatio : 1
-        const wanted = this.csgModels.length && !this.requiresTopology() && this.previewNavigating ? Math.min(nativeRatio, 1) : nativeRatio
-        if (wanted === this.renderPixelRatio || this.csgFrameBusy || rendererBusy(this.renderer)) return
-        this.renderer.setPixelRatio(wanted)
-        this.renderPixelRatio = wanted
-        this.renderSignature = undefined
-    }
-
-    private renderFrame(force = true) {
+    private renderFrame() {
         if (rendererBusy(this.renderer)) return
-        let signature: string | undefined
-        if (this.csgModels.length) {
-            const camera = this.activeCameraRig.activeCamera
-            camera.updateMatrixWorld(true)
-            if (this.previewNavigating && !force) {
-                // During an orbit the camera is the only continuously changing
-                // input. Avoid walking/serializing the entire scene every rAF.
-                // When navigation ends, the full scene signature is evaluated.
-                signature = `camera:${this.modelGeneration}:${this.selectedId}:${camera.matrixWorld.elements.join(',')}:${camera.projectionMatrix.elements.join(',')}`
-            } else {
-                this.scene.updateMatrixWorld(true)
-                const state: unknown[] = [this.modelGeneration, this.selectedId, this.viewOptions?.options, camera.matrixWorld.elements, camera.projectionMatrix.elements]
-                this.scene.traverse((object) => {
-                    if (object instanceof Mesh) {
-                        const material = Array.isArray(object.material) ? object.material : [object.material]
-                        state.push(
-                            object.id,
-                            object.visible,
-                            object.matrixWorld.elements,
-                            object.geometry.id,
-                            object.geometry.getAttribute('position')?.version,
-                            material.map((m) => [m.id, m.version]),
-                        )
-                    } else state.push(object.id, object.visible, object.matrixWorld.elements)
-                })
-                signature = JSON.stringify(state)
-            }
-            if (!force && signature === this.renderSignature) return
-        }
-        this.renderSignature = signature
         if (this.failedGeneration === this.modelGeneration) return
         try {
             const start = performance.now(),
                 generation = this.modelGeneration,
                 report = this.modelContext?.reportPerformance
             this.drawFrame()
-            if (!this.csgModels.length && report && !this.performancePending && this.firstFrame?.submitted && start - this.performanceSampledAt >= 1000) {
+            if (report && !this.performancePending && this.firstFrame?.submitted && start - this.performanceSampledAt >= 1000) {
                 this.performancePending = true
                 this.performanceSampledAt = start
                 void this.gpuCompletion
@@ -1081,6 +901,8 @@ export class Stage {
                     })
             }
         } catch (error) {
+            const validate = this.firstFrame?.validate
+            if (validate) void withRenderer(this.renderer, validate).catch(() => {})
             this.failedGeneration = this.modelGeneration
             this.onError?.(error instanceof Error ? error.message : String(error))
         }
@@ -1090,100 +912,15 @@ export class Stage {
         if (this.paused || this.disposed || !this.initialized) return
         const camera = this.activeCameraRig.activeCamera
 
-        if (this.csgModels.length) {
-            if (this.csgFrameBusy) {
-                this.csgFrameDirty = true
-                return
-            }
-            const planes: Plane[] = []
-            for (const handle of this.handles.values()) if (handle instanceof CrossSectionRig && handle.active) planes.push(handle.plane)
-            const advanced = !!planes.length || this.viewOptions?.is('renderMode', RenderMode.Wireframe) || this.viewOptions?.is('renderMode', RenderMode.XRay)
-            if (advanced) {
-                this.ensureTopology()
-                if (!this.topologyGroup) return
-            }
-            if (this.topologyGroup) this.topologyGroup.visible = !!advanced
-            // A previously clipped tool mesh must not answer ordinary face picks.
-            if (!this.requiresTopology()) this.csgModels[0]?.setTopology(undefined)
-            this.csgModels.forEach((model) => (model.mesh.visible = !advanced))
-            const lights: CsgLight[] = []
-            const ambient = new Color(0.15, 0.15, 0.15)
-            this.scene.traverseVisible((object) => {
-                if (object instanceof AmbientLight) ambient.add(object.color.clone().multiplyScalar(object.intensity))
-                else if (object instanceof DirectionalLight) lights.push({ position: object.getWorldPosition(new Vector3()).sub(object.target.getWorldPosition(new Vector3())), color: object.color.clone().multiplyScalar(object.intensity), directional: true, castShadow: object.castShadow })
-                else if (object instanceof PointLight || object instanceof SpotLight) lights.push({ position: object.getWorldPosition(new Vector3()), color: object.color.clone().multiplyScalar(object.intensity), directional: false, castShadow: object.castShadow, distance: object.distance, decay: object.decay, ...(object instanceof SpotLight ? { direction: object.target.getWorldPosition(new Vector3()).sub(object.getWorldPosition(new Vector3())).normalize(), cone: Math.cos(object.angle), penumbra: Math.cos(object.angle * (1 - object.penumbra)) } : {}) })
-            })
-            const representation = this.modelRepresentation,
-                generation = this.modelGeneration
-            if (!representation) return
-            const frame = { color: this.viewOptions?.get('modelColor') ? new Color(this.viewOptions.get('modelColor')!) : this.theme.additive, overrideColor: !!this.viewOptions?.get('modelColor'), mode: this.viewOptions?.get('renderMode') ?? RenderMode.Solid, planes, webgpu: this.renderer.coordinateSystem === 2001, shadows: this.viewOptions?.get('shadows') ?? true, lights, ambient }
-            this.csgFrameBusy = true
-            const interactive = this.previewNavigating && !advanced
-            const frameStarted = performance.now()
-            void this.csgFramePass
-                .render(
-                    this.renderer,
-                    this.scene,
-                    camera,
-                    async (view) => {
-                        if (advanced && this.topologyGroup) {
-                            if (this.viewOptions?.is('renderMode', RenderMode.XRay)) {
-                                this.topologyGroup.visible = false
-                                await representation.render(this.renderer, this.scene, view, frame)
-                                this.topologyGroup.visible = true
-                                this.xrayPass.render(this.renderer, this.topologyGroup, view)
-                            } else await representation.render(this.renderer, this.scene, view, frame)
-                            return
-                        }
-                        return representation.render(this.renderer, this.scene, view, frame)
-                    },
-                    () => !this.disposed && !this.paused && generation === this.modelGeneration,
-                    interactive,
-                )
-                .then((complete) => {
-                    if (!complete) this.csgFrameDirty = true
-                    if (complete) {
-                        this.reportFirstFrame()
-                        // Navigation intentionally skips the GPU completion fence.
-                        // Do not report its CPU submission time as a GPU-complete frame.
-                        if (!interactive && frameStarted - this.performanceSampledAt >= 1000) {
-                            this.performanceSampledAt = frameStarted
-                            this.modelContext?.reportPerformance?.({ interactiveFrameMs: performance.now() - frameStarted })
-                        }
-                    }
-                })
-                .catch((error) => {
-                    if (!this.disposed && generation === this.modelGeneration) {
-                        const message = String(error)
-                        this.failedGeneration = generation
-                        this.onError?.(message)
-                    }
-                })
-                .finally(() => {
-                    this.csgFrameBusy = false
-                    if (this.csgFrameDirty) {
-                        this.csgFrameDirty = false
-                        this.renderSignature = undefined
-                    }
-                })
-
-            return
-        }
-        if (this.viewOptions?.is('renderMode', RenderMode.XRay)) {
-            // Hide the model from the main pass so the environment/grid render
-            // unoccluded, then accumulate thickness from the model alone and
-            // composite that on top with density-driven opacity.
-            const modelVisible = this.modelGroup.visible
-            this.modelGroup.visible = false
-            this.renderer.render(this.scene, camera)
-            this.modelGroup.visible = modelVisible
-            this.xrayPass.render(this.renderer, this.modelGroup, camera)
-            this.reportFirstFrame()
-            return
-        }
-
+        const first = this.firstFrame
+        if (first && !first.submitted && !first.validate) first.validate = beginGpuValidation(this.renderer, 'first frame')
+        const image = this.modelRepresentation?.imageCsg
+        image?.updateAppearance(this.viewOptions?.get('modelColor') ? new Color(this.viewOptions.get('modelColor')!) : this.theme.additive, !!this.viewOptions?.get('modelColor'), this.scene, this.theme.subtractive)
+        const meshStarted = first && !first.submitted && !image ? performance.now() : undefined
         if (this.modelRepresentation) this.modelRepresentation.render(this.renderer, this.scene, camera)
         else this.renderer.render(this.scene, camera)
+        if (image && first && !first.submitted) this.modelContext?.reportPerformance?.(image.lastTimings)
+        if (meshStarted !== undefined) this.modelContext?.reportPerformance?.({ meshSubmitMs: performance.now() - meshStarted })
         this.reportFirstFrame()
     }
 
@@ -1205,6 +942,7 @@ export class Stage {
         // Raycast against all registered handles
         const selectables: { id: string; obj: import('three').Object3D }[] = []
         for (const [id, handle] of this.handles) {
+            if (handle instanceof CrossSectionRig) continue
             for (const obj of handle.getSelectableObjects()) {
                 selectables.push({ id, obj })
             }

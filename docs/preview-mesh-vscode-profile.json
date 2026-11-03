@@ -1,0 +1,32 @@
+{
+    "kind": "mesh",
+    "elapsedMs": 0,
+    "timings": {
+        "sourceMs": 0,
+        "runtimeSelectionMs": 0,
+        "meshExportMs": 0,
+        "meshReadMs": 0,
+        "dependenciesMs": 0,
+        "cleanupMs": 0,
+        "cliMs": 0,
+        "watcherMs": 0.11074999999982538,
+        "encodeMs": 0.007666999999855761,
+        "decodeMs": 0,
+        "meshParseMs": 0,
+        "resourcePreparationMs": 0,
+        "viewerPreparationMs": 0.29999999701976776,
+        "uploadMs": 0,
+        "shaderMs": 0.20000000298023224,
+        "gpuWarmupMs": 0,
+        "meshSubmitMs": 0.5,
+        "gpuCompleteMs": 1.7000000029802322,
+        "presentationMs": 31.200000002980232,
+        "firstFrameMs": 48.20000000298023,
+        "totalPreviewMs": 56,
+        "transferSchedulingMs": 7.681582997020087
+    },
+    "cacheHit": true,
+    "graphics": "webgpu",
+    "firstFrameMs": 48.20000000298023,
+    "frameReady": true
+}

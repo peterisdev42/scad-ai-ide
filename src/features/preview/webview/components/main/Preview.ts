@@ -6,7 +6,6 @@ import { modelContext, ModelContext } from '../../contexts/ModelContext'
 import { viewOptionsContext, ViewOptionsContext } from '../../contexts/ViewOptionsContext'
 import { Stage } from '../../preview/Stage'
 import { readPreviewTheme, Theme } from '../../preview/Theme'
-import './BackendStatus'
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -37,7 +36,7 @@ export class Preview extends LitElement {
             height: 100% !important;
         }
 
-        /* One status surface for loading, notices, errors and backend details.
+        /* One status surface for loading, notices and errors.
          * No independent position/z-index rules for individual messages. */
         #preview-status {
             position: absolute;
@@ -46,9 +45,8 @@ export class Preview extends LitElement {
             z-index: 20;
             box-sizing: border-box;
             width: max-content;
-            max-width: min(480px, calc(100% - 32px));
-            max-height: min(45%, 360px);
-            overflow: auto;
+            max-width: calc(100% - 32px);
+            overflow: visible;
             padding: 9px 12px;
             border: 1px solid var(--vscode-panel-border);
             border-radius: 8px;
@@ -68,14 +66,6 @@ export class Preview extends LitElement {
         }
         #preview-status .primary.error {
             color: var(--vscode-errorForeground, var(--vscode-foreground));
-        }
-        #preview-status .backend {
-            min-width: 0;
-        }
-        #preview-status .primary + .backend {
-            border-top: 1px solid var(--vscode-panel-border);
-            margin-top: 6px;
-            padding-top: 6px;
         }
         /* No model loaded: centered placeholder, never a second bottom-left notice. */
         #loading-overlay.empty {
@@ -303,26 +293,30 @@ export class Preview extends LitElement {
     render() {
         const loading = !!(this.modelContext?.isLoading || this.preparing)
         const error = this.modelContext?.previewError || (!this.recovering ? this.previewIssue : '')
-        const loadingMessage = this.preparing
-            ? this.modelContext?.format === 'csg' ? 'Preparing CSG preview and first frame…' : 'Preparing mesh and first frame…'
-            : (this.modelContext?.loadingMessage ?? 'Rendering SCAD...')
-        // Severity order: error > renderer recovery > loading > tool notice > backend.
+        const loadingMessage = this.preparing ? (this.modelContext?.format === 'csgp' ? 'Preparing CSG preview and first frame…' : 'Preparing mesh and first frame…') : (this.modelContext?.loadingMessage ?? 'Rendering SCAD...')
+        // Severity order: error > renderer recovery > loading > tool notice.
         const primary = error || (this.recovering ? this.previewIssue : '') || (loading ? loadingMessage : this.toolStatus)
-        const backend = !!this.modelContext?.backend
         const empty = !this.modelContext?.base64Data && !loading && !error
         return html`
             ${empty ? html`<div id="loading-overlay" class="empty">${this.modelContext?.loadingMessage ?? 'Rendering SCAD...'}</div>` : nothing}
-            ${primary || backend ? html`
-                <div id="preview-status" role=${error ? 'alert' : 'status'} aria-label="Preview status">
-                    ${primary ? html`
-                        <div id=${error ? 'tool-status' : 'preview-message'} class="primary ${error ? 'error' : ''}">
-                            ${loading && !error ? html`<div class="spinner" aria-hidden="true"></div>` : nothing}
-                            <span>${primary}</span>
-                        </div>
-                    ` : nothing}
-                    ${backend ? html`<div class="backend"><scad-backend-status></scad-backend-status></div>` : nothing}
-                </div>
-            ` : nothing}
+            ${
+                primary
+                    ? html`
+                          <div id="preview-status" role=${error ? 'alert' : 'status'} aria-label="Preview status">
+                              ${
+                                  primary
+                                      ? html`
+                                            <div id=${error ? 'tool-status' : 'preview-message'} class="primary ${error ? 'error' : ''}">
+                                                ${loading && !error ? html`<div class="spinner" aria-hidden="true"></div>` : nothing}
+                                                <span>${primary}</span>
+                                            </div>
+                                        `
+                                      : nothing
+                              }
+                          </div>
+                      `
+                    : nothing
+            }
             <div id="canvas-container"></div>
         `
     }

@@ -8,10 +8,12 @@ import { ScadClient } from './extension/services/ScadClient'
 import { MeshPreviewEditorProvider } from './extension/views/MeshPreviewEditorProvider'
 import { meshPreviewEditorViewType } from './extension/services/previewFile'
 import { ScadPreviewEditorProvider } from './extension/views/ScadPreviewEditorProvider'
-import { configureCsgWorker } from '../../core/csg/compile'
+import { configureMeshTopologyWorker } from '../../core/formats/meshTopology'
+import { registerPreviewExporter } from './extension/services/PreviewExporter'
 
 export function registerPreview(context: vscode.ExtensionContext, runtime: ReturnType<typeof registerRuntime>, customizer: CustomizerService) {
-    configureCsgWorker(vscode.Uri.joinPath(context.extensionUri, 'dist', 'csg-worker.mjs').fsPath)
+    registerPreviewExporter(context)
+    configureMeshTopologyWorker(vscode.Uri.joinPath(context.extensionUri, 'dist', 'mesh-topology-worker.mjs').fsPath)
     const sessions = new ScadSessionManager(customizer)
     const runtimeIdentity = () => {
         const active = runtime.getActiveRuntime()

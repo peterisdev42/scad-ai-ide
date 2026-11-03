@@ -49,13 +49,10 @@ async function main() {
     })
     const fs = require('node:fs/promises')
     await fs.mkdir('dist', { recursive: true })
-    await fs.copyFile('node_modules/vscode-oniguruma/release/onig.wasm', 'dist/onig.wasm')
+    for (const name of ['csg-worker.mjs', 'csg-worker.mjs.map', 'csg-kernel.mjs', 'csg-kernel.wasm', 'harfbuzz.wasm', 'freetype.wasm', 'fonts']) await fs.rm(`dist/${name}`, { recursive: true, force: true })
+    // Full STL/3MF clipping only. Fast Preview never loads this worker or WASM.
     await fs.copyFile('node_modules/manifold-3d/manifold.wasm', 'dist/manifold.wasm')
-    await fs.copyFile(require.resolve('harfbuzzjs/dist/harfbuzz.wasm'), 'dist/harfbuzz.wasm')
-    await fs.copyFile(require.resolve('@zkl2333/freetype-wasm/freetype.wasm'), 'dist/freetype.wasm')
-    for (const file of ['csg-kernel.mjs', 'csg-kernel.wasm']) await fs.copyFile(`resources/csg/${file}`, `dist/${file}`)
-    await fs.mkdir('dist/fonts', { recursive: true })
-    for (const file of await fs.readdir('resources/fonts')) await fs.copyFile(`resources/fonts/${file}`, `dist/fonts/${file}`)
+    await fs.copyFile('node_modules/vscode-oniguruma/release/onig.wasm', 'dist/onig.wasm')
     await fs.mkdir('dist/codicons', { recursive: true })
     for (const file of ['codicon.css', 'codicon.ttf']) {
         await fs.copyFile(`node_modules/@vscode/codicons/dist/${file}`, `dist/codicons/${file}`)
@@ -83,16 +80,15 @@ async function main() {
         legalComments: 'linked',
         plugins: [esbuildProblemMatcherPlugin],
     })
-    const csgWorker = await esbuild.context({
-        entryPoints: ['src/core/csg/worker.mts'],
+    const meshTopology = await esbuild.context({
+        entryPoints: ['src/core/formats/meshTopologyWorker.mts'],
         bundle: true,
         format: 'esm',
         platform: 'node',
-        outfile: 'dist/csg-worker.mjs',
-        banner: { js: "import { createRequire as scadWorkerRequireFactory } from 'node:module'; const require = scadWorkerRequireFactory(import.meta.url);" },
+        outfile: 'dist/mesh-topology-worker.mjs',
+        banner: { js: "import { createRequire as meshRequireFactory } from 'node:module'; const require = meshRequireFactory(import.meta.url);" },
         minify: production,
         sourcemap: !production,
-        legalComments: 'linked',
         plugins: [esbuildProblemMatcherPlugin],
     })
     const markdownPreview = await esbuild.context({
@@ -123,13 +119,13 @@ async function main() {
         plugins: [esbuildProblemMatcherPlugin],
     })
     if (watch) {
-        await Promise.all([ctx.watch(), webview.watch(), customizer.watch(), csgWorker.watch(), markdownPreview.watch(), markdownOwned.watch()])
+        await Promise.all([ctx.watch(), webview.watch(), customizer.watch(), meshTopology.watch(), markdownPreview.watch(), markdownOwned.watch()])
     } else {
         try {
-            await Promise.all([ctx.rebuild(), webview.rebuild(), customizer.rebuild(), csgWorker.rebuild(), markdownPreview.rebuild(), markdownOwned.rebuild()])
+            await Promise.all([ctx.rebuild(), webview.rebuild(), customizer.rebuild(), meshTopology.rebuild(), markdownPreview.rebuild(), markdownOwned.rebuild()])
             await fs.writeFile('dist/bundled-packages.json', JSON.stringify([...bundledPackages].sort(), null, 2) + '\n')
         } finally {
-            await Promise.all([ctx.dispose(), webview.dispose(), customizer.dispose(), csgWorker.dispose(), markdownPreview.dispose(), markdownOwned.dispose()])
+            await Promise.all([ctx.dispose(), webview.dispose(), customizer.dispose(), meshTopology.dispose(), markdownPreview.dispose(), markdownOwned.dispose()])
         }
     }
 }

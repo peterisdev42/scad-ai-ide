@@ -31,7 +31,7 @@
 | **代码编辑**      | 语法高亮、代码片段、括号匹配、自动缩进、注释与代码折叠                                               |
 | **代码智能**      | 补全、悬停说明、定义跳转、重命名、大纲、错误诊断与格式化                                             |
 | **三维预览**      | 自动更新模型，旋转 / 平移 / 缩放，26 方向视角切换，透视 / 正交投影                                   |
-| **显示与场景**    | 实体 / X-Ray / 线框，网格、打印平台、光照、阴影与场景树                                              |
+| **显示与场景**    | 实体显示，网格、打印平台、光照、阴影与场景树                                                         |
 | **参数调试**      | Customizer 与预览面板双向同步，支持滑块、数值、枚举、布尔、文本、向量与注释提示                      |
 | **参数预设**      | 保存、应用、更新与删除参数方案，兼容 OpenSCAD `.json` 预设文件                                       |
 | **测量与剖切**    | 顶点 / 边 / 面吸附测量，查看坐标与距离，通过剖切平面检查内部结构                                     |
@@ -55,15 +55,15 @@ cube(20);
 Markdown 源码编辑器和预览中的 Source Tab 均支持 `openscad` / `scad`（大小写不敏感）的语法高亮，复用扩展的 OpenSCAD 语法规则；高亮不依赖 CLI，也可在关闭模型预览时使用。
 Source Tab 同时读取当前 VS Code 主题及 `editor.tokenColorCustomizations`，按完整语法 scope 匹配颜色、粗体、斜体和下划线；切换主题或修改自定义规则后自动更新。
 
-Markdown 的 Preview 直接嵌入交互视口。标准路径由选中的 OpenSCAD CLI 导出 **STL / 3MF**；快速路径导出 **CSG 树**（`$preview=true`），宿主 Node Worker 准备操作数、局部几何和规范化 Product，GPU 通过光栅化、Depth/Stencil 与多 Pass 求结果表面。普通三维布尔不在快速首帧生成最终边界网格。两条路径共享 Three.js **WebGPURenderer**，自动选择 WebGPU 或 WebGL 2。
+Markdown 的 Preview 直接嵌入交互视口，普通模式由选中的 OpenSCAD CLI 导出标准网格，使用 Three.js Mesh 渲染。快速模式由独立 Preview Exporter 导出 `.csgp`，使用参考官方 OpenCSG 的 Goldfeather 深度/模板算法显示 Boolean，不预先生成最终网格。
 
-只有进入视口且选中 Preview 的代码块才创建交互实例，同时最多保留两个；离开视口或切到 Source 后暂停绘制，2 秒后释放 GPU 资源，再次进入时恢复视角。CLI/CSG 编译结果按代码块缓存，相对资源以 Markdown 文件所在目录为基准。浏览器不执行 WASM、不读取本地模型文件。快速模式失败会显示原因，编辑器保留最后有效帧，不再暗中导出 STL。通过 `scad-ai-ide.markdown.preview.enabled` 可关闭 Markdown 预览。
+只有进入视口且选中 Preview 的代码块才创建交互实例，同时最多保留两个；离开视口或切到 Source 后暂停绘制，2 秒后释放 GPU 资源，再次进入时恢复视角。模型按代码块缓存，相对资源以 Markdown 文件所在目录为基准。浏览器不执行 WASM、不读取本地模型文件。渲染失败会显示原因。通过 `scad-ai-ide.markdown.preview.enabled` 可关闭 Markdown 预览。
 
-Markdown 默认使用标准网格，可用 `scad-ai-ide.markdown.preview.renderMode: "preview"` 改为快速模式。使用编辑器标题栏或命令 **Open Markdown Preview with 3D Tools** 可打开扩展管理的 Markdown 预览，保留内置预览。该入口支持宿主按需生成精确拓扑，包括剖切后的封口、线框和顶点/边工具；内置预览继续提供兼容入口。
+Markdown 默认使用标准网格，可通过 `scad-ai-ide.markdown.preview.renderMode: "preview"` 选择图像空间快速预览。使用编辑器标题栏或命令 **Open Markdown Preview with 3D Tools** 可打开扩展管理的 Markdown 预览，保留内置预览。视口保留相机、颜色、光照和测量；裁剪、线框及 XRay 切换入口已移除。
 
-预览左下角分别显示求值路径、实际图形后端和首帧耗时。CSG 首帧得到浏览器确认后才启用连续拖动更新。完整实现边界、兼容覆盖和未完成的验收项见 [双路径预览说明](docs/csg-preview.md)。
+预览左下角分别显示求值路径、实际图形后端和首帧耗时。CSG 首帧得到浏览器确认后才启用连续拖动更新。安装、协议和边界见 [Preview Exporter 架构](docs/preview-exporter-architecture.md)，测试与实测性能见 [验收记录](docs/preview-exporter-validation.md)。
 
-`.scad` 预览顶部在透视/正交按钮右侧提供 **CSG preview / Full mesh render** 切换，两种模式均可交互并保留相机位置。默认完整网格，可用 `scad-ai-ide.preview.renderMode: "preview"` 改为 CSG。`.csg` 文件支持相同的预览入口，默认直接读取 CSG，无需额外 CLI 求网格。STL / 3MF 导出始终计算完整几何。
+快速预览入口按钮和左下角性能面板已隐藏。顶部保留 **Full mesh render**，普通预览、模型导出及加载/错误提示继续可用。后台阶段计时仍保留。裁剪、线框和 XRay 切换入口继续隐藏。
 
 <details>
 <summary><strong>参数调整如何工作？</strong></summary>
