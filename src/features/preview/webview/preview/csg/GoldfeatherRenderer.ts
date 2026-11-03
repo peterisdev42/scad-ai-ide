@@ -1,8 +1,11 @@
+import type { CsgPartHint } from '../../../../../core/preview/csgParts'
+import { hintAt, hintColor } from '../managers/CsgPartColors'
 import { AlwaysDepth, AlwaysStencilFunc, BackSide, BufferGeometry, Camera, Color, DoubleSide, EqualStencilFunc, Float32BufferAttribute, FloatType, FrontSide, GreaterDepth, Group, HalfFloatType, IncrementStencilOp, InvertStencilOp, KeepStencilOp, Matrix4, Mesh, NearestFilter, NoBlending, OrthographicCamera, PlaneGeometry, Raycaster, RenderTarget, Scene, Uint32BufferAttribute, Vector2, Vector3, type Intersection, type Light } from 'three'
 import { MeshBasicNodeMaterial, MeshStandardNodeMaterial, QuadMesh, type WebGPURenderer } from 'three/webgpu'
 import { expression, float, Fn, lights, screenUV, texture, vec4 } from 'three/tsl'
 import type { PreviewGroup, PreviewProduct, PreviewScene } from '../../../../../core/preview/types'
 import { decodeFloats, decodeIndices, tracePreview } from '../../../../../core/preview/query'
+import { partColor } from '../managers/PartColors'
 import { measureBufferUploads } from '../passes/BufferUploadTiming'
 
 // Use the rasterizer's depth in both passes, rather than independently reconstructing
@@ -22,6 +25,9 @@ const rasterDepth = Fn((builder) => {
  * Convexity bounds candidate layers, as in OpenCSG's standard Goldfeather variant. */
 export class GoldfeatherRenderer {
     readonly root = new Group()
+    private readonly partIds = new Map<number, number>()
+    private hints?: readonly CsgPartHint[]
+    private readonly hintedColors = new Map<number, Color>()
     private readonly geometries: BufferGeometry[]
     private readonly proxies: Mesh[]
     private readonly draws: Mesh[]
@@ -52,6 +58,23 @@ export class GoldfeatherRenderer {
             geometry.setIndex(new Uint32BufferAttribute(decodeIndices(mesh.indices), 1))
             return geometry
         })
+        const parent = scene.instances.map((_, i) => i)
+        const find = (id: number): number => {
+            while (parent[id] !== id) {
+                parent[id] = parent[parent[id]]
+                id = parent[id]
+            }
+            return id
+        }
+        for (const product of scene.products) for (const term of product.intersections) parent[find(term.id)] = find(product.intersections[0].id)
+        const parts = new Map<number, number>()
+        for (const product of scene.products) {
+            if (!product.intersections.length) continue
+            const root = find(product.intersections[0].id)
+            if (!parts.has(root)) parts.set(root, parts.size)
+            for (const term of product.intersections) this.partIds.set(term.id, parts.get(root)!)
+        }
+        for (const product of scene.products) for (const term of product.subtractions) if (!this.partIds.has(term.id) && product.intersections.length) this.partIds.set(term.id, this.partIds.get(product.intersections[0].id)!)
         this.proxies = scene.instances.map((instance) => {
             const mesh = new Mesh(this.geometries[instance.mesh], this.parity)
             mesh.matrixAutoUpdate = false
@@ -102,7 +125,18 @@ export class GoldfeatherRenderer {
         return material
     }
 
-    updateAppearance(color: Color, override: boolean, world: Scene, cutout: Color = color) {
+    updateAppearance(color: Color, override: boolean, world: Scene, cutout: Color = color, partColors = false, hints?: readonly CsgPartHint[]) {
+        if (this.hints !== hints) {
+            this.hints = hints
+            this.hintedColors.clear()
+            if (hints?.length)
+                for (const [id, part] of this.partIds) {
+                    const bounds = this.scene.instances[id].bounds
+                    const point = bounds.min.map((n, d) => (n + bounds.max[d]) / 2 + this.scene.origin[d])
+                    const hint = hintAt(hints, point)
+                    if (hint && !this.hintedColors.has(part)) this.hintedColors.set(part, hintColor(hint))
+                }
+        }
         const sourceLights: Light[] = []
         world.traverseVisible((object) => {
             if ((object as Light).isLight) sourceLights.push(object as Light)
@@ -114,7 +148,8 @@ export class GoldfeatherRenderer {
             const [id, group, negative] = key.split(':')
             const instance = this.scene.instances[Number(id)]
             if (group === 'products') {
-                if (override) material.color.copy(color)
+                if (partColors) material.color.copy(this.hintedColors.get(this.partIds.get(Number(id)) ?? 0) ?? partColor(this.partIds.get(Number(id)) ?? 0))
+                else if (override) material.color.copy(color)
                 else if (instance.defaultColor) material.color.copy(negative === 'true' ? cutout : color)
                 else material.color.setRGB(...(instance.color.slice(0, 3) as [number, number, number]))
             }

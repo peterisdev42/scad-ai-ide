@@ -1,3 +1,4 @@
+import type { CsgPartHint } from '../../../../core/preview/csgParts'
 import type { ClipPlane } from '../../../../core/preview/types'
 import { createContext } from '@lit/context'
 import { ModelFormat } from '../../shared/types/ModelFormat'
@@ -8,6 +9,8 @@ import type { GeometryData } from '../../../../core/preview/types'
 export interface ModelContext {
     format: ModelFormat | null
     modelVersion?: number
+    csgPartsAvailable?: boolean
+    csgPartHints?: CsgPartHint[]
     previewError?: string
     queryTopology?: (planes?: ClipPlane[]) => Promise<GeometryData>
     reportPerformance?: (timings: PreviewTimings) => void

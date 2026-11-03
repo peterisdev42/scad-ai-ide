@@ -23,7 +23,7 @@ before(async () => {
 })
 after(async () => browser?.close())
 
-async function fixture(t, mode = 'render', deviceScaleFactor = 1, content = csg) {
+async function fixture(t, mode = 'render', deviceScaleFactor = 1, content = csg, partHints) {
     const server = createServer((request, response) => {
         const path = new URL(request.url, 'http://fixture').pathname
         if (path === '/') {
@@ -49,7 +49,7 @@ async function fixture(t, mode = 'render', deviceScaleFactor = 1, content = csg)
         if (message.type() === 'error' && /Shader Error|GPUValidationError|OpenSCAD Preview/.test(message.text())) errors.push(message.text())
     })
     await page.addInitScript(
-        ({ mode, csg, stl, topology, webgpu, denserCsg }) => {
+        ({ mode, csg, stl, topology, webgpu, denserCsg, partHints }) => {
             window.__scadTestWebGPU = webgpu
             if (!window.__scadTestWebGPU) Object.defineProperty(navigator, 'gpu', { value: undefined, configurable: true })
             window.denserCsg = denserCsg
@@ -66,6 +66,7 @@ async function fixture(t, mode = 'render', deviceScaleFactor = 1, content = csg)
                             update(mode)
                             send({ type: 'updateParameters', parameters: [{ name: 'width', group: 'Parameters', type: 'number', value: 20 }], overrides: {}, parameterSets: {} })
                         })
+                    if (message.type === 'setPartColors' && message.enabled && partHints) queueMicrotask(() => send({ type: 'partHints', modelVersion: message.modelVersion, hints: partHints }))
                     if (message.type === 'queryTopology') queueMicrotask(() => send({ type: 'topology', modelVersion: message.modelVersion, geometry: topology }))
                     if (message.type === 'setPreviewMode')
                         queueMicrotask(() => {
@@ -76,7 +77,7 @@ async function fixture(t, mode = 'render', deviceScaleFactor = 1, content = csg)
                 },
             })
         },
-        { mode, csg: content, stl, topology, denserCsg, webgpu: process.env.SCAD_TEST_WEBGPU === '1' },
+        { mode, csg: content, stl, topology, denserCsg, partHints, webgpu: process.env.SCAD_TEST_WEBGPU === '1' },
     )
     t.after(async () => {
         await page.close()
@@ -109,7 +110,7 @@ test('ordinary preview exposes only basic controls and keeps the camera across m
     assert.deepEqual(await page.locator('scad-preview').evaluate((p) => p.stage.serializeProperties().get('camera-default')), camera)
     await page.locator('scad-app').evaluate((app) => app.modelContext.setPreviewMode('preview'))
     await page.waitForFunction(() => document.querySelector('scad-app').shadowRoot.querySelector('scad-preview').stage.modelContext.format === 'csgp')
-    await page.getByRole('switch', { name: 'Full mesh render', exact: true }).click()
+    await page.locator('scad-app').evaluate((app) => app.modelContext.setPreviewMode('render'))
     await page.waitForFunction(() => document.querySelector('scad-app').shadowRoot.querySelector('scad-preview').stage.modelContext.format === 'stl')
     assert.equal(await page.evaluate(() => window.hostMessages.filter((m) => m.type === 'setPreviewMode').length), 2)
 })
@@ -398,20 +399,110 @@ test('quick mode offers surface measurement and full mode keeps exact vertex and
     const variant = await page.locator('scad-preview').evaluate((p) => p.stage.toolVariant)
     assert.equal(variant, 'face')
     assert.equal(await page.getByRole('switch', { name: 'Shadows require Full Render', exact: true }).isDisabled(), true)
-    await page.getByRole('switch', { name: 'Full mesh render', exact: true }).click()
+    await page.locator('scad-app').evaluate((app) => app.modelContext.setPreviewMode('render'))
     await page.waitForFunction(() => document.querySelector('scad-app').modelContext.format === 'stl')
     await measure.hover()
     assert.equal(await page.getByRole('switch', { name: 'Vertex', exact: true }).count(), 1)
     assert.equal(await page.getByRole('switch', { name: 'Edge', exact: true }).count(), 1)
 })
 
-test('quick preview entry and performance panel stay hidden in both modes', async (t) => {
+test('preview mode switches and performance panel stay hidden in both modes', async (t) => {
     for (const mode of ['render', 'preview']) {
         const page = await fixture(t, mode)
         await ready(page)
         await page.evaluate(() => window.dispatchEvent(new MessageEvent('message', { data: { type: 'previewBackend', backend: { kind: 'csg', frameReady: true, timings: { totalPreviewMs: 123 } } } })))
         assert.equal(await page.getByRole('switch', { name: 'CSG preview', exact: true }).count(), 0)
+        assert.equal(await page.getByRole('switch', { name: 'Full mesh render', exact: true }).count(), 0)
         assert.equal(await page.locator('scad-backend-status').count(), 0)
         assert.equal(await page.getByText('Performance details', { exact: true }).count(), 0)
     }
+})
+
+test('part color toggle distinguishes disconnected STL shells and restores manual colors without a host render', async (t) => {
+    const page = await fixture(t, 'render')
+    await ready(page)
+    const bytes = Buffer.alloc(184)
+    bytes.writeUInt32LE(2, 80)
+    for (let part = 0; part < 2; part++) {
+        const x = part * 30
+        const values = [0, 0, 1, x, 0, 0, x + 20, 0, 0, x, 20, 0]
+        values.forEach((value, i) => bytes.writeFloatLE(value, 84 + part * 50 + i * 4))
+    }
+    await page.evaluate((content) => window.dispatchEvent(new MessageEvent('message', { data: { type: 'update', format: 'stl', content, modelVersion: 81 } })), bytes.toString('base64'))
+    await page.waitForFunction(() => window.hostMessages.some((message) => message.type === 'frameReady' && message.modelVersion === 81))
+    const toggle = page.getByRole('switch', { name: 'Color parts separately', exact: true })
+    const before = await page.evaluate(() => window.hostMessages.filter((m) => m.type === 'setPreviewMode').length)
+    await toggle.click()
+    assert.equal(await toggle.getAttribute('aria-checked'), 'true')
+    const colors = await page.locator('scad-preview').evaluate((p) => {
+        const mesh = p.stage.modelGroup.children[0],
+            color = mesh.geometry.getAttribute('color')
+        return [Array.from(color.array.slice(0, 3)), Array.from(color.array.slice(9, 12)), mesh.material.vertexColors]
+    })
+    assert.notDeepEqual(colors[0], colors[1])
+    assert.equal(colors[2], true)
+    await toggle.click()
+    assert.equal(await page.locator('scad-preview').evaluate((p) => p.stage.modelGroup.children[0].geometry.hasAttribute('color')), false)
+    await toggle.click()
+    await page.locator('scad-toolbar').evaluate((toolbar) => {
+        const input = toolbar.shadowRoot.querySelector('#model-color')
+        input.value = '#ff0000'
+        input.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+    await page.waitForFunction(() => document.querySelector('scad-app').viewSettingsContext.get('partColors') === false)
+    assert.equal(await page.locator('scad-preview').evaluate((p) => p.stage.modelGroup.children[0].material.color.getHexString()), 'ff0000')
+    assert.equal(await page.evaluate(() => window.hostMessages.filter((m) => m.type === 'setPreviewMode').length), before)
+})
+
+test('part colors also toggle on prepared Boolean previews without changing geometry', async (t) => {
+    const page = await fixture(t, 'preview')
+    await ready(page)
+    const toggle = page.getByRole('switch', { name: 'Color parts separately', exact: true })
+    const before = await page.locator('scad-preview').evaluate((p) => ({ version: p.stage.modelRepresentation.modelVersion, colors: [...p.stage.modelRepresentation.imageCsg.shade.values()].map((m) => m.color.getHexString()) }))
+    await toggle.click()
+    await page.waitForFunction(() => document.querySelector('scad-app').viewSettingsContext.get('partColors') === true)
+    // Wait for drawFrame to apply CSG appearance settings.
+    await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))))
+    const enabled = await page.locator('scad-preview').evaluate((p) => [...p.stage.modelRepresentation.imageCsg.shade.values()].map((m) => m.color.getHexString()))
+    assert.notDeepEqual(enabled, before.colors)
+    await toggle.click()
+    await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))))
+    const restored = await page.locator('scad-preview').evaluate((p) => ({ version: p.stage.modelRepresentation.modelVersion, colors: [...p.stage.modelRepresentation.imageCsg.shade.values()].map((m) => m.color.getHexString()) }))
+    assert.deepEqual(restored, before)
+})
+
+test('CSG color assistance is requested lazily and applied without replacing the model or rendering again', async (t) => {
+    const hints = [
+        { id: '/0', min: [0, 0, 0], max: [1, 1, 1], color: [1, 0, 0] },
+        { id: '/1', min: [1, 0, 0], max: [2, 1, 1], color: [0, 1, 0] },
+    ]
+    const page = await fixture(t, 'render', 1, csg, hints)
+    await ready(page)
+    const bytes = Buffer.alloc(184)
+    bytes.writeUInt32LE(2, 80)
+    for (const [part, positions] of [
+        [0, [0, 0, 0, 1, 0, 0, 1, 1, 0]],
+        [1, [1, 0, 0, 2, 0, 0, 1, 1, 0]],
+    ]) {
+        ;[0, 0, 1, ...positions].forEach((value, i) => bytes.writeFloatLE(value, 84 + part * 50 + i * 4))
+    }
+    await page.evaluate((content) => window.dispatchEvent(new MessageEvent('message', { data: { type: 'update', format: 'stl', content, modelVersion: 91, csgPartsAvailable: true } })), bytes.toString('base64'))
+    await page.waitForFunction(() => window.hostMessages.some((m) => m.type === 'frameReady' && m.modelVersion === 91))
+    assert.equal(await page.evaluate(() => window.hostMessages.filter((m) => m.type === 'setPartColors').length), 0)
+    const toggle = page.getByRole('switch', { name: 'Color parts separately', exact: true })
+    await page.locator('scad-preview').evaluate((p) => (window.originalModel = p.stage.modelRepresentation))
+    await toggle.click()
+    await page.waitForFunction(() => document.querySelector('scad-app').modelContext.csgPartHints?.length === 2)
+    await page.waitForFunction(() => document.querySelector('scad-app').shadowRoot.querySelector('scad-preview').stage.modelGroup.children[0].geometry.getAttribute('color')?.getX(0) === 1)
+    const result = await page.locator('scad-preview').evaluate((p) => {
+        const colors = p.stage.modelGroup.children[0].geometry.getAttribute('color')
+        return { first: Array.from(colors.array.slice(0, 3)), second: Array.from(colors.array.slice(9, 12)), sameModel: p.stage.modelRepresentation === window.originalModel }
+    })
+    assert.deepEqual(result, { first: [1, 0, 0], second: [0, 1, 0], sameModel: true })
+    await toggle.click()
+    assert.equal(await page.locator('scad-preview').evaluate((p) => p.stage.modelGroup.children[0].geometry.hasAttribute('color')), false)
+    await toggle.click()
+    await page.waitForFunction(() => document.querySelector('scad-app').viewSettingsContext.get('partColors') === true)
+    assert.equal(await page.evaluate(() => window.hostMessages.filter((m) => m.type === 'setPartColors' && m.enabled).length), 1)
+    assert.equal(await page.evaluate(() => window.hostMessages.filter((m) => m.type === 'setPreviewMode').length), 0)
 })

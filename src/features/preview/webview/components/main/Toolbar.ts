@@ -125,6 +125,11 @@ export class Toolbar extends LitElement {
 
     private rememberedVariants = new Map<ActiveTool, string>()
 
+    private setModelColor(color: string | null) {
+        this.viewSettings.set('partColors', false)
+        this.viewSettings.set('modelColor', color)
+    }
+
     render() {
         return html`
             ${groups.map(
@@ -154,8 +159,11 @@ export class Toolbar extends LitElement {
                 <scad-icon-button label="Choose model color" @change=${() => this.colorInput.click()}>
                     <scad-icon name="model-color"></scad-icon>
                 </scad-icon-button>
-                <input id="model-color" type="color" tabindex="-1" aria-label="Model color" .value=${this.viewSettings?.get('modelColor') ?? `#${readPreviewTheme(getComputedStyle(document.body)).additive.getHexString()}`} @input=${(event: Event) => this.viewSettings.set('modelColor', (event.target as HTMLInputElement).value)} />
-                ${this.viewSettings?.get('modelColor') ? html`<scad-icon-button label="Restore default model color" @change=${() => this.viewSettings.set('modelColor', null)}><scad-icon name="color-reset"></scad-icon></scad-icon-button>` : nothing}
+                <scad-icon-button label="Color parts separately" toggleable .checked=${!!this.viewSettings?.get('partColors')} @change=${() => this.viewSettings.set('partColors', !this.viewSettings.get('partColors'))}>
+                    <scad-icon name="part-colors"></scad-icon>
+                </scad-icon-button>
+                <input id="model-color" type="color" tabindex="-1" aria-label="Model color" .value=${this.viewSettings?.get('modelColor') ?? `#${readPreviewTheme(getComputedStyle(document.body)).additive.getHexString()}`} @input=${(event: Event) => this.setModelColor((event.target as HTMLInputElement).value)} />
+                ${this.viewSettings?.get('modelColor') ? html`<scad-icon-button label="Restore default model color" @change=${() => this.setModelColor(null)}><scad-icon name="color-reset"></scad-icon></scad-icon-button>` : nothing}
             </div>
         `
     }

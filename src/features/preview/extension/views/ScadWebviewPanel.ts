@@ -1,3 +1,4 @@
+import { readCsgPartHints, type CsgPartHint } from '../../../../core/preview/csgParts'
 import { notifications, confirmDeleteParameterSet } from '../../../../platform/notifications'
 import { randomBytes } from 'node:crypto'
 import { ScadClient } from '../services/ScadClient'
@@ -24,6 +25,10 @@ export class ScadWebviewPanel {
     private awaitingRender = false
     private modelVersion = 0
     private topologyController?: AbortController
+    private partHintsController?: AbortController
+    private partHintsCache?: { model: object; hints: CsgPartHint[] }
+    private partHintsPending?: object
+    private renderParameters: Record<string, string | number | boolean | number[]> = {}
 
     private get sceneStateKey(): string {
         return `openscad.scene.${this.session.documentUri.toString()}`
@@ -55,6 +60,42 @@ export class ScadWebviewPanel {
                             this.isWebviewReady = true
                             this.pushInitialState()
                             return
+                        case 'setPartColors': {
+                            if (!message.enabled) {
+                                this.partHintsController?.abort()
+                                this.partHintsPending = undefined
+                                return
+                            }
+                            const model = this.lastRender
+                            if (!model || this.awaitingRender || model.modelVersion !== message.modelVersion || this.session.sourceFormat || !workspace.isTrusted) return
+                            if (this.partHintsCache?.model === model) {
+                                this.postMessage({ type: 'partHints', modelVersion: model.modelVersion, hints: this.partHintsCache.hints })
+                                return
+                            }
+                            if (this.partHintsPending === model) return
+                            this.partHintsController?.abort()
+                            const controller = (this.partHintsController = new AbortController())
+                            this.partHintsPending = model
+                            const started = performance.now()
+                            try {
+                                const buffer = await ScadClient.render(this.session.documentUri.fsPath, { $preview: this.session.previewMode === 'preview', ...this.renderParameters }, 'csg', undefined, `${this.session.documentUri.toString()}:part-colors`, undefined, AbortSignal.any([controller.signal, AbortSignal.timeout(2500)]))
+                                const hints = readCsgPartHints(buffer.toString('utf8'))
+                                if (!controller.signal.aborted && !this.disposed && !this.awaitingRender && this.lastRender === model) {
+                                    this.partHintsCache = { model, hints }
+                                    this.postMessage({ type: 'partHints', modelVersion: model.modelVersion, hints })
+                                    ScadClient.outputChannel?.appendLine(`[Part colors] CSG metadata: ${buffer.length} bytes, ${hints.length} groups, ${(performance.now() - started).toFixed(1)} ms`)
+                                }
+                            } catch (error) {
+                                if (!controller.signal.aborted && !this.disposed && this.lastRender === model) {
+                                    this.partHintsCache = { model, hints: [] }
+                                    this.postMessage({ type: 'partHints', modelVersion: model.modelVersion, hints: [] })
+                                    ScadClient.outputChannel?.appendLine(`[Part colors] Using geometry fallback: ${String(error)}`)
+                                }
+                            } finally {
+                                if (this.partHintsController === controller) this.partHintsPending = undefined
+                            }
+                            return
+                        }
                         case 'queryTopology': {
                             const model = this.lastRender
                             if (!model || model.modelVersion !== message.modelVersion) return
@@ -133,6 +174,9 @@ export class ScadWebviewPanel {
         this.session.onRenderStarted(
             () => {
                 this.awaitingRender = true
+                this.partHintsController?.abort()
+                this.partHintsCache = undefined
+                this.partHintsPending = undefined
                 this.pushPreviewMode()
                 this.postMessage({
                     type: 'loadingState',
@@ -163,11 +207,13 @@ export class ScadWebviewPanel {
                 const modelVersion = ++this.modelVersion
                 this.topologyController?.abort()
                 this.lastRender = { base64Data, format, modelVersion }
+                this.renderParameters = Object.fromEntries(Object.entries(this.session.currentOverrides ?? {}).map(([key, value]) => [key, Array.isArray(value) ? [...value] : value]))
                 this.postMessage({
                     type: 'update',
                     content: base64Data,
                     format,
                     modelVersion,
+                    csgPartsAvailable: !this.session.sourceFormat,
                 })
             },
             null,
@@ -324,6 +370,7 @@ export class ScadWebviewPanel {
                 content: this.lastRender.base64Data,
                 format: this.lastRender.format,
                 modelVersion: this.lastRender.modelVersion,
+                csgPartsAvailable: !this.session.sourceFormat,
             })
         }
         if (this.previewMessage?.type === 'previewIssue') this.postMessage(this.previewMessage)
@@ -445,6 +492,8 @@ export class ScadWebviewPanel {
         this.topologyController?.abort()
         if (this.disposed) return
         this.disposed = true
+        this.partHintsController?.abort()
+        this.partHintsCache = undefined
         this.panel.dispose()
         while (this.disposables.length) {
             const x = this.disposables.pop()

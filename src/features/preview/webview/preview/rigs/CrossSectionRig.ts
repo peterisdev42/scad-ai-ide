@@ -3,7 +3,7 @@ import { Line2 } from 'three/examples/jsm/lines/webgpu/Line2.js'
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js'
 import { Line2NodeMaterial as LineMaterial } from 'three/webgpu'
 import { CrossSectionPlaneProperties } from '../../contexts/SelectedObjectContext'
-import { Theme } from '../Stage'
+import type { Theme } from '../Theme'
 import { Rig } from './Rig'
 
 // Each rig occupies one render-order tier so stencil→cap cycles never overlap.

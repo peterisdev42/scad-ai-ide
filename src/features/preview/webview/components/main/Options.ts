@@ -54,11 +54,6 @@ export class Options extends LitElement {
         this.viewSettings.set(key, value)
     }
 
-    private setPreviewMode(mode: 'preview' | 'render', event: Event) {
-        ;(event.currentTarget as IconButton).checked = true
-        this.model?.setPreviewMode?.(mode)
-    }
-
     private setPlateOrigin(origin: BuildPlateOrigin, event: Event) {
         if (this.viewSettings.get('environment') !== Environment.BuildPlate) return
         ;(event.currentTarget as IconButton).checked = true
@@ -86,14 +81,6 @@ export class Options extends LitElement {
                     <scad-icon name="camera-orthographic"></scad-icon>
                 </scad-icon-button>
             </div>
-
-            ${
-                this.model?.setPreviewMode
-                    ? html`<div class="group">
-                          <scad-icon-button label="Full mesh render" .href=${this.model.modeLinks?.render} toggleable .checked=${this.model.previewMode === 'render'} @change=${(event: Event) => this.setPreviewMode('render', event)}><scad-icon name="render-solid"></scad-icon></scad-icon-button>
-                      </div>`
-                    : null
-            }
 
             <div class="group">
                 <scad-icon-button label=${this.model?.format === 'csgp' ? 'Shadows require Full Render' : 'Toggle Shadows'} .disabled=${this.model?.format === 'csgp'} toggleable .checked=${get('shadows')} @change=${() => this.set('shadows', !get('shadows'))}>

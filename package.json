@@ -3,6 +3,10 @@
     "displayName": "SCAD AI IDE",
     "description": "OpenSCAD runtime discovery and development tools for VS Code",
     "version": "0.0.1",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/peterisdev42/scad-ai-ide.git"
+    },
     "engines": {
         "vscode": "^1.140.0"
     },

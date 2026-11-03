@@ -46,13 +46,13 @@ GPU 图像组包括 Cube、Sphere、Cylinder、镜像/旋转变换、Union、Dif
 | 64 实例               | webgpu |    126 |     66 |        100 |         67 |
 | 64 实例               | webgl2 |    142 |     92 |        116 |         92 |
 
-五种模型共 20 个新样本的原始分阶段数据在 [新管线 JSON](preview-exporter-benchmark.json)；[旧管线 JSON](preview-exporter-legacy-baseline.json) 包含 CLI、worker、shader、upload、首帧及总时间。
+五种模型共 20 个新样本的原始分阶段数据在 [新管线 JSON](artifacts/preview-exporter-benchmark.json)；[旧管线 JSON](artifacts/preview-exporter-legacy-baseline.json) 包含 CLI、worker、shader、upload、首帧及总时间。
 
 结论：旧 worker 的约 44–57 ms 预处理被移除，新 JSON/Scene 转换在本组样本约 0.1–2 ms。共享材质显著降低了实例数造成的 shader 构建开销。新方案在这些首次样本上较快，WebGL2 的复杂 Boolean 参数更新仍略慢于旧版。样本量有限，没有声称所有模型和设备均更快；首次驱动编译、复杂重叠和显式拓扑操作仍可能更慢。
 
-![WebGPU 复杂 Boolean 实际画布](preview-exporter-benchmark-webgpu.png)
+![WebGPU 复杂 Boolean 实际画布](artifacts/preview-exporter-benchmark-webgpu.png)
 
-![WebGL2 复杂 Boolean 实际画布](preview-exporter-benchmark-webgl2.png)
+![WebGL2 复杂 Boolean 实际画布](artifacts/preview-exporter-benchmark-webgl2.png)
 
 ## 复现
 
@@ -67,7 +67,7 @@ npm run test:preview-gpu
 SCAD_TEST_WEBGPU=1 node --test scripts/preview-fast.test.mjs
 npm run test:integration
 npm run test:preview-editor
-npm run benchmark:preview -- docs/preview-exporter-benchmark.json
+npm run benchmark:preview -- docs/artifacts/preview-exporter-benchmark.json
 ```
 
 ## 尚未完成的验证或功能

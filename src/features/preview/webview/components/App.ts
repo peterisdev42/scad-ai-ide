@@ -79,6 +79,7 @@ export class App extends LitElement {
             renderMode: RenderMode.Solid,
             camera: CameraMode.Perspective,
             modelColor: null,
+            partColors: false,
             shadows: true,
             fogDensity: 0,
         },
@@ -93,6 +94,11 @@ export class App extends LitElement {
                 },
             }
             if (key === 'modelColor') this.schedulePersist()
+            if (key === 'partColors' && !value && this.modelContext.csgPartsAvailable) {
+                this.bridge.setPartColors(false, this.modelContext.modelVersion ?? 0)
+                this.partHintsRequested = undefined
+                clearTimeout(this.partHintsTimer)
+            }
         },
     }
 
@@ -291,7 +297,17 @@ export class App extends LitElement {
 
     private _stageWired = false
 
+    private partHintsRequested?: number
+    private partHintsTimer?: ReturnType<typeof setTimeout>
     updated() {
+        const model = this.modelContext
+        if (this.viewSettingsContext.get('partColors') && model.csgPartsAvailable && model.csgPartHints === undefined && model.modelVersion !== this.partHintsRequested) {
+            clearTimeout(this.partHintsTimer)
+            this.partHintsRequested = model.modelVersion
+            this.partHintsTimer = setTimeout(() => {
+                if (this.viewSettingsContext.get('partColors') && this.modelContext.modelVersion === model.modelVersion) this.bridge.setPartColors(true, model.modelVersion ?? 0)
+            }, 150)
+        }
         if (!this._stageWired && this.previewEl?.stage && this.sceneLoaded) {
             this._stageWired = true
             this.previewEl.stage.setSelectionCallbacks(
@@ -361,6 +377,7 @@ export class App extends LitElement {
     disconnectedCallback() {
         if (this.persistTimer !== null) window.clearTimeout(this.persistTimer)
         this.persistScene()
+        clearTimeout(this.partHintsTimer)
         this.dispatchEvent(new Event('preview-disconnecting'))
         super.disconnectedCallback()
         this.unsubscribe?.()
@@ -368,6 +385,9 @@ export class App extends LitElement {
 
     private handleMessage = (message: ExtensionToWebviewMessage) => {
         switch (message.type) {
+            case 'partHints':
+                if (message.modelVersion === this.modelContext.modelVersion) this.modelContext = { ...this.modelContext, csgPartHints: message.hints }
+                break
             case 'previewBackend':
                 this.modelContext = { ...this.modelContext, backend: message.backend }
                 break
@@ -381,6 +401,8 @@ export class App extends LitElement {
                         format: message.format,
                         base64Data: message.content,
                         modelVersion: message.modelVersion,
+                        csgPartsAvailable: message.csgPartsAvailable,
+                        csgPartHints: undefined,
                         queryTopology: (planes) => this.bridge.queryTopology(message.modelVersion ?? 0, planes),
                         reportPerformance: (timings) => this.bridge.reportPerformance(message.modelVersion ?? 0, timings),
                         frameReady: (graphics, elapsedMs) => this.bridge.frameReady(message.modelVersion ?? 0, graphics, elapsedMs),

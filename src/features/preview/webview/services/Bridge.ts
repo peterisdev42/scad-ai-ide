@@ -45,6 +45,10 @@ export class Bridge {
         this.post({ type: 'ready' })
     }
 
+    public setPartColors(enabled: boolean, modelVersion: number) {
+        this.post({ type: 'setPartColors', enabled, modelVersion })
+    }
+
     public setPreviewMode(mode: PreviewMode) {
         this.post({ type: 'setPreviewMode', mode })
     }

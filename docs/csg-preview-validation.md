@@ -7,16 +7,16 @@
 
 同一台 Apple M4 Pro，以 Chromium 149.0.7827.55、Three.js 0.187.0、OpenSCAD 2026.10.27 测量。WebGPU 的公开 adapter 信息为 Apple / metal-3；WebGL 2 通过 `WebGPURenderer({forceWebGL:true})` 运行。物理附件尺寸分别为 1920×1080、3840×2160，非 CSS 缩小视口。
 
-修改前已记录 [首次基线](csg-ray-baseline-initial-1080p.json)。最终比较在相同基准程序中依次运行原实现源码快照和最终实现；快照位于不打包的 `.build/csg-audit-baseline`，运行时不保留另一套 Renderer。每个模型、后端各记录 20 次实际相机旋转，每次旋转 0.015 弧度；P50/P95 对保存的样本作线性插值。这是短程交互基准，不能替代长期热稳定性测试。
+修改前已记录 [首次基线](artifacts/csg-ray-baseline-initial-1080p.json)。最终比较在相同基准程序中依次运行原实现源码快照和最终实现；快照位于不打包的 `.build/csg-audit-baseline`，运行时不保留另一套 Renderer。每个模型、后端各记录 20 次实际相机旋转，每次旋转 0.015 弧度；P50/P95 对保存的样本作线性插值。这是短程交互基准，不能替代长期热稳定性测试。
 
 每帧等待真实渲染目标读回，以确认之前的 GPU 工作完成；不使用已被 r187 移除的 `waitForGPU()`。只有 1 像素完成标记读回，布尔可见性不在 CPU 求解。首次及更新画面额外等待两次 rAF，记录呈现机会；没有直接测量操作系统扫描到物理屏幕的时间。
 
-原实现的 `waitForGPU()` 控制台错误次数完整保留；原实现 200 个重复图元的 WebGPU Shader 编译失败也保留为失败，没有填入帧时间。原有 [96×96 历史记录](csg-benchmark.json) 已明确标注不适用于性能验收。
+原实现的 `waitForGPU()` 控制台错误次数完整保留；原实现 200 个重复图元的 WebGPU Shader 编译失败也保留为失败，没有填入帧时间。原有 [96×96 历史记录](artifacts/csg-benchmark.json) 已明确标注不适用于性能验收。
 
 原始数据包含 CLI、Worker 总耗时、局部几何、规范化、GPU 上传/预热、Shader 准备、首次 GPU 帧、首次画面、全部旋转样本、编辑更新和 Three.js 资源计数：
 
-- [旧实现 1080p](csg-ray-baseline-1080p.json)、[新实现 1080p](csg-raster-1080p.json)
-- [旧实现 4K](csg-ray-baseline-4k.json)、[新实现 4K](csg-raster-4k.json)
+- [旧实现 1080p](artifacts/csg-ray-baseline-1080p.json)、[新实现 1080p](artifacts/csg-raster-1080p.json)
+- [旧实现 4K](artifacts/csg-ray-baseline-4k.json)、[新实现 4K](artifacts/csg-raster-4k.json)
 
 `shaderMs` 是准备阶段减去上传/预热的墙钟时间；`uploadMs` 也包含预热绘制所需的后端工作，并非硬件计时器分离出的纯 DMA 时间。`firstPresentedMs` 从浏览器开始准备模型计算，不含 CLI/Worker 和 Renderer 初始化。`customizerTransformUpdateMs` 是分别测量的 host 与浏览器阶段之和，不冒充真实 VS Code 输入延迟。真实 Customizer 测量另列。
 
@@ -84,14 +84,14 @@ Three.js `info.memory.total` 是记录时已分配资源的估算，不是物理
 
 ## 真实 Customizer 到画面
 
-在 VS Code 1.144.0 / Chromium 150.0.7871.250 中，对 Cube 宽度作十次不命中旧结果的尺寸修改，实际 WebGPU 画布 1690×1352。P50 **104.00 ms**、P95 **110.55 ms**。计时从真实 extension host 的 `CustomizerService.set(width,value,'input')` 开始，经过 CLI、Worker、Webview、GPU 完成、两次 rAF、host 确认；包含轮询/确认开销，不包括 DOM 手势派发。[全部样本](csg-customizer-latency.json)。没有相同方法的旧实现 Customizer 记录，因此不宣称此指标的改善倍数。
+在 VS Code 1.144.0 / Chromium 150.0.7871.250 中，对 Cube 宽度作十次不命中旧结果的尺寸修改，实际 WebGPU 画布 1690×1352。P50 **104.00 ms**、P95 **110.55 ms**。计时从真实 extension host 的 `CustomizerService.set(width,value,'input')` 开始，经过 CLI、Worker、Webview、GPU 完成、两次 rAF、host 确认；包含轮询/确认开销，不包括 DOM 手势派发。[全部样本](artifacts/csg-customizer-latency.json)。没有相同方法的旧实现 Customizer 记录，因此不宣称此指标的改善倍数。
 
 
 ## 官方 F5 对照
 
 官方 CLI 使用 `--preview=opencsg`、1920×1080、固定摄像机、22.5° 透视 FOV、相同分面参数。十个模型包含多层嵌套、通孔、非凸 render 屏障、挤出、凹多面体、MCAD 齿轮、嵌套 `%` 和高亮差集。在 WebGPU、WebGL 2 均通过轮廓比较，排除参考轮廓两像素边缘带。没有逐像素匹配颜色或光照。
 
-[WebGPU 对照明细](csg-f5-1080p-webgpu.json)、[WebGL 2 对照明细](csg-f5-1080p-webgl2.json) 保留每模型结果；普通通孔与高亮差集的三份原始 PNG 链接见 [实现文档](csg-preview.md)。官方 `officialProcessMs` 包含整个 CLI 进程导出，不是 Qt IDE 的 F5 首帧或旋转时间。未测量官方 Qt IDE 连续旋转帧率。
+[WebGPU 对照明细](artifacts/csg-f5-1080p-webgpu.json)、[WebGL 2 对照明细](artifacts/csg-f5-1080p-webgl2.json) 保留每模型结果；普通通孔与高亮差集的三份原始 PNG 链接见 [实现文档](csg-preview.md)。官方 `officialProcessMs` 包含整个 CLI 进程导出，不是 Qt IDE 的 F5 首帧或旋转时间。未测量官方 Qt IDE 连续旋转帧率。
 
 ## 自动化回归
 
@@ -113,7 +113,7 @@ Three.js `info.memory.total` 是记录时已分配资源的估算，不是物理
 | `npm run package` | 类型、lint、production bundle、许可证准备通过 |
 | `node scripts/verify-csg-package.mjs .build/artifacts/scad-ai-ide-raster-preview.vsix` | 隔离 VSIX Worker / Product、无 GPU BLAS/TLAS、字体、roof、许可证检查通过 |
 
-[机器可读记录与用例名称](csg-preview-tests.json)。实际 VS Code 使用 1.144.0 / Chromium 150.0.7871.250；浏览器独立 GPU 测试使用 Chromium 149.0.7827.55。测试设备恢复为回调模拟，不是物理设备复位。
+[机器可读记录与用例名称](artifacts/csg-preview-tests.json)。实际 VS Code 使用 1.144.0 / Chromium 150.0.7871.250；浏览器独立 GPU 测试使用 Chromium 149.0.7827.55。测试设备恢复为回调模拟，不是物理设备复位。
 
 Editor 夹具的共享 CLI 日志竞争与两个遗留 v2 schema 断言已经修正后重跑；没有通过取消断言或放宽像素容差隐藏失败。VSIX 本地打包使用 `--no-dependencies --allow-missing-repository --no-rewrite-relative-links`，不发布到外部服务。
 

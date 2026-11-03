@@ -8,3 +8,8 @@ LICENSE
 .preview-sync/
 sources/
 licenses/
+.build/
+server/
+logs/
+docs/artifacts/
+*.vsix

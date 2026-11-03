@@ -61,7 +61,7 @@ Markdown 的 Preview 直接嵌入交互视口，普通模式由选中的 OpenSCA
 
 Markdown 默认使用标准网格，可通过 `scad-ai-ide.markdown.preview.renderMode: "preview"` 选择图像空间快速预览。使用编辑器标题栏或命令 **Open Markdown Preview with 3D Tools** 可打开扩展管理的 Markdown 预览，保留内置预览。视口保留相机、颜色、光照和测量；裁剪、线框及 XRay 切换入口已移除。
 
-预览左下角分别显示求值路径、实际图形后端和首帧耗时。CSG 首帧得到浏览器确认后才启用连续拖动更新。安装、协议和边界见 [Preview Exporter 架构](docs/preview-exporter-architecture.md)，测试与实测性能见 [验收记录](docs/preview-exporter-validation.md)。
+预览左下角分别显示求值路径、实际图形后端和首帧耗时。CSG 首帧得到浏览器确认后才启用连续拖动更新。安装、协议和边界见 [Preview Exporter 架构](docs/preview-exporter-architecture.md)，测试与实测性能见 [验收记录](docs/preview-goldfeather-validation.md)。
 
 快速预览入口按钮和左下角性能面板已隐藏。顶部保留 **Full mesh render**，普通预览、模型导出及加载/错误提示继续可用。后台阶段计时仍保留。裁剪、线框和 XRay 切换入口继续隐藏。
 
@@ -134,3 +134,7 @@ cube([width, width, height]);
 
 > [!NOTE]
 > 当前已提供的能力以 IDE 和建模工具为主，尚不提供 AI 代码生成或自动建模。
+
+## 开发与文档
+
+开发环境、目录职责和验证命令见 [开发说明](CONTRIBUTING.md)；当前架构、历史报告和性能数据见 [文档索引](docs/README.md)。

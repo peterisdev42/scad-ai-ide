@@ -27,6 +27,7 @@ export interface ViewOptions {
     buildPlateOrigin: BuildPlateOrigin
     renderMode: RenderMode
     camera: CameraMode
+    partColors?: boolean
     modelColor: string | null
     shadows: boolean
     fogDensity: number

@@ -4,6 +4,7 @@ import type { PreviewMode } from './PreviewMode'
 
 export type WebviewToExtensionMessage =
     | { type: 'ready' }
+    | { type: 'setPartColors'; enabled: boolean; modelVersion: number }
     | { type: 'setPreviewMode'; mode: PreviewMode }
     | { type: 'queryTopology'; modelVersion: number; planes?: ClipPlane[] }
     | { type: 'previewPerformance'; modelVersion: number; timings: PreviewTimings }

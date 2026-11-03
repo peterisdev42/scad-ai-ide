@@ -1,3 +1,4 @@
+import type { CsgPartHint } from '../../../../core/preview/csgParts'
 import { GpuCompletion } from './passes/GpuCompletion'
 import { rendererBusy, withRenderer } from './passes/RendererJobs'
 import { validatePreviewScene } from '../../../../core/preview/validate'
@@ -74,6 +75,16 @@ export class Stage {
 
     private modelGeneration = 0
     private modelContext?: ModelContext
+    private partHints?: { version: number | undefined; hints?: CsgPartHint[] }
+    private get csgPartHints() {
+        return this.partHints?.version === this.modelContext?.modelVersion ? this.partHints?.hints : undefined
+    }
+    public setCsgPartHints(version: number | undefined, hints?: CsgPartHint[]) {
+        if (this.partHints?.version === version && this.partHints?.hints === hints) return
+        this.partHints = { version, hints }
+        if (version === this.modelContext?.modelVersion && this.viewOptions) this.applySettings(this.viewOptions)
+    }
+
     private onToolStatus?: (status: string) => void
     private onDeviceLoss?: (reason: string) => void
     public setDeviceLossCallback(callback: (reason: string) => void) {
@@ -292,7 +303,7 @@ export class Stage {
         this.environmentRig.setTheme(theme)
         this.xrayPass.setColor(theme.foreground)
         if (this.scene.fog) this.scene.fog.color.copy(theme.fog)
-        this.materialManager.setTheme(this.modelGroup, theme, this.viewOptions?.get('modelColor'))
+        this.materialManager.setTheme(this.modelGroup, theme, this.viewOptions?.get('modelColor'), !!this.viewOptions?.get('partColors'), this.csgPartHints)
         this.handles.forEach((h) => {
             if (h instanceof CrossSectionRig) h.setTheme(theme)
         })
@@ -324,7 +335,7 @@ export class Stage {
         this.activeCameraRig.setMode(viewOptions.get('camera'))
         this.renderer.shadowMap.enabled = viewOptions.get('shadows')
         this.scene.fog = new FogExp2(this.theme.fog, viewOptions.get('fogDensity'))
-        this.materialManager.setTheme(this.modelGroup, this.theme, viewOptions.get('modelColor'))
+        this.materialManager.setTheme(this.modelGroup, this.theme, viewOptions.get('modelColor'), !!viewOptions.get('partColors'), this.csgPartHints)
         this.materialManager.applyToGroup(this.modelGroup, this.materialSettings!)
 
         // The visible preview exposes only the solid display mode.
@@ -371,7 +382,7 @@ export class Stage {
             modelContext.reportPerformance?.({ viewerValidationMs: performance.now() - phase })
             phase = performance.now()
             imageCsg = new GoldfeatherRenderer(scene)
-            imageCsg.updateAppearance(this.theme.additive, false, this.scene, this.theme.subtractive)
+            imageCsg.updateAppearance(this.theme.additive, false, this.scene, this.theme.subtractive, !!this.viewOptions?.get('partColors'), this.csgPartHints)
             nextGroup.add(imageCsg.root)
             modelContext.reportPerformance?.({ resourcePreparationMs: performance.now() - phase })
         } else if (!cachedCandidate && format === ModelFormat.ThreeMF) {
@@ -427,13 +438,13 @@ export class Stage {
             }
         }
 
-        this.materialManager.setTheme(nextGroup, this.theme, this.viewOptions?.get('modelColor'))
+        this.materialManager.setTheme(nextGroup, this.theme, this.viewOptions?.get('modelColor'), !!this.viewOptions?.get('partColors'), this.partHints?.version === modelContext.modelVersion ? this.partHints?.hints : undefined)
 
         const candidate = cachedCandidate ?? new ModelRepresentation(nextGroup, modelContext.modelVersion ?? generation, modelContext.queryTopology, imageCsg)
         try {
             await this.ready
             if (!this.disposed && generation === this.modelGeneration) {
-                candidate.imageCsg?.updateAppearance(this.viewOptions?.get('modelColor') ? new Color(this.viewOptions.get('modelColor')!) : this.theme.additive, !!this.viewOptions?.get('modelColor'), this.scene, this.theme.subtractive)
+                candidate.imageCsg?.updateAppearance(this.viewOptions?.get('modelColor') ? new Color(this.viewOptions.get('modelColor')!) : this.theme.additive, !!this.viewOptions?.get('modelColor'), this.scene, this.theme.subtractive, !!this.viewOptions?.get('partColors'), this.csgPartHints)
                 modelContext.reportPerformance?.({ viewerPreparationMs: performance.now() - started })
                 const prepared = await candidate.prepare(this.renderer, this.activeCameraRig.activeCamera, this.scene, preparationController.signal)
                 if (generation === this.modelGeneration) modelContext.reportPerformance?.(prepared.value)
@@ -457,6 +468,7 @@ export class Stage {
         this.modelRepresentation = candidate
         if (this.materialSettings) this.materialManager.applyToGroup(nextGroup, this.materialSettings)
         this.modelGroup.add(...nextGroup.children)
+        if (this.csgPartHints && this.viewOptions) this.applySettings(this.viewOptions)
         this.firstFrame = { generation, start: started, notify: modelContext.frameReady, submitted: false }
         // Pick an absorption coefficient so a ray traversing the model's full
         // diagonal in material reads as ~95% opaque (1 - exp(-3) ≈ 0.95).
@@ -915,7 +927,7 @@ export class Stage {
         const first = this.firstFrame
         if (first && !first.submitted && !first.validate) first.validate = beginGpuValidation(this.renderer, 'first frame')
         const image = this.modelRepresentation?.imageCsg
-        image?.updateAppearance(this.viewOptions?.get('modelColor') ? new Color(this.viewOptions.get('modelColor')!) : this.theme.additive, !!this.viewOptions?.get('modelColor'), this.scene, this.theme.subtractive)
+        image?.updateAppearance(this.viewOptions?.get('modelColor') ? new Color(this.viewOptions.get('modelColor')!) : this.theme.additive, !!this.viewOptions?.get('modelColor'), this.scene, this.theme.subtractive, !!this.viewOptions?.get('partColors'), this.csgPartHints)
         const meshStarted = first && !first.submitted && !image ? performance.now() : undefined
         if (this.modelRepresentation) this.modelRepresentation.render(this.renderer, this.scene, camera)
         else this.renderer.render(this.scene, camera)

@@ -95,8 +95,8 @@ IDE 使用 stdin、`$preview=true`、Customizer 覆盖、原文件 cwd 和 depfi
 
 ## 验证与基准
 
-见 [本次验收报告](preview-goldfeather-validation.md)、[原始基准数据](preview-goldfeather-benchmark.json) 和 [真实 VS Code 阶段记录](preview-goldfeather-vscode-profile.json)。
+见 [本次验收报告](preview-goldfeather-validation.md)、[原始基准数据](artifacts/preview-goldfeather-benchmark.json) 和 [真实 VS Code 阶段记录](artifacts/preview-goldfeather-vscode-profile.json)。
 
 面板布局与普通模式计时更新已通过：类型检查、Lint、212 项单元测试、WebGL2/WebGPU 各 17 项视口测试、10 项 Markdown 浏览器测试，以及真实 VS Code 模式切换与编辑器回归。布局覆盖 1100×850、900×650、650×850 窗口，确认完整阶段表可见、无内部滚动条，收起后恢复画布空间。
 
-普通模式示例：[阶段数据](preview-mesh-vscode-profile.json)、[展开面板截图](preview-mesh-vscode-profile.png)。该示例来自缓存复用，不代表冷启动耗时。
+普通模式示例：[阶段数据](artifacts/preview-mesh-vscode-profile.json)、[展开面板截图](artifacts/preview-mesh-vscode-profile.png)。该示例来自缓存复用，不代表冷启动耗时。

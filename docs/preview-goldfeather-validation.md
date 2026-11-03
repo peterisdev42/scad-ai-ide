@@ -39,7 +39,7 @@ Apple M4 Pro，Chromium 149.0.7827.55，800×600、DPR 1，关闭阴影和环境
 
 相机基准为四种模型 × `.csgp` / STL × 两种后端，每组 120 帧，排除前 10 帧。STL 比较用于导航，不把从同一 Exporter 导出的 STL 当作正常 CLI 的端到端时间。全部组的几何查询数为 0。
 
-原始数据：[本次基准](preview-goldfeather-benchmark.json)。历史基线：[旧原生最终网格物化流程](preview-standard-mesh-benchmark.json)。两次采样不是同一进程、不是成对统计；历史格式只保存较粗的阶段数据。下表由原始数据生成，单位 ms，单元格为“首次 / 参数更新”。
+原始数据：[本次基准](artifacts/preview-goldfeather-benchmark.json)。历史基线：[旧原生最终网格物化流程](artifacts/preview-standard-mesh-benchmark.json)。两次采样不是同一进程、不是成对统计；历史格式只保存较粗的阶段数据。下表由原始数据生成，单位 ms，单元格为“首次 / 参数更新”。
 
 | 模型                | 旧物化 WebGPU |   当前 WebGPU | 旧物化 WebGL2 |   当前 WebGL2 |
 | ------------------- | ------------: | ------------: | ------------: | ------------: |
@@ -63,7 +63,7 @@ Exporter 为外部进程整体时间，协议没有其内部几何求值/三角�
 
 宿主总时间来自同一时钟，传输/调度为扣除已知阶段后的估算；小计存在重叠，不可把所有行相加。缓存明确跳过的阶段为 0，尚未测到的值为 `—`。内置 Markdown 没有完整首帧宿主确认时不捏造总时间。
 
-[真实 VS Code 阶段 JSON](preview-goldfeather-vscode-profile.json) 和 [面板截图](preview-goldfeather-vscode-profile.png) 是缓存复用示例，不能当作冷启动性能数字。
+[真实 VS Code 阶段 JSON](artifacts/preview-goldfeather-vscode-profile.json) 和 [面板截图](artifacts/preview-goldfeather-vscode-profile.png) 是缓存复用示例，不能当作冷启动性能数字。
 
 ## 尚未全面验证或实现
 

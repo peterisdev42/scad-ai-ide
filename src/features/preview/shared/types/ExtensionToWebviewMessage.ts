@@ -1,3 +1,4 @@
+import type { CsgPartHint } from '../../../../core/preview/csgParts'
 import { ModelFormat } from './ModelFormat'
 import { ScadParameter } from './ScadParameter'
 import type { PreviewBackend } from './PreviewBackend'
@@ -6,6 +7,7 @@ import type { GeometryData } from '../../../../core/preview/types'
 
 export type ExtensionToWebviewMessage =
     | { type: 'ready' }
+    | { type: 'partHints'; modelVersion: number; hints: CsgPartHint[] }
     | { type: 'previewMode'; mode: PreviewMode; links?: Record<PreviewMode, string> }
     | { type: 'previewBackend'; backend: PreviewBackend }
     | { type: 'topology'; modelVersion: number; geometry?: GeometryData; error?: string }
@@ -18,6 +20,7 @@ export type ExtensionToWebviewMessage =
           content: string // base64 payload
           format: ModelFormat
           modelVersion?: number
+          csgPartsAvailable?: boolean
       }
     | {
           type: 'updateParameters'

@@ -3,7 +3,7 @@ import { MeshBasicNodeMaterial as MeshBasicMaterial } from 'three/webgpu'
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js'
 import { BuildPlateOrigin, Environment } from '../../contexts/ViewOptionsContext'
 import buildPlate from '../assets/models/buildPlate.stl'
-import { Theme } from '../Stage'
+import type { Theme } from '../Theme'
 import { InfiniteGrid } from '../widgets/InfiniteGrid'
 import { BUILD_PLATE_SIZE, buildPlateOffset } from './BuildPlateLayout'
 

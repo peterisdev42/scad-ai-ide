@@ -359,12 +359,13 @@ test('late Markdown DOM replacement mounts ready previews without an updateConte
     await page.waitForFunction(() => document.querySelector('scad-app')?.shadowRoot.querySelector('scad-preview')?.stage?.modelGroup?.children.length > 0)
 })
 
-test('embedded previews hide quick entry and performance details', async (t) => {
+test('embedded previews hide both mode switches and performance details', async (t) => {
     const { page, blocks } = await fixture(t)
     await blocks.first().locator('canvas.main-canvas').waitFor()
     await page.waitForFunction(() => document.querySelector('scad-app')?.shadowRoot.querySelector('scad-preview')?.stage?.firstFrame?.submitted)
     assert.equal(await blocks.first().locator('scad-backend-status').count(), 0)
     assert.equal(await blocks.first().getByRole('switch', { name: 'CSG preview', exact: true }).count(), 0)
+    assert.equal(await blocks.first().getByRole('switch', { name: 'Full mesh render', exact: true }).count(), 0)
 })
 
 test('built-in Markdown consumes prepared Products and keeps advanced display modes hidden', async (t) => {

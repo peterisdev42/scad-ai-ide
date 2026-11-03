@@ -3,7 +3,7 @@ import { readCliDependencies, type FileDependency } from '../../../../core/forma
 import { runExporter } from '../../../../platform/previewExporter/runtime'
 import { resolvePreviewExporter } from './PreviewExporter'
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process'
-import { mkdtemp, readFile, rm } from 'node:fs/promises'
+import { mkdtemp, readFile, rm, stat } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { window, workspace } from 'vscode'
@@ -43,7 +43,7 @@ export class ScadClient {
             process.kill()
         }
     }
-    static async render(scadPath: string, parameters: Record<string, string | number | boolean | number[]> = {}, format: ModelFormat = ModelFormat.STL, onStderr?: (chunk: string) => void, key = scadPath, onDependencies?: (dependencies: FileDependency[]) => void, signal?: AbortSignal, onTimings?: (timings: PreviewTimings) => void): Promise<Buffer> {
+    static async render(scadPath: string, parameters: Record<string, string | number | boolean | number[]> = {}, format: ModelFormat | 'csg' = ModelFormat.STL, onStderr?: (chunk: string) => void, key = scadPath, onDependencies?: (dependencies: FileDependency[]) => void, signal?: AbortSignal, onTimings?: (timings: PreviewTimings) => void): Promise<Buffer> {
         this.cancelRender(key)
         const ticket = Symbol(key)
         this.tickets.set(key, ticket)
@@ -133,6 +133,7 @@ export class ScadClient {
             })
             onTimings?.({ meshExportMs: performance.now() - renderStarted })
             const readStarted = performance.now()
+            if (format === 'csg' && (await stat(output)).size > 2 * 1048576) throw new Error('CSG color metadata exceeds 2 MiB.')
             const buffer = await readFile(output)
             onTimings?.({ meshReadMs: performance.now() - readStarted })
             if (!buffer.length) throw new Error(`OpenSCAD produced an empty ${format} output. The selected runtime may not support this format.`)

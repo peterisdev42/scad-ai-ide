@@ -28,7 +28,7 @@ Apple M4 Pro / Metal，Chromium 149.0.7827.55，Three.js 0.187.0，OpenSCAD 2026
 
 旧版本两后端均在首帧报 365336 预算错误，没有可比较的旋转帧时间。不能据此宣称获得某个 FPS 提升倍数。新版本能显示和更新，但**这份装配模型仍未达到流畅交互目标**，WebGPU 多 Pass 调度开销尤其明显。
 
-1080p 的 CLI 约 48 ms，局部几何 57 ms，Product 规范化 3.8 ms；WebGPU 上传/Shader 准备约 30/48 ms，WebGL 2 约 25/79 ms。内存数字来自 Three.js 公开统计，未包括浏览器、驱动与 CLI/Worker 全部占用。完整原始样本见 [JSON](csg-raster-assembly-regression.json)。
+1080p 的 CLI 约 48 ms，局部几何 57 ms，Product 规范化 3.8 ms；WebGPU 上传/Shader 准备约 30/48 ms，WebGL 2 约 25/79 ms。内存数字来自 Three.js 公开统计，未包括浏览器、驱动与 CLI/Worker 全部占用。完整原始样本见 [JSON](artifacts/csg-raster-assembly-regression.json)。
 
 ## 官方 F5 对照与限制
 

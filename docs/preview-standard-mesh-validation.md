@@ -32,7 +32,7 @@ GPU 模型包含 Cube、Sphere、Cylinder、Union、Difference、Intersection、
 
 ## 相机性能
 
-[完整原始数据](preview-standard-mesh-benchmark.json)。800×600、DPR 1、关闭阴影；每种模型每种格式采样 120 个相机帧，前 10 帧预热。中位数是浏览器 rAF 间隔，受刷新率限制，不能当作纯 GPU 执行时间。
+[完整原始数据](artifacts/preview-standard-mesh-benchmark.json)。800×600、DPR 1、关闭阴影；每种模型每种格式采样 120 个相机帧，前 10 帧预热。中位数是浏览器 rAF 间隔，受刷新率限制，不能当作纯 GPU 执行时间。
 
 | 模型                | 后端   | `.csgp` 标准 Mesh 中位数 / P95 | STL 中位数 / P95 |
 | ------------------- | ------ | -----------------------------: | ---------------: |
@@ -47,7 +47,7 @@ GPU 模型包含 Cube、Sphere、Cylinder、Union、Difference、Intersection、
 
 ## 加载与参数更新代价
 
-与此前 `a5cf241` 的逐片元 Boolean 路径作历史对照。旧值来自 [原始记录](preview-exporter-benchmark.json)。两次运行时间不同，均为单次样本，不能视为统计显著的速度提升或退化结论。
+与此前 `a5cf241` 的逐片元 Boolean 路径作历史对照。旧值来自 [原始记录](artifacts/preview-exporter-benchmark.json)。两次运行时间不同，均为单次样本，不能视为统计显著的速度提升或退化结论。
 
 | 模型                | 后端   | 旧首次 / 更新 | 标准 Mesh 首次 / 更新 | 新增原生表面求值 |
 | ------------------- | ------ | ------------: | --------------------: | ---------------: |
@@ -83,7 +83,7 @@ SCAD_TEST_WEBGPU=1 node --test scripts/preview-fast.test.mjs
 npm run test:integration
 npm run test:preview-editor
 npm run test:markdown-host
-npm run benchmark:preview -- docs/preview-standard-mesh-benchmark.json
+npm run benchmark:preview -- docs/artifacts/preview-standard-mesh-benchmark.json
 ```
 
 Git 仅提交本次改造、测试、数据与文档。用户 `.DS_Store` 和未跟踪需求文档保持原样、未纳入提交；最终提交号见交付消息。

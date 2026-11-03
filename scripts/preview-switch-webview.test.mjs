@@ -68,13 +68,13 @@ test('real Preview switches image-based CSG and full STL while advanced controls
         const menu = await frame.locator('scad-scene-tree').evaluate((tree) => tree.shadowRoot.querySelector('vscode-context-menu').data)
         assert.ok(menu.every((item) => item.value !== 'cross-section-plane'))
         const camera = await frame.locator('scad-preview').evaluate((p) => p.stage.serializeProperties().get('camera-default'))
-        for (const [name, format] of [
-            ['CSG preview', 'csgp'],
-            ['Full mesh render', 'stl'],
-            ['CSG preview', 'csgp'],
+        for (const [mode, format] of [
+            ['preview', 'csgp'],
+            ['render', 'stl'],
+            ['preview', 'csgp'],
         ]) {
-            if (format === 'csgp') await frame.locator('scad-app').evaluate((app) => app.modelContext.setPreviewMode('preview'))
-            else await frame.getByRole('switch', { name, exact: true }).click()
+            assert.equal(await frame.getByRole('switch', { name: 'Full mesh render', exact: true }).count(), 0)
+            await frame.locator('scad-app').evaluate((app, mode) => app.modelContext.setPreviewMode(mode), mode)
             await ready(format)
             if (format === 'csgp') {
                 const scene = await frame.locator('scad-preview').evaluate((p) => p.stage.modelRepresentation.imageCsg.scene)

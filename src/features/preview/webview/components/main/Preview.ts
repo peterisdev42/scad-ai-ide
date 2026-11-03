@@ -214,7 +214,10 @@ export class Preview extends LitElement {
             this.stage.applySettings(this.viewSettingsContext)
         }
 
-        if (changedProperties.has('modelContext')) this.loadModel()
+        if (changedProperties.has('modelContext')) {
+            this.stage.setCsgPartHints(this.modelContext.modelVersion, this.modelContext.csgPartHints)
+            this.loadModel()
+        }
 
         if (changedProperties.has('activeToolContext') && this.activeToolContext) {
             this.stage.setActiveTool(this.activeToolContext.activeTool)

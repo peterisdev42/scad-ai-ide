@@ -179,11 +179,13 @@ async function fixture(t, extraSource = '') {
     runInNewContext(transformSync(readFileSync(join(root, 'src/features/preview/extension/core/ScadSession.ts'), 'utf8'), { loader: 'ts', format: 'cjs' }).code, {
         module: sessionModule,
         Buffer,
+        performance,
         setTimeout,
         clearTimeout,
         require: (name) => {
             if (name.startsWith('node:')) return require(name)
             if (name === 'vscode') return api
+            if (name.endsWith('/core/preview/performance')) return require('../out/core/preview/performance.js')
             if (name.endsWith('/ScadClient')) return { ScadClient: { cancelRender() {} } }
             if (name.endsWith('/ScadParser')) return require('../out/features/preview/extension/services/ScadParser.js')
             if (name.endsWith('/ScadParameters')) return require('../out/features/preview/extension/core/ScadParameters.js')
