@@ -1,3 +1,4 @@
+import { memoryCaches } from '../../../../core/cache/CacheRegistry'
 import { readCsgPartHints, type CsgPartHint } from '../../../../core/preview/csgParts'
 import { notifications, confirmDeleteParameterSet } from '../../../../platform/notifications'
 import { randomBytes } from 'node:crypto'
@@ -41,6 +42,11 @@ export class ScadWebviewPanel {
         private readonly workspaceState: Memento,
     ) {
         this.panel = panel
+        this.disposables.push(memoryCaches.register(`Preview part metadata: ${session.documentUri.toString()}`, () => ({ hints: this.partHintsCache?.hints ?? [] }), () => {
+            this.partHintsController?.abort()
+            this.partHintsCache = undefined
+            this.partHintsPending = undefined
+        }))
 
         // Configure webview
         this.panel.webview.options = {

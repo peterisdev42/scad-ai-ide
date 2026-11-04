@@ -94,7 +94,8 @@ let source = '';
 process.stdin.setEncoding('utf8');
 process.stdin.on('data', chunk => source += chunk);
 process.stdin.on('end', () => {
-    fs.writeFileSync(${JSON.stringify(trace)}, JSON.stringify({ args, output, source, cwd: process.cwd() }));
+    fs.writeFileSync(${JSON.stringify(trace + '.tmp')}, JSON.stringify({ args, output, source, cwd: process.cwd(), openscadPath: process.env.OPENSCADPATH }));
+    fs.renameSync(${JSON.stringify(trace + '.tmp')}, ${JSON.stringify(trace)});
     if (source === 'hang') { setInterval(() => {}, 1000); return; }
     if (source === 'broken') { process.stderr.write('ERROR: Parser error <unsafe>'); process.exitCode = 1; return; }
     fs.writeFileSync(output, source === 'invalid' ? Buffer.alloc(0) : Buffer.from(${JSON.stringify(mesh.toString('base64'))}, 'base64'));

@@ -1,3 +1,4 @@
+import { memoryCaches } from '../../core/cache/CacheRegistry'
 import type { GitHubRequest } from '../../platform/github/client'
 import * as vscode from 'vscode'
 import { fileCandidate, probe, type Runtime, type LaunchCommand } from '../../platform/runtime/discovery'
@@ -385,7 +386,17 @@ export function registerRuntime(context: vscode.ExtensionContext, manager: Runti
         }
     }
 
+    const clearCatalogCache = async () => {
+        await buildsPending
+        await pending
+        builds = []
+        recommendedBuildId = undefined
+        buildsLoaded = false
+        buildsError = ''
+        cacheRestorePending = undefined
+    }
     context.subscriptions.push(
+        memoryCaches.register('Runtime catalog', () => ({ system, builds, recommendedBuildId, loaded: buildsLoaded }), clearCatalogCache),
         output,
         status,
         changed,
@@ -437,6 +448,7 @@ export function registerRuntime(context: vscode.ExtensionContext, manager: Runti
             installationIsArchive,
             installedBuildIds: installedBuilds.map((build) => build.id),
         }),
+        clearCatalogCache,
         loadBuilds,
         deleteRuntime,
         installArchive,

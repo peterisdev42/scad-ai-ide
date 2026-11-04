@@ -1,3 +1,5 @@
+import type { DeveloperCacheController } from '../development/DeveloperCacheController'
+import type { LibraryPanelController } from '../libraries/LibraryPanelController'
 import { randomBytes } from 'node:crypto'
 import * as vscode from 'vscode'
 import { quickAccess } from '../sidebar/QuickAccessTreeProvider'
@@ -12,6 +14,7 @@ export class PanelManager implements vscode.Disposable {
     private readonly panels = new Map<PageId, vscode.WebviewPanel>()
     private readonly changed: vscode.Disposable
     private readonly githubChanged: vscode.Disposable
+    private librariesChanged?: vscode.Disposable
     private runtimeReady = false
     private requestedRuntimeTab?: 'available'
 
@@ -19,7 +22,12 @@ export class PanelManager implements vscode.Disposable {
         private readonly extensionUri: vscode.Uri,
         private readonly runtime: RuntimeFeature,
         private readonly github: ReturnType<typeof registerGitHub>,
+        private readonly libraries?: LibraryPanelController,
+        private readonly development?: DeveloperCacheController,
     ) {
+        this.librariesChanged = libraries?.onDidChange(() => {
+            void this.updateLibraries()
+        })
         this.changed = runtime.onDidChange(() => {
             const panel = this.panels.get('runtime')
             if (panel) {
@@ -31,6 +39,17 @@ export class PanelManager implements vscode.Disposable {
                 void panel.webview.postMessage({ type: 'githubState', state: github.getState() })
             }
         })
+    }
+
+    private async updateLibraries() {
+        const panel = this.panels.get('libraries')
+        if (panel && this.libraries) {
+            try {
+                await panel.webview.postMessage({ type: 'librariesState', state: await this.libraries.getState() })
+            } catch (error) {
+                await panel.webview.postMessage({ type: 'error', message: String(error) })
+            }
+        }
     }
 
     getPanel(id: PageId): vscode.WebviewPanel | undefined {
@@ -59,9 +78,15 @@ export class PanelManager implements vscode.Disposable {
         }
         const page = quickAccess.find((page) => page.id === id)!
         const root = vscode.Uri.joinPath(this.extensionUri, 'media', 'panels')
-        const panel = vscode.window.createWebviewPanel(`scad-ai.${id}`, page.title, vscode.ViewColumn.Active, { enableScripts: true, localResourceRoots: [root] })
+        const panel = vscode.window.createWebviewPanel(`scad-ai.${id}`, page.title, vscode.ViewColumn.Active, { enableScripts: true, retainContextWhenHidden: true, localResourceRoots: [root] })
         this.panels.set(id, panel)
+        let visible = panel.visible
         const listeners = [
+            panel.onDidChangeViewState(() => {
+                const becameVisible = panel.visible && !visible
+                visible = panel.visible
+                if (becameVisible && id === 'libraries') void this.libraries?.refreshActiveTab()
+            }),
             panel.webview.onDidReceiveMessage(async (value: unknown) => {
                 if (!value || typeof value !== 'object') {
                     return
@@ -75,8 +100,20 @@ export class PanelManager implements vscode.Disposable {
                     if (action === 'ready') {
                         await panel.webview.postMessage({ type: 'githubState', state: this.github.getState() })
                     }
+                    if (id === 'libraries' && this.libraries) {
+                        await this.libraries.handle(action === 'ready' ? { action: 'libraries.selectTab', tab: (value as { tab?: unknown }).tab ?? 'registry' } : value)
+                        return
+                    }
                     if (id === 'more') {
-                        if (action === 'ready') {
+                        if (typeof action === 'string' && action.startsWith('development.')) {
+                            if (!this.development?.enabled) throw new Error('Cache tools are only available in extension development mode.')
+                            try {
+                                await this.development.handle(value)
+                            } finally {
+                                await panel.webview.postMessage({ type: 'developmentState', state: await this.development.getState() })
+                            }
+                        } else if (action === 'ready') {
+                            await panel.webview.postMessage({ type: 'developmentMode', enabled: !!this.development?.enabled })
                             await this.github.refresh()
                         } else if (action === 'connectGitHub') {
                             await vscode.commands.executeCommand('scad-ai-ide.connectGitHub')
@@ -136,6 +173,7 @@ export class PanelManager implements vscode.Disposable {
                 title: page.title,
                 page: id,
                 style: panel.webview.asWebviewUri(vscode.Uri.joinPath(root, 'main.css')).toString(),
+                librariesScript: panel.webview.asWebviewUri(vscode.Uri.joinPath(root, 'libraries.js')).toString(),
                 script: panel.webview.asWebviewUri(vscode.Uri.joinPath(root, 'main.js')).toString(),
             }
             panel.webview.html = Buffer.from(source)
@@ -148,6 +186,7 @@ export class PanelManager implements vscode.Disposable {
     }
 
     dispose(): void {
+        this.librariesChanged?.dispose()
         this.changed.dispose()
         this.githubChanged.dispose()
         for (const panel of [...this.panels.values()]) {

@@ -1,0 +1,20 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "SCAD Project Dependencies",
+    "type": "object",
+    "required": ["manifestVersion", "dependencies"],
+    "additionalProperties": false,
+    "properties": {
+        "manifestVersion": { "const": 1 },
+        "dependencies": {
+            "type": "object",
+            "propertyNames": { "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "not": { "enum": ["constructor", "prototype"] } },
+            "additionalProperties": {
+                "type": "object",
+                "required": ["version"],
+                "additionalProperties": false,
+                "properties": { "version": { "type": "string", "minLength": 1, "pattern": "^[^~^*<>=|]+$", "description": "Exact registry tag, or snapshot:<full commit SHA>." } }
+            }
+        }
+    }
+}

@@ -66,6 +66,7 @@ test('CLI empty results are distinct from failures; configuration skips executio
             if (id === './previewEligibility') return { canPreviewSource, EmptyModelError, isEmptyModelOutput }
             if (id.endsWith('/ModelFormat')) return { ModelFormat }
             if (id.endsWith('/runtime/errors')) return { RuntimeUnavailableError: Error }
+            if (id.endsWith('/libraries/LibraryEnvironment')) return { libraryEnvironment: { getEnvironment: async () => ({ ...process.env }), getDependencyFingerprint: async () => '' } }
             return require(id)
         },
     })

@@ -1,0 +1,40 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "SCAD Project Dependency Lockfile",
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["lockVersion", "dependencies"],
+    "properties": {
+        "lockVersion": { "const": 1 },
+        "dependencies": {
+            "type": "object",
+            "propertyNames": { "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+            "additionalProperties": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["source", "resolved", "mount"],
+                "properties": {
+                    "source": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": ["provider", "repositoryUrl"],
+                        "properties": { "provider": { "enum": ["github", "codeberg"] }, "repositoryUrl": { "type": "string", "pattern": "^https://(?:github\\.com|codeberg\\.org)/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/?$" } }
+                    },
+                    "resolved": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": ["kind", "tag", "commit"],
+                        "properties": { "kind": { "enum": ["tag", "snapshot"] }, "tag": { "type": ["string", "null"] }, "commit": { "type": "string", "pattern": "^(?:[a-fA-F0-9]{40}|[a-fA-F0-9]{64})$" } },
+                        "allOf": [{ "if": { "properties": { "kind": { "const": "snapshot" } } }, "then": { "properties": { "tag": { "const": null } } }, "else": { "properties": { "tag": { "type": "string", "minLength": 1 } } } }]
+                    },
+                    "mount": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": ["name", "includeRoot"],
+                        "properties": { "name": { "type": "string", "minLength": 1, "pattern": "^[^<>:\"/\\\\|?*]+$" }, "includeRoot": { "type": "string", "minLength": 1, "description": "Repository-relative directory; never an absolute machine path." } }
+                    }
+                }
+            }
+        }
+    }
+}

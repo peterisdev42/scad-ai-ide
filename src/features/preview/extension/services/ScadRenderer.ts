@@ -1,3 +1,5 @@
+import { memoryCaches } from '../../../../core/cache/CacheRegistry'
+import { libraryEnvironment } from '../../../../platform/libraries/LibraryEnvironment'
 import { stat } from 'node:fs/promises'
 import { workspace } from 'vscode'
 import { ModelFormat } from '../../shared/types/ModelFormat'
@@ -22,6 +24,7 @@ type OnErrorCallback = (error: Error) => void
 
 export class ScadRenderer {
     private readonly results = new Map<string, { buffer: Buffer; format: ModelFormat; backend: PreviewBackend; dependencies: import('../../../../core/formats/dependencies').FileDependency[] }>()
+    private readonly cacheInspector = memoryCaches.register('Preview render results', () => [...this.results].map(([key, result]) => ({ key, bytes: result.buffer.length, format: result.format, dependencies: result.dependencies })), () => this.invalidateCache())
     private cacheEpoch = 0
     public invalidateCache() {
         this.cacheEpoch++
@@ -36,6 +39,7 @@ export class ScadRenderer {
     private generation = 0
     private controller?: AbortController
     dispose() {
+        this.cacheInspector.dispose()
         this.disposed = true
         this.results.clear()
         this.pending = undefined
@@ -133,7 +137,9 @@ export class ScadRenderer {
         let format = mode === 'preview' ? ModelFormat.PreviewScene : workspace.getConfiguration('scad-ai-ide.preview').get<ModelFormat>('format', ModelFormat.STL)
 
         try {
-            const cached = this.results.get(key)
+            const cacheKey = key + ':' + await libraryEnvironment.getDependencyFingerprint(path)
+            if (generation !== this.generation || signal.aborted) return
+            const cached = this.results.get(cacheKey)
             if (cached) {
                 const stamps = await Promise.all(
                     cached.dependencies.map(async (dependency) => {
@@ -152,7 +158,7 @@ export class ScadRenderer {
                     this.onComplete({ buffer: cached.buffer, format: cached.format, dependencies: cached.dependencies })
                     return
                 }
-                this.results.delete(key)
+                this.results.delete(cacheKey)
             }
             const pipelineTimings: import('../../shared/types/PreviewBackend').PreviewTimings = {}
             let dependencies: import('../../../../core/formats/dependencies').FileDependency[] = []
@@ -190,7 +196,7 @@ export class ScadRenderer {
                 this.completedKey = key
                 this.changeBackend({ kind: format === ModelFormat.PreviewScene ? 'csg' : 'mesh', elapsedMs: Date.now() - started, timings })
                 if (cacheEpoch === this.cacheEpoch && modelBuffer.length <= 32 * 1048576) {
-                    this.results.set(key, { buffer: modelBuffer, format, backend: this.backend, dependencies })
+                    this.results.set(cacheKey, { buffer: modelBuffer, format, backend: this.backend, dependencies })
                     while (this.results.size > 2) this.results.delete(this.results.keys().next().value!)
                 }
                 this.onComplete({ buffer: modelBuffer, format, dependencies })

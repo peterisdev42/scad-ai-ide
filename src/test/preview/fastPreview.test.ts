@@ -7,6 +7,7 @@ import { transformSync } from 'esbuild'
 import { ModelFormat } from '../../features/preview/shared/types/ModelFormat'
 import type { ScadRenderer } from '../../features/preview/extension/services/ScadRenderer'
 function fixture() {
+    let fingerprint = ''
     const calls: { mode: ModelFormat; signal: AbortSignal; resolve: (b: Buffer) => void; reject: (e: Error) => void }[] = [],
         frames: string[] = [],
         errors: Error[] = [],
@@ -21,26 +22,31 @@ function fixture() {
         AbortController,
         Error,
         require: (id: string) => {
+            if (id.endsWith('/cache/CacheRegistry')) return { memoryCaches: { register: () => ({ dispose() {} }) } }
             if (id === 'vscode') return { workspace: { getConfiguration: () => ({ get: (_: string, fallback: unknown) => fallback }) } }
             if (id.endsWith('/ModelFormat')) return { ModelFormat }
             if (id.endsWith('/previewEligibility')) return { EmptyModelError: class extends Error {} }
             if (id === './ScadClient') return { ScadClient: { render: (_p: unknown, _params: unknown, mode: ModelFormat, _log: unknown, _key: unknown, _deps: unknown, signal: AbortSignal) => new Promise<Buffer>((resolve, reject) => calls.push({ mode, signal, resolve, reject })) } }
+            if (id.endsWith('/libraries/LibraryEnvironment')) return { libraryEnvironment: { getEnvironment: async () => ({ ...process.env }), getDependencyFingerprint: async () => fingerprint } }
             return require(id)
         },
     })
     const renderer = new module.exports.ScadRenderer({ onComplete: ({ buffer }) => frames.push(buffer.toString()), onError: (e) => errors.push(e), onBackendChange: (b) => backends.push(b) })
-    return { renderer, calls, frames, errors, backends }
+    return { renderer, calls, frames, errors, backends, setFingerprint: (value: string) => { fingerprint = value } }
 }
 const settle = () => new Promise((resolve) => setTimeout(resolve, 0))
 test('mode changes cancel old work, publish only latest, and Full Render keeps native mesh', async () => {
-    const f = fixture(),
-        a = f.renderer.render('/part.scad', {}, 'render'),
-        b = f.renderer.render('/part.scad', {}, 'preview')
+    const f = fixture()
+    const a = f.renderer.render('/part.scad', {}, 'render')
+    await settle()
+    const b = f.renderer.render('/part.scad', {}, 'preview')
+    await settle()
     assert.equal(f.calls[0].mode, ModelFormat.STL)
     assert.equal(f.calls[1].mode, ModelFormat.PreviewScene)
     assert.equal(f.calls[0].signal.aborted, true)
     f.calls[1].resolve(Buffer.from('prepared'))
     await b
+    await settle()
     f.calls[0].resolve(Buffer.from('old'))
     await a
     assert.deepEqual(f.frames, ['prepared'])
@@ -49,9 +55,11 @@ test('mode changes cancel old work, publish only latest, and Full Render keeps n
 test('continuous parameters abort obsolete work and coalesce to newest request', async () => {
     const f = fixture()
     const first = f.renderer.render('/part.scad', {}, 'preview')
+    await settle()
     f.calls[0].resolve(Buffer.from('initial'))
     await first
     f.renderer.renderLatest('/part.scad', { width: 1 }, 'preview', 'input')
+    await settle()
     f.renderer.renderLatest('/part.scad', { width: 2 }, 'preview', 'input')
     f.renderer.renderLatest('/part.scad', { width: 3 }, 'preview', 'commit')
     assert.equal(f.calls[1].signal.aborted, true)
@@ -66,12 +74,14 @@ test('continuous parameters abort obsolete work and coalesce to newest request',
 test('cache reuse avoids exporter work; invalidation and disposal prevent stale publication', async () => {
     const f = fixture(),
         a = f.renderer.render('/part.scad', {}, 'preview')
+    await settle()
     f.calls[0].resolve(Buffer.from('prepared'))
     await a
     await f.renderer.render('/part.scad', {}, 'preview', true)
     assert.equal(f.calls.length, 1)
     assert.equal(f.backends.at(-1).cacheHit, true)
     const b = f.renderer.render('/part.scad', {}, 'preview')
+    await settle()
     assert.equal(f.calls.length, 2)
     f.renderer.dispose()
     f.calls[1].resolve(Buffer.from('after-dispose'))
@@ -81,6 +91,7 @@ test('cache reuse avoids exporter work; invalidation and disposal prevent stale 
 test('exporter errors are surfaced with no legacy or mesh fallback', async () => {
     const f = fixture(),
         a = f.renderer.render('/part.scad', {}, 'preview')
+    await settle()
     f.calls[0].reject(new Error('Preview Exporter unavailable'))
     await a
     assert.equal(f.errors[0].message, 'Preview Exporter unavailable')
@@ -92,9 +103,11 @@ test('exporter errors are surfaced with no legacy or mesh fallback', async () =>
 test('continuous input never starves frames and only the newest pending sample runs', async () => {
     const f = fixture(),
         initial = f.renderer.render('/part.scad', {}, 'preview')
+    await settle()
     f.calls[0].resolve(Buffer.from('initial'))
     await initial
     f.renderer.renderLatest('/part.scad', { width: 1 }, 'preview', 'input')
+    await settle()
     f.renderer.renderLatest('/part.scad', { width: 2 }, 'preview', 'input')
     f.renderer.renderLatest('/part.scad', { width: 3 }, 'preview', 'input')
     assert.equal(f.calls[1].signal.aborted, false)
@@ -111,6 +124,7 @@ test('host phase timings survive prepared-scene transport metadata parsing', asy
     const f = fixture()
     f.renderer.render('/model.scad', {}, 'preview')
     await new Promise((resolve) => setImmediate(resolve))
+    await settle()
     f.calls[0].resolve(Buffer.from(JSON.stringify({ timings: { exporterMs: 12.5, jsonParseMs: 0.125, validationMs: 0.2, conversionMs: 0.3 }, dependencies: [] })))
     await new Promise((resolve) => setImmediate(resolve))
     const timings = f.backends.at(-1).timings
@@ -118,5 +132,18 @@ test('host phase timings survive prepared-scene transport metadata parsing', asy
     assert.equal(timings.jsonParseMs, 0.125)
     assert.ok(Number.isFinite(timings.resultParseMs))
     assert.ok(Number.isFinite(timings.cliMs))
+    f.renderer.dispose()
+})
+
+
+test('Changing only dependency fingerprint prevents reuse of a previous library version', async () => {
+    const f = fixture()
+    const first = f.renderer.render('/part.scad', {}, 'preview')
+    await settle(); f.calls[0].resolve(Buffer.from('library v1')); await first
+    f.setFingerprint('new locked commit')
+    const second = f.renderer.render('/part.scad', {}, 'preview', true)
+    await settle(); assert.equal(f.calls.length, 2)
+    f.calls[1].resolve(Buffer.from('library v2')); await second
+    assert.deepEqual(f.frames, ['library v1', 'library v2'])
     f.renderer.dispose()
 })

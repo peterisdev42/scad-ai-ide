@@ -1,3 +1,4 @@
+import { libraryEnvironment } from '../../../../platform/libraries/LibraryEnvironment'
 import type { PreviewTimings } from '../../../../core/preview/performance'
 import { readCliDependencies, type FileDependency } from '../../../../core/formats/dependencies'
 import { runExporter } from '../../../../platform/previewExporter/runtime'
@@ -100,8 +101,10 @@ export class ScadClient {
             const args = [...command.argsPrefix, '-d', dependencyFile, '--export-format', exportFormat, ...(workspace.getConfiguration('scad-ai-ide.preview').get<boolean>('enableLazyUnion', false) ? ['--enable', 'lazy-union'] : []), '-o', output, ...Object.entries(parameters).flatMap(([name, value]) => ['-D', `${name}=${JSON.stringify(value)}`]), source === undefined ? scadPath : '-']
             this.outputChannel.appendLine(`[OpenSCAD] ${JSON.stringify([command.executable, ...args])}`)
             const renderStarted = performance.now()
+            const env = await libraryEnvironment.getEnvironment(scadPath)
+            check()
             await new Promise<void>((resolve, reject) => {
-                const child = spawn(command.executable, args, { cwd: dirname(scadPath), signal })
+                const child = spawn(command.executable, args, { cwd: dirname(scadPath), signal, env, shell: false })
                 this.activeProcesses.set(key, child)
                 let stderr = ''
                 child.stdin.on('error', () => {})

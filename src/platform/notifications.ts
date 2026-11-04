@@ -24,3 +24,15 @@ export const notifications = createNotifications(center, (command, ...args) => c
 export async function confirmDeleteParameterSet(name: string): Promise<boolean> {
     return (await window.showWarningMessage(`Delete the "${name}" parameter set?`, { modal: true }, 'Delete')) === 'Delete'
 }
+
+export async function confirmLibraryCopy(source: string, sizeBytes: number): Promise<boolean> {
+    return (await window.showWarningMessage(`Directory links are unavailable. Copy ${(sizeBytes / 1048576).toFixed(1)} MiB of library files into this project? Copies use additional disk space. Source: ${source}`, { modal: true }, 'Copy Library')) === 'Copy Library'
+}
+
+export async function confirmLibraryCleanup(name: string, bytes: number, unavailable: string[]): Promise<boolean> {
+    return (await window.showWarningMessage(`Delete global library ${name} (${(bytes / 1048576).toFixed(1)} MiB)? No known project currently references it. Projects outside this IDE's reference index may still use it and will need Restore Dependencies.${unavailable.length ? ` Unavailable projects could not be checked: ${unavailable.join(', ')}.` : ''}`, { modal: true }, 'Delete Cached Version')) === 'Delete Cached Version'
+}
+
+export async function confirmLibraryBulkCleanup(count: number, bytes: number, retained: number, protectedCount: number): Promise<boolean> {
+    return (await window.showWarningMessage(`Delete ${count} unused cached library versions (${(bytes / 1048576).toFixed(1)} MiB)? ${retained} latest versions will be retained; ${protectedCount} versions with known or unreadable project references will be skipped. Projects outside this IDE's reference index may need Restore Dependencies.`, { modal: true }, 'Delete Cached Versions')) === 'Delete Cached Versions'
+}

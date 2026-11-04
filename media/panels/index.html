@@ -115,6 +115,18 @@
                     </section>
                     <p class="github-help muted">Not signed in? VS Code will prompt you to sign in to GitHub when you authorize access. If authorization fails, sign in from the Accounts menu in VS Code, then try again.</p>
                 </div>
+                <section id="panel-development" role="tabpanel" aria-labelledby="tab-development" tabindex="0" hidden>
+                    <div class="section-toolbar">
+                        <h2>Extension caches</h2>
+                        <div class="actions">
+                            <button data-action="development.refreshCaches" class="text-button">Refresh</button>
+                            <button data-action="development.clearAllCaches" class="secondary" id="clear-all-caches">Clear All Caches</button>
+                        </div>
+                    </div>
+                    <p class="muted small">Inspect global and workspace state, disk list caches, and live render caches. Installed runtimes and library sources are managed in Runtime and Libraries.</p>
+                    <p id="cache-status" role="status" aria-live="polite" hidden></p>
+                    <div id="cache-entries" class="cache-entries"></div>
+                </section>
             </section>
             <template id="local-runtime-options-template">
                 <details class="local-options">
@@ -133,5 +145,6 @@
             </section>
         </main>
         <script nonce="{{nonce}}" src="{{script}}"></script>
+        <script nonce="{{nonce}}" src="{{librariesScript}}"></script>
     </body>
 </html>

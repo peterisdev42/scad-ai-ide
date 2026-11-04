@@ -167,8 +167,10 @@ async function fixture(t, extraSource = '') {
         Buffer,
         AbortController,
         require: (name) => {
+            if (name.endsWith('/cache/CacheRegistry')) return { memoryCaches: { register: () => ({ dispose() {} }) } }
             if (name.startsWith('node:')) return require(name)
             if (name === 'vscode') return api
+            if (name.endsWith('/libraries/LibraryEnvironment')) return { libraryEnvironment: { getDependencyFingerprint: async () => '' } }
             if (name.endsWith('/ScadClient')) return { ScadClient: { render: async (_path, values) => Buffer.from(JSON.stringify(values)) } }
             if (name.endsWith('/ModelFormat')) return require('../out/features/preview/shared/types/ModelFormat.js')
             if (name.endsWith('/previewEligibility')) return { EmptyModelError: class extends Error {} }

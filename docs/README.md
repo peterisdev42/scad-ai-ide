@@ -4,6 +4,10 @@
 
 ## 当前实现
 
+- [第三方依赖库管理](library-manager.md)：安装、锁文件、恢复、跨平台链接、运行环境和清理。
+- [Library Manager 验收](library-manager-validation.md)：本机测试结果、原始 HEAD 对照和平台验收限制。
+- [Registry 布局审核](library-layout-audit.md)：29 项来源、固定 Commit、安装布局与未支持原因。
+
 - [实验性按零件着色](part-colors.md)：按需 CSG 辅助、缓存、性能预算和限制。
 
 - [Preview Exporter 架构](preview-exporter-architecture.md)：原生导出器、协议、Goldfeather 和边界。
@@ -30,3 +34,5 @@
 ## 原始资料
 
 [artifacts/](artifacts/) 集中保存性能 JSON、阶段记录及验收截图。保留原文件名和字节内容，包括旧渲染方案的基线；同名实验中的相同图片也保留各自来源身份。文档中的对应链接说明采样环境与限制。`images/` 保存面向用户的演示图片。
+
+- [开发模式缓存管理](development-caches.md)：More 开发标签页、缓存范围与清除行为。

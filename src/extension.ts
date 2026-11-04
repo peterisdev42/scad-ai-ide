@@ -1,3 +1,5 @@
+import { DeveloperCacheController } from './features/development/DeveloperCacheController'
+import { registerLibraries } from './features/libraries/registerLibraries'
 import { registerOwnedMarkdownPreview } from './features/markdown/OwnedMarkdownPreview'
 import { notifications } from './platform/notifications'
 import { registerGitHub } from './features/github/registerGitHub'
@@ -18,6 +20,7 @@ let language: ReturnType<typeof registerLanguage> | undefined
 export async function activate(context: vscode.ExtensionContext) {
     notifications.reset()
     context.subscriptions.push(notifications)
+    const libraries = registerLibraries(context)
     language = registerLanguage(context)
     const github = registerGitHub(context)
     const runtime = registerRuntime(context, new RuntimeManager(discover), github.request)
@@ -26,7 +29,11 @@ export async function activate(context: vscode.ExtensionContext) {
     registerOwnedMarkdownPreview(context, runtime)
     const { ready: markdownReady, ...markdown } = registerMarkdown(context, runtime)
     const customizerView = new CustomizerViewProvider(customizer, context.extensionUri)
-    const panels = new PanelManager(context.extensionUri, runtime, github)
+    const development = new DeveloperCacheController(context, async (key) => {
+        if (key.startsWith('runtime.catalog.') || /runtime-catalog-.*\.json$/.test(key)) await runtime.clearCatalogCache()
+        if (key.startsWith('libraries.registry.') || key.replaceAll('\\', '/').startsWith('libraries/v1/cache/')) await libraries.clearRegistryCache()
+    })
+    const panels = new PanelManager(context.extensionUri, runtime, github, libraries, development)
     context.subscriptions.push(
         customizerView,
         ...(['resetAll', 'collapseAll', 'expandAll'] as const).map((action) => vscode.commands.registerCommand(`scad-ai-ide.customizer.${action}`, () => customizerView.runAction(action))),
@@ -42,7 +49,7 @@ export async function activate(context: vscode.ExtensionContext) {
     // Markdown's plugin hook is synchronous. Make its grammar ready before VS Code
     // obtains the hook, instead of relying on a refresh racing the first webview load.
     await markdownReady
-    return { ...markdown, preview, language, getActiveRuntime: runtime.getActiveRuntime, refresh: runtime.refresh, customizer, panels, getRenderArguments: () => customizer.getArguments() }
+    return { ...markdown, preview, language, libraries, getActiveRuntime: runtime.getActiveRuntime, refresh: runtime.refresh, customizer, panels, getRenderArguments: () => customizer.getArguments() }
 }
 
 export async function deactivate() {

@@ -1,3 +1,4 @@
+import { libraryEnvironment } from '../../platform/libraries/LibraryEnvironment'
 import { randomBytes } from 'node:crypto'
 import { basename, dirname, join, resolve } from 'node:path'
 import * as vscode from 'vscode'
@@ -62,6 +63,7 @@ class OwnedMarkdownPreview implements vscode.Disposable {
         panel.webview.options = { enableScripts: true, localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, 'dist'), vscode.Uri.joinPath(context.extensionUri, 'media'), vscode.Uri.file(dirname(document.uri.fsPath)), ...(vscode.workspace.workspaceFolders ?? []).map((f) => f.uri)] }
         panel.webview.html = this.html()
         this.subscriptions.push(
+            libraryEnvironment.onDidChange(() => this.invalidate()),
             panel.onDidDispose(() => this.dispose()),
             panel.webview.onDidReceiveMessage((message) => {
                 void this.receive(message).catch((error) => console.error('Owned Markdown preview:', error))
