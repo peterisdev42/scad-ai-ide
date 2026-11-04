@@ -1,0 +1,278 @@
+[
+    {
+        "id": "bosl",
+        "repositoryUrl": "https://github.com/revarbat/BOSL",
+        "commit": "9c8f33861e3fba485bd4c93f74874d30e6733936",
+        "tag": "v1.0.3",
+        "includeName": "BOSL",
+        "includeRoot": ".",
+        "entryPoint": "transforms.scad",
+        "evidence": "https://github.com/revarbat/BOSL/tree/9c8f33861e3fba485bd4c93f74874d30e6733936"
+    },
+    {
+        "id": "bosl2",
+        "repositoryUrl": "https://github.com/BelfrySCAD/BOSL2",
+        "commit": "ef03153850945bd0371733ea69022361dc978493",
+        "tag": "v2.0.780",
+        "includeName": "BOSL2",
+        "includeRoot": ".",
+        "entryPoint": "std.scad",
+        "evidence": "https://github.com/BelfrySCAD/BOSL2/tree/ef03153850945bd0371733ea69022361dc978493"
+    },
+    {
+        "id": "dotscad",
+        "repositoryUrl": "https://github.com/JustinSDK/dotSCAD",
+        "commit": "c2ce9d8b8a762f4f54dceebded5c1ced7907b6ef",
+        "tag": "v3.2.2",
+        "includeName": "dotSCAD",
+        "includeRoot": "src",
+        "entryPoint": "line2d.scad",
+        "evidence": "https://github.com/JustinSDK/dotSCAD/tree/c2ce9d8b8a762f4f54dceebded5c1ced7907b6ef"
+    },
+    {
+        "id": "nopscadlib",
+        "repositoryUrl": "https://github.com/nophead/NopSCADlib",
+        "commit": "53775b7e099b1256723d5ecbbe28176491a82729",
+        "tag": "v21.43.1",
+        "includeName": "NopSCADlib",
+        "includeRoot": ".",
+        "entryPoint": "core.scad",
+        "evidence": "https://github.com/nophead/NopSCADlib/tree/53775b7e099b1256723d5ecbbe28176491a82729"
+    },
+    {
+        "id": "ub-scad",
+        "repositoryUrl": "https://github.com/UBaer21/UB.scad",
+        "commit": "18069bbe5f9b08091ea591565d517e04aa906070",
+        "tag": "β22|022",
+        "blockedReason": "Library requires additional search roots; layout not yet verified.",
+        "evidence": "https://github.com/UBaer21/UB.scad/tree/18069bbe5f9b08091ea591565d517e04aa906070"
+    },
+    {
+        "id": "functional-openscad",
+        "repositoryUrl": "https://github.com/thehans/FunctionalOpenSCAD",
+        "commit": "51588ffe13d3124b5ea5c04e521cd8e25ab5d0a9",
+        "tag": null,
+        "includeName": "FunctionalOpenSCAD",
+        "includeRoot": ".",
+        "entryPoint": "functional.scad",
+        "evidence": "https://github.com/thehans/FunctionalOpenSCAD/tree/51588ffe13d3124b5ea5c04e521cd8e25ab5d0a9"
+    },
+    {
+        "id": "constructive",
+        "repositoryUrl": "https://github.com/solidboredom/constructive",
+        "commit": "8aad3ca29534223debe084d9ad48bddffb71da32",
+        "tag": null,
+        "includeName": "constructive",
+        "includeRoot": ".",
+        "entryPoint": "constructive-all.scad",
+        "evidence": "https://github.com/solidboredom/constructive/tree/8aad3ca29534223debe084d9ad48bddffb71da32"
+    },
+    {
+        "id": "stoneagelib",
+        "repositoryUrl": "https://github.com/Stone-Age-Sculptor/StoneAgeLib",
+        "commit": "c3eda9b85ee1d98d1249add707ca6837cab2a02f",
+        "tag": null,
+        "includeName": "StoneAgeLib",
+        "includeRoot": ".",
+        "entryPoint": "StoneAgeLib.scad",
+        "evidence": "https://github.com/Stone-Age-Sculptor/StoneAgeLib/tree/c3eda9b85ee1d98d1249add707ca6837cab2a02f"
+    },
+    {
+        "id": "bolts",
+        "repositoryUrl": "https://github.com/boltsparts/BOLTS",
+        "commit": "3e197a12d4c910a00736811f1469880434327a01",
+        "tag": "v0.4.1",
+        "blockedReason": "Repository is a source generator, not a directly installable BOLTS distribution.",
+        "evidence": "https://github.com/boltsparts/BOLTS/tree/3e197a12d4c910a00736811f1469880434327a01"
+    },
+    {
+        "id": "asset-collection",
+        "repositoryUrl": "https://github.com/AngeloNicoli/OpenSCAD-Snippet",
+        "commit": "4f9e3d4d16b5e427186c1f89e10c2181c437dee6",
+        "tag": null,
+        "blockedReason": "Collection of independent models; no verified library include contract.",
+        "evidence": "https://github.com/AngeloNicoli/OpenSCAD-Snippet/tree/4f9e3d4d16b5e427186c1f89e10c2181c437dee6"
+    },
+    {
+        "id": "board-gametoolkit",
+        "repositoryUrl": "https://github.com/pinkfish/openscad_boardgame_toolkit",
+        "commit": "719ebde5d225372be7eff58737172eda81c62b08",
+        "tag": null,
+        "blockedReason": "Requires BOSL2 and fonts; explicit prerequisite metadata is not available in Registry v1.",
+        "evidence": "https://github.com/pinkfish/openscad_boardgame_toolkit/tree/719ebde5d225372be7eff58737172eda81c62b08"
+    },
+    {
+        "id": "round-anything",
+        "repositoryUrl": "https://github.com/Irev-Dev/Round-Anything",
+        "commit": "8ead00a2bf3ace4004cbd29e8909ab83e67bb155",
+        "tag": "1.0.4",
+        "includeName": "Round-Anything",
+        "includeRoot": ".",
+        "entryPoint": "polyround.scad",
+        "evidence": "https://github.com/Irev-Dev/Round-Anything/tree/8ead00a2bf3ace4004cbd29e8909ab83e67bb155"
+    },
+    {
+        "id": "marks-enclosure-helper",
+        "repositoryUrl": "https://github.com/sbambach/MarksEnclosureHelper",
+        "commit": "77f016d86aded6fc8d79504b8edba85422143b56",
+        "tag": null,
+        "includeName": "MarksEnclosureHelper",
+        "includeRoot": ".",
+        "entryPoint": "hingebox_code.scad",
+        "evidence": "https://github.com/sbambach/MarksEnclosureHelper/tree/77f016d86aded6fc8d79504b8edba85422143b56"
+    },
+    {
+        "id": "funcutils",
+        "repositoryUrl": "https://github.com/thehans/funcutils",
+        "commit": "fac6ac1269d3578b839ece088c03f404a76fb43b",
+        "tag": null,
+        "includeName": "funcutils",
+        "includeRoot": ".",
+        "entryPoint": "funcutils.scad",
+        "evidence": "https://github.com/thehans/funcutils/tree/fac6ac1269d3578b839ece088c03f404a76fb43b"
+    },
+    {
+        "id": "threads-scad",
+        "repositoryUrl": "https://github.com/rcolyer/threads-scad",
+        "commit": "4ae9aeb3b136f9858200f77a304b909a000ce3b4",
+        "tag": null,
+        "includeName": "threads-scad",
+        "includeRoot": ".",
+        "entryPoint": "threads.scad",
+        "evidence": "https://github.com/rcolyer/threads-scad/tree/4ae9aeb3b136f9858200f77a304b909a000ce3b4"
+    },
+    {
+        "id": "smooth-prim",
+        "repositoryUrl": "https://github.com/rcolyer/smooth-prim",
+        "commit": "0d0038f984465f3eb0f6026a4d5de2f79d2dcea8",
+        "tag": null,
+        "includeName": "smooth-prim",
+        "includeRoot": ".",
+        "entryPoint": "smooth_prim.scad",
+        "evidence": "https://github.com/rcolyer/smooth-prim/tree/0d0038f984465f3eb0f6026a4d5de2f79d2dcea8"
+    },
+    {
+        "id": "plot-function",
+        "repositoryUrl": "https://github.com/rcolyer/plot-function",
+        "commit": "5f78d0399632ded49a03edb7b695c443056ebbbd",
+        "tag": null,
+        "includeName": "plot-function",
+        "includeRoot": ".",
+        "entryPoint": "plot_function.scad",
+        "evidence": "https://github.com/rcolyer/plot-function/tree/5f78d0399632ded49a03edb7b695c443056ebbbd"
+    },
+    {
+        "id": "closepoints",
+        "repositoryUrl": "https://github.com/rcolyer/closepoints",
+        "commit": "8ce827f5a7fec8afe4ab9a13a3427d685bca2ce0",
+        "tag": null,
+        "includeName": "closepoints",
+        "includeRoot": ".",
+        "entryPoint": "closepoints.scad",
+        "evidence": "https://github.com/rcolyer/closepoints/tree/8ce827f5a7fec8afe4ab9a13a3427d685bca2ce0"
+    },
+    {
+        "id": "openscad-tray",
+        "repositoryUrl": "https://github.com/sofian/openscad-tray",
+        "commit": "9fc472032fad5d5fd3f25ea0e230b44fe95c9ccf",
+        "tag": null,
+        "includeName": "openscad-tray",
+        "includeRoot": ".",
+        "entryPoint": "tray.scad",
+        "evidence": "https://github.com/sofian/openscad-tray/tree/9fc472032fad5d5fd3f25ea0e230b44fe95c9ccf"
+    },
+    {
+        "id": "yapp-box",
+        "repositoryUrl": "https://github.com/mrWheel/YAPP_Box",
+        "commit": "2ed6c23b98fc9333cf588be39f9a35ce0c2957de",
+        "tag": "v2.0.5",
+        "includeName": "YAPP_Box",
+        "includeRoot": "library",
+        "entryPoint": "YAPPgenerator_v21.scad",
+        "evidence": "https://github.com/mrWheel/YAPP_Box/tree/2ed6c23b98fc9333cf588be39f9a35ce0c2957de"
+    },
+    {
+        "id": "stemfie-parts",
+        "repositoryUrl": "https://github.com/Cantareus/Stemfie_OpenSCAD",
+        "commit": "440c084488915d79b06de88aac8a2a3cdb1662eb",
+        "tag": null,
+        "includeName": "STEMFIE",
+        "includeRoot": ".",
+        "entryPoint": "stemfie.scad",
+        "evidence": "https://github.com/Cantareus/Stemfie_OpenSCAD/tree/440c084488915d79b06de88aac8a2a3cdb1662eb"
+    },
+    {
+        "id": "catchnhole",
+        "repositoryUrl": "https://github.com/mmalecki/catchnhole",
+        "commit": "99428972ca2588f5ce33c0df54d097a14acf7f10",
+        "tag": "v3.0.2",
+        "includeName": "catchnhole",
+        "includeRoot": ".",
+        "entryPoint": "catchnhole.scad",
+        "evidence": "https://github.com/mmalecki/catchnhole/tree/99428972ca2588f5ce33c0df54d097a14acf7f10"
+    },
+    {
+        "id": "pathbuilder",
+        "repositoryUrl": "https://github.com/dinther/pathbuilder",
+        "commit": "271458439cfad7c2b4658693645e3dc3b28cc6a3",
+        "tag": "V1.0",
+        "includeName": "pathbuilder",
+        "includeRoot": ".",
+        "entryPoint": "pathbuilder.scad",
+        "evidence": "https://github.com/dinther/pathbuilder/tree/271458439cfad7c2b4658693645e3dc3b28cc6a3"
+    },
+    {
+        "id": "scon",
+        "repositoryUrl": "https://github.com/wmacevoy/openscad-scon",
+        "commit": "c954e07bf0faf571d8eccc259d47e61938666cef",
+        "tag": "v1.0.0",
+        "blockedReason": "Requires nonstandard include expressions; runtime compatibility is not verified.",
+        "evidence": "https://github.com/wmacevoy/openscad-scon/tree/c954e07bf0faf571d8eccc259d47e61938666cef"
+    },
+    {
+        "id": "a2d",
+        "repositoryUrl": "https://github.com/ridercz/A2D",
+        "commit": "4ad48205fefd841a468b7916521596f09383add9",
+        "tag": "v1.6.2",
+        "includeName": "A2D",
+        "includeRoot": ".",
+        "entryPoint": "A2D.scad",
+        "evidence": "https://github.com/ridercz/A2D/tree/4ad48205fefd841a468b7916521596f09383add9"
+    },
+    {
+        "id": "doll-house",
+        "repositoryUrl": "https://codeberg.org/adrien-delhorme/openscad-doll-house",
+        "commit": "a866a807c595e7562ad27eb13aa23b2009697ca5",
+        "tag": null,
+        "blockedReason": "Codeberg layout has not been independently verified.",
+        "evidence": "https://codeberg.org/adrien-delhorme/openscad-doll-house/tree/a866a807c595e7562ad27eb13aa23b2009697ca5"
+    },
+    {
+        "id": "dimensions",
+        "repositoryUrl": "https://codeberg.org/adrien-delhorme/openscad-new-dimensions",
+        "commit": "d37828e26df6067fbd872e8e291c6b0b19298243",
+        "tag": null,
+        "blockedReason": "Codeberg layout has not been independently verified.",
+        "evidence": "https://codeberg.org/adrien-delhorme/openscad-new-dimensions/tree/d37828e26df6067fbd872e8e291c6b0b19298243"
+    },
+    {
+        "id": "lego-scad",
+        "repositoryUrl": "https://github.com/cfinke/LEGO.scad",
+        "commit": "d717ca8e29dbb62f271bf351b35179060eaa744e",
+        "tag": null,
+        "includeName": "LEGO",
+        "includeRoot": ".",
+        "entryPoint": "LEGO.scad",
+        "evidence": "https://github.com/cfinke/LEGO.scad/tree/d717ca8e29dbb62f271bf351b35179060eaa744e"
+    },
+    {
+        "id": "technic-scad",
+        "repositoryUrl": "https://github.com/cfinke/Technic.scad",
+        "commit": "41f17a4696b582850097a2e3779348bc27c87f47",
+        "tag": null,
+        "includeName": "Technic",
+        "includeRoot": ".",
+        "entryPoint": "Technic.scad",
+        "evidence": "https://github.com/cfinke/Technic.scad/tree/41f17a4696b582850097a2e3779348bc27c87f47"
+    }
+]

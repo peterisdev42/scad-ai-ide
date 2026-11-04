@@ -1,3 +1,4 @@
+import { memoryCaches } from '../../core/cache/CacheRegistry'
 import { createHash } from 'node:crypto'
 
 export type ModelState = { status: 'pending' } | { status: 'ready'; model: string } | { status: 'error'; message: string }
@@ -16,6 +17,7 @@ interface Entry {
 export class ScadModelCache {
     private readonly entries = new Map<string, Entry>()
     private queue = Promise.resolve()
+    private readonly cacheInspector = memoryCaches.register('Markdown model results', () => [...this.entries].map(([key, entry]) => ({ key, document: entry.document, cwd: entry.cwd, variant: entry.variant, status: entry.state.status, bytes: entry.state.status === 'ready' ? Buffer.byteLength(entry.state.model) : 0, dependencies: entry.dependencies })), () => this.invalidate())
     private disposed = false
 
     constructor(
@@ -89,6 +91,7 @@ export class ScadModelCache {
     }
 
     dispose() {
+        this.cacheInspector.dispose()
         this.disposed = true
         this.invalidate()
     }

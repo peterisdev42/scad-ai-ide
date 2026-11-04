@@ -1,3 +1,4 @@
+import { libraryEnvironment } from '../../platform/libraries/LibraryEnvironment'
 import * as vscode from 'vscode'
 import { RuntimeUnavailableError } from '../../core/runtime/errors'
 import type { CustomizerService } from '../../core/customizer/CustomizerService'
@@ -33,6 +34,7 @@ export function registerPreview(context: vscode.ExtensionContext, runtime: Retur
         ScadClient.outputChannel,
         { dispose: () => ScadClient.dispose() },
         sessions,
+        libraryEnvironment.onDidChange(() => sessions.refresh()),
         registerShowPanelCommand(),
         vscode.window.registerCustomEditorProvider(previewEditorViewType, new ScadPreviewEditorProvider(context, sessions), {
             webviewOptions: { enableFindWidget: true },

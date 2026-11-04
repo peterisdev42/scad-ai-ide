@@ -17,6 +17,7 @@ function mockPreview(initialRuntime?: Runtime) {
     vm.runInNewContext(transformSync(source, { loader: 'ts', format: 'cjs', target: 'es2022' }).code, {
         module,
         require: (id: string) => {
+            if (id.endsWith('/libraries/LibraryEnvironment')) return { libraryEnvironment: { onDidChange: () => disposable } }
             if (id === 'vscode')
                 return {
                     Uri: { joinPath: () => ({ fsPath: '/dist/mesh-topology-worker.mjs' }) },

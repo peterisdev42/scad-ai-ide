@@ -40,6 +40,7 @@ function panelFixture(render: (...args: unknown[]) => Promise<Buffer> = async ()
         AbortController,
         AbortSignal,
         require: (id: string) => {
+            if (id.endsWith('/cache/CacheRegistry')) return { memoryCaches: { register: () => ({ dispose() {} }) } }
             if (id.endsWith('/formats/meshTopology')) return { queryMeshTopology: async () => ({ version: 1, meshes: [] }) }
             if (id.endsWith('/platform/notifications')) return { notifications: { previewError: (error: Error) => notices.push(error) } }
             if (id.endsWith('/renderError')) return { showRenderError: (error: Error) => notices.push(error) }

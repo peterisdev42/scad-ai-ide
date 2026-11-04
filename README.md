@@ -124,13 +124,19 @@ cube([width, width, height]);
 
 </details>
 
+### 📚 第三方依赖库
+
+打开 Quick Access → **Libraries**，在 **Project** 页确认当前项目路径后，在 **Registry** 中选择库与精确版本并安装。**Project** 管理依赖、切换版本和恢复；**Global** 管理共享源码缓存和安全清理。提交 `.scad/dependencies.json` 与 `.scad/dependencies.lock.json` 后，其他机器可通过 Restore Dependencies 重建环境。
+
+普通渲染、快速预览、Markdown 与语言服务自动使用对应项目的依赖路径。可安装的库与版本以审核结果为准，未知布局会明确禁用。使用方式、平台行为与限制见 [依赖库管理说明](docs/library-manager.md)。
+
 ### ✨ AI 增强与扩展方向
 
-| 方向                                               | 当前状态              |
-| :------------------------------------------------- | :-------------------- |
-| **AI**：Skills、MCP、Agent Tools、AI Provider 管理 | ⏳ 预留入口，尚未实现 |
-| **Bricks**：可复用建模积木管理                     | ⏳ 预留入口，尚未实现 |
-| **Libraries**：OpenSCAD 库与依赖管理               | ⏳ 预留入口，尚未实现 |
+| 方向                                               | 当前状态                              |
+| :------------------------------------------------- | :------------------------------------ |
+| **AI**：Skills、MCP、Agent Tools、AI Provider 管理 | ⏳ 预留入口，尚未实现                 |
+| **Bricks**：可复用建模积木管理                     | ⏳ 预留入口，尚未实现                 |
+| **Libraries**：OpenSCAD 库与依赖管理               | ✅ 项目锁定、共享缓存、恢复与安全清理 |
 
 > [!NOTE]
 > 当前已提供的能力以 IDE 和建模工具为主，尚不提供 AI 代码生成或自动建模。

@@ -1,3 +1,4 @@
+import { libraryEnvironment } from '../../platform/libraries/LibraryEnvironment'
 import type { PreviewTimings } from '../../core/preview/performance'
 import { readCliDependencies } from '../../core/formats/dependencies'
 import { runExporter, resolveExporterExecutable } from '../../platform/previewExporter/runtime'
@@ -25,8 +26,9 @@ export async function renderScadModel(command: LaunchCommand | undefined, source
         const exportFormat = format === ModelFormat.STL ? 'binstl' : format
         const args = [...command.argsPrefix, '-d', join(directory, 'model.d'), '--export-format', exportFormat, '-o', output, '-']
         const renderStarted = performance.now()
+        const env = await libraryEnvironment.getEnvironment(join(cwd, '__markdown__.scad'))
         await new Promise<void>((resolve, reject) => {
-            const child = execFile(command.executable, args, { cwd, signal, timeout: 30000, killSignal: 'SIGKILL', maxBuffer: 1024 * 1024, windowsHide: true }, (error, _stdout, stderr) => (error ? reject(new Error(stderr.trim().slice(-2000) || error.message)) : resolve()))
+            const child = execFile(command.executable, args, { cwd, env, signal, timeout: 30000, killSignal: 'SIGKILL', maxBuffer: 1024 * 1024, windowsHide: true }, (error, _stdout, stderr) => (error ? reject(new Error(stderr.trim().slice(-2000) || error.message)) : resolve()))
             child.stdin?.on('error', () => {})
             child.stdin?.end(source)
         })

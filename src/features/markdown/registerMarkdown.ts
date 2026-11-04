@@ -1,3 +1,4 @@
+import { libraryEnvironment } from '../../platform/libraries/LibraryEnvironment'
 import { basename, dirname, join } from 'node:path'
 import { createHash, randomUUID } from 'node:crypto'
 import * as vscode from 'vscode'
@@ -107,6 +108,7 @@ export function registerMarkdown(context: vscode.ExtensionContext, runtime: Retu
     let previousRuntime = identity()
     let wasInstalling = false
     context.subscriptions.push(
+        libraryEnvironment.onDidChange(invalidate),
         {
             dispose() {
                 disposed = true

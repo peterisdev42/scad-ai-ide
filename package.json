@@ -444,6 +444,20 @@
                 ],
                 "priority": "option"
             }
+        ],
+        "jsonValidation": [
+            {
+                "fileMatch": [
+                    "**/.scad/dependencies.json"
+                ],
+                "url": "./resources/libraries/dependencies.schema.json"
+            },
+            {
+                "fileMatch": [
+                    "**/.scad/dependencies.lock.json"
+                ],
+                "url": "./resources/libraries/dependencies.lock.schema.json"
+            }
         ]
     },
     "scripts": {
@@ -457,7 +471,7 @@
         "watch-tests": "tsc -p . -w --outDir out",
         "check-types": "tsc --noEmit && tsc -p tsconfig.webview.json",
         "lint": "eslint src",
-        "test": "npm run compile-tests && node --test out/test/notifications.test.js out/test/runtime.test.js out/test/github.test.js out/test/installation.test.js out/test/customizer.test.js out/test/language.test.js out/test/markdown.test.js && npm run test:preview",
+        "test": "npm run compile-tests && node --test out/test/notifications.test.js out/test/runtime.test.js out/test/github.test.js out/test/installation.test.js out/test/customizer.test.js out/test/language.test.js out/test/markdown.test.js && npm run test:libraries && npm run test:preview",
         "test:customizer": "npm run compile-tests && node esbuild.js && node --test scripts/customizer-scrollbar.test.mjs",
         "test:markdown": "npm run compile && npm run compile-tests && node --test out/test/markdown.test.js && node --test scripts/markdown-preview.test.mjs",
         "test:markdown-host": "npm run compile && node --test scripts/markdown-webview.test.mjs",
@@ -474,13 +488,18 @@
         "test:preview-sync": "node --test scripts/preview-sync/engine.test.mjs",
         "test:preview-exporter": "node --import tsx --test src/test/preview/exporter.test.ts",
         "test:preview-gpu": "node --test scripts/prepared-preview-gpu.test.mjs",
-        "benchmark:preview": "node scripts/preview-pipeline-benchmark.mjs"
+        "benchmark:preview": "node scripts/preview-pipeline-benchmark.mjs",
+        "test:libraries": "node --import tsx --test src/test/libraries/*.test.ts",
+        "test:libraries:ui": "node --test scripts/library-panel.test.mjs",
+        "test:libraries:online": "node --import tsx scripts/test-libraries-online.ts",
+        "test:libraries:integration": "npm run compile-tests && npm run compile && vscode-test --grep \"Library Manager extension host\""
     },
     "devDependencies": {
         "@types/markdown-it": "^14.2.0",
         "@types/mocha": "^10.0.10",
         "@types/node": "24.x",
         "@types/pngjs": "6.0.5",
+        "@types/proper-lockfile": "^4.1.4",
         "@types/three": "0.186.0",
         "@types/vscode": "^1.140.0",
         "@types/vscode-webview": "^1.57.5",
@@ -523,6 +542,7 @@
         "lit": "^3.3.2",
         "manifold-3d": "^3.5.4",
         "pngjs": "7.0.0",
+        "proper-lockfile": "^4.1.2",
         "tar": "^7.5.22",
         "three": "0.187.0",
         "vscode-languageclient": "^9.0.1",

@@ -1,3 +1,4 @@
+import { libraryEnvironment } from '../libraries/LibraryEnvironment'
 import { execFile } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { access, mkdir, mkdtemp, open, readFile, realpath, rename, rm, stat, writeFile } from 'node:fs/promises'
@@ -143,8 +144,9 @@ async function exportPreparedScene(executable: string, source: string, cwd: stri
             deps = join(directory, 'model.d')
         const args = ['--export-format=preview-scene', '-d', deps, '-o', output, ...Object.entries(parameters).flatMap(([k, v]) => ['-D', `${k}=${JSON.stringify(v)}`]), '-D', '$preview=true', '-']
         const started = performance.now()
+        const env = await libraryEnvironment.getEnvironment(sourcePath ?? join(cwd, '__markdown__.scad'))
         await new Promise<void>((resolve, reject) => {
-            const child = execFile(executable, args, { cwd, signal, timeout: 30000, killSignal: 'SIGKILL', maxBuffer: 1048576 }, (error, _out, err) => (error ? reject(new Error(`Preview Exporter failed: ${err.trim() || error.message}`)) : resolve()))
+            const child = execFile(executable, args, { cwd, env, signal, timeout: 30000, killSignal: 'SIGKILL', maxBuffer: 1048576 }, (error, _out, err) => (error ? reject(new Error(`Preview Exporter failed: ${err.trim() || error.message}`)) : resolve()))
             child.stderr?.on('data', (chunk) => onLog?.(String(chunk)))
             child.stdin?.on('error', () => {})
             child.stdin?.end(source)

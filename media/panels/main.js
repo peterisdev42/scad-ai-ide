@@ -1,6 +1,7 @@
 const vscode = acquireVsCodeApi()
 const page = document.body.dataset.page
 const get = (id) => document.getElementById(id)
+let librariesState
 let runtimeState
 let pendingLocalAction
 const actionErrors = { overview: '', installed: '', available: '' }
@@ -58,6 +59,64 @@ function element(tag, text, className) {
     }
     return node
 }
+
+let developmentEnabled = false
+let developmentBusy = false
+function selectMoreTab(id, focus = false) {
+    if (page !== 'more' || (id !== 'github' && (id !== 'development' || !developmentEnabled))) return
+    const previous = vscode.getState()?.moreTab
+    for (const tab of get('more-tabs').querySelectorAll('[role="tab"]')) {
+        const selected = tab.id === `tab-${id}`
+        tab.setAttribute('aria-selected', String(selected))
+        tab.tabIndex = selected ? 0 : -1
+        get(tab.getAttribute('aria-controls')).hidden = !selected
+        if (selected && focus) tab.focus()
+    }
+    vscode.setState({ ...vscode.getState(), moreTab: id })
+    get('github-error').hidden = true
+    get('action-error').hidden = true
+    if (id === 'development' && previous !== id) requestCaches('development.refreshCaches')
+}
+function requestCaches(action, id) {
+    if (!developmentEnabled || developmentBusy) return
+    developmentBusy = true
+    for (const button of get('panel-development').querySelectorAll('button')) button.disabled = true
+    vscode.postMessage({ action, ...(id === undefined ? {} : { id }) })
+}
+function renderCaches(state) {
+    developmentBusy = false
+    const list = get('cache-entries')
+    list.replaceChildren()
+    for (const entry of state.entries) {
+        const card = element('article', undefined, 'card cache-entry')
+        const heading = element('div', undefined, 'section-heading')
+        heading.append(element('h3', entry.name), element('span', entry.scope, 'badge'))
+        const clear = element('button', 'Clear', 'secondary')
+        clear.setAttribute('aria-label', `Clear ${entry.scope} ${entry.name}`)
+        clear.addEventListener('click', () => requestCaches('development.clearCache', entry.id))
+        heading.append(clear)
+        const details = element('details')
+        details.append(element('summary', 'Cached value'), element('pre', JSON.stringify(entry.value, null, 2) ?? 'undefined'))
+        card.append(heading, details)
+        list.append(card)
+    }
+    get('cache-status').textContent = state.entries.length ? `${state.entries.length} cache fields` : 'No cached data.'
+    get('cache-status').hidden = false
+    for (const button of get('panel-development').querySelectorAll('button')) button.disabled = false
+    get('clear-all-caches').disabled = !state.entries.length
+}
+get('more-tabs').addEventListener('click', (event) => {
+    const tab = event.target.closest('[role="tab"]')
+    if (tab) selectMoreTab(tab.id.replace('tab-', ''), true)
+})
+get('more-tabs').addEventListener('keydown', (event) => {
+    const tabs = [...get('more-tabs').querySelectorAll('[role="tab"]')]
+    const index = tabs.indexOf(document.activeElement)
+    if (index < 0 || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return
+    event.preventDefault()
+    const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length
+    selectMoreTab(tabs[next].id.replace('tab-', ''), true)
+})
 
 function appendRuntimeChannel(heading, channel) {
     if (!['Stable', 'RC', 'Test', 'Snapshot'].includes(channel)) return
@@ -293,6 +352,25 @@ function renderGitHub(state) {
 }
 
 window.addEventListener('message', (event) => {
+    if (event.data?.type === 'developmentMode' && page === 'more') {
+        developmentEnabled = !!event.data.enabled
+        if (developmentEnabled && !get('tab-development')) {
+            const tab = element('button', 'Development')
+            tab.id = 'tab-development'
+            tab.setAttribute('role', 'tab')
+            tab.setAttribute('aria-controls', 'panel-development')
+            tab.setAttribute('aria-selected', 'false')
+            tab.tabIndex = -1
+            get('more-tabs').append(tab)
+        }
+        if (!developmentEnabled) get('tab-development')?.remove()
+        const saved = vscode.getState()?.moreTab
+        // Select GitHub first so a restored Development tab requests a fresh snapshot.
+        vscode.setState({ ...vscode.getState(), moreTab: 'github' })
+        selectMoreTab(developmentEnabled && saved === 'development' ? 'development' : 'github')
+    }
+    if (event.data?.type === 'developmentState' && page === 'more' && developmentEnabled) renderCaches(event.data.state)
+    if (event.data?.type === 'librariesState') librariesState = event.data.state
     if (event.data?.type === 'runtimeTab' && page === 'runtime') {
         selectTab(event.data.tab, true)
     }
@@ -313,6 +391,10 @@ window.addEventListener('message', (event) => {
         if (runtimeState) render(runtimeState)
     }
     if (event.data?.type === 'error') {
+        if (page === 'more' && String(event.data.action).startsWith('development.')) {
+            developmentBusy = false
+            for (const button of get('panel-development').querySelectorAll('button')) button.disabled = false
+        }
         if (page === 'runtime') {
             const tab = actionOrigins.get(event.data.action) ?? (event.data.action === 'installBuild' || event.data.action === 'refreshBuilds' ? 'available' : 'installed')
             actionErrors[tab] = event.data.message
@@ -345,7 +427,8 @@ document.addEventListener('click', (event) => {
             if (['browse', 'installArchive'].includes(button.dataset.action)) pendingLocalAction = button.dataset.action
             if (runtimeState) render(runtimeState)
         }
-        vscode.postMessage({ action: button.dataset.action, id: button.dataset.id })
+        if (button.dataset.action.startsWith('development.')) requestCaches(button.dataset.action)
+        else vscode.postMessage({ action: button.dataset.action, id: button.dataset.id })
     }
 })
 get('runtime-tabs').addEventListener('keydown', (event) => {
@@ -358,4 +441,4 @@ get('runtime-tabs').addEventListener('keydown', (event) => {
     const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length
     selectTab(tabs[next].dataset.tab, true)
 })
-vscode.postMessage({ action: 'ready' })
+vscode.postMessage({ action: 'ready', ...(page === 'libraries' ? { tab: ['registry', 'global', 'project'].includes(vscode.getState()?.libraryTab) ? vscode.getState().libraryTab : 'registry' } : {}) })

@@ -3,6 +3,7 @@
     --border: var(--vscode-contrastBorder, var(--vscode-panel-border));
     --muted: var(--vscode-descriptionForeground);
     --font-small: calc(var(--vscode-font-size) * 0.923);
+    --control-gap: var(--vscode-spacing-size80, calc(var(--vscode-font-size) * 0.6154));
     --font-caption: calc(var(--vscode-font-size) * 0.846);
 }
 * {
@@ -446,4 +447,395 @@ body.vscode-high-contrast {
 }
 body.vscode-high-contrast-light {
     color-scheme: light;
+}
+
+/* Libraries uses only host theme tokens; no fixed light/dark palette. */
+.library-manager {
+    --library-border: var(--vscode-contrastBorder, var(--vscode-panel-border, var(--vscode-widget-border, transparent)));
+}
+.library-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+.library-content {
+    min-width: 0;
+    width: 100%;
+}
+.library-header-actions,
+.library-project-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.library-header-actions {
+    justify-content: flex-end;
+    flex-shrink: 0;
+    margin-bottom: 16px;
+}
+.library-project-actions {
+    margin-bottom: 16px;
+}
+.library-header-actions button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+.library-header-actions .library-icon {
+    width: 15px;
+    height: 15px;
+}
+.library-section-description {
+    color: var(--vscode-descriptionForeground);
+    margin: 0 0 calc(var(--control-gap) * 2);
+}
+.library-current-project {
+    color: var(--vscode-descriptionForeground);
+    font-family: var(--vscode-editor-font-family, monospace);
+    font-size: var(--font-small);
+    overflow-wrap: anywhere;
+    margin: 0 0 calc(var(--control-gap) * 2);
+}
+.library-global-actions {
+    display: flex;
+    gap: var(--control-gap);
+    flex-wrap: wrap;
+    margin-bottom: calc(var(--control-gap) * 2);
+}
+.library-cleanup-split {
+    position: relative;
+    display: inline-flex;
+    max-width: 100%;
+}
+.library-cleanup-split > button:first-child {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+    min-width: 0;
+}
+.library-cleanup-split > .library-cleanup-toggle {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    border-inline-start-color: var(--vscode-button-separator, var(--border));
+    padding-inline: calc(var(--control-gap) * 1.5);
+    flex-shrink: 0;
+}
+.library-cleanup-toggle::after {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-inline-end: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    transform: translateY(-2px) rotate(45deg);
+}
+.library-cleanup-menu {
+    position: absolute;
+    inset-inline-end: 0;
+    top: calc(100% + var(--control-gap) / 2);
+    z-index: 10;
+    width: max-content;
+    max-width: min(320px, 100%);
+    padding: calc(var(--control-gap) / 2);
+    border: 1px solid var(--vscode-menu-border, var(--border));
+    border-radius: 3px;
+    color: var(--vscode-menu-foreground, var(--vscode-foreground));
+    background: var(--vscode-menu-background, var(--vscode-editor-background));
+    box-shadow: 0 2px 8px var(--vscode-widget-shadow, transparent);
+}
+.library-cleanup-menu [role='menuitem'] {
+    display: block;
+    width: 100%;
+    text-align: start;
+    color: inherit;
+    background: transparent;
+    border: 0;
+}
+.library-cleanup-menu [role='menuitem']:is(:hover, :focus-visible) {
+    color: var(--vscode-menu-selectionForeground, var(--vscode-foreground));
+    background: var(--vscode-menu-selectionBackground, var(--vscode-list-hoverBackground));
+}
+.library-bulk-result {
+    color: var(--vscode-descriptionForeground);
+}
+body[data-page='libraries'] select,
+body[data-page='libraries'] input {
+    font: inherit;
+    min-width: 0;
+    max-width: 100%;
+    padding: 7px 10px;
+    border-radius: 3px;
+    color: var(--vscode-input-foreground);
+    background: var(--vscode-input-background);
+    border: 1px solid var(--vscode-input-border, var(--library-border));
+}
+body[data-page='libraries'] select {
+    color: var(--vscode-dropdown-foreground, var(--vscode-input-foreground));
+    background: var(--vscode-dropdown-background, var(--vscode-input-background));
+    border-color: var(--vscode-dropdown-border, var(--library-border));
+}
+body[data-page='libraries'] input::placeholder {
+    color: var(--vscode-input-placeholderForeground);
+}
+body[data-page='libraries'] select:disabled {
+    color: var(--vscode-disabledForeground);
+}
+body[data-page='libraries'] a {
+    color: var(--vscode-textLink-foreground);
+}
+body[data-page='libraries'] a:hover {
+    color: var(--vscode-textLink-activeForeground);
+}
+body[data-page='libraries'] :is(select, input, a):focus-visible {
+    outline: 1px solid var(--vscode-focusBorder);
+    outline-offset: 2px;
+}
+.library-list {
+    display: grid;
+    gap: 12px;
+}
+.library-card {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr);
+    gap: 12px 16px;
+    padding: 20px;
+    border: 1px solid var(--library-border);
+    border-radius: 4px;
+    background: var(--vscode-editor-background);
+}
+.library-card:hover {
+    border-color: var(--vscode-contrastBorder, var(--vscode-focusBorder));
+}
+.library-package-mark {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--library-border);
+    border-radius: 4px;
+    background: var(--vscode-editorWidget-background, var(--vscode-editor-background));
+    color: var(--vscode-descriptionForeground);
+}
+.library-card-info {
+    min-width: 0;
+}
+.library-card-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px 24px;
+    flex-wrap: wrap;
+}
+.library-card-heading {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.library-card-heading h3 {
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+    margin-right: 4px;
+}
+.library-description {
+    margin: 8px 0 12px;
+    color: var(--vscode-descriptionForeground);
+    overflow-wrap: anywhere;
+}
+.library-badge {
+    padding: 2px 7px;
+    border: 1px solid var(--library-border);
+    border-radius: 3px;
+    font-size: var(--font-caption);
+    line-height: 1.5;
+    color: var(--vscode-descriptionForeground);
+    overflow-wrap: anywhere;
+}
+.library-badge-success {
+    color: var(--vscode-testing-iconPassed, var(--vscode-foreground));
+}
+.library-badge-warning {
+    color: var(--vscode-editorWarning-foreground, var(--vscode-foreground));
+}
+.library-card-actions {
+    grid-column: 2;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    padding-top: 12px;
+    margin-top: 4px;
+    border-top: 1px solid var(--library-border);
+}
+.library-select {
+    position: relative;
+    display: inline-flex;
+    min-width: 0;
+    flex: 1 1 200px;
+    margin-right: auto;
+    color: var(--vscode-dropdown-foreground, var(--vscode-foreground));
+}
+.library-select::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-right: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    transform: rotate(45deg);
+    inset-inline-end: 12px;
+    top: calc(50% - 5px);
+    pointer-events: none;
+}
+.library-select:has(select:disabled) {
+    color: var(--vscode-disabledForeground);
+}
+body[data-page='libraries'] .library-select select {
+    appearance: none;
+    width: 100%;
+    padding-inline-end: 32px;
+}
+.library-links {
+    display: flex;
+    gap: 16px;
+    font-size: var(--font-small);
+    margin: 0 0 0 auto;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+.library-search {
+    display: flex;
+    align-items: center;
+    gap: var(--control-gap);
+    margin-bottom: calc(var(--control-gap) * 3);
+}
+.library-search-input {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+}
+.library-search-input > .library-icon {
+    position: absolute;
+    width: calc(var(--vscode-font-size) * 1.231);
+    height: calc(var(--vscode-font-size) * 1.231);
+    inset-inline-start: var(--control-gap);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--vscode-input-placeholderForeground, var(--vscode-descriptionForeground));
+    pointer-events: none;
+}
+body[data-page='libraries'] .library-search input {
+    width: 100%;
+    padding-inline-start: calc(var(--control-gap) * 2 + var(--vscode-font-size) * 1.231);
+}
+.library-search > button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--control-gap);
+    flex-shrink: 0;
+}
+.library-search > button .library-icon {
+    width: calc(var(--vscode-font-size) * 1.154);
+    height: calc(var(--vscode-font-size) * 1.154);
+}
+.library-empty {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    padding: 56px 24px;
+    border: 1px dashed var(--library-border);
+    border-radius: 4px;
+    text-align: center;
+}
+.library-empty > .library-icon {
+    width: 38px;
+    height: 38px;
+    color: var(--vscode-descriptionForeground);
+    margin-bottom: 4px;
+}
+.library-empty h3,
+.library-empty p {
+    margin: 0;
+}
+.library-empty p {
+    max-width: 430px;
+    color: var(--vscode-descriptionForeground);
+}
+.library-empty button {
+    margin-top: 8px;
+}
+.library-working {
+    border-color: var(--vscode-progressBar-background, var(--vscode-focusBorder));
+}
+body[data-page='libraries'] #panel-notices:not(:has(> :not([hidden]))) {
+    display: none;
+}
+@media (max-width: 720px) {
+    .library-header-actions {
+        justify-content: flex-start;
+    }
+    .library-card {
+        padding: 16px;
+        grid-template-columns: 28px minmax(0, 1fr);
+        gap: 10px;
+    }
+    .library-package-mark {
+        width: 28px;
+        height: 28px;
+    }
+    .library-package-mark .library-icon {
+        width: 17px;
+        height: 17px;
+    }
+    .library-card-actions {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+    }
+    .library-card-actions .library-select {
+        flex-basis: 100%;
+        max-width: 100%;
+    }
+    .library-metadata {
+        flex-direction: column;
+        gap: 6px;
+    }
+}
+
+@media (max-width: 420px) {
+    .library-card-actions > button {
+        flex: 1 1 auto;
+    }
+}
+
+body[data-page='libraries'] button {
+    border-color: var(--vscode-button-border, var(--vscode-contrastBorder, transparent));
+}
+
+.cache-entries {
+    display: grid;
+    gap: calc(var(--control-gap) * 2);
+}
+.cache-entry {
+    min-width: 0;
+}
+.cache-entry .section-heading {
+    flex-wrap: wrap;
+}
+.cache-entry h3 {
+    overflow-wrap: anywhere;
+    min-width: 0;
+}
+.cache-entry button {
+    margin-inline-start: auto;
+}
+.cache-entry pre {
+    max-height: 360px;
+    overflow: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-family: var(--vscode-editor-font-family, monospace);
+    color: var(--vscode-editor-foreground, var(--vscode-foreground));
+    background: var(--vscode-textCodeBlock-background, var(--vscode-editor-background));
+    padding: var(--control-gap);
 }

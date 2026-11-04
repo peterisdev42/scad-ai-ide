@@ -48,3 +48,6 @@ Thumbs.db
 /.preview-sync/merge-*/
 /.preview-sync/lock
 *.preview-sync-*
+
+# Browser automation session artifacts
+/.playwright-cli/

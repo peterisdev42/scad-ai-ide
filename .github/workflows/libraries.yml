@@ -1,0 +1,52 @@
+name: Library Manager
+on:
+    push:
+    pull_request:
+    workflow_dispatch:
+        inputs:
+            online:
+                description: Run live Registry / BOSL2 integration
+                type: boolean
+                default: false
+permissions:
+    contents: read
+jobs:
+    libraries:
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [macos-latest, ubuntu-latest, windows-latest]
+        runs-on: ${{ matrix.os }}
+        env:
+            QT_QPA_PLATFORM: offscreen
+            SCAD_REQUIRE_CLI: '1'
+            SCAD_LIBRARIES_ONLINE: ${{ inputs.online && '1' || '0' }}
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '24'
+                  cache: npm
+            - run: npm ci
+            - name: Install OpenSCAD (Linux)
+              if: runner.os == 'Linux'
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y openscad
+            - name: Install OpenSCAD (macOS)
+              if: runner.os == 'macOS'
+              run: brew install --cask openscad@snapshot
+            - name: Install OpenSCAD (Windows)
+              if: runner.os == 'Windows'
+              shell: pwsh
+              run: |
+                  winget install --id OpenSCAD.OpenSCAD -e --accept-source-agreements --accept-package-agreements --silent
+                  'SCAD_OPENSCAD_EXECUTABLE=C:\Program Files\OpenSCAD\openscad.exe' >> $env:GITHUB_ENV
+            - run: npm run check-types
+            - run: npm run lint
+            - run: npm run test:libraries
+            - run: npm run compile-tests
+            - name: Save test report context
+              if: always()
+              shell: bash
+              run: node -p 'JSON.stringify({platform:process.platform,arch:process.arch,node:process.version})'

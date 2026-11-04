@@ -56,6 +56,9 @@ docs/                   架构、验收和历史研究文档
 | `npm run check-types`                                 | Host 和 Webview 各自的 TypeScript 配置                                            |
 | `npm run lint`                                        | `src/` 静态检查                                                                   |
 | `npm test`                                            | 编译 Node 测试、运行核心测试及 Preview 单元测试；部分真实导出器测试缺少程序时跳过 |
+| `npm run test:libraries` | Registry、Store、项目事务、链接、环境、清理及 CLI smoke；已纳入 npm test |
+| `npm run test:libraries:ui` | Libraries 三页浏览器交互；需要 Playwright Chromium |
+| `npm run test:libraries:online` | 在线 Registry/BOSL2 下载、真实渲染及离线恢复；需要 SCAD_OPENSCAD_EXECUTABLE |
 | `npm run test:preview-sync`                           | 同步引擎测试，真实双仓库用例需要 Preview 工作副本                                 |
 | `npm run test:customizer`                             | Customizer 浏览器测试                                                             |
 | `npm run test:markdown`                               | Markdown 单元与浏览器测试                                                         |
