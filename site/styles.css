@@ -16,6 +16,7 @@
   --header: rgba(248,250,252,.84);
   --hero-glow: rgba(87,125,228,.12);
   --container: 1180px;
+  --header-height: 77px;
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
@@ -35,7 +36,7 @@
   --hero-glow: rgba(78,121,254,.13);
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+html { scroll-behavior: smooth; scroll-padding-top: var(--header-height); }
 body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { font: inherit; }
@@ -238,6 +239,7 @@ h1 { font-size: clamp(70px, 7vw, 110px); line-height: .99; font-weight: 760; let
   .open-layout { gap: 30px; }
 }
 @media (max-width: 680px) {
+  :root { --header-height: 66px; }
   .container { width: min(calc(100% - 36px), var(--container)); }
   .nav-shell { min-height: 65px; gap: 12px; }
   .brand { font-size: 15px; }
