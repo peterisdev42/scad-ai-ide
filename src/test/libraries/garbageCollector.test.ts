@@ -67,10 +67,10 @@ test('A known project without any dependencies does not masquerade as an unreada
     }
 })
 
-test('Bulk cleanup keeps one latest cached commit per library/repository and skips referenced versions', async () => {
+test('Unreferenced cleanup removes all unused versions across repositories and preserves project-used versions', async () => {
     const f = await fixture()
     try {
-        const { locked, commitB, registry } = await import('./helpers.js')
+        const { locked, commitB } = await import('./helpers.js')
         await f.manager.install(f.project, 'fixture', 'v1')
         await f.installer.ensureInstalled('fixture', locked(commitB))
         const older = { ...locked('c'.repeat(40)), resolved: { kind: 'tag' as const, tag: 'v0', commit: 'c'.repeat(40) } }
@@ -82,19 +82,18 @@ test('Bulk cleanup keeps one latest cached commit per library/repository and ski
             await f.installer.ensureInstalled('fixture', dependency)
         }
         const gc = new LibraryGarbageCollector(f.store, f.manager.references)
-        const plan = await gc.previewAll(true, registry().libraries)
-        assert.equal(plan.retained, 2, 'Each repository keeps its own latest version')
+        const plan = await gc.previewAll('unused')
         assert.equal(plan.protectedCount, 1)
-        assert.equal(plan.candidates.length, 2)
-        const result = await gc.removeAll(true, registry().libraries, async (preview) => {
-            assert.equal(preview.candidates.length, 2)
+        assert.equal(plan.candidates.length, 4)
+        const result = await gc.removeAll('unused', async (preview) => {
+            assert.equal(preview.candidates.length, 4)
             return true
         })
-        assert.deepEqual(result, { removed: 2, retained: 2, protectedCount: 1 })
+        assert.deepEqual(result, { removed: 4, protectedCount: 1 })
         assert.ok(await f.store.find('fixture', repo, commitA))
-        assert.ok(await f.store.find('fixture', repo, commitB))
-        assert.ok(await f.store.find('fixture', otherRepo, commitB))
-        assert.equal((await f.store.list()).length, 3)
+        assert.equal(await f.store.find('fixture', repo, commitB), undefined)
+        assert.equal(await f.store.find('fixture', otherRepo, commitB), undefined)
+        assert.equal((await f.store.list()).length, 1)
     } finally {
         await f.cleanup()
     }
@@ -107,9 +106,9 @@ test('Bulk cleanup rechecks project references after confirmation and never dele
         await f.installer.ensureInstalled('fixture', locked(commitA))
         await f.installer.ensureInstalled('fixture', locked(commitB))
         const gc = new LibraryGarbageCollector(f.store, f.manager.references)
-        await gc.removeAll(false, [], async () => false)
+        await gc.removeAll('unused', async () => false)
         assert.equal((await f.store.list()).length, 2, 'Cancel leaves every version intact')
-        const result = await gc.removeAll(false, [], async (plan) => {
+        const result = await gc.removeAll('unused', async (plan) => {
             assert.equal(plan.candidates.length, 2)
             await f.manager.install(f.project, 'fixture', 'v1')
             await f.installer.ensureInstalled('fixture', { ...locked(), resolved: { kind: 'tag', tag: 'v3', commit: 'c'.repeat(40) } })
@@ -120,10 +119,35 @@ test('Bulk cleanup rechecks project references after confirmation and never dele
         assert.ok(await f.store.find('fixture', repo, commitA))
         assert.ok(await f.store.find('fixture', repo, 'c'.repeat(40)))
         await rm(f.project, { recursive: true })
-        const blocked = await gc.removeAll(false, [], async () => { throw new Error('No confirmation for fully protected content') })
+        const blocked = await gc.removeAll('unused', async () => { throw new Error('No confirmation for fully protected content') })
         assert.equal(blocked.removed, 0)
         assert.equal(blocked.protectedCount, 2)
     } finally {
         await f.cleanup()
     }
+})
+
+
+test('Delete-all mode removes referenced sources without changing project manifests or lockfiles', async () => {
+    const f = await fixture()
+    try {
+        const { readFile } = await import('node:fs/promises')
+        await f.manager.install(f.project, 'fixture', 'v1')
+        const lock = path.join(f.project, '.scad', 'dependencies.lock.json')
+        const manifest = path.join(f.project, '.scad', 'dependencies.json')
+        const before = [await readFile(lock, 'utf8'), await readFile(manifest, 'utf8')]
+        const gc = new LibraryGarbageCollector(f.store, f.manager.references)
+        const plan = await gc.previewAll('all')
+        assert.equal(plan.candidates.length, 1)
+        assert.equal(plan.protectedCount, 0)
+        assert.equal((await gc.removeAll('all', async () => false)).removed, 0)
+        assert.equal((await gc.removeAll('all', async () => true)).removed, 1)
+        assert.deepEqual([await readFile(lock, 'utf8'), await readFile(manifest, 'utf8')], before)
+        await f.installer.ensureInstalled('fixture', (await import('./helpers.js')).locked())
+        await rm(f.project, { recursive: true })
+        assert.equal((await gc.previewAll('unused')).protectedCount, 1)
+        assert.equal((await gc.removeAll('all', async () => true)).removed, 1, 'All mode also works when known projects are unavailable')
+        assert.equal((await f.store.list()).length, 0)
+        assert.deepEqual(f.store.issues, [], 'Intentional cleanup does not produce missing-index warnings')
+    } finally { await f.cleanup() }
 })

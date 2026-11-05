@@ -250,6 +250,10 @@ async function fixture(t, extraSource = '') {
         page,
         view,
         contexts,
+        async hostPresetAction(action) {
+            receive({ type: 'preset', action, target: service.target, revision: provider.revision })
+            await provider.presetOperations
+        },
         nativeAction: (action) => provider.runAction(action),
         service,
         messages,
@@ -430,10 +434,9 @@ test('decimal sliders, mixed menus, default menu entries and vector labels stay 
 test('preset create, save, default, import, partial selection, export and delete use OpenSCAD JSON', async (t) => {
     const { page, service, files, dialogs } = await fixture(t)
     dialogs.names.push('Wide')
-    dialogs.save.push('file:///models/my-presets.json')
     await clickPresetMenu(page, 'New preset')
     await page.waitForFunction(() => document.querySelector('#preset-select').selectedOptions[0].textContent === 'Wide')
-    const sidecar = 'file:///models/my-presets.json'
+    const sidecar = 'file:///models/customizer.json'
     assert.equal(JSON.parse(files.get(sidecar)).parameterSets.Wide.label, 'Model')
     service.set('field_0', 15)
     await page.waitForFunction(() => document.querySelector('#preset-select').selectedOptions[0].textContent === 'Wide · Unsaved')
@@ -453,6 +456,9 @@ test('preset create, save, default, import, partial selection, export and delete
     await page.getByRole('combobox', { name: 'Parameter preset', exact: true }).selectOption('0')
     await page.waitForFunction(() => document.querySelector('[data-name="field_0"] input').value === '7')
     assert.deepEqual(service.getOverrides('file:///models/customizer.scad'), { field_0: 7, field_1: 19 })
+    assert.equal(await page.getByRole('button', { name: 'Save preset', exact: true }).isDisabled(), true)
+    service.set('field_2', 23)
+    await page.waitForFunction(() => !document.querySelector('#preset-save').disabled)
     await page.getByRole('button', { name: 'Save preset', exact: true }).click()
     await page.waitForFunction(() => document.querySelector('#preset-select').selectedOptions[0].textContent === 'Partial')
     dialogs.save.push('file:///models/exported.json')
@@ -622,7 +628,7 @@ test('preset file sits left of actions with the menu below, and every action has
         assert.ok(select.width > actions.width)
     }
     for (const [action, text] of [
-        ['save', 'select a named preset first'],
+        ['save', 'no unsaved changes'],
         ['import', 'open any OpenSCAD'],
         ['more', 'More preset actions'],
     ]) {
@@ -777,11 +783,18 @@ test('preset filenames refer only to explicitly opened or newly saved files', as
     assert.equal(await page.locator('#preset-file').isVisible(), false)
     assert.equal(await page.locator('.preset-separator').isVisible(), false)
     assert.equal(await page.locator('#preset-select option').count(), 1)
-    dialogs.names.push('Cancelled')
+    dialogs.names.push(undefined)
     await clickPresetMenu(page, 'New preset')
     await page.evaluate(() => window.sendToHost({ type: 'ready' }))
-    assert.equal(files.size, 1, 'Cancelling the save dialog must not create an inferred JSON file')
+    assert.equal(files.size, 1, 'Cancelling the preset name dialog must not create a JSON file')
     assert.equal(await page.locator('#preset-file').isVisible(), false)
+    dialogs.names.push('Created')
+    await clickPresetMenu(page, 'New preset')
+    await page.waitForFunction(() => document.querySelector('#preset-file').textContent === 'customizer.json')
+    const created = JSON.parse(files.get('file:///models/customizer.json'))
+    assert.equal(created.parameterSets.Unexpected.field_0, '33', 'Creating a preset preserves existing matching JSON entries')
+    assert.equal(created.parameterSets.Created.field_0, '0')
+    assert.equal(dialogs.save.length, 0)
     files.set('file:///models/user-picked.json', JSON.stringify({ fileFormatVersion: '1', parameterSets: { Chosen: { field_0: '7' } } }))
     await openPresetFile(page, dialogs, 'file:///models/user-picked.json')
     assert.equal(await page.locator('#preset-file').isVisible(), true)
@@ -811,4 +824,75 @@ test('preset header stays collapsed during actions and the more menu supports ke
     await more.click()
     await page.locator('[data-group-kind="parameters"] > .group-row').first().click()
     assert.equal(await page.locator('#preset-menu').isVisible(), false)
+})
+
+test('Save is enabled only for unsaved values and creates the matching JSON without a file dialog', async (t) => {
+    const { page, service, files, dialogs, hostPresetAction } = await fixture(t)
+    const save = page.getByRole('button', { name: 'Save preset', exact: true })
+    assert.equal(await save.isDisabled(), true)
+    await hostPresetAction('save')
+    assert.equal(files.size, 0, 'A stale or forged Save while clean does not create a file')
+    service.set('field_0', 12)
+    await page.waitForFunction(() => !document.querySelector('#preset-save').disabled)
+    service.set('field_0', 0)
+    await page.waitForFunction(() => document.querySelector('#preset-save').disabled)
+    service.set('field_0', 15)
+    await page.waitForFunction(() => !document.querySelector('#preset-save').disabled)
+    dialogs.save.push('file:///models/should-not-be-used.json')
+    await save.click()
+    await page.waitForFunction(() => document.querySelector('#preset-file').textContent === 'customizer.json' && document.querySelector('#preset-save').disabled)
+    const file = JSON.parse(files.get('file:///models/customizer.json'))
+    assert.equal(file.fileFormatVersion, '1')
+    assert.equal(file.parameterSets.Current.field_0, '15')
+    assert.equal(await page.locator('#preset-select').evaluate((node) => node.selectedOptions[0].textContent), 'Current')
+    assert.equal(dialogs.save.length, 1, 'Saving a saved .scad uses its matching sidecar without asking for a path')
+    service.set('field_0', 16)
+    await page.waitForFunction(() => !document.querySelector('#preset-save').disabled)
+    service.set('field_0', 15)
+    await page.waitForFunction(() => document.querySelector('#preset-save').disabled)
+    service.set('field_0', 17)
+    await page.waitForFunction(() => !document.querySelector('#preset-save').disabled)
+    await save.click()
+    await page.waitForFunction(() => document.querySelector('#preset-save').disabled)
+    assert.equal(JSON.parse(files.get('file:///models/customizer.json')).parameterSets.Current.field_0, '17')
+})
+
+test('Saving custom values merges an unopened matching JSON without overwriting an existing Current preset', async (t) => {
+    const { page, service, files } = await fixture(t)
+    files.set('file:///models/customizer.json', JSON.stringify({ fileFormatVersion: '1', metadata: 'keep', parameterSets: { Current: { field_0: '44', hidden: 'keep' } } }))
+    service.set('field_0', 9)
+    await page.waitForFunction(() => !document.querySelector('#preset-save').disabled)
+    await page.getByRole('button', { name: 'Save preset', exact: true }).click()
+    await page.waitForFunction(() => document.querySelector('#preset-select').selectedOptions[0].textContent === 'Current 2')
+    const file = JSON.parse(files.get('file:///models/customizer.json'))
+    assert.equal(file.metadata, 'keep')
+    assert.deepEqual(file.parameterSets.Current, { field_0: '44', hidden: 'keep' })
+    assert.equal(file.parameterSets['Current 2'].field_0, '9')
+    assert.equal(await page.locator('#preset-save').isDisabled(), true)
+})
+
+test('New preset automatically creates a matching JSON even when model values are unchanged', async (t) => {
+    const { page, files, dialogs } = await fixture(t)
+    assert.equal(await page.locator('#preset-save').isDisabled(), true)
+    dialogs.names.push('Default model')
+    dialogs.save.push('file:///models/unused-location.json')
+    await clickPresetMenu(page, 'New preset')
+    await page.waitForFunction(() => document.querySelector('#preset-file').textContent === 'customizer.json')
+    assert.equal(JSON.parse(files.get('file:///models/customizer.json')).parameterSets['Default model'].field_0, '0')
+    assert.equal(dialogs.save.length, 1)
+    assert.equal(await page.locator('#preset-save').isDisabled(), true)
+})
+
+
+test('Automatic matching JSON creation does not overwrite invalid existing content', async (t) => {
+    const { page, service, files } = await fixture(t)
+    const original = '{ invalid parameter JSON'
+    files.set('file:///models/customizer.json', original)
+    service.set('field_0', 8)
+    await page.waitForFunction(() => !document.querySelector('#preset-save').disabled)
+    await page.getByRole('button', { name: 'Save preset', exact: true }).click()
+    await page.locator('#panel-error:not([hidden])').waitFor()
+    assert.equal(files.get('file:///models/customizer.json'), original)
+    assert.equal(service.getOverrides('file:///models/customizer.scad').field_0, 8)
+    assert.equal(await page.locator('#preset-save').isEnabled(), true)
 })

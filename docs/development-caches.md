@@ -2,7 +2,11 @@
 
 以扩展开发模式启动 SCAD AI IDE 后，打开 **More → Development**。普通安装和扩展测试模式不显示该 Tab；宿主同样检查 `ExtensionMode.Development`，拒绝非开发模式的读取与清除消息。
 
-缓存字段按名称和来源展示，展开 **Cached value** 查看内容；**Clear** 清除单个字段，**Clear All Caches** 清除当前全部字段，**Refresh** 重新读取当前值。清除期间禁用操作按钮，失败显示错误并重新读取当前列表。
+缓存按 `globalState`、`workspaceState`、`Memory`、`Disk` 分组，每组使用 Field / Value / Action 表格，提供 **Clear Scope**；**Clear** 清除单个字段，**Clear All Caches** 清除全部字段，**Refresh** 重新读取。表格、按钮和弹窗使用 VS Code CSS 变量，窄窗口只在表格区域横向滚动。
+
+点击 **Cached value** 打开内容弹窗（最大 1200px、窗口高度 80%），JSON 使用 VS Code 内置 JSON 扩展提供的 TextMate 规则，通过 vscode-textmate / Oniguruma 分词并匹配当前主题及用户 tokenColorCustomizations，保留颜色和字体样式；主题切换时重新请求高亮。超过 1 MiB 时使用纯文本以避免大量高亮节点。标题自动换行并与右侧 Open in Editor / Close 垂直居中。内容区复用 Customizer 的 Monaco DomScrollableElement，滚动条自动隐藏，跟随 VS Code 主题与 workbench.list 的滚动设置，并支持键盘滚动。可通过 **Close** 或 Esc 关闭。**Open in Editor** 从宿主重新读取该字段，在新的非预览 JSON 编辑器标签中展示；标签为独立未命名文档，编辑内容不直接修改缓存。读取和分类清除均校验字段 ID / Scope，仍只在开发模式下允许。清除持久化目录字段时会连带失效对应内存副本，避免旧值恢复；其他不相关 Scope 字段保持不变。
+
+**Open Global Folder** 位于按钮组最右侧，使用系统文件浏览器显示当前扩展宿主的全局存储目录；不存在时先创建该目录。路径由宿主的 `globalStorageUri` 确定，不接受 Webview 提供的路径。
 
 当前包含：
 

@@ -1,3 +1,4 @@
+import { highlightJson } from '../features/development/JsonHighlighter'
 import { DeveloperCacheController } from '../features/development/DeveloperCacheController'
 import { memoryCaches } from '../core/cache/CacheRegistry'
 import * as assert from 'node:assert/strict'
@@ -199,6 +200,9 @@ suite('Library Manager extension host', () => {
             assert.equal(controller.enabled, false)
             await assert.rejects(controller.getState(), /development mode/)
             await assert.rejects(controller.handle({ action: 'development.clearAllCaches' }), /development mode/)
+            await assert.rejects(controller.handle({ action: 'development.openGlobalFolder' }), /development mode/)
+            await assert.rejects(controller.handle({ action: 'development.clearScopeCaches', scope: 'globalState' }), /development mode/)
+            await assert.rejects(controller.handle({ action: 'development.openCacheEditor', id: 'globalState:x' }), /development mode/)
         }
     })
     test('Development cache tools enumerate and clear individual state, disk and memory fields', async () => {
@@ -225,7 +229,15 @@ suite('Library Manager extension host', () => {
             assert.ok(initial.entries.some((entry) => entry.id === `disk:${path.join('cache', 'runtime-fixture.json')}`))
             assert.ok(!initial.entries.some((entry) => entry.name.endsWith('linked.json')))
             await assert.rejects(controller.handle({ action: 'development.clearCache', id: '../outside.json' }), /no longer exists/)
-            await controller.handle({ action: 'development.clearCache', id: 'globalState:fixture.cache' })
+            await assert.rejects(controller.handle({ action: 'development.clearScopeCaches', scope: '../invalid' }), /Unknown cache scope/)
+            await assert.rejects(controller.handle({ action: 'development.openCacheEditor', id: '../outside.json' }), /no longer exists/)
+            await controller.handle({ action: 'development.openCacheEditor', id: 'globalState:fixture.cache' })
+            const editor = vscode.window.activeTextEditor!
+            assert.equal(editor.document.isUntitled, true)
+            assert.equal(editor.document.languageId, 'json')
+            assert.deepEqual(JSON.parse(editor.document.getText()), { list: [1, 2] })
+            await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor')
+            await controller.handle({ action: 'development.clearScopeCaches', scope: 'globalState' })
             assert.equal(global.size, 0)
             assert.equal(workspace.size, 1)
             assert.ok(invalidated.includes('fixture.cache'))
@@ -275,7 +287,7 @@ suite('Library Manager extension host', () => {
 
     test('Global bulk actions validate modes, report local verification and preserve project-used content', async () => {
         const f = await fixture()
-        const controller = new LibraryPanelController(f.manager)
+        const controller = new LibraryPanelController(f.manager, async () => true)
         try {
             await f.manager.install(f.project, 'fixture', 'v1')
             f.offline()
@@ -284,18 +296,43 @@ suite('Library Manager extension host', () => {
             assert.equal((await f.store.list()).length, 1)
             await controller.handle({ action: 'libraries.verifyAll' })
             assert.match((await controller.getState()).bulkResult, /Verified 1 cached versions/)
-            await controller.handle({ action: 'libraries.cleanupAll', mode: 'all' })
+            await controller.handle({ action: 'libraries.cleanupAll', mode: 'unused' })
             const all = await controller.getState()
             assert.equal(all.error, '')
-            assert.match(all.bulkResult, /Deleted 0.*skipped 1/)
-            await controller.handle({ action: 'libraries.cleanupAll', mode: 'keepLatest' })
-            assert.match((await controller.getState()).bulkResult, /Kept 1 latest versions/)
-            assert.equal((await f.store.list()).length, 1)
+            assert.match(all.bulkResult, /Deleted 0.*Skipped 1/)
+            await controller.handle({ action: 'libraries.cleanupAll', mode: 'all' })
+            assert.match((await controller.getState()).bulkResult, /Deleted 1 global dependency versions/)
+            assert.equal((await f.store.list()).length, 0)
             assert.equal((await f.manager.list(f.project))[0].repositoryUrl, 'https://github.com/example/fixture')
+            assert.match((await f.manager.list(f.project))[0].status, /Missing/)
+            await fs.access(path.join(f.project, '.scad', 'dependencies.lock.json'))
         } finally {
             controller.dispose()
             await f.cleanup()
         }
+    })
+
+    test('Development folder action uses only the extension-owned global storage path', async () => {
+        const f = await fixture()
+        const revealed: string[] = []
+        const storage = path.join(f.root, 'global-folder')
+        const memento = { keys: () => [] }
+        const controller = new DeveloperCacheController({ extensionMode: vscode.ExtensionMode.Development, globalStorageUri: vscode.Uri.file(storage), globalState: memento, workspaceState: memento } as unknown as vscode.ExtensionContext, async () => {}, async (uri) => { revealed.push(uri.fsPath) })
+        try {
+            await controller.handle({ action: 'development.openGlobalFolder', path: '/untrusted/request' })
+            assert.deepEqual(revealed, [storage])
+            assert.ok((await fs.stat(storage)).isDirectory())
+            assert.equal((await controller.getState()).globalDirectory, storage)
+        } finally { await f.cleanup() }
+    })
+
+    test('Cache highlighting uses the installed JSON TextMate grammar with editor theme colors', async () => {
+        const extension = vscode.extensions.all.find((item) => item.packageJSON.name === 'scad-ai-ide')!
+        const value = { name: 'escaped "quote" <script>', count: -12.5e3, enabled: true, missing: null, nested: [1, 'two'] }
+        const tokens = await highlightJson(value, extension.extensionUri)
+        assert.equal(tokens.map((token) => token.text).join(''), JSON.stringify(value, null, 2))
+        assert.ok(tokens.length > 10)
+        assert.ok(tokens.some((token) => /^#[\da-f]{6}$/i.test(token.color ?? '')))
     })
 
 })

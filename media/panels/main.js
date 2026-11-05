@@ -60,10 +60,16 @@ function element(tag, text, className) {
     return node
 }
 
+function setText(node, text) {
+    const value = String(text ?? '')
+    if (node.textContent !== value) node.textContent = value
+}
+
 let developmentEnabled = false
 let developmentBusy = false
 function selectMoreTab(id, focus = false) {
     if (page !== 'more' || (id !== 'github' && (id !== 'development' || !developmentEnabled))) return
+    get('summary').hidden = id === 'development'
     const previous = vscode.getState()?.moreTab
     for (const tab of get('more-tabs').querySelectorAll('[role="tab"]')) {
         const selected = tab.id === `tab-${id}`
@@ -77,31 +83,108 @@ function selectMoreTab(id, focus = false) {
     get('action-error').hidden = true
     if (id === 'development' && previous !== id) requestCaches('development.refreshCaches')
 }
-function requestCaches(action, id) {
+function requestCaches(action, id, scope) {
     if (!developmentEnabled || developmentBusy) return
     developmentBusy = true
-    for (const button of get('panel-development').querySelectorAll('button')) button.disabled = true
-    vscode.postMessage({ action, ...(id === undefined ? {} : { id }) })
+    for (const button of get('panel-development').querySelectorAll('button:not(#close-cache-value)')) button.disabled = true
+    vscode.postMessage({ action, ...(id === undefined ? {} : { id }), ...(scope === undefined ? {} : { scope }) })
 }
+let cacheValueRequest = 0
+function requestCacheHighlight() {
+    if (developmentEnabled && inspectedCache && get('cache-value-dialog').open) vscode.postMessage({ action: 'development.inspectCache', id: inspectedCache.id, requestId: ++cacheValueRequest })
+}
+function renderJsonTokens(tokens) {
+    const fragment = document.createDocumentFragment()
+    for (const token of tokens) {
+        const span = element('span', token.text)
+        if (/^#[\da-f]{6}(?:[\da-f]{2})?$/i.test(token.color)) span.style.color = token.color
+        span.style.fontStyle = token.font & 1 ? 'italic' : 'normal'
+        span.style.fontWeight = token.font & 2 ? 'bold' : 'normal'
+        span.style.textDecoration = [token.font & 4 ? 'underline' : '', token.font & 8 ? 'line-through' : ''].filter(Boolean).join(' ') || 'none'
+        fragment.append(span)
+    }
+    get('cache-value-content').replaceChildren(fragment)
+}
+const cacheScrollbar = page === 'more' ? globalThis.ScadPanelScrollbar?.attachCacheScrollbar(get('cache-value-scroll-host'), get('cache-value-viewport'), get('cache-value-content')) : undefined
+window.addEventListener('pagehide', () => cacheScrollbar?.dispose(), { once: true })
+get('cache-value-viewport').addEventListener('keydown', (event) => {
+    if (event.ctrlKey || event.metaKey || event.altKey) return
+    const viewport = event.currentTarget
+    const steps = { ArrowDown: 40, ArrowUp: -40, PageDown: viewport.clientHeight, PageUp: -viewport.clientHeight, Home: -viewport.scrollHeight, End: viewport.scrollHeight }
+    if (event.key in steps) { event.preventDefault(); viewport.scrollTop += steps[event.key]; cacheScrollbar?.layout() }
+})
+let inspectedCache
+get('close-cache-value').addEventListener('click', () => get('cache-value-dialog').close())
+get('cache-value-dialog').addEventListener('close', () => { inspectedCache = undefined })
+get('open-cache-editor').addEventListener('click', () => {
+    if (inspectedCache) requestCaches('development.openCacheEditor', inspectedCache.id)
+})
 function renderCaches(state) {
+    cacheScrollbar?.updateSettings(state.scrollSettings)
     developmentBusy = false
     const list = get('cache-entries')
     list.replaceChildren()
+    const groups = new Map()
     for (const entry of state.entries) {
-        const card = element('article', undefined, 'card cache-entry')
-        const heading = element('div', undefined, 'section-heading')
-        heading.append(element('h3', entry.name), element('span', entry.scope, 'badge'))
-        const clear = element('button', 'Clear', 'secondary')
-        clear.setAttribute('aria-label', `Clear ${entry.scope} ${entry.name}`)
-        clear.addEventListener('click', () => requestCaches('development.clearCache', entry.id))
-        heading.append(clear)
-        const details = element('details')
-        details.append(element('summary', 'Cached value'), element('pre', JSON.stringify(entry.value, null, 2) ?? 'undefined'))
-        card.append(heading, details)
-        list.append(card)
+        if (!groups.has(entry.scope)) groups.set(entry.scope, [])
+        groups.get(entry.scope).push(entry)
     }
-    get('cache-status').textContent = state.entries.length ? `${state.entries.length} cache fields` : 'No cached data.'
-    get('cache-status').hidden = false
+    for (const [scope, entries] of groups) {
+        const section = element('section', undefined, 'cache-scope')
+        section.setAttribute('aria-label', `${scope} caches`)
+        const heading = element('div', undefined, 'section-heading')
+        const clearScope = element('button', 'Clear Scope', 'text-button')
+        clearScope.setAttribute('aria-label', `Clear ${scope} caches`)
+        clearScope.addEventListener('click', () => requestCaches('development.clearScopeCaches', undefined, scope))
+        heading.append(element('h3', scope), clearScope)
+        const wrapper = element('div', undefined, 'cache-table-container')
+        wrapper.tabIndex = 0
+        const table = element('table', undefined, 'cache-table')
+        table.setAttribute('aria-label', `${scope} caches`)
+        const columns = element('colgroup')
+        for (const name of ['field', 'value', 'action']) columns.append(element('col', undefined, `cache-${name}-column`))
+        const header = element('thead')
+        const labels = element('tr')
+        for (const label of ['Field', 'Value', 'Action']) {
+            const cell = element('th', label)
+            cell.scope = 'col'
+            labels.append(cell)
+        }
+        header.append(labels)
+        const body = element('tbody')
+        for (const entry of entries) {
+            const row = element('tr', undefined, 'cache-entry')
+            const name = element('th', entry.name)
+            name.scope = 'row'
+            const value = element('td')
+            const inspect = element('button', 'Cached value', 'text-button')
+            inspect.setAttribute('aria-label', `View ${entry.scope} ${entry.name}`)
+            inspect.addEventListener('click', () => {
+                inspectedCache = entry
+                get('cache-value-title').textContent = `${entry.scope}: ${entry.name}`
+                get('cache-value-content').textContent = JSON.stringify(entry.value, null, 2) ?? 'undefined'
+                get('cache-value-dialog').showModal()
+                cacheScrollbar?.resetPosition()
+                cacheScrollbar?.layout()
+                requestCacheHighlight()
+            })
+            value.append(inspect)
+            const action = element('td')
+            const clear = element('button', 'Clear', 'text-button')
+            clear.setAttribute('aria-label', `Clear ${entry.scope} ${entry.name}`)
+            clear.addEventListener('click', () => requestCaches('development.clearCache', entry.id))
+            action.append(clear)
+            row.append(name, value, action)
+            body.append(row)
+        }
+        table.append(columns, header, body)
+        wrapper.append(table)
+        section.append(heading, wrapper)
+        list.append(section)
+    }
+    if (state.globalDirectory) get('open-global-folder').title = `Open global directory: ${state.globalDirectory}`
+    get('cache-status').textContent = state.entries.length ? '' : 'No cached data.'
+    get('cache-status').hidden = !!state.entries.length
     for (const button of get('panel-development').querySelectorAll('button')) button.disabled = false
     get('clear-all-caches').disabled = !state.entries.length
 }
@@ -154,6 +237,9 @@ function versionMetadata(fields) {
 
 function replaceVersions(container, rows) {
     const focusKey = container.contains(document.activeElement) ? document.activeElement.dataset.focusKey : undefined
+    // Catalog refreshes often publish identical rows. Keep their DOM and focus.
+    const previous = [...container.children]
+    if (previous.length === rows.length && previous.every((row, index) => row.isEqualNode(rows[index]))) return
     container.replaceChildren(...rows)
     if (focusKey) {
         const target = [...container.querySelectorAll('[data-focus-key]')].find((node) => node.dataset.focusKey === focusKey)
@@ -211,7 +297,7 @@ function render(state) {
     get('builds-system-os').textContent = system ? `${system.name} ${system.version}` : 'Detecting…'
     get('builds-system-arch').textContent = system?.architecture ?? 'Detecting…'
     get('installed-count').textContent = !loading && state.runtimes.length > 0 ? state.runtimes.length : ''
-    get('available-count').textContent = !state.buildsBusy && state.buildsLoaded && state.builds.length > 0 ? state.builds.length : ''
+    get('available-count').textContent = state.builds.length > 0 ? state.builds.length : ''
     get('runtime-badge').textContent = loading ? 'Checking' : active ? 'Ready' : 'Setup needed'
     get('runtime-badge').className = `badge ${active && !loading ? 'success' : ''}`
     get('active-title').textContent = loading ? 'Looking for OpenSCAD…' : active ? `OpenSCAD ${active.version}` : state.message && state.message !== 'No OpenSCAD runtime found' ? 'Runtime needs attention' : 'Set up your first runtime'
@@ -266,7 +352,7 @@ function render(state) {
     )
     renderLocalActions(state, loading)
     get('refresh-builds').disabled = state.buildsBusy
-    get('refresh-builds').textContent = state.buildsBusy ? (state.buildsLoaded ? 'Refreshing…' : 'Loading…') : 'Refresh'
+    get('refresh-builds').textContent = state.buildsBusy && !state.builds.length ? 'Loading…' : 'Refresh'
     get('refresh-builds').setAttribute('aria-busy', String(state.buildsBusy))
     const builds = state.builds ?? []
     get('builds-loading').hidden = !state.buildsBusy || !!builds.length
@@ -352,6 +438,8 @@ function renderGitHub(state) {
 }
 
 window.addEventListener('message', (event) => {
+    if (event.data?.type === 'cacheThemeChanged' && page === 'more') requestCacheHighlight()
+    if (event.data?.type === 'cacheValue' && developmentEnabled && get('cache-value-dialog').open && event.data.id === inspectedCache?.id && event.data.requestId === cacheValueRequest) renderJsonTokens(event.data.tokens)
     if (event.data?.type === 'developmentMode' && page === 'more') {
         developmentEnabled = !!event.data.enabled
         if (developmentEnabled && !get('tab-development')) {

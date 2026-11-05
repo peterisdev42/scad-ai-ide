@@ -22,7 +22,7 @@ export class LibraryPanelController implements vscode.Disposable {
     private registryPending?: Promise<void>
     private registryLibraries: Awaited<ReturnType<ProjectDependencyManager['registry']['search']>> = []
     private subscriptions: vscode.Disposable[] = []
-    constructor(readonly manager: ProjectDependencyManager) {
+    constructor(readonly manager: ProjectDependencyManager, private readonly confirmBulkCleanup = confirmLibraryBulkCleanup) {
         this.subscriptions.push(
             libraryEnvironment.onDidChange(() => this.changed.fire()),
             vscode.window.onDidChangeActiveTextEditor(() => this.changed.fire()),
@@ -189,13 +189,17 @@ export class LibraryPanelController implements vscode.Disposable {
                     })
                 } else if (action === 'libraries.cleanupAll' || action === 'libraries.verifyAll') {
                     if (action === 'libraries.cleanupAll') {
-                        if (value.mode !== 'all' && value.mode !== 'keepLatest') throw new Error('Invalid cache cleanup mode.')
-                        await this.manager.store.exclusive(async () => {
+                        if (value.mode !== 'all' && value.mode !== 'unused') throw new Error('Invalid cache cleanup mode.')
+                        const mode = value.mode
+                        if (mode === 'unused') await this.manager.store.exclusive(async () => {
                             for (const project of await this.projects()) await this.manager.references.register(project)
                         })
                         const collector = new LibraryGarbageCollector(this.manager.store, this.manager.references)
-                        const result = await collector.removeAll(value.mode === 'keepLatest', this.registryLibraries, (plan) => confirmLibraryBulkCleanup(plan.candidates.length, plan.bytes, plan.retained, plan.protectedCount))
-                        this.bulkResult = `Deleted ${result.removed} cached versions. Kept ${result.retained} latest versions; skipped ${result.protectedCount} versions with project references or unavailable projects.`
+                        const result = await collector.removeAll(mode, (plan) => this.confirmBulkCleanup(plan.candidates.length, plan.bytes, mode, plan.protectedCount))
+                        this.bulkResult = mode === 'all'
+                            ? `Deleted ${result.removed} global dependency versions. Projects that used these versions can recover with Restore Dependencies.`
+                            : `Deleted ${result.removed} unreferenced global dependency versions. Skipped ${result.protectedCount} referenced or unverifiable versions.`
+                        if (result.removed) libraryEnvironment.notifyChanged(this.selected ?? '')
                     } else {
                         const installed = await this.manager.store.list()
                         let damaged = 0

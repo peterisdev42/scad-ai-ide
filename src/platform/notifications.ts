@@ -33,6 +33,9 @@ export async function confirmLibraryCleanup(name: string, bytes: number, unavail
     return (await window.showWarningMessage(`Delete global library ${name} (${(bytes / 1048576).toFixed(1)} MiB)? No known project currently references it. Projects outside this IDE's reference index may still use it and will need Restore Dependencies.${unavailable.length ? ` Unavailable projects could not be checked: ${unavailable.join(', ')}.` : ''}`, { modal: true }, 'Delete Cached Version')) === 'Delete Cached Version'
 }
 
-export async function confirmLibraryBulkCleanup(count: number, bytes: number, retained: number, protectedCount: number): Promise<boolean> {
-    return (await window.showWarningMessage(`Delete ${count} unused cached library versions (${(bytes / 1048576).toFixed(1)} MiB)? ${retained} latest versions will be retained; ${protectedCount} versions with known or unreadable project references will be skipped. Projects outside this IDE's reference index may need Restore Dependencies.`, { modal: true }, 'Delete Cached Versions')) === 'Delete Cached Versions'
+export async function confirmLibraryBulkCleanup(count: number, bytes: number, mode: 'all' | 'unused', protectedCount: number): Promise<boolean> {
+    const impact = mode === 'all'
+        ? 'This also removes versions used by projects. Project manifests and lockfiles are kept; use Restore Dependencies to download their sources again.'
+        : `Only versions unreferenced by known projects will be removed. ${protectedCount} referenced or unverifiable versions will be skipped. Projects outside this IDE reference index cannot be checked.`
+    return (await window.showWarningMessage(`Delete ${count} global dependency versions (${(bytes / 1048576).toFixed(1)} MiB)? ${impact}`, { modal: true }, mode === 'all' ? 'Delete All Global Dependencies' : 'Delete Unreferenced Dependencies')) === (mode === 'all' ? 'Delete All Global Dependencies' : 'Delete Unreferenced Dependencies')
 }

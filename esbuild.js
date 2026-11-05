@@ -80,6 +80,18 @@ async function main() {
         legalComments: 'linked',
         plugins: [esbuildProblemMatcherPlugin],
     })
+    const panelScrollbar = await esbuild.context({
+        entryPoints: ['media/panels/scrollbar.js'],
+        bundle: true,
+        format: 'iife',
+        globalName: 'ScadPanelScrollbar',
+        platform: 'browser',
+        outfile: 'dist/panel-scrollbar.js',
+        minify: production,
+        sourcemap: !production,
+        legalComments: 'linked',
+        plugins: [esbuildProblemMatcherPlugin],
+    })
     const meshTopology = await esbuild.context({
         entryPoints: ['src/core/formats/meshTopologyWorker.mts'],
         bundle: true,
@@ -119,13 +131,13 @@ async function main() {
         plugins: [esbuildProblemMatcherPlugin],
     })
     if (watch) {
-        await Promise.all([ctx.watch(), webview.watch(), customizer.watch(), meshTopology.watch(), markdownPreview.watch(), markdownOwned.watch()])
+        await Promise.all([ctx.watch(), webview.watch(), customizer.watch(), panelScrollbar.watch(), meshTopology.watch(), markdownPreview.watch(), markdownOwned.watch()])
     } else {
         try {
-            await Promise.all([ctx.rebuild(), webview.rebuild(), customizer.rebuild(), meshTopology.rebuild(), markdownPreview.rebuild(), markdownOwned.rebuild()])
+            await Promise.all([ctx.rebuild(), webview.rebuild(), customizer.rebuild(), panelScrollbar.rebuild(), meshTopology.rebuild(), markdownPreview.rebuild(), markdownOwned.rebuild()])
             await fs.writeFile('dist/bundled-packages.json', JSON.stringify([...bundledPackages].sort(), null, 2) + '\n')
         } finally {
-            await Promise.all([ctx.dispose(), webview.dispose(), customizer.dispose(), meshTopology.dispose(), markdownPreview.dispose(), markdownOwned.dispose()])
+            await Promise.all([ctx.dispose(), webview.dispose(), customizer.dispose(), panelScrollbar.dispose(), meshTopology.dispose(), markdownPreview.dispose(), markdownOwned.dispose()])
         }
     }
 }

@@ -271,7 +271,7 @@ summary {
 .version-row {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    align-items: start;
+    align-items: center;
     gap: 10px 20px;
     padding: 18px 20px;
     border-bottom: 1px solid var(--border);
@@ -449,6 +449,10 @@ body.vscode-high-contrast-light {
     color-scheme: light;
 }
 
+/* Keep long Registry results and short local lists on the same viewport width. */
+html:has(body[data-page='libraries']) {
+    scrollbar-gutter: stable;
+}
 /* Libraries uses only host theme tokens; no fixed light/dark palette. */
 .library-manager {
     --library-border: var(--vscode-contrastBorder, var(--vscode-panel-border, var(--vscode-widget-border, transparent)));
@@ -458,7 +462,9 @@ body.vscode-high-contrast-light {
     height: 20px;
     flex-shrink: 0;
 }
-.library-content {
+.library-content,
+.library-section,
+.library-list {
     min-width: 0;
     width: 100%;
 }
@@ -592,12 +598,14 @@ body[data-page='libraries'] :is(select, input, a):focus-visible {
 }
 .library-list {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 12px;
 }
 .library-card {
+    --library-section-gap: calc(var(--control-gap) * 1.5);
     display: grid;
     grid-template-columns: 38px minmax(0, 1fr);
-    gap: 12px 16px;
+    gap: 0 16px;
     padding: 20px;
     border: 1px solid var(--library-border);
     border-radius: 4px;
@@ -618,6 +626,9 @@ body[data-page='libraries'] :is(select, input, a):focus-visible {
 }
 .library-card-info {
     min-width: 0;
+}
+.library-card-info > :last-child {
+    margin-block-end: 0;
 }
 .library-card-header {
     display: flex;
@@ -664,8 +675,8 @@ body[data-page='libraries'] :is(select, input, a):focus-visible {
     justify-content: flex-end;
     align-items: center;
     flex-wrap: wrap;
-    padding-top: 12px;
-    margin-top: 4px;
+    padding-top: var(--library-section-gap);
+    margin-top: var(--library-section-gap);
     border-top: 1px solid var(--library-border);
 }
 .library-select {
@@ -778,7 +789,7 @@ body[data-page='libraries'] #panel-notices:not(:has(> :not([hidden]))) {
     .library-card {
         padding: 16px;
         grid-template-columns: 28px minmax(0, 1fr);
-        gap: 10px;
+        gap: 0 10px;
     }
     .library-package-mark {
         width: 28px;
@@ -812,30 +823,85 @@ body[data-page='libraries'] button {
     border-color: var(--vscode-button-border, var(--vscode-contrastBorder, transparent));
 }
 
-.cache-entries {
-    display: grid;
-    gap: calc(var(--control-gap) * 2);
+.cache-table-container {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--vscode-panel-border, var(--vscode-widget-border));
 }
-.cache-entry {
-    min-width: 0;
+.cache-table {
+    width: 100%;
+    min-width: calc(var(--vscode-font-size) * 40);
+    border-collapse: collapse;
+    table-layout: fixed;
+    color: var(--vscode-foreground);
+    background: var(--vscode-editor-background);
 }
-.cache-entry .section-heading {
-    flex-wrap: wrap;
-}
-.cache-entry h3 {
+.cache-field-column { width: 60%; }
+.cache-value-column { width: 25%; }
+.cache-action-column { width: 15%; }
+.cache-table :is(th, td) {
+    padding: var(--control-gap);
+    text-align: start;
+    vertical-align: top;
     overflow-wrap: anywhere;
-    min-width: 0;
+    border-bottom: 1px solid var(--vscode-panel-border, var(--vscode-widget-border));
 }
-.cache-entry button {
-    margin-inline-start: auto;
+.cache-table thead {
+    color: var(--vscode-sideBarSectionHeader-foreground, var(--vscode-foreground));
+    background: var(--vscode-sideBarSectionHeader-background, var(--vscode-editorWidget-background, var(--vscode-editor-background)));
 }
-.cache-entry pre {
-    max-height: 360px;
-    overflow: auto;
+.cache-table tbody th { font-weight: 400; }
+.cache-table tbody tr:last-child > * { border-bottom: 0; }
+.cache-table tbody tr:hover { background: var(--vscode-list-hoverBackground, transparent); }
+.cache-table-container:focus-visible {
+    outline: 1px solid var(--vscode-focusBorder);
+    outline-offset: 2px;
+}
+
+
+.cache-scope { margin-bottom: calc(var(--control-gap) * 3); }
+.cache-scope .section-heading { margin-bottom: var(--control-gap); }
+#cache-value-dialog {
+    width: min(1200px, calc(100vw - 48px));
+    height: 80vh;
+    max-height: calc(100vh - 32px);
+    padding: calc(var(--control-gap) * 2);
+    border: 1px solid var(--vscode-contrastBorder, var(--vscode-widget-border, var(--border)));
+    border-radius: 4px;
+    color: var(--vscode-editorWidget-foreground, var(--vscode-foreground));
+    background: var(--vscode-editorWidget-background, var(--vscode-editor-background));
+    box-shadow: 0 4px 16px var(--vscode-widget-shadow, transparent);
+}
+#cache-value-dialog::backdrop { background: var(--vscode-widget-shadow, transparent); }
+#cache-value-dialog[open] { display: flex; flex-direction: column; }
+#cache-value-dialog > .section-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: calc(var(--control-gap) * 2);
+    flex-shrink: 0;
+}
+#cache-value-dialog .actions { flex-wrap: nowrap; justify-self: end; }
+#cache-value-dialog .actions button { white-space: nowrap; }
+#cache-value-title { overflow-wrap: anywhere; min-width: 0; line-height: 1.5; }
+#cache-value-content {
+    margin: 0;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
     font-family: var(--vscode-editor-font-family, monospace);
-    color: var(--vscode-editor-foreground, var(--vscode-foreground));
-    background: var(--vscode-textCodeBlock-background, var(--vscode-editor-background));
-    padding: var(--control-gap);
 }
+
+#cache-value-scroll-host { flex: 1; min-height: 0; overflow: hidden; }
+#cache-value-scroll-host > .customizer-scrollable { height: 100%; width: 100%; }
+#cache-value-viewport { height: 100%; overflow: auto; scrollbar-width: none; }
+#cache-value-viewport::-webkit-scrollbar { display: none; }
+#cache-value-scroll-host .has-vertical-scrollbar #cache-value-content { padding-inline-end: var(--customizer-scrollbar-size, 10px); }
+#cache-value-scroll-host .slider { background: var(--vscode-scrollbarSlider-background); }
+#cache-value-scroll-host .slider:hover { background: var(--vscode-scrollbarSlider-hoverBackground); }
+#cache-value-scroll-host .slider.active { background: var(--vscode-scrollbarSlider-activeBackground); }
+#cache-value-scroll-host .shadow { box-shadow: var(--vscode-scrollbar-shadow) 0 6px 6px -6px inset; }
+#cache-value-scroll-host .modern-ui > .scrollbar > .slider { border-radius: var(--vscode-cornerRadius-small, 4px); }
+@media (prefers-reduced-motion: reduce) {
+    #cache-value-scroll-host .visible, #cache-value-scroll-host .invisible.fade { transition: none; }
+}
+body.vscode-reduce-motion #cache-value-scroll-host .scrollbar { transition: none; }

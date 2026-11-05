@@ -104,12 +104,20 @@ export class GlobalLibraryStore {
         await atomicJson(path.join(this.root, 'index.json'), { version: 1, packages: result })
         return result
     }
-    /** Caller must hold exclusive(), recheck references and obtain host confirmation. */
+    /** Caller must hold exclusive() and obtain host confirmation. Recheck references unless deletion of used sources was explicitly requested. */
     async removeChecked(libraryId: string, repositoryUrl: string, commit: string) {
         const data = await this.find(libraryId, repositoryUrl, commit)
         if (!data) return
         const directory = this.directory(libraryId, repositoryUrl, commit)
         if (path.resolve(await realpath(directory)) !== path.resolve(directory)) throw new Error('Unsafe Store deletion.')
         await rm(directory, { recursive: true })
+        // Intentional deletion must not be reported as unexplained data loss on the next scan.
+        const indexFile = path.join(this.root, 'index.json')
+        const index = await readJson(indexFile, { packages: [] }).catch(() => ({ packages: [] }))
+        const packages = (Array.isArray(index.packages) ? index.packages : []).filter((entity: InstalledLibrary) => {
+            try { return this.directory(entity.libraryId, entity.repositoryUrl, entity.commit) !== directory }
+            catch { return true }
+        })
+        await atomicJson(indexFile, { version: 1, packages })
     }
 }

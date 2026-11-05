@@ -291,14 +291,14 @@ import { attachCustomizerScrollbar } from './scrollbar.js'
             options.push(option)
         })
         if (!presets.active && next.parameters.some((parameter) => !equal(parameter.value, parameter.defaultValue))) {
-            const option = element('option', '', 'Custom values')
+            const option = element('option', '', 'Custom values' + (presets.modified ? ' · Unsaved' : ''))
             option.value = 'custom'
             option.disabled = true
             options.push(option)
         }
         presetSelect.replaceChildren(...options)
         presetSelect.value = presets.active ? String(presets.names.indexOf(presets.active)) : options.at(-1).value === 'custom' ? 'custom' : ''
-        document.getElementById('preset-save').disabled = !presets.active
+        document.getElementById('preset-save').disabled = !presets.modified
         document.getElementById('preset-delete').disabled = !presets.active
         presetFile.textContent = presets.filename ?? ''
         presetFile.hidden = !presets.path
@@ -308,7 +308,7 @@ import { attachCustomizerScrollbar } from './scrollbar.js'
         presetFile.title = presetFile.dataset.help
         const descriptions = {
             new: 'New preset — save current model values with a new name.',
-            save: presets.active ? `Save preset “${presets.active}” — overwrite it with current model values.` : 'Save preset — select a named preset first, or use New preset.',
+            save: !presets.modified ? 'Save preset — no unsaved changes.' : presets.active ? `Save preset “${presets.active}” — overwrite it with current model values.` : 'Save preset — save current model values as a new preset in the current or matching JSON file.',
             delete: presets.active ? `Delete preset “${presets.active}” — keep current model values.` : 'Delete preset — select a named preset first.',
             import: 'Import presets — open any OpenSCAD parameter JSON file, then choose a preset below.',
             export: 'Export presets — save a copy of all saved presets. If none exist, export current model values.',

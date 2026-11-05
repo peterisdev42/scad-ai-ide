@@ -311,11 +311,39 @@ test('Library layout follows VS Code theme tokens and adapts navigation without 
         assert.equal(await page.getByRole('tab', { name: 'Project', exact: true }).getAttribute('aria-selected'), 'true')
         for (const width of [320, 480, 720, 960, 1280]) {
             await page.setViewportSize({ width, height: 900 })
+            const boxes = []
             for (const tab of ['Project', 'Global', 'Registry']) {
                 await page.getByRole('tab', { name: tab, exact: true }).click()
                 assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `${tab} overflows at ${width}px`)
+                const card = page.locator(`#library-panel-${tab.toLowerCase()} .library-card`).first()
+                boxes.push(await card.boundingBox())
+                const spacing = await card.evaluate((node) => {
+                    const info = node.querySelector('.library-card-info').getBoundingClientRect()
+                    const mark = node.querySelector('.library-package-mark').getBoundingClientRect()
+                    const actions = node.querySelector('.library-card-actions')
+                    const divider = actions.getBoundingClientRect().top
+                    const firstControl = Math.min(...[...actions.children].map((child) => child.getBoundingClientRect().top))
+                    return { above: divider - Math.max(info.bottom, mark.bottom), below: firstControl - divider - parseFloat(getComputedStyle(actions).borderTopWidth) }
+                })
+                assert.ok(Math.abs(spacing.above - spacing.below) < 1, `${tab} divider gaps differ at ${width}px: ${JSON.stringify(spacing)}`)
+            }
+            for (const box of boxes.slice(1)) {
+                assert.ok(Math.abs(box.x - boxes[0].x) < 1 && Math.abs(box.width - boxes[0].width) < 1, `Tab card widths differ at ${width}px`)
             }
         }
+        await page.setViewportSize({ width: 960, height: 800 })
+        const longCatalog = { ...display, registry: Array.from({ length: 24 }, (_, index) => ({ ...display.registry[0], id: `library-${index}` })) }
+        await publishPanelState(page, 'librariesState', longCatalog)
+        const widths = []
+        const overflows = []
+        for (const tab of ['Registry', 'Global', 'Project', 'Registry']) {
+            await page.getByRole('tab', { name: tab, exact: true }).click()
+            widths.push(await page.locator(`#library-panel-${tab.toLowerCase()} .library-card`).first().evaluate((node) => ({ x: node.getBoundingClientRect().x, width: node.getBoundingClientRect().width })))
+            overflows.push(await page.evaluate(() => document.documentElement.scrollHeight > innerHeight))
+        }
+        assert.deepEqual(overflows, [true, false, false, true], 'The fixture switches between overflowing and non-overflowing pages')
+        assert.deepEqual(widths, widths.map(() => widths[0]), 'Scrollbar visibility must not shift tab/card widths')
+        await publishPanelState(page, 'librariesState', display)
         await page.setViewportSize({ width: 480, height: 900 })
         await page.screenshot({ path: root + '.build/library-manager-registry-narrow.png', fullPage: true })
         await page.getByRole('searchbox', { name: 'Search registry' }).fill('no match')
@@ -378,7 +406,7 @@ test('Local tabs refresh once per entry and Global operations follow the selecte
         assert.equal(await cleanupToggle.getAttribute('aria-expanded'), 'true')
         await page.keyboard.press('End')
         await page.keyboard.press('Enter')
-        assert.deepEqual(await page.evaluate(() => window.__actions.at(-1)), { action: 'libraries.cleanupAll', mode: 'keepLatest' })
+        assert.deepEqual(await page.evaluate(() => window.__actions.at(-1)), { action: 'libraries.cleanupAll', mode: 'unused' })
         assert.equal(await cleanupToggle.getAttribute('aria-expanded'), 'false')
         await page.setViewportSize({ width: 320, height: 900 })
         await cleanupToggle.click()
@@ -388,7 +416,7 @@ test('Local tabs refresh once per entry and Global operations follow the selecte
         await cleanupToggle.click()
         await page.keyboard.press('Escape')
         assert.equal(await cleanupToggle.getAttribute('aria-expanded'), 'false')
-        await global.getByRole('button', { name: 'Delete All Cached Versions', exact: true }).click()
+        await global.getByRole('button', { name: 'Delete All Global Dependencies', exact: true }).click()
         assert.deepEqual(await page.evaluate(() => window.__actions.at(-1)), { action: 'libraries.cleanupAll', mode: 'all' })
         await global.getByRole('button', { name: 'Install to Project', exact: true }).click()
         assert.deepEqual(await page.evaluate(() => window.__actions.at(-1)), { action: 'libraries.install', id: 'fixture', version: 'v1' })
@@ -463,6 +491,8 @@ test('More exposes cache tools only in development, supports keyboard navigation
         })
         await page.addStyleTag({ content: ':root { --vscode-font-family: system-ui; --vscode-font-size: 13px; --vscode-foreground: #cccccc; --vscode-editor-background: #1f1f1f; --vscode-descriptionForeground: #999999; --vscode-panel-border: #343434; --vscode-focusBorder: #007fd4; --vscode-button-background: #0078d4; --vscode-button-foreground: #ffffff; --vscode-button-secondaryBackground: #313131; --vscode-button-secondaryForeground: #cccccc; }' })
         await page.addStyleTag({ path: root + 'media/panels/main.css' })
+        await page.addStyleTag({ path: root + 'dist/panel-scrollbar.css' })
+        await page.addScriptTag({ path: root + 'dist/panel-scrollbar.js' })
         await page.addScriptTag({ path: root + 'media/panels/main.js' })
         await page.evaluate(() => window.postMessage({ type: 'developmentMode', enabled: false }, '*'))
         assert.equal(await page.getByRole('tab', { name: 'Development', exact: true }).count(), 0)
@@ -471,8 +501,8 @@ test('More exposes cache tools only in development, supports keyboard navigation
         await page.keyboard.press('ArrowRight')
         assert.equal(await page.getByRole('tab', { name: 'Development', exact: true }).getAttribute('aria-selected'), 'true')
         assert.deepEqual(await page.evaluate(() => window.__actions.at(-1)), { action: 'development.refreshCaches' })
-        const state = { entries: [
-            { id: 'globalState:runtime.catalog', scope: 'globalState', name: 'runtime.catalog', value: { builds: [123] } },
+        const state = { globalDirectory: '/extension/global', entries: [
+            { id: 'globalState:runtime.catalog', scope: 'globalState', name: 'runtime.catalog', value: { builds: [123], enabled: true, absent: null, text: 'escaped \"quote\"' } },
             { id: 'workspaceState:unsafe', scope: 'workspaceState', name: '<img src=x onerror=alert(1)>', value: { unsafe: '<script>alert(1)</script>' } },
         ] }
         const publish = async () => {
@@ -481,6 +511,14 @@ test('More exposes cache tools only in development, supports keyboard navigation
         }
         await publish()
         assert.equal(await page.locator('.cache-entry img, .cache-entry script').count(), 0)
+        assert.equal(await page.getByRole('table').count(), 2)
+        assert.deepEqual(await page.locator('.cache-table thead th').allTextContents(), ['Field', 'Value', 'Action', 'Field', 'Value', 'Action'])
+        assert.equal(await page.locator('.cache-table tbody tr').count(), 2)
+        assert.equal(await page.locator('article.cache-entry').count(), 0)
+        await page.getByRole('button', { name: 'Open Global Folder', exact: true }).click()
+        assert.deepEqual(await page.evaluate(() => window.__actions.at(-1)), { action: 'development.openGlobalFolder' })
+        await publish()
+
         await page.getByRole('button', { name: 'Clear globalState runtime.catalog', exact: true }).click()
         assert.deepEqual(await page.evaluate(() => window.__actions.at(-1)), { action: 'development.clearCache', id: 'globalState:runtime.catalog' })
         assert.equal(await page.getByRole('button', { name: 'Clear All Caches', exact: true }).isDisabled(), true)
@@ -488,7 +526,59 @@ test('More exposes cache tools only in development, supports keyboard navigation
         await page.getByRole('button', { name: 'Clear All Caches', exact: true }).click()
         assert.deepEqual(await page.evaluate(() => window.__actions.at(-1)), { action: 'development.clearAllCaches' })
         await publish()
-        await page.locator('.cache-entry details').first().locator('summary').click()
+        assert.equal(await page.locator('#summary').isVisible(), false)
+        assert.equal(await page.locator('#panel-development > .section-toolbar .actions button').last().textContent(), 'Open Global Folder')
+        await page.getByRole('button', { name: 'View globalState runtime.catalog', exact: true }).click()
+        assert.equal(await page.getByRole('dialog').isVisible(), true)
+        assert.match(await page.locator('#cache-value-content').textContent(), /123/)
+        const highlightRequest = await page.evaluate(() => window.__actions.at(-1))
+        assert.equal(highlightRequest.action, 'development.inspectCache')
+        const text = JSON.stringify(state.entries[0].value, null, 2)
+        await page.evaluate(({ request, text }) => window.postMessage({ type: 'cacheValue', id: request.id, requestId: request.requestId, tokens: [{ text: text.slice(0, 5), color: '#123456', font: 2 }, { text: text.slice(5), color: '#abcdef', font: 1 }] }, '*'), { request: highlightRequest, text })
+        await page.waitForFunction(() => document.querySelector('#cache-value-content span'))
+        assert.equal(await page.locator('#cache-value-content').textContent(), text)
+        assert.equal(await page.locator('#cache-value-content span').first().evaluate((node) => node.style.color), 'rgb(18, 52, 86)')
+        const singleLineAlignment = await page.locator('#cache-value-title').evaluate((node) => {
+            const title = node.getBoundingClientRect(), actions = node.nextElementSibling.getBoundingClientRect()
+            return Math.abs(title.y + title.height / 2 - actions.y - actions.height / 2)
+        })
+        assert.ok(singleLineAlignment < 1)
+        await page.evaluate(() => { document.getElementById('cache-value-content').textContent = Array.from({ length: 300 }, (_, i) => `  "field-${i}": ${i},`).join('\n') })
+        await page.locator('#cache-value-scroll-host .has-vertical-scrollbar').waitFor()
+        assert.equal(await page.locator('#cache-value-scroll-host .monaco-scrollable-element').count(), 1)
+        await page.locator('#cache-value-viewport').hover()
+        await page.mouse.wheel(0, 400)
+        await page.waitForFunction(() => document.getElementById('cache-value-viewport').scrollTop > 0)
+        await page.mouse.move(0, 0)
+        await page.waitForFunction(() => document.querySelector('#cache-value-scroll-host .scrollbar.vertical').classList.contains('invisible'))
+        await page.locator('#cache-value-viewport').focus()
+        await page.keyboard.press('Home')
+        assert.equal(await page.locator('#cache-value-viewport').evaluate((node) => node.scrollTop), 0)
+        const dialogBounds = await page.getByRole('dialog').boundingBox()
+        assert.ok(Math.abs(dialogBounds.width - Math.min(1200, 1120 - 48)) < 1 && Math.abs(dialogBounds.height - 860 * 0.8) < 1)
+        await page.evaluate(() => { document.getElementById('cache-value-title').textContent = 'workspaceState: ' + 'cache.long-path.'.repeat(12) })
+        for (const width of [320, 720, 1120]) {
+            await page.setViewportSize({ width, height: 860 })
+            const header = await page.locator('#cache-value-dialog > .section-heading').boundingBox()
+            const title = await page.locator('#cache-value-title').boundingBox()
+            const actions = await page.locator('#cache-value-dialog .actions').boundingBox()
+            assert.ok(title.x + title.width <= actions.x, 'Long title wraps before the buttons')
+            assert.ok(Math.abs(actions.x + actions.width - header.x - header.width) < 1, 'Buttons remain right aligned')
+            assert.ok(Math.abs(actions.y + actions.height / 2 - title.y - title.height / 2) < 1, 'Title and buttons remain vertically centered')
+        }
+
+        await page.getByRole('button', { name: 'Open in Editor', exact: true }).click()
+        assert.deepEqual(await page.evaluate(() => window.__actions.at(-1)), { action: 'development.openCacheEditor', id: 'globalState:runtime.catalog' })
+        await page.getByRole('button', { name: 'Close', exact: true }).click()
+        assert.equal(await page.getByRole('dialog').isVisible(), false)
+        await publish()
+        await page.getByRole('button', { name: 'Clear workspaceState caches', exact: true }).click()
+        assert.deepEqual(await page.evaluate(() => window.__actions.at(-1)), { action: 'development.clearScopeCaches', scope: 'workspaceState' })
+        await publish()
+        await page.getByRole('button', { name: 'View workspaceState <img src=x onerror=alert(1)>', exact: true }).click()
+        assert.equal(await page.locator('#cache-value-dialog script').count(), 0)
+        await page.keyboard.press('Escape')
+        assert.equal(await page.getByRole('dialog').isVisible(), false)
         await page.screenshot({ path: root + '.build/more-development-caches.png', fullPage: true })
         await page.setViewportSize({ width: 320, height: 900 })
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false)
@@ -496,6 +586,112 @@ test('More exposes cache tools only in development, supports keyboard navigation
         assert.equal(await page.locator('#panel-development').isVisible(), false)
         assert.equal(await page.locator('#panel-github').isVisible(), true)
         assert.deepEqual(errors, [])
+    } finally {
+        await browser.close()
+    }
+})
+
+async function publishPanelState(page, type, state) {
+    await page.evaluate(({ type, state }) => new Promise((resolve) => {
+        window.addEventListener('message', function received(event) {
+            if (event.data?.type !== type) return
+            window.removeEventListener('message', received)
+            resolve()
+        })
+        window.postMessage({ type, state }, '*')
+    }), { type, state })
+}
+
+test('Libraries keeps all cached lists mounted through silent refresh and updates changed data', async () => {
+    const browser = await chromium.launch({ channel: process.env.SCAD_BROWSER_CHANNEL || undefined })
+    try {
+        const page = await browser.newPage({ viewport: { width: 1120, height: 860 } })
+        await page.setContent(await libraryFixtureHtml())
+        await page.evaluate(() => {
+            let saved = {}
+            window.acquireVsCodeApi = () => ({ getState: () => saved, setState: (value) => { saved = value }, postMessage() {} })
+        })
+        await page.addScriptTag({ path: root + 'media/panels/main.js' })
+        await page.addScriptTag({ path: root + 'media/panels/libraries.js' })
+        const display = structuredClone(state)
+        display.global.push({ ...display.global[0], versions: ['v2'], commit: 'b'.repeat(40), key: 'second-version' })
+        await publishPanelState(page, 'librariesState', display)
+        await page.getByRole('combobox', { name: '<Fixture Library> version' }).selectOption('v2')
+        await page.getByRole('searchbox', { name: 'Search registry' }).fill('fixture')
+        await page.getByRole('searchbox', { name: 'Search registry' }).press('Tab')
+        await page.waitForTimeout(350)
+        await page.evaluate(() => {
+            window.__lists = [...document.querySelectorAll('.library-list')]
+            window.__cards = [...document.querySelectorAll('.library-card')]
+            window.__listMutations = 0
+            const observer = new MutationObserver((records) => { window.__listMutations += records.length })
+            for (const list of window.__lists) observer.observe(list.parentElement, { childList: true, subtree: true })
+            window.__listObserver = observer
+        })
+        for (const extra of [{ registryBusy: true }, { registryBusy: true }, {}, { registryError: 'Temporary refresh failure' }, {}]) {
+            await publishPanelState(page, 'librariesState', { ...display, ...extra })
+        }
+        assert.equal(await page.evaluate(() => window.__listMutations), 0, 'Repeated states, warm loading and refresh errors must not replace cached cards')
+        assert.equal(await page.evaluate(() => window.__cards.every((card) => card.isConnected)), true)
+        assert.equal(await page.getByRole('combobox', { name: '<Fixture Library> version' }).inputValue(), 'v2')
+        assert.equal(await page.getByRole('searchbox', { name: 'Search registry' }).inputValue(), 'fixture')
+        assert.equal(await page.locator('#library-tab-global .count').textContent(), '1', 'A preserved Global list keeps its grouped count')
+        await page.evaluate(() => window.__listObserver.disconnect())
+        display.registry[0].description = 'Updated catalog description'
+        await publishPanelState(page, 'librariesState', display)
+        assert.equal(await page.locator('#library-panel-registry .library-description').textContent(), 'Updated catalog description')
+        await page.getByRole('tab', { name: 'Project', exact: true }).click()
+        display.projectDependencies[0].version = 'v2'
+        await publishPanelState(page, 'librariesState', display)
+        assert.equal(await page.locator('#library-panel-project select').inputValue(), 'v2')
+        await publishPanelState(page, 'librariesState', { ...display, busy: true, cancellable: true, message: 'Installing…' })
+        assert.equal(await page.getByRole('button', { name: 'Remove', exact: true }).isDisabled(), true, 'Real mutation state still updates actions')
+    } finally {
+        await browser.close()
+    }
+})
+
+test('Runtime preserves identical version rows and cached counts while refreshing catalogs', async () => {
+    const browser = await chromium.launch({ channel: process.env.SCAD_BROWSER_CHANNEL || undefined })
+    try {
+        const page = await browser.newPage({ viewport: { width: 1120, height: 860 } })
+        await page.setContent((await libraryFixtureHtml()).replace('data-page="libraries"', 'data-page="runtime"'))
+        await page.evaluate(() => {
+            let saved = { runtimeTab: 'available' }
+            window.acquireVsCodeApi = () => ({ getState: () => saved, setState: (value) => { saved = value }, postMessage() {} })
+        })
+        await page.addScriptTag({ path: root + 'media/panels/main.js' })
+        const runtime = {
+            busy: false, refreshingSilently: false, message: '', buildsError: '', buildsBusy: false, buildsLoaded: true,
+            activeId: 'local', system: { name: 'macOS', version: '15', architecture: 'arm64' },
+            runtimes: [{ id: 'local', version: '2026.11', channel: 'Stable', source: 'managed', command: { executable: '/runtime/openscad', argsPrefix: [] } }],
+            builds: [{ id: 42, release: 'OpenSCAD 2026.11', tag: 'openscad-2026.11', channel: 'Stable', size: 123456 }],
+            installedBuildIds: [],
+        }
+        await publishPanelState(page, 'runtimeState', runtime)
+        const action = page.locator('#builds button')
+        await action.focus()
+        await page.evaluate(() => {
+            window.__runtimeRows = [...document.querySelectorAll('#runtimes > *, #builds > *')]
+            window.__runtimeMutations = 0
+            const observer = new MutationObserver((records) => { window.__runtimeMutations += records.length })
+            for (const id of ['runtimes', 'builds']) observer.observe(document.getElementById(id), { childList: true, subtree: true })
+            window.__runtimeObserver = observer
+        })
+        for (const extra of [{ buildsBusy: true }, { buildsBusy: true }, {}, { buildsError: 'Temporary refresh failure' }, {}]) {
+            await publishPanelState(page, 'runtimeState', { ...runtime, ...extra })
+            assert.equal(await page.locator('#available-count').textContent(), '1')
+            assert.equal(await page.locator('#refresh-builds').textContent(), 'Refresh')
+            assert.equal(await page.locator('#builds-loading').isVisible(), false)
+        }
+        assert.equal(await page.evaluate(() => window.__runtimeMutations), 0)
+        assert.equal(await page.evaluate(() => window.__runtimeRows.every((row) => row.isConnected)), true)
+        assert.equal(await action.evaluate((node) => node === document.activeElement), true)
+        await page.evaluate(() => window.__runtimeObserver.disconnect())
+        await publishPanelState(page, 'runtimeState', { ...runtime, installedBuildIds: [42] })
+        assert.equal(await page.locator('#builds button').textContent(), 'Reinstall', 'Actual installation state replaces changed rows')
+        await publishPanelState(page, 'runtimeState', { ...runtime, builds: [], buildsBusy: true, buildsLoaded: false })
+        assert.equal(await page.locator('#builds-loading').isVisible(), true, 'Cold startup still indicates loading')
     } finally {
         await browser.close()
     }
