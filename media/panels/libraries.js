@@ -240,8 +240,9 @@ if (page === 'libraries') {
 
     const globalActions = element('div', undefined, 'library-global-actions')
     const verifyAll = button('Verify All', 'verifyAll')
+    verifyAll.title = 'Check cached file hashes for missing or corrupted content. Does not download updates or repair libraries.'
     const cleanupSplit = element('div', undefined, 'library-cleanup-split')
-    const cleanupAll = button('Delete All Cached Versions', 'cleanupAll', { mode: 'all' })
+    const cleanupAll = button('Delete All Global Dependencies', 'cleanupAll', { mode: 'all' })
     const cleanupToggle = element('button', undefined, 'secondary library-cleanup-toggle')
     cleanupToggle.type = 'button'
     cleanupToggle.setAttribute('aria-label', 'Cache cleanup options')
@@ -258,7 +259,7 @@ if (page === 'libraries') {
         cleanupToggle.setAttribute('aria-expanded', 'false')
         if (focus) cleanupToggle.focus()
     }
-    for (const [label, mode] of [['Delete all cached versions', 'all'], ['Keep latest version of each library', 'keepLatest']]) {
+    for (const [label, mode] of [['Delete all global dependencies', 'all'], ['Delete unreferenced global dependencies', 'unused']]) {
         const item = element('button', label)
         item.type = 'button'
         item.setAttribute('role', 'menuitem')
@@ -289,11 +290,19 @@ if (page === 'libraries') {
     cleanupSplit.append(cleanupAll, cleanupToggle, cleanupMenu)
     globalActions.append(verifyAll, cleanupSplit)
 
+    const renderedSections = new Map()
+    function needsRender(name, values) {
+        const key = JSON.stringify(values)
+        if (renderedSections.get(name) === key) return false
+        renderedSections.set(name, key)
+        return true
+    }
+
     function render(s) {
         const focused = document.activeElement?.dataset.focusKey
         state = s
         host.setAttribute('aria-busy', String(s.busy))
-        projectPath.textContent = s.selectedProject ?? 'No project open'
+        setText(projectPath, s.selectedProject ?? 'No project open')
         refresh.disabled = s.busy || s.registryBusy
         refresh.setAttribute('aria-busy', String(!!s.registryBusy))
         cancel.hidden = !s.cancellable
@@ -304,127 +313,133 @@ if (page === 'libraries') {
         error.textContent = [s.error, s.projectError, s.registryError].filter(Boolean).join('\n')
         error.hidden = !error.textContent
         counts.get('project').textContent = s.projectDependencies.length
-        counts.get('global').textContent = s.global.length
         counts.get('registry').textContent = s.registry.length
-        const project = panels.get('project')
-        project.replaceChildren(element('p', 'Project dependencies are pinned to exact versions in this project. Restore rebuilds local links from the lockfile; switching or removing a library changes this project only.', 'library-section-description'), projectPath)
-        const projectActions = element('div', undefined, 'library-project-actions')
-        projectActions.append(button('Restore Dependencies', 'restore', {}, !s.trusted || !s.selectedProject), button('Repair Links', 'repair', {}, !s.trusted || !s.selectedProject))
-        project.append(projectActions)
-        if (!s.projectDependencies.length) empty(project, s.selectedProject ? 'Add your first library' : 'Open a project to get started', s.selectedProject ? 'Browse the registry, choose a version, and install it to this project.' : 'Open a workspace folder to install and restore project dependencies.', !!s.selectedProject)
-        const projectList = element('div', undefined, 'library-list')
-        project.append(projectList)
-        for (const dep of s.projectDependencies) {
-            const library = s.registry.find((library) => library.id === dep.id && (!dep.repositoryUrl || sameRepository(library.repositoryUrl, dep.repositoryUrl)))
-            const { row, heading, actions } = libraryCard(library, { id: dep.id, name: dep.name, repositoryUrl: dep.repositoryUrl })
-            if (dep.status !== 'Ready') heading.append(badge(dep.status, 'library-badge-warning'))
-            if (library) {
-                const picker = versionPicker(library, 'project', dep.version)
-                actions.append(dropdown(picker), installButton(library, picker, 'Switch Version'))
-            } else {
+        if (needsRender('project', [s.projectDependencies, s.selectedProject, s.trusted, s.busy, s.registry])) {
+            const project = panels.get('project')
+            project.replaceChildren(element('p', 'Project dependencies are pinned to exact versions in this project. Restore rebuilds local links from the lockfile; switching or removing a library changes this project only.', 'library-section-description'), projectPath)
+            const projectActions = element('div', undefined, 'library-project-actions')
+            projectActions.append(button('Restore Dependencies', 'restore', {}, !s.trusted || !s.selectedProject), button('Repair Links', 'repair', {}, !s.trusted || !s.selectedProject))
+            project.append(projectActions)
+            if (!s.projectDependencies.length) empty(project, s.selectedProject ? 'Add your first library' : 'Open a project to get started', s.selectedProject ? 'Browse the registry, choose a version, and install it to this project.' : 'Open a workspace folder to install and restore project dependencies.', !!s.selectedProject)
+            const projectList = element('div', undefined, 'library-list')
+            project.append(projectList)
+            for (const dep of s.projectDependencies) {
+                const library = s.registry.find((library) => library.id === dep.id && (!dep.repositoryUrl || sameRepository(library.repositoryUrl, dep.repositoryUrl)))
+                const { row, heading, actions } = libraryCard(library, { id: dep.id, name: dep.name, repositoryUrl: dep.repositoryUrl })
+                if (dep.status !== 'Ready') heading.append(badge(dep.status, 'library-badge-warning'))
+                if (library) {
+                    const picker = versionPicker(library, 'project', dep.version)
+                    actions.append(dropdown(picker), installButton(library, picker, 'Switch Version'))
+                } else {
+                    const picker = element('select')
+                    picker.setAttribute('aria-label', `${dep.name ?? dep.id} version`)
+                    picker.append(element('option', dep.version ?? 'Unmatched lock entry'))
+                    picker.disabled = true
+                    const switchVersion = button('Switch Version', 'install', {}, true, true)
+                    switchVersion.title = 'Version switching requires this library in the local Registry catalog.'
+                    actions.append(dropdown(picker), switchVersion)
+                }
+                actions.append(button('Remove', 'remove', { id: dep.id }, !s.trusted))
+                projectList.append(row)
+            }
+        }
+        if (needsRender('global', [s.global, s.globalIssues, s.registry, s.selectedProject, s.busy, s.trusted, s.bulkResult])) {
+            const global = panels.get('global')
+            global.replaceChildren(element('p', 'Global stores downloaded library versions shared by all projects. Installing a cached version reuses these files. Delete all removes every global version, including those used by projects; Restore Dependencies can download them again. Unreferenced cleanup checks known projects and skips versions whose references cannot be verified.', 'library-section-description'), globalActions)
+            for (const control of [verifyAll, cleanupAll, cleanupToggle, ...cleanupMenu.querySelectorAll('button')]) control.disabled = s.busy || !s.trusted || !s.global.length
+            if (s.busy || !s.global.length) closeCleanupMenu()
+            if (s.bulkResult) global.append(element('p', s.bulkResult, 'library-bulk-result'))
+            for (const issue of s.globalIssues ?? []) global.append(element('p', `${issue.path}: ${issue.message}`, 'notice warning request-error'))
+            if (!s.global.length) empty(global, 'No cached libraries yet', 'Installed library versions appear here and can be reused by other projects.')
+            const globalList = element('div', undefined, 'library-list')
+            global.append(globalList)
+            const groups = new Map()
+            for (const library of s.global) {
+                const identity = JSON.stringify([library.libraryId, library.repositoryUrl])
+                if (!groups.has(identity)) groups.set(identity, [])
+                groups.get(identity).push(library)
+            }
+            counts.get('global').textContent = groups.size
+            for (const [identity, versions] of groups) {
+                const first = versions[0]
+                const registryLibrary = s.registry.find((library) => library.id === first.libraryId && sameRepository(library.repositoryUrl, first.repositoryUrl))
+                const { row, heading, actions } = libraryCard(registryLibrary, { id: first.libraryId, repositoryUrl: first.repositoryUrl }, true)
                 const picker = element('select')
-                picker.setAttribute('aria-label', `${dep.name ?? dep.id} version`)
-                picker.append(element('option', dep.version ?? 'Unmatched lock entry'))
-                picker.disabled = true
-                const switchVersion = button('Switch Version', 'install', {}, true, true)
-                switchVersion.title = 'Version switching requires this library in the local Registry catalog.'
-                actions.append(dropdown(picker), switchVersion)
-            }
-            actions.append(button('Remove', 'remove', { id: dep.id }, !s.trusted))
-            projectList.append(row)
-        }
-        const global = panels.get('global')
-        global.replaceChildren(element('p', 'Global stores downloaded library versions shared by all projects. Installing a cached version reuses these files. Cleanup skips versions used by known projects or whose references cannot be checked.', 'library-section-description'), globalActions)
-        for (const control of [verifyAll, cleanupAll, cleanupToggle, ...cleanupMenu.querySelectorAll('button')]) control.disabled = s.busy || !s.trusted || !s.global.length
-        if (s.busy || !s.global.length) closeCleanupMenu()
-        if (s.bulkResult) global.append(element('p', s.bulkResult, 'library-bulk-result'))
-        for (const issue of s.globalIssues ?? []) global.append(element('p', `${issue.path}: ${issue.message}`, 'notice warning request-error'))
-        if (!s.global.length) empty(global, 'No cached libraries yet', 'Installed library versions appear here and can be reused by other projects.')
-        const globalList = element('div', undefined, 'library-list')
-        global.append(globalList)
-        const groups = new Map()
-        for (const library of s.global) {
-            const identity = JSON.stringify([library.libraryId, library.repositoryUrl])
-            if (!groups.has(identity)) groups.set(identity, [])
-            groups.get(identity).push(library)
-        }
-        counts.get('global').textContent = groups.size
-        for (const [identity, versions] of groups) {
-            const first = versions[0]
-            const registryLibrary = s.registry.find((library) => library.id === first.libraryId && sameRepository(library.repositoryUrl, first.repositoryUrl))
-            const { row, heading, actions } = libraryCard(registryLibrary, { id: first.libraryId, repositoryUrl: first.repositoryUrl }, true)
-            const picker = element('select')
-            const selectionKey = `global:${identity}`
-            picker.dataset.focusKey = selectionKey
-            picker.setAttribute('aria-label', `${first.libraryId} version`)
-            const recommended = registryLibrary?.versions.find((version) => version.label === defaultVersion(registryLibrary))
-            const initial = versions.find((version) => version.commit === recommended?.commit) ?? versions[0]
-            for (const version of versions) {
-                const option = element('option', version.versions.join(', ') || `snapshot:${version.commit.slice(0, 12)}`)
-                option.value = version.key
-                picker.append(option)
-            }
-            const selected = selections.get(selectionKey)
-            picker.value = versions.some((version) => version.key === selected) ? selected : initial.key
-            picker.disabled = s.busy
-            const warning = badge('', 'library-badge-warning')
-            heading.append(warning)
-            const operations = [
-                ['Verify', 'verify'],
-                ['Repair', 'repairGlobal'],
-                ['Preview Cleanup…', 'previewCleanup'],
-            ].map(([label, action]) => {
-                const control = element('button', label, 'secondary')
-                control.type = 'button'
-                control.addEventListener('click', () => send(action, { key: picker.value }))
-                return control
-            })
-            const install = element('button', 'Install to Project', 'library-primary')
-            install.type = 'button'
-            install.addEventListener('click', () => {
-                const cached = versions.find((version) => version.key === picker.value)
-                const exact = registryLibrary?.versions.find((version) => version.commit === cached.commit)
-                if (exact) send('install', { id: first.libraryId, version: exact.label })
-            })
-            const update = () => {
-                const version = versions.find((version) => version.key === picker.value)
-                const exact = registryLibrary?.versions.find((entry) => entry.commit === version.commit)
-                install.disabled = s.busy || !s.trusted || !s.selectedProject || !exact || !!exact.layoutError || !!registryLibrary?.validationError || registryLibrary?.sync.status === 'error' || version.status !== 'ready'
-                install.title = exact?.layoutError || registryLibrary?.validationError || (!exact ? 'Install requires this cached version in the local Registry catalog.' : 'Reuse the selected cached version in this project.')
-                warning.textContent = version.status === 'ready' ? '' : version.status
-                warning.hidden = !warning.textContent
-                for (const control of operations) control.disabled = s.busy || !s.trusted
-                const cleanup = operations[2]
-                cleanup.disabled ||= !!version.references.projects.length || !!version.references.unavailable.length
-                cleanup.title = version.references.projects.length ? 'In use by a known project.' : version.references.unavailable.length ? 'Some known projects are unavailable.' : 'Preview cleanup of the selected cached version.'
-            }
-            picker.addEventListener('change', () => {
-                selections.set(selectionKey, picker.value)
+                const selectionKey = `global:${identity}`
+                picker.dataset.focusKey = selectionKey
+                picker.setAttribute('aria-label', `${first.libraryId} version`)
+                const recommended = registryLibrary?.versions.find((version) => version.label === defaultVersion(registryLibrary))
+                const initial = versions.find((version) => version.commit === recommended?.commit) ?? versions[0]
+                for (const version of versions) {
+                    const option = element('option', version.versions.join(', ') || `snapshot:${version.commit.slice(0, 12)}`)
+                    option.value = version.key
+                    picker.append(option)
+                }
+                const selected = selections.get(selectionKey)
+                picker.value = versions.some((version) => version.key === selected) ? selected : initial.key
+                picker.disabled = s.busy
+                const warning = badge('', 'library-badge-warning')
+                heading.append(warning)
+                const operations = [
+                    ['Verify', 'verify'],
+                    ['Repair', 'repairGlobal'],
+                    ['Preview Cleanup…', 'previewCleanup'],
+                ].map(([label, action]) => {
+                    const control = element('button', label, 'secondary')
+                    control.type = 'button'
+                    control.addEventListener('click', () => send(action, { key: picker.value }))
+                    return control
+                })
+                const install = element('button', 'Install to Project', 'library-primary')
+                install.type = 'button'
+                install.addEventListener('click', () => {
+                    const cached = versions.find((version) => version.key === picker.value)
+                    const exact = registryLibrary?.versions.find((version) => version.commit === cached.commit)
+                    if (exact) send('install', { id: first.libraryId, version: exact.label })
+                })
+                const update = () => {
+                    const version = versions.find((version) => version.key === picker.value)
+                    const exact = registryLibrary?.versions.find((entry) => entry.commit === version.commit)
+                    install.disabled = s.busy || !s.trusted || !s.selectedProject || !exact || !!exact.layoutError || !!registryLibrary?.validationError || registryLibrary?.sync.status === 'error' || version.status !== 'ready'
+                    install.title = exact?.layoutError || registryLibrary?.validationError || (!exact ? 'Install requires this cached version in the local Registry catalog.' : 'Reuse the selected cached version in this project.')
+                    warning.textContent = version.status === 'ready' ? '' : version.status
+                    warning.hidden = !warning.textContent
+                    for (const control of operations) control.disabled = s.busy || !s.trusted
+                    const cleanup = operations[2]
+                    cleanup.disabled ||= !!version.references.projects.length || !!version.references.unavailable.length
+                    cleanup.title = version.references.projects.length ? 'In use by a known project.' : version.references.unavailable.length ? 'Some known projects are unavailable.' : 'Preview cleanup of the selected cached version.'
+                }
+                picker.addEventListener('change', () => {
+                    selections.set(selectionKey, picker.value)
+                    update()
+                })
                 update()
-            })
-            update()
-            actions.append(dropdown(picker), install, ...operations)
-            globalList.append(row)
+                actions.append(dropdown(picker), install, ...operations)
+                globalList.append(row)
+            }
         }
         if (!queryInitialized) {
             search.value = s.query ?? ''
             filterQuery = search.value.trim()
             queryInitialized = true
         }
-        registryResults.replaceChildren()
-        const query = filterQuery.toLowerCase()
-        const filtered = s.registry.filter((library) => `${library.id} ${library.name} ${library.description}`.toLowerCase().includes(query))
-        if (!s.registry.length && s.registryBusy) empty(registryResults, 'Loading libraries…', 'Fetching the library registry.')
-        else if (!s.registryError && !filtered.length && (s.registry.length || s.registryLoaded !== false)) empty(registryResults, query ? 'No matching libraries' : 'No libraries to display', query ? 'Try another name, library ID, or keyword.' : 'Refresh to load the registry. Cached versions remain available offline.')
-        const registryList = element('div', undefined, 'library-list')
-        registryResults.append(registryList)
-        for (const library of filtered) {
-            const { row, info, actions } = libraryCard(library)
-            if (library.validationError) info.append(element('p', library.validationError, 'notice error'))
-            if (library.layoutError && !library.versions.some((v) => !v.layoutError)) info.append(element('p', library.layoutError, 'notice warning'))
-            const picker = versionPicker(library, 'registry')
-            actions.append(dropdown(picker), installButton(library, picker, 'Install to Project'))
-            registryList.append(row)
+        // A warm refresh changes only the Refresh control; keep cached cards mounted.
+        if (needsRender('registry', [s.registry, s.selectedProject, s.trusted, s.busy, filterQuery, !s.registry.length && [s.registryBusy, s.registryError, s.registryLoaded]])) {
+            registryResults.replaceChildren()
+            const query = filterQuery.toLowerCase()
+            const filtered = s.registry.filter((library) => `${library.id} ${library.name} ${library.description}`.toLowerCase().includes(query))
+            if (!s.registry.length && s.registryBusy) empty(registryResults, 'Loading libraries…', 'Fetching the library registry.')
+            else if ((!s.registryError || s.registry.length) && !filtered.length && (s.registry.length || s.registryLoaded !== false)) empty(registryResults, query ? 'No matching libraries' : 'No libraries to display', query ? 'Try another name, library ID, or keyword.' : 'Refresh to load the registry. Cached versions remain available offline.')
+            const registryList = element('div', undefined, 'library-list')
+            registryResults.append(registryList)
+            for (const library of filtered) {
+                const { row, info, actions } = libraryCard(library)
+                if (library.validationError) info.append(element('p', library.validationError, 'notice error'))
+                if (library.layoutError && !library.versions.some((v) => !v.layoutError)) info.append(element('p', library.layoutError, 'notice warning'))
+                const picker = versionPicker(library, 'registry')
+                actions.append(dropdown(picker), installButton(library, picker, 'Install to Project'))
+                registryList.append(row)
+            }
         }
         if (focused) [...host.querySelectorAll('[data-focus-key]')].find((node) => node.dataset.focusKey === focused)?.focus({ preventScroll: true })
         showTab()

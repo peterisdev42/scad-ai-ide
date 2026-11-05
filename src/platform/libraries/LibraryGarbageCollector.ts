@@ -1,8 +1,9 @@
-import { latestCached, libraryIdentity } from '../../core/libraries/latestCached'
-import type { RegistryLibrary } from '../../core/libraries/types'
+import { repository } from '../../core/libraries/validation'
 import type { InstalledLibrary } from '../../core/libraries/types'
 import { GlobalLibraryStore } from './GlobalLibraryStore'
 import { LibraryReferenceIndex } from './LibraryReferenceIndex'
+export type CleanupMode = 'all' | 'unused'
+const identity = (entity: InstalledLibrary) => JSON.stringify([entity.libraryId, repository(entity.repositoryUrl).url.toLowerCase(), entity.commit])
 type Identity = Pick<InstalledLibrary, 'libraryId' | 'repositoryUrl' | 'commit'>
 export class LibraryGarbageCollector {
     constructor(
@@ -25,47 +26,39 @@ export class LibraryGarbageCollector {
             return true
         })
     }
-    async previewAll(keepLatest: boolean, registry: readonly RegistryLibrary[] = []) {
+    async previewAll(mode: CleanupMode) {
+        if (mode !== 'all' && mode !== 'unused') throw new Error('Invalid cache cleanup mode.')
         const installed = await this.store.list()
-        const groups = new Map<string, InstalledLibrary[]>()
-        for (const entity of installed) {
-            const key = libraryIdentity(entity)
-            const versions = groups.get(key) ?? []
-            versions.push(entity)
-            groups.set(key, versions)
-        }
-        const retained = new Set<InstalledLibrary>()
-        if (keepLatest) for (const versions of groups.values()) {
-            const metadata = registry.find((library) => libraryIdentity({ libraryId: library.id, repositoryUrl: library.repositoryUrl }) === libraryIdentity(versions[0]))
-            retained.add(latestCached(versions, metadata))
-        }
         const candidates: InstalledLibrary[] = []
         let protectedCount = 0
         for (const entity of installed) {
-            if (retained.has(entity)) continue
-            const references = await this.references.references(entity)
-            if (references.projects.length || references.unavailable.length) protectedCount++
-            else candidates.push(entity)
+            if (mode === 'unused') {
+                const references = await this.references.references(entity)
+                if (references.projects.length || references.unavailable.length) { protectedCount++; continue }
+            }
+            candidates.push(entity)
         }
-        return { candidates, retained: retained.size, protectedCount, bytes: candidates.reduce((sum, entity) => sum + entity.sizeBytes, 0) }
+        return { candidates, protectedCount, bytes: candidates.reduce((sum, entity) => sum + entity.sizeBytes, 0) }
     }
-    async removeAll(keepLatest: boolean, registry: readonly RegistryLibrary[], confirm: (plan: Awaited<ReturnType<LibraryGarbageCollector['previewAll']>>) => Promise<boolean>) {
-        const plan = await this.store.exclusive(() => this.previewAll(keepLatest, registry))
-        if (!plan.candidates.length || !(await confirm(plan))) return { removed: 0, retained: plan.retained, protectedCount: plan.protectedCount }
+    async removeAll(mode: CleanupMode, confirm: (plan: Awaited<ReturnType<LibraryGarbageCollector['previewAll']>>) => Promise<boolean>) {
+        const plan = await this.store.exclusive(() => this.previewAll(mode))
+        if (!plan.candidates.length || !(await confirm(plan))) return { removed: 0, protectedCount: plan.protectedCount }
         return this.store.exclusive(async () => {
-            // Re-plan after confirmation: references/latest versions may have changed.
-            // Never delete a version added after the preview.
-            const current = await this.previewAll(keepLatest, registry)
-            const approved = new Set(plan.candidates.map((entity) => `${libraryIdentity(entity)}:${entity.commit}`))
+            // Recheck references after confirmation in unused mode, and never
+            // delete a version added after the preview in either mode.
+            const current = await this.previewAll(mode)
+            const approved = new Set(plan.candidates.map(identity))
             let removed = 0
             for (const entity of current.candidates) {
-                if (!approved.has(`${libraryIdentity(entity)}:${entity.commit}`)) continue
-                const references = await this.references.references(entity)
-                if (references.projects.length || references.unavailable.length) { current.protectedCount++; continue }
+                if (!approved.has(identity(entity))) continue
+                if (mode === 'unused') {
+                    const references = await this.references.references(entity)
+                    if (references.projects.length || references.unavailable.length) { current.protectedCount++; continue }
+                }
                 await this.store.removeChecked(entity.libraryId, entity.repositoryUrl, entity.commit)
                 removed++
             }
-            return { removed, retained: current.retained, protectedCount: current.protectedCount }
+            return { removed, protectedCount: current.protectedCount }
         })
     }
     private assertUnused(preview: { projects: string[]; unavailable: string[] }) {

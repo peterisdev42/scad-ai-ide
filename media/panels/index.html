@@ -4,6 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src {{csp}}; script-src 'nonce-{{nonce}}';" />
+        <link rel="stylesheet" href="{{scrollbarStyle}}" />
         <link rel="stylesheet" href="{{style}}" />
         <title>{{title}}</title>
     </head>
@@ -120,12 +121,16 @@
                         <h2>Extension caches</h2>
                         <div class="actions">
                             <button data-action="development.refreshCaches" class="text-button">Refresh</button>
-                            <button data-action="development.clearAllCaches" class="secondary" id="clear-all-caches">Clear All Caches</button>
+                            <button data-action="development.clearAllCaches" class="text-button" id="clear-all-caches">Clear All Caches</button>
+                            <button data-action="development.openGlobalFolder" class="text-button" id="open-global-folder">Open Global Folder</button>
                         </div>
                     </div>
-                    <p class="muted small">Inspect global and workspace state, disk list caches, and live render caches. Installed runtimes and library sources are managed in Runtime and Libraries.</p>
                     <p id="cache-status" role="status" aria-live="polite" hidden></p>
-                    <div id="cache-entries" class="cache-entries"></div>
+                    <div id="cache-entries"></div>
+                    <dialog id="cache-value-dialog" aria-labelledby="cache-value-title">
+                        <div class="section-heading"><h3 id="cache-value-title">Cached value</h3><div class="actions"><button id="open-cache-editor" class="text-button">Open in Editor</button><button id="close-cache-value" class="text-button">Close</button></div></div>
+                        <div id="cache-value-scroll-host"><div id="cache-value-viewport" tabindex="0"><pre id="cache-value-content"></pre></div></div>
+                    </dialog>
                 </section>
             </section>
             <template id="local-runtime-options-template">
@@ -144,6 +149,7 @@
                 <p>This feature is not available yet.</p>
             </section>
         </main>
+        <script nonce="{{nonce}}" src="{{scrollbarScript}}"></script>
         <script nonce="{{nonce}}" src="{{script}}"></script>
         <script nonce="{{nonce}}" src="{{librariesScript}}"></script>
     </body>

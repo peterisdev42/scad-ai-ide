@@ -6,24 +6,24 @@
 
 **You choose how to work.** Build by hand, collaborate with AI, or eventually delegate the whole workflow to an agent. Our long-term design principle is: **every IDE capability offered to people should also be available to AI agents through shared, controlled tools.**
 
-*From code to solid.*
+_From code to solid._
 
 [Website](https://peterisdev42.github.io/scad-ai-ide/) · [Quick start](#quick-start) · [Documentation](docs/README.md) · [Contributing](CONTRIBUTING.md)
 
 ## Features at a glance
 
-| Feature | What you can do | Status |
-| --- | --- | --- |
-| **OpenSCAD language support** | Syntax highlighting, completions, diagnostics, navigation, renaming, and formatting | ✅ Available |
-| **Interactive 3D preview** | View models in VS Code, switch views, rotate, and zoom | ✅ Available |
-| **Customizer** | Adjust parameters using sliders and inputs; save and switch presets | ✅ Available |
-| **Model inspection and export** | Measure, inspect sections, export STL / 3MF, and launch your slicer | ✅ Available¹ |
-| **OpenSCAD Runtime** | Discover, install, switch, and manage OpenSCAD runtimes | ✅ Available |
-| **Libraries** | Find libraries, lock and restore project dependencies, and manage a shared cache | ✅ Available |
-| **3D preview in Markdown** | Interactively preview `openscad` / `scad` code blocks in documentation | ✅ Available |
-| **Per-part coloring** | Automatically color separate parts in a multi-part model for easier inspection | 🧪 Experimental³ |
-| **Fast CSG preview** | Preview CSG with a separate image-space Preview Exporter | 🧪 Experimental² |
-| **AI agent integrations** | Agent Tools, MCP, and Skills using the same IDE capabilities as people | 📌 Planned |
+| Feature                         | What you can do                                                                     | Status           |
+| ------------------------------- | ----------------------------------------------------------------------------------- | ---------------- |
+| **OpenSCAD language support**   | Syntax highlighting, completions, diagnostics, navigation, renaming, and formatting | ✅ Available     |
+| **Interactive 3D preview**      | View models in VS Code, switch views, rotate, and zoom                              | ✅ Available     |
+| **Customizer**                  | Adjust parameters using sliders and inputs; save and switch presets                 | ✅ Available     |
+| **Model inspection and export** | Measure, inspect sections, export STL / 3MF, and launch your slicer                 | ✅ Available¹    |
+| **OpenSCAD Runtime**            | Discover, install, switch, and manage OpenSCAD runtimes                             | ✅ Available     |
+| **Libraries**                   | Find libraries, lock and restore project dependencies, and manage a shared cache    | ✅ Available     |
+| **3D preview in Markdown**      | Interactively preview `openscad` / `scad` code blocks in documentation              | ✅ Available     |
+| **Per-part coloring**           | Automatically color separate parts in a multi-part model for easier inspection      | 🧪 Experimental³ |
+| **Fast CSG preview**            | Preview CSG with a separate image-space Preview Exporter                            | 🧪 Experimental² |
+| **AI agent integrations**       | Agent Tools, MCP, and Skills using the same IDE capabilities as people              | 📌 Planned       |
 
 <sub>¹ Export formats and some inspection tools depend on the runtime and render mode. ² Fast CSG preview currently requires a separately installed Preview Exporter on supported macOS ARM64 setups. ³ Per-part coloring changes only the preview, not source files, presets, or exports; overlapping or complex geometry can be misidentified. **AI agent interfaces are not yet available, and this extension cannot currently build a model autonomously from a text prompt.**</sub>
 

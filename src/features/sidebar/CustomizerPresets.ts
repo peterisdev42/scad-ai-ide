@@ -31,7 +31,7 @@ export class CustomizerPresets implements vscode.Disposable {
         return {
             names: Object.keys(presets?.file.parameterSets ?? {}),
             active: presets?.active ?? '',
-            modified: !!presets?.active && this.modified(presets),
+            modified: !!presets && this.modified(presets),
             filename: presets?.uri?.path.split('/').at(-1) ?? '',
             error: presets?.error,
             path: presets?.uri?.toString(),
@@ -131,20 +131,29 @@ export class CustomizerPresets implements vscode.Disposable {
             if (!Object.keys(file.parameterSets).length) file.parameterSets.Current = this.snapshot()
             await vscode.workspace.fs.writeFile(uri, Buffer.from(JSON.stringify(file, null, 2) + '\n'))
         } else if (action === 'new' || action === 'save' || action === 'delete') {
+            if (action === 'save' && !this.modified(presets)) return
             const snapshot = this.snapshot()
             if (action === 'new') {
                 name = await vscode.window.showInputBox({ prompt: 'New preset name', placeHolder: 'Preset name', validateInput: (value) => (!value.trim() ? 'Enter a name' : Object.hasOwn(presets.file.parameterSets, value.trim()) ? 'A preset with this name already exists' : undefined) })
                 if (!name || !current()) return
                 name = name.trim()
             } else name = presets.active
-            if (!name || !current()) return
-            const uri = presets.uri ?? (await vscode.window.showSaveDialog({ saveLabel: 'Create preset file', filters: { 'OpenSCAD parameter files': ['json'] } }))
+            if ((!name && action !== 'save') || !current()) return
+            const source = vscode.Uri.parse(target)
+            const inferred = source.scheme !== 'untitled' && /\.scad$/i.test(source.path) ? source.with({ path: source.path.replace(/\.scad$/i, '.json'), query: '', fragment: '' }) : undefined
+            const uri = presets.uri ?? inferred ?? (await vscode.window.showSaveDialog({ saveLabel: 'Create preset file', filters: { 'OpenSCAD parameter files': ['json'] } }))
             if (!uri || !current()) return
             // Re-read before writing so unrelated presets and file metadata survive external edits.
             const { file } = await this.read(uri)
             if (!current()) return
+            const creating = action === 'new' || (action === 'save' && !name)
+            if (!name) {
+                name = 'Current'
+                let suffix = 2
+                while (Object.hasOwn(file.parameterSets, name)) name = `Current ${suffix++}`
+            }
             if (action === 'new' && Object.hasOwn(file.parameterSets, name)) throw new Error('A preset with this name already exists')
-            if (action !== 'new' && !Object.hasOwn(file.parameterSets, name)) throw new Error('Preset no longer exists')
+            if (!creating && !Object.hasOwn(file.parameterSets, name)) throw new Error('Preset no longer exists')
             if (action === 'delete') delete file.parameterSets[name]
             else file.parameterSets = { ...file.parameterSets, [name]: { ...file.parameterSets[name], ...snapshot } }
             this.reloadGeneration++
@@ -163,7 +172,10 @@ export class CustomizerPresets implements vscode.Disposable {
     }
 
     private modified(presets: Presets): boolean {
-        return !!presets.baseline && this.service.parameters.some((parameter) => presets.baseline![parameter.name] !== encodePresetValue(this.service.value(parameter)))
+        return this.service.parameters.some((parameter) => {
+            const baseline = presets.active && presets.baseline ? presets.baseline[parameter.name] : encodePresetValue(parameter.defaultValue)
+            return baseline !== encodePresetValue(this.service.value(parameter))
+        })
     }
 
     private apply(target: string, presets: Presets, name: string) {

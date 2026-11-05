@@ -15,7 +15,7 @@ suite('SCAD AI IDE integration', () => {
         return (await extension.activate()) as Awaited<ReturnType<typeof activate>>
     }
 
-    test('registers native Quick Access and an HTML Customizer with five plain navigation items', async () => {
+    test('registers native Quick Access and an HTML Customizer with four plain navigation items', async () => {
         await api()
         const manifest = vscode.extensions.all.find((item) => item.packageJSON.name === 'scad-ai-ide')!.packageJSON
         assert.deepEqual(
@@ -28,11 +28,11 @@ suite('SCAD AI IDE integration', () => {
         const items = tree.getChildren()
         assert.deepEqual(
             items.map((item) => item.label),
-            ['AI', 'Bricks', 'Libraries', 'Runtime', 'More'],
+            ['AI', 'Libraries', 'Runtime', 'More'],
         )
         assert.deepEqual(
             items.map((item) => item.command?.command),
-            quickAccess.map((page) => page.command),
+            quickAccess.filter((page) => page.id !== 'bricks').map((page) => page.command),
         )
         for (const item of items) {
             assert.equal(item.iconPath, undefined)

@@ -9,6 +9,7 @@
 - [Registry 布局审核](library-layout-audit.md)：29 项来源、固定 Commit、安装布局与未支持原因。
 
 - [实验性按零件着色](part-colors.md)：按需 CSG 辅助、缓存、性能预算和限制。
+- [预览模型跳转源码研究](preview-source-navigation-research.md)：拾取能力、源码映射缺口、渲染模式边界与建议方案。
 
 - [Preview Exporter 架构](preview-exporter-architecture.md)：原生导出器、协议、Goldfeather 和边界。
 - [Goldfeather 验收](preview-goldfeather-validation.md)：当前快速预览的测试和性能记录。

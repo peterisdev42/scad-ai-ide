@@ -1,3 +1,4 @@
+import { highlightJson } from './JsonHighlighter'
 import * as vscode from 'vscode'
 import { lstat, readdir, readFile, realpath, unlink } from 'node:fs/promises'
 import * as path from 'node:path'
@@ -20,6 +21,7 @@ export class DeveloperCacheController {
     constructor(
         private readonly context: vscode.ExtensionContext,
         private readonly invalidate: (key: string) => Promise<void>,
+        private readonly revealDirectory: (uri: vscode.Uri) => PromiseLike<unknown> = (uri) => vscode.commands.executeCommand('revealFileInOS', uri),
     ) {
         this.enabled = context.extensionMode === vscode.ExtensionMode.Development
     }
@@ -102,20 +104,46 @@ export class DeveloperCacheController {
 
     async getState() {
         this.assertEnabled()
-        return { entries: (await this.entries()).map(({ clear: _clear, ...entry }) => entry) }
+        const configuration = vscode.workspace.getConfiguration('workbench')
+        const modernUI = configuration.get<boolean>('experimental.modernUI', false)
+        const scrollSettings = {
+            modernUI, size: modernUI ? 8 : 10,
+            mouseWheelScrollSensitivity: configuration.get<number>('list.mouseWheelScrollSensitivity', 1),
+            fastScrollSensitivity: configuration.get<number>('list.fastScrollSensitivity', 5),
+            smoothScrolling: configuration.get<boolean>('list.smoothScrolling', false),
+        }
+        return { scrollSettings, globalDirectory: this.context.globalStorageUri.fsPath, entries: (await this.entries()).map(({ clear: _clear, ...entry }) => entry) }
     }
 
     async handle(raw: unknown) {
         this.assertEnabled()
         if (!raw || typeof raw !== 'object') throw new Error('Invalid cache action.')
         const value = raw as Record<string, unknown>
+        if (value.action === 'development.openGlobalFolder') {
+            await vscode.workspace.fs.createDirectory(this.context.globalStorageUri)
+            await this.revealDirectory(this.context.globalStorageUri)
+            return this.getState()
+        }
+        if (value.action === 'development.inspectCache') {
+            const entry = (await this.entries()).find((entry) => entry.id === value.id)
+            if (!entry) throw new Error('Cache field no longer exists. Refresh the list.')
+            return { cacheValue: { id: entry.id, tokens: await highlightJson(entry.value, this.context.extensionUri) } }
+        }
+        if (value.action === 'development.openCacheEditor') {
+            const entry = (await this.entries()).find((entry) => entry.id === value.id)
+            if (!entry) throw new Error('Cache field no longer exists. Refresh the list.')
+            const document = await vscode.workspace.openTextDocument({ language: 'json', content: JSON.stringify(entry.value, null, 2) ?? 'null' })
+            await vscode.window.showTextDocument(document, { preview: false })
+            return this.getState()
+        }
         if (value.action === 'development.refreshCaches') return this.getState()
-        if (!['development.clearCache', 'development.clearAllCaches'].includes(String(value.action))) throw new Error('Unknown cache action.')
+        if (!['development.clearCache', 'development.clearAllCaches', 'development.clearScopeCaches'].includes(String(value.action))) throw new Error('Unknown cache action.')
         if (this.busy) throw new Error('A cache operation is already running.')
         this.busy = true
         try {
             const entries = await this.entries()
-            const selected = value.action === 'development.clearAllCaches' ? entries : entries.filter((entry) => entry.id === value.id)
+            if (value.action === 'development.clearScopeCaches' && !['globalState', 'workspaceState', 'Memory', 'Disk'].includes(String(value.scope))) throw new Error('Unknown cache scope.')
+            const selected = value.action === 'development.clearAllCaches' ? entries : entries.filter((entry) => value.action === 'development.clearScopeCaches' ? entry.scope === value.scope : entry.id === value.id)
             if (!selected.length && value.action !== 'development.clearAllCaches') throw new Error('Cache field no longer exists. Refresh the list.')
             // Finish every requested field even if one owner fails, then report failures.
             const failures: string[] = []

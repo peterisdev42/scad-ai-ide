@@ -78,10 +78,14 @@ export class PanelManager implements vscode.Disposable {
         }
         const page = quickAccess.find((page) => page.id === id)!
         const root = vscode.Uri.joinPath(this.extensionUri, 'media', 'panels')
-        const panel = vscode.window.createWebviewPanel(`scad-ai.${id}`, page.title, vscode.ViewColumn.Active, { enableScripts: true, retainContextWhenHidden: true, localResourceRoots: [root] })
+        const panel = vscode.window.createWebviewPanel(`scad-ai.${id}`, page.title, vscode.ViewColumn.Active, { enableScripts: true, retainContextWhenHidden: true, localResourceRoots: [root, vscode.Uri.joinPath(this.extensionUri, 'dist')] })
         this.panels.set(id, panel)
         let visible = panel.visible
         const listeners = [
+            vscode.window.onDidChangeActiveColorTheme(() => { if (id === 'more') void panel.webview.postMessage({ type: 'cacheThemeChanged' }) }),
+            vscode.workspace.onDidChangeConfiguration((event) => {
+                if (id === 'more' && (event.affectsConfiguration('editor.tokenColorCustomizations') || event.affectsConfiguration('workbench.colorCustomizations') || event.affectsConfiguration('workbench.list') || event.affectsConfiguration('workbench.experimental.modernUI'))) void panel.webview.postMessage({ type: 'cacheThemeChanged' })
+            }),
             panel.onDidChangeViewState(() => {
                 const becameVisible = panel.visible && !visible
                 visible = panel.visible
@@ -108,7 +112,8 @@ export class PanelManager implements vscode.Disposable {
                         if (typeof action === 'string' && action.startsWith('development.')) {
                             if (!this.development?.enabled) throw new Error('Cache tools are only available in extension development mode.')
                             try {
-                                await this.development.handle(value)
+                                const result = await this.development.handle(value)
+                                if ('cacheValue' in result) await panel.webview.postMessage({ type: 'cacheValue', ...result.cacheValue, requestId: (value as { requestId?: unknown }).requestId })
                             } finally {
                                 await panel.webview.postMessage({ type: 'developmentState', state: await this.development.getState() })
                             }
@@ -172,6 +177,8 @@ export class PanelManager implements vscode.Disposable {
                 nonce: randomBytes(16).toString('hex'),
                 title: page.title,
                 page: id,
+                scrollbarScript: panel.webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, 'dist', 'panel-scrollbar.js')).toString(),
+                scrollbarStyle: panel.webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, 'dist', 'panel-scrollbar.css')).toString(),
                 style: panel.webview.asWebviewUri(vscode.Uri.joinPath(root, 'main.css')).toString(),
                 librariesScript: panel.webview.asWebviewUri(vscode.Uri.joinPath(root, 'libraries.js')).toString(),
                 script: panel.webview.asWebviewUri(vscode.Uri.joinPath(root, 'main.js')).toString(),
