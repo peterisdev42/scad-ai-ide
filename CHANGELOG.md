@@ -2,6 +2,15 @@
 
 ## 0.0.1
 
+- 修正 Customizer 重复赋值的过度告警：只检查最终生效声明，忽略已被覆盖的旧范围/默认值；合法覆盖不再被判为错误。控件因最终表达式失效时，仅在实际覆盖声明上显示可定位的信息提示。
+
+- 固化 Runtime、Customizer、Libraries、More 四个管理面板的 GUI/Agent 业务能力对等要求，生成并校验逐动作 Agent 参数契约。
+- 补齐 GUI 发起任务的 Agent 取消、在线 Runtime 强制刷新语义与已安装标记、安装/删除后置校验、库任务进度与安装能力元数据，以及 GitHub/开发缓存诊断信息。
+
+- 增加 Customizer 源码分析、结构化 plan/commit 与目标验证工具，使用独立 URI/version/SHA-256 并发保护；保留未保存 buffer、Undo 与现有 Override/Preset 工作流。
+- 共享 Parser 扫描器提供源码位置与有界诊断，接入 Problems 和安全 Quick Fix；可通过 `scad-ai-ide.customizer.sourceDiagnostics` 关闭。
+- 增加 Customizer Authoring Instructions、Skill、语法参考与精选 snippets，并同步生成 40 个 Agent Tools 的清单。
+
 - 集成 OpenSCAD Preview 的 Lit/Three.js 交互式视口、测量、剖切、场景保存、参数预设、STL/3MF 导出及切片软件发送。
 - 统一预览的 Runtime 选择、Customizer 解析与覆盖值；增加预览资源打包、CSP、取消/临时文件清理和视口/扩展宿主回归。
 

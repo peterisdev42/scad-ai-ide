@@ -9,3 +9,5 @@ description: Inspect and change OpenSCAD model Customizer parameters or manage n
 5. `scad_ai_ide_customizer_importPresets` / `scad_ai_ide_customizer_exportPresets` take explicit workspace file URIs, not file-picker instructions. Preserve JSON format and other presets/metadata. Import selects a preset file without applying a named set; apply explicitly afterward. External file changes invalidate revisions.
 
 Examples: “列出当前模型 Customizer 参数，把尺寸改为合法值并验证。” “Save these overrides as a named preset, without editing the SCAD source.”
+
+For creating, grouping, hiding, migrating or repairing source declarations, use [openscad-customizer-authoring](../openscad-customizer-authoring/SKILL.md) and its sourceAnalyze/sourceApply/sourceValidate workflow. Runtime Overrides and presets never create or edit Customizer source declarations.

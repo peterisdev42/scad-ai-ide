@@ -1,3 +1,4 @@
+import { CustomizerSourceDomainService } from './features/sidebar/CustomizerSourceDomainService'
 import { createAiPanelState } from './features/agents/CapabilityPresentation'
 import { registerAgentTools } from './features/agents/registerAgentTools'
 import { DeveloperCacheController } from './features/development/DeveloperCacheController'
@@ -35,7 +36,9 @@ export async function activate(context: vscode.ExtensionContext) {
         if (key.startsWith('runtime.catalog.') || /runtime-catalog-.*\.json$/.test(key)) await runtime.clearCatalogCache()
         if (key.startsWith('libraries.registry.') || key.replaceAll('\\', '/').startsWith('libraries/v1/cache/')) await libraries.clearRegistryCache()
     })
-    const capabilities = registerAgentTools(context, { runtime: runtime.service, libraries, customizer: customizerView.domain, github, development })
+    const customizerSource = new CustomizerSourceDomainService()
+    context.subscriptions.push(customizerSource)
+    const capabilities = registerAgentTools(context, { runtime: runtime.service, libraries, customizer: customizerView.domain, customizerSource, github, development })
     const panels = new PanelManager(context.extensionUri, runtime, github, libraries, development, () => createAiPanelState(capabilities.registry))
     context.subscriptions.push(
         customizerView,
@@ -52,7 +55,7 @@ export async function activate(context: vscode.ExtensionContext) {
     // Markdown's plugin hook is synchronous. Make its grammar ready before VS Code
     // obtains the hook, instead of relying on a refresh racing the first webview load.
     await markdownReady
-    return { ...markdown, preview, language, libraries, capabilities, getActiveRuntime: runtime.getActiveRuntime, refresh: runtime.refresh, customizer, panels, getRenderArguments: () => customizer.getArguments() }
+    return { ...markdown, preview, language, libraries, capabilities, customizerSource, getActiveRuntime: runtime.getActiveRuntime, refresh: runtime.refresh, customizer, panels, getRenderArguments: () => customizer.getArguments() }
 }
 
 export async function deactivate() {

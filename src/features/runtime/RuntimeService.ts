@@ -390,6 +390,13 @@ export function createRuntimeService(context: vscode.ExtensionContext, manager: 
                 return { ...runtime, channel: build?.channel ?? runtime.channel ?? classifyRuntimeRelease({ tag_name: runtime.tag ?? runtime.version }) }
             }),
             activeId: manager.active?.id,
+            discovery: {
+                status: !vscode.workspace.isTrusted ? 'restricted' : busy ? 'discovering' : !discovered ? 'notStarted' : message ? 'error' : 'ready',
+                scope: 'extensionHost',
+                configuredError: manager.result.configuredError ?? null,
+                diagnostics: manager.result.diagnostics.slice(0, 50).map((entry) => entry.slice(0, 1000)),
+                omittedDiagnostics: Math.max(0, manager.result.diagnostics.length - 50),
+            },
             busy,
             refreshingSilently,
             selectingId,
@@ -413,7 +420,11 @@ export function createRuntimeService(context: vscode.ExtensionContext, manager: 
         deleteRuntime,
         installArchivePath,
         addExecutable,
-        cancel: () => installationAbort?.abort(),
+        cancel: () => {
+            if (!installationAbort) return false
+            installationAbort.abort()
+            return true
+        },
         installBuild: async (id: number, signal?: AbortSignal) => {
             const build = builds.find((build) => build.id === id)
             if (!build || !system) {

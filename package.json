@@ -271,6 +271,11 @@
                     "default": "",
                     "scope": "machine",
                     "description": "Independent bin/openscad-preview-exporter wrapper (macOS ARM64, openscad-2026.11-RC0, Schema v1). Empty discovers the managed installation and PATH. Full Render uses the separately selected OpenSCAD CLI."
+                },
+                "scad-ai-ide.customizer.sourceDiagnostics": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Report static Customizer source diagnostics and offer safe Quick Fixes. Files larger than 1 MiB are skipped."
                 }
             }
         },
@@ -514,7 +519,7 @@
             {
                 "name": "scad_ai_ide_operation_cancel",
                 "displayName": "Cancel OpenSCAD operation",
-                "modelDescription": "Request cancellation of a running operation using its exact ID. Returns its current state; non-cancellable critical sections finish before terminal status.",
+                "modelDescription": "Cancel one Agent operation by exact id, OR request cancellation of the current Runtime installation / Library task by domain=runtime|libraries, including tasks started in the GUI. Choose exactly one. Returns cancellationRequested, not proof the task stopped: re-read domain state or operation status; critical transactions may finish.",
                 "canBeReferencedInPrompt": true,
                 "toolReferenceName": "scad_operation_cancel",
                 "inputSchema": {
@@ -525,17 +530,49 @@
                             "type": "string",
                             "minLength": 1,
                             "maxLength": 512
+                        },
+                        "domain": {
+                            "type": "string",
+                            "enum": [
+                                "runtime",
+                                "libraries"
+                            ]
                         }
                     },
-                    "required": [
-                        "id"
+                    "oneOf": [
+                        {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 512
+                                }
+                            },
+                            "required": [
+                                "id"
+                            ]
+                        },
+                        {
+                            "properties": {
+                                "domain": {
+                                    "type": "string",
+                                    "enum": [
+                                        "runtime",
+                                        "libraries"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "domain"
+                            ]
+                        }
                     ]
                 }
             },
             {
                 "name": "scad_ai_ide_runtime_state",
-                "displayName": "Read OpenSCAD runtimes",
-                "modelDescription": "Read actual active/installed runtimes, host paths, discovery state, revision and errors without opening a panel. Use before selection or removal.",
+                "displayName": "Read OpenSCAD Runtime: current CLI and installed versions",
+                "modelDescription": "Read the SAME local runtime inventory as Runtime Panel, without opening it. state.activeRuntime is the currently selected CLI with full version, command.executable, argsPrefix, source and release metadata, or null if none is selected; it is independent of pagination. state.runtimes.items lists detected installed CLI versions/paths/sources; follow hasMore/nextOffset to enumerate all. discovery reports ready/restricted/error and configured-path failures. This inventory is on the workspace extension host, not necessarily the client machine, and is not an exhaustive filesystem scan. Use runtime_refresh when stale; discovery/probing requires Workspace Trust. runtime_builds lists downloadable releases, NOT installed versions.",
                 "canBeReferencedInPrompt": true,
                 "toolReferenceName": "scad_runtime_state",
                 "inputSchema": {
@@ -558,7 +595,7 @@
             {
                 "name": "scad_ai_ide_runtime_builds",
                 "displayName": "List OpenSCAD builds",
-                "modelDescription": "Load available release builds for the extension host. Optional refresh/channel; bounded exact build IDs, versions and cache/error status. Network read only.",
+                "modelDescription": "Read all downloadable OpenSCAD CLI releases for the extension host, including exact build IDs, versions, channels and installed flags. Set refresh=true to force the SAME online refresh as the GUI Available Refresh button, even when cached. Follow builds.hasMore/nextOffset; optional channel filter. Catalog errors fail explicitly; installed versions/current CLI are available from runtime_state. Network read only. recommendedBuild returns the full recommended release independently of filtering/pagination, matching the GUI recommendation card.",
                 "canBeReferencedInPrompt": true,
                 "toolReferenceName": "scad_runtime_builds",
                 "inputSchema": {
@@ -572,7 +609,10 @@
                             "type": "string",
                             "enum": [
                                 "Stable",
-                                "Snapshot"
+                                "RC",
+                                "Test",
+                                "Snapshot",
+                                "Unknown"
                             ]
                         },
                         "offset": {
@@ -591,13 +631,21 @@
             {
                 "name": "scad_ai_ide_runtime_refresh",
                 "displayName": "Discover OpenSCAD runtimes",
-                "modelDescription": "Discover runtimes on the extension host and return actual post-refresh state. Requires workspace trust; does not install.",
+                "modelDescription": "Rescan locally installed CLI runtimes (default mode=rescan), or coalesce a silent Installed-tab refresh with mode=installed. Requires Workspace Trust because discovery probes executables. Does not refresh the ONLINE catalog: use runtime_builds with refresh=true for the GUI Available Refresh action. Returns selected CLI, installed inventory and discovery status.",
                 "canBeReferencedInPrompt": true,
                 "toolReferenceName": "scad_runtime_refresh",
                 "inputSchema": {
                     "type": "object",
                     "additionalProperties": false,
-                    "properties": {},
+                    "properties": {
+                        "mode": {
+                            "type": "string",
+                            "enum": [
+                                "rescan",
+                                "installed"
+                            ]
+                        }
+                    },
                     "required": []
                 }
             },
@@ -1009,7 +1057,7 @@
             {
                 "name": "scad_ai_ide_libraries_search",
                 "displayName": "Search OpenSCAD libraries",
-                "modelDescription": "Search real registry metadata for IDs, exact versions and supported layouts. Bounded query, pagination and optional detail ID. Returns freshness/errors; no install.",
+                "modelDescription": "Search real registry metadata for IDs, exact versions and supported layouts. Bounded query, pagination and optional detail ID. Returns freshness/errors; no install. Includes the same layout/installability errors, version labels and cached flags shown in GUI registry rows.",
                 "canBeReferencedInPrompt": true,
                 "toolReferenceName": "scad_libraries_search",
                 "inputSchema": {
@@ -1054,7 +1102,7 @@
             {
                 "name": "scad_ai_ide_libraries_projectState",
                 "displayName": "Read project dependencies",
-                "modelDescription": "List workspace projects, or dependencies for one exact project path returned by this tool. Reports manifest/lock and mount state; no writes.",
+                "modelDescription": "List workspace projects, or dependencies for one exact project path returned by this tool. Reports manifest/lock and mount state; no writes. Includes shared busy/cancellable/message/error activity for tasks started in GUI or Agent; use operation_cancel with domain=libraries to request cancellation, then read state until busy clears.",
                 "canBeReferencedInPrompt": true,
                 "toolReferenceName": "scad_libraries_projectState",
                 "inputSchema": {
@@ -1082,7 +1130,7 @@
             {
                 "name": "scad_ai_ide_libraries_globalState",
                 "displayName": "Read global library cache",
-                "modelDescription": "Inspect bounded global cache metadata, integrity issues and references. Exact cache keys identify verify/repair/cleanup targets. No raw file inventories.",
+                "modelDescription": "Inspect bounded global cache metadata, integrity issues and references. Exact cache keys identify verify/repair/cleanup targets. No raw file inventories. Includes shared busy/cancellable/message/error activity for tasks started in GUI or Agent; use operation_cancel with domain=libraries to request cancellation, then read state until busy clears.",
                 "canBeReferencedInPrompt": true,
                 "toolReferenceName": "scad_libraries_globalState",
                 "inputSchema": {
@@ -1312,7 +1360,7 @@
             {
                 "name": "scad_ai_ide_development_listCaches",
                 "displayName": "List disposable cache metadata",
-                "modelDescription": "Development mode only. Returns bounded cache IDs/names/scopes without values. Installed runtimes, exporter and library sources/reference indices are excluded.",
+                "modelDescription": "Development mode only. Returns bounded cache IDs/names/scopes without values. Installed runtimes, exporter and library sources/reference indices are excluded. Returns the extension-owned storage directory and pagination metadata; no cache values.",
                 "canBeReferencedInPrompt": true,
                 "toolReferenceName": "scad_development_listCaches",
                 "inputSchema": {
@@ -1383,11 +1431,636 @@
                     },
                     "required": []
                 }
+            },
+            {
+                "name": "scad_ai_ide_customizer_sourceAnalyze",
+                "displayName": "Analyze Customizer source",
+                "modelDescription": "Analyze Customizer declarations in an explicit workspace .scad URI, including unsaved editor text. Returns source version/hash, actual widgets, ranges, candidates and bounded diagnostics; complete=false is not success. Unlike customizer_state this reads source, not Overrides. Analyze before sourceApply; correct invalid inputs or unsupported forms rather than guessing.",
+                "canBeReferencedInPrompt": true,
+                "toolReferenceName": "scad_customizer_sourceAnalyze",
+                "inputSchema": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "uri": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2048
+                        },
+                        "includeCandidates": {
+                            "type": "boolean"
+                        },
+                        "maxDiagnostics": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 100
+                        }
+                    },
+                    "required": [
+                        "uri"
+                    ]
+                }
+            },
+            {
+                "name": "scad_ai_ide_customizer_sourceApply",
+                "displayName": "Plan or commit Customizer source edits",
+                "modelDescription": "Author Customizer SOURCE, not runtime Overrides: plan bounded literal/annotation/group edits with sourceAnalyze version/hash, inspect preview, then commit the single-use planId within 120 seconds. Requires Workspace Trust and commit confirmation; never accepts model approval. Writes only the buffer, never saves. On STALE_SOURCE reanalyze and replan; on NEEDS_MANUAL_REVIEW use ordinary editor changes and sourceValidate. Check applied AND semanticPass/postValidation; never claim success after failure.",
+                "canBeReferencedInPrompt": true,
+                "toolReferenceName": "scad_customizer_sourceApply",
+                "inputSchema": {
+                    "oneOf": [
+                        {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "mode": {
+                                    "const": "plan"
+                                },
+                                "uri": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 2048
+                                },
+                                "identity": {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "version": {
+                                            "type": "integer",
+                                            "minimum": 1
+                                        },
+                                        "sha256": {
+                                            "type": "string",
+                                            "pattern": "^[a-f0-9]{64}$"
+                                        }
+                                    },
+                                    "required": [
+                                        "version",
+                                        "sha256"
+                                    ]
+                                },
+                                "edits": {
+                                    "type": "array",
+                                    "minItems": 1,
+                                    "maxItems": 50,
+                                    "items": {
+                                        "oneOf": [
+                                            {
+                                                "type": "object",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "kind": {
+                                                        "const": "annotateExisting"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "minLength": 1,
+                                                        "maxLength": 128
+                                                    },
+                                                    "widget": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "slider",
+                                                            "spinbox",
+                                                            "dropdown",
+                                                            "checkbox",
+                                                            "textbox",
+                                                            "vector"
+                                                        ]
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "maxLength": 1024
+                                                    },
+                                                    "group": {
+                                                        "type": "string",
+                                                        "minLength": 1,
+                                                        "maxLength": 128
+                                                    },
+                                                    "range": {
+                                                        "type": "object",
+                                                        "additionalProperties": false,
+                                                        "properties": {
+                                                            "min": {
+                                                                "type": "number"
+                                                            },
+                                                            "max": {
+                                                                "type": "number"
+                                                            },
+                                                            "step": {
+                                                                "type": "number",
+                                                                "exclusiveMinimum": 0
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "min",
+                                                            "max"
+                                                        ]
+                                                    },
+                                                    "choices": {
+                                                        "type": "array",
+                                                        "minItems": 1,
+                                                        "maxItems": 100,
+                                                        "items": {
+                                                            "type": "object",
+                                                            "additionalProperties": false,
+                                                            "properties": {
+                                                                "value": {
+                                                                    "oneOf": [
+                                                                        {
+                                                                            "type": "number"
+                                                                        },
+                                                                        {
+                                                                            "type": "string",
+                                                                            "maxLength": 256
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "label": {
+                                                                    "type": "string",
+                                                                    "minLength": 1,
+                                                                    "maxLength": 256
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "value"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "step": {
+                                                        "type": "number",
+                                                        "exclusiveMinimum": 0
+                                                    },
+                                                    "maxLength": {
+                                                        "type": "integer",
+                                                        "minimum": 0,
+                                                        "maximum": 100000
+                                                    }
+                                                },
+                                                "required": [
+                                                    "kind",
+                                                    "name",
+                                                    "widget"
+                                                ]
+                                            },
+                                            {
+                                                "type": "object",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "kind": {
+                                                        "const": "insertLiteralParameter"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "minLength": 1,
+                                                        "maxLength": 128
+                                                    },
+                                                    "widget": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "slider",
+                                                            "spinbox",
+                                                            "dropdown",
+                                                            "checkbox",
+                                                            "textbox",
+                                                            "vector"
+                                                        ]
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "maxLength": 1024
+                                                    },
+                                                    "group": {
+                                                        "type": "string",
+                                                        "minLength": 1,
+                                                        "maxLength": 128
+                                                    },
+                                                    "range": {
+                                                        "type": "object",
+                                                        "additionalProperties": false,
+                                                        "properties": {
+                                                            "min": {
+                                                                "type": "number"
+                                                            },
+                                                            "max": {
+                                                                "type": "number"
+                                                            },
+                                                            "step": {
+                                                                "type": "number",
+                                                                "exclusiveMinimum": 0
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "min",
+                                                            "max"
+                                                        ]
+                                                    },
+                                                    "choices": {
+                                                        "type": "array",
+                                                        "minItems": 1,
+                                                        "maxItems": 100,
+                                                        "items": {
+                                                            "type": "object",
+                                                            "additionalProperties": false,
+                                                            "properties": {
+                                                                "value": {
+                                                                    "oneOf": [
+                                                                        {
+                                                                            "type": "number"
+                                                                        },
+                                                                        {
+                                                                            "type": "string",
+                                                                            "maxLength": 256
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "label": {
+                                                                    "type": "string",
+                                                                    "minLength": 1,
+                                                                    "maxLength": 256
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "value"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "step": {
+                                                        "type": "number",
+                                                        "exclusiveMinimum": 0
+                                                    },
+                                                    "maxLength": {
+                                                        "type": "integer",
+                                                        "minimum": 0,
+                                                        "maximum": 100000
+                                                    },
+                                                    "defaultValue": {
+                                                        "oneOf": [
+                                                            {
+                                                                "type": "number"
+                                                            },
+                                                            {
+                                                                "type": "string",
+                                                                "maxLength": 4096
+                                                            },
+                                                            {
+                                                                "type": "boolean"
+                                                            },
+                                                            {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "number"
+                                                                },
+                                                                "minItems": 1,
+                                                                "maxItems": 4
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "kind",
+                                                    "name",
+                                                    "widget",
+                                                    "defaultValue"
+                                                ]
+                                            },
+                                            {
+                                                "type": "object",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "kind": {
+                                                        "const": "changeWidget"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "minLength": 1,
+                                                        "maxLength": 128
+                                                    },
+                                                    "widget": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "slider",
+                                                            "spinbox",
+                                                            "dropdown",
+                                                            "checkbox",
+                                                            "textbox",
+                                                            "vector"
+                                                        ]
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "maxLength": 1024
+                                                    },
+                                                    "group": {
+                                                        "type": "string",
+                                                        "minLength": 1,
+                                                        "maxLength": 128
+                                                    },
+                                                    "range": {
+                                                        "type": "object",
+                                                        "additionalProperties": false,
+                                                        "properties": {
+                                                            "min": {
+                                                                "type": "number"
+                                                            },
+                                                            "max": {
+                                                                "type": "number"
+                                                            },
+                                                            "step": {
+                                                                "type": "number",
+                                                                "exclusiveMinimum": 0
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "min",
+                                                            "max"
+                                                        ]
+                                                    },
+                                                    "choices": {
+                                                        "type": "array",
+                                                        "minItems": 1,
+                                                        "maxItems": 100,
+                                                        "items": {
+                                                            "type": "object",
+                                                            "additionalProperties": false,
+                                                            "properties": {
+                                                                "value": {
+                                                                    "oneOf": [
+                                                                        {
+                                                                            "type": "number"
+                                                                        },
+                                                                        {
+                                                                            "type": "string",
+                                                                            "maxLength": 256
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "label": {
+                                                                    "type": "string",
+                                                                    "minLength": 1,
+                                                                    "maxLength": 256
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "value"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "step": {
+                                                        "type": "number",
+                                                        "exclusiveMinimum": 0
+                                                    },
+                                                    "maxLength": {
+                                                        "type": "integer",
+                                                        "minimum": 0,
+                                                        "maximum": 100000
+                                                    }
+                                                },
+                                                "required": [
+                                                    "kind",
+                                                    "name",
+                                                    "widget"
+                                                ]
+                                            },
+                                            {
+                                                "type": "object",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "kind": {
+                                                        "const": "moveGroup"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "minLength": 1,
+                                                        "maxLength": 128
+                                                    },
+                                                    "group": {
+                                                        "type": "string",
+                                                        "minLength": 1,
+                                                        "maxLength": 128
+                                                    }
+                                                },
+                                                "required": [
+                                                    "kind",
+                                                    "name",
+                                                    "group"
+                                                ]
+                                            },
+                                            {
+                                                "type": "object",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "kind": {
+                                                        "const": "hideParameter"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "minLength": 1,
+                                                        "maxLength": 128
+                                                    }
+                                                },
+                                                "required": [
+                                                    "kind",
+                                                    "name"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                            "required": [
+                                "mode",
+                                "uri",
+                                "identity",
+                                "edits"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "mode": {
+                                    "const": "commit"
+                                },
+                                "planId": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 128
+                                }
+                            },
+                            "required": [
+                                "mode",
+                                "planId"
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "scad_ai_ide_customizer_sourceValidate",
+                "displayName": "Validate Customizer source",
+                "modelDescription": "Read and validate current workspace .scad buffer against optional explicit widget/type/group/default/range/choice expectations. Unlike customizer_state, validates source declarations, not Overrides. Without expectations proves only static consistency. complete=false or semanticPass=false is failure. Runtime and GUI checks are separately notRequested; use existing Preview when requested. Correct diagnostics and validate again.",
+                "canBeReferencedInPrompt": true,
+                "toolReferenceName": "scad_customizer_sourceValidate",
+                "inputSchema": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "uri": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2048
+                        },
+                        "expectations": {
+                            "type": "array",
+                            "maxItems": 100,
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 128
+                                    },
+                                    "widget": {
+                                        "type": "string",
+                                        "enum": [
+                                            "slider",
+                                            "spinbox",
+                                            "dropdown",
+                                            "checkbox",
+                                            "textbox",
+                                            "vector"
+                                        ]
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "maxLength": 1024
+                                    },
+                                    "group": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 128
+                                    },
+                                    "range": {
+                                        "type": "object",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "min": {
+                                                "type": "number"
+                                            },
+                                            "max": {
+                                                "type": "number"
+                                            },
+                                            "step": {
+                                                "type": "number",
+                                                "exclusiveMinimum": 0
+                                            }
+                                        },
+                                        "required": [
+                                            "min",
+                                            "max"
+                                        ]
+                                    },
+                                    "choices": {
+                                        "type": "array",
+                                        "minItems": 1,
+                                        "maxItems": 100,
+                                        "items": {
+                                            "type": "object",
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "value": {
+                                                    "oneOf": [
+                                                        {
+                                                            "type": "number"
+                                                        },
+                                                        {
+                                                            "type": "string",
+                                                            "maxLength": 256
+                                                        }
+                                                    ]
+                                                },
+                                                "label": {
+                                                    "type": "string",
+                                                    "minLength": 1,
+                                                    "maxLength": 256
+                                                }
+                                            },
+                                            "required": [
+                                                "value"
+                                            ]
+                                        }
+                                    },
+                                    "step": {
+                                        "type": "number",
+                                        "exclusiveMinimum": 0
+                                    },
+                                    "maxLength": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 100000
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "number",
+                                            "string",
+                                            "boolean",
+                                            "vector"
+                                        ]
+                                    },
+                                    "defaultValue": {
+                                        "oneOf": [
+                                            {
+                                                "type": "number"
+                                            },
+                                            {
+                                                "type": "string",
+                                                "maxLength": 4096
+                                            },
+                                            {
+                                                "type": "boolean"
+                                            },
+                                            {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "number"
+                                                },
+                                                "minItems": 1,
+                                                "maxItems": 4
+                                            }
+                                        ]
+                                    },
+                                    "requireDescription": {
+                                        "type": "boolean"
+                                    },
+                                    "visible": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "required": [
+                                    "name"
+                                ]
+                            }
+                        },
+                        "includeWarnings": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "uri"
+                    ]
+                }
             }
         ],
         "chatInstructions": [
             {
                 "path": "./instructions/openscad.instructions.md"
+            },
+            {
+                "path": "./instructions/openscad-customizer.instructions.md"
             }
         ],
         "chatSkills": [
@@ -1399,6 +2072,9 @@
             },
             {
                 "path": "./skills/openscad-customizer/SKILL.md"
+            },
+            {
+                "path": "./skills/openscad-customizer-authoring/SKILL.md"
             },
             {
                 "path": "./skills/scad-ai-ide-diagnostics/SKILL.md"
@@ -1416,7 +2092,7 @@
         "watch-tests": "tsc -p . -w --outDir out",
         "check-types": "tsc --noEmit && tsc -p tsconfig.webview.json",
         "lint": "eslint src",
-        "test": "npm run compile-tests && node --test out/test/capabilities.test.js out/test/capabilityServices.test.js out/test/notifications.test.js out/test/runtime.test.js out/test/github.test.js out/test/installation.test.js out/test/customizer.test.js out/test/language.test.js out/test/markdown.test.js && npm run test:libraries && npm run test:preview",
+        "test": "npm run compile-tests && node --test out/test/capabilities.test.js out/test/capabilityServices.test.js out/test/notifications.test.js out/test/runtime.test.js out/test/github.test.js out/test/installation.test.js out/test/customizer.test.js out/test/customizerSource*.test.js out/test/language.test.js out/test/markdown.test.js && npm run test:libraries && npm run test:preview",
         "test:customizer": "npm run compile-tests && node esbuild.js && node --test scripts/customizer-scrollbar.test.mjs",
         "test:markdown": "npm run compile && npm run compile-tests && node --test out/test/markdown.test.js && node --test scripts/markdown-preview.test.mjs",
         "test:markdown-host": "npm run compile && node --test scripts/markdown-webview.test.mjs",
@@ -1445,7 +2121,8 @@
         "test:agents:installed": "node scripts/test-agent-installed.mjs",
         "test:agents:ui": "node --test scripts/ai-panel.test.mjs",
         "prepare:ollama-dev": "node scripts/prepare-ollama-dev.mjs",
-        "test:ollama-dev": "node scripts/test-ollama-dev.mjs"
+        "test:ollama-dev": "node scripts/test-ollama-dev.mjs",
+        "test:customizer:source": "npm run compile-tests && node --test out/test/customizerSource*.test.js"
     },
     "devDependencies": {
         "@types/markdown-it": "^14.2.0",

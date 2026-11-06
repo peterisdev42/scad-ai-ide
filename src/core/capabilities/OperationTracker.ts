@@ -24,7 +24,7 @@ export class OperationTracker {
             if (!op) throw new CapabilityError('NOT_FOUND', 'Operation expired or does not exist.')
             return { ...op.state }
         }
-        return { total: this.operations.size, operations: [...this.operations.values()].reverse().slice(offset, offset + limit).map(({ state }) => ({ ...state })) }
+        return { total: this.operations.size, offset, hasMore: offset + limit < this.operations.size, nextOffset: offset + limit < this.operations.size ? offset + limit : null, operations: [...this.operations.values()].reverse().slice(offset, offset + limit).map(({ state }) => ({ ...state })) }
     }
     cancel(id: string) {
         const op = this.operations.get(id)

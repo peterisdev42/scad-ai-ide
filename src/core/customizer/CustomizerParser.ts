@@ -69,7 +69,7 @@ function splitOutsideStrings(text: string, delimiter: string): string[] {
     return parts
 }
 
-function annotate(parameter: Parameter, comment: string): void {
+function annotate(parameter: Parameter, comment: string): Parameter['choices'] | undefined {
     parameter.hint = comment
     const annotation = /^\s*\[([\s\S]*)\]\s*$/.exec(comment)?.[1]
     const isNumeric = typeof parameter.defaultValue === 'number' || Array.isArray(parameter.defaultValue)
@@ -108,19 +108,50 @@ function annotate(parameter: Parameter, comment: string): void {
     })
     if (choices.length && choices.every((choice) => typeof choice.value === 'string' || typeof choice.value === 'number')) {
         parameter.choices = choices as NonNullable<Parameter['choices']>
+        const declaredChoices = [...parameter.choices]
         if (!parameter.choices.some((choice) => choice.value === parameter.defaultValue)) {
             parameter.choices.unshift({ label: String(parameter.defaultValue), value: parameter.defaultValue as string | number })
         }
+        return declaredChoices
     }
 }
 
 /** Scan source without evaluating expressions or following includes. Only standalone
  * literal assignments before the first real opening brace are customizable. */
-export function parseCustomizer(source: string): Parameter[] {
+export interface SourceSpan { start: number; end: number }
+export interface ScannedDeclaration {
+    name: string
+    group: string
+    start: number
+    end: number
+    value?: ParameterValue
+    parameter?: Parameter
+    declaredChoices?: Parameter['choices']
+    annotation?: SourceSpan
+    description?: SourceSpan
+    beforeFirstBrace: boolean
+}
+
+export function scanCustomizer(source: string) {
+    const declarations: ScannedDeclaration[] = []
+    let complete = true
+    let lineStart = 0
+    let lineEnd = source.indexOf('\n')
+    const firstContent = (start: number, end: number) => {
+        for (let i = start; i < (end < 0 ? source.length : end); i++) { if (!/\s/.test(source[i])) return i }
+        return -1
+    }
+    let firstOnLine = firstContent(lineStart, lineEnd)
+    let statementStart = -1
+    let descriptionStart = -1
+    let descriptionEnd = -1
+    let statementDescriptionSpan: SourceSpan | undefined
+    let lastDeclaration: ScannedDeclaration | undefined
     const parameters = new Map<string, Parameter>()
     let group = ''
     let descriptions: string[] = []
     let statement = ''
+    let statementHasContent = false
     let depth = 0
     let braceDepth = 0
     let beforeFirstBrace = true
@@ -129,6 +160,7 @@ export function parseCustomizer(source: string): Parameter[] {
     for (let index = 0; index < source.length; index++) {
         const char = source[index]
         if (char === '"') {
+            statementHasContent = true
             statement += char
             while (++index < source.length) {
                 statement += source[index]
@@ -138,26 +170,41 @@ export function parseCustomizer(source: string): Parameter[] {
                     break
                 }
             }
+            if (index >= source.length) complete = false
             continue
         }
         if (char === '/' && (source[index + 1] === '/' || source[index + 1] === '*')) {
             const block = source[index + 1] === '*'
             const end = source.indexOf(block ? '*/' : '\n', index + 2)
             const stop = end < 0 ? source.length : end
+            if (block && end < 0) complete = false
             const comment = source.slice(index + 2, stop).trim()
-            const lineStart = source.lastIndexOf('\n', index - 1) + 1
-            const standalone = !source.slice(lineStart, index).trim()
+            while (lineEnd >= 0 && lineEnd < index) {
+                lineStart = lineEnd + 1
+                lineEnd = source.indexOf('\n', lineStart)
+                firstOnLine = firstContent(lineStart, lineEnd)
+            }
+            const standalone = firstOnLine === index
             if (braceDepth) {
                 index = stop + (block && end >= 0 ? 1 : -1)
                 continue
             }
             const heading = block && standalone && /^(?:\[[^\]]+\]\s*)+$/.test(comment) ? [...comment.matchAll(/\[([^\]]+)\]/g)].map((match) => match[1].trim()).join('-') : undefined
-            if (heading && !statement.trim()) {
+            if (heading && !statementHasContent) {
                 group = heading
                 descriptions = []
+                descriptionStart = -1
             } else if (!block && lastParameter && !standalone) {
-                annotate(lastParameter, comment)
-            } else if (standalone && !statement.trim()) {
+                const declaredChoices = annotate(lastParameter, comment)
+                if (lastDeclaration) {
+                    lastDeclaration.declaredChoices = declaredChoices
+                    lastDeclaration.annotation = { start: index, end: stop - (source[stop - 1] === '\r' ? 1 : 0) }
+                }
+            } else if (!block && lastDeclaration && !standalone) {
+                lastDeclaration.annotation = { start: index, end: stop - (source[stop - 1] === '\r' ? 1 : 0) }
+            } else if (standalone && !statementHasContent) {
+                if (descriptionStart < 0) descriptionStart = index
+                descriptionEnd = stop + (block && end >= 0 ? 2 : !block && source[stop - 1] === '\r' ? -1 : 0)
                 descriptions.push(comment.replace(/^\s*\* ?/gm, '').trim())
             }
             statement += ' '
@@ -167,26 +214,38 @@ export function parseCustomizer(source: string): Parameter[] {
         if (char === '<' && /^\s*(?:include|use)\s*$/.test(statement)) {
             // Library directives have no required semicolon; do not swallow the next assignment.
             const end = source.indexOf('>', index + 1)
-            if (end < 0) break
+            if (end < 0) { complete = false; break }
             index = end
             statement = ''
+            statementHasContent = false
+            statementStart = -1
             descriptions = []
+            descriptionStart = -1
             continue
         }
         if (char === '{' || char === '}') {
             beforeFirstBrace = false
             braceDepth += char === '{' ? 1 : -1
             statement = ''
+            statementHasContent = false
+            statementStart = -1
             descriptions = []
+            descriptionStart = -1
             lastParameter = undefined
+            lastDeclaration = undefined
             depth = 0
             continue
         }
         if (braceDepth) continue
         if (char === '\n') {
             lastParameter = undefined
+            lastDeclaration = undefined
         }
-        if (!statement.trim() && !/\s/.test(char)) {
+        if (!statementHasContent && !/\s/.test(char)) {
+            statementHasContent = true
+            statementStart = index
+            statementDescriptionSpan = descriptionStart >= 0 ? { start: descriptionStart, end: descriptionEnd } : undefined
+            descriptionStart = -1
             statementDescription = descriptions.join('\n')
             descriptions = []
         }
@@ -198,21 +257,35 @@ export function parseCustomizer(source: string): Parameter[] {
         if (char === ';' && depth === 0) {
             const assignment = /^\s*([\p{L}_$][\p{L}\p{N}_$]*)\s*=\s*([\s\S]*?)\s*$/u.exec(statement)
             lastParameter = undefined
+            lastDeclaration = undefined
+            if (assignment) {
+                lastDeclaration = { name: assignment[1], group, start: statementStart, end: index + 1, value: parseLiteral(assignment[2]), beforeFirstBrace, description: statementDescriptionSpan }
+                declarations.push(lastDeclaration)
+            }
             if (assignment) parameters.delete(assignment[1])
             if (assignment && beforeFirstBrace && group !== 'Hidden') {
                 const defaultValue = parseLiteral(assignment[2])
                 if (defaultValue !== undefined) {
                     lastParameter = { name: assignment[1], group, description: statementDescription, defaultValue }
                     parameters.set(assignment[1], lastParameter)
+                    lastDeclaration!.parameter = lastParameter
                 }
             }
             statement = ''
+            statementHasContent = false
+            statementStart = -1
             statementDescription = ''
         } else {
             statement += char
         }
     }
-    return [...parameters.values()]
+    if (depth !== 0 || braceDepth !== 0 || /^\s*[\p{L}_$][\p{L}\p{N}_$]*\s*=/u.test(statement)) complete = false
+    return { parameters: [...parameters.values()], declarations, complete }
+}
+
+/** Backwards-compatible GUI API; analysis and authoring use the same scanner. */
+export function parseCustomizer(source: string): Parameter[] {
+    return scanCustomizer(source).parameters
 }
 
 /** Match the precision of the literal defaults instead of rounding decimal controls to integers. */

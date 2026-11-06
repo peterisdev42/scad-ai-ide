@@ -5,6 +5,7 @@ import * as path from 'node:path'
 import * as vscode from 'vscode'
 import type { activate } from '../extension'
 import { createAiPanelState } from '../features/agents/CapabilityPresentation'
+import resources from '../core/capabilities/resources.json'
 import { capabilityCatalog } from '../core/capabilities/CapabilityRegistry'
 
 suite('Agent capabilities extension host', () => {
@@ -25,6 +26,15 @@ suite('Agent capabilities extension host', () => {
         assert.equal(output.ok, true)
         assert.ok(['checking', 'anonymous', 'authenticated'].includes(output.data.mode))
         assert.doesNotMatch(text, /accessToken|Bearer |github_pat_/)
+        const runtimeResult = await vscode.lm.invokeTool('scad_ai_ide_runtime_state', { input: { limit: 1 }, toolInvocationToken: undefined })
+        const runtimeOutput = JSON.parse((runtimeResult.content[0] as vscode.LanguageModelTextPart).value)
+        assert.equal(runtimeOutput.ok, true)
+        const actualRuntime = api.getActiveRuntime()
+        assert.equal(runtimeOutput.data.state.activeRuntime?.version ?? null, actualRuntime?.version ?? null)
+        assert.equal(runtimeOutput.data.state.activeRuntime?.command.executable ?? null, actualRuntime?.command.executable ?? null)
+        assert.equal(runtimeOutput.data.state.discovery.scope, 'extensionHost')
+        assert.ok(['ready', 'error', 'restricted'].includes(runtimeOutput.data.state.discovery.status))
+        assert.equal(typeof runtimeOutput.data.state.runtimes.hasMore, 'boolean')
         const state = await api.capabilities.invoke('development.status', {}, { actor: 'agent' })
         assert.equal(state.ok, true)
     })
@@ -35,8 +45,8 @@ suite('Agent capabilities extension host', () => {
         const snapshot = createAiPanelState(api.capabilities.registry)
         assert.equal(snapshot.total, capabilityCatalog.length)
         assert.deepEqual(snapshot.capabilities.map((entry) => entry.toolName).sort(), capabilityCatalog.map((entry) => entry.toolName).sort())
-        assert.equal(snapshot.resources.filter((entry) => entry.kind === 'Skill').length, 4)
-        assert.equal(snapshot.resources.filter((entry) => entry.kind === 'Instruction').length, 1)
+        assert.equal(snapshot.resources.filter((entry) => entry.kind === 'Skill').length, resources.filter((r) => r.kind === 'Skill').length)
+        assert.equal(snapshot.resources.filter((entry) => entry.kind === 'Instruction').length, resources.filter((r) => r.kind === 'Instruction').length)
         assert.deepEqual(api.capabilities.operations.status(), before)
         await vscode.commands.executeCommand('scad-ai.ai.open')
         try {
@@ -71,4 +81,79 @@ suite('Agent capabilities extension host', () => {
         api.customizer.clear() // Reset shared target for the following, independent GUI suite.
         await rm(root, { recursive: true, force: true })
     })
+    test('source tools edit unsaved buffers with CAS and refresh GUI schema, diagnostics and Quick Fixes', async function () {
+        const folder = vscode.workspace.workspaceFolders?.[0]
+        if (!folder || !vscode.workspace.isTrusted) { this.skip(); return }
+        const extension = vscode.extensions.all.find((item) => item.packageJSON.name === 'scad-ai-ide')!
+        const api = await extension.activate() as Awaited<ReturnType<typeof activate>>
+        const uri = vscode.Uri.joinPath(folder.uri, `customizer-source-${Date.now()}.scad`)
+        await vscode.workspace.fs.writeFile(uri, Buffer.from('width=40;\nmodule model() { cube([width,2,3]); }\n'))
+        const document = await vscode.workspace.openTextDocument(uri)
+        await vscode.window.showTextDocument(document)
+        const waitFor = async (predicate: () => boolean) => {
+            const deadline = Date.now() + 5000
+            while (!predicate()) { if (Date.now() >= deadline) assert.fail('Timed out waiting for Customizer diagnostics'); await new Promise((resolve) => setTimeout(resolve, 25)) }
+        }
+        try {
+            const source = api.customizerSource
+            const initial = await source.analyze(uri.toString())
+            const unsaved = new vscode.WorkspaceEdit()
+            unsaved.insert(uri, new vscode.Position(0, 0), '// Unsaved width\n')
+            await vscode.workspace.applyEdit(unsaved)
+            await assert.rejects(source.apply({ mode: 'plan', uri: uri.toString(), identity: { version: initial.identity.version, sha256: initial.identity.sha256 }, edits: [{ kind: 'changeWidget', name: 'width', widget: 'slider', range: { min: 10, max: 100, step: 5 } }] }), (e: unknown) => (e as { code: string }).code === 'STALE_SOURCE')
+            const current = await source.analyze(uri.toString())
+            assert.equal(current.parameters[0].description, 'Unsaved width')
+            const plan = await source.apply({ mode: 'plan', uri: uri.toString(), identity: { version: current.identity.version, sha256: current.identity.sha256 }, edits: [{ kind: 'changeWidget', name: 'width', widget: 'slider', range: { min: 10, max: 100, step: 5 } }] }) as { planId: string }
+            const committed = await source.apply({ mode: 'commit', planId: plan.planId }) as { semanticPass: boolean }
+            assert.equal(committed.semanticPass, true)
+            assert.equal(document.isDirty, true)
+            assert.equal((await source.validate(uri.toString(), [{ name: 'width', widget: 'slider' }])).semanticPass, true)
+            const gui = await api.capabilities.invoke('customizer.state', {}, { actor: 'agent' })
+            assert.equal(gui.ok, true)
+            if (gui.ok) assert.equal((gui.data as { parameters: Array<{ range: { step: number } }> }).parameters[0].range.step, 5)
+            const disk = Buffer.from(await vscode.workspace.fs.readFile(uri)).toString()
+            assert.doesNotMatch(disk, /Unsaved|\[10:5:100\]/)
+            const invalid = new vscode.WorkspaceEdit()
+            const text = document.getText(), start = text.indexOf('[10:5:100]')
+            invalid.replace(uri, new vscode.Range(document.positionAt(start), document.positionAt(start + 10)), '[10:0:100]')
+            await vscode.workspace.applyEdit(invalid)
+            await waitFor(() => vscode.languages.getDiagnostics(uri).some((d) => d.code === 'CUSTOMIZER_INVALID_RANGE'))
+            const actions = await vscode.commands.executeCommand<vscode.CodeAction[]>('vscode.executeCodeActionProvider', uri, new vscode.Range(1, 0, 1, 100))
+            const fix = actions?.find((a) => a.title === 'Customizer: remove invalid explicit step')
+            assert.ok(fix?.edit)
+            await vscode.workspace.applyEdit(fix.edit)
+            await waitFor(() => !vscode.languages.getDiagnostics(uri).some((d) => d.code === 'CUSTOMIZER_INVALID_RANGE'))
+            assert.equal((await source.analyze(uri.toString())).parameters[0].range?.step, undefined)
+            const plan2read = await source.analyze(uri.toString())
+            const plan2 = await source.apply({ mode: 'plan', uri: uri.toString(), identity: { version: plan2read.identity.version, sha256: plan2read.identity.sha256 }, edits: [{ kind: 'changeWidget', name: 'width', widget: 'slider', range: { min: 10, max: 100, step: 5 } }] }) as { planId: string }
+            const other = new vscode.WorkspaceEdit(); other.insert(uri, new vscode.Position(0, 0), '// Concurrent edit\n')
+            await vscode.workspace.applyEdit(other)
+            await assert.rejects(source.apply({ mode: 'commit', planId: plan2.planId }), (e: unknown) => (e as { code: string }).code === 'STALE_SOURCE')
+            assert.match(document.getText(), /Concurrent edit/)
+            const setSource = async (text: string) => {
+                const edit = new vscode.WorkspaceEdit()
+                edit.replace(uri, new vscode.Range(document.positionAt(0), document.positionAt(document.getText().length)), text)
+                assert.equal(await vscode.workspace.applyEdit(edit), true)
+            }
+            const customizerProblems = () => vscode.languages.getDiagnostics(uri).filter((d) => d.source === 'OpenSCAD Customizer')
+            await setSource('width=10; // [1:1:200]\nwidth=30; // [1:0:200]\n')
+            await waitFor(() => customizerProblems().some((d) => d.code === 'CUSTOMIZER_INVALID_RANGE'))
+            await setSource('width=0; // [1:0:200]\nheight=201; // [1:1:200]\nwidth=30; // [1:1:200]\nheight=40; // [1:1:200]\n')
+            await waitFor(() => customizerProblems().length === 0)
+            assert.equal((await source.validate(uri.toString(), [{ name: 'width', widget: 'slider', defaultValue: 30 }])).semanticPass, true)
+            await setSource('width=10; // [1:1:200]\nwidth=10+20;\n')
+            await waitFor(() => customizerProblems().some((d) => d.code === 'CUSTOMIZER_DUPLICATE_ASSIGNMENT'))
+            const lostControl = customizerProblems().find((d) => d.code === 'CUSTOMIZER_DUPLICATE_ASSIGNMENT')!
+            assert.equal(lostControl.severity, vscode.DiagnosticSeverity.Information)
+            assert.equal(lostControl.range.start.line, 1)
+            await setSource('width=10; // [1:1:200]\nwidth=30; // [1:1:200]\n')
+            await waitFor(() => customizerProblems().length === 0)
+        } finally {
+            await vscode.window.showTextDocument(document)
+            await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor')
+            await vscode.workspace.fs.delete(uri)
+            api.customizer.clear()
+        }
+    })
+
 })

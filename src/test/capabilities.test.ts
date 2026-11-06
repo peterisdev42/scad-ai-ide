@@ -92,3 +92,32 @@ test('cache previews redact credentials and personal identifiers, cap depth/entr
     const bounded = JSON.stringify(safePreview(Array.from({ length: 1000 }, () => '中'.repeat(1000)), 100))
     assert.ok(Buffer.byteLength(bounded) < 200)
 })
+
+test('source tool schemas reject arbitrary edits, numeric strings, forged permission and mixed plan/commit fields', async () => {
+    const d = dispatcher()
+    const identity = { version: 1, sha256: 'a'.repeat(64) }
+    const uri = 'file:///workspace/model.scad'
+    const plan = { mode: 'plan', uri, identity, edits: [{ kind: 'changeWidget', name: 'width', widget: 'slider', range: { min: 0, max: 100 } }] }
+    assert.equal((await d.invoke('customizer.sourceApply', plan, { actor: 'agent' })).ok, true)
+    for (const input of [
+        { ...plan, approved: true }, { ...plan, planId: 'x' }, { mode: 'commit', planId: 'x', uri },
+        { ...plan, edits: [{ kind: 'replace', text: 'evil' }] },
+        { ...plan, edits: [{ kind: 'changeWidget', name: 'width', widget: 'slider', range: { min: '0', max: 100 } }] },
+        { ...plan, edits: [{ kind: 'changeWidget', name: 'width', widget: 'spinbox', step: 0 }] },
+    ]) {
+        const result = await d.invoke('customizer.sourceApply', input, { actor: 'agent' })
+        assert.equal(result.ok, false)
+        if (!result.ok) assert.equal(result.error.code, 'INVALID_INPUT')
+    }
+})
+
+
+test('cancellation accepts exactly an Agent operation ID or a supported GUI domain', async () => {
+    const d = dispatcher()
+    for (const input of [{ domain: 'runtime' }, { domain: 'libraries' }, { id: 'observed-operation' }]) assert.equal((await d.invoke('operation.cancel', input, { actor: 'agent' })).ok, true)
+    for (const input of [{}, { domain: 'all' }, { domain: 'runtime', id: 'operation' }, { domain: 'runtime', approved: true }]) {
+        const result = await d.invoke('operation.cancel', input, { actor: 'agent' })
+        assert.equal(result.ok, false)
+        if (!result.ok) assert.equal(result.error.code, 'INVALID_INPUT')
+    }
+})

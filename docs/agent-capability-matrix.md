@@ -21,7 +21,7 @@ Sources: [VS Code tools](https://code.visualstudio.com/api/extension-guides/ai/t
 
 ## Catalog and owners
 
-The exact, generated 37-row matrix is [agent-capability-catalog.md](agent-capability-catalog.md). Its canonical source is `src/core/capabilities/catalog.json`; `gui-actions.json` classifies the actual dispatcher action strings and rejects unclassified/stale GUI branches; `npm run check:agents` rejects stale manifest schemas, tool names, resource paths, skill names/references and matrix output. Activation binds every entry exactly once and checks completeness. `all 37 catalog handlers execute without panels and preserve exact service arguments and safe outputs` exercises every binding; module behavioral tests complement that routing coverage. This is not a claim that the routing test alone verifies every platform postcondition.
+The exact, generated 40-row matrix is [agent-capability-catalog.md](agent-capability-catalog.md). Its canonical source is `src/core/capabilities/catalog.json`; `gui-actions.json` classifies the actual dispatcher action strings and rejects unclassified/stale GUI branches; `npm run check:agents` rejects stale manifest schemas, tool names, resource paths, skill names/references and matrix output. Activation binds every entry exactly once and checks completeness. `all catalog handlers execute without panels and preserve exact service arguments and safe outputs` exercises every binding; module behavioral tests complement that routing coverage. This is not a claim that the routing test alone verifies every platform postcondition.
 
 | Module     | Shared implementation                                                                                                                                                       | GUI adapter                                                                                                                        | Agent coverage / behavioral tests                                                                                                                                                                                                     |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -40,12 +40,33 @@ The exact, generated 37-row matrix is [agent-capability-catalog.md](agent-capabi
 - Cache access hard-rejects outside ExtensionMode.Development in both availability and the service. Agent reads expose metadata or one bounded/redacted preview; they never return raw bulk Mementos or cache contents. Cache values can still contain unrecognized personal data: preview is explicitly labeled. Managed runtimes/exporter/library source/reference indices remain excluded from disposable disk caches. Clear-all finishes requested entries and reports partial failures.
 - GitHub authorization uses the actual interactive VS Code provider; tools return allow-listed status fields only. No access tokens enter tool context. GUI operates without any AI subscription. No proposed VS Code APIs or bespoke MCP/LLM backend were added.
 
-## UI-only exemptions (complete audit)
+## UI-only exemptions (four management panels)
 
 Panel opening/navigation, Runtime Installed/Available tabs, Library Registry/Global/Project tabs, query-widget text, project-picker selection, Customizer group folding/collapse/expand/input focus/scroll/native scrollbar configuration, opening cache values in an editor, revealing the global folder, theme/highlight rendering and tooltips are presentation. Their underlying inspect/search/explicit project operations/reset-all/cache operations are covered above. Cancellation is a business capability and is exposed through operation cancellation.
 
 ## Discovery and verification
 
-AI Panel lists all 37 tools in six category tables with live availability and permission information, followed by one Instruction and four Skills. Refresh reads metadata only. The catalog and generated resource paths are checked by `npm run check:agents`.
+AI Panel lists all 40 tools in six category tables with live availability and permission information, followed by two Instructions and five Skills. Refresh reads metadata only. The catalog and generated resource paths are checked by `npm run check:agents`.
 
 Registration and GUI parity do not prove that a model can complete a workflow. See the [verification guide](agent-verification.md) for repeatable commands, observed model failures and environments that still require acceptance.
+
+
+## Customizer source authoring
+
+The three `customizer.sourceAnalyze/sourceApply/sourceValidate` capabilities belong to `CustomizerSourceDomainService`, separate from Override revisions and presets. They use the existing Parser's shared scanner and the pure source Analyzer/Editor/Validator. Problems and Quick Fixes use those same Core functions; the existing GUI still uses `parseCustomizer`.
+
+Source identity is the complete URI, TextDocument version and UTF-8 SHA-256. Plan is read-only but requires trust; commit retains LM confirmation, consumes an opaque two-minute plan once, rechecks canonical workspace membership/trust/CAS, and submits bounded WorkspaceEdits without saving. Commit returns actual buffer analysis, applied and semanticPass separately. No model flag grants authority. Code Actions require normal trusted editor context and reuse the planner.
+
+The service supports extension-host `file:` URIs only. Virtual/untitled/custom providers are rejected explicitly; SSH/WSL/container behavior needs real host acceptance. No recursive include/use, expression evaluation, geometry migration, preset writes or implicit Runtime/Preview execution is added. Ambiguous ordinary trailing comments and moves that would alter other parameters are refused. See [source authoring](customizer-source-authoring.md) for the supported contract and acceptance status.
+
+
+Runtime state exposes `state.activeRuntime` as a complete selected CLI record (version, executable, argsPrefix, source/release metadata) regardless of installed-list pagination. `state.runtimes` uses the same discovered inventory as Runtime Panel and returns total/items/hasMore/nextOffset. `state.discovery` distinguishes restricted, discovering, notStarted, error and ready, including configured-path errors and bounded diagnostics. The list represents recognized installations on the extension host rather than an exhaustive client-machine scan; `runtime.builds` remains the downloadable release catalog. No extra tool is necessary.
+
+
+## Required business parity
+
+The agreed delivery scope is **Runtime, Customizer, Libraries and More**. Preview rendering, measurement, scene editing, exports and slicer workflows remain a separate follow-up. Within these four panels, every GUI business operation must have a shared-service Agent path. [GUI → Agent contracts](gui-agent-parity.md) is generated from actual GUI action classification plus schema-validated call examples; `check:agents` rejects missing examples, unknown capabilities, invalid arguments and stale output. Navigation, folding, scrolling and revealing an existing editor/folder are presentation, not substitutes for missing data or mutations.
+
+Runtime equivalents: selected and installed CLI inventory (`runtime.state`), online catalog and forced online refresh (`runtime.builds`, refresh=true), exact build download (`runtime.installBuild`), offline archive (`runtime.installArchive`), executable registration (`runtime.addExecutable`), switching (`runtime.select`), managed deletion (`runtime.remove`), installed rescan (`runtime.refresh`, mode=installed), and cancellation (`operation.cancel`, domain=runtime). Installed flags and pagination are returned. Install/remove handlers verify inventory postconditions. Downloading alone does not promise selection.
+
+`operation.cancel` now accepts exactly an Agent operation ID or a Runtime/Library domain. Domain cancellation uses the same abort controller as GUI-started jobs, including requests issued while mutation gates are busy; a cancellation request is not a terminal result. Library snapshots expose shared busy/cancellable/message/error activity so either origin can be observed. Registry search shares GUI installability, labels and cached flags. More returns redacted GitHub diagnostics and Development-only cache storage metadata; real authorization, removal confirmation and cache redaction remain enforced.

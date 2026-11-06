@@ -702,6 +702,7 @@ async function mockRuntimeFeature(detect: (options: DiscoveryOptions) => Promise
     const configuration = new Map<string, unknown>()
     let updateError: Error | undefined
     let archiveError: Error | undefined
+    let archiveTask: ((signal: AbortSignal) => Promise<string>) | undefined
     let cancelInstallation = false
     let removalApproved = true
     const file = path.join(__dirname, '../features/runtime/registerRuntime.js')
@@ -785,6 +786,7 @@ async function mockRuntimeFeature(detect: (options: DiscoveryOptions) => Promise
                     installRuntimeArchive: async (_root: unknown, _system: unknown, _source: unknown, options: { signal: AbortSignal; progress: (value: { message: string; percent?: number }) => void }) => {
                         if (options.signal.aborted) throw new Error('Cancelled')
                         if (archiveError) throw archiveError
+                        if (archiveTask) return archiveTask(options.signal)
                         options.progress({ message: 'Validating runtime', percent: 100 })
                         return '/mock/openscad'
                     },
@@ -831,6 +833,7 @@ async function mockRuntimeFeature(detect: (options: DiscoveryOptions) => Promise
         setArchiveError: (error: Error) => {
             archiveError = error
         },
+        setArchiveTask: (task: (signal: AbortSignal) => Promise<string>) => { archiveTask = task },
         cancelInstallation: () => {
             cancelInstallation = true
         },
@@ -922,6 +925,7 @@ test('discovery failures do not claim that OpenSCAD is missing', async () => {
     try {
         await mock.runtime.whenReady()
         assert.equal(mock.notices.length, 0)
+        assert.equal(mock.runtime.getState().discovery.status, 'error')
     } finally {
         mock.dispose()
     }
@@ -1352,5 +1356,29 @@ test('Runtime shared service rejects cancellation, forged unmanaged deletion and
         await assert.rejects(mock.runtime.service.installArchivePath('/host/archive.zip', abort.signal), /cancelled/)
         assert.equal(mock.runtime.getState().installing, undefined)
         await assert.rejects(mock.runtime.service.installArchivePath('relative.zip'), /absolute/)
+    } finally { mock.dispose() }
+})
+
+
+test('the shared Runtime cancel service stops a GUI-started installation and reports no cancellable task after completion', async () => {
+    const mock = await mockRuntimeFeature(async () => ({ runtimes: [], diagnostics: [] }))
+    let entered!: () => void
+    const ready = new Promise<void>((resolve) => { entered = resolve })
+    mock.setArchiveTask((signal) => new Promise<string>((_, reject) => {
+        signal.addEventListener('abort', () => reject(new Error('Cancelled by shared Runtime service')), { once: true })
+        entered()
+    }))
+    try {
+        await mock.runtime.whenReady()
+        assert.equal(mock.runtime.cancel(), false)
+        const guiTask = mock.runtime.installArchive()
+        await ready
+        assert.ok(mock.runtime.getState().installing)
+        assert.equal(mock.runtime.cancel(), true)
+        assert.equal(mock.runtime.cancel(), true, 'A repeated request must not claim an already-aborting critical task has stopped')
+        await guiTask
+        assert.equal(mock.runtime.getState().installing, undefined)
+        assert.match(mock.runtime.getState().installationMessage, /cancelled/i)
+        assert.equal(mock.runtime.cancel(), false)
     } finally { mock.dispose() }
 })

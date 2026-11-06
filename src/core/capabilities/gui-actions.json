@@ -7,11 +7,25 @@
       "libraries.cancel": {
         "capabilities": [
           "operation.cancel"
+        ],
+        "examples": [
+          {
+            "capability": "operation.cancel",
+            "input": {
+              "domain": "libraries"
+            }
+          }
         ]
       },
       "libraries.refresh": {
         "capabilities": [
           "libraries.refresh"
+        ],
+        "examples": [
+          {
+            "capability": "libraries.refresh",
+            "input": {}
+          }
         ]
       },
       "libraries.selectProject": {
@@ -20,53 +34,152 @@
       "libraries.search": {
         "capabilities": [
           "libraries.search"
+        ],
+        "examples": [
+          {
+            "capability": "libraries.search",
+            "input": {
+              "query": "BOSL2"
+            }
+          }
         ]
       },
       "libraries.install": {
         "capabilities": [
           "libraries.install"
+        ],
+        "examples": [
+          {
+            "capability": "libraries.install",
+            "input": {
+              "project": "/workspace",
+              "id": "bosl2",
+              "version": "v1"
+            }
+          }
         ]
       },
       "libraries.remove": {
         "capabilities": [
           "libraries.remove"
+        ],
+        "examples": [
+          {
+            "capability": "libraries.remove",
+            "input": {
+              "project": "/workspace",
+              "id": "bosl2"
+            }
+          }
         ]
       },
       "libraries.restore": {
         "capabilities": [
           "libraries.restore"
+        ],
+        "examples": [
+          {
+            "capability": "libraries.restore",
+            "input": {
+              "project": "/workspace"
+            }
+          }
         ]
       },
       "libraries.repair": {
         "capabilities": [
           "libraries.restore"
+        ],
+        "examples": [
+          {
+            "capability": "libraries.restore",
+            "input": {
+              "project": "/workspace"
+            }
+          }
         ]
       },
       "libraries.cleanupAll": {
         "capabilities": [
           "libraries.cleanupPlan",
           "libraries.cleanupExecute"
+        ],
+        "examples": [
+          {
+            "capability": "libraries.cleanupPlan",
+            "input": {
+              "mode": "unused"
+            }
+          },
+          {
+            "capability": "libraries.cleanupExecute",
+            "input": {
+              "planId": "cleanup-plan"
+            }
+          },
+          {
+            "capability": "libraries.cleanupPlan",
+            "input": {
+              "mode": "all"
+            }
+          }
         ]
       },
       "libraries.verifyAll": {
         "capabilities": [
           "libraries.verify"
+        ],
+        "examples": [
+          {
+            "capability": "libraries.verify",
+            "input": {}
+          }
         ]
       },
       "libraries.verify": {
         "capabilities": [
           "libraries.verify"
+        ],
+        "examples": [
+          {
+            "capability": "libraries.verify",
+            "input": {
+              "key": "library-cache-key"
+            }
+          }
         ]
       },
       "libraries.previewCleanup": {
         "capabilities": [
           "libraries.cleanupPlan",
           "libraries.cleanupExecute"
+        ],
+        "examples": [
+          {
+            "capability": "libraries.cleanupPlan",
+            "input": {
+              "key": "library-cache-key"
+            }
+          },
+          {
+            "capability": "libraries.cleanupExecute",
+            "input": {
+              "planId": "cleanup-plan"
+            }
+          }
         ]
       },
       "libraries.repairGlobal": {
         "capabilities": [
           "libraries.repair"
+        ],
+        "examples": [
+          {
+            "capability": "libraries.repair",
+            "input": {
+              "key": "library-cache-key"
+            }
+          }
         ]
       }
     }
@@ -95,26 +208,64 @@
       "development.inspectCache": {
         "capabilities": [
           "development.inspectCache"
+        ],
+        "examples": [
+          {
+            "capability": "development.inspectCache",
+            "input": {
+              "id": "globalState:cache"
+            }
+          }
         ]
       },
       "development.refreshCaches": {
         "capabilities": [
           "development.listCaches"
+        ],
+        "examples": [
+          {
+            "capability": "development.listCaches",
+            "input": {}
+          }
         ]
       },
       "development.clearCache": {
         "capabilities": [
           "development.clearCaches"
+        ],
+        "examples": [
+          {
+            "capability": "development.clearCaches",
+            "input": {
+              "id": "globalState:cache"
+            }
+          }
         ]
       },
       "development.clearAllCaches": {
         "capabilities": [
           "development.clearCaches"
+        ],
+        "examples": [
+          {
+            "capability": "development.clearCaches",
+            "input": {
+              "all": true
+            }
+          }
         ]
       },
       "development.clearScopeCaches": {
         "capabilities": [
           "development.clearCaches"
+        ],
+        "examples": [
+          {
+            "capability": "development.clearCaches",
+            "input": {
+              "scope": "Disk"
+            }
+          }
         ]
       }
     }
@@ -133,51 +284,125 @@
       "connectGitHub": {
         "capabilities": [
           "more.authorizeGitHub"
+        ],
+        "examples": [
+          {
+            "capability": "more.authorizeGitHub",
+            "input": {}
+          }
         ]
       },
       "refreshBuilds": {
         "capabilities": [
           "runtime.builds"
+        ],
+        "examples": [
+          {
+            "capability": "runtime.builds",
+            "input": {
+              "refresh": true
+            }
+          }
         ]
       },
       "installBuild": {
         "capabilities": [
           "runtime.installBuild"
+        ],
+        "examples": [
+          {
+            "capability": "runtime.installBuild",
+            "input": {
+              "id": 1
+            }
+          }
         ]
       },
       "refresh": {
         "capabilities": [
           "runtime.refresh"
+        ],
+        "examples": [
+          {
+            "capability": "runtime.refresh",
+            "input": {}
+          }
         ]
       },
       "refreshInstalled": {
         "capabilities": [
           "runtime.refresh"
+        ],
+        "examples": [
+          {
+            "capability": "runtime.refresh",
+            "input": {
+              "mode": "installed"
+            }
+          }
         ]
       },
       "installArchive": {
         "capabilities": [
           "runtime.installArchive"
+        ],
+        "examples": [
+          {
+            "capability": "runtime.installArchive",
+            "input": {
+              "path": "/workspace/openscad.zip"
+            }
+          }
         ]
       },
       "browse": {
         "capabilities": [
           "runtime.addExecutable"
+        ],
+        "examples": [
+          {
+            "capability": "runtime.addExecutable",
+            "input": {
+              "path": "/workspace/openscad"
+            }
+          }
         ]
       },
       "deleteRuntime": {
         "capabilities": [
           "runtime.remove"
+        ],
+        "examples": [
+          {
+            "capability": "runtime.remove",
+            "input": {
+              "id": "runtime-id"
+            }
+          }
         ]
       },
       "select": {
         "capabilities": [
           "runtime.select"
+        ],
+        "examples": [
+          {
+            "capability": "runtime.select",
+            "input": {
+              "id": "runtime-id"
+            }
+          }
         ]
       },
       "refreshAiCapabilities": {
         "capabilities": [
           "capabilities.discover"
+        ],
+        "examples": [
+          {
+            "capability": "capabilities.discover",
+            "input": {}
+          }
         ]
       }
     }
@@ -190,31 +415,91 @@
       "select": {
         "capabilities": [
           "customizer.applyPreset"
+        ],
+        "examples": [
+          {
+            "capability": "customizer.applyPreset",
+            "input": {
+              "target": "file:///workspace/model.scad",
+              "revision": 1,
+              "name": "Example"
+            }
+          }
         ]
       },
       "import": {
         "capabilities": [
           "customizer.importPresets"
+        ],
+        "examples": [
+          {
+            "capability": "customizer.importPresets",
+            "input": {
+              "target": "file:///workspace/model.scad",
+              "revision": 1,
+              "uri": "file:///workspace/presets.json"
+            }
+          }
         ]
       },
       "export": {
         "capabilities": [
           "customizer.exportPresets"
+        ],
+        "examples": [
+          {
+            "capability": "customizer.exportPresets",
+            "input": {
+              "target": "file:///workspace/model.scad",
+              "revision": 1,
+              "uri": "file:///workspace/presets.json"
+            }
+          }
         ]
       },
       "new": {
         "capabilities": [
           "customizer.createPreset"
+        ],
+        "examples": [
+          {
+            "capability": "customizer.createPreset",
+            "input": {
+              "target": "file:///workspace/model.scad",
+              "revision": 1,
+              "name": "Example"
+            }
+          }
         ]
       },
       "save": {
         "capabilities": [
           "customizer.savePreset"
+        ],
+        "examples": [
+          {
+            "capability": "customizer.savePreset",
+            "input": {
+              "target": "file:///workspace/model.scad",
+              "revision": 1,
+              "name": "Example"
+            }
+          }
         ]
       },
       "delete": {
         "capabilities": [
           "customizer.deletePreset"
+        ],
+        "examples": [
+          {
+            "capability": "customizer.deletePreset",
+            "input": {
+              "target": "file:///workspace/model.scad",
+              "revision": 1,
+              "name": "Example"
+            }
+          }
         ]
       }
     }
@@ -238,16 +523,198 @@
           "customizer.deletePreset",
           "customizer.importPresets",
           "customizer.exportPresets"
+        ],
+        "examples": [
+          {
+            "capability": "customizer.applyPreset",
+            "input": {
+              "target": "file:///workspace/model.scad",
+              "revision": 1,
+              "name": "Example"
+            }
+          },
+          {
+            "capability": "customizer.createPreset",
+            "input": {
+              "target": "file:///workspace/model.scad",
+              "revision": 1,
+              "name": "Example"
+            }
+          },
+          {
+            "capability": "customizer.savePreset",
+            "input": {
+              "target": "file:///workspace/model.scad",
+              "revision": 1,
+              "name": "Example"
+            }
+          },
+          {
+            "capability": "customizer.deletePreset",
+            "input": {
+              "target": "file:///workspace/model.scad",
+              "revision": 1,
+              "name": "Example"
+            }
+          },
+          {
+            "capability": "customizer.importPresets",
+            "input": {
+              "target": "file:///workspace/model.scad",
+              "revision": 1,
+              "uri": "file:///workspace/presets.json"
+            }
+          },
+          {
+            "capability": "customizer.exportPresets",
+            "input": {
+              "target": "file:///workspace/model.scad",
+              "revision": 1,
+              "uri": "file:///workspace/presets.json"
+            }
+          }
         ]
       },
       "set": {
         "capabilities": [
           "customizer.set"
+        ],
+        "examples": [
+          {
+            "capability": "customizer.set",
+            "input": {
+              "target": "file:///workspace/model.scad",
+              "revision": 1,
+              "values": {
+                "width": 25
+              }
+            }
+          }
         ]
       },
       "reset": {
         "capabilities": [
           "customizer.reset"
+        ],
+        "examples": [
+          {
+            "capability": "customizer.reset",
+            "input": {
+              "target": "file:///workspace/model.scad",
+              "revision": 1
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "group": "customizer toolbar",
+    "source": "src/features/sidebar/CustomizerViewProvider.ts",
+    "pattern": "if \\(action === '(resetAll)'\\)",
+    "actions": {
+      "resetAll": {
+        "capabilities": [
+          "customizer.reset"
+        ],
+        "examples": [
+          {
+            "capability": "customizer.reset",
+            "input": {
+              "target": "file:///workspace/model.scad",
+              "revision": 1
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "group": "runtime inventory",
+    "source": "src/features/runtime/RuntimeService.ts",
+    "pattern": "(getState): \\(\\) =>",
+    "actions": {
+      "getState": {
+        "capabilities": [
+          "runtime.state"
+        ],
+        "examples": [
+          {
+            "capability": "runtime.state",
+            "input": {}
+          }
+        ]
+      }
+    }
+  },
+  {
+    "group": "runtime cancellation",
+    "source": "src/features/runtime/RuntimeService.ts",
+    "pattern": "(cancel): \\(\\) =>",
+    "actions": {
+      "cancel": {
+        "capabilities": [
+          "operation.cancel"
+        ],
+        "examples": [
+          {
+            "capability": "operation.cancel",
+            "input": {
+              "domain": "runtime"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "group": "library inventory",
+    "source": "src/features/libraries/LibraryService.ts",
+    "pattern": "async (getState)\\(\\)",
+    "actions": {
+      "getState": {
+        "capabilities": [
+          "libraries.search",
+          "libraries.projectState",
+          "libraries.globalState"
+        ],
+        "examples": [
+          {
+            "capability": "libraries.search",
+            "input": {}
+          },
+          {
+            "capability": "libraries.projectState",
+            "input": {}
+          },
+          {
+            "capability": "libraries.projectState",
+            "input": {
+              "project": "/workspace"
+            }
+          },
+          {
+            "capability": "libraries.globalState",
+            "input": {}
+          }
+        ]
+      }
+    }
+  },
+  {
+    "group": "GitHub status",
+    "source": "src/features/github/registerGitHub.ts",
+    "pattern": "(getState): \\(\\)",
+    "actions": {
+      "getState": {
+        "capabilities": [
+          "more.githubStatus"
+        ],
+        "examples": [
+          {
+            "capability": "more.githubStatus",
+            "input": {}
+          }
         ]
       }
     }

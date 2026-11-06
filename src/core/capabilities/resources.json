@@ -6,6 +6,12 @@
     "description": "Use when managing OpenSCAD runtimes, library dependencies, Customizer parameters or SCAD AI IDE diagnostics."
   },
   {
+    "path": "./instructions/openscad-customizer.instructions.md",
+    "kind": "Instruction",
+    "name": "openscad-customizer",
+    "description": "Author, inspect, repair and validate OpenSCAD Customizer source declarations rather than runtime parameter overrides."
+  },
+  {
     "path": "./skills/openscad-runtime/SKILL.md",
     "kind": "Skill",
     "name": "openscad-runtime",
@@ -22,6 +28,12 @@
     "kind": "Skill",
     "name": "openscad-customizer",
     "description": "Inspect and change OpenSCAD model Customizer parameters or manage named JSON presets with SCAD AI IDE while preserving target identity and Preview behavior."
+  },
+  {
+    "path": "./skills/openscad-customizer-authoring/SKILL.md",
+    "kind": "Skill",
+    "name": "openscad-customizer-authoring",
+    "description": "Create, migrate, inspect, repair and objectively validate OpenSCAD Customizer source with bounded source tools, preserving model geometry and unsaved buffers."
   },
   {
     "path": "./skills/scad-ai-ide-diagnostics/SKILL.md",

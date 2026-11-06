@@ -1,5 +1,5 @@
 import * as assert from 'node:assert/strict'
-import { mkdtemp, writeFile, chmod, rm } from 'node:fs/promises'
+import { mkdtemp, writeFile, chmod, rm, realpath } from 'node:fs/promises'
 import * as path from 'node:path'
 import * as os from 'node:os'
 import * as vscode from 'vscode'
@@ -158,9 +158,24 @@ suite('SCAD AI IDE integration', () => {
             await configuration.update('runtimeCommand', { executable: file, argsPrefix: [] }, vscode.ConfigurationTarget.Global)
             await runtimeApi.refresh()
             assert.equal(runtimeApi.getActiveRuntime()?.version, '2026.10.TEST')
+            const readRuntime = async () => {
+                const result = await vscode.lm.invokeTool('scad_ai_ide_runtime_state', { input: { limit: 1 }, toolInvocationToken: undefined })
+                const output = JSON.parse((result.content[0] as vscode.LanguageModelTextPart).value)
+                assert.equal(output.ok, true)
+                return output.data.state
+            }
+            const selected = await readRuntime()
+            assert.equal(selected.activeRuntime.version, '2026.10.TEST')
+            assert.equal(selected.activeRuntime.command.executable, await realpath(file))
+            assert.equal(selected.discovery.status, 'ready')
+            assert.ok(selected.runtimes.total >= 1)
             await configuration.update('openscadPath', path.join(directory, 'missing'), vscode.ConfigurationTarget.Global)
             await vscode.commands.executeCommand('scad-ai-ide.refreshRuntimes')
             assert.equal(runtimeApi.getActiveRuntime(), undefined)
+            const invalid = await readRuntime()
+            assert.equal(invalid.activeRuntime, null)
+            assert.equal(invalid.discovery.status, 'error')
+            assert.ok(invalid.discovery.configuredError)
         } finally {
             await configuration.update('openscadPath', previousPath, vscode.ConfigurationTarget.Global)
             await configuration.update('runtimeCommand', previousCommand, vscode.ConfigurationTarget.Global)

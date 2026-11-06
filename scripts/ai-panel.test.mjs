@@ -30,7 +30,7 @@ test('AI Panel categorizes every catalog tool and awareness resource, buffers ea
         assert.equal(await page.locator('[data-capability-id]').count(), catalog.length)
         assert.deepEqual((await page.locator('[data-capability-id]').evaluateAll((rows) => rows.map((row) => row.dataset.capabilityId))).sort(), catalog.map((entry) => entry.id).sort())
         for (const entry of catalog) assert.equal(await page.locator(`[data-capability-id="${entry.id}"] code`).textContent(), entry.toolName)
-        assert.equal(await page.locator('#ai-resources tbody tr').count(), 5)
+        assert.equal(await page.locator('#ai-resources tbody tr').count(), resources.length)
         assert.match(await page.locator('[data-capability-id="development.clearCaches"]').textContent(), /Restricted.*Development mode required/)
         assert.match(await page.locator('[data-capability-id="runtime.remove"]').textContent(), /Human confirmation/)
         await page.getByRole('button', { name: 'Refresh availability' }).click()
@@ -47,7 +47,7 @@ test('AI Panel categorizes every catalog tool and awareness resource, buffers ea
         await page.screenshot({ path: new URL('.build/ai-capabilities-panel.png', root).pathname })
         await page.setViewportSize({ width: 360, height: 780 })
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true)
-        assert.equal(await page.locator('[data-capability-id]').count(), 37)
+        assert.equal(await page.locator('[data-capability-id]').count(), catalog.length)
         assert.ok(await page.locator('.ai-table-scroll').first().evaluate((node) => node.scrollWidth > node.clientWidth))
         assert.deepEqual(errors, [])
     } finally { await browser.close() }

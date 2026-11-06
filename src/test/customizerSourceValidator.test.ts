@@ -1,0 +1,38 @@
+import { test } from 'node:test'
+import * as assert from 'node:assert/strict'
+import { validateCustomizerSource } from '../core/customizer/CustomizerSourceValidator'
+
+test('validator compares every explicit expectation and reports independent skipped checks', () => {
+    const source = '/* [Dimensions] */\n// Width\nwidth=40; // [10:5:100]\nshape="round"; // [round:Round,square:Square]\n'
+    const expected = { name: 'width', widget: 'slider' as const, type: 'number' as const, group: 'Dimensions', defaultValue: 40, range: { min: 10, max: 100, step: 5 }, requireDescription: true }
+    const result = validateCustomizerSource(source, [expected])
+    assert.equal(result.semanticPass, true)
+    assert.equal(result.matched, 1)
+    assert.equal(result.runtimeCheck.status, 'notRequested')
+    assert.equal(result.guiCheck.status, 'notRequested')
+    for (const patch of [{ widget: 'spinbox' as const }, { group: 'Appearance' }, { defaultValue: 20 }, { range: { min: 0, max: 100 } }, { description: 'Wrong' }, { type: 'string' as const }]) assert.equal(validateCustomizerSource(source, [{ ...expected, ...patch }]).semanticPass, false)
+    assert.equal(validateCustomizerSource(source, [{ name: 'shape', choices: [{ value: 'round', label: 'Round' }, { value: 'square', label: 'Square' }] }]).semanticPass, true)
+    assert.equal(validateCustomizerSource(source, [{ name: 'shape', choices: [{ value: 'round', label: 'Wrong' }] }]).semanticPass, false)
+})
+test('missing, wrong-widget, hidden and unsupported defaults fail explicit visible contracts', () => {
+    for (const source of ['a=1;', 'width=2; width=3;', '/* [Hidden] */\nwidth=2;', 'width=1+1;']) assert.equal(validateCustomizerSource(source, [{ name: 'width', widget: 'slider' }]).semanticPass, false)
+    assert.equal(validateCustomizerSource('/* [Hidden] */\na=1;', [{ name: 'a', visible: false }]).semanticPass, true)
+    assert.equal(validateCustomizerSource('a=1;', [{ name: 'a', visible: false }]).semanticPass, false)
+})
+test('no targets means only static consistency; warnings filtering never hides a failed pass', () => {
+    assert.equal(validateCustomizerSource('cube([1,2,3]);').semanticPass, true)
+    const result = validateCustomizerSource('a=10; // [0:0:20]', [], false)
+    assert.equal(result.semanticPass, false)
+    assert.equal(result.diagnostics.length, 0)
+    assert.equal(validateCustomizerSource('a=[1,2;', []).semanticPass, false)
+})
+
+
+test('validation compares the effective control rather than rejecting legal reassignment counts', () => {
+    const source = 'width=10; // [1:1:200]\nwidth=30; // [1:1:200]\n'
+    const expected = { name: 'width', widget: 'slider' as const, defaultValue: 30, range: { min: 1, max: 200, step: 1 } }
+    assert.equal(validateCustomizerSource(source, [expected]).semanticPass, true)
+    assert.equal(validateCustomizerSource(source, [{ ...expected, defaultValue: 10 }]).semanticPass, false)
+    assert.equal(validateCustomizerSource('width=10; // [1:1:200]\nwidth=10+20;', [expected]).semanticPass, false)
+    assert.equal(validateCustomizerSource('width=10; // [1:1:200]\n/* [Hidden] */\nwidth=30;', [{ name: 'width', visible: false }]).semanticPass, true)
+})

@@ -6,7 +6,10 @@ permissions:
     contents: read
 jobs:
     contracts:
-        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                os: [ubuntu-latest, macos-latest, windows-latest]
+        runs-on: ${{ matrix.os }}
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
@@ -17,6 +20,7 @@ jobs:
             - run: npm run check:agents
             - run: npm run check-types
             - run: npm run lint
+            - run: npm run test:customizer:source
             - run: npm run test:capabilities
             - run: npm run test:libraries
     panel:

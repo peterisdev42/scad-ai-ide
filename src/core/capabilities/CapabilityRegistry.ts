@@ -15,7 +15,7 @@ export class CapabilityRegistry {
         if (new Set(capabilityCatalog.map((d) => d.toolName)).size !== capabilityCatalog.length) throw new Error('Duplicate tool name')
     }
     discover(context: CapabilityContext, offset = 0, limit = 20) {
-        return { total: capabilityCatalog.length, capabilities: capabilityCatalog.slice(offset, offset + limit).map((definition) => ({ ...definition, inputSchema: undefined, availability: this.handlers.get(definition.id)?.available(context) ?? { enabled: false, reasonCode: 'NOT_REGISTERED' } })) }
+        return { total: capabilityCatalog.length, offset, hasMore: offset + limit < capabilityCatalog.length, nextOffset: offset + limit < capabilityCatalog.length ? offset + limit : null, capabilities: capabilityCatalog.slice(offset, offset + limit).map((definition) => ({ ...definition, inputSchema: undefined, availability: this.handlers.get(definition.id)?.available(context) ?? { enabled: false, reasonCode: 'NOT_REGISTERED' } })) }
     }
     resolve(id: string, input: unknown, context: CapabilityContext) {
         const validate = this.validators.get(id)

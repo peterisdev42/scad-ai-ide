@@ -1,6 +1,6 @@
 # Agent integration verification
 
-The [capability matrix](agent-capability-matrix.md) describes shared services, permissions and GUI boundaries. The generated [catalog](agent-capability-catalog.md) lists all 37 tools. Verification has three distinct levels: service contracts, real VS Code registration/GUI behavior, and actual model-driven workflows. Success at one level does not establish the next.
+The [capability matrix](agent-capability-matrix.md) describes shared services, permissions and GUI boundaries. The generated [catalog](agent-capability-catalog.md) lists all 40 tools. Verification has three distinct levels: service contracts, real VS Code registration/GUI behavior, and actual model-driven workflows. Success at one level does not establish the next.
 
 ## Automated checks
 
@@ -17,7 +17,7 @@ npm run test:integration
 npm run package
 ```
 
-- `check:agents` checks catalog, manifest schemas, registrations, GUI classifications, generated resources, one Instruction and four Skills.
+- `check:agents` checks catalog, manifest schemas, registrations, GUI classifications, generated resources, two Instructions and five Skills.
 - Capability suites cover all handler bindings, explicit identities, atomic validation, stale targets, trust/path guards, cancellation, redaction, Development-only access and service-side confirmations.
 - Browser tests cover Customizer, Runtime, Libraries, More and AI Panel. Host tests check actual `vscode.lm.tools` and `vscode.lm.invokeTool`, shared state and CLI arguments without requiring panels.
 - Installed Production smoke must reject Development cache access even when directly invoked. VSIX inspection checks shipped runtime assets, Instruction and Skills.
@@ -64,3 +64,31 @@ Actual Skill triggering and Instruction application across harnesses, authentica
 The extension uses stable APIs with engine `^1.140.0`; it contributes no MCP server or custom agent. Another harness, CLI or cloud client may not consume editor extension tools or contribution resources. Record VS Code version, harness, provider, model and execution host for each run; do not infer one from another.
 
 SSH/WSL/Dev Container and native Windows/Linux installation behavior need actual authorized environments. Verify that Runtime executable paths, project paths, library store and subprocess environment belong to the remote extension host. A local macOS run or path mock cannot establish remote/platform acceptance. More's GitHub connection serves GitHub API access and does not configure the Chat model provider.
+
+
+## Customizer source authoring verification (2026-11-06)
+
+Source-specific implementation and evidence are tracked in [Customizer source authoring](customizer-source-authoring.md). Run `npm run test:customizer:source` for shared scanning, ranges, widgets, negative fixtures, planning/idempotence and expectations. `test:capabilities` additionally covers source schema rejection, unsaved buffers, version/hash CAS, expiry, single use, trust loss, cancellation, canonical paths/symlink escapes, WorkspaceEdit refusal, postcondition failures and Quick Fixes.
+
+The actual Host case `source tools edit unsaved buffers with CAS and refresh GUI schema, diagnostics and Quick Fixes` requires a trusted test folder: set `SCAD_TEST_WORKSPACE` to an isolated workspace directory when running `test:integration`. Without a workspace it explicitly skips. It checks real TextDocuments/WorkspaceEdits, disk preservation, Customizer state, DiagnosticCollection and the code-action provider. The installed smoke independently verifies contributions and Production restrictions. Neither is a model-authored workflow.
+
+Real model acceptance for the NEW source tools is still required. Prior Ollama results above concern runtime Overrides and libraries, not source authoring. Do not use those results to mark source E2E-01 through E2E-09 accepted. Likewise, Linux, Windows and Remote SSH/WSL/container execution is not established by a macOS run. Optional agent Hooks are deferred and no hook execution/configuration is installed.
+
+
+Final local source-authoring run: 288 `npm test` passes and three existing environment-dependent skips; 16 source tests and 21 capability/service tests passed; 24 Customizer browser checks and the AI Panel check passed. Full Extension Host runs passed all 26 tests on both VS Code 1.140.0 and 1.145.1 using clean profiles and the real 2026.11-RC0 Preview Exporter. VSIX resources and the installed Production analyze/plan/commit/validate path passed. For clean reproducibility use `SCAD_TEST_USER_DATA` in addition to `SCAD_TEST_WORKSPACE`; an older persisted test profile caused a keyboard timeout that did not reproduce in either clean full run. Raw evidence remains in `.build/customizer-source-*.log`. New real-model and non-macOS source-authoring acceptance remains pending.
+
+
+Runtime read contract follow-up: `runtime.state` now returns a complete `state.activeRuntime` independently of installed-list pagination, explicit `hasMore/nextOffset`, and bounded discovery status/diagnostics/configured-path errors. Runtime, capability and service suites passed 74 cases; five targeted actual Host cases passed on VS Code 1.145.1, including a real CLI version probe through `vscode.lm.invokeTool`, canonical executable path comparison and an invalid configured-path result. Evidence: `.build/runtime-agent-unit.log`, `.build/runtime-agent-host.log`. Resource/type/lint/build/VSIX checks passed. This proves registration and execution, not native-model tool choice.
+
+An additional isolated native Agent + official Ollama attempt selected `mimo-v2.6:latest` but showed a Copilot sign-in dialog and produced zero Runtime calls. This attempt is **not accepted** as a model workflow; raw result and UI evidence are retained in `.build/runtime-native-first-evidence.json` and `.build/runtime-native-chat.yml`. No account authorization was performed. The user's running native-model/provider/tool-selection configuration still needs matching before attributing their missing Runtime response to a specific cause.
+
+The native Configure Tools UI also displayed the SCAD AI IDE group in a local-model session. The screenshot/snapshot in `.build/runtime-native-tools-expanded.yml` is virtualized and does not establish all child tool entries or actual model invocation; it must not be used as a substitute for the recorded zero-call result. Tool naming now explicitly includes Runtime, current CLI and installed versions to improve discovery. The actual user's native model/provider remains unspecified at the end of this local investigation.
+
+
+## Four management-panel business parity (2026-11-06)
+
+The user confirmed the current scope as Runtime, Customizer, Libraries and More; Preview rendering/measurement/scene editing/export/slicer integration is deferred. The generated [GUI/Agent contract table](gui-agent-parity.md) covers 11 audited GUI groups and 41 business actions, including valid tool inputs for each operation. Generation/checks validate all examples against strict catalog schemas; the critical online/installed refresh and cancellation tests execute inputs directly from that table. CONTRIBUTING and bundled Instructions require shared-service Agent coverage whenever a GUI business action changes.
+
+New behavioral coverage includes GUI-origin Runtime/Library cancellation via shared abort controllers, registry installability/cache parity, redacted GitHub diagnostics, shared Library progress, pagination and Runtime install/remove postconditions. The Runtime lifecycle test downloads a fixture archive through an injected transport, verifies checksum, extracts to a real temporary managed directory, probes the executable's version, switches to it, refuses deletion when consent is denied, then confirms deletion and checks both disk and inventory. Catalog transport is deterministic; this is not a public-release download or a model-driven acceptance test.
+
+Local results: 292 passing default tests, three pre-existing environment-dependent skips; 24 capability/service tests; 24 Customizer, six Library and one AI Panel browser checks; all 26 actual VS Code 1.145.1 Host cases passed in a clean profile. Type/lint/manifest/package checks passed, including the new GUI contract guard. Evidence: `.build/gui-parity-full.log`, `.build/gui-parity-capabilities.log`, `.build/gui-parity-*-ui.log`, `.build/gui-parity-host.log` and `.build/gui-parity-package.log`. The minimum supported VS Code 1.140.0 also passed all 26 full Host cases (`.build/gui-parity-host-min.log`). Final VSIX resource inspection and isolated installed Production smoke passed (`.build/gui-parity-vsix.log`, `.build/gui-parity-installed.log`), including all 40 tools/resources and the real source plan/commit/validate path. Linux/Windows CI execution and actual native-model automatic selection/invocation remain separately unaccepted; earlier direct Host or fixture-based successes must not be described as those tests.
