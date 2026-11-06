@@ -905,3 +905,54 @@ body[data-page='libraries'] button {
     #cache-value-scroll-host .visible, #cache-value-scroll-host .invisible.fade { transition: none; }
 }
 body.vscode-reduce-motion #cache-value-scroll-host .scrollbar { transition: none; }
+
+.ai-capability-group,
+.ai-resource-section {
+    margin-top: 28px;
+}
+.ai-table-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-top: 12px;
+}
+.ai-table-scroll:focus-visible {
+    outline: 1px solid var(--vscode-focusBorder);
+    outline-offset: 2px;
+}
+.ai-table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: var(--font-small);
+    line-height: 1.6;
+}
+.ai-table th,
+.ai-table td {
+    padding: 12px;
+    text-align: left;
+    vertical-align: top;
+    overflow-wrap: anywhere;
+    border-bottom: 1px solid var(--border);
+}
+.ai-table thead {
+    background: var(--vscode-editorWidget-background, var(--vscode-editor-background));
+}
+.ai-table th {
+    font-weight: 600;
+}
+.ai-table tbody tr:last-child > * {
+    border-bottom: 0;
+}
+.ai-table th:nth-child(1) { width: 17%; }
+.ai-table th:nth-child(2) { width: 31%; }
+.ai-table th:nth-child(3) { width: 25%; }
+.ai-table th:nth-child(4) { width: 13%; }
+.ai-table th:nth-child(5) { width: 14%; }
+.ai-table td p {
+    margin: 6px 0 0;
+}
+.ai-resource-section .ai-table th:nth-child(1) { width: 13%; }
+.ai-resource-section .ai-table th:nth-child(2) { width: 30%; }
+.ai-resource-section .ai-table th:nth-child(3) { width: 57%; }

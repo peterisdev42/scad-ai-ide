@@ -19,3 +19,7 @@
 已安装 Runtime、Preview Exporter、Library 源码以及项目引用索引属于受管理资源，仍通过 Runtime / Libraries 页面管理，不作为此处的可丢弃缓存。GitHub 凭据由 VS Code Authentication 管理，不读取为缓存。
 
 新增长期保留的内存缓存时，向 `memoryCaches` 注册只读快照和清除函数，并在缓存 owner 释放时注销。持久化 Memento 字段自动枚举，新增可丢弃磁盘缓存目录时需更新宿主目录清单。
+
+## Agent 访问边界
+
+Agent 使用同一个缓存控制器，但只能列出有界元数据或读取一个脱敏预览，不能批量获取 GUI 原始值。内容预览可能仍包含未识别的个人信息。清理需要真实用户确认，重新验证选中字段，清理后向 GUI 发布状态；普通安装中即使直接调用工具也拒绝缓存读取与清理。具体验证入口见 [Agent 验证指南](agent-verification.md)。

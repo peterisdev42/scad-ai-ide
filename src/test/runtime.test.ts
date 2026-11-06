@@ -703,6 +703,7 @@ async function mockRuntimeFeature(detect: (options: DiscoveryOptions) => Promise
     let updateError: Error | undefined
     let archiveError: Error | undefined
     let cancelInstallation = false
+    let removalApproved = true
     const file = path.join(__dirname, '../features/runtime/registerRuntime.js')
     const subscriptions: vscode.Disposable[] = []
     const disposable = { dispose() {} }
@@ -770,7 +771,12 @@ async function mockRuntimeFeature(detect: (options: DiscoveryOptions) => Promise
         exports: {} as { registerRuntime: typeof import('../features/runtime/registerRuntime').registerRuntime },
         require: (id: string) => {
             if (id === 'vscode') return mock
-            if (id.endsWith('/platform/notifications')) return { notifications }
+            if (id === './RuntimeService') {
+                const nested = { ...sandbox, exports: {} }
+                vm.runInNewContext(require('node:fs').readFileSync(path.join(path.dirname(file), 'RuntimeService.js'), 'utf8'), nested)
+                return nested.exports
+            }
+            if (id.endsWith('/platform/notifications')) return { notifications, confirmCapabilityAction: async () => removalApproved }
             if (id.endsWith('/installation'))
                 return {
                     removeRuntimeInstallation: async (_root: string, _system: unknown, installPath: string) => remove(installPath),
@@ -809,6 +815,7 @@ async function mockRuntimeFeature(detect: (options: DiscoveryOptions) => Promise
     )
     return {
         runtime,
+        denyRemoval: () => { removalApproved = false },
         notifications,
         notices,
         commands,
@@ -1327,4 +1334,23 @@ test('each Runtime panel load shows cached data while GitHub refresh is pending,
     } finally {
         mock.dispose()
     }
+})
+
+test('Runtime shared service rejects cancellation, forged unmanaged deletion and human-denied removal without GUI dependencies', async () => {
+    const managed = await fakeProbe({ source: 'managed', installPath: '/managed/version', command: { executable: '/managed/version/openscad', argsPrefix: [] } })
+    const custom = await fakeProbe({ source: 'PATH', command: { executable: '/usr/bin/openscad', argsPrefix: [] } })
+    let removed = 0
+    const mock = await mockRuntimeFeature(async () => ({ runtimes: [managed, custom], diagnostics: [] }), async () => { removed++ })
+    try {
+        await mock.runtime.whenReady()
+        await assert.rejects(mock.runtime.service.deleteRuntime(custom.id), /Only extension-managed/)
+        mock.denyRemoval()
+        await assert.rejects(mock.runtime.service.deleteRuntime(managed.id), /cancelled/)
+        assert.equal(removed, 0)
+        const abort = new AbortController()
+        abort.abort()
+        await assert.rejects(mock.runtime.service.installArchivePath('/host/archive.zip', abort.signal), /cancelled/)
+        assert.equal(mock.runtime.getState().installing, undefined)
+        await assert.rejects(mock.runtime.service.installArchivePath('relative.zip'), /absolute/)
+    } finally { mock.dispose() }
 })

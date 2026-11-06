@@ -1,6 +1,7 @@
 const vscode = acquireVsCodeApi()
 const page = document.body.dataset.page
 const get = (id) => document.getElementById(id)
+let aiState
 let librariesState
 let runtimeState
 let pendingLocalAction
@@ -8,7 +9,7 @@ const actionErrors = { overview: '', installed: '', available: '' }
 const actionSeverities = { overview: 'error', installed: 'error', available: 'error' }
 const actionOrigins = new Map()
 const summaries = {
-    ai: 'Manage Skills, MCP, Agent Tools and AI Providers.',
+    ai: 'Explore the OpenSCAD tools and workflows available to your AI agent.',
     bricks: 'Manage reusable OpenSCAD bricks.',
     libraries: 'Manage OpenSCAD libraries and project dependencies.',
     more: 'Configure integrations for SCAD AI IDE.',
@@ -16,7 +17,7 @@ const summaries = {
 const runtimeTabs = ['overview', 'installed', 'available']
 get('summary').textContent = summaries[page] ?? ''
 get('summary').hidden = !summaries[page]
-get(page === 'runtime' ? 'runtime' : page === 'more' ? 'more' : 'placeholder').hidden = false
+get(page === 'runtime' ? 'runtime' : page === 'more' ? 'more' : page === 'ai' ? 'ai' : 'placeholder').hidden = false
 get('runtime-tabs').hidden = page !== 'runtime'
 get('more-tabs').hidden = page !== 'more'
 const headings = { ai: 'AI configuration', bricks: 'Bricks', libraries: 'Libraries' }
@@ -458,6 +459,10 @@ window.addEventListener('message', (event) => {
         selectMoreTab(developmentEnabled && saved === 'development' ? 'development' : 'github')
     }
     if (event.data?.type === 'developmentState' && page === 'more' && developmentEnabled) renderCaches(event.data.state)
+    if (event.data?.type === 'aiCapabilities' && page === 'ai') {
+        aiState = event.data.state
+        globalThis.ScadAiPanel?.render(aiState)
+    }
     if (event.data?.type === 'librariesState') librariesState = event.data.state
     if (event.data?.type === 'runtimeTab' && page === 'runtime') {
         selectTab(event.data.tab, true)

@@ -98,6 +98,20 @@
                     <div data-local-runtime-options></div>
                 </section>
             </section>
+            <section id="ai" hidden aria-label="AI capabilities">
+                <div class="section-toolbar">
+                    <h2>Agent capabilities <span id="ai-capability-count" class="count"></span></h2>
+                    <button class="text-button" data-action="refreshAiCapabilities">Refresh availability</button>
+                </div>
+                <p class="muted">Every contributed tool is listed below, including operations that are currently restricted. Availability reflects extension permissions; a compatible Agent harness and an available model are required separately.</p>
+                <p id="ai-loading" role="status">Loading capability catalog…</p>
+                <div id="ai-capability-groups"></div>
+                <section class="ai-resource-section" aria-labelledby="ai-resources-heading">
+                    <h2 id="ai-resources-heading">Instructions &amp; Skills</h2>
+                    <p class="muted">The instruction guides relevant OpenSCAD requests. Skills provide task-specific workflows; no custom agent selection is required.</p>
+                    <div id="ai-resources"></div>
+                </section>
+            </section>
             <section id="more" hidden aria-label="More">
                 <div id="panel-github" class="github-access" role="tabpanel" aria-labelledby="tab-github" tabindex="0">
                     <h2>GitHub API access</h2>
@@ -152,5 +166,6 @@
         <script nonce="{{nonce}}" src="{{scrollbarScript}}"></script>
         <script nonce="{{nonce}}" src="{{script}}"></script>
         <script nonce="{{nonce}}" src="{{librariesScript}}"></script>
+        <script nonce="{{nonce}}" src="{{aiScript}}"></script>
     </body>
 </html>

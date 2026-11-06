@@ -1,3 +1,4 @@
+import { createAiPanelState } from '../agents/CapabilityPresentation'
 import type { DeveloperCacheController } from '../development/DeveloperCacheController'
 import type { LibraryPanelController } from '../libraries/LibraryPanelController'
 import { randomBytes } from 'node:crypto'
@@ -14,6 +15,7 @@ export class PanelManager implements vscode.Disposable {
     private readonly panels = new Map<PageId, vscode.WebviewPanel>()
     private readonly changed: vscode.Disposable
     private readonly githubChanged: vscode.Disposable
+    private developmentChanged?: vscode.Disposable
     private librariesChanged?: vscode.Disposable
     private runtimeReady = false
     private requestedRuntimeTab?: 'available'
@@ -24,11 +26,19 @@ export class PanelManager implements vscode.Disposable {
         private readonly github: ReturnType<typeof registerGitHub>,
         private readonly libraries?: LibraryPanelController,
         private readonly development?: DeveloperCacheController,
+        private readonly getAiState = () => createAiPanelState(),
     ) {
+        this.developmentChanged = development?.onDidChange(() => {
+            void this.updateAi()
+            const panel = this.panels.get('more')
+            if (panel && development.enabled) void development.getState().then((state) => panel.webview.postMessage({ type: 'developmentState', state }))
+        })
         this.librariesChanged = libraries?.onDidChange(() => {
             void this.updateLibraries()
+            void this.updateAi()
         })
         this.changed = runtime.onDidChange(() => {
+            void this.updateAi()
             const panel = this.panels.get('runtime')
             if (panel) {
                 void panel.webview.postMessage({ type: 'runtimeState', state: runtime.getState() })
@@ -39,6 +49,11 @@ export class PanelManager implements vscode.Disposable {
                 void panel.webview.postMessage({ type: 'githubState', state: github.getState() })
             }
         })
+    }
+
+    private async updateAi() {
+        const panel = this.panels.get('ai')
+        if (panel) await panel.webview.postMessage({ type: 'aiCapabilities', state: this.getAiState() })
     }
 
     private async updateLibraries() {
@@ -68,6 +83,7 @@ export class PanelManager implements vscode.Disposable {
         const existing = this.panels.get(id)
         if (existing) {
             existing.reveal()
+            if (id === 'ai') await this.updateAi()
             if (id === 'runtime') {
                 await this.showRequestedRuntimeTab(existing)
                 await this.runtime.loadBuilds()
@@ -89,6 +105,7 @@ export class PanelManager implements vscode.Disposable {
             panel.onDidChangeViewState(() => {
                 const becameVisible = panel.visible && !visible
                 visible = panel.visible
+                if (becameVisible && id === 'ai') void this.updateAi()
                 if (becameVisible && id === 'libraries') void this.libraries?.refreshActiveTab()
             }),
             panel.webview.onDidReceiveMessage(async (value: unknown) => {
@@ -103,6 +120,10 @@ export class PanelManager implements vscode.Disposable {
                     }
                     if (action === 'ready') {
                         await panel.webview.postMessage({ type: 'githubState', state: this.github.getState() })
+                    }
+                    if (id === 'ai') {
+                        if (action === 'ready' || action === 'refreshAiCapabilities') await this.updateAi()
+                        return
                     }
                     if (id === 'libraries' && this.libraries) {
                         await this.libraries.handle(action === 'ready' ? { action: 'libraries.selectTab', tab: (value as { tab?: unknown }).tab ?? 'registry' } : value)
@@ -158,6 +179,7 @@ export class PanelManager implements vscode.Disposable {
                     }
                 }
             }),
+            vscode.workspace.onDidGrantWorkspaceTrust(() => { if (id === 'ai') void this.updateAi() }),
             panel.onDidDispose(() => {
                 if (id === 'runtime') {
                     this.runtimeReady = false
@@ -180,6 +202,7 @@ export class PanelManager implements vscode.Disposable {
                 scrollbarScript: panel.webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, 'dist', 'panel-scrollbar.js')).toString(),
                 scrollbarStyle: panel.webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, 'dist', 'panel-scrollbar.css')).toString(),
                 style: panel.webview.asWebviewUri(vscode.Uri.joinPath(root, 'main.css')).toString(),
+                aiScript: panel.webview.asWebviewUri(vscode.Uri.joinPath(root, 'ai.js')).toString(),
                 librariesScript: panel.webview.asWebviewUri(vscode.Uri.joinPath(root, 'libraries.js')).toString(),
                 script: panel.webview.asWebviewUri(vscode.Uri.joinPath(root, 'main.js')).toString(),
             }
@@ -193,6 +216,7 @@ export class PanelManager implements vscode.Disposable {
     }
 
     dispose(): void {
+        this.developmentChanged?.dispose()
         this.librariesChanged?.dispose()
         this.changed.dispose()
         this.githubChanged.dispose()

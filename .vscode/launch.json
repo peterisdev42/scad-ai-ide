@@ -12,6 +12,18 @@
             "args": ["--extensionDevelopmentPath=${workspaceFolder}", "--disable-extensions"],
             "outFiles": ["${workspaceFolder}/dist/**/*.js"],
             "preLaunchTask": "${defaultBuildTask}"
+        },
+        {
+            "name": "Run Extension + Ollama",
+            "type": "extensionHost",
+            "request": "launch",
+            "args": [
+                "--extensionDevelopmentPath=${workspaceFolder}",
+                "--extensionDevelopmentPath=${workspaceFolder}/.build/ollama-dev/extensions/ollama.ollama",
+                "--disable-extensions"
+            ],
+            "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+            "preLaunchTask": "watch + Ollama"
         }
     ]
 }

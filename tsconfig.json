@@ -3,6 +3,7 @@
     "exclude": ["src/features/preview/webview", "src/test/preview"],
     "compilerOptions": {
         "module": "Node16",
+        "resolveJsonModule": true,
         "target": "ES2022",
         "lib": ["ES2022"],
         "types": ["node", "mocha"],

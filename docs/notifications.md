@@ -24,7 +24,7 @@ Runtime 的启动检测、渲染、导出和切片器路径都上报 `runtime.un
 
 原生通知 API 不提供主动关闭已显示通知的句柄。问题恢复会清除聚合记录并使旧通知的按钮动作失效；已经显示的旧通知由 VS Code 管理。
 
-删除参数集的确认框通过平台入口 `confirmDeleteParameterSet()` 展示，每次都等待用户决定，不参与去重。
+删除参数集的确认框通过平台入口 `confirmDeleteParameterSet()` 展示；共享能力的删除和缓存清理等确认通过 `confirmCapabilityAction()` 展示。每次都等待真实用户决定，不参与通知去重，也不接受模型提供的批准布尔值。
 
 ## 新增通知
 

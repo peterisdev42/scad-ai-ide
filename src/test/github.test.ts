@@ -488,8 +488,9 @@ test('panel navigation shares GitHub guidance and opens requested Runtime tabs b
     const mock = {
         Uri: { joinPath: (...parts: unknown[]) => parts.join('/') },
         ViewColumn: { Active: 1 },
-        workspace: { fs: { readFile: async () => Buffer.from('{{page}}') } },
+        workspace: { fs: { readFile: async () => Buffer.from('{{page}}') }, onDidChangeConfiguration: () => disposable, onDidGrantWorkspaceTrust: () => disposable },
         window: {
+            onDidChangeActiveColorTheme: () => disposable,
             createWebviewPanel: (viewType: string) => {
                 const record = { messages: [] as Array<{ type: string; state?: unknown; severity?: string; action?: string; tab?: string }>, receive: undefined as Listener | undefined, reveals: 0, html: '' }
                 panels.set(viewType.replace('scad-ai.', ''), record)
@@ -505,6 +506,7 @@ test('panel navigation shares GitHub guidance and opens requested Runtime tabs b
                             record.html = value
                         },
                     },
+                    onDidChangeViewState: () => disposable,
                     reveal: () => record.reveals++,
                     onDidDispose: () => disposable,
                 }

@@ -1,3 +1,4 @@
+import { CapabilityError } from '../../core/capabilities/CapabilityTypes'
 import { posix } from 'node:path'
 import * as vscode from 'vscode'
 import { encodePresetValue, parsePresetFile, presetOverrides, type PresetFile } from '../../core/customizer/CustomizerPresets'
@@ -94,10 +95,10 @@ export class CustomizerPresets implements vscode.Disposable {
         this.changed()
     }
 
-    async execute(action: string, name?: string) {
+    async execute(action: string, name?: string, explicitUri?: vscode.Uri, guard: () => void = () => {}) {
         const target = this.target
         const presets = target ? this.files.get(target) : undefined
-        if (!target || !presets) return
+        if (!target || !presets) throw new CapabilityError('TARGET_CHANGED', 'No Customizer target.')
         const generation = this.generation
         const current = () => !this.disposed && this.target === target && generation === this.generation
         if (action === 'select') {
@@ -109,11 +110,12 @@ export class CustomizerPresets implements vscode.Disposable {
                 this.apply(target, presets, name)
             }
         } else if (action === 'import') {
-            const selected = await vscode.window.showOpenDialog({ filters: { 'OpenSCAD parameter files': ['json'] }, canSelectMany: false })
-            if (!selected?.[0] || !current()) return
-            const file = parsePresetFile(Buffer.from(await vscode.workspace.fs.readFile(selected[0])).toString('utf8'))
-            if (!current()) return
-            presets.uri = selected[0]
+            const selected = explicitUri
+            if (!selected || !current()) throw new CapabilityError('TARGET_CHANGED', 'Preset target changed.', true)
+            const file = parsePresetFile(Buffer.from(await vscode.workspace.fs.readFile(selected)).toString('utf8'))
+            if (!current()) throw new CapabilityError('TARGET_CHANGED', 'Preset target changed.', true)
+            guard()
+            presets.uri = selected
             presets.file = file
             presets.active = undefined
             presets.baseline = undefined
@@ -124,28 +126,29 @@ export class CustomizerPresets implements vscode.Disposable {
             this.changed()
             return
         } else if (action === 'export') {
-            const uri = await vscode.window.showSaveDialog({ defaultUri: presets.uri, filters: { 'OpenSCAD parameter files': ['json'] } })
-            if (!uri || !current()) return
+            const uri = explicitUri
+            if (!uri || !current()) throw new CapabilityError('INVALID_PATH', 'An explicit preset file and current target are required.')
             const file = presets.uri ? (await this.read(presets.uri)).file : { fileFormatVersion: '1', parameterSets: {} as Record<string, Record<string, string>> }
-            if (!current()) return
+            if (!current()) throw new CapabilityError('TARGET_CHANGED', 'Preset target changed.', true)
             if (!Object.keys(file.parameterSets).length) file.parameterSets.Current = this.snapshot()
+            guard()
             await vscode.workspace.fs.writeFile(uri, Buffer.from(JSON.stringify(file, null, 2) + '\n'))
         } else if (action === 'new' || action === 'save' || action === 'delete') {
-            if (action === 'save' && !this.modified(presets)) return
+            if (action === 'save' && (!name || name === presets.active) && !this.modified(presets)) return
             const snapshot = this.snapshot()
             if (action === 'new') {
-                name = await vscode.window.showInputBox({ prompt: 'New preset name', placeHolder: 'Preset name', validateInput: (value) => (!value.trim() ? 'Enter a name' : Object.hasOwn(presets.file.parameterSets, value.trim()) ? 'A preset with this name already exists' : undefined) })
-                if (!name || !current()) return
+                if (!name || !current()) throw new CapabilityError('TARGET_CHANGED', 'A preset name and current target are required.', true)
                 name = name.trim()
-            } else name = presets.active
+                if (!name) throw new CapabilityError('INVALID_INPUT', 'Enter a non-empty preset name.')
+            } else name ??= presets.active
             if ((!name && action !== 'save') || !current()) return
             const source = vscode.Uri.parse(target)
             const inferred = source.scheme !== 'untitled' && /\.scad$/i.test(source.path) ? source.with({ path: source.path.replace(/\.scad$/i, '.json'), query: '', fragment: '' }) : undefined
-            const uri = presets.uri ?? inferred ?? (await vscode.window.showSaveDialog({ saveLabel: 'Create preset file', filters: { 'OpenSCAD parameter files': ['json'] } }))
-            if (!uri || !current()) return
+            const uri = explicitUri ?? presets.uri ?? inferred
+            if (!uri || !current()) throw new CapabilityError('INVALID_PATH', 'An explicit preset file and current target are required.')
             // Re-read before writing so unrelated presets and file metadata survive external edits.
             const { file } = await this.read(uri)
-            if (!current()) return
+            if (!current()) throw new CapabilityError('TARGET_CHANGED', 'Preset target changed.', true)
             const creating = action === 'new' || (action === 'save' && !name)
             if (!name) {
                 name = 'Current'
@@ -157,8 +160,9 @@ export class CustomizerPresets implements vscode.Disposable {
             if (action === 'delete') delete file.parameterSets[name]
             else file.parameterSets = { ...file.parameterSets, [name]: { ...file.parameterSets[name], ...snapshot } }
             this.reloadGeneration++
+            guard()
             await vscode.workspace.fs.writeFile(uri, Buffer.from(JSON.stringify(file, null, 2) + '\n'))
-            if (!current()) return
+            if (!current()) throw new CapabilityError('TARGET_CHANGED', 'Preset file was written, but the active model changed. Re-read before another action.', true)
             const openedNewFile = !presets.uri
             presets.uri = uri
             presets.file = file
@@ -167,7 +171,7 @@ export class CustomizerPresets implements vscode.Disposable {
             presets.baseline = action === 'delete' ? undefined : snapshot
             presets.exists = true
             presets.error = undefined
-        }
+        } else throw new CapabilityError('INVALID_INPUT', 'Unknown preset action.')
         if (current()) this.changed()
     }
 

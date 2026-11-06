@@ -12,7 +12,7 @@ Libraries 隐藏后保留 Webview 上下文，切换到 Runtime 等页面再返�
 
 首次安装需要访问 Registry 和上游仓库。Registry 列表沿用 Runtime 的本地缓存方式：成功校验的数据保存在 VS Code `globalState`。打开或切换进入 Registry 时先显示缓存列表，再静默刷新远端；已有缓存时不展示 Loading 或成功提示，也不阻塞安装等操作。首次没有缓存内容时展示 Loading，失败时保留已有列表并仅显示错误信息，成功后同步更新界面和缓存。搜索图标位于输入框内部左侧，Refresh 位于搜索框右侧并保持同一行居中对齐，间距跟随 VS Code spacing/font 变量。搜索在 Webview 内对本地列表按名称、ID、描述过滤，输入停止 300ms 后更新，无需搜索按钮，也不发送远端搜索请求。缓存刷新支持 ETag/304。已有 `libraries/v1/cache/registry.json` 会在缺少可用 `globalState` 缓存时校验并迁移；损坏或来源不匹配的缓存不会使用。离线时 **Restore Dependencies** 使用已有全局源码，无需重新解析 Registry，也不会跟随移动后的 Tag。源码缓存缺失时，从锁文件中记录的仓库和 Commit 下载，仍无需 Registry 可用。
 
-当前 v1 Registry 的安装布局审核见 [29 项布局清单](library-layout-audit.md)。BOSL2 的每个选定 Commit 都检查根目录 `std.scad`；其余映射只开放清单里明确审核的 Commit。支持 Registry v2 的库级 `layout` 与版本级 `layout` 覆盖。布局确认不等于全部库、全部版本都已经完成真实渲染验收。
+当前 v1 Registry 的固定 Commit、挂载名称、入口与禁用原因维护在 [布局资源](../resources/libraries/layouts.json)，由 [布局解析](../src/core/libraries/validation.ts) 校验。BOSL2 的每个选定 Commit 都检查根目录 `std.scad`；其余映射只开放资源中明确审核的 Commit。支持 Registry v2 的库级 `layout` 与版本级 `layout` 覆盖。布局确认不等于全部库、全部版本都已经完成真实渲染验收。
 
 ## 界面布局与主题
 
@@ -89,9 +89,9 @@ npm run test:integration
 
 [CI](../.github/workflows/libraries.yml) 在 macOS/Linux/Windows 运行类型、lint、依赖测试和真实 CLI smoke；Windows 分支实际创建、解析和删除 Junction。CI 配置已加入，但本机验收不代表三平台 CI 已经通过。Fast Preview 仍限现有实现支持的 macOS ARM64。
 
-## Registry v2 布局草案
+## Registry 布局格式
 
-保持 v1 响应不变；v2 使用 `schemaVersion: 2`，增加可选的库级布局，版本级布局优先。字段必须是安全的单目录名与仓库相对目录，并在下载的实际 Commit 中再次校验。
+解析器同时支持 v1 和 v2；v2 使用 `schemaVersion: 2`，增加可选的库级布局，版本级布局优先。字段必须是安全的单目录名与仓库相对目录，并在下载的实际 Commit 中再次校验。
 
 ```json
 {
@@ -110,4 +110,4 @@ npm run test:integration
 
 此段仅展示新增字段，不是完整 Registry 示例；现有版本、同步、许可与来源字段仍然必需。Registry v1 某一库的仓库与下载身份不一致时，该项单独禁用，不阻断其他合法库。BOLTS 的已改名下载目标是当前发现的一例，需 Registry 上游修正后重新审核。
 
-本次结果与已知限制见 [本机验收记录](library-manager-validation.md)。
+真实 Windows Junction、SSH/WSL/Container、各平台 CLI 与库兼容性必须在相应环境运行验证；本机测试不能替代这些验收。

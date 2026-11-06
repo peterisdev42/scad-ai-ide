@@ -2,54 +2,36 @@ import { randomBytes } from 'node:crypto'
 import { posix } from 'node:path'
 import * as vscode from 'vscode'
 import { CustomizerService } from '../../core/customizer/CustomizerService'
-import { CustomizerPresets } from './CustomizerPresets'
+import { CustomizerDomainService } from './CustomizerDomainService'
 import type { ParameterValue } from '../../core/customizer/CustomizerParser'
 
 /** Owns document selection and the message boundary; the view owns only presentation. */
 export class CustomizerViewProvider implements vscode.WebviewViewProvider, vscode.Disposable {
     private view?: vscode.WebviewView
-    private revision = 0
+    private get revision() { return this.domain.revision }
     private groupTarget?: string
     private hasGroups = false
     private allCollapsed = false
     private readonly contexts = new Map<string, boolean>()
-    private loadedTarget?: string
-    private loadedSource?: string
-    private readonly presets: CustomizerPresets
+    private get presets() { return this.domain.presets }
     private presetOperations = Promise.resolve()
     private readonly subscriptions: vscode.Disposable[]
 
     constructor(
         readonly service: CustomizerService,
         private readonly extensionUri: vscode.Uri,
+        readonly domain = new CustomizerDomainService(service),
     ) {
-        this.presets = new CustomizerPresets(service, () => this.refresh())
         this.subscriptions = [
-            this.presets,
-            service.onDidChangePreviewCapability((target) => {
-                if (target === service.target) this.refresh()
-            }),
-            service.onDidChangeValues((target) => {
-                if (target === service.target) {
-                    this.refresh()
-                }
-            }),
-            vscode.window.onDidChangeActiveTextEditor(() => this.loadTarget()),
-            vscode.window.tabGroups.onDidChangeTabs(() => this.loadTarget()),
-            vscode.workspace.onDidChangeTextDocument((event) => {
-                if (event.document.uri.toString() === service.target) {
-                    this.load(event.document)
-                }
-            }),
-            vscode.workspace.onDidOpenTextDocument(() => this.loadTarget()),
-            vscode.workspace.onDidCloseTextDocument(() => this.loadTarget()),
+            this.domain,
+            this.domain.onDidChange(() => this.refresh()),
             vscode.workspace.onDidChangeConfiguration((event) => {
                 if (event.affectsConfiguration('workbench.list') || event.affectsConfiguration('workbench.experimental.modernUI')) {
                     void this.view?.webview.postMessage({ type: 'scrollSettings', settings: this.getScrollSettings() })
                 }
             }),
         ]
-        this.loadTarget()
+        this.domain.loadTarget()
     }
 
     resolveWebviewView(view: vscode.WebviewView): void {
@@ -90,7 +72,7 @@ export class CustomizerViewProvider implements vscode.WebviewViewProvider, vscod
             view.webview.onDidReceiveMessage((message: unknown) => this.receiveMessage(message)),
             view.onDidChangeVisibility(() => {
                 if (view.visible) {
-                    this.loadTarget()
+                    this.domain.loadTarget()
                     this.refresh()
                 }
             }),
@@ -128,7 +110,7 @@ export class CustomizerViewProvider implements vscode.WebviewViewProvider, vscod
             this.presetOperations = this.presetOperations.then(async () => {
                 if (data.target !== this.service.target || data.revision !== this.revision) return
                 try {
-                    await this.presets.execute(action, typeof data.name === 'string' ? data.name : undefined)
+                    await this.executePreset(action, typeof data.name === 'string' ? data.name : undefined)
                 } catch (error) {
                     if (data.target === this.service.target) {
                         this.refresh()
@@ -144,7 +126,7 @@ export class CustomizerViewProvider implements vscode.WebviewViewProvider, vscod
         const name = typeof data.name === 'string' ? data.name : undefined
         try {
             if (data.type === 'reset' && (name === undefined || this.service.parameters.some((parameter) => parameter.name === name))) {
-                this.service.reset(name)
+                this.domain.reset(String(data.target), Number(data.revision), name)
             } else if (data.type === 'set' && name) {
                 if (data.phase === 'input' && !this.service.canPreviewContinuously()) return
                 // Service validation also checks values received from untrusted webview messages.
@@ -155,29 +137,17 @@ export class CustomizerViewProvider implements vscode.WebviewViewProvider, vscod
         }
     }
 
-    private loadTarget(): void {
-        const input = vscode.window.tabGroups.activeTabGroup.activeTab?.input
-        const uri = input instanceof vscode.TabInputCustom && input.viewType === 'scad-ai-ide.preview.editor' ? input.uri : undefined
-        const document = uri ? vscode.workspace.textDocuments.find((document) => document.uri.toString() === uri.toString() && !document.isClosed) : vscode.window.activeTextEditor?.document
-        if (document && !document.isClosed && (document.languageId === 'openscad' || document.uri.path.toLowerCase().endsWith('.scad'))) {
-            this.load(document)
-        } else if (this.service.target && !vscode.workspace.textDocuments.some((document) => document.uri.toString() === this.service.target && !document.isClosed)) {
-            this.service.clear()
-            this.revision++
-            this.refresh()
-        }
-    }
-
-    private load(document: vscode.TextDocument): void {
-        const target = document.uri.toString()
-        const source = document.getText()
-        // Focus/tab changes do not invalidate pending preset actions for unchanged source.
-        if (this.service.target === target && this.loadedTarget === target && this.loadedSource === source) return
-        this.loadedTarget = target
-        this.loadedSource = source
-        this.service.load(target, source)
-        this.revision++
-        this.refresh()
+    private async executePreset(action: string, name?: string) {
+        const target = this.service.target!
+        const revision = this.revision
+        let uri: vscode.Uri | undefined
+        if (action === 'new') name = await vscode.window.showInputBox({ prompt: 'New preset name', placeHolder: 'Preset name', validateInput: (value) => !value.trim() ? 'Enter a name' : this.presets.state().names.includes(value.trim()) ? 'A preset with this name already exists' : undefined })
+        if (action === 'new' && !name) return
+        if (action === 'import') uri = (await vscode.window.showOpenDialog({ filters: { 'OpenSCAD parameter files': ['json'] }, canSelectMany: false }))?.[0]
+        if (action === 'export') uri = await vscode.window.showSaveDialog({ defaultUri: this.presets.state().path ? vscode.Uri.parse(this.presets.state().path!) : undefined, filters: { 'OpenSCAD parameter files': ['json'] } })
+        if ((action === 'import' || action === 'export') && !uri) return
+        if ((action === 'new' || action === 'save') && !this.presets.state().path && vscode.Uri.parse(target).scheme === 'untitled') uri = await vscode.window.showSaveDialog({ saveLabel: 'Create preset file', filters: { 'OpenSCAD parameter files': ['json'] } })
+        await this.domain.preset(target, revision, action, name, uri)
     }
 
     private refresh(): void {
@@ -206,6 +176,7 @@ export class CustomizerViewProvider implements vscode.WebviewViewProvider, vscod
 
     runAction(action: 'resetAll' | 'collapseAll' | 'expandAll') {
         if (!this.service.target || !this.service.parameters.length) return
+        if (action === 'resetAll') return this.domain.reset(this.service.target, this.revision)
         return this.view?.webview.postMessage({ type: 'action', action, target: this.service.target, revision: this.revision })
     }
 

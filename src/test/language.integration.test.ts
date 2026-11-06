@@ -16,6 +16,15 @@ async function eventually(check: () => boolean | Promise<boolean>) {
     }
 }
 
+/** The command acknowledgement can precede the editor edit in current VS Code hosts. */
+async function typeText(editor: vscode.TextEditor, text: string) {
+    await vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup')
+    await eventually(() => vscode.window.activeTextEditor?.document === editor.document)
+    const version = editor.document.version
+    await vscode.commands.executeCommand('type', { text })
+    await eventually(() => editor.document.version > version)
+}
+
 suite('OpenSCAD language integration', () => {
     test('native Enter indents unbraced bodies once, nested vectors and block comments', async () => {
         const settings = vscode.workspace.getConfiguration('editor')
@@ -28,14 +37,14 @@ suite('OpenSCAD language integration', () => {
                 editor.options = { insertSpaces: true, tabSize: 4 }
                 editor.selection = new vscode.Selection(document.positionAt(header.length), document.positionAt(header.length))
                 await vscode.commands.executeCommand('editor.action.forceRetokenize')
-                await vscode.commands.executeCommand('type', { text: '\n' })
+                await typeText(editor, '\n')
                 assert.equal(document.getText(), `${header}\n    `, header)
-                await vscode.commands.executeCommand('type', { text: 'cube(1);' })
+                await typeText(editor, 'cube(1);')
                 assert.equal(document.lineAt(1).text, '    cube(1);')
                 // Rapid API typing can otherwise hit VS Code's temporary
                 // keep-indent fallback before background tokenization catches up.
                 await vscode.commands.executeCommand('editor.action.forceRetokenize')
-                await vscode.commands.executeCommand('type', { text: '\n' })
+                await typeText(editor, '\n')
                 assert.equal(document.lineAt(2).text, '', header)
                 await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor')
             }
@@ -50,7 +59,7 @@ suite('OpenSCAD language integration', () => {
                 editor.options = { insertSpaces: true, tabSize: 4 }
                 editor.selection = new vscode.Selection(document.positionAt(source.length), document.positionAt(source.length))
                 await vscode.commands.executeCommand('editor.action.forceRetokenize')
-                await vscode.commands.executeCommand('type', { text: '\n' })
+                await typeText(editor, '\n')
                 assert.equal(document.lineAt(document.lineCount - 1).text, expected, source)
                 await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor')
             }

@@ -1,0 +1,22 @@
+const vscode = require('vscode')
+const assert = require('node:assert/strict')
+const fs = require('node:fs/promises')
+exports.run = async () => {
+    const extension = vscode.extensions.all.find((item) => item.packageJSON.name === 'scad-ai-ide')
+    assert.ok(extension)
+    assert.ok(extension.extensionPath.startsWith(process.env.SCAD_SMOKE_EXTENSIONS_DIR))
+    const api = await extension.activate()
+    const names = extension.packageJSON.contributes.languageModelTools.map((tool) => tool.name)
+    for (const name of names) assert.ok(vscode.lm.tools.some((tool) => tool.name === name), name)
+    const availableChatModels = (await vscode.lm.selectChatModels()).length
+    const result = await vscode.lm.invokeTool('scad_ai_ide_development_status', { input: {}, toolInvocationToken: undefined })
+    const state = JSON.parse(result.content[0].value)
+    assert.equal(state.ok, true)
+    assert.equal(state.data.enabled, false)
+    const denied = await api.capabilities.invoke('development.listCaches', {}, { actor: 'agent' })
+    assert.equal(denied.ok, false)
+    assert.equal(denied.error.code, 'DEVELOPMENT_ONLY')
+    assert.equal(api.panels.getPanel('libraries'), undefined)
+    assert.equal(api.panels.getPanel('runtime'), undefined)
+    await fs.writeFile(process.env.SCAD_SMOKE_RESULT, JSON.stringify({ vscode: vscode.version, extension: extension.id, toolCount: names.length, availableChatModels, productionDevDenied: true, panelsRequired: false, instructions: extension.packageJSON.contributes.chatInstructions, skills: extension.packageJSON.contributes.chatSkills }, null, 2))
+}
