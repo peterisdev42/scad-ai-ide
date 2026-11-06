@@ -25,15 +25,6 @@ Preview 左侧颜色按钮下方的 **Color parts separately** 开关用于辅�
 
 目前处理 cube、sphere、cylinder、polyhedron 及常见分组、变换和 Boolean 容器的保守范围；difference 使用正操作数范围，intersection 使用保守合并范围，不进行实体求值。优先保留外层 color 作用域；没有可用显式颜色作用域时尝试顶层分组。
 
-## 本机样本
+## 验证
 
-2026-11-03，macOS ARM64、Node.js 24.16.0，使用已有本机 OpenSCAD Runtime 对 `scalable_field_camera/SCAD/assembly.scad` 验证：
-
-- `explode=0/1` 分别得到 27 个作用域；标识与源颜色保持一致。
-- CSG 约 188 KiB；两次独立导出约 76 / 45 ms。
-- CSG 解析短程采样约 3–6 ms。
-- 两份最终 STL 约 82,048 / 83,532 个三角形；辅助匹配短程样本约 9–18 ms，缓存后的外观更新约 0.02 ms。
-
-这些是单机短程样本，不是跨平台性能保证。包围盒命中也不等于视觉归属完全正确。
-
-自动化覆盖按需请求、缓存、取消、旧版本丢弃、失败回退，以及接触几何在装配/展开后使用相同源颜色。
+自动化覆盖按需请求、缓存、取消、旧版本丢弃、失败回退，以及接触几何在装配和展开后使用相同源颜色。运行 `npm test` 和 Preview 浏览器回归；环境与命令见 [开发说明](../CONTRIBUTING.md)。性能和视觉归属需用目标模型实测，包围盒命中不等于准确的源码映射。

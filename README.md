@@ -102,3 +102,33 @@ We plan to expose existing IDE services through **VS Code Agent Tools, MCP, and 
 Feedback and contributions are welcome through [GitHub Issues](https://github.com/peterisdev42/scad-ai-ide/issues). See [CONTRIBUTING.md](CONTRIBUTING.md) for build and testing instructions, and the [documentation index](docs/README.md) for technical details.
 
 SCAD AI IDE is licensed under [GPL-3.0](LICENSE). It is an independent community project built on the [OpenSCAD](https://openscad.org/) and [VS Code](https://code.visualstudio.com/) ecosystems, not an official project of either.
+
+### Agent tools and shared capabilities
+
+SCAD AI IDE contributes 37 VS Code Language Model Tools for Runtime, Customizer,
+Libraries and safe diagnostics, plus one targeted Instruction and four task Skills.
+GUI, commands and tools share domain services; tools work without opening panels.
+The AI Panel lists every tool in six category tables with permissions and live
+availability, followed by the bundled Instruction and Skills.
+Customizer changes are per-model overrides and do not edit SCAD source. Project
+library writes use an explicit workspace project and exact versions. Destructive
+operations independently ask for user authorization; Development cache access is
+hard-disabled in normal installations.
+
+See the [capability matrix](docs/agent-capability-matrix.md),
+[exact tool catalog](docs/agent-capability-catalog.md) and
+[verification/manual acceptance](docs/agent-verification.md) for permissions,
+workflows and the remaining model/host validation limits. VS Code extension-tool
+availability depends on the Agent harness; the GUI needs no AI subscription.
+
+For contributors, run `npm run generate:agents` after editing the capability catalog;
+`npm run check:agents` checks the manifest/resources/matrix and
+`npm run test:capabilities` exercises the shared contracts and adapters.
+
+Observed model failures and remaining acceptance cases are maintained in the
+[Agent verification guide](docs/agent-verification.md).
+
+For local LLM development testing, choose **Run Extension + Ollama** in the F5
+launch configuration. It retains `--disable-extensions` and explicitly loads this project plus the
+locally installed `Ollama.ollama` as development extensions. See [Ollama development setup](docs/ollama-development.md)
+for model selection, custom installation paths and the real-host discovery smoke.

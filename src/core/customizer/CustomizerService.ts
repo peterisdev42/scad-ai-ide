@@ -105,27 +105,26 @@ export class CustomizerService {
     }
 
     set(name: string, value: ParameterValue, reason: CustomizerChangeReason = 'values'): void {
-        const parameter = this.parameters.find((item) => item.name === name)
-        if (!this.target || !parameter) {
-            throw new Error('Parameter is no longer available')
+        this.setMany({ [name]: value }, reason)
+    }
+
+    /** Validate the entire batch before touching overrides; GUI single writes use this same path. */
+    setMany(input: Record<string, ParameterValue>, reason: CustomizerChangeReason = 'values'): void {
+        if (!this.target) throw new Error('Parameter is no longer available')
+        const validated = Object.entries(input).map(([name, value]) => {
+            const parameter = this.parameters.find((item) => item.name === name)
+            if (!parameter) throw new Error(`Parameter is no longer available: ${name}`)
+            const error = validateValue(parameter, value)
+            if (error) throw new Error(`${name}: ${error}`)
+            return { name, value, parameter }
+        })
+        const values = new Map(this.overrides.get(this.target))
+        for (const { name, value, parameter } of validated) {
+            if (equalValues(value, parameter.defaultValue)) values.delete(name)
+            else values.set(name, value)
         }
-        const error = validateValue(parameter, value)
-        if (error) {
-            throw new Error(error)
-        }
-        let values = this.overrides.get(this.target)
-        if (!values) {
-            values = new Map()
-            this.overrides.set(this.target, values)
-        }
-        if (equalValues(value, parameter.defaultValue)) {
-            values.delete(name)
-        } else {
-            values.set(name, value)
-        }
-        for (const listener of this.listeners) {
-            listener(this.target, reason)
-        }
+        this.overrides.set(this.target, values)
+        for (const listener of this.listeners) listener(this.target, reason)
     }
 
     reset(name?: string, reason: CustomizerChangeReason = 'values'): void {

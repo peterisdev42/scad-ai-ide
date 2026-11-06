@@ -40,9 +40,7 @@ scripts/                 构建、浏览器测试、性能测试和同步工具
 sources/                 三个独立管理的 Git 子模块
 .preview-sync/           受版本控制的同步基线和内容对象
 examples/                手工验收与用户示例
-docs/                   架构、验收和历史研究文档
-  artifacts/             已记录的性能 JSON 和原始截图
-  images/                文档演示图片
+docs/                    现行功能、架构、安全边界与验证指南
 ```
 
 `dist/`、`out/`、`.build/`、`server/`、`licenses/` 和 `.vscode-test/` 都是本地生成目录，不提交版本控制。`dist/`、`server/`、`licenses/` 中的必要产物会随 VSIX 分发；不要因为 Git 忽略它们就从打包规则中排除。静态界面资源和语言贡献路径由 manifest、构建脚本及 Host 代码共同引用。
@@ -53,12 +51,14 @@ docs/                   架构、验收和历史研究文档
 
 | 命令                                                  | 覆盖范围与前置条件                                                                |
 | ----------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `npm run check:agents`                                | Agent 工具、manifest、资源与生成目录的一致性                                      |
+| `npm run test:capabilities`                           | 共享服务、权限与工具适配器契约                                                    |
 | `npm run check-types`                                 | Host 和 Webview 各自的 TypeScript 配置                                            |
 | `npm run lint`                                        | `src/` 静态检查                                                                   |
 | `npm test`                                            | 编译 Node 测试、运行核心测试及 Preview 单元测试；部分真实导出器测试缺少程序时跳过 |
-| `npm run test:libraries` | Registry、Store、项目事务、链接、环境、清理及 CLI smoke；已纳入 npm test |
-| `npm run test:libraries:ui` | Libraries 三页浏览器交互；需要 Playwright Chromium |
-| `npm run test:libraries:online` | 在线 Registry/BOSL2 下载、真实渲染及离线恢复；需要 SCAD_OPENSCAD_EXECUTABLE |
+| `npm run test:libraries`                              | Registry、Store、项目事务、链接、环境、清理及 CLI smoke；已纳入 npm test          |
+| `npm run test:libraries:ui`                           | Libraries 三页浏览器交互；需要 Playwright Chromium                                |
+| `npm run test:libraries:online`                       | 在线 Registry/BOSL2 下载、真实渲染及离线恢复；需要 SCAD_OPENSCAD_EXECUTABLE       |
 | `npm run test:preview-sync`                           | 同步引擎测试，真实双仓库用例需要 Preview 工作副本                                 |
 | `npm run test:customizer`                             | Customizer 浏览器测试                                                             |
 | `npm run test:markdown`                               | Markdown 单元与浏览器测试                                                         |
@@ -71,7 +71,7 @@ docs/                   架构、验收和历史研究文档
 | `npm run package`                                     | 类型检查、lint、生产 bundle、第三方许可证暂存；不生成 VSIX，也不构建 LSP          |
 | `npm run build:lsp`                                   | 构建并暂存当前宿主平台的 LSP                                                      |
 
-浏览器测试需要安装与锁定 Playwright 对应的 Chromium（`npx playwright install chromium`）；WebGPU 测试还需要可用图形后端。真实 Preview Exporter 验收使用 `SCAD_PREVIEW_EXPORTER`，详细环境要求见 [当前验收报告](docs/preview-goldfeather-validation.md)。跨平台路径测试不能代替在 Windows、Linux 和 macOS 上分别运行原生程序。
+浏览器测试需要安装与锁定 Playwright 对应的 Chromium（`npx playwright install chromium`）；WebGPU 测试还需要可用图形后端。真实 Preview Exporter 验收使用 `SCAD_PREVIEW_EXPORTER`，环境要求与渲染边界见 [Preview 架构](docs/preview-exporter-architecture.md)。测试日志、截图和性能采样输出到 `.build/` 或临时目录。跨平台路径测试不能代替在 Windows、Linux 和 macOS 上分别运行原生程序。
 
 `npm run format` 会格式化整个仓库，应只在明确需要时执行。局部整理优先对修改过的文件运行 Prettier，避免混入无关格式变更。
 

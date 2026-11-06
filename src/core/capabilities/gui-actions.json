@@ -1,0 +1,255 @@
+[
+  {
+    "group": "libraries",
+    "source": "src/features/libraries/LibraryService.ts",
+    "pattern": "'(libraries\\.[A-Za-z]+)'",
+    "actions": {
+      "libraries.cancel": {
+        "capabilities": [
+          "operation.cancel"
+        ]
+      },
+      "libraries.refresh": {
+        "capabilities": [
+          "libraries.refresh"
+        ]
+      },
+      "libraries.selectProject": {
+        "uiOnly": "GUI project selection; Agent always supplies explicit project"
+      },
+      "libraries.search": {
+        "capabilities": [
+          "libraries.search"
+        ]
+      },
+      "libraries.install": {
+        "capabilities": [
+          "libraries.install"
+        ]
+      },
+      "libraries.remove": {
+        "capabilities": [
+          "libraries.remove"
+        ]
+      },
+      "libraries.restore": {
+        "capabilities": [
+          "libraries.restore"
+        ]
+      },
+      "libraries.repair": {
+        "capabilities": [
+          "libraries.restore"
+        ]
+      },
+      "libraries.cleanupAll": {
+        "capabilities": [
+          "libraries.cleanupPlan",
+          "libraries.cleanupExecute"
+        ]
+      },
+      "libraries.verifyAll": {
+        "capabilities": [
+          "libraries.verify"
+        ]
+      },
+      "libraries.verify": {
+        "capabilities": [
+          "libraries.verify"
+        ]
+      },
+      "libraries.previewCleanup": {
+        "capabilities": [
+          "libraries.cleanupPlan",
+          "libraries.cleanupExecute"
+        ]
+      },
+      "libraries.repairGlobal": {
+        "capabilities": [
+          "libraries.repair"
+        ]
+      }
+    }
+  },
+  {
+    "group": "library presentation",
+    "source": "src/features/libraries/LibraryPanelController.ts",
+    "pattern": "'(libraries\\.[A-Za-z]+)'",
+    "actions": {
+      "libraries.selectTab": {
+        "uiOnly": "Library tab presentation only"
+      }
+    }
+  },
+  {
+    "group": "development",
+    "source": "src/features/development/DeveloperCacheController.ts",
+    "pattern": "'(development\\.[A-Za-z]+)'",
+    "actions": {
+      "development.openGlobalFolder": {
+        "uiOnly": "Reveal extension-owned folder; navigation only"
+      },
+      "development.openCacheEditor": {
+        "uiOnly": "Open cache editor; safe inspection is separately exposed"
+      },
+      "development.inspectCache": {
+        "capabilities": [
+          "development.inspectCache"
+        ]
+      },
+      "development.refreshCaches": {
+        "capabilities": [
+          "development.listCaches"
+        ]
+      },
+      "development.clearCache": {
+        "capabilities": [
+          "development.clearCaches"
+        ]
+      },
+      "development.clearAllCaches": {
+        "capabilities": [
+          "development.clearCaches"
+        ]
+      },
+      "development.clearScopeCaches": {
+        "capabilities": [
+          "development.clearCaches"
+        ]
+      }
+    }
+  },
+  {
+    "group": "panels/runtime",
+    "source": "src/features/panels/PanelManager.ts",
+    "pattern": "(?<!typeof )action === '([A-Za-z]+)'",
+    "actions": {
+      "openGitHubConnection": {
+        "uiOnly": "Navigate to More"
+      },
+      "ready": {
+        "uiOnly": "Webview hydration only"
+      },
+      "connectGitHub": {
+        "capabilities": [
+          "more.authorizeGitHub"
+        ]
+      },
+      "refreshBuilds": {
+        "capabilities": [
+          "runtime.builds"
+        ]
+      },
+      "installBuild": {
+        "capabilities": [
+          "runtime.installBuild"
+        ]
+      },
+      "refresh": {
+        "capabilities": [
+          "runtime.refresh"
+        ]
+      },
+      "refreshInstalled": {
+        "capabilities": [
+          "runtime.refresh"
+        ]
+      },
+      "installArchive": {
+        "capabilities": [
+          "runtime.installArchive"
+        ]
+      },
+      "browse": {
+        "capabilities": [
+          "runtime.addExecutable"
+        ]
+      },
+      "deleteRuntime": {
+        "capabilities": [
+          "runtime.remove"
+        ]
+      },
+      "select": {
+        "capabilities": [
+          "runtime.select"
+        ]
+      },
+      "refreshAiCapabilities": {
+        "capabilities": [
+          "capabilities.discover"
+        ]
+      }
+    }
+  },
+  {
+    "group": "presets",
+    "source": "src/features/sidebar/CustomizerPresets.ts",
+    "pattern": "action === '([A-Za-z]+)'",
+    "actions": {
+      "select": {
+        "capabilities": [
+          "customizer.applyPreset"
+        ]
+      },
+      "import": {
+        "capabilities": [
+          "customizer.importPresets"
+        ]
+      },
+      "export": {
+        "capabilities": [
+          "customizer.exportPresets"
+        ]
+      },
+      "new": {
+        "capabilities": [
+          "customizer.createPreset"
+        ]
+      },
+      "save": {
+        "capabilities": [
+          "customizer.savePreset"
+        ]
+      },
+      "delete": {
+        "capabilities": [
+          "customizer.deletePreset"
+        ]
+      }
+    }
+  },
+  {
+    "group": "customizer messages",
+    "source": "src/features/sidebar/CustomizerViewProvider.ts",
+    "pattern": "data.type [!=]== '([A-Za-z]+)'",
+    "actions": {
+      "ready": {
+        "uiOnly": "Webview hydration only"
+      },
+      "groups": {
+        "uiOnly": "Parameter group presentation only"
+      },
+      "preset": {
+        "capabilities": [
+          "customizer.applyPreset",
+          "customizer.createPreset",
+          "customizer.savePreset",
+          "customizer.deletePreset",
+          "customizer.importPresets",
+          "customizer.exportPresets"
+        ]
+      },
+      "set": {
+        "capabilities": [
+          "customizer.set"
+        ]
+      },
+      "reset": {
+        "capabilities": [
+          "customizer.reset"
+        ]
+      }
+    }
+  }
+]

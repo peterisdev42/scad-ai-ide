@@ -215,7 +215,7 @@ suite('Library Manager extension host', () => {
         const cache = path.join(storage, 'cache')
         let memory = ['result']
         const registration = memoryCaches.register('Fixture memory cache', () => memory, () => { memory = [] })
-        const controller = new DeveloperCacheController({ extensionMode: vscode.ExtensionMode.Development, globalStorageUri: vscode.Uri.file(storage), globalState: memento(global), workspaceState: memento(workspace) } as unknown as vscode.ExtensionContext, async (key) => { invalidated.push(key) })
+        const controller = new DeveloperCacheController({ extensionMode: vscode.ExtensionMode.Development, globalStorageUri: vscode.Uri.file(storage), globalState: memento(global), workspaceState: memento(workspace) } as unknown as vscode.ExtensionContext, async (key) => { invalidated.push(key) }, undefined, async () => true)
         try {
             await fs.mkdir(cache, { recursive: true })
             await fs.writeFile(path.join(cache, 'runtime-fixture.json'), JSON.stringify({ builds: [123] }))
@@ -265,7 +265,7 @@ suite('Library Manager extension host', () => {
         const requested = new Promise<void>((resolve) => { started = resolve })
         const client = new RegistryClient(f.store.root, async () => { started(); return new Promise<Response>((resolve) => { respond = resolve }) }, undefined, storage)
         const panel = new LibraryPanelController(new ProjectDependencyManager(f.store, client, f.installer))
-        const controller = new DeveloperCacheController({ extensionMode: vscode.ExtensionMode.Development, globalStorageUri: vscode.Uri.file(path.join(f.root, 'global')), globalState: storage, workspaceState: { keys: () => [] } } as unknown as vscode.ExtensionContext, async () => { await panel.clearRegistryCache() })
+        const controller = new DeveloperCacheController({ extensionMode: vscode.ExtensionMode.Development, globalStorageUri: vscode.Uri.file(path.join(f.root, 'global')), globalState: storage, workspaceState: { keys: () => [] } } as unknown as vscode.ExtensionContext, async () => { await panel.clearRegistryCache() }, undefined, async () => true)
         try {
             const legacy = path.join(f.store.root, 'cache', 'registry.json')
             await fs.mkdir(path.dirname(legacy), { recursive: true })

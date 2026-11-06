@@ -117,15 +117,21 @@ async function fixture(t, extraSource = '') {
     runInNewContext(transformSync(readFileSync(join(root, 'src/features/sidebar/CustomizerPresets.ts'), 'utf8'), { loader: 'ts', format: 'cjs' }).code, {
         module: controllerModule,
         Buffer,
-        require: (name) => (name === 'vscode' ? api : name === '../../core/customizer/CustomizerPresets' ? require('../out/core/customizer/CustomizerPresets.js') : require(name)),
+        require: (name) => (name === 'vscode' ? api : name.startsWith('../../') ? require(join(root, 'out', name.replace('../../', '') + '.js')) : require(name)),
+    })
+    const domainModule = { exports: {} }
+    runInNewContext(transformSync(readFileSync(join(root, 'src/features/sidebar/CustomizerDomainService.ts'), 'utf8'), { loader: 'ts', format: 'cjs' }).code, {
+        module: domainModule, Buffer,
+        require: (name) => name === 'vscode' ? api : name === './CustomizerPresets' ? controllerModule.exports : name.endsWith('/WorkspacePaths') ? { assertWorkspacePath: async () => {} } : name.endsWith('/notifications') ? { confirmCapabilityAction: async () => true } : name.startsWith('../../') ? require(join(root, 'out', name.replace('../../', '' ) + '.js')) : require(name),
     })
     const module = { exports: {} }
     runInNewContext(transformSync(readFileSync(join(root, 'src/features/sidebar/CustomizerViewProvider.ts'), 'utf8'), { loader: 'ts', format: 'cjs' }).code, {
         module,
         Buffer,
-        require: (name) => (name === 'vscode' ? api : name === './CustomizerPresets' ? controllerModule.exports : require(name)),
+        require: (name) => (name === 'vscode' ? api : name === './CustomizerDomainService' ? domainModule.exports : require(name)),
     })
     const service = new CustomizerService()
+    Object.defineProperty(api.workspace, 'textDocuments', { get: () => service.target ? [{ uri: uri(service.target), isClosed: false }] : [] })
     const provider = new module.exports.CustomizerViewProvider(service, uri('/'))
     let receive
     const messages = []
@@ -248,6 +254,7 @@ async function fixture(t, extraSource = '') {
     await page.locator('.has-vertical-scrollbar').waitFor()
     return {
         page,
+        domain: provider.domain,
         view,
         contexts,
         async hostPresetAction(action) {
@@ -895,4 +902,20 @@ test('Automatic matching JSON creation does not overwrite invalid existing conte
     assert.equal(files.get('file:///models/customizer.json'), original)
     assert.equal(service.getOverrides('file:///models/customizer.scad').field_0, 8)
     assert.equal(await page.locator('#preset-save').isEnabled(), true)
+})
+
+
+test('Agent saves current values into an explicit different preset even when the selected preset is unmodified', async (t) => {
+    const { page, files, dialogs, domain } = await fixture(t)
+    const file = 'file:///models/named-presets.json'
+    files.set(file, JSON.stringify({ fileFormatVersion: '1', parameterSets: { A: { field_0: '5' }, B: { field_0: '9' } } }))
+    await openPresetFile(page, dialogs, file)
+    let state = domain.snapshot()
+    await domain.preset(state.target, state.revision, 'select', 'A')
+    state = domain.snapshot()
+    assert.equal(state.presets.modified, false)
+    await domain.preset(state.target, state.revision, 'save', 'B')
+    assert.equal(JSON.parse(files.get(file)).parameterSets.B.field_0, '5')
+    state = domain.snapshot()
+    await assert.rejects(domain.preset(state.target, state.revision, 'new', '   '), /non-empty/)
 })

@@ -39,3 +39,8 @@ export async function confirmLibraryBulkCleanup(count: number, bytes: number, mo
         : `Only versions unreferenced by known projects will be removed. ${protectedCount} referenced or unverifiable versions will be skipped. Projects outside this IDE reference index cannot be checked.`
     return (await window.showWarningMessage(`Delete ${count} global dependency versions (${(bytes / 1048576).toFixed(1)} MiB)? ${impact}`, { modal: true }, mode === 'all' ? 'Delete All Global Dependencies' : 'Delete Unreferenced Dependencies')) === (mode === 'all' ? 'Delete All Global Dependencies' : 'Delete Unreferenced Dependencies')
 }
+
+/** Service-side user authorization cannot be supplied in model JSON or auto-approved by the tool harness. */
+export async function confirmCapabilityAction(title: string, target: string): Promise<boolean> {
+    return (await window.showWarningMessage(`${title}: ${target}. This changes or deletes managed state.`, { modal: true }, 'Confirm')) === 'Confirm'
+}

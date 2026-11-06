@@ -1,0 +1,1000 @@
+[
+  {
+    "id": "capabilities.discover",
+    "toolName": "scad_ai_ide_capabilities_discover",
+    "title": "Discover OpenSCAD capabilities",
+    "description": "Discover live availability, constraints and tool names for Runtime, Libraries, Customizer and diagnostics. No changes; returns bounded capability metadata.",
+    "risk": "read",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": []
+    },
+    "service": "CapabilityRegistry",
+    "gui": "AI Panel capability tables / Refresh availability"
+  },
+  {
+    "id": "operation.status",
+    "toolName": "scad_ai_ide_operation_status",
+    "title": "Inspect OpenSCAD operations",
+    "description": "Poll a specific operation ID or list recent operations. Returns running/terminal state and progress message, no changes.",
+    "risk": "read",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": []
+    },
+    "service": "OperationTracker.status",
+    "gui": "progress indicators"
+  },
+  {
+    "id": "operation.cancel",
+    "toolName": "scad_ai_ide_operation_cancel",
+    "title": "Cancel OpenSCAD operation",
+    "description": "Request cancellation of a running operation using its exact ID. Returns its current state; non-cancellable critical sections finish before terminal status.",
+    "risk": "change",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "service": "OperationTracker.cancel",
+    "gui": "cancel buttons"
+  },
+  {
+    "id": "runtime.state",
+    "toolName": "scad_ai_ide_runtime_state",
+    "title": "Read OpenSCAD runtimes",
+    "description": "Read actual active/installed runtimes, host paths, discovery state, revision and errors without opening a panel. Use before selection or removal.",
+    "risk": "read",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": []
+    },
+    "service": "RuntimeService.getState",
+    "gui": "Runtime Installed"
+  },
+  {
+    "id": "runtime.builds",
+    "toolName": "scad_ai_ide_runtime_builds",
+    "title": "List OpenSCAD builds",
+    "description": "Load available release builds for the extension host. Optional refresh/channel; bounded exact build IDs, versions and cache/error status. Network read only.",
+    "risk": "read",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "refresh": {
+          "type": "boolean"
+        },
+        "channel": {
+          "type": "string",
+          "enum": [
+            "Stable",
+            "Snapshot"
+          ]
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": []
+    },
+    "service": "RuntimeService.loadBuilds",
+    "gui": "Runtime Available/refresh"
+  },
+  {
+    "id": "runtime.refresh",
+    "toolName": "scad_ai_ide_runtime_refresh",
+    "title": "Discover OpenSCAD runtimes",
+    "description": "Discover runtimes on the extension host and return actual post-refresh state. Requires workspace trust; does not install.",
+    "risk": "change",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {},
+      "required": []
+    },
+    "service": "RuntimeService.refresh",
+    "gui": "Runtime refresh/refreshInstalled command"
+  },
+  {
+    "id": "runtime.installBuild",
+    "toolName": "scad_ai_ide_runtime_installBuild",
+    "title": "Install exact OpenSCAD build",
+    "description": "Install an exact numeric build ID returned by runtime_builds. Downloads to managed storage; supports cancellation and returns verified discovery state. Requires trust.",
+    "risk": "change",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "service": "RuntimeService.installBuild",
+    "gui": "Runtime installBuild"
+  },
+  {
+    "id": "runtime.installArchive",
+    "toolName": "scad_ai_ide_runtime_installArchive",
+    "title": "Install OpenSCAD archive",
+    "description": "Install a host-local archive at an absolute path. Validates archive safety and probes runtime; managed storage only, trust required. Supports cancellation.",
+    "risk": "change",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "path"
+      ]
+    },
+    "service": "RuntimeService.installArchivePath",
+    "gui": "Runtime installArchive"
+  },
+  {
+    "id": "runtime.addExecutable",
+    "toolName": "scad_ai_ide_runtime_addExecutable",
+    "title": "Add OpenSCAD executable",
+    "description": "Probe and select a host-local executable or macOS app at an absolute path. Changes global runtime selection after validation; trust required.",
+    "risk": "change",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "path"
+      ]
+    },
+    "service": "RuntimeService.addExecutable",
+    "gui": "Runtime addExecutable"
+  },
+  {
+    "id": "runtime.select",
+    "toolName": "scad_ai_ide_runtime_select",
+    "title": "Select OpenSCAD runtime",
+    "description": "Select the exact runtime ID from runtime_state. Changes global runtime configuration; returns actual active runtime and updates Preview. Trust and current identity required.",
+    "risk": "change",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "service": "RuntimeService.select",
+    "gui": "Runtime select"
+  },
+  {
+    "id": "runtime.remove",
+    "toolName": "scad_ai_ide_runtime_remove",
+    "title": "Remove managed OpenSCAD runtime",
+    "description": "Remove an exact managed runtime ID from runtime_state. Independent user confirmation required; unmanaged paths rejected. Revalidates managed identity and returns discovered state.",
+    "risk": "destructive",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "service": "RuntimeService.deleteRuntime",
+    "gui": "Runtime remove"
+  },
+  {
+    "id": "customizer.state",
+    "toolName": "scad_ai_ide_customizer_state",
+    "title": "Read model Customizer",
+    "description": "Read active model target URI, revision, complete parameter types/ranges/default/current values and preset status. Overrides do not edit SCAD source; no panel required.",
+    "risk": "read",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {},
+      "required": []
+    },
+    "service": "CustomizerDomainService.snapshot",
+    "gui": "Customizer parameter tree/preset selector"
+  },
+  {
+    "id": "customizer.set",
+    "toolName": "scad_ai_ide_customizer_set",
+    "title": "Set model parameters atomically",
+    "description": "Set validated parameter overrides atomically on the exact target/revision from customizer_state. Values must match parameter schema. Updates GUI/Preview; does not edit SCAD source.",
+    "risk": "change",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "values": {
+          "type": "object",
+          "minProperties": 1,
+          "maxProperties": 100,
+          "propertyNames": {
+            "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$"
+          },
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 10000
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "maxItems": 4,
+                "minItems": 1
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "target",
+        "revision",
+        "values"
+      ]
+    },
+    "service": "CustomizerDomainService.setValues",
+    "gui": "Customizer set"
+  },
+  {
+    "id": "customizer.reset",
+    "toolName": "scad_ai_ide_customizer_reset",
+    "title": "Reset model parameters",
+    "description": "Reset one named parameter or all overrides for exact target/revision. Returns actual values; updates Preview without editing source.",
+    "risk": "change",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "target",
+        "revision"
+      ]
+    },
+    "service": "CustomizerDomainService.reset",
+    "gui": "Customizer reset/resetAll command"
+  },
+  {
+    "id": "customizer.applyPreset",
+    "toolName": "scad_ai_ide_customizer_applyPreset",
+    "title": "applyPreset OpenSCAD presets",
+    "description": "applyPreset for exact target URI and revision from customizer_state. Named presets use existing OpenSCAD JSON format; explicit file URIs must be inside the host workspace. Returns verified parameter/preset state; preserves other presets and metadata. Empty name applies design defaults. Overrides do not edit source.",
+    "risk": "change",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "target",
+        "revision",
+        "name"
+      ]
+    },
+    "service": "CustomizerDomainService.preset:select",
+    "gui": "Customizer preset select"
+  },
+  {
+    "id": "customizer.createPreset",
+    "toolName": "scad_ai_ide_customizer_createPreset",
+    "title": "createPreset OpenSCAD presets",
+    "description": "createPreset for exact target URI and revision from customizer_state. Named presets use existing OpenSCAD JSON format; explicit file URIs must be inside the host workspace. Returns verified parameter/preset state; preserves other presets and metadata.",
+    "risk": "change",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "uri": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "target",
+        "revision",
+        "name"
+      ]
+    },
+    "service": "CustomizerDomainService.preset:new",
+    "gui": "Customizer preset new"
+  },
+  {
+    "id": "customizer.savePreset",
+    "toolName": "scad_ai_ide_customizer_savePreset",
+    "title": "savePreset OpenSCAD presets",
+    "description": "savePreset for exact target URI and revision from customizer_state. Named presets use existing OpenSCAD JSON format; explicit file URIs must be inside the host workspace. Returns verified parameter/preset state; preserves other presets and metadata.",
+    "risk": "change",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "uri": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "target",
+        "revision"
+      ]
+    },
+    "service": "CustomizerDomainService.preset:save",
+    "gui": "Customizer preset save"
+  },
+  {
+    "id": "customizer.deletePreset",
+    "toolName": "scad_ai_ide_customizer_deletePreset",
+    "title": "deletePreset OpenSCAD presets",
+    "description": "deletePreset for exact target URI and revision from customizer_state. Named presets use existing OpenSCAD JSON format; explicit file URIs must be inside the host workspace. Returns verified parameter/preset state; preserves other presets and metadata. Requires independent user confirmation.",
+    "risk": "destructive",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "target",
+        "revision",
+        "name"
+      ]
+    },
+    "service": "CustomizerDomainService.preset:delete",
+    "gui": "Customizer preset delete"
+  },
+  {
+    "id": "customizer.importPresets",
+    "toolName": "scad_ai_ide_customizer_importPresets",
+    "title": "importPresets OpenSCAD presets",
+    "description": "importPresets for exact target URI and revision from customizer_state. Named presets use existing OpenSCAD JSON format; explicit file URIs must be inside the host workspace. Returns verified parameter/preset state; preserves other presets and metadata.",
+    "risk": "change",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "uri": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "target",
+        "revision",
+        "uri"
+      ]
+    },
+    "service": "CustomizerDomainService.preset:import",
+    "gui": "Customizer preset import"
+  },
+  {
+    "id": "customizer.exportPresets",
+    "toolName": "scad_ai_ide_customizer_exportPresets",
+    "title": "exportPresets OpenSCAD presets",
+    "description": "exportPresets for exact target URI and revision from customizer_state. Named presets use existing OpenSCAD JSON format; explicit file URIs must be inside the host workspace. Returns verified parameter/preset state; preserves other presets and metadata.",
+    "risk": "change",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "uri": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "target",
+        "revision",
+        "uri"
+      ]
+    },
+    "service": "CustomizerDomainService.preset:export",
+    "gui": "Customizer preset export"
+  },
+  {
+    "id": "libraries.search",
+    "toolName": "scad_ai_ide_libraries_search",
+    "title": "Search OpenSCAD libraries",
+    "description": "Search real registry metadata for IDs, exact versions and supported layouts. Bounded query, pagination and optional detail ID. Returns freshness/errors; no install.",
+    "risk": "read",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": []
+    },
+    "service": "LibraryService.getState/registry.getLibrary",
+    "gui": "Libraries registry/search/version details"
+  },
+  {
+    "id": "libraries.refresh",
+    "toolName": "scad_ai_ide_libraries_refresh",
+    "title": "Refresh OpenSCAD registry",
+    "description": "Refresh registry independent of panels. Network read, returns actual catalog status/errors; cached data is identified.",
+    "risk": "read",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {},
+      "required": []
+    },
+    "service": "LibraryService.loadRegistry",
+    "gui": "Libraries refresh"
+  },
+  {
+    "id": "libraries.projectState",
+    "toolName": "scad_ai_ide_libraries_projectState",
+    "title": "Read project dependencies",
+    "description": "List workspace projects, or dependencies for one exact project path returned by this tool. Reports manifest/lock and mount state; no writes.",
+    "risk": "read",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "project": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": []
+    },
+    "service": "LibraryService.projectState",
+    "gui": "Libraries project selector/dependencies"
+  },
+  {
+    "id": "libraries.globalState",
+    "toolName": "scad_ai_ide_libraries_globalState",
+    "title": "Read global library cache",
+    "description": "Inspect bounded global cache metadata, integrity issues and references. Exact cache keys identify verify/repair/cleanup targets. No raw file inventories.",
+    "risk": "read",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": []
+    },
+    "service": "LibraryService.getState",
+    "gui": "Libraries global"
+  },
+  {
+    "id": "libraries.install",
+    "toolName": "scad_ai_ide_libraries_install",
+    "title": "install OpenSCAD project dependency",
+    "description": "Install exact version label returned by libraries_search; writes project manifest/lock and mounts using shared atomic transactions. Explicit workspace project path required; trust and path safety enforced. Cancellable; returns verified dependency state.",
+    "risk": "change",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "project": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "project",
+        "id",
+        "version"
+      ]
+    },
+    "service": "LibraryService.execute:install",
+    "gui": "Libraries install"
+  },
+  {
+    "id": "libraries.remove",
+    "toolName": "scad_ai_ide_libraries_remove",
+    "title": "remove OpenSCAD project dependency",
+    "description": "Remove project dependency; preserves global cached sources. Explicit workspace project path required; trust and path safety enforced. Cancellable; returns verified dependency state.",
+    "risk": "change",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "project": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "project",
+        "id"
+      ]
+    },
+    "service": "LibraryService.execute:remove",
+    "gui": "Libraries remove"
+  },
+  {
+    "id": "libraries.restore",
+    "toolName": "scad_ai_ide_libraries_restore",
+    "title": "restore OpenSCAD project dependency",
+    "description": "Restore dependencies using authoritative lockfile commits; never silently re-resolve tags. Explicit workspace project path required; trust and path safety enforced. Cancellable; returns verified dependency state.",
+    "risk": "change",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "project": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "project"
+      ]
+    },
+    "service": "LibraryService.execute:restore",
+    "gui": "Libraries restore/repair project"
+  },
+  {
+    "id": "libraries.verify",
+    "toolName": "scad_ai_ide_libraries_verify",
+    "title": "Verify global library cache",
+    "description": "Verify one exact cache key or all cached versions. Checks local inventory corruption, not independent supply-chain authenticity. Returns actual failures, trust required.",
+    "risk": "read",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "required": []
+    },
+    "service": "LibraryService.execute:verify/verifyAll",
+    "gui": "Libraries verify/verifyAll"
+  },
+  {
+    "id": "libraries.repair",
+    "toolName": "scad_ai_ide_libraries_repair",
+    "title": "Repair global library version",
+    "description": "Repair an exact cache key from globalState. Rechecks repository/commit identity; requires trust, supports cancellation and preserves source safety checks.",
+    "risk": "change",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "key"
+      ]
+    },
+    "service": "LibraryService.execute:repairGlobal",
+    "gui": "Libraries repairGlobal"
+  },
+  {
+    "id": "libraries.cleanupPlan",
+    "toolName": "scad_ai_ide_libraries_cleanupPlan",
+    "title": "Plan global library cleanup",
+    "description": "Read-only preflight of single cache key or mode unused/all. Returns expiring server plan ID, candidates, bytes, protections and impact; does not delete. Requires trust.",
+    "risk": "read",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "unused",
+            "all"
+          ]
+        }
+      },
+      "required": []
+    },
+    "service": "LibraryService.planCleanup",
+    "gui": "Libraries cleanup preview"
+  },
+  {
+    "id": "libraries.cleanupExecute",
+    "toolName": "scad_ai_ide_libraries_cleanupExecute",
+    "title": "Execute confirmed library cleanup",
+    "description": "Execute an unexpired exact plan ID from cleanupPlan. Independently asks the human to authorize exact targets; JSON cannot approve deletion. Rechecks state/references under store locks. Returns actual removals.",
+    "risk": "destructive",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "planId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "planId"
+      ]
+    },
+    "service": "LibraryService.executeCleanup",
+    "gui": "Libraries cleanup single/unused/all"
+  },
+  {
+    "id": "more.githubStatus",
+    "toolName": "scad_ai_ide_more_githubStatus",
+    "title": "Read GitHub connection status",
+    "description": "Refresh silently and read GitHub mode/account label/rate-limit hint only. Never returns tokens or session objects.",
+    "risk": "read",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {},
+      "required": []
+    },
+    "service": "GitHub.getState/refresh",
+    "gui": "More GitHub status"
+  },
+  {
+    "id": "more.authorizeGitHub",
+    "toolName": "scad_ai_ide_more_authorizeGitHub",
+    "title": "Authorize GitHub access",
+    "description": "Start real interactive VS Code GitHub authentication. User must complete Accounts flow. Returns safe status only; no access token is exposed. Anonymous access remains available.",
+    "risk": "change",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {},
+      "required": []
+    },
+    "service": "GitHub.connect",
+    "gui": "More authorize/connect command"
+  },
+  {
+    "id": "development.status",
+    "toolName": "scad_ai_ide_development_status",
+    "title": "Read development diagnostics availability",
+    "description": "Read whether extension runs in Development mode. Safe in production; reports reason when cache tools are disabled.",
+    "risk": "read",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {},
+      "required": []
+    },
+    "service": "DeveloperCacheController.enabled",
+    "gui": "More Development visibility"
+  },
+  {
+    "id": "development.listCaches",
+    "toolName": "scad_ai_ide_development_listCaches",
+    "title": "List disposable cache metadata",
+    "description": "Development mode only. Returns bounded cache IDs/names/scopes without values. Installed runtimes, exporter and library sources/reference indices are excluded.",
+    "risk": "privileged",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": []
+    },
+    "service": "DeveloperCacheController.listSafe",
+    "gui": "More cache list/refresh"
+  },
+  {
+    "id": "development.inspectCache",
+    "toolName": "scad_ai_ide_development_inspectCache",
+    "title": "Inspect redacted cache entry",
+    "description": "Development mode only. Inspect one exact cache ID from listCaches. Returns bounded redacted preview, which may still contain personal information. No arbitrary file reads.",
+    "risk": "privileged",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "service": "DeveloperCacheController.inspectSafe",
+    "gui": "More inspectCache"
+  },
+  {
+    "id": "development.clearCaches",
+    "toolName": "scad_ai_ide_development_clearCaches",
+    "title": "Clear confirmed disposable caches",
+    "description": "Development mode only. Choose exactly one cache ID, scope or all=true. Independent user confirmation required; clears only disposable caches, reports partial failures and invalidates owners.",
+    "risk": "destructive",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "globalState",
+            "workspaceState",
+            "Memory",
+            "Disk"
+          ]
+        },
+        "all": {
+          "const": true
+        }
+      },
+      "required": []
+    },
+    "service": "DeveloperCacheController.clearSafe",
+    "gui": "More clearCache/clearScopeCaches/clearAllCaches"
+  }
+]

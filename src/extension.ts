@@ -1,3 +1,5 @@
+import { createAiPanelState } from './features/agents/CapabilityPresentation'
+import { registerAgentTools } from './features/agents/registerAgentTools'
 import { DeveloperCacheController } from './features/development/DeveloperCacheController'
 import { registerLibraries } from './features/libraries/registerLibraries'
 import { registerOwnedMarkdownPreview } from './features/markdown/OwnedMarkdownPreview'
@@ -33,7 +35,8 @@ export async function activate(context: vscode.ExtensionContext) {
         if (key.startsWith('runtime.catalog.') || /runtime-catalog-.*\.json$/.test(key)) await runtime.clearCatalogCache()
         if (key.startsWith('libraries.registry.') || key.replaceAll('\\', '/').startsWith('libraries/v1/cache/')) await libraries.clearRegistryCache()
     })
-    const panels = new PanelManager(context.extensionUri, runtime, github, libraries, development)
+    const capabilities = registerAgentTools(context, { runtime: runtime.service, libraries, customizer: customizerView.domain, github, development })
+    const panels = new PanelManager(context.extensionUri, runtime, github, libraries, development, () => createAiPanelState(capabilities.registry))
     context.subscriptions.push(
         customizerView,
         ...(['resetAll', 'collapseAll', 'expandAll'] as const).map((action) => vscode.commands.registerCommand(`scad-ai-ide.customizer.${action}`, () => customizerView.runAction(action))),
@@ -49,7 +52,7 @@ export async function activate(context: vscode.ExtensionContext) {
     // Markdown's plugin hook is synchronous. Make its grammar ready before VS Code
     // obtains the hook, instead of relying on a refresh racing the first webview load.
     await markdownReady
-    return { ...markdown, preview, language, libraries, getActiveRuntime: runtime.getActiveRuntime, refresh: runtime.refresh, customizer, panels, getRenderArguments: () => customizer.getArguments() }
+    return { ...markdown, preview, language, libraries, capabilities, getActiveRuntime: runtime.getActiveRuntime, refresh: runtime.refresh, customizer, panels, getRenderArguments: () => customizer.getArguments() }
 }
 
 export async function deactivate() {

@@ -87,6 +87,19 @@
             "label": "tasks: watch-tests",
             "dependsOn": ["npm: watch", "npm: watch-tests"],
             "problemMatcher": []
+        },
+        {
+            "label": "ollama: prepare",
+            "type": "process",
+            "command": "node",
+            "args": ["${workspaceFolder}/scripts/prepare-ollama-dev.mjs"],
+            "problemMatcher": []
+        },
+        {
+            "label": "watch + Ollama",
+            "dependsOn": ["ollama: prepare", "watch"],
+            "dependsOrder": "sequence",
+            "problemMatcher": []
         }
     ]
 }

@@ -1,0 +1,32 @@
+[
+  {
+    "path": "./instructions/openscad.instructions.md",
+    "kind": "Instruction",
+    "name": "SCAD AI IDE managed OpenSCAD capabilities",
+    "description": "Use when managing OpenSCAD runtimes, library dependencies, Customizer parameters or SCAD AI IDE diagnostics."
+  },
+  {
+    "path": "./skills/openscad-runtime/SKILL.md",
+    "kind": "Skill",
+    "name": "openscad-runtime",
+    "description": "Detect, install, select or repair the selected OpenSCAD CLI runtime in SCAD AI IDE, including offline archives and extension-host executable paths."
+  },
+  {
+    "path": "./skills/openscad-libraries/SKILL.md",
+    "kind": "Skill",
+    "name": "openscad-libraries",
+    "description": "Search, install exact OpenSCAD library versions, restore project dependencies, verify or repair global sources, or safely clean library storage through SCAD AI IDE."
+  },
+  {
+    "path": "./skills/openscad-customizer/SKILL.md",
+    "kind": "Skill",
+    "name": "openscad-customizer",
+    "description": "Inspect and change OpenSCAD model Customizer parameters or manage named JSON presets with SCAD AI IDE while preserving target identity and Preview behavior."
+  },
+  {
+    "path": "./skills/scad-ai-ide-diagnostics/SKILL.md",
+    "kind": "Skill",
+    "name": "scad-ai-ide-diagnostics",
+    "description": "Diagnose SCAD AI IDE runtime, library and GitHub status, or inspect bounded redacted disposable caches only when the extension runs in Development mode."
+  }
+]

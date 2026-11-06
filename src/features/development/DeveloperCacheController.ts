@@ -1,3 +1,7 @@
+import { createHash } from 'node:crypto'
+import { safePreview } from '../../core/capabilities/SafeOutput'
+import { CapabilityError } from '../../core/capabilities/CapabilityTypes'
+import { confirmCapabilityAction } from '../../platform/notifications'
 import { highlightJson } from './JsonHighlighter'
 import * as vscode from 'vscode'
 import { lstat, readdir, readFile, realpath, unlink } from 'node:fs/promises'
@@ -16,18 +20,23 @@ interface CacheEntry {
 /** Development-only inspection of extension state and disposable cache data. */
 export class DeveloperCacheController {
     private busy = false
+    isBusy() { return this.busy }
+    private readonly changed = new vscode.EventEmitter<void>()
+    readonly onDidChange = this.changed.event
+    dispose() { this.changed.dispose() }
     readonly enabled: boolean
 
     constructor(
         private readonly context: vscode.ExtensionContext,
         private readonly invalidate: (key: string) => Promise<void>,
         private readonly revealDirectory: (uri: vscode.Uri) => PromiseLike<unknown> = (uri) => vscode.commands.executeCommand('revealFileInOS', uri),
+        private readonly authorize = confirmCapabilityAction,
     ) {
         this.enabled = context.extensionMode === vscode.ExtensionMode.Development
     }
 
     private assertEnabled() {
-        if (!this.enabled) throw new Error('Cache tools are only available in extension development mode.')
+        if (!this.enabled) throw new CapabilityError('DEVELOPMENT_ONLY', 'Cache tools are only available in extension development mode.')
     }
 
     private async entries(): Promise<CacheEntry[]> {
@@ -115,6 +124,24 @@ export class DeveloperCacheController {
         return { scrollSettings, globalDirectory: this.context.globalStorageUri.fsPath, entries: (await this.entries()).map(({ clear: _clear, ...entry }) => entry) }
     }
 
+    async listSafe(offset = 0, limit = 20) {
+        this.assertEnabled()
+        const entries = await this.entries()
+        return { total: entries.length, offset, entries: entries.slice(offset, offset + limit).map(({ id, name, scope }) => ({ id, name, scope })) }
+    }
+    async inspectSafe(id: string) {
+        this.assertEnabled()
+        const entry = (await this.entries()).find((entry) => entry.id === id)
+        if (!entry) throw new CapabilityError('NOT_FOUND', 'Cache field no longer exists.')
+        return { id, warning: 'Cache may contain personal information. Preview is redacted and bounded.', value: safePreview({ [entry.name]: entry.value }) }
+    }
+    async clearSafe(input: { id?: string; scope?: string; all?: boolean }) {
+        this.assertEnabled()
+        if (Object.keys(input).length !== 1 || (input.all !== undefined && input.all !== true)) throw new CapabilityError('INVALID_INPUT', 'Choose exactly one cache ID, scope or all=true.')
+        await this.handle({ action: input.all ? 'development.clearAllCaches' : input.scope ? 'development.clearScopeCaches' : 'development.clearCache', ...input })
+        return this.listSafe()
+    }
+
     async handle(raw: unknown) {
         this.assertEnabled()
         if (!raw || typeof raw !== 'object') throw new Error('Invalid cache action.')
@@ -145,7 +172,16 @@ export class DeveloperCacheController {
             if (value.action === 'development.clearScopeCaches' && !['globalState', 'workspaceState', 'Memory', 'Disk'].includes(String(value.scope))) throw new Error('Unknown cache scope.')
             const selected = value.action === 'development.clearAllCaches' ? entries : entries.filter((entry) => value.action === 'development.clearScopeCaches' ? entry.scope === value.scope : entry.id === value.id)
             if (!selected.length && value.action !== 'development.clearAllCaches') throw new Error('Cache field no longer exists. Refresh the list.')
+            const digest = (entry: CacheEntry) => createHash('sha256').update(JSON.stringify(entry.value) ?? 'null').digest('hex')
+            const before = selected.map((entry) => [entry.id, digest(entry)])
             // Finish every requested field even if one owner fails, then report failures.
+            if (!(await this.authorize('Clear disposable caches', selected.map((entry) => entry.id).join(', ')))) throw new CapabilityError('CANCELLED', 'Cache clearing cancelled.')
+            this.assertEnabled()
+            const current = await this.entries()
+            for (const [id, expected] of before) {
+                const entry = current.find((entry) => entry.id === id)
+                if (!entry || digest(entry) !== expected) throw new CapabilityError('STALE_STATE', 'Cache changed during confirmation. Refresh and try again.', true)
+            }
             const failures: string[] = []
             for (const entry of selected) {
                 try { await entry.clear() } catch (error) { failures.push(`${entry.name}: ${String(error)}`) }
@@ -154,6 +190,7 @@ export class DeveloperCacheController {
             return await this.getState()
         } finally {
             this.busy = false
+            this.changed.fire()
         }
     }
 }

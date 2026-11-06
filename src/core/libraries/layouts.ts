@@ -7,5 +7,5 @@ interface AuditedLayout {
     entryPoint?: string
     blockedReason?: string
 }
-// The same reviewed data is shipped in the bundle and documented in library-layout-audit.md.
+// Canonical reviewed layouts are shipped in the bundle from resources/libraries/layouts.json.
 export const auditedLayouts = require('../../../resources/libraries/layouts.json') as AuditedLayout[]
