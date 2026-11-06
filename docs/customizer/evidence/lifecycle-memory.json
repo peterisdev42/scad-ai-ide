@@ -1,0 +1,73 @@
+{
+  "scope": "Production source/editor classes with injected document/event ports; not a full VS Code heap profile",
+  "node": "v24.16.0",
+  "platform": "darwin",
+  "architecture": "arm64",
+  "documentCount": 32,
+  "sourceBytes": 117053,
+  "capacitiesVerified": {
+    "analysisCache": 16,
+    "sourcePlans": 32,
+    "editorPlans": 32
+  },
+  "listenersAfterEachDispose": 0,
+  "postDisposeHeapRangeBytes": 79960,
+  "samples": [
+    {
+      "round": 0,
+      "warmup": true,
+      "heapBefore": 9358824,
+      "heapOccupied": 13649216,
+      "heapAfterDispose": 9789640,
+      "releasedBytes": 3859576
+    },
+    {
+      "round": 1,
+      "warmup": false,
+      "heapBefore": 9798336,
+      "heapOccupied": 13673760,
+      "heapAfterDispose": 9813096,
+      "releasedBytes": 3860664
+    },
+    {
+      "round": 2,
+      "warmup": false,
+      "heapBefore": 9813416,
+      "heapOccupied": 13698040,
+      "heapAfterDispose": 9843272,
+      "releasedBytes": 3854768
+    },
+    {
+      "round": 3,
+      "warmup": false,
+      "heapBefore": 9843392,
+      "heapOccupied": 13716224,
+      "heapAfterDispose": 9854024,
+      "releasedBytes": 3862200
+    },
+    {
+      "round": 4,
+      "warmup": false,
+      "heapBefore": 9854176,
+      "heapOccupied": 13723552,
+      "heapAfterDispose": 9861320,
+      "releasedBytes": 3862232
+    },
+    {
+      "round": 5,
+      "warmup": false,
+      "heapBefore": 9861456,
+      "heapOccupied": 13731344,
+      "heapAfterDispose": 9869112,
+      "releasedBytes": 3862232
+    },
+    {
+      "round": 6,
+      "warmup": false,
+      "heapBefore": 9869248,
+      "heapOccupied": 13755176,
+      "heapAfterDispose": 9893056,
+      "releasedBytes": 3862120
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+npm notice run scad-ai-ide@0.0.1 test:customizer
+npm notice run npm run compile-tests && node esbuild.js && node --test scripts/customizer-scrollbar.test.mjs scripts/customizer-preview-fields.test.mjs
+npm notice run scad-ai-ide@0.0.1 compile-tests
+npm notice run tsc -p . --outDir out
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+✔ Preview manual numeric entry rejects out of bounds without clamping and accepts off-grid input (184.5065ms)
+✔ Preview handles literal regex punctuation in group names and preserves multiline textbox values (52.268542ms)
+✔ native scrollbar scrolls with the wheel, drags, fades and uses VS Code theme variables (1290.250084ms)
+✔ collapse, viewport resize, keyboard focus and file changes update native scroll dimensions (185.140541ms)
+✔ host list settings update scrollbar width and wheel behavior without replacing controls (112.340375ms)
+✔ native view title identifies the model and switches between collapse and expand actions (181.742166ms)
+✔ decimal sliders, mixed menus, default menu entries and vector labels stay editable (108.698375ms)
+✔ preset create, save, default, import, partial selection, export and delete use OpenSCAD JSON (285.598334ms)
+✔ removed panel settings stay absent and invalid imports preserve the working model (125.186875ms)
+✔ a preset dialog cannot write into a different active file (116.66625ms)
+✔ sidecar reload, invalid preset selection and compact panel layout preserve model state (130.650667ms)
+✔ range sliders send intermediate values before pointer release and retain the final value (234.210958ms)
+✔ preset dropdown reaches the real Preview session and renderer, including cold startup and design defaults (146.306125ms)
+✔ active presets follow file edits and mark edits outside partial presets as unsaved (137.520417ms)
+✔ preset file sits left of actions with the menu below, and every action has a hover label (3452.300959ms)
+✔ ordinary and fallback sliders submit only after release, including fallback during a drag (640.456708ms)
+✔ preset section shares parameter folding, font size and persisted state (160.100958ms)
+✔ parameter controls grow with the sidebar and wrap vectors without losing edits or overflowing (107.530209ms)
+✔ Customizer icon groups use VS Code spacing tokens with consistent fallbacks (87.567708ms)
+✔ preset filenames refer only to explicitly opened or newly saved files (191.339917ms)
+✔ preset header stays collapsed during actions and the more menu supports keyboard and dismissal (312.932833ms)
+✔ Save is enabled only for unsaved values and creates the matching JSON without a file dialog (180.771417ms)
+✔ Saving custom values merges an unopened matching JSON without overwriting an existing Current preset (109.158833ms)
+✔ New preset automatically creates a matching JSON even when model values are unchanged (121.528417ms)
+✔ Automatic matching JSON creation does not overwrite invalid existing content (103.502833ms)
+✔ Agent saves current values into an explicit different preset even when the selected preset is unmodified (128.828708ms)
+✔ native effective bounds and off-grid values survive GUI, Agent and keyboard updates (93.871042ms)
+✔ GUI rejects oversize UTF-8 input without truncation and makes incomplete analysis visible (83.441416ms)
+✔ partial presets switch A to B to defaults across GUI, domain and Preview without writing the file (141.566375ms)
+✔ unknown-version preset import is readonly and programmatic apply/save/export cannot bypass it (107.751625ms)
+✔ multiline strings round trip without HTML input newline sanitization (90.901708ms)
+✔ Preview actions and Agent share preset state, readonly policy, overrides and atomic persistence (160.027667ms)
+✔ pointer slider interaction uses minimum-anchored steps without rounding stored Agent values (126.449292ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9630.057334

@@ -1,0 +1,30 @@
+{
+  "scenario": "failure",
+  "nativeAgent": true,
+  "model": [
+    {
+      "id": "qwen3.5:2b-mlx",
+      "name": "qwen3.5:2b-mlx",
+      "vendor": "ollama-models"
+    },
+    {
+      "id": "qwen3.5:2b-mlx",
+      "name": "qwen3.5:2b-mlx",
+      "vendor": "ollama-models"
+    }
+  ],
+  "artifact": {
+    "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+    "bytes": 4532700,
+    "sha256": "5cd831f6e9bbc2772be7db99f09f4e31fb15d26fc2745f81073223ec59cb652e"
+  },
+  "requestFinished": true,
+  "timedOut": false,
+  "terminalReason": "nativeRequestError",
+  "sourceDiskUnchanged": true,
+  "sourceBufferObserved": true,
+  "sourceBufferUnchanged": true,
+  "actualCustomizerToolInvocations": 0,
+  "calls": [],
+  "acceptance": "REQUIRES REVIEW: these are observations, not a model acceptance PASS"
+}

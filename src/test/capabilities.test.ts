@@ -19,6 +19,37 @@ test('capability contract preserves caller, cancellation and explicit failure id
 import { capabilityCatalog, CapabilityRegistry } from '../core/capabilities/CapabilityRegistry'
 import { CapabilityDispatcher } from '../core/capabilities/CapabilityDispatcher'
 import { safePreview } from '../core/capabilities/SafeOutput'
+import legacySourceApplySchema from './fixtures/customizer-source-apply-schema-v1.json'
+import Ajv from 'ajv'
+
+test('Source Apply exposes object properties to model clients without changing the accepted input contract', () => {
+    const schema = capabilityCatalog.find(entry => entry.id === 'customizer.sourceApply')!.inputSchema as { type?: string; properties?: Record<string, unknown> }
+    assert.equal(schema.type, 'object')
+    assert.deepEqual(Object.keys(schema.properties ?? {}).sort(), ['edits', 'identity', 'mode', 'planId', 'uri'])
+    const ajv = new Ajv({ strict: true })
+    const before = ajv.compile(legacySourceApplySchema)
+    const after = ajv.compile(schema)
+    const base = { mode: 'plan', uri: 'file:///workspace/model.scad', identity: { version: 1, sha256: 'a'.repeat(64) }, edits: [{ kind: 'annotateExisting', name: 'width', widget: 'slider', range: { min: 10, max: 100, step: 5 } }] }
+    const inputs: unknown[] = [base, { mode: 'commit', planId: 'observed-plan' }, {}, null, [], 'plan',
+        { ...base, mode: 'unused' }, { ...base, approved: true }, { ...base, planId: 'mixed-modes' },
+        { ...base, identity: { version: '1', sha256: 'a'.repeat(64) } }, { ...base, edits: [] },
+        { mode: 'commit' }, { mode: 'commit', planId: 'x', uri: base.uri },
+    ]
+    for (const intent of [
+        { kind: 'annotateExisting', name: 'width', widget: 'slider', range: { min: 10, max: 100 } },
+        { kind: 'changeWidget', name: 'width', widget: 'slider', range: { min: 10, max: 100 } },
+        { kind: 'moveGroup', name: 'width', group: 'Dimensions' },
+        { kind: 'hideParameter', name: 'width' },
+        { kind: 'insertLiteralParameter', name: 'width', widget: 'slider', defaultValue: 40, range: { min: 10, max: 100 } },
+    ]) {
+        const input = { ...base, edits: [intent] }
+        assert.equal(before(input), true)
+        inputs.push(input, { ...input, approved: true })
+    }
+    assert.equal(before(base), true)
+    assert.equal(after(base), true)
+    for (const input of inputs) assert.equal(after(input), before(input), JSON.stringify(input))
+})
 
 function dispatcher(invoke: CapabilityHandler['invoke'] = (input) => input) {
     const registry = new CapabilityRegistry()
@@ -91,4 +122,33 @@ test('cache previews redact credentials and personal identifiers, cap depth/entr
     assert.match(json, /CIRCULAR/)
     const bounded = JSON.stringify(safePreview(Array.from({ length: 1000 }, () => '中'.repeat(1000)), 100))
     assert.ok(Buffer.byteLength(bounded) < 200)
+})
+
+test('source tool schemas reject arbitrary edits, numeric strings, forged permission and mixed plan/commit fields', async () => {
+    const d = dispatcher()
+    const identity = { version: 1, sha256: 'a'.repeat(64) }
+    const uri = 'file:///workspace/model.scad'
+    const plan = { mode: 'plan', uri, identity, edits: [{ kind: 'changeWidget', name: 'width', widget: 'slider', range: { min: 0, max: 100 } }] }
+    assert.equal((await d.invoke('customizer.sourceApply', plan, { actor: 'agent' })).ok, true)
+    for (const input of [
+        { ...plan, approved: true }, { ...plan, planId: 'x' }, { mode: 'commit', planId: 'x', uri },
+        { ...plan, edits: [{ kind: 'replace', text: 'evil' }] },
+        { ...plan, edits: [{ kind: 'changeWidget', name: 'width', widget: 'slider', range: { min: '0', max: 100 } }] },
+        { ...plan, edits: [{ kind: 'changeWidget', name: 'width', widget: 'spinbox', step: 0 }] },
+    ]) {
+        const result = await d.invoke('customizer.sourceApply', input, { actor: 'agent' })
+        assert.equal(result.ok, false)
+        if (!result.ok) assert.equal(result.error.code, 'INVALID_INPUT')
+    }
+})
+
+
+test('cancellation accepts exactly an Agent operation ID or a supported GUI domain', async () => {
+    const d = dispatcher()
+    for (const input of [{ domain: 'runtime' }, { domain: 'libraries' }, { id: 'observed-operation' }]) assert.equal((await d.invoke('operation.cancel', input, { actor: 'agent' })).ok, true)
+    for (const input of [{}, { domain: 'all' }, { domain: 'runtime', id: 'operation' }, { domain: 'runtime', approved: true }]) {
+        const result = await d.invoke('operation.cancel', input, { actor: 'agent' })
+        assert.equal(result.ok, false)
+        if (!result.ok) assert.equal(result.error.code, 'INVALID_INPUT')
+    }
 })

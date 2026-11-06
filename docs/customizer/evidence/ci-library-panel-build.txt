@@ -1,0 +1,30 @@
+npm notice run scad-ai-ide@0.0.1 test:libraries:ui
+npm notice run node esbuild.js && node --test scripts/library-panel.test.mjs
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+✔ Library webview: tabs, escaping, exact selection, project selection, cleanup protection and busy/trust states (729.7875ms)
+✔ Library layout follows VS Code theme tokens and adapts navigation without horizontal overflow (1581.404667ms)
+✔ Local tabs refresh once per entry and Global operations follow the selected cached version (429.374042ms)
+✔ More exposes cache tools only in development, supports keyboard navigation and exact clear actions (677.026959ms)
+✔ Libraries keeps all cached lists mounted through silent refresh and updates changed data (569.623125ms)
+✔ Runtime preserves identical version rows and cached counts while refreshing catalogs (145.537375ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4285.736375

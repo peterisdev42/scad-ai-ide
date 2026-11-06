@@ -1,0 +1,50 @@
+{
+  "scope": "Actual local Ollama tags/show metadata, not independently verified model provenance or remote MiMo branding",
+  "tag": {
+    "name": "mimo-v2.6:latest",
+    "model": "mimo-v2.6:latest",
+    "modified_at": "2026-11-06T10:01:27.986857626+08:00",
+    "size": 8711267221,
+    "digest": "0af2fcf0cdba6e967700d7660a35c2ae905be1680d9afb3d377f6e61dbd1dfc0",
+    "details": {
+      "parent_model": "",
+      "format": "safetensors",
+      "family": "",
+      "families": null,
+      "parameter_size": "",
+      "quantization_level": "nvfp4",
+      "runner": "mlx"
+    },
+    "capabilities": [
+      "completion",
+      "vision",
+      "tools",
+      "thinking"
+    ]
+  },
+  "show": {
+    "capabilities": [
+      "completion",
+      "vision",
+      "tools",
+      "thinking"
+    ],
+    "details": {
+      "parent_model": "",
+      "format": "safetensors",
+      "family": "qwen3_5",
+      "families": null,
+      "parameter_size": "9.4B",
+      "quantization_level": "nvfp4",
+      "runner": "mlx"
+    },
+    "model_info": {
+      "general.architecture": "qwen3_5",
+      "general.parameter_count": 9409468800,
+      "qwen3_5.block_count": 32,
+      "qwen3_5.context_length": 262144,
+      "qwen3_5.embedding_length": 4096
+    },
+    "parameters": "top_k                          20\ntop_p                          0.95\nmin_p                          0\npresence_penalty               0\nrepeat_penalty                 1\ntemperature                    0.6"
+  }
+}

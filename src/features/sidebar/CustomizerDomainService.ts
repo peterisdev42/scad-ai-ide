@@ -1,7 +1,7 @@
 import { assertWorkspacePath } from '../../platform/WorkspacePaths'
 import type { CapabilityContext } from '../../core/capabilities/CapabilityTypes'
 import * as vscode from 'vscode'
-import { CustomizerService } from '../../core/customizer/CustomizerService'
+import { CustomizerService, type CustomizerChangeReason } from '../../core/customizer/CustomizerService'
 import type { ParameterValue } from '../../core/customizer/CustomizerParser'
 import { CustomizerPresets } from './CustomizerPresets'
 import { CapabilityError } from '../../core/capabilities/CapabilityTypes'
@@ -17,6 +17,7 @@ export class CustomizerDomainService implements vscode.Disposable {
     readonly onDidChange = this.changed.event
     private readonly subscriptions: vscode.Disposable[]
     private busy = false
+    private disposed = false
     isBusy() { return this.busy }
     constructor(readonly service: CustomizerService) {
         this.presets = new CustomizerPresets(service, () => { this.revision++; this.publish() })
@@ -31,24 +32,26 @@ export class CustomizerDomainService implements vscode.Disposable {
         ]
         this.loadTarget()
     }
-    private publish() { this.presets.bind(this.service.target); this.changed.fire() }
+    private publish() { if (!this.disposed) { this.presets.bind(this.service.target); this.changed.fire() } }
     snapshot() {
         this.loadTarget()
-        return { target: this.service.target, revision: this.revision, parameters: this.service.parameters.map((p) => ({ ...p, value: this.service.value(p) })), presets: this.presets.state(), overridesEditSource: false }
+        return { target: this.service.target, revision: this.revision, parameters: this.service.parameters.map((p) => ({ ...p, value: this.service.value(p) })), presets: this.presets.state(), analysis: this.service.analysisStatus, overridesEditSource: false }
     }
     assertTarget(target: string, revision: number) {
+        if (this.disposed) throw new CapabilityError('TARGET_CHANGED', 'This Customizer domain is no longer active. Read the current target again.', true)
         this.loadTarget()
         if (!target || target !== this.service.target) throw new CapabilityError('TARGET_CHANGED', 'Read the active Customizer target again.', true)
         if (revision !== this.revision) throw new CapabilityError('STALE_STATE', 'Customizer changed. Read parameters again.', true)
     }
-    setValues(target: string, revision: number, values: Record<string, ParameterValue>) {
+    setValues(target: string, revision: number, values: Record<string, ParameterValue>, reason: CustomizerChangeReason = 'values') {
         this.assertTarget(target, revision)
         if (this.busy) throw new CapabilityError('BUSY', 'A preset operation is already running.', true)
-        try { this.service.setMany(values) } catch (error) { throw new CapabilityError('INVALID_VALUE', error instanceof Error ? error.message : String(error)) }
+        try { this.service.setMany(values, reason) } catch (error) { throw new CapabilityError('INVALID_VALUE', error instanceof Error ? error.message : String(error)) }
         return this.snapshot()
     }
     reset(target: string, revision: number, name?: string) {
         this.assertTarget(target, revision)
+        if (this.busy) throw new CapabilityError('BUSY', 'A preset operation is already running.', true)
         if (name && !this.service.parameters.some((p) => p.name === name)) throw new CapabilityError('INVALID_VALUE', 'Unknown parameter')
         this.service.reset(name)
         return this.snapshot()
@@ -56,6 +59,7 @@ export class CustomizerDomainService implements vscode.Disposable {
     async preset(target: string, revision: number, action: string, name?: string, uri?: vscode.Uri, context: CapabilityContext = { actor: 'gui' }) {
         this.assertTarget(target, revision)
         if (this.busy) throw new CapabilityError('BUSY', 'A preset operation is already running.', true)
+        if (!this.service.analysisStatus.complete && action !== 'import') throw new CapabilityError('SOURCE_UNSUPPORTED', 'Source analysis is incomplete; finish the source before using presets.')
         this.busy = true
         try {
             if (context.actor === 'agent' && action !== 'select') {
@@ -76,6 +80,7 @@ export class CustomizerDomainService implements vscode.Disposable {
         } finally { this.busy = false }
     }
     loadTarget(): void {
+        if (this.disposed) return
         const input = vscode.window.tabGroups.activeTabGroup.activeTab?.input
         const uri = input instanceof vscode.TabInputCustom && input.viewType === 'scad-ai-ide.preview.editor' ? input.uri : undefined
         const document = uri ? vscode.workspace.textDocuments.find((document) => document.uri.toString() === uri.toString() && !document.isClosed) : vscode.window.activeTextEditor?.document
@@ -100,5 +105,11 @@ export class CustomizerDomainService implements vscode.Disposable {
         this.publish()
     }
 
-    dispose() { this.subscriptions.forEach((s) => s.dispose()) }
+    dispose() {
+        if (this.disposed) return
+        this.disposed = true
+        this.loadedTarget = undefined
+        this.loadedSource = undefined
+        this.subscriptions.forEach((s) => s.dispose())
+    }
 }

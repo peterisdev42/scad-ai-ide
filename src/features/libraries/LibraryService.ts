@@ -5,7 +5,7 @@ import { LibraryGarbageCollector } from '../../platform/libraries/LibraryGarbage
 import * as vscode from 'vscode'
 import { createHash } from 'node:crypto'
 import { installLayout, repository } from '../../core/libraries/validation'
-import { versionLabel } from '../../core/libraries/types'
+import { versionLabel, type RegistryLibrary, type InstalledLibrary } from '../../core/libraries/types'
 import { libraryEnvironment } from '../../platform/libraries/LibraryEnvironment'
 import { ProjectDependencyManager } from '../../platform/libraries/ProjectDependencyManager'
 import { confirmLibraryCleanup, confirmLibraryBulkCleanup } from '../../platform/notifications'
@@ -15,6 +15,12 @@ export class LibraryService implements vscode.Disposable {
     private selected?: string
     private busy = false
     isBusy() { return this.busy }
+    activity() { return { busy: this.busy, cancellable: this.busy && !!this.abort, message: this.message, error: this.error, bulkResult: this.bulkResult, trusted: vscode.workspace.isTrusted } }
+    cancel() {
+        if (!this.abort) return false
+        this.abort.abort()
+        return true
+    }
     private message = ''
     protected error = ''
     private query = ''
@@ -59,31 +65,38 @@ export class LibraryService implements vscode.Disposable {
         }
         const installed = await this.manager.store.list()
         const global = await Promise.all(installed.map(async ({ files: _files, ...p }) => ({ ...p, key: this.key(p), references: await this.manager.references.references(p) })))
-        const registry = this.registryLibraries.map((l) => {
-            let reason = ''
-            let mount
-            try {
-                mount = installLayout(l)
-            } catch (e) {
-                reason = (e as Error).message
-            }
-            return {
-                ...l,
-                layout: mount,
-                layoutError: reason,
-                versions: l.versions.map((v) => {
-                    let layoutError = ''
-                    let resolvedLayout
-                    try {
-                        resolvedLayout = installLayout(l, v)
-                    } catch (e) {
-                        layoutError = (e as Error).message
-                    }
-                    return { ...v, label: versionLabel(v), layout: resolvedLayout, layoutError, cached: installed.some((p) => p.libraryId === l.id && repository(p.repositoryUrl).url.toLowerCase() === repository(l.repositoryUrl).url.toLowerCase() && p.commit === v.commit) }
-                }),
-            }
-        })
-        return { bulkResult: this.bulkResult, projects, selectedProject: this.selected, projectDependencies, projectError, global, globalIssues: this.manager.store.issues, registry, registryError: this.registryError, registryBusy: this.registryBusy, registryLoaded: this.registryLoaded, registryStatus: this.manager.registry.status, busy: this.busy, cancellable: this.busy && !!this.abort, message: this.message, error: this.error, trusted: vscode.workspace.isTrusted, query: this.query }
+        const registry = this.registryLibraries.map((library) => this.describeLibrary(library, installed))
+        return { ...this.activity(), projects, selectedProject: this.selected, projectDependencies, projectError, global, globalIssues: this.manager.store.issues, registry, registryError: this.registryError, registryBusy: this.registryBusy, registryLoaded: this.registryLoaded, registryStatus: this.manager.registry.status, query: this.query }
+    }
+    /** The same installability and cached-version metadata powers GUI rows and Agent results. */
+    private describeLibrary(l: RegistryLibrary, installed: InstalledLibrary[]) {
+        let reason = ''
+        let mount
+        try {
+            mount = installLayout(l)
+        } catch (e) {
+            reason = (e as Error).message
+        }
+        return {
+            ...l,
+            layout: mount,
+            layoutError: reason,
+            versions: l.versions.map((v) => {
+                let layoutError = ''
+                let resolvedLayout
+                try {
+                    resolvedLayout = installLayout(l, v)
+                } catch (e) {
+                    layoutError = (e as Error).message
+                }
+                return { ...v, label: versionLabel(v), layout: resolvedLayout, layoutError, cached: installed.some((p) => p.libraryId === l.id && repository(p.repositoryUrl).url.toLowerCase() === repository(l.repositoryUrl).url.toLowerCase() && p.commit === v.commit) }
+            }),
+        }
+    }
+    async search(query = '', id?: string) {
+        const matches = id ? [await this.manager.registry.getLibrary(id)] : await this.manager.registry.search(query)
+        const installed = await this.manager.store.list()
+        return matches.map((library) => this.describeLibrary(library, installed))
     }
     private async restoreRegistryList() {
         const cached = await this.manager.registry.restoreCachedRegistry()
@@ -134,8 +147,7 @@ export class LibraryService implements vscode.Disposable {
         const action = value.action
         if (typeof action !== 'string' || !action.startsWith('libraries.')) return
         if (action === 'libraries.cancel') {
-            this.abort?.abort()
-            return
+            return this.cancel()
         }
         if (action === 'libraries.refresh') return this.loadRegistry()
         if (this.busy) throw new CapabilityError('BUSY', 'A library operation is already running.', true)

@@ -1,0 +1,12 @@
+{
+  "scenario": "author",
+  "model": "qwen3.5:2b-mlx",
+  "file": "<fixture>/workspace/model.scad",
+  "query": "/openscad-customizer-authoring 目标文件为 file://<fixture>/workspace/model.scad。按受控Source工作流：width成为Dimensions分组的Slider(10:5:100)，描述Width in millimeters；shape成为Appearance分组的Dropdown(round:Round,square:Square)；internalOffset隐藏。将相互影响的group修改放在同一批计划中；最后验证这三个明确目标。 保留几何、源码默认值与Preset，不保存文件。使用项目安装的Skill完成分析、适用时的最小编辑和明确目标验证；如实报告实际结果及未执行的GUI/渲染检查。",
+  "source": "width=40;\nshape=\"round\";\ninternalOffset=0.01;\nmodule model() { cube([width,2,3]); }\nmodel();\n",
+  "artifact": {
+    "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+    "bytes": 4532700,
+    "sha256": "5cd831f6e9bbc2772be7db99f09f4e31fb15d26fc2745f81073223ec59cb652e"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "result": {},
+  "buffer": "width=40;\nmodule model() { cube([width,2,3]); }\nmodel();\n",
+  "dirty": false,
+  "operations": {
+    "total": 0,
+    "offset": 0,
+    "hasMore": false,
+    "nextOffset": null,
+    "operations": []
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "scope": "Review of original actual MODEL-01 native metadata, not a new inference run or acceptance PASS",
+  "artifact": {
+    "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+    "bytes": 4532700,
+    "sha256": "5cd831f6e9bbc2772be7db99f09f4e31fb15d26fc2745f81073223ec59cb652e"
+  },
+  "actualDispatcherCustomizerCalls": [
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": true,
+      "complete": true
+    }
+  ],
+  "nativeToolRequests": [
+    {
+      "name": "scad_ai_ide_customizer_sourceAnalyze",
+      "id": "call_rdxxer22__vscode-1794214917835",
+      "toolInputRetry": 0,
+      "hostSchemaRejected": false
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_pj58biam__vscode-1794214917836",
+      "toolInputRetry": 0,
+      "hostSchemaRejected": true,
+      "hostError": "ERROR: Your input to the tool was invalid (must have required property 'mode', must have required property 'mode', must match exactly one schema in oneOf)\nPlease check your input and try again."
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_riwiuhrz__vscode-1794214917837",
+      "toolInputRetry": 1,
+      "hostSchemaRejected": true,
+      "hostError": "ERROR: Your input to the tool was invalid (must have required property 'uri', must have required property 'planId', must match exactly one schema in oneOf)\nPlease check your input and try again."
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_rrc17rmq__vscode-1794214917838",
+      "toolInputRetry": 2,
+      "hostSchemaRejected": true,
+      "hostError": "ERROR: Your input to the tool was invalid (must have required property 'identity', must have required property 'planId', must match exactly one schema in oneOf)\nPlease check your input and try again."
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_bynjcseq__vscode-1794214917839",
+      "toolInputRetry": 3,
+      "hostSchemaRejected": true,
+      "hostError": "ERROR: Your input to the tool was invalid (must NOT have additional properties, must have required property 'planId', must match exactly one schema in oneOf)\nPlease check your input and try again."
+    },
+    {
+      "name": "get_errors",
+      "id": "call_2bn9tucb__vscode-1794214917840",
+      "toolInputRetry": 4,
+      "hostSchemaRejected": true,
+      "hostError": "ERROR: Your input to the tool was invalid (must be array)\nPlease check your input and try again."
+    }
+  ],
+  "hostSchemaRejections": 5,
+  "generatedSourceApplyRequests": 4,
+  "actualSourceApplyDispatcherCalls": 0,
+  "terminalReason": "nativeRequestError",
+  "sourceBufferUnchanged": true,
+  "sourceDiskUnchanged": true,
+  "limitation": "No response followed malformed native tool requests; this does not establish network/provider failure or uniquely identify the terminal error cause."
+}

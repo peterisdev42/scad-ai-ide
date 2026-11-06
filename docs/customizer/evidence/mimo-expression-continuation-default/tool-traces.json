@@ -1,0 +1,161 @@
+[
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "uri": "file://<fixture>/workspace/model.scad",
+      "includeCandidates": true,
+      "maxDiagnostics": 50
+    },
+    "started": "2026-11-10T06:59:02.702Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "31a6a088cf5428dac05bde0befb708878c001f4c3cff8ce64473cdc4eae43499"
+        },
+        "parameters": [
+          {
+            "name": "base",
+            "group": "",
+            "description": "",
+            "defaultValue": 80,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 8
+              }
+            }
+          }
+        ],
+        "candidates": [
+          {
+            "name": "width",
+            "range": {
+              "start": {
+                "line": 1,
+                "character": 0
+              },
+              "end": {
+                "line": 1,
+                "character": 13
+              }
+            },
+            "reason": "unsupportedDefault",
+            "confidence": "certain"
+          }
+        ],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "5cd4e7b2-0e9a-469c-b76f-c3d949e37fa5",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceValidate",
+    "input": {
+      "uri": "file://<fixture>/workspace/model.scad",
+      "expectations": [
+        {
+          "name": "width",
+          "range": {
+            "max": 100,
+            "min": 10,
+            "step": 1
+          },
+          "type": "number",
+          "widget": "slider"
+        }
+      ],
+      "includeWarnings": true
+    },
+    "started": "2026-11-10T06:59:40.670Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceValidate",
+      "data": {
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "31a6a088cf5428dac05bde0befb708878c001f4c3cff8ce64473cdc4eae43499"
+        },
+        "sourceStatus": {
+          "status": "complete",
+          "reasons": []
+        },
+        "contractStatus": "mismatch",
+        "qualityStatus": "clear",
+        "semanticPass": false,
+        "checked": 1,
+        "matched": 0,
+        "expectationResults": [
+          {
+            "parameter": "width",
+            "matched": false,
+            "issues": [
+              "Parameter is missing or not visible"
+            ],
+            "details": [
+              {
+                "code": "EXPECTED_LITERAL",
+                "message": "Parameter is missing or not visible",
+                "range": {
+                  "start": {
+                    "line": 1,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 1,
+                    "character": 13
+                  }
+                }
+              }
+            ],
+            "range": {
+              "start": {
+                "line": 1,
+                "character": 0
+              },
+              "end": {
+                "line": 1,
+                "character": 13
+              }
+            }
+          }
+        ],
+        "omittedExpectations": 0,
+        "diagnostics": [],
+        "omittedDiagnostics": 0,
+        "runtimeCheck": {
+          "status": "notRequested"
+        },
+        "guiCheck": {
+          "status": "notRequested"
+        },
+        "complete": true
+      },
+      "operation": {
+        "id": "9c5590e9-a337-4e42-ab56-97b6313dbaac",
+        "capabilityId": "customizer.sourceValidate",
+        "status": "succeeded"
+      }
+    }
+  }
+]

@@ -1,0 +1,72 @@
+{
+  "scope": "Actual Windows diagnostic; no test acceptance inferred",
+  "binary": "D:\\a\\_temp\\customizer-native-runtime\\openscad-cli-windows-x86_64\\bin\\openscad.exe",
+  "outcomes": [
+    {
+      "label": "ascii",
+      "representation": "absolute",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-ByUCXr\\ascii",
+      "searchPath": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-ByUCXr\\ascii\\.scad\\lib",
+      "status": 0,
+      "signal": null,
+      "stderr": "Geometries in cache: 2\r\nGeometry cache size in bytes: 1712\r\nCGAL Polyhedrons in cache: 0\r\nCGAL cache size in bytes: 0\r\nTotal rendering time: 0:00:00.001\r\nTop level object is a 3D object (PolySet):\r\n   Convex:       yes\r\n   Facets:         6\r\n",
+      "geometryWidth": 10,
+      "expectedWidth": 10
+    },
+    {
+      "label": "ascii",
+      "representation": "relative",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-ByUCXr\\ascii",
+      "searchPath": ".scad\\lib",
+      "status": 0,
+      "signal": null,
+      "stderr": "Geometries in cache: 2\r\nGeometry cache size in bytes: 1712\r\nCGAL Polyhedrons in cache: 0\r\nCGAL cache size in bytes: 0\r\nTotal rendering time: 0:00:00.003\r\nTop level object is a 3D object (PolySet):\r\n   Convex:       yes\r\n   Facets:         6\r\n",
+      "geometryWidth": 10,
+      "expectedWidth": 10
+    },
+    {
+      "label": "unicode-direct",
+      "representation": "absolute",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-ByUCXr\\项目 A",
+      "searchPath": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-ByUCXr\\项目 A\\.scad\\lib",
+      "status": 3221226505,
+      "signal": null,
+      "stderr": "WARNING: Can't find include file 'fixture-library/smoke.scad'. in file ../项目 A/main.scad, line 1\r\n",
+      "geometryWidth": null,
+      "expectedWidth": 10
+    },
+    {
+      "label": "unicode-direct",
+      "representation": "relative",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-ByUCXr\\项目 A",
+      "searchPath": ".scad\\lib",
+      "status": 3221226505,
+      "signal": null,
+      "stderr": "",
+      "geometryWidth": null,
+      "expectedWidth": 10
+    },
+    {
+      "label": "unicode-junction",
+      "representation": "absolute",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-ByUCXr\\项目 B",
+      "searchPath": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-ByUCXr\\项目 B\\.scad\\lib",
+      "status": 3221226505,
+      "signal": null,
+      "stderr": "WARNING: Can't find include file 'fixture-library/smoke.scad'. in file ../项目 B/main.scad, line 1\r\n",
+      "geometryWidth": null,
+      "expectedWidth": 10
+    },
+    {
+      "label": "unicode-junction",
+      "representation": "relative",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-ByUCXr\\项目 B",
+      "searchPath": ".scad\\lib",
+      "status": 3221226505,
+      "signal": null,
+      "stderr": "",
+      "geometryWidth": null,
+      "expectedWidth": 10
+    }
+  ]
+}

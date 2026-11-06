@@ -1,0 +1,25 @@
+{
+  "scope": "Historical failed probe, retained alongside the final verified run",
+  "files": [
+    {
+      "file": "result.json",
+      "originalSha256": "95411109d8a4be0d38a74da8c974ccd8c0debfc7a9684beaed9fe74efca40acd",
+      "sha256": "4d49814d9be51299415834ccee5b0705c3ec9cf58e168466a3f7e2b902f36404"
+    },
+    {
+      "file": "dynamic-checks.json",
+      "originalSha256": "3a9111abaea5db2e2772edf5ee0f05ef96a2c20bfad476a80e8fdd157b6b5025",
+      "sha256": "95f1c9ae81c857e1eed9b82bb119e240ef889f09fcac5c9c126633cf4d403a92"
+    },
+    {
+      "file": "ax-initial.json",
+      "originalSha256": "66ac1ce854e29c2dee060c82fe52b05ad04c47a786a30f411af66adb71d4364c",
+      "sha256": "1c14aa64482eea322f36900e138d1d74d6c066da21dd424ef4f2c24de988a80f"
+    },
+    {
+      "file": "failed-native-state.json",
+      "originalSha256": "abf08eea91ba142276656768a16691694857e0a61a947041518ed6ab1653373d",
+      "sha256": "41d3aecd9c81297bc94d5d7d41d7f664111c3e1a20c2cd4feae5b30fdcfa3fb7"
+    }
+  ]
+}

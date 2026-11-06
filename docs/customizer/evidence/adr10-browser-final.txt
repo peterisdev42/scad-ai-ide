@@ -1,0 +1,64 @@
+npm notice run scad-ai-ide@0.0.1 test:customizer
+npm notice run npm run compile-tests && node esbuild.js && node --test scripts/customizer-scrollbar.test.mjs scripts/customizer-preview-fields.test.mjs
+npm notice run scad-ai-ide@0.0.1 compile-tests
+npm notice run tsc -p . --outDir out
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+✔ Preview manual numeric entry rejects out of bounds without clamping and accepts off-grid input (464.306917ms)
+✔ Preview handles literal regex punctuation in group names and preserves multiline textbox values (57.178958ms)
+✔ Preview incomplete analysis is visible and makes stale controls inert (78.471125ms)
+✔ native scrollbar scrolls with the wheel, drags, fades and uses VS Code theme variables (1536.083083ms)
+✔ collapse, viewport resize, keyboard focus and file changes update native scroll dimensions (191.420875ms)
+✔ host list settings update scrollbar width and wheel behavior without replacing controls (141.997084ms)
+✔ native view title identifies the model and switches between collapse and expand actions (208.258333ms)
+✔ decimal sliders, mixed menus, default menu entries and vector labels stay editable (131.617459ms)
+✔ preset create, save, default, import, partial selection, export and delete use OpenSCAD JSON (315.116916ms)
+✔ removed panel settings stay absent and invalid imports preserve the working model (145.42225ms)
+✔ a preset dialog cannot write into a different active file (137.276042ms)
+✔ sidecar reload, invalid preset selection and compact panel layout preserve model state (151.034666ms)
+✔ range sliders send intermediate values before pointer release and retain the final value (241.385166ms)
+✔ preset dropdown reaches the real Preview session and renderer, including cold startup and design defaults (164.386084ms)
+✔ active presets follow file edits and mark edits outside partial presets as unsaved (155.75625ms)
+✔ preset file sits left of actions with the menu below, and every action has a hover label (3432.691541ms)
+✔ ordinary and fallback sliders submit only after release, including fallback during a drag (629.20775ms)
+✔ preset section shares parameter folding, font size and persisted state (168.44575ms)
+✔ parameter controls grow with the sidebar and wrap vectors without losing edits or overflowing (124.931584ms)
+✔ Customizer icon groups use VS Code spacing tokens with consistent fallbacks (97.28ms)
+✔ preset filenames refer only to explicitly opened or newly saved files (202.400167ms)
+✔ preset header stays collapsed during actions and the more menu supports keyboard and dismissal (314.504417ms)
+✔ Save is enabled only for unsaved values and creates the matching JSON without a file dialog (177.174833ms)
+✔ Saving custom values merges an unopened matching JSON without overwriting an existing Current preset (134.056ms)
+✔ New preset automatically creates a matching JSON even when model values are unchanged (133.231417ms)
+✔ Automatic matching JSON creation does not overwrite invalid existing content (138.823ms)
+✔ Agent saves current values into an explicit different preset even when the selected preset is unmodified (125.631792ms)
+✔ native effective bounds and off-grid values survive GUI, Agent and keyboard updates (107.457084ms)
+✔ partial preset baselines preserve an omitted unrepresentable source default as its actual type (175.719625ms)
+✔ GUI marks a same-encoding enum type change as modified and refuses a lossy save (159.069042ms)
+✔ GUI rejects an unreplayable current preset and succeeds after the user corrects its value (228.714917ms)
+✔ GUI rejects oversize UTF-8 input without truncation and makes incomplete analysis visible (101.525667ms)
+✔ partial presets switch A to B to defaults across GUI, domain and Preview without writing the file (159.242875ms)
+✔ unknown-version preset import is readonly and programmatic apply/save/export cannot bypass it (118.995125ms)
+✔ multiline strings round trip without HTML input newline sanitization (100.237ms)
+✔ Preview actions and Agent share preset state, readonly policy, overrides and atomic persistence (175.368042ms)
+✔ pointer slider interaction uses minimum-anchored steps without rounding stored Agent values (162.37575ms)
+✔ spinbox and vector off-grid inputs remain valid and keyboard uses interaction increments (123.872375ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11032.573875

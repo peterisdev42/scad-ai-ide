@@ -1,0 +1,79 @@
+{
+  "baselineMain": "4463d61046d962a3f5afa5ace49b21f37e6cc4a6",
+  "implementationCommit": "d2a337ee4d81a3cdd34c9984111384ecc68ade91",
+  "branch": "codex/customizer-architecture-v2",
+  "mainMerged": false,
+  "runs": [
+    {
+      "id": 42625707424,
+      "url": "https://github.com/peterisdev42/scad-ai-ide/actions/runs/42625707424",
+      "jobs": [
+        {
+          "id": 129188801020,
+          "name": "panel",
+          "status": "completed",
+          "conclusion": "success",
+          "failedSteps": []
+        },
+        {
+          "id": 129188801561,
+          "name": "contracts (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "failedSteps": []
+        },
+        {
+          "id": 129188801878,
+          "name": "contracts (macos-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "failedSteps": []
+        },
+        {
+          "id": 129188802223,
+          "name": "contracts (windows-latest)",
+          "status": "completed",
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run npm run test:capabilities"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 42625707480,
+      "url": "https://github.com/peterisdev42/scad-ai-ide/actions/runs/42625707480",
+      "jobs": [
+        {
+          "id": 129188801598,
+          "name": "libraries (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "failedSteps": []
+        },
+        {
+          "id": 129188801897,
+          "name": "libraries (windows-latest)",
+          "status": "completed",
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run npm run test:libraries"
+          ]
+        },
+        {
+          "id": 129188801932,
+          "name": "libraries (macos-latest)",
+          "status": "completed",
+          "conclusion": "success",
+          "failedSteps": []
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "Actual CI of this implementation commit, not the earlier main baseline.",
+    "Windows Source tests failed because the fixture's file URL conversion produced D:\\C:\\...; production safety was not weakened.",
+    "Windows real CLI Unicode project-path failure was preserved; current follow-up uses a checksum-pinned managed runtime without changing the Unicode fixture.",
+    "Follow-up 57ea7eadf35bb1d90dd8f8f434590a92edbfe2bb is running; no success inferred from these old results."
+  ]
+}

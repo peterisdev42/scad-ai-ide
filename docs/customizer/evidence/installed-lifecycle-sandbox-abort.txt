@@ -1,0 +1,17 @@
+[1110/112029.284768:ERROR:electron/shell/common/mac/codesign_util.cc:79] task_name_for_pid: (os/kern) failure (5)
+Installing extensions...
+Extension 'scad-ai-ide-customizer-architecture-v2.vsix' was successfully installed.
+Exit code:   SIGABRT
+<repo>/node_modules/@vscode/test-electron/out/runTest.js:125
+                reject(new TestRunFailedError(code ?? undefined, signal ?? undefined));
+                       ^
+
+TestRunFailedError: Test run terminated with signal SIGABRT
+    at ChildProcess.onProcessClosed (<repo>/node_modules/@vscode/test-electron/out/runTest.js:125:24)
+    at ChildProcess.emit (node:events:509:28)
+    at ChildProcess._handle.onexit (node:internal/child_process:295:12) {
+  code: undefined,
+  signal: 'SIGABRT'
+}
+
+Node.js v24.16.0

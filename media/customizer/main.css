@@ -50,6 +50,7 @@ body.vscode-high-contrast {
 }
 button,
 input,
+textarea,
 select {
     font: inherit;
 }
@@ -58,6 +59,7 @@ button {
 }
 button,
 input,
+textarea,
 select {
     border-radius: 0;
 }
@@ -80,6 +82,30 @@ select {
     margin: 0;
     padding: 4px 12px 4px 20px;
     line-height: 22px;
+}
+/* Secondary action in the empty view; colors follow the active VS Code theme. */
+.empty-action {
+    appearance: none;
+    display: block;
+    width: calc(100% - 32px);
+    min-height: 26px;
+    margin: 4px 12px 8px 20px;
+    padding: 4px 8px;
+    border: 1px solid var(--vscode-button-border, var(--vscode-contrastBorder, transparent));
+    border-radius: var(--vscode-cornerRadius-small, 3px);
+    color: var(--vscode-button-secondaryForeground);
+    background: var(--vscode-button-secondaryBackground);
+    line-height: 1.4;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+.empty-action:enabled:hover,
+.empty-action:enabled:active {
+    background: var(--vscode-button-secondaryHoverBackground);
+}
+.empty-action:focus-visible {
+    outline: 1px solid var(--vscode-focusBorder);
+    outline-offset: 2px;
 }
 .tree-row {
     min-height: var(--row-height);
@@ -182,6 +208,7 @@ select {
     justify-content: flex-end;
     font-size: calc(var(--vscode-font-size) * 0.923);
 }
+textarea,
 input:not([type='checkbox']):not([type='range']),
 select {
     width: 100%;
@@ -200,6 +227,7 @@ select {
     padding-right: 0;
     text-align-last: center;
 }
+textarea:focus,
 input:focus,
 select:focus {
     outline: 1px solid var(--vscode-focusBorder);
@@ -466,3 +494,5 @@ body.vscode-reduce-motion .customizer-scrollable > .invisible.fade {
 .preset-menu-item:disabled {
     color: var(--vscode-disabledForeground);
 }
+
+textarea { resize: vertical; min-height: 22px; white-space: pre; }

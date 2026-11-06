@@ -1,0 +1,79 @@
+const vscode = require('vscode')
+const fs = require('node:fs/promises')
+const path = require('node:path')
+
+// Test-only observer. It records actual native Chat tool invocations without
+// supplying tool calls, results, confirmations or synthetic model responses.
+exports.run = async () => {
+    const directory = process.env.SCAD_NATIVE_AGENT_DIRECTORY
+    const traces = []
+    const own = vscode.extensions.all.find(extension => extension.packageJSON.name === 'scad-ai-ide')
+    const provider = vscode.extensions.getExtension('Ollama.ollama')
+    if (!own || !provider) throw new Error('The isolated native Agent host requires this extension and the installed official Ollama provider')
+    await provider.activate()
+    let nativeAgent = vscode.extensions.getExtension('GitHub.copilot-chat')
+    let nativeAgentError
+    try { await nativeAgent?.activate() } catch (error) { nativeAgentError = String(error) }
+    const api = await own.activate()
+    const original = api.capabilities.invoke.bind(api.capabilities)
+    api.capabilities.invoke = async (...args) => {
+        const trace = { capability: args[0], input: args[1], started: new Date().toISOString() }
+        traces.push(trace)
+        try { trace.output = await original(...args); return trace.output }
+        catch (error) { trace.error = String(error); throw error }
+        finally { await fs.writeFile(path.join(directory, 'tool-traces.json'), JSON.stringify(traces, null, 2)) }
+    }
+    const models = await vscode.lm.selectChatModels({ vendor: 'ollama-models' })
+    await fs.writeFile(path.join(directory, 'ready.json'), JSON.stringify({
+        vscode: vscode.version,
+        extensionMode: own.extensionMode,
+        extensionPath: own.extensionPath,
+        bundleSha256: require('node:crypto').createHash('sha256').update(await fs.readFile(path.join(own.extensionPath, own.packageJSON.main))).digest('hex'),
+        chatSettings: { extensionUnification: vscode.workspace.getConfiguration('chat').get('extensionUnification.enabled'), disableAI: vscode.workspace.getConfiguration('chat').get('disableAIFeatures'), extensionTools: vscode.workspace.getConfiguration('chat').get('extensionTools.enabled') },
+        nativeAgent: { present: !!nativeAgent, active: nativeAgent?.isActive, error: nativeAgentError },
+        provider: { id: provider.id, version: provider.packageJSON.version },
+        models: models.map(model => ({ id: model.id, name: model.name, vendor: model.vendor, toolCalling: model.capabilities?.toolCalling })),
+    }, null, 2))
+    let pending
+    const read = async name => { try { return await fs.readFile(path.join(directory, name), 'utf8') } catch { return undefined } }
+    while (!(await read('finish'))) {
+        const raw = await read('request.json')
+        if (raw && JSON.parse(raw).snapshot) {
+            await fs.rm(path.join(directory, 'request.json'))
+            const request = JSON.parse(raw)
+            if (request.cancel) await vscode.commands.executeCommand('workbench.action.chat.cancel')
+            const doc = await vscode.workspace.openTextDocument(vscode.Uri.file(request.file))
+            await fs.writeFile(path.join(directory, 'response.json'), JSON.stringify({ snapshot: true, cancelledForSnapshot: !!request.cancel, stopReason: request.stopReason, buffer: doc.getText(), dirty: doc.isDirty, operations: api.capabilities.operations.status(undefined, 0, 100) }, null, 2))
+            continue
+        }
+        if (raw && !pending) {
+            await fs.rm(path.join(directory, 'request.json'))
+            const request = JSON.parse(raw)
+            pending = (async () => {
+                try {
+                    if (request.inspect) {
+                        await vscode.commands.executeCommand('extension.open', 'GitHub.copilot-chat')
+                        await new Promise(resolve => setTimeout(resolve, 1500))
+                        await fs.writeFile(path.join(directory, 'response.json'), JSON.stringify({ inspection: true, installedIds: vscode.extensions.all.map(extension => extension.id) }, null, 2))
+                        return
+                    }
+                    const uri = vscode.Uri.file(request.file)
+                    const document = await vscode.workspace.openTextDocument(uri)
+                    await vscode.window.showTextDocument(document)
+                    await vscode.commands.executeCommand('workbench.action.chat.newChat')
+                    const result = await vscode.commands.executeCommand('workbench.action.chat.open', {
+                        query: request.query, mode: 'agent', modelSelector: { vendor: 'ollama-models', id: request.model },
+                        attachFiles: [uri], blockOnResponse: true,
+                    })
+                    await fs.writeFile(path.join(directory, 'response.json'), JSON.stringify({ result, buffer: document.getText(), dirty: document.isDirty, operations: api.capabilities.operations.status(undefined, 0, 100) }, null, 2))
+                } catch (error) {
+                    await fs.writeFile(path.join(directory, 'response.json'), JSON.stringify({ error: String(error), stack: error.stack }, null, 2))
+                } finally { pending = undefined }
+            })()
+        }
+        await new Promise(resolve => setTimeout(resolve, 100))
+    }
+    await vscode.commands.executeCommand('workbench.action.chat.cancel')
+    // The UI controller preserves the isolated directory for inspection; source
+    // buffers are never implicitly saved by this observer.
+}

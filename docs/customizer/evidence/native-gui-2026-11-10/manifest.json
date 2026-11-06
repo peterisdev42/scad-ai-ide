@@ -1,0 +1,175 @@
+{
+  "scope": "Actual native windows/control observations and incomplete/failed controller attempts; not an all-PASS acceptance",
+  "privatePreferencesArchived": false,
+  "files": [
+    {
+      "evidence": "unlocked/result.json",
+      "originalSha256": "01d6dffe1c9ff17b72b6abb6d3bef2e55f440fc6943e078a106a36bc8f239570",
+      "sha256": "325fee4ea4d08d5925d5aa69ef38b0200a3336dfe6723eb87364bd5fea58a21b",
+      "redactions": [
+        "fixture/repo/home prefixes"
+      ]
+    },
+    {
+      "evidence": "unlocked/ax-after-preview.json",
+      "originalSha256": "6ff492c997008e0291d5eed8f759386ba2651ab1d028096bc7455617dc7f2675",
+      "sha256": "6ff492c997008e0291d5eed8f759386ba2651ab1d028096bc7455617dc7f2675",
+      "redactions": [
+        "fixture/repo/home prefixes"
+      ]
+    },
+    {
+      "evidence": "unlocked/interactions.json",
+      "originalSha256": "f3c7cd3a49e8dfad64733f81b7bb99c89e175d2332efd8670a62965a948b2502",
+      "sha256": "f3c7cd3a49e8dfad64733f81b7bb99c89e175d2332efd8670a62965a948b2502",
+      "redactions": [
+        "fixture/repo/home prefixes"
+      ]
+    },
+    {
+      "evidence": "unlocked/controls.png",
+      "originalSha256": "b59da1523b68abdfa03918eacdf55231e3fe7162816b8df0ad052116007eab95",
+      "sha256": "b59da1523b68abdfa03918eacdf55231e3fe7162816b8df0ad052116007eab95",
+      "redactions": []
+    },
+    {
+      "evidence": "runtime/result.json",
+      "originalSha256": "0f24521a18fa0d62a4577da0fa9aacf6b79391659466446e23c3d1c67b68448c",
+      "sha256": "a5cc56b52580df8509db681c63d850db73ae4d0fdedd811a48696557f4eb0899",
+      "redactions": [
+        "fixture/repo/home prefixes"
+      ]
+    },
+    {
+      "evidence": "runtime/ax-initial.json",
+      "originalSha256": "ee205fba80697367708106eb4bfbd3146996616165dcf452531bc102050baeb1",
+      "sha256": "036dca0a57d3aad68a8f3a6d039b7f1026ab0b1ff52113898b25fb73fa38dea6",
+      "redactions": [
+        "fixture/repo/home prefixes"
+      ]
+    },
+    {
+      "evidence": "runtime/ax-spin-keyboard.json",
+      "originalSha256": "c9b4a3568fb64a4a35fdce0f64d7882bd3413b04c5155ff97ed94c9309e9575b",
+      "sha256": "d81f26df548775f58311cb951f66d2eb70cd8cf45d038ffbd605021ceaea27d5",
+      "redactions": [
+        "fixture/repo/home prefixes"
+      ]
+    },
+    {
+      "evidence": "runtime/keyboard-and-presets.json",
+      "originalSha256": "fda63568e3d8f6ea1de485493637875b9be7cb21b92256cb0a7b2f3335ccce05",
+      "sha256": "fda63568e3d8f6ea1de485493637875b9be7cb21b92256cb0a7b2f3335ccce05",
+      "redactions": [
+        "fixture/repo/home prefixes"
+      ]
+    },
+    {
+      "evidence": "runtime/controls.png",
+      "originalSha256": "97fd29290a17024b3458bd14ad3cc349a3aeaf8d10175df816ad77b3a35f4db5",
+      "sha256": "97fd29290a17024b3458bd14ad3cc349a3aeaf8d10175df816ad77b3a35f4db5",
+      "redactions": []
+    },
+    {
+      "evidence": "popup/result.json",
+      "originalSha256": "5f06a3ad3739c36f83f5bd6ce68d88e2dc97f27103dd019ef8933361dedec68c",
+      "sha256": "4f8177966fd606e7292b018abf8b7bec3d07c0a9e362687d5f2483c8433daa2a",
+      "redactions": [
+        "fixture/repo/home prefixes"
+      ]
+    },
+    {
+      "evidence": "popup/ax-showmenu.json",
+      "originalSha256": "ad05e6f36e5a72e254343f8bb795fe511f46b1ebcd41c80890b8081aba9a66e4",
+      "sha256": "ad05e6f36e5a72e254343f8bb795fe511f46b1ebcd41c80890b8081aba9a66e4",
+      "redactions": [
+        "fixture/repo/home prefixes"
+      ]
+    },
+    {
+      "evidence": "matrix-initial/result.json",
+      "originalSha256": "23d6920a2c278f2b0220574093879c10576b7072890f7b35d806f8980179693b",
+      "sha256": "ac24424fa9ef5dd24f01eb7d00658afcc24299494411ace34e39cfbc2ca7cfc5",
+      "redactions": [
+        "fixture/repo/home prefixes"
+      ]
+    },
+    {
+      "evidence": "matrix-initial/ax-popup-geometry.json",
+      "originalSha256": "87c68e0c08ff27d2db7e49f50589afbdd40e6ff50fe982c1723bdc83ad859fdf",
+      "sha256": "85407be1613a9d80a93b64b1ee1407511c30edc7c260c76452a9692198867603",
+      "redactions": [
+        "fixture/repo/home prefixes"
+      ]
+    },
+    {
+      "evidence": "matrix-initial/ax-A-pointer-selected.json",
+      "originalSha256": "e260adc0ef838523b78a5bbd6986db36b987a9fe3485496e90042b999e08aa69",
+      "sha256": "058e51fe2b9675eefc4038b48929b81e649110e11f65ca2eae598282d65a9f4b",
+      "redactions": [
+        "fixture/repo/home prefixes"
+      ]
+    },
+    {
+      "evidence": "matrix-initial/dynamic-checks.json",
+      "originalSha256": "ad5c733726f192c82b9872230de7c823c9be061fe524d40e6b7c5ef5ceb513b9",
+      "sha256": "ad5c733726f192c82b9872230de7c823c9be061fe524d40e6b7c5ef5ceb513b9",
+      "redactions": [
+        "fixture/repo/home prefixes"
+      ]
+    },
+    {
+      "evidence": "matrix-guard/result.json",
+      "originalSha256": "c514972655ec469768033bec754df6763d63ad7bc291c744845b760706577ea5",
+      "sha256": "96c30ddabf155712237e002e3689d068ea4969f440a0af4ff4ccc366829e6f91",
+      "redactions": [
+        "fixture/repo/home prefixes"
+      ]
+    },
+    {
+      "evidence": "matrix-guard/verified-default-display.json",
+      "originalSha256": "76c5c12f2351fc4ecadaae9b62fae9eb17f8fef0ba656eda416dcb3bacb9b7c5",
+      "sha256": "b7da0a21ca4bcc657230d08af8586f433bf1c262c50dd7d8e5342f438a3b5be8",
+      "redactions": [
+        "fixture/repo/home prefixes"
+      ]
+    },
+    {
+      "evidence": "matrix-guard/failed-native-state.json",
+      "originalSha256": "76c5c12f2351fc4ecadaae9b62fae9eb17f8fef0ba656eda416dcb3bacb9b7c5",
+      "sha256": "b7da0a21ca4bcc657230d08af8586f433bf1c262c50dd7d8e5342f438a3b5be8",
+      "redactions": [
+        "fixture/repo/home prefixes"
+      ]
+    },
+    {
+      "evidence": "matrix-guard/dynamic-checks.json",
+      "originalSha256": "8bda3d9e474ee2e11ba1d87b7a447b5cf1d985134a0b904d613dd5466dbb3481",
+      "sha256": "7ea957df9d5cfabe464cc616b37eeb613f337064dd99dcfc491c6a58fb5a3843",
+      "redactions": [
+        "fixture/repo/home prefixes"
+      ]
+    },
+    {
+      "evidence": "ax-startup/result.json",
+      "originalSha256": "d2d227ab39216dd2a38ced9de9613aaa2566c607f14c4920832036b6d2deba6c",
+      "sha256": "220c43253aa1d9c5e5cf73f17ee070e50c6820a8273e288b6c5763606d95edfc",
+      "redactions": [
+        "fixture/repo/home prefixes"
+      ]
+    },
+    {
+      "evidence": "ax-startup/dynamic-checks.json",
+      "originalSha256": "a3369e0ad55be1ad3fac6d2bfc06b84c5c86d6f0a91b1de6a759f29e75e38ccb",
+      "sha256": "98733f29ee334587449aeac09454258ae31ddf4bdc6117f1d31f523ce43a2cc5",
+      "redactions": [
+        "fixture/repo/home prefixes"
+      ]
+    }
+  ],
+  "additionalRunManifests": [
+    "verified/manifest.json",
+    "automated-guard/manifest.json",
+    "incorrect-B-expectation/manifest.json"
+  ]
+}

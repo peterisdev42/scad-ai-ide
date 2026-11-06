@@ -421,6 +421,7 @@ export class App extends LitElement {
                     this.parameterContext = {
                         ...this.parameterContext,
                         parameters: message.parameters,
+                        analysisComplete: message.analysisComplete !== false,
                         parameterSets: message.parameterSets || {},
                         activeSetName: message.activeSetName,
                         overrides: message.overrides || {},

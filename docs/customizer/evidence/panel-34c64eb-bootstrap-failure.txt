@@ -1,0 +1,121 @@
+Actual CI run42748900048 job129607539203; 32 PASS / 8 FAIL in Customizer bootstrap; later Library step NOT RUN.
+ℹ tests 40
+2026-11-10T03:24:57.7046903Z ℹ suites 0
+2026-11-10T03:24:57.7047346Z ℹ pass 32
+2026-11-10T03:24:57.7047739Z ℹ fail 8
+2026-11-10T03:24:57.7048108Z ℹ cancelled 0
+2026-11-10T03:24:57.7048706Z ℹ skipped 0
+2026-11-10T03:24:57.7049130Z ℹ todo 0
+2026-11-10T03:24:57.7049503Z ℹ duration_ms 114434.873338
+2026-11-10T03:24:57.7069919Z 
+2026-11-10T03:24:57.7071112Z ✖ failing tests:
+2026-11-10T03:24:57.7071415Z 
+2026-11-10T03:24:57.7071912Z test at scripts/customizer-scrollbar.test.mjs:345:1
+2026-11-10T03:24:57.7073259Z ✖ collapse, viewport resize, keyboard focus and file changes update native scroll dimensions (5068.170224ms)
+2026-11-10T03:24:57.7074257Z   page.goto: Timeout 5000ms exceeded.
+2026-11-10T03:24:57.7074752Z   Call log:
+2026-11-10T03:24:57.7075361Z     - navigating to "http://127.0.0.1:37597/", waiting until "load"
+2026-11-10T03:24:57.7076188Z   
+2026-11-10T03:24:57.7076762Z       at fixture (/home/runner/work/scad-ai-ide/scad-ai-ide/scripts/customizer-scrollbar.test.mjs:262:16)
+2026-11-10T03:24:57.7077700Z       at async TestContext.<anonymous> (/home/runner/work/scad-ai-ide/scad-ai-ide/scripts/customizer-scrollbar.test.mjs:346:41) {
+2026-11-10T03:24:57.7078390Z     name: 'TimeoutError',
+2026-11-10T03:24:57.7079124Z     log: [ '  - navigating to "http://127.0.0.1:37597/", waiting until "load"' ]
+2026-11-10T03:24:57.7079668Z   }
+2026-11-10T03:24:57.7080313Z 
+2026-11-10T03:24:57.7080660Z test at scripts/customizer-scrollbar.test.mjs:455:1
+2026-11-10T03:24:57.7081904Z ✖ preset create, save, default, import, partial selection, export and delete use OpenSCAD JSON (6766.79826ms)
+2026-11-10T03:24:57.7082769Z   page.goto: Timeout 5000ms exceeded.
+2026-11-10T03:24:57.7083491Z   Call log:
+2026-11-10T03:24:57.7084168Z     - navigating to "http://127.0.0.1:36145/", waiting until "load"
+2026-11-10T03:24:57.7084665Z   
+2026-11-10T03:24:57.7085664Z       at fixture (/home/runner/work/scad-ai-ide/scad-ai-ide/scripts/customizer-scrollbar.test.mjs:262:16)
+2026-11-10T03:24:57.7086596Z       at async TestContext.<anonymous> (/home/runner/work/scad-ai-ide/scad-ai-ide/scripts/customizer-scrollbar.test.mjs:456:47) {
+2026-11-10T03:24:57.7087355Z     name: 'TimeoutError',
+2026-11-10T03:24:57.7087857Z     log: [ '  - navigating to "http://127.0.0.1:36145/", waiting until "load"' ]
+2026-11-10T03:24:57.7088358Z   }
+2026-11-10T03:24:57.7088963Z 
+2026-11-10T03:24:57.7089321Z test at scripts/customizer-scrollbar.test.mjs:563:1
+2026-11-10T03:24:57.7090314Z ✖ range sliders send intermediate values before pointer release and retain the final value (15568.144898ms)
+2026-11-10T03:24:57.7091142Z   locator.waitFor: Timeout 5000ms exceeded.
+2026-11-10T03:24:57.7091701Z   Call log:
+2026-11-10T03:24:57.7092332Z     - waiting for locator('.has-vertical-scrollbar') to be visible
+2026-11-10T03:24:57.7092898Z   
+2026-11-10T03:24:57.7093676Z       at fixture (/home/runner/work/scad-ai-ide/scad-ai-ide/scripts/customizer-scrollbar.test.mjs:264:51)
+2026-11-10T03:24:57.7094766Z       at async TestContext.<anonymous> (/home/runner/work/scad-ai-ide/scad-ai-ide/scripts/customizer-scrollbar.test.mjs:564:41) {
+2026-11-10T03:24:57.7095553Z     name: 'TimeoutError',
+2026-11-10T03:24:57.7096298Z     log: [ "  - waiting for locator('.has-vertical-scrollbar') to be visible" ]
+2026-11-10T03:24:57.7096879Z   }
+2026-11-10T03:24:57.7097050Z 
+2026-11-10T03:24:57.7097824Z test at scripts/customizer-scrollbar.test.mjs:612:1
+2026-11-10T03:24:57.7099185Z ✖ active presets follow file edits and mark edits outside partial presets as unsaved (5059.927174ms)
+2026-11-10T03:24:57.7102000Z   page.goto: Timeout 5000ms exceeded.
+2026-11-10T03:24:57.7102415Z   Call log:
+2026-11-10T03:24:57.7102923Z     - navigating to "http://127.0.0.1:38283/", waiting until "load"
+2026-11-10T03:24:57.7103373Z   
+2026-11-10T03:24:57.7103902Z       at fixture (/home/runner/work/scad-ai-ide/scad-ai-ide/scripts/customizer-scrollbar.test.mjs:262:16)
+2026-11-10T03:24:57.7104814Z       at async TestContext.<anonymous> (/home/runner/work/scad-ai-ide/scad-ai-ide/scripts/customizer-scrollbar.test.mjs:613:78) {
+2026-11-10T03:24:57.7105479Z     name: 'TimeoutError',
+2026-11-10T03:24:57.7105976Z     log: [ '  - navigating to "http://127.0.0.1:38283/", waiting until "load"' ]
+2026-11-10T03:24:57.7106450Z   }
+2026-11-10T03:24:57.7106625Z 
+2026-11-10T03:24:57.7106856Z test at scripts/customizer-scrollbar.test.mjs:700:1
+2026-11-10T03:24:57.7107681Z ✖ preset section shares parameter folding, font size and persisted state (10441.633083ms)
+2026-11-10T03:24:57.7108266Z   page.goto: Timeout 5000ms exceeded.
+2026-11-10T03:24:57.7108913Z   Call log:
+2026-11-10T03:24:57.7109412Z     - navigating to "http://127.0.0.1:39817/", waiting until "load"
+2026-11-10T03:24:57.7109837Z   
+2026-11-10T03:24:57.7110388Z       at fixture (/home/runner/work/scad-ai-ide/scad-ai-ide/scripts/customizer-scrollbar.test.mjs:262:16)
+2026-11-10T03:24:57.7111311Z       at async TestContext.<anonymous> (/home/runner/work/scad-ai-ide/scad-ai-ide/scripts/customizer-scrollbar.test.mjs:701:45) {
+2026-11-10T03:24:57.7111933Z     name: 'TimeoutError',
+2026-11-10T03:24:57.7112421Z     log: [ '  - navigating to "http://127.0.0.1:39817/", waiting until "load"' ]
+2026-11-10T03:24:57.7112886Z   }
+2026-11-10T03:24:57.7113079Z 
+2026-11-10T03:24:57.7113401Z test at scripts/customizer-scrollbar.test.mjs:726:1
+2026-11-10T03:24:57.7114348Z ✖ parameter controls grow with the sidebar and wrap vectors without losing edits or overflowing (5529.639251ms)
+2026-11-10T03:24:57.7115017Z   page.goto: Timeout 5000ms exceeded.
+2026-11-10T03:24:57.7115378Z   Call log:
+2026-11-10T03:24:57.7115858Z     - navigating to "http://127.0.0.1:44237/", waiting until "load"
+2026-11-10T03:24:57.7116442Z   
+2026-11-10T03:24:57.7116996Z       at fixture (/home/runner/work/scad-ai-ide/scad-ai-ide/scripts/customizer-scrollbar.test.mjs:262:16)
+2026-11-10T03:24:57.7117878Z       at async TestContext.<anonymous> (/home/runner/work/scad-ai-ide/scad-ai-ide/scripts/customizer-scrollbar.test.mjs:727:31) {
+2026-11-10T03:24:57.7118681Z     name: 'TimeoutError',
+2026-11-10T03:24:57.7119354Z     log: [ '  - navigating to "http://127.0.0.1:44237/", waiting until "load"' ]
+2026-11-10T03:24:57.7119809Z   }
+2026-11-10T03:24:57.7120029Z 
+2026-11-10T03:24:57.7120288Z test at scripts/customizer-scrollbar.test.mjs:796:1
+2026-11-10T03:24:57.7121276Z ✖ preset filenames refer only to explicitly opened or newly saved files (5066.451111ms)
+2026-11-10T03:24:57.7122065Z   page.goto: Timeout 5000ms exceeded.
+2026-11-10T03:24:57.7122625Z   Call log:
+2026-11-10T03:24:57.7123243Z     - navigating to "http://127.0.0.1:40663/", waiting until "load"
+2026-11-10T03:24:57.7123811Z   
+2026-11-10T03:24:57.7124732Z       at fixture (/home/runner/work/scad-ai-ide/scad-ai-ide/scripts/customizer-scrollbar.test.mjs:262:16)
+2026-11-10T03:24:57.7126080Z       at async TestContext.<anonymous> (/home/runner/work/scad-ai-ide/scad-ai-ide/scripts/customizer-scrollbar.test.mjs:797:63) {
+2026-11-10T03:24:57.7127081Z     name: 'TimeoutError',
+2026-11-10T03:24:57.7127794Z     log: [ '  - navigating to "http://127.0.0.1:40663/", waiting until "load"' ]
+2026-11-10T03:24:57.7128717Z   }
+2026-11-10T03:24:57.7128984Z 
+2026-11-10T03:24:57.7129350Z test at scripts/customizer-scrollbar.test.mjs:828:1
+2026-11-10T03:24:57.7130589Z ✖ preset header stays collapsed during actions and the more menu supports keyboard and dismissal (8929.190385ms)
+2026-11-10T03:24:57.7131556Z   page.goto: Timeout 5000ms exceeded.
+2026-11-10T03:24:57.7132140Z   Call log:
+2026-11-10T03:24:57.7132647Z     - navigating to "http://127.0.0.1:34409/", waiting until "load"
+2026-11-10T03:24:57.7133838Z   
+2026-11-10T03:24:57.7134625Z       at fixture (/home/runner/work/scad-ai-ide/scad-ai-ide/scripts/customizer-scrollbar.test.mjs:262:16)
+2026-11-10T03:24:57.7136098Z       at async TestContext.<anonymous> (/home/runner/work/scad-ai-ide/scad-ai-ide/scripts/customizer-scrollbar.test.mjs:829:22) {
+2026-11-10T03:24:57.7137063Z     name: 'TimeoutError',
+2026-11-10T03:24:57.7137818Z     log: [ '  - navigating to "http://127.0.0.1:34409/", waiting until "load"' ]
+2026-11-10T03:24:57.7138684Z   }
+2026-11-10T03:24:57.7202984Z ##[error]Process completed with exit code 1.
+2026-11-10T03:24:57.7368264Z Post job cleanup.
+2026-11-10T03:24:57.8259016Z [command]/usr/bin/git version
+2026-11-10T03:24:57.8306426Z git version 2.56.0
+2026-11-10T03:24:57.8349769Z Temporarily overriding HOME='/home/runner/work/_temp/383ca8d1-4235-4efe-b245-37c4ff9a7474' before making global git config changes
+2026-11-10T03:24:57.8351092Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-10T03:24:57.8356347Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/scad-ai-ide/scad-ai-ide
+2026-11-10T03:24:57.8398555Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-10T03:24:57.8433763Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-10T03:24:57.8965227Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-10T03:24:57.8998374Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-10T03:24:57.9368301Z Cleaning up orphan processes
+2026-11-10T03:24:57.9689551Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+

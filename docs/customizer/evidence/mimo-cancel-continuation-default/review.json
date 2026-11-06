@@ -1,0 +1,7 @@
+{
+  "status": "INVALID CANCELLATION TEST: controller policy defect",
+  "reason": "First Native confirmation was skipped, but a later confirmation path approved Source Apply despite cancellation mode. Not evidence that user cancellation is correctly enforced.",
+  "sourceBufferUnchanged": true,
+  "scope": "Historical test controller failure, not evidence of product authorization bypass; malformed commits were rejected and no source edit was observed.",
+  "next": "Unified policy plus pre-click invariant; rerun the native cancellation probe on the new candidate."
+}

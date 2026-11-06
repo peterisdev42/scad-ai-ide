@@ -1,0 +1,591 @@
+Installing extensions...
+Extension 'scad-ai-ide-customizer-architecture-v2.vsix' was successfully installed.
+[main 2026-11-10T01:55:23.831Z] [node-compile-cache] main: packaged cache inactive (status: disabled, configured: <repo>/.vscode-test/vscode-darwin-arm64-1.140.0/Visual Studio Code.app/Contents/Resources/app/node-compile-cache/main, active: none)
+[main 2026-11-10T01:55:23.850Z] StorageMainService: creating application shared storage
+[main 2026-11-10T01:55:23.912Z] [shared storage] Creating shared storage database at ':memory:' (wasCreated: true)
+[main 2026-11-10T01:55:23.912Z] [shared storage] Initializing fallback application storage (path: in-memory)
+[main 2026-11-10T01:55:23.941Z] [shared storage] Fallback application storage initialized with 3 items
+[main 2026-11-10T01:55:23.941Z] update#setState disabled
+[main 2026-11-10T01:55:23.941Z] update#ctor - updates are disabled by the environment
+[RemoteAgentHost] Reconciling: desired=[], current=[]
+[AgentHost:renderer] Acquiring MessagePort to agent host...
+[main 2026-11-10T01:55:24.291Z] AgentHostProcessManager: agent host started
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey=undefined conversationKey=undefined modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[AgentHost:renderer] MessagePort acquired, creating client...
+Started local extension host with pid 11910.
+[main 2026-11-10T01:55:24.491Z] [AgentHost:stderr] (node:11906) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `Code Helper --trace-deprecation ...` to show where the warning was created)
+
+[AgentHost:renderer] Protocol connection established; clientId=88497e60-9e2d-409c-863d-b717ebbc792b
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/N2NmNTY2NjEtMGQ4MS00OGNlLWJhOTktYTAzNjM5NjdhMWQ0" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+Loading development extension at /var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-e87tGX
+Extension 'github.copilot-chat' appears in product.json but enables LESS API proposals than the extension wants.
+package.json (LOSES): agentSessionsWorkspace
+agentsWindowConfiguration
+chatDebug
+chatHooks
+envIsConnectionMetered
+extensionsAny
+newSymbolNamesProvider
+interactive
+codeActionAI
+activeComment
+commentReveal
+contribCommentThreadAdditionalMenu
+contribCommentsViewThreadMenus
+contribChatEditorInlineGutterMenu
+documentFiltersExclusive
+embeddings
+findTextInFiles
+findTextInFiles2
+languageModelToolSupportsModel
+findFiles2
+textSearchProvider
+terminalDataWriteEvent
+terminalExecuteCommandEvent
+terminalSelection
+terminalQuickFixProvider
+mappedEditsProvider
+aiRelatedInformation
+aiSettingsSearch
+chatParticipantAdditions
+defaultChatParticipant
+contribSourceControlInputBoxMenu
+authLearnMore
+authIssuers
+testObserver
+aiTextSearchProvider
+chatParticipantPrivate
+chatProvider
+contribDebugCreateConfiguration
+chatReferenceDiagnostic
+textSearchProvider2
+chatReferenceBinaryData
+languageModelSystem
+languageModelCapabilities
+languageModelPricing
+inlineCompletionsAdditions
+chatStatusItem
+chatInputNotification
+taskProblemMatcherStatus
+contribLanguageModelToolSets
+textDocumentChangeReason
+resolvers
+taskExecutionTerminal
+dataChannels
+languageModelThinkingPart
+chatSessionsProvider
+devDeviceId
+contribEditorContentMenu
+chatPromptFiles
+mcpServerDefinitions
+tabInputMultiDiff
+workspaceTrust
+environmentPower
+terminalTitle
+toolInvocationApproveCombination
+chatSessionCustomizationProvider
+product.json (WINS): agentSessionsWorkspace
+agentsWindowConfiguration
+interactive
+terminalDataWriteEvent
+terminalExecuteCommandEvent
+terminalSelection
+terminalQuickFixProvider
+chatParticipantAdditions
+defaultChatParticipant
+embeddings
+chatProvider
+mappedEditsProvider
+aiRelatedInformation
+aiSettingsSearch
+codeActionAI
+findTextInFiles
+findTextInFiles2
+textSearchProvider
+textSearchProvider2
+activeComment
+commentReveal
+contribSourceControlInputBoxMenu
+contribCommentEditorActionsMenu
+contribCommentThreadAdditionalMenu
+contribCommentsViewThreadMenus
+contribChatEditorInlineGutterMenu
+extensionAffinity
+newSymbolNamesProvider
+findFiles2
+chatReferenceDiagnostic
+extensionsAny
+authLearnMore
+testObserver
+aiTextSearchProvider
+documentFiltersExclusive
+chatParticipantPrivate
+contribDebugCreateConfiguration
+inlineCompletionsAdditions
+chatReferenceBinaryData
+languageModelSystem
+languageModelCapabilities
+languageModelThinkingPart
+languageModelToolSupportsModel
+chatStatusItem
+taskProblemMatcherStatus
+contribLanguageModelToolSets
+textDocumentChangeReason
+resolvers
+taskExecutionTerminal
+dataChannels
+chatSessionsProvider
+chatSessionCustomizationProvider
+devDeviceId
+contribEditorContentMenu
+tokenInformation
+toolInvocationApproveCombination
+chatPromptFiles
+mcpServerDefinitions
+tabInputMultiDiff
+workspaceTrust
+chatHooks
+chatDebug
+envIsConnectionMetered
+environmentPower
+terminalTitle
+languageModelPricing
+chatInputNotification
+DELTA: authIssuers
+Proceeding with EXTRA proposals (authIssuers) because extension is in development mode. Still, this EXTENSION WILL BE BROKEN unless product.json is updated.
+[AccountPolicyGate] apply: state=inactive, reason=undefined, isRestricted=false
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[RemoteAgentHost] Reconciling: desired=[], current=[]
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/N2NmNTY2NjEtMGQ4MS00OGNlLWJhOTktYTAzNjM5NjdhMWQ0" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/N2NmNTY2NjEtMGQ4MS00OGNlLWJhOTktYTAzNjM5NjdhMWQ0" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+Settings Sync: Account status changed from uninitialized to unavailable
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/N2NmNTY2NjEtMGQ4MS00OGNlLWJhOTktYTAzNjM5NjdhMWQ0" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/N2NmNTY2NjEtMGQ4MS00OGNlLWJhOTktYTAzNjM5NjdhMWQ0" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+Unknown channel: agentHostClientByokLm
+Unknown channel: agentHostClientProxy
+Unknown channel: agentHostClientProxy
+[main 2026-11-10T01:55:26.189Z] Extension host with pid 11910 exited with code: 0, signal: unknown.
+Exit code:   0
+{
+  "vscode": "1.140.0",
+  "extension": "undefined_publisher.scad-ai-ide",
+  "toolCount": 40,
+  "availableChatModels": 0,
+  "productionDevDenied": true,
+  "sourceAuthoring": {
+    "analyzed": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-e87tGX/workspace/source-authoring.scad",
+          "version": 1,
+          "sha256": "aee2bb6ce9a771963a48dae91dcc6843080dbf30e9dfb0aef87941e5831b7348"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "",
+            "defaultValue": 40,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "745a3861-0763-45a4-a8dd-856baa70b0cf",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    },
+    "unmet": {
+      "ok": true,
+      "capabilityId": "customizer.sourceValidate",
+      "data": {
+        "identity": {
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-e87tGX/workspace/source-authoring.scad",
+          "version": 1,
+          "sha256": "aee2bb6ce9a771963a48dae91dcc6843080dbf30e9dfb0aef87941e5831b7348"
+        },
+        "sourceStatus": {
+          "status": "complete",
+          "reasons": []
+        },
+        "contractStatus": "mismatch",
+        "qualityStatus": "clear",
+        "semanticPass": false,
+        "checked": 1,
+        "matched": 0,
+        "expectationResults": [
+          {
+            "parameter": "width",
+            "matched": false,
+            "issues": [
+              "Expected widget \"slider\"; actual \"spinbox\""
+            ],
+            "details": [
+              {
+                "code": "EXPECTED_WIDGET",
+                "message": "Expected widget \"slider\"; actual \"spinbox\"",
+                "range": {
+                  "start": {
+                    "line": 0,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 0,
+                    "character": 9
+                  }
+                }
+              }
+            ],
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            }
+          }
+        ],
+        "omittedExpectations": 0,
+        "diagnostics": [],
+        "omittedDiagnostics": 0,
+        "runtimeCheck": {
+          "status": "notRequested"
+        },
+        "guiCheck": {
+          "status": "notRequested"
+        },
+        "complete": true
+      },
+      "operation": {
+        "id": "6c47fe42-42d2-4e08-92fc-efd1d0a69ebc",
+        "capabilityId": "customizer.sourceValidate",
+        "status": "succeeded"
+      }
+    },
+    "planned": {
+      "ok": true,
+      "capabilityId": "customizer.sourceApply",
+      "data": {
+        "planId": "b816c25f-3efa-4270-abe6-719b1875a8ac",
+        "identity": {
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-e87tGX/workspace/source-authoring.scad",
+          "version": 1,
+          "sha256": "aee2bb6ce9a771963a48dae91dcc6843080dbf30e9dfb0aef87941e5831b7348"
+        },
+        "summary": "Update Customizer source: width",
+        "preview": [
+          {
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 9
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            },
+            "before": "",
+            "after": " // [10:5:100]"
+          }
+        ],
+        "validation": {
+          "sourceStatus": {
+            "status": "complete",
+            "reasons": []
+          },
+          "contractStatus": "matched",
+          "qualityStatus": "clear",
+          "semanticPass": true,
+          "checked": 1,
+          "matched": 1,
+          "expectationResults": [
+            {
+              "parameter": "width",
+              "matched": true,
+              "issues": [],
+              "details": [],
+              "range": {
+                "start": {
+                  "line": 0,
+                  "character": 0
+                },
+                "end": {
+                  "line": 0,
+                  "character": 9
+                }
+              }
+            }
+          ],
+          "omittedExpectations": 0,
+          "diagnostics": [],
+          "omittedDiagnostics": 0,
+          "runtimeCheck": {
+            "status": "notRequested"
+          },
+          "guiCheck": {
+            "status": "notRequested"
+          },
+          "complete": true,
+          "pass": true
+        },
+        "expiresInSeconds": 120
+      },
+      "operation": {
+        "id": "7f1ab1d6-aa6e-4c8d-9d2d-19f52edc6116",
+        "capabilityId": "customizer.sourceApply",
+        "status": "succeeded"
+      }
+    },
+    "committed": {
+      "ok": true,
+      "capabilityId": "customizer.sourceApply",
+      "data": {
+        "applied": true,
+        "identity": {
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-e87tGX/workspace/source-authoring.scad",
+          "version": 2,
+          "sha256": "4f5e8cba047a8b3a4c4edcbfc0a2155fb616b7c10b18a3db68c6da97b12839b6"
+        },
+        "changedParameters": [
+          "width"
+        ],
+        "postValidation": {
+          "sourceStatus": {
+            "status": "complete",
+            "reasons": []
+          },
+          "contractStatus": "matched",
+          "qualityStatus": "clear",
+          "semanticPass": true,
+          "checked": 1,
+          "matched": 1,
+          "expectationResults": [
+            {
+              "parameter": "width",
+              "matched": true,
+              "issues": [],
+              "details": [],
+              "range": {
+                "start": {
+                  "line": 0,
+                  "character": 0
+                },
+                "end": {
+                  "line": 0,
+                  "character": 9
+                }
+              }
+            }
+          ],
+          "omittedExpectations": 0,
+          "diagnostics": [],
+          "omittedDiagnostics": 0,
+          "runtimeCheck": {
+            "status": "notRequested"
+          },
+          "guiCheck": {
+            "status": "notRequested"
+          },
+          "complete": true,
+          "pass": true
+        },
+        "semanticPass": true,
+        "savedToDisk": false
+      },
+      "operation": {
+        "id": "357038d1-8182-497e-9c9f-43d4c0166e5f",
+        "capabilityId": "customizer.sourceApply",
+        "status": "succeeded"
+      }
+    },
+    "validated": {
+      "ok": true,
+      "capabilityId": "customizer.sourceValidate",
+      "data": {
+        "identity": {
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-e87tGX/workspace/source-authoring.scad",
+          "version": 2,
+          "sha256": "4f5e8cba047a8b3a4c4edcbfc0a2155fb616b7c10b18a3db68c6da97b12839b6"
+        },
+        "sourceStatus": {
+          "status": "complete",
+          "reasons": []
+        },
+        "contractStatus": "matched",
+        "qualityStatus": "clear",
+        "semanticPass": true,
+        "checked": 1,
+        "matched": 1,
+        "expectationResults": [
+          {
+            "parameter": "width",
+            "matched": true,
+            "issues": [],
+            "details": [],
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            }
+          }
+        ],
+        "omittedExpectations": 0,
+        "diagnostics": [],
+        "omittedDiagnostics": 0,
+        "runtimeCheck": {
+          "status": "notRequested"
+        },
+        "guiCheck": {
+          "status": "notRequested"
+        },
+        "complete": true
+      },
+      "operation": {
+        "id": "70d1586e-3aa0-4600-bff0-b34a950faf49",
+        "capabilityId": "customizer.sourceValidate",
+        "status": "succeeded"
+      }
+    },
+    "singleUseRejected": true,
+    "unsavedSource": "width=40; // [10:5:100]\nmodule model() { cube([width,2,3]); }\n",
+    "diskUnchanged": true
+  },
+  "presetSnapshot": {
+    "invalidRejectedBeforeWrite": true,
+    "invalidErrorCode": "PRESET_INVALID_VALUE",
+    "rejectedStateUnchanged": true,
+    "validSnapshotReplayed": true,
+    "sourceUnchanged": true,
+    "sourceDirty": false
+  },
+  "panelsRequired": false,
+  "instructions": [
+    {
+      "path": "./instructions/openscad.instructions.md"
+    },
+    {
+      "path": "./instructions/openscad-customizer.instructions.md"
+    }
+  ],
+  "skills": [
+    {
+      "path": "./skills/openscad-runtime/SKILL.md"
+    },
+    {
+      "path": "./skills/openscad-libraries/SKILL.md"
+    },
+    {
+      "path": "./skills/openscad-customizer/SKILL.md"
+    },
+    {
+      "path": "./skills/openscad-customizer-authoring/SKILL.md"
+    },
+    {
+      "path": "./skills/scad-ai-ide-diagnostics/SKILL.md"
+    }
+  ]
+}
+Installed Production smoke PASS. Isolated evidence: /var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-e87tGX

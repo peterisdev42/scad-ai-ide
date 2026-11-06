@@ -1,7 +1,11 @@
 {
     "Module": {
         "prefix": "module",
-        "body": ["module ${1:name}(${2:parameters}) {", "\t$0", "}"],
+        "body": [
+            "module ${1:name}(${2:parameters}) {",
+            "\t$0",
+            "}"
+        ],
         "description": "Define an OpenSCAD module"
     },
     "Function": {
@@ -11,17 +15,30 @@
     },
     "For": {
         "prefix": "for",
-        "body": ["for (${1:i} = [${2:0}:${3:10}]) {", "\t$0", "}"],
+        "body": [
+            "for (${1:i} = [${2:0}:${3:10}]) {",
+            "\t$0",
+            "}"
+        ],
         "description": "Iterate over a range"
     },
     "If": {
         "prefix": "if",
-        "body": ["if (${1:condition}) {", "\t$0", "}"],
+        "body": [
+            "if (${1:condition}) {",
+            "\t$0",
+            "}"
+        ],
         "description": "Conditional geometry"
     },
     "Difference": {
         "prefix": "difference",
-        "body": ["difference() {", "\t${1:cube(10);}", "\t$0", "}"],
+        "body": [
+            "difference() {",
+            "\t${1:cube(10);}",
+            "\t$0",
+            "}"
+        ],
         "description": "Subtract child geometry"
     },
     "Include": {
@@ -36,7 +53,59 @@
     },
     "Region": {
         "prefix": "region",
-        "body": ["// #region ${1:name}", "$0", "// #endregion"],
+        "body": [
+            "// #region ${1:name}",
+            "$0",
+            "// #endregion"
+        ],
         "description": "Foldable region"
+    },
+    "Customizer slider": {
+        "prefix": "customizer-slider",
+        "body": [
+            "// ${1:Width in millimeters}",
+            "${2:width} = ${3:40}; // [${4:10}:${5:5}:${6:100}]"
+        ],
+        "description": "Numeric Customizer slider with explicit range and step"
+    },
+    "Customizer dropdown": {
+        "prefix": "customizer-dropdown",
+        "body": [
+            "// ${1:Select shape}",
+            "${2:shape} = \"${3:round}\"; // [${3:round}:${4:Round}, ${5:square}:${6:Square}]"
+        ],
+        "description": "String Customizer dropdown"
+    },
+    "Customizer group": {
+        "prefix": "customizer-group",
+        "body": [
+            "/* [${1:Dimensions}] */",
+            "$0"
+        ],
+        "description": "Customizer group; Hidden hides following declarations"
+    },
+    "Customizer checkbox": {
+        "prefix": "customizer-checkbox",
+        "body": [
+            "// ${1:Hollow body}",
+            "${2:hollow} = ${3:true};"
+        ],
+        "description": "Boolean Customizer checkbox"
+    },
+    "Customizer textbox": {
+        "prefix": "customizer-textbox",
+        "body": [
+            "// ${1:Display label}",
+            "${2:label} = \"${3:Model}\"; // ${4:20}"
+        ],
+        "description": "Text Customizer input with maximum length"
+    },
+    "Customizer vector": {
+        "prefix": "customizer-vector",
+        "body": [
+            "// ${1:Dimensions}",
+            "${2:size} = [${3:20}, ${4:30}, ${5:40}]; // [${6:0}:${7:5}:${8:100}]"
+        ],
+        "description": "Numeric Customizer vector"
     }
 }

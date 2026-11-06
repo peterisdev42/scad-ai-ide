@@ -1,0 +1,1651 @@
+[
+  {
+    "actions": [
+      "AXRaise"
+    ],
+    "AXFocused": false,
+    "AXRole": "AXWindow",
+    "AXSubrole": "AXStandardWindow",
+    "AXTitle": "model.scad",
+    "path": "0",
+    "position": {
+      "x": -1920,
+      "y": 30
+    },
+    "size": {
+      "height": 1050,
+      "width": 1920
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Preview &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">F5</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Preview",
+    "path": "0.0",
+    "position": {
+      "x": -1276,
+      "y": 795
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Render &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">F6</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Render",
+    "path": "0.1",
+    "position": {
+      "x": -1230,
+      "y": 795
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "View All &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⇧⌘V</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "View All",
+    "path": "0.2",
+    "position": {
+      "x": -1174,
+      "y": 795
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Zoom In &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘]</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Zoom In",
+    "path": "0.3",
+    "position": {
+      "x": -1128,
+      "y": 795
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Zoom Out &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘[</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Zoom Out",
+    "path": "0.4",
+    "position": {
+      "x": -1082,
+      "y": 795
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Reset View",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Reset View",
+    "path": "0.5",
+    "position": {
+      "x": -1036,
+      "y": 795
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "Render (not preview) to enable measurements",
+    "AXEnabled": false,
+    "AXFocused": false,
+    "AXRole": "AXCheckBox",
+    "AXTitle": "Measure Distance",
+    "AXValue": 0,
+    "path": "0.6",
+    "position": {
+      "x": -990,
+      "y": 795
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "Render (not preview) to enable measurements",
+    "AXEnabled": false,
+    "AXFocused": false,
+    "AXRole": "AXCheckBox",
+    "AXTitle": "Measure Angle",
+    "AXValue": 0,
+    "path": "0.7",
+    "position": {
+      "x": -944,
+      "y": 795
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Right &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘7</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Right",
+    "path": "0.8",
+    "position": {
+      "x": -888,
+      "y": 795
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Left &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘6</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Left",
+    "path": "0.9",
+    "position": {
+      "x": -842,
+      "y": 795
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Back &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘9</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Back",
+    "path": "0.10",
+    "position": {
+      "x": -796,
+      "y": 795
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Front &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘8</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Front",
+    "path": "0.11",
+    "position": {
+      "x": -750,
+      "y": 795
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Top &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘4</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Top",
+    "path": "0.12",
+    "position": {
+      "x": -704,
+      "y": 795
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Bottom &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘5</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Bottom",
+    "path": "0.13",
+    "position": {
+      "x": -658,
+      "y": 795
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress",
+      "AXPress"
+    ],
+    "AXDescription": "Perspective",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXCheckBox",
+    "AXTitle": "Perspective",
+    "AXValue": 1,
+    "path": "0.14",
+    "position": {
+      "x": -602,
+      "y": 795
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress",
+      "AXPress"
+    ],
+    "AXDescription": "Orthogonal",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXCheckBox",
+    "AXTitle": "Orthogonal",
+    "AXValue": 0,
+    "path": "0.15",
+    "position": {
+      "x": -556,
+      "y": 795
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress",
+      "AXPress"
+    ],
+    "AXDescription": "Show Axes &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘2</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXCheckBox",
+    "AXTitle": "Show Axes",
+    "AXValue": 1,
+    "path": "0.16",
+    "position": {
+      "x": -500,
+      "y": 795
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress",
+      "AXPress"
+    ],
+    "AXDescription": "Show Scale Markers",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXCheckBox",
+    "AXTitle": "Show Scale Markers",
+    "AXValue": 1,
+    "path": "0.17",
+    "position": {
+      "x": -454,
+      "y": 795
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress",
+      "AXPress"
+    ],
+    "AXDescription": "Show Edges &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘1</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXCheckBox",
+    "AXTitle": "Show Edges",
+    "AXValue": 0,
+    "path": "0.18",
+    "position": {
+      "x": -408,
+      "y": 795
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXStaticText",
+    "AXTitle": "",
+    "path": "0.19",
+    "position": {
+      "x": -1920,
+      "y": 1053
+    },
+    "size": {
+      "height": 27,
+      "width": 1920
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXStaticText",
+    "AXValue": "OpenSCAD 2026.11.06 (git a81e8630)",
+    "path": "0.19.0",
+    "position": {
+      "x": -231,
+      "y": 1056
+    },
+    "size": {
+      "height": 22,
+      "width": 230
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXStaticText",
+    "AXValue": "Viewport: translate = [ -51.93 99.86 160.60 ], rotate = [ 55.00 0.00 25.00 ], distance = 1995.17, fov = 22.50 (990x732)",
+    "path": "0.19.1",
+    "position": {
+      "x": -1918,
+      "y": 1056
+    },
+    "size": {
+      "height": 22,
+      "width": 705
+    }
+  },
+  {
+    "actions": [
+      "AXRaise"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXTabGroup",
+    "AXTitle": "Console",
+    "path": "0.20",
+    "position": {
+      "x": -2520,
+      "y": -468
+    },
+    "size": {
+      "height": 30,
+      "width": 100
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Console",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXRadioButton",
+    "AXTitle": "Console",
+    "path": "0.20.0",
+    "position": {
+      "x": -2506,
+      "y": -468
+    },
+    "size": {
+      "height": 23,
+      "width": 73
+    }
+  },
+  {
+    "actions": [
+      "AXPress",
+      "AXPress",
+      "AXRaise"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXCheckBox",
+    "AXTitle": "Automatic Preview",
+    "AXValue": 1,
+    "path": "0.21",
+    "position": {
+      "x": -286,
+      "y": 94
+    },
+    "size": {
+      "height": 20,
+      "width": 134
+    }
+  },
+  {
+    "actions": [
+      "AXShowMenu",
+      "AXPress"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXMenuButton",
+    "AXTitle": "Show Details",
+    "path": "0.22",
+    "position": {
+      "x": -156,
+      "y": 89
+    },
+    "size": {
+      "height": 32,
+      "width": 152
+    }
+  },
+  {
+    "actions": [
+      "AXShowMenu",
+      "AXPress"
+    ],
+    "AXDescription": "preset selection",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXMenuButton",
+    "AXTitle": "<design default>",
+    "path": "0.23",
+    "position": {
+      "x": -286,
+      "y": 127
+    },
+    "size": {
+      "height": 32,
+      "width": 153
+    }
+  },
+  {
+    "actions": [
+      "AXPress",
+      "AXRaise"
+    ],
+    "AXDescription": "Add new preset",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "+",
+    "path": "0.24",
+    "position": {
+      "x": -132,
+      "y": 125
+    },
+    "size": {
+      "height": 38,
+      "width": 40
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "Remove current preset",
+    "AXEnabled": false,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "-",
+    "path": "0.25",
+    "position": {
+      "x": -88,
+      "y": 125
+    },
+    "size": {
+      "height": 38,
+      "width": 40
+    }
+  },
+  {
+    "actions": [
+      "AXShowMenu"
+    ],
+    "AXDescription": "More actions",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXMenuButton",
+    "AXTitle": "...",
+    "path": "0.26",
+    "position": {
+      "x": -44,
+      "y": 129
+    },
+    "size": {
+      "height": 26,
+      "width": 40
+    }
+  },
+  {
+    "actions": [
+      "AXPress",
+      "AXPress",
+      "AXRaise"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXCheckBox",
+    "AXTitle": "Dimensions",
+    "AXValue": 1,
+    "path": "0.27",
+    "position": {
+      "x": -285,
+      "y": 168
+    },
+    "size": {
+      "height": 26,
+      "width": 280
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXStaticText",
+    "AXValue": "width",
+    "path": "0.28",
+    "position": {
+      "x": -278,
+      "y": 194
+    },
+    "size": {
+      "height": 16,
+      "width": 36
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXStaticText",
+    "AXValue": "",
+    "path": "0.29",
+    "position": {
+      "x": -242,
+      "y": 194
+    },
+    "size": {
+      "height": 16,
+      "width": 95
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXStaticText",
+    "AXValue": "Width in millimeters",
+    "path": "0.30",
+    "position": {
+      "x": -278,
+      "y": 210
+    },
+    "size": {
+      "height": 16,
+      "width": 131
+    }
+  },
+  {
+    "actions": [
+      "AXRaise",
+      "AXIncrement",
+      "AXDecrement"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXMaxValue": "120",
+    "AXMinValue": "0",
+    "AXRole": "AXIncrementor",
+    "AXTitle": "",
+    "AXValue": "120",
+    "path": "0.31",
+    "position": {
+      "x": -143,
+      "y": 199
+    },
+    "size": {
+      "height": 21,
+      "width": 130
+    }
+  },
+  {
+    "actions": [
+      "AXRaise",
+      "AXIncrement",
+      "AXDecrement"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXMaxValue": "24",
+    "AXMinValue": "0",
+    "AXRole": "AXSlider",
+    "AXTitle": "",
+    "AXValue": "24",
+    "path": "0.32",
+    "position": {
+      "x": -281,
+      "y": 230
+    },
+    "size": {
+      "height": 25,
+      "width": 272
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXStaticText",
+    "AXValue": "offgrid",
+    "path": "0.33",
+    "position": {
+      "x": -278,
+      "y": 257
+    },
+    "size": {
+      "height": 16,
+      "width": 44
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXStaticText",
+    "AXValue": "",
+    "path": "0.34",
+    "position": {
+      "x": -234,
+      "y": 255
+    },
+    "size": {
+      "height": 21,
+      "width": 87
+    }
+  },
+  {
+    "actions": [
+      "AXRaise",
+      "AXIncrement",
+      "AXDecrement"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXMaxValue": "100",
+    "AXMinValue": "0",
+    "AXRole": "AXIncrementor",
+    "AXTitle": "",
+    "AXValue": "10",
+    "path": "0.35",
+    "position": {
+      "x": -143,
+      "y": 255
+    },
+    "size": {
+      "height": 21,
+      "width": 130
+    }
+  },
+  {
+    "actions": [
+      "AXRaise",
+      "AXIncrement",
+      "AXDecrement"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXMaxValue": "20",
+    "AXMinValue": "0",
+    "AXRole": "AXSlider",
+    "AXTitle": "",
+    "AXValue": "2",
+    "path": "0.36",
+    "position": {
+      "x": -281,
+      "y": 280
+    },
+    "size": {
+      "height": 25,
+      "width": 272
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXStaticText",
+    "AXValue": "spin",
+    "path": "0.37",
+    "position": {
+      "x": -281,
+      "y": 307
+    },
+    "size": {
+      "height": 16,
+      "width": 28
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXStaticText",
+    "AXValue": "",
+    "path": "0.38",
+    "position": {
+      "x": -253,
+      "y": 305
+    },
+    "size": {
+      "height": 21,
+      "width": 106
+    }
+  },
+  {
+    "actions": [
+      "AXRaise",
+      "AXIncrement",
+      "AXDecrement"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXMaxValue": "1.7976931348623157e+308",
+    "AXMinValue": "-1.7976931348623157e+308",
+    "AXRole": "AXIncrementor",
+    "AXTitle": "",
+    "AXValue": "1.25",
+    "path": "0.39",
+    "position": {
+      "x": -143,
+      "y": 305
+    },
+    "size": {
+      "height": 21,
+      "width": 134
+    }
+  },
+  {
+    "actions": [
+      "AXPress",
+      "AXPress",
+      "AXRaise"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXCheckBox",
+    "AXTitle": "Appearance",
+    "AXValue": 1,
+    "path": "0.40",
+    "position": {
+      "x": -285,
+      "y": 326
+    },
+    "size": {
+      "height": 26,
+      "width": 280
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXStaticText",
+    "AXValue": "shape",
+    "path": "0.41",
+    "position": {
+      "x": -278,
+      "y": 352
+    },
+    "size": {
+      "height": 16,
+      "width": 39
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXStaticText",
+    "AXValue": "",
+    "path": "0.42",
+    "position": {
+      "x": -239,
+      "y": 352
+    },
+    "size": {
+      "height": 16,
+      "width": 227
+    }
+  },
+  {
+    "actions": [
+      "AXShowMenu",
+      "AXPress"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXMenuButton",
+    "AXTitle": "Round",
+    "path": "0.43",
+    "position": {
+      "x": -281,
+      "y": 368
+    },
+    "size": {
+      "height": 32,
+      "width": 272
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXStaticText",
+    "AXValue": "text",
+    "path": "0.44",
+    "position": {
+      "x": -281,
+      "y": 400
+    },
+    "size": {
+      "height": 16,
+      "width": 26
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXStaticText",
+    "AXValue": "",
+    "path": "0.45",
+    "position": {
+      "x": -255,
+      "y": 400
+    },
+    "size": {
+      "height": 16,
+      "width": 246
+    }
+  },
+  {
+    "actions": [
+      "AXRaise"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXTextField",
+    "AXTitle": "",
+    "AXValue": "abcd",
+    "path": "0.46",
+    "position": {
+      "x": -281,
+      "y": 416
+    },
+    "size": {
+      "height": 21,
+      "width": 272
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXStaticText",
+    "AXValue": "checked",
+    "path": "0.47",
+    "position": {
+      "x": -281,
+      "y": 440
+    },
+    "size": {
+      "height": 16,
+      "width": 54
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXStaticText",
+    "AXValue": "",
+    "path": "0.48",
+    "position": {
+      "x": -227,
+      "y": 440
+    },
+    "size": {
+      "height": 16,
+      "width": 196
+    }
+  },
+  {
+    "actions": [
+      "AXPress",
+      "AXPress",
+      "AXRaise"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXCheckBox",
+    "AXTitle": "",
+    "AXValue": 1,
+    "path": "0.49",
+    "position": {
+      "x": -29,
+      "y": 438
+    },
+    "size": {
+      "height": 20,
+      "width": 20
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXStaticText",
+    "AXValue": "vector",
+    "path": "0.50",
+    "position": {
+      "x": -281,
+      "y": 460
+    },
+    "size": {
+      "height": 16,
+      "width": 41
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXStaticText",
+    "AXValue": "",
+    "path": "0.51",
+    "position": {
+      "x": -240,
+      "y": 460
+    },
+    "size": {
+      "height": 16,
+      "width": 231
+    }
+  },
+  {
+    "actions": [
+      "AXRaise",
+      "AXIncrement",
+      "AXDecrement"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXMaxValue": "10",
+    "AXMinValue": "0",
+    "AXRole": "AXIncrementor",
+    "AXTitle": "",
+    "AXValue": "1",
+    "path": "0.52",
+    "position": {
+      "x": -281,
+      "y": 476
+    },
+    "size": {
+      "height": 21,
+      "width": 88
+    }
+  },
+  {
+    "actions": [
+      "AXRaise",
+      "AXIncrement",
+      "AXDecrement"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXMaxValue": "10",
+    "AXMinValue": "0",
+    "AXRole": "AXIncrementor",
+    "AXTitle": "",
+    "AXValue": "2",
+    "path": "0.53",
+    "position": {
+      "x": -189,
+      "y": 476
+    },
+    "size": {
+      "height": 21,
+      "width": 88
+    }
+  },
+  {
+    "actions": [
+      "AXRaise",
+      "AXIncrement",
+      "AXDecrement"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXMaxValue": "10",
+    "AXMinValue": "0",
+    "AXRole": "AXIncrementor",
+    "AXTitle": "",
+    "AXValue": "3",
+    "path": "0.54",
+    "position": {
+      "x": -97,
+      "y": 476
+    },
+    "size": {
+      "height": 21,
+      "width": 88
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Closes the dock widget",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Close",
+    "path": "0.55",
+    "position": {
+      "x": -286,
+      "y": 63
+    },
+    "size": {
+      "height": 18,
+      "width": 18
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "New File &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘N</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "New File",
+    "path": "0.56",
+    "position": {
+      "x": -1919,
+      "y": 85
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Open File &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘O</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Open File",
+    "path": "0.57",
+    "position": {
+      "x": -1873,
+      "y": 85
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Save &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘S</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Save",
+    "path": "0.58",
+    "position": {
+      "x": -1827,
+      "y": 85
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "Undo &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘Z</span>",
+    "AXEnabled": false,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Undo",
+    "path": "0.59",
+    "position": {
+      "x": -1771,
+      "y": 85
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Redo &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⇧⌘Z</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Redo",
+    "path": "0.60",
+    "position": {
+      "x": -1725,
+      "y": 85
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Unindent &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⇧⌘I</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Unindent",
+    "path": "0.61",
+    "position": {
+      "x": -1679,
+      "y": 85
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Indent &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘I</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Indent",
+    "path": "0.62",
+    "position": {
+      "x": -1633,
+      "y": 85
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Preview &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">F5</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Preview",
+    "path": "0.63",
+    "position": {
+      "x": -1577,
+      "y": 85
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Render &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">F6</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Render",
+    "path": "0.64",
+    "position": {
+      "x": -1531,
+      "y": 85
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "3D Print &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">F8</span>",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "3D Print",
+    "path": "0.65",
+    "position": {
+      "x": -1383,
+      "y": 85
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Export as STL (ascii)",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Export as STL (ascii)",
+    "path": "0.66",
+    "position": {
+      "x": -1475,
+      "y": 85
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Export as DXF",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Export as DXF",
+    "path": "0.67",
+    "position": {
+      "x": -1429,
+      "y": 85
+    },
+    "size": {
+      "height": 42,
+      "width": 42
+    }
+  },
+  {
+    "actions": [],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXGroup",
+    "AXTitle": "",
+    "path": "0.68",
+    "position": {
+      "x": -1917,
+      "y": 156
+    },
+    "size": {
+      "height": 894,
+      "width": 636
+    }
+  },
+  {
+    "actions": [
+      "AXRaise"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXTextArea",
+    "AXTitle": "",
+    "AXValue": "/* [Dimensions] */\n// Width in millimeters\nwidth=120; // [0:5:100]\noffgrid=12; // [0:5:100]\nspin=1.25; // .25\n/* [Appearance] */\nshape=\"round\"; // [round:Round, square:Square]\ntext=\"abcdef\"; // 4\nchecked=true;\nvector=[1,2,3]; // [0:0.5:10]\n/* [Hidden] */\ninternalOffset=0.01;\necho(width=width,offgrid=offgrid,spin=spin,shape=shape,text=text,checked=checked,vector=vector);\ncube([width,2,3]);\n",
+    "path": "0.68.0",
+    "position": {
+      "x": -1917,
+      "y": 156
+    },
+    "size": {
+      "height": 894,
+      "width": 636
+    }
+  },
+  {
+    "actions": [
+      "AXRaise"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXTabGroup",
+    "AXTitle": "model.scad",
+    "path": "0.69",
+    "position": {
+      "x": -1658,
+      "y": 128
+    },
+    "size": {
+      "height": 23,
+      "width": 116
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXRadioButton",
+    "AXTitle": "model.scad",
+    "path": "0.69.0",
+    "position": {
+      "x": -1658,
+      "y": 128
+    },
+    "size": {
+      "height": 23,
+      "width": 116
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Closes the dock widget",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Close",
+    "path": "0.70",
+    "position": {
+      "x": -1920,
+      "y": 63
+    },
+    "size": {
+      "height": 18,
+      "width": 18
+    }
+  },
+  {
+    "actions": [
+      "AXRaise"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": true,
+    "AXRole": "AXTextArea",
+    "AXTitle": "",
+    "AXValue": "OpenSCAD 2026.11.06 \nhttps://www.openscad.org/  \nCopyright (C) 2009-2026 The OpenSCAD Developers\nThis program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. \nLoaded design '<fixture>/model.scad'.\n \nParsing design (AST generation)...\nWARNING: Parameter \"width\": value 120 is above the declared maximum 100, adjusting maximum value in file model.scad, line 3\nCompiling design (CSG Tree generation)...\nECHO: width = 120, offgrid = 12, spin = 1.25, shape = \"round\", text = \"abcdef\", checked = true, vector = [1, 2, 3]\nCompiling design (CSG Products generation)...\nGeometries in cache: 1\nGeometry cache size in bytes: 856\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nCompiling design (CSG Products normalization)...\nNormalized tree has 1 elements!\nCompile and preview finished.\nTotal rendering time: 0:00:00.068\n \nParsing design (AST generation)...\nCompiling design (CSG Tree generation)...\nECHO: width = 120, offgrid = 12, spin = 1.25, shape = \"round\", text = \"abcdef\", checked = true, vector = [1, 2, 3]\nCompiling design (CSG Products generation)...\nGeometries in cache: 1\nGeometry cache size in bytes: 856\nCGAL Polyhedrons in cache: 0\nCGAL cache size in bytes: 0\nCompiling design (CSG Products normalization)...\nNormalized tree has 1 elements!\nCompile and preview finished.\nTotal rendering time: 0:00:00.003",
+    "path": "0.71",
+    "position": {
+      "x": -1277,
+      "y": 861
+    },
+    "size": {
+      "height": 192,
+      "width": 990
+    }
+  },
+  {
+    "actions": [
+      "AXIncrement",
+      "AXDecrement"
+    ],
+    "AXDescription": "",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXMaxValue": "23",
+    "AXMinValue": "0",
+    "AXRole": "AXScrollBar",
+    "AXTitle": "",
+    "AXValue": "23",
+    "path": "0.71.0",
+    "position": {
+      "x": -305,
+      "y": 862
+    },
+    "size": {
+      "height": 190,
+      "width": 17
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXDescription": "Closes the dock widget",
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXTitle": "Close",
+    "path": "0.72",
+    "position": {
+      "x": -1277,
+      "y": 840
+    },
+    "size": {
+      "height": 18,
+      "width": 18
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXSubrole": "AXCloseButton",
+    "path": "0.73",
+    "position": {
+      "x": -1912,
+      "y": 38
+    },
+    "size": {
+      "height": 16,
+      "width": 16
+    }
+  },
+  {
+    "actions": [
+      "AXPress",
+      "AXZoomWindow",
+      "AXShowMenu"
+    ],
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXHelp": "this button also has an action to zoom the window",
+    "AXRole": "AXButton",
+    "AXSubrole": "AXFullScreenButton",
+    "path": "0.74",
+    "position": {
+      "x": -1866,
+      "y": 38
+    },
+    "size": {
+      "height": 16,
+      "width": 16
+    }
+  },
+  {
+    "actions": [],
+    "AXFocused": false,
+    "AXRole": "AXGroup",
+    "path": "0.74.0",
+    "position": {
+      "x": -1865,
+      "y": 39
+    },
+    "size": {
+      "height": 14,
+      "width": 14
+    }
+  },
+  {
+    "actions": [],
+    "AXFocused": false,
+    "AXRole": "AXGroup",
+    "path": "0.74.0.0",
+    "position": {
+      "x": -1865,
+      "y": 39
+    },
+    "size": {
+      "height": 14,
+      "width": 14
+    }
+  },
+  {
+    "actions": [
+      "AXPress"
+    ],
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXButton",
+    "AXSubrole": "AXMinimizeButton",
+    "path": "0.75",
+    "position": {
+      "x": -1889,
+      "y": 38
+    },
+    "size": {
+      "height": 16,
+      "width": 16
+    }
+  },
+  {
+    "actions": [],
+    "AXEnabled": true,
+    "AXFocused": false,
+    "AXRole": "AXStaticText",
+    "AXValue": "model.scad",
+    "path": "0.76",
+    "position": {
+      "x": -1838,
+      "y": 38
+    },
+    "size": {
+      "height": 16,
+      "width": 80
+    }
+  }
+]

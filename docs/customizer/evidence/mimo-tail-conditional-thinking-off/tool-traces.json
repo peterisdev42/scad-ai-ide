@@ -1,0 +1,363 @@
+[
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "uri": "file://<fixture>/workspace/model.scad",
+      "includeCandidates": true,
+      "maxDiagnostics": 50
+    },
+    "started": "2026-11-10T07:27:22.739Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "",
+            "defaultValue": 40,
+            "hint": "[0:100] IDs in Assembly.md; preserve this explanation",
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            },
+            "annotationRange": {
+              "start": {
+                "line": 0,
+                "character": 10
+              },
+              "end": {
+                "line": 0,
+                "character": 66
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "7290a37d-143a-4322-8dd8-32e1bac3a158",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "edits": [
+        {
+          "kind": "changeWidget",
+          "name": "width",
+          "widget": "slider"
+        }
+      ],
+      "identity": {
+        "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480",
+        "version": 1
+      },
+      "mode": "plan",
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T07:27:52.777Z",
+    "output": {
+      "ok": false,
+      "capabilityId": "customizer.sourceApply",
+      "error": {
+        "code": "NEEDS_MANUAL_REVIEW",
+        "message": "Supply an ordered finite range and positive step.",
+        "retryable": false
+      },
+      "operation": {
+        "id": "cc196abb-0141-4a3b-8535-3ffc6269cbe1",
+        "capabilityId": "customizer.sourceApply",
+        "status": "failed",
+        "error": {
+          "code": "NEEDS_MANUAL_REVIEW",
+          "message": "Supply an ordered finite range and positive step.",
+          "retryable": false
+        }
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "edits": [
+        {
+          "defaultValue": 40,
+          "description": "",
+          "group": "",
+          "kind": "changeWidget",
+          "name": "width",
+          "range": {
+            "max": 100,
+            "min": 0,
+            "step": 1
+          },
+          "widget": "slider"
+        }
+      ],
+      "identity": {
+        "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480",
+        "version": 1
+      },
+      "mode": "plan",
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T07:29:07.709Z",
+    "output": {
+      "ok": false,
+      "capabilityId": "customizer.sourceApply",
+      "error": {
+        "code": "INVALID_INPUT",
+        "message": "data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0 must match exactly one schema in oneOf",
+        "retryable": false
+      },
+      "operation": null
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "edits": [
+        {
+          "defaultValue": 40,
+          "description": "",
+          "group": "",
+          "kind": "changeWidget",
+          "name": "width",
+          "range": {
+            "max": 100,
+            "min": 0,
+            "step": 1
+          },
+          "widget": "slider"
+        }
+      ],
+      "identity": {
+        "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480",
+        "version": 1
+      },
+      "mode": "plan",
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T07:29:59.111Z",
+    "output": {
+      "ok": false,
+      "capabilityId": "customizer.sourceApply",
+      "error": {
+        "code": "INVALID_INPUT",
+        "message": "data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0 must match exactly one schema in oneOf",
+        "retryable": false
+      },
+      "operation": null
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "edits": [
+        {
+          "defaultValue": 40,
+          "description": "",
+          "group": "",
+          "kind": "changeWidget",
+          "name": "width",
+          "range": {
+            "max": 100,
+            "min": 0,
+            "step": 1
+          },
+          "widget": "slider"
+        }
+      ],
+      "identity": {
+        "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480",
+        "version": 1
+      },
+      "mode": "plan",
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T07:30:52.019Z",
+    "output": {
+      "ok": false,
+      "capabilityId": "customizer.sourceApply",
+      "error": {
+        "code": "INVALID_INPUT",
+        "message": "data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0 must match exactly one schema in oneOf",
+        "retryable": false
+      },
+      "operation": null
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "edits": [
+        {
+          "defaultValue": 40,
+          "description": "",
+          "group": "",
+          "kind": "changeWidget",
+          "name": "width",
+          "range": {
+            "max": 100,
+            "min": 0,
+            "step": 1
+          },
+          "widget": "slider"
+        }
+      ],
+      "identity": {
+        "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480",
+        "version": 1
+      },
+      "mode": "plan",
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T07:31:45.545Z",
+    "output": {
+      "ok": false,
+      "capabilityId": "customizer.sourceApply",
+      "error": {
+        "code": "INVALID_INPUT",
+        "message": "data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0 must match exactly one schema in oneOf",
+        "retryable": false
+      },
+      "operation": null
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "edits": [
+        {
+          "defaultValue": 40,
+          "description": "",
+          "group": "",
+          "kind": "changeWidget",
+          "name": "width",
+          "range": {
+            "max": 100,
+            "min": 0,
+            "step": 1
+          },
+          "widget": "slider"
+        }
+      ],
+      "identity": {
+        "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480",
+        "version": 1
+      },
+      "mode": "plan",
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T07:32:42.114Z",
+    "output": {
+      "ok": false,
+      "capabilityId": "customizer.sourceApply",
+      "error": {
+        "code": "INVALID_INPUT",
+        "message": "data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0 must match exactly one schema in oneOf",
+        "retryable": false
+      },
+      "operation": null
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "edits": [
+        {
+          "defaultValue": 40,
+          "description": "",
+          "group": "",
+          "kind": "changeWidget",
+          "name": "width",
+          "range": {
+            "max": 100,
+            "min": 0,
+            "step": 1
+          },
+          "widget": "slider"
+        }
+      ],
+      "identity": {
+        "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480",
+        "version": 1
+      },
+      "mode": "plan",
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T07:33:37.703Z",
+    "output": {
+      "ok": false,
+      "capabilityId": "customizer.sourceApply",
+      "error": {
+        "code": "INVALID_INPUT",
+        "message": "data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0 must match exactly one schema in oneOf",
+        "retryable": false
+      },
+      "operation": null
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "edits": [
+        {
+          "defaultValue": 40,
+          "description": "",
+          "group": "",
+          "kind": "changeWidget",
+          "name": "width",
+          "range": {
+            "max": 100,
+            "min": 0,
+            "step": 1
+          },
+          "widget": "slider"
+        }
+      ],
+      "identity": {
+        "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480",
+        "version": 1
+      },
+      "mode": "plan",
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T07:34:35.494Z",
+    "output": {
+      "ok": false,
+      "capabilityId": "customizer.sourceApply",
+      "error": {
+        "code": "INVALID_INPUT",
+        "message": "data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0/group must NOT have fewer than 1 characters, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0 must match exactly one schema in oneOf",
+        "retryable": false
+      },
+      "operation": null
+    }
+  }
+]

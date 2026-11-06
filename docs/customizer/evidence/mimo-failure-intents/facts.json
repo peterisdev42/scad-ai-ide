@@ -1,0 +1,149 @@
+{
+  "scenario": "failure",
+  "nativeAgent": true,
+  "selectedModel": "mimo-v2.6:latest",
+  "requestedModel": "mimo-v2.6:latest",
+  "modelIdentity": {
+    "name": "mimo-v2.6:latest",
+    "digest": "0af2fcf0cdba6e967700d7660a35c2ae905be1680d9afb3d377f6e61dbd1dfc0",
+    "size": 8711267221,
+    "modifiedAt": "2026-11-06T10:01:27.986857626+08:00"
+  },
+  "inferenceProfile": "Official provider directly to the local server; no sampling override in this harness",
+  "ollamaEndpoint": "http://127.0.0.1:11434",
+  "model": [
+    {
+      "id": "mimo-v2.6:latest",
+      "name": "mimo-v2.6:latest",
+      "vendor": "ollama-models"
+    },
+    {
+      "id": "mimo-v2.6:latest",
+      "name": "mimo-v2.6:latest",
+      "vendor": "ollama-models"
+    }
+  ],
+  "artifact": {
+    "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+    "bytes": 4532196,
+    "sha256": "fac54ddf29cc9d98f356ad7d18abb0b715d693fad292b104d496819d7df51e1a"
+  },
+  "requestFinished": true,
+  "timedOut": false,
+  "terminalReason": "nativeRequestReturned",
+  "interrupted": false,
+  "controllerOutcomeMissing": false,
+  "sourceDiskUnchanged": true,
+  "sourceBufferObserved": true,
+  "sourceBufferUnchanged": true,
+  "actualBusinessToolInvocations": 3,
+  "actualCustomizerToolInvocations": 3,
+  "nativeToolRequestMetadataAvailable": true,
+  "nativeToolRequestSource": "final-response-metadata",
+  "nativeToolRequests": [
+    {
+      "name": "read_file",
+      "id": "call_yfw34xo8__vscode-1794282660116",
+      "toolInputRetry": 0,
+      "hostSchemaRejected": true,
+      "hostError": "ERROR: Your input to the tool was invalid (must have required property 'startLine')\nPlease check your input and try again."
+    },
+    {
+      "name": "read_file",
+      "id": "call_uzlek5w4__vscode-1794282660117",
+      "toolInputRetry": 0,
+      "hostSchemaRejected": true,
+      "hostError": "ERROR: Your input to the tool was invalid (must have required property 'startLine')\nPlease check your input and try again."
+    },
+    {
+      "name": "read_file",
+      "id": "call_0e2wampg__vscode-1794282660118",
+      "toolInputRetry": 0,
+      "hostSchemaRejected": true,
+      "hostError": "ERROR: Your input to the tool was invalid (must have required property 'startLine')\nPlease check your input and try again."
+    },
+    {
+      "name": "read_file",
+      "id": "call_w5y3ld4y__vscode-1794282660119",
+      "toolInputRetry": 0,
+      "hostSchemaRejected": true,
+      "hostError": "ERROR: Your input to the tool was invalid (must have required property 'startLine')\nPlease check your input and try again."
+    },
+    {
+      "name": "read_file",
+      "id": "call_hikwn8ad__vscode-1794282660120",
+      "toolInputRetry": 0,
+      "hostSchemaRejected": true,
+      "hostError": "ERROR: Your input to the tool was invalid (must have required property 'startLine')\nPlease check your input and try again."
+    },
+    {
+      "name": "read_file",
+      "id": "call_5du0ori9__vscode-1794282660121",
+      "toolInputRetry": 1,
+      "hostSchemaRejected": false
+    },
+    {
+      "name": "read_file",
+      "id": "call_wvu1hm2p__vscode-1794282660122",
+      "toolInputRetry": 1,
+      "hostSchemaRejected": false
+    },
+    {
+      "name": "read_file",
+      "id": "call_m1dlrg2p__vscode-1794282660123",
+      "toolInputRetry": 1,
+      "hostSchemaRejected": false
+    },
+    {
+      "name": "read_file",
+      "id": "call_achdccc3__vscode-1794282660124",
+      "toolInputRetry": 1,
+      "hostSchemaRejected": false
+    },
+    {
+      "name": "read_file",
+      "id": "call_7fdc63g6__vscode-1794282660125",
+      "toolInputRetry": 1,
+      "hostSchemaRejected": false
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceAnalyze",
+      "id": "call_rcefk0h8__vscode-1794282660126",
+      "toolInputRetry": 0,
+      "hostSchemaRejected": false
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceAnalyze",
+      "id": "call_rtkprm35__vscode-1794282660127",
+      "toolInputRetry": 0,
+      "hostSchemaRejected": false
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceValidate",
+      "id": "call_4ypb28ib__vscode-1794282660128",
+      "toolInputRetry": 0,
+      "hostSchemaRejected": false
+    }
+  ],
+  "nativeHostSchemaRejections": 5,
+  "nativeToolMetadataScope": "Observed final-response metadata or persisted native transcript requests; not necessarily the complete conversation. Host rejection count is unknown without result metadata. Generated requests are not dispatcher execution or successful edits.",
+  "calls": [
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": false,
+      "errorCode": "OUTSIDE_WORKSPACE"
+    },
+    {
+      "capability": "customizer.sourceValidate",
+      "ok": true,
+      "semanticPass": false,
+      "complete": true
+    }
+  ],
+  "acceptance": "REQUIRES REVIEW: these are observations, not a model acceptance PASS"
+}

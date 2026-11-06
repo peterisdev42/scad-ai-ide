@@ -1,0 +1,23 @@
+{
+  "scope": "Actual native Qt controls and runtime echo; not full pinned binary or IDE parity",
+  "records": [
+    {
+      "id": "default-display",
+      "status": "PASS",
+      "echo": "ECHO: width = 120, offgrid = 12, spin = 1.25, shape = \"round\", text = \"abcdef\", checked = true, vector = [1, 2, 3]"
+    },
+    {
+      "id": "preset-A",
+      "status": "PASS",
+      "echo": "ECHO: width = 30, offgrid = 12, spin = 1.25, shape = \"square\", text = \"abcdef\", checked = true, vector = [1, 2, 3]"
+    },
+    {
+      "id": "preset-B",
+      "status": "FAIL",
+      "error": "preset-B: actual ECHO: width = 120, offgrid = 12, spin = 2, shape = \"round\", text = \"abcdef\", checked = true, vector = [1, 2, 3]; expected width = 30; spin = 2; shape = \"square\"",
+      "observedEcho": "ECHO: width = 120, offgrid = 12, spin = 2, shape = \"round\", text = \"abcdef\", checked = true, vector = [1, 2, 3]",
+      "sourceBufferUnchanged": true,
+      "sourceDiskUnchanged": true
+    }
+  ]
+}

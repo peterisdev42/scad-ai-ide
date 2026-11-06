@@ -127,7 +127,7 @@ export class DeveloperCacheController {
     async listSafe(offset = 0, limit = 20) {
         this.assertEnabled()
         const entries = await this.entries()
-        return { total: entries.length, offset, entries: entries.slice(offset, offset + limit).map(({ id, name, scope }) => ({ id, name, scope })) }
+        return { globalDirectory: this.context.globalStorageUri.fsPath, total: entries.length, offset, hasMore: offset + limit < entries.length, nextOffset: offset + limit < entries.length ? offset + limit : null, entries: entries.slice(offset, offset + limit).map(({ id, name, scope }) => ({ id, name, scope })) }
     }
     async inspectSafe(id: string) {
         this.assertEnabled()

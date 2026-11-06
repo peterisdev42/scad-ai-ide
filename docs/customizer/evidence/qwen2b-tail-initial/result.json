@@ -1,0 +1,67 @@
+{
+  "scenario": "tail",
+  "ready": {
+    "vscode": "1.145.2",
+    "extensionPath": "<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1",
+    "bundleSha256": "f84e52b79f693689f8af6d91d78a3bdcb1c236de1ec002abffaf2f8bf33b78a6",
+    "chatSettings": {
+      "extensionUnification": false,
+      "disableAI": false,
+      "extensionTools": true
+    },
+    "nativeAgent": {
+      "present": true,
+      "active": true
+    },
+    "provider": {
+      "id": "Ollama.ollama",
+      "version": "0.0.14"
+    },
+    "models": [
+      {
+        "id": "qwen3.5:2b-mlx",
+        "name": "qwen3.5:2b-mlx",
+        "vendor": "ollama-models"
+      },
+      {
+        "id": "mimo-v2.6:latest",
+        "name": "mimo-v2.6:latest",
+        "vendor": "ollama-models"
+      },
+      {
+        "id": "qwen3.5:2b-mlx",
+        "name": "qwen3.5:2b-mlx",
+        "vendor": "ollama-models"
+      }
+    ]
+  },
+  "response": {
+    "snapshot": true,
+    "buffer": "width=40; // [0:100] IDs in Assembly.md; preserve this explanation\ncube(width);\n",
+    "dirty": false,
+    "operations": {
+      "total": 0,
+      "offset": 0,
+      "hasMore": false,
+      "nextOffset": null,
+      "operations": []
+    }
+  },
+  "timedOut": true,
+  "requestFinished": false,
+  "nativeAgent": true,
+  "confirmationsAutomaticallyApproved": true,
+  "approvals": [
+    {
+      "tool": "run_in_terminal",
+      "decision": "skip",
+      "scope": "Unrecognized action was not approved",
+      "argumentsObserved": {
+        "command": "wc -l <fixture>/workspace/model.scad && file <fixture>/workspace/model.scad",
+        "goal": "获取文件基本信息",
+        "mode": "sync"
+      },
+      "displayedInput": "d"
+    }
+  ]
+}

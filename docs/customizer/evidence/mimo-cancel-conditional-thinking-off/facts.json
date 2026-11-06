@@ -1,0 +1,204 @@
+{
+  "scenario": "cancel",
+  "nativeAgent": true,
+  "requestedModel": "mimo-v2.6:latest",
+  "modelIdentity": {
+    "name": "mimo-v2.6:latest",
+    "digest": "0af2fcf0cdba6e967700d7660a35c2ae905be1680d9afb3d377f6e61dbd1dfc0",
+    "size": 8711267221,
+    "modifiedAt": "2026-11-06T10:01:27.986857626+08:00"
+  },
+  "requestedThinkingLevel": false,
+  "thinkingMetadata": {
+    "values": [
+      false,
+      true
+    ],
+    "default": true
+  },
+  "observedThinkingLevels": {
+    "mimo-v2.6:latest": false
+  },
+  "inferenceProfile": "Official Ollama provider supported thinkingLevels=false in isolated profile; full tasks/tools retained; sampling/context unchanged; no global settings changed",
+  "ollamaEndpoint": "http://127.0.0.1:11434",
+  "model": [
+    {
+      "id": "mimo-v2.6:latest",
+      "name": "mimo-v2.6:latest",
+      "vendor": "ollama-models"
+    },
+    {
+      "id": "mimo-v2.6:latest",
+      "name": "mimo-v2.6:latest",
+      "vendor": "ollama-models"
+    }
+  ],
+  "artifact": {
+    "file": "scad-ai-ide-customizer-conditional-guidance.vsix",
+    "bytes": 4533531,
+    "sha256": "4793d7b4e4c6cc96bb130f24cdd3b84dca6b29a1f8351ee444f06238408bc4c5"
+  },
+  "requestFinished": true,
+  "timedOut": false,
+  "terminalReason": "nativeUICompleted",
+  "interrupted": false,
+  "controllerOutcomeMissing": false,
+  "sourceDiskUnchanged": true,
+  "sourceBufferObserved": true,
+  "sourceBufferUnchanged": true,
+  "actualBusinessToolInvocations": 9,
+  "actualCustomizerToolInvocations": 9,
+  "nativeExecutionMetrics": {
+    "observed": 15,
+    "completed": 15,
+    "successTrue": 15,
+    "successFalse": 0,
+    "scope": "Persisted Native transcript execution events only; may be incomplete. SDK execution success is not business ok=true or target success. Schema rejection reasons remain unknown without result metadata."
+  },
+  "customizerDispatcherMetrics": {
+    "total": 9,
+    "okTrue": 9,
+    "okFalse": 0,
+    "okRate": 1,
+    "semanticPassTrue": 0,
+    "semanticPassFalse": 1,
+    "scope": "Observed Customizer dispatcher calls only. Excludes built-in tool outcomes and requests rejected before dispatch. Expected business refusals count as ok=false. Invocation ok=true is not task success or target match."
+  },
+  "nativeToolRequestMetadataAvailable": false,
+  "nativeToolRequestSource": "persisted-native-transcript",
+  "nativeToolRequests": [
+    {
+      "name": "read_file",
+      "id": "call_4zzmbftb",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_state",
+      "id": "call_3gnjqwgk",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "read_file",
+      "id": "call_46mcubcw",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceAnalyze",
+      "id": "call_9limy151",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_inm8a6xj",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_ir3yxv4a",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceAnalyze",
+      "id": "call_ga0h1dbo",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_kbintb98",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_spl190y0",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_state",
+      "id": "call_enm2x8um",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "read_file",
+      "id": "call_4unkxijt",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_4oxqxkxq",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_2cag3npq",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_4soqidy7",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_state",
+      "id": "call_6qbogypx",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "read_file",
+      "id": "call_k27r6ieb",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceValidate",
+      "id": "call_raucceuh",
+      "hostSchemaRejected": null
+    }
+  ],
+  "nativeHostSchemaRejections": null,
+  "nativeToolMetadataScope": "Observed final-response metadata or persisted native transcript requests; not necessarily the complete conversation. Host rejection count is unknown without result metadata. Generated requests are not dispatcher execution or successful edits.",
+  "calls": [
+    {
+      "capability": "customizer.state",
+      "ok": true
+    },
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "mode": "plan",
+      "ok": true
+    },
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "mode": "plan",
+      "ok": true
+    },
+    {
+      "capability": "customizer.state",
+      "ok": true
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "mode": "plan",
+      "ok": true
+    },
+    {
+      "capability": "customizer.state",
+      "ok": true
+    },
+    {
+      "capability": "customizer.sourceValidate",
+      "ok": true,
+      "semanticPass": false,
+      "complete": true
+    }
+  ],
+  "acceptance": "REQUIRES REVIEW: these are observations, not a model acceptance PASS"
+}

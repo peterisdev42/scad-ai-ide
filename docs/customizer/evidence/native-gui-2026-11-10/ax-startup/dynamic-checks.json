@@ -1,0 +1,10 @@
+{
+  "scope": "Actual native Qt controls and runtime echo; not full pinned binary or IDE parity",
+  "records": [
+    {
+      "id": "initial",
+      "status": "FAIL",
+      "error": "Command failed: <repo>/.build/customizer-native-control 487 <repo>/.build/customizer-native-gui/mount/OpenSCAD.app dump\nNative control error: Error Domain=NativeControl Code=6 \"(null)\"\n"
+    }
+  ]
+}

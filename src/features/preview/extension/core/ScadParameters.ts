@@ -1,5 +1,6 @@
-import { parseLiteral } from '../../../../core/customizer/CustomizerParser'
-import { validateValue } from '../../../../core/customizer/CustomizerService'
+import { parsePresetFile } from '../../../../core/customizer/CustomizerPresets'
+import type { Parameter } from '../../../../core/customizer/CustomizerModel'
+import { validateValue } from '../../../../core/customizer/CustomizerConstraints'
 import type { ParameterValue } from '../../../../core/customizer/CustomizerParser'
 import { ScadParameter } from '../../shared/types/ScadParameter'
 
@@ -22,23 +23,20 @@ export class ScadParameters {
         this.onChange = onChange
     }
 
+    private domainParameter(parameter: ScadParameter): Parameter {
+        return {
+            name: parameter.name,
+            group: parameter.group ?? '',
+            description: parameter.description ?? '',
+            defaultValue: parameter.value,
+            range: (parameter.type === 'number' || parameter.type === 'vector') && parameter.min !== undefined && parameter.max !== undefined ? { min: parameter.min, max: parameter.max, step: parameter.step } : undefined,
+            maxLength: parameter.type === 'string' ? parameter.maxLength : undefined,
+            choices: parameter.type === 'number' || parameter.type === 'string' ? parameter.options?.map(option => ({ label: option.label ?? String(option.value), value: option.value })) : undefined,
+        }
+    }
     private valid(name: string, value: ParameterValue): boolean {
         const parameter = this.parameters.get(name)
-        if (!parameter) {
-            return false
-        }
-        return !validateValue(
-            {
-                name,
-                group: parameter.group ?? '',
-                description: parameter.description ?? '',
-                defaultValue: parameter.value,
-                range: (parameter.type === 'number' || parameter.type === 'vector') && parameter.min !== undefined && parameter.max !== undefined ? { min: parameter.min, max: parameter.max, step: parameter.step } : undefined,
-                maxLength: parameter.type === 'string' ? parameter.maxLength : undefined,
-                choices: parameter.type === 'number' || parameter.type === 'string' ? parameter.options?.map((option) => ({ label: option.label ?? String(option.value), value: option.value })) : undefined,
-            },
-            value,
-        )
+        return !!parameter && !validateValue(this.domainParameter(parameter), value)
     }
 
     private fireChange() {
@@ -72,54 +70,15 @@ export class ScadParameters {
         this.fireChange()
     }
 
-    public updateParameterSets(sets: Record<string, Record<string, string>>) {
-        this.parameterSets = Object.fromEntries(
-            Object.entries(sets)
-                .filter(([, values]) => values && typeof values === 'object')
-                .map(([name, values]) => [name, Object.fromEntries(Object.entries(values).filter(([, value]) => typeof value === 'string'))]),
-        )
+    /** Mirrors host preset identity without applying values or changing overrides. */
+    public syncPresetState(sets: Record<string, Record<string, string>>, active: string | undefined) {
+        this.parameterSets = parsePresetFile(JSON.stringify({ parameterSets: sets })).parameterSets
+        this.activeSetName = active
         this.fireChange()
     }
 
     public getParameterSets(): Record<string, Record<string, string>> {
         return this.parameterSets
-    }
-
-    public setActiveSet(name: string | undefined) {
-        this.activeSetName = name
-        this.overrides.clear()
-
-        if (name && this.parameterSets[name]) {
-            const setValues = this.parameterSets[name]
-            for (const param of this.parameters.values()) {
-                if (param.name in setValues) {
-                    const rawStr = setValues[param.name]
-                    if ((param.type === 'number' || param.type === 'string') && param.options) {
-                        const choice = param.options.find((option) => typeof option.value === 'string' && option.value === rawStr) ?? param.options.find((option) => option.value === parseLiteral(rawStr))
-                        if (choice) this.overrides.set(param.name, choice.value)
-                    } else if (Array.isArray(param.value)) {
-                        const vector = parseLiteral(rawStr)
-                        if (Array.isArray(vector)) this.overrides.set(param.name, vector)
-                    } else if (typeof param.value === 'number') {
-                        const number = Number(rawStr)
-                        if (Number.isFinite(number)) {
-                            this.overrides.set(param.name, number)
-                        }
-                    } else if (typeof param.value === 'boolean') {
-                        if (rawStr === 'true' || rawStr === 'false') this.overrides.set(param.name, rawStr === 'true')
-                    } else {
-                        this.overrides.set(param.name, rawStr)
-                    }
-                }
-            }
-        }
-
-        for (const [name, value] of this.overrides) {
-            if (!this.valid(name, value)) {
-                this.overrides.delete(name)
-            }
-        }
-        this.fireChange()
     }
 
     public getActiveSetName(): string | undefined {
@@ -130,8 +89,8 @@ export class ScadParameters {
      * Call this to override a parameter value, or to revert back to the original
      * value for a parameter.
      */
-    public replaceOverrides(values: Record<string, string | number | boolean | number[]>) {
-        this.overrides = new Map(Object.entries(values).filter(([name, value]) => this.valid(name, value)))
+    public replaceOverrides(values: Record<string, string | number | boolean | number[]>, validate = true) {
+        this.overrides = new Map(Object.entries(values).filter(([name, value]) => !validate || this.valid(name, value)))
         this.fireChange()
     }
 
@@ -160,34 +119,4 @@ export class ScadParameters {
         return Object.fromEntries(this.overrides)
     }
 
-    /**
-     * Returns a merged record of the active parameter values,
-     * combining default values exclusively with the flat active overrides map.
-     */
-    public getActiveValues(): Record<string, string | number | boolean | number[]> {
-        const active: Record<string, string | number | boolean | number[]> = {}
-
-        for (const param of this.parameters.values()) {
-            if (this.overrides.has(param.name)) {
-                active[param.name] = this.overrides.get(param.name)!
-            } else {
-                active[param.name] = param.value
-            }
-        }
-
-        return active
-    }
-
-    /**
-     * Calculates a partial record of active values to save.
-     * In the flat model, this is simply a direct string serialization of all explicit edits in the overrides bucket,
-     * protecting against future SCAD default value mutations.
-     */
-    public calculateActiveSetPartial(): Record<string, string> {
-        const partial: Record<string, string> = {}
-        for (const [name, value] of this.overrides) {
-            partial[name] = Array.isArray(value) ? JSON.stringify(value) : value.toString()
-        }
-        return partial
-    }
 }

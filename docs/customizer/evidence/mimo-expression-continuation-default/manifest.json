@@ -1,0 +1,66 @@
+[
+  {
+    "file": "request-input.json",
+    "originalSha256": "c1bd2ec337d0d555304d91587234b1772aefb725831a94d914f02b8b66cdb42b",
+    "redactions": [
+      "isolated fixture prefix",
+      "repository prefix"
+    ]
+  },
+  {
+    "file": "ready.json",
+    "originalSha256": "e719971865e154141cbe503b13122769a1ecb598b809b96a1acb801e3cdbc1cd",
+    "redactions": [
+      "isolated fixture prefix",
+      "repository prefix"
+    ]
+  },
+  {
+    "file": "result.json",
+    "originalSha256": "4358d84f562c110d050bf013d727730967c99537b2fccd0d0fc930285dda9d20",
+    "redactions": [
+      "isolated fixture prefix",
+      "repository prefix"
+    ]
+  },
+  {
+    "file": "tool-traces.json",
+    "originalSha256": "83bbca0833567983d48eeb7866e24af230fe1c5a85109206439d90d688d9c260",
+    "redactions": [
+      "isolated fixture prefix",
+      "repository prefix"
+    ]
+  },
+  {
+    "file": "workbench.txt",
+    "originalSha256": "1683316a81c37a7899dec71e719368b767275887ecfcb2497ad750131718df8c",
+    "redactions": [
+      "isolated fixture prefix",
+      "repository prefix"
+    ]
+  },
+  {
+    "file": "disk.scad",
+    "originalSha256": "31a6a088cf5428dac05bde0befb708878c001f4c3cff8ce64473cdc4eae43499",
+    "redactions": [
+      "isolated fixture prefix",
+      "repository prefix"
+    ]
+  },
+  {
+    "file": "native-assistant-messages.json",
+    "originalSha256": "032784f5fb0acd3fede98460588394e58938d7e4395420293d6277e5bf12a526",
+    "redactions": [
+      "isolated fixture prefix",
+      "repository prefix"
+    ]
+  },
+  {
+    "file": "facts.json",
+    "originalSha256": "b803924a56d8741a869bc6113e305f5dab1c0347d0dd079ca12f0754d51532a6",
+    "redactions": [
+      "isolated fixture prefix",
+      "repository prefix"
+    ]
+  }
+]

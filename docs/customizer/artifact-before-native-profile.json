@@ -1,0 +1,20 @@
+{
+  "artifact": ".build/scad-ai-ide-customizer-architecture-v2.vsix",
+  "bytes": 4532774,
+  "sha256": "41b515c77f65b7636cb140e8d59b1520d58d56dd4388ce65f9a1eb7eea67f22d",
+  "verifiedManifest": {
+    "tools": 40,
+    "instructions": 2,
+    "skills": 5
+  },
+  "installedHost": "1.140.0",
+  "installedSmoke": "PASS",
+  "installedEvidence": "evidence/installed-ci-fixes.txt",
+  "nativeAgent": "qwen3.5:2b-mlx failed on the prior artifact. CI-only script/manifest changes do not establish model acceptance for this artifact.",
+  "unverified": [
+    "Windows/Linux/Remote current candidate CI pending",
+    "native Desktop controls (permissions granted, current screen locked)",
+    "full pinned binary",
+    "all GUI/Preset service heap lifecycle"
+  ]
+}

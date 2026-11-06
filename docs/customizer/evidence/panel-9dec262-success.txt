@@ -1,0 +1,16 @@
+Actual CI run42749664581 job129610028701; success. Selected summaries retain executed scope.
+2026-11-10T03:29:46.5558124Z ##[group]Run npm run test:customizer
+2026-11-10T03:30:08.1199849Z ℹ tests 40
+2026-11-10T03:30:08.1202458Z ℹ pass 40
+2026-11-10T03:30:08.1202750Z ℹ fail 0
+2026-11-10T03:30:08.1203329Z ℹ skipped 0
+2026-11-10T03:30:08.1352661Z ##[group]Run npm run test:agents:ui
+2026-11-10T03:30:09.0473456Z ℹ tests 1
+2026-11-10T03:30:09.0474047Z ℹ pass 1
+2026-11-10T03:30:09.0474304Z ℹ fail 0
+2026-11-10T03:30:09.0474811Z ℹ skipped 0
+2026-11-10T03:30:09.0623442Z ##[group]Run npm run test:libraries:ui
+2026-11-10T03:30:17.1911166Z ℹ tests 6
+2026-11-10T03:30:17.1911649Z ℹ pass 6
+2026-11-10T03:30:17.1911829Z ℹ fail 0
+2026-11-10T03:30:17.1912801Z ℹ skipped 0

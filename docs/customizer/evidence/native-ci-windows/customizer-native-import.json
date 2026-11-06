@@ -1,0 +1,204 @@
+{
+  "binary": "D:\\a\\_temp\\customizer-native-runtime\\openscad-cli-windows-x86_64\\bin\\openscad.exe",
+  "version": "OpenSCAD version 2026.11-RC0",
+  "platform": "win32",
+  "node": "v24.22.2",
+  "build": {
+    "tag": "openscad-2026.11-RC0",
+    "commit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+    "target": "windows-x64",
+    "headless": true,
+    "opengl": true,
+    "nullgl": false,
+    "preview_exporter": false,
+    "preview_scene_schema": null,
+    "vcpkg_commit": "6f7ffeb18f99796233b958aaaf14ec7bd4fb64b2",
+    "mesa": "24.3.4",
+    "msvc_runtime": "14.44.35112",
+    "lib3mf": false,
+    "manifold": true,
+    "asan": false,
+    "builder_commit": "7d60f7a42610d848bc1c07ec0b21ac34d175ae28"
+  },
+  "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2",
+  "results": [
+    {
+      "id": "bool-import",
+      "source": "enabled=true;\necho(enabled);\n",
+      "values": {
+        "enabled": "0"
+      },
+      "expectedEcho": "ECHO: false\n",
+      "schema": {
+        "parameters": [
+          {
+            "group": "Parameters",
+            "initial": true,
+            "name": "enabled",
+            "type": "boolean"
+          }
+        ],
+        "title": "bool-import"
+      },
+      "echo": "ECHO: false\r\n",
+      "normalizedEcho": "ECHO: false\n",
+      "echoHex": "4543484f3a2066616c73650d0a",
+      "status": "native-verified-other-build"
+    },
+    {
+      "id": "enum-number-first",
+      "source": "mode=1; // [1:Numeric,\"1\":String]\necho(mode);\n",
+      "values": {
+        "mode": "1"
+      },
+      "expectedEcho": "ECHO: 1\n",
+      "schema": {
+        "parameters": [
+          {
+            "group": "Parameters",
+            "initial": 1,
+            "name": "mode",
+            "options": [
+              {
+                "name": "Numeric",
+                "value": 1
+              },
+              {
+                "name": "String",
+                "value": "1"
+              }
+            ],
+            "type": "number"
+          }
+        ],
+        "title": "enum-number-first"
+      },
+      "echo": "ECHO: 1\r\n",
+      "normalizedEcho": "ECHO: 1\n",
+      "echoHex": "4543484f3a20310d0a",
+      "status": "native-verified-other-build"
+    },
+    {
+      "id": "enum-string-first",
+      "source": "mode=\"1\"; // [\"1\":String,1:Numeric]\necho(mode);\n",
+      "values": {
+        "mode": "1"
+      },
+      "expectedEcho": "ECHO: \"1\"\n",
+      "schema": {
+        "parameters": [
+          {
+            "group": "Parameters",
+            "initial": "1",
+            "name": "mode",
+            "options": [
+              {
+                "name": "String",
+                "value": "1"
+              },
+              {
+                "name": "Numeric",
+                "value": 1
+              }
+            ],
+            "type": "string"
+          }
+        ],
+        "title": "enum-string-first"
+      },
+      "echo": "ECHO: \"1\"\r\n",
+      "normalizedEcho": "ECHO: \"1\"\n",
+      "echoHex": "4543484f3a202231220d0a",
+      "status": "native-verified-other-build"
+    },
+    {
+      "id": "text-import",
+      "source": "label=\"abcdef\"; // 3\necho(label);\n",
+      "values": {
+        "label": "123456"
+      },
+      "expectedEcho": "ECHO: \"123\"\n",
+      "expectedMaxLength": 3,
+      "schema": {
+        "parameters": [
+          {
+            "group": "Parameters",
+            "initial": "abcdef",
+            "maxLength": 3,
+            "name": "label",
+            "type": "string"
+          }
+        ],
+        "title": "text-import"
+      },
+      "echo": "ECHO: \"123\"\r\n",
+      "normalizedEcho": "ECHO: \"123\"\n",
+      "echoHex": "4543484f3a2022313233220d0a",
+      "status": "native-verified-other-build"
+    },
+    {
+      "id": "utf8-import",
+      "source": "label=\"Ω😀\"; // 1\necho(label);\n",
+      "values": {
+        "label": "Ω😀"
+      },
+      "expectedEcho": "ECHO: \"�\"\n",
+      "expectedMaxLength": 1,
+      "schema": {
+        "parameters": [
+          {
+            "group": "Parameters",
+            "initial": "Ω😀",
+            "maxLength": 1,
+            "name": "label",
+            "type": "string"
+          }
+        ],
+        "title": "utf8-import"
+      },
+      "echo": "ECHO: \"�\"\r\n",
+      "normalizedEcho": "ECHO: \"�\"\n",
+      "echoHex": "4543484f3a2022ce220d0a",
+      "status": "native-verified-other-build"
+    },
+    {
+      "id": "offgrid-import",
+      "source": "w=10; // [0:5:100]\nv=[2,4]; // [0:2:10]\necho(w=w,v=v);\n",
+      "values": {
+        "w": "12",
+        "v": "[3,5]"
+      },
+      "expectedEcho": "ECHO: w = 12, v = [3, 5]\n",
+      "schema": {
+        "parameters": [
+          {
+            "group": "Parameters",
+            "initial": 10,
+            "max": 100,
+            "min": 0,
+            "name": "w",
+            "step": 5,
+            "type": "number"
+          },
+          {
+            "group": "Parameters",
+            "initial": [
+              2,
+              4
+            ],
+            "max": 10,
+            "min": 0,
+            "name": "v",
+            "step": 2,
+            "type": "number"
+          }
+        ],
+        "title": "offgrid-import"
+      },
+      "echo": "ECHO: w = 12, v = [3, 5]\r\n",
+      "normalizedEcho": "ECHO: w = 12, v = [3, 5]\n",
+      "echoHex": "4543484f3a2077203d2031322c2076203d205b332c20355d0d0a",
+      "status": "native-verified-other-build"
+    }
+  ]
+}

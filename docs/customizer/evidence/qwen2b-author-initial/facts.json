@@ -1,0 +1,43 @@
+{
+  "scenario": "author",
+  "nativeAgent": true,
+  "model": [
+    {
+      "id": "qwen3.5:2b-mlx",
+      "name": "qwen3.5:2b-mlx",
+      "vendor": "ollama-models"
+    },
+    {
+      "id": "qwen3.5:2b-mlx",
+      "name": "qwen3.5:2b-mlx",
+      "vendor": "ollama-models"
+    }
+  ],
+  "artifact": "Historical run: VSIX hash not captured; bundled extension hash is in result.ready",
+  "requestFinished": false,
+  "timedOut": true,
+  "sourceDiskUnchanged": true,
+  "sourceBufferObserved": true,
+  "sourceBufferUnchanged": true,
+  "actualCustomizerToolInvocations": 3,
+  "calls": [
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "mode": "plan",
+      "ok": false,
+      "errorCode": "INVALID_INPUT"
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "mode": "plan",
+      "ok": false,
+      "errorCode": "NEEDS_MANUAL_REVIEW"
+    }
+  ],
+  "acceptance": "REQUIRES REVIEW: these are observations, not a model acceptance PASS"
+}

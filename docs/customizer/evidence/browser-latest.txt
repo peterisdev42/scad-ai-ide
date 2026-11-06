@@ -1,0 +1,61 @@
+npm notice run scad-ai-ide@0.0.1 test:customizer
+npm notice run npm run compile-tests && node esbuild.js && node --test scripts/customizer-scrollbar.test.mjs scripts/customizer-preview-fields.test.mjs
+npm notice run scad-ai-ide@0.0.1 compile-tests
+npm notice run tsc -p . --outDir out
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+✔ Preview manual numeric entry rejects out of bounds without clamping and accepts off-grid input (230.523209ms)
+✔ Preview handles literal regex punctuation in group names and preserves multiline textbox values (51.660666ms)
+✔ Preview incomplete analysis is visible and makes stale controls inert (59.620375ms)
+✔ native scrollbar scrolls with the wheel, drags, fades and uses VS Code theme variables (1321.293375ms)
+✔ collapse, viewport resize, keyboard focus and file changes update native scroll dimensions (169.198833ms)
+✔ host list settings update scrollbar width and wheel behavior without replacing controls (105.619958ms)
+✔ native view title identifies the model and switches between collapse and expand actions (181.498458ms)
+✔ decimal sliders, mixed menus, default menu entries and vector labels stay editable (109.065791ms)
+✔ preset create, save, default, import, partial selection, export and delete use OpenSCAD JSON (285.327458ms)
+✔ removed panel settings stay absent and invalid imports preserve the working model (116.742875ms)
+✔ a preset dialog cannot write into a different active file (124.525916ms)
+✔ sidecar reload, invalid preset selection and compact panel layout preserve model state (131.097834ms)
+✔ range sliders send intermediate values before pointer release and retain the final value (235.580459ms)
+✔ preset dropdown reaches the real Preview session and renderer, including cold startup and design defaults (144.7115ms)
+✔ active presets follow file edits and mark edits outside partial presets as unsaved (128.697625ms)
+✔ preset file sits left of actions with the menu below, and every action has a hover label (3432.819291ms)
+✔ ordinary and fallback sliders submit only after release, including fallback during a drag (643.605334ms)
+✔ preset section shares parameter folding, font size and persisted state (160.464625ms)
+✔ parameter controls grow with the sidebar and wrap vectors without losing edits or overflowing (102.305166ms)
+✔ Customizer icon groups use VS Code spacing tokens with consistent fallbacks (89.070083ms)
+✔ preset filenames refer only to explicitly opened or newly saved files (194.406ms)
+✔ preset header stays collapsed during actions and the more menu supports keyboard and dismissal (313.562334ms)
+✔ Save is enabled only for unsaved values and creates the matching JSON without a file dialog (171.854584ms)
+✔ Saving custom values merges an unopened matching JSON without overwriting an existing Current preset (101.49975ms)
+✔ New preset automatically creates a matching JSON even when model values are unchanged (122.380166ms)
+✔ Automatic matching JSON creation does not overwrite invalid existing content (101.556125ms)
+✔ Agent saves current values into an explicit different preset even when the selected preset is unmodified (126.028792ms)
+✔ native effective bounds and off-grid values survive GUI, Agent and keyboard updates (94.992958ms)
+✔ GUI rejects oversize UTF-8 input without truncation and makes incomplete analysis visible (82.580042ms)
+✔ partial presets switch A to B to defaults across GUI, domain and Preview without writing the file (136.503709ms)
+✔ unknown-version preset import is readonly and programmatic apply/save/export cannot bypass it (109.955541ms)
+✔ multiline strings round trip without HTML input newline sanitization (90.047542ms)
+✔ Preview actions and Agent share preset state, readonly policy, overrides and atomic persistence (158.904125ms)
+✔ pointer slider interaction uses minimum-anchored steps without rounding stored Agent values (117.1525ms)
+✔ spinbox and vector off-grid inputs remain valid and keyboard uses interaction increments (101.446ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9685.960208

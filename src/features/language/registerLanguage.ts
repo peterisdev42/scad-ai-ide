@@ -1,3 +1,4 @@
+import { registerCustomizerDiagnostics } from './CustomizerDiagnostics'
 import { stat } from 'node:fs/promises'
 import { libraryEnvironment } from '../../platform/libraries/LibraryEnvironment'
 import { notifications } from '../../platform/notifications'
@@ -14,6 +15,7 @@ const snippets = require('../../../snippets/openscad.json') as Record<string, { 
 const snippetPrefixes = new Set(Object.values(snippets).flatMap((snippet) => snippet.prefix))
 
 export function registerLanguage(context: vscode.ExtensionContext) {
+    registerCustomizerDiagnostics(context)
     const output = vscode.window.createOutputChannel('SCAD AI IDE Language Server')
     const clients = new Map<string, LanguageClient>()
     let pending: Promise<void> = Promise.resolve()

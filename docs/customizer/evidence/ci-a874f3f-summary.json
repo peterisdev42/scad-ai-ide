@@ -1,0 +1,121 @@
+{
+  "commit": "a874f3ff9dc05e2c9dae9db97c7cffee2a4b99d0",
+  "agentRun": 42631083903,
+  "agentJobs": {
+    "linux": "success",
+    "macos": "success",
+    "windows": "success",
+    "panel": "success"
+  },
+  "librariesRun": 42631083471,
+  "libraryJobs": {
+    "linux": "success",
+    "macos": "success",
+    "windows": "failure"
+  },
+  "nativeReports": [
+    {
+      "platform": "linux",
+      "schemaCases": 41,
+      "importCases": 6,
+      "nativeOptions": [],
+      "unicodeFeatureSwitchSupported": false,
+      "archive": {
+        "artifactId": 13680398388,
+        "sha256": "453b3057426f82b83da96a3ff4728fbce0f1316a1ebd289bb02965c1dddca6c2",
+        "digestMatches": true
+      }
+    },
+    {
+      "platform": "macos",
+      "schemaCases": 41,
+      "importCases": 6,
+      "nativeOptions": [
+        "--enable=unicode-identifiers"
+      ],
+      "unicodeFeatureSwitchSupported": true,
+      "archive": {
+        "artifactId": 13681036466,
+        "sha256": "3fc84a24b71899eba273f5a541fd69469cdccec4deb90d1de388ab6a8f760479",
+        "digestMatches": true
+      }
+    },
+    {
+      "platform": "windows",
+      "schemaCases": 41,
+      "importCases": 6,
+      "nativeOptions": [],
+      "unicodeFeatureSwitchSupported": false,
+      "archive": {
+        "artifactId": 13682290524,
+        "bytes": 6943,
+        "sha256": "11111af446fac4ed3a0f76c585fe6f40a4a21e875441114ed3ef9fc772f93c2c",
+        "apiDigest": "11111af446fac4ed3a0f76c585fe6f40a4a21e875441114ed3ef9fc772f93c2c",
+        "digestMatches": true
+      }
+    }
+  ],
+  "scope": "Native schema/import reports passed on all three OS; Windows real library integration still fails with Unicode include paths. New 10-case local import audit is separate from these six-case CI reports.",
+  "counts": {
+    "contracts": {
+      "manifest": {
+        "pass": 2
+      },
+      "compatibility": {
+        "pass": 41
+      },
+      "source": {
+        "pass": 45
+      },
+      "capabilities": {
+        "linux": {
+          "pass": 31
+        },
+        "macos": {
+          "pass": 31
+        },
+        "windows": {
+          "pass": 30,
+          "skip": 1,
+          "skipReason": "POSIX runtime lifecycle fixture"
+        }
+      },
+      "librariesDefault": {
+        "pass": 26,
+        "skip": 3
+      }
+    },
+    "panel": {
+      "customizer": {
+        "pass": 35
+      },
+      "agents": {
+        "pass": 1
+      },
+      "libraries": {
+        "pass": 6
+      }
+    },
+    "librariesRealCLI": {
+      "linux": {
+        "pass": 27,
+        "fail": 0,
+        "skip": 2
+      },
+      "macos": {
+        "pass": 27,
+        "fail": 0,
+        "skip": 2
+      },
+      "windows": {
+        "pass": 26,
+        "fail": 1,
+        "skip": 2
+      }
+    },
+    "realCLISkipReasons": [
+      "Preview exporter unavailable in CI",
+      "Online BOSL2 opt-in disabled"
+    ]
+  }
+}

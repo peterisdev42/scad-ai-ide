@@ -1,0 +1,22 @@
+{
+  "artifact": ".build/scad-ai-ide-customizer-architecture-v2.vsix",
+  "bytes": 4532700,
+  "sha256": "5cd831f6e9bbc2772be7db99f09f4e31fb15d26fc2745f81073223ec59cb652e",
+  "verifiedManifest": {
+    "tools": 40,
+    "instructions": 2,
+    "skills": 5
+  },
+  "installedHost": "1.140.0",
+  "installedSmoke": "PASS",
+  "installedEvidence": "evidence/installed-explicit-contract.txt",
+  "nativeAgent": "qwen3.5:2b-mlx actual native tool calls; complete task acceptance remains unmet",
+  "unverified": [
+    "Windows/Linux/Remote",
+    "native Desktop",
+    "full pinned binary",
+    "whole VS Code heap profile"
+  ],
+  "historical": true,
+  "pathStatus": "Historical hash; the artifact path was replaced after CI script fixes."
+}

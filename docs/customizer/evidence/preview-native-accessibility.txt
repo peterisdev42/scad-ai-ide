@@ -1,0 +1,11 @@
+✔ Preview manual numeric entry rejects out of bounds without clamping and accepts off-grid input (218.948ms)
+✔ Preview handles literal regex punctuation in group names and preserves multiline textbox values (51.920541ms)
+✔ Preview incomplete analysis is visible and makes stale controls inert (68.91475ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 517.809584

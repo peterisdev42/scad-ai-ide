@@ -1,0 +1,8 @@
+{
+  "scope": "Controlled transport validation, not model inference",
+  "preservedMessageAndToolPayload": true,
+  "changedOnlyTemperature": true,
+  "forwardedStreamBytesExactly": true,
+  "blockedModelCreation": true,
+  "propagatedUpstream503": true
+}

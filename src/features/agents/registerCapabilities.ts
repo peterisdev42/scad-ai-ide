@@ -1,3 +1,6 @@
+import { safePreview } from '../../core/capabilities/SafeOutput'
+import type { CustomizerSourceDomainService } from '../sidebar/CustomizerSourceDomainService'
+import type { SourceExpectation } from '../../core/customizer/CustomizerSourceTypes'
 import * as vscode from 'vscode'
 import { capabilityCatalog, CapabilityRegistry } from '../../core/capabilities/CapabilityRegistry'
 import { CapabilityDispatcher } from '../../core/capabilities/CapabilityDispatcher'
@@ -12,15 +15,21 @@ import type { ParameterValue } from '../../core/customizer/CustomizerParser'
 export interface CapabilityServices {
     runtime: ReturnType<typeof createRuntimeService>
     libraries: LibraryService
+    customizerSource: CustomizerSourceDomainService
     customizer: CustomizerDomainService
     github: ReturnType<typeof registerGitHub>
     development: DeveloperCacheController
 }
-const page = <T>(items: T[], input: Record<string, unknown>) => ({ total: items.length, offset: Number(input.offset ?? 0), items: items.slice(Number(input.offset ?? 0), Number(input.offset ?? 0) + Number(input.limit ?? 20)) })
+const page = <T>(items: T[], input: Record<string, unknown>) => {
+    const offset = Number(input.offset ?? 0)
+    const result = items.slice(offset, offset + Number(input.limit ?? 20))
+    const next = offset + result.length
+    return { total: items.length, offset, items: result, hasMore: next < items.length, nextOffset: next < items.length ? next : null }
+}
 
 /** Binds domain methods, never GUI adapters. Every catalog entry must have one handler. */
 export function registerCapabilities(services: CapabilityServices) {
-    const { runtime, libraries, customizer, github, development } = services
+    const { runtime, libraries, customizer, customizerSource, github, development } = services
     const registry = new CapabilityRegistry()
     const dispatcher = new CapabilityDispatcher(registry)
     let runtimeRevision = 0
@@ -28,15 +37,18 @@ export function registerCapabilities(services: CapabilityServices) {
     const subscriptions = [runtime.onDidChange(() => runtimeRevision++), libraries.onDidChange(() => libraryRevision++)]
     const runtimeSnapshot = (input: Record<string, unknown> = {}) => {
         const { builds, ...state } = runtime.getState()
-        return { revision: runtimeRevision, state: { ...state, runtimes: page(state.runtimes, input), buildCount: builds.length, readiness: state.busy ? 'loading' : state.message ? 'error' : 'ready' } }
+        const installed = page(state.runtimes, input)
+        // Always return the selected CLI in full, even when it is outside the requested page.
+        const activeRuntime = state.runtimes.find((entry) => entry.id === state.activeId) ?? null
+        return { revision: runtimeRevision, state: { ...state, activeRuntime, runtimes: installed, buildCount: builds.length, readiness: state.busy ? 'loading' : state.message ? 'error' : 'ready' } }
     }
     const librarySnapshot = async (input: Record<string, unknown>, global: boolean) => {
         const state = await libraries.getState()
-        return { revision: libraryRevision, status: state.registryBusy ? 'loading' : state.registryError ? 'error' : state.registryLoaded ? 'ready' : 'notLoaded', registryError: state.registryError, registryStatus: state.registryStatus, ...(global ? { cache: page(state.global.map((entity) => ({ ...entity, versions: entity.versions.slice(0, 10), references: { ...entity.references, projects: entity.references.projects.slice(0, 10), unavailable: entity.references.unavailable.slice(0, 10), total: entity.references.projects.length + entity.references.unavailable.length } })), input), issues: state.globalIssues.slice(0, 50) } : { libraries: page(state.registry.filter((l) => !input.query || JSON.stringify([l.id, l.name]).toLowerCase().includes(String(input.query).toLowerCase())), input) }) }
+        return { revision: libraryRevision, ...libraries.activity(), status: state.registryBusy ? 'loading' : state.registryError ? 'error' : state.registryLoaded ? 'ready' : 'notLoaded', registryError: state.registryError, registryStatus: state.registryStatus, ...(global ? { cache: page(state.global.map((entity) => ({ ...entity, versions: entity.versions.slice(0, 10), references: { ...entity.references, projects: entity.references.projects.slice(0, 10), unavailable: entity.references.unavailable.slice(0, 10), total: entity.references.projects.length + entity.references.unavailable.length } })), input), issues: state.globalIssues.slice(0, 50) } : { libraries: page(state.registry.filter((l) => !input.query || JSON.stringify([l.id, l.name]).toLowerCase().includes(String(input.query).toLowerCase())), input) }) }
     }
     const projectSnapshot = async (project: string, input: Record<string, unknown> = {}) => {
         const state = await libraries.projectState(project)
-        return { revision: libraryRevision, project, dependencies: page(state.dependencies, input), affectedDependency: input.id ? state.dependencies.find((entry) => entry.id === input.id) : undefined }
+        return { revision: libraryRevision, ...libraries.activity(), project, dependencies: page(state.dependencies, input), affectedDependency: input.id ? state.dependencies.find((entry) => entry.id === input.id) : undefined }
     }
     const runtimeMutation = async (ctx: CapabilityContext, task: () => Promise<void>) => {
         const subscription = runtime.onDidChange(() => { const state = runtime.getState(); if (state.installing) ctx.report?.(state.installing.message) })
@@ -45,22 +57,33 @@ export function registerCapabilities(services: CapabilityServices) {
     const handlers: Record<string, (input: Record<string, unknown>, ctx: CapabilityContext) => unknown> = {
         'capabilities.discover': (input, ctx) => registry.discover(ctx, Number(input.offset ?? 0), Number(input.limit ?? 20)),
         'operation.status': (input) => dispatcher.operations.status(input.id as string | undefined, Number(input.offset ?? 0), Number(input.limit ?? 20)),
-        'operation.cancel': (input) => dispatcher.operations.cancel(String(input.id)),
+        'operation.cancel': (input) => {
+            if (input.domain) {
+                const requested = input.domain === 'runtime' ? runtime.cancel() : libraries.cancel()
+                return { domain: input.domain, cancellationRequested: requested, status: requested ? 'cancellationRequested' : 'noCancellableTask', message: 'Cancellation is cooperative. Read domain state until the operation finishes; critical transactions may complete.' }
+            }
+            return dispatcher.operations.cancel(String(input.id))
+        },
         'runtime.state': async (input) => { await runtime.whenReady(); return runtimeSnapshot(input) },
         'runtime.builds': async (input) => {
+            await runtime.whenReady()
             const before = runtime.getState()
             if (input.refresh === true || (!before.buildsLoaded && !before.builds.length)) await runtime.loadBuilds(input.refresh === true)
             const state = runtime.getState()
             if (state.buildsError && (input.refresh === true || !state.builds.length)) throw new CapabilityError('CATALOG_FAILED', state.buildsError, true)
-            return { revision: runtimeRevision, cached: !state.buildsLoaded || !!state.buildsError, error: state.buildsError, system: state.system, recommendedBuildId: state.recommendedBuildId, builds: page(state.builds.filter((b) => !input.channel || b.channel === input.channel), input) }
+            return { revision: runtimeRevision, cached: !state.buildsLoaded || !!state.buildsError, error: state.buildsError, system: state.system, recommendedBuildId: state.recommendedBuildId, recommendedBuild: state.builds.find((build) => build.id === state.recommendedBuildId) ?? null, installedBuildIds: state.installedBuildIds, builds: page(state.builds.filter((b) => !input.channel || b.channel === input.channel).map((build) => ({ ...build, installed: state.installedBuildIds.includes(build.id) })), input) }
         },
-        'runtime.refresh': async () => {
-            await runtime.refresh()
+        'runtime.refresh': async (input) => {
+            if (input.mode === 'installed') await runtime.refreshInstalled()
+            else await runtime.refresh()
             const state = runtime.getState()
             if (/Detection failed:/.test(state.message)) throw new CapabilityError('DISCOVERY_FAILED', state.message, true)
             return runtimeSnapshot()
         },
-        'runtime.installBuild': (input, ctx) => runtimeMutation(ctx, () => runtime.installBuild(Number(input.id), ctx.signal)),
+        'runtime.installBuild': (input, ctx) => runtimeMutation(ctx, async () => {
+            await runtime.installBuild(Number(input.id), ctx.signal)
+            if (!runtime.getState().installedBuildIds.includes(Number(input.id))) throw new CapabilityError('POSTCONDITION_FAILED', 'Installation returned but the requested build is not in the installed inventory. Refresh Runtime state.', true)
+        }),
         'runtime.installArchive': (input, ctx) => runtimeMutation(ctx, () => runtime.installArchivePath(String(input.path), ctx.signal)),
         'runtime.addExecutable': async (input) => { await runtime.addExecutable(String(input.path)); return runtimeSnapshot() },
         'runtime.select': async (input) => {
@@ -68,12 +91,19 @@ export function registerCapabilities(services: CapabilityServices) {
             if (runtime.getActiveRuntime()?.id !== input.id) throw new CapabilityError('POSTCONDITION_FAILED', 'Requested runtime did not become active. Refresh discovery.', true)
             return runtimeSnapshot()
         },
-        'runtime.remove': async (input) => { await runtime.deleteRuntime(String(input.id)); return runtimeSnapshot() },
+        'runtime.remove': async (input) => {
+            await runtime.deleteRuntime(String(input.id))
+            if (runtime.getState().runtimes.some((entry) => entry.id === input.id)) throw new CapabilityError('POSTCONDITION_FAILED', 'Removal returned but the runtime is still detected. Refresh Runtime state.', true)
+            return runtimeSnapshot()
+        },
+        'customizer.sourceAnalyze': (input) => customizerSource.analyze(String(input.uri), input),
+        'customizer.sourceApply': (input, ctx) => customizerSource.apply(input, ctx),
+        'customizer.sourceValidate': (input) => customizerSource.validate(String(input.uri), input.expectations as SourceExpectation[] | undefined, input.includeWarnings as boolean | undefined),
         'customizer.state': () => customizer.snapshot(),
         'customizer.set': (input) => customizer.setValues(String(input.target), Number(input.revision), input.values as Record<string, ParameterValue>),
         'customizer.reset': (input) => customizer.reset(String(input.target), Number(input.revision), input.name as string | undefined),
         'libraries.search': async (input) => {
-            const matches = input.id ? [await libraries.manager.registry.getLibrary(String(input.id))] : await libraries.manager.registry.search(String(input.query ?? ''))
+            const matches = await libraries.search(String(input.query ?? ''), input.id as string | undefined)
             const rows = matches.map(({ versions, ...library }) => ({ ...library, versions: page(versions, input.id ? input : { offset: 0, limit: 3 }) }))
             return { revision: libraryRevision, status: libraries.manager.registry.status, error: libraries.manager.registry.error, ...(input.id ? { library: rows[0] } : { libraries: page(rows, input) }) }
         },
@@ -83,7 +113,7 @@ export function registerCapabilities(services: CapabilityServices) {
             if (state.registryError) throw new CapabilityError('REGISTRY_FAILED', state.registryError, true)
             return librarySnapshot(input, false)
         },
-        'libraries.projectState': async (input) => input.project ? projectSnapshot(String(input.project), input) : { revision: libraryRevision, projects: page(await libraries.projects(), input) },
+        'libraries.projectState': async (input) => input.project ? projectSnapshot(String(input.project), input) : { revision: libraryRevision, ...libraries.activity(), projects: page(await libraries.projects(), input) },
         'libraries.globalState': (input) => librarySnapshot(input, true),
         'libraries.verify': async (input, ctx) => {
             await libraries.execute({ action: input.key ? 'libraries.verify' : 'libraries.verifyAll', key: input.key }, ctx)
@@ -95,8 +125,8 @@ export function registerCapabilities(services: CapabilityServices) {
             return libraries.planCleanup(input as { key?: string; mode?: 'unused' | 'all' })
         },
         'libraries.cleanupExecute': (input) => libraries.executeCleanup(String(input.planId)),
-        'more.githubStatus': async () => { await github.refresh(); const { mode, busy, account, loginSuggested } = github.getState(); return { mode, busy, account, loginSuggested } },
-        'more.authorizeGitHub': async () => { await github.connect(); await runtime.loadBuilds(true); const { mode, busy, account, loginSuggested } = github.getState(); return { mode, busy, account, loginSuggested } },
+        'more.githubStatus': async () => { await github.refresh(); const { mode, busy, account, loginSuggested, message } = github.getState(); return { mode, busy, account, loginSuggested, message: message ? safePreview(message) : undefined } },
+        'more.authorizeGitHub': async () => { await github.connect(); await runtime.loadBuilds(true); const { mode, busy, account, loginSuggested, message } = github.getState(); return { mode, busy, account, loginSuggested, message: message ? safePreview(message) : undefined } },
         'development.status': () => ({ enabled: development.enabled, reason: development.enabled ? undefined : 'DEVELOPMENT_ONLY' }),
         'development.listCaches': (input) => development.listSafe(Number(input.offset ?? 0), Number(input.limit ?? 20)),
         'development.inspectCache': (input) => development.inspectSafe(String(input.id)),

@@ -11,3 +11,6 @@ description: Search, install exact OpenSCAD library versions, restore project de
 7. Read operation status or request cancellation with `scad_ai_ide_operation_status` / `scad_ai_ide_operation_cancel`. Do not claim success after partial failure/cancellation.
 
 Examples: “在当前项目安装指定 OpenSCAD Library 版本并检查 lockfile。” “Preview unused global library cleanup without deleting anything.”
+
+
+Search results include the same version labels, layout/installability errors and cached flags as the GUI. To cancel the current library task, including one started from the GUI, use `scad_ai_ide_operation_cancel` with `{"domain":"libraries"}` and re-read state; cancellation is cooperative. For an exact tracked Agent operation use its ID instead. Do not claim a cancellation request has completed a critical filesystem transaction.

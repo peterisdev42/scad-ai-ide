@@ -1,0 +1,65 @@
+npm notice run scad-ai-ide@0.0.1 test:capabilities
+npm notice run npm run compile-tests && node --test out/test/capabilities.test.js out/test/capabilityServices.test.js
+npm notice run scad-ai-ide@0.0.1 compile-tests
+npm notice run tsc -p . --outDir out
+✔ capability contract preserves caller, cancellation and explicit failure identity (0.481042ms)
+✔ Source Apply exposes object properties to model clients without changing the accepted input contract (28.880291ms)
+✔ all catalog schemas compile strictly, completeness and duplicate bindings are enforced (86.537417ms)
+✔ schemas reject forged approval, unknown fields, missing targets, invalid enums and excessive reads (77.866833ms)
+✔ dispatcher denies unavailable handlers even when invoked directly and preserves failed terminal state (128.201583ms)
+✔ running operations expose progress, cancellation reaches AbortSignal and never claims success (59.170209ms)
+✔ cache previews redact credentials and personal identifiers, cap depth/entries/bytes, handle cycles (0.782375ms)
+✔ source tool schemas reject arbitrary edits, numeric strings, forged permission and mixed plan/commit fields (60.97325ms)
+✔ cancellation accepts exactly an Agent operation ID or a supported GUI domain (56.49525ms)
+✔ Customizer has full schema with no panel, atomic validation, shared Preview events and stale guards (8.619875ms)
+✔ Customizer preset deletion cannot be approved by model input and leaves state unchanged (2.815083ms)
+✔ Production denies every Dev cache read/mutation path when called directly (7.971958ms)
+✔ Workspace paths reject outside files and canonical symlink escapes; allow workspace files and new sidecars (7.37825ms)
+✔ LM adapter registers side-effect confirmation and bridges cancellation to structured failures (97.88525ms)
+✔ Library GUI and Agent share exact-version transactions, explicit projects, verification and human-confirmed two-phase cleanup (74.54975ms)
+✔ all catalog handlers execute without panels and preserve exact service arguments and safe outputs (78.328875ms)
+✔ Development cache inspection is bounded/redacted; confirmation, stale state and partial clear failures preserve managed artifacts (8.698083ms)
+✔ preset import rejects an asynchronous target switch with TARGET_CHANGED before rebinding files (3.068667ms)
+✔ source plan/commit reads unsaved buffers, never writes disk and consumes plans once (72.955917ms)
+✔ source CAS rejects version, hash-only changes, closed targets, expiry, trust loss and cancellation (24.646167ms)
+✖ source continuation retains native review and cancellation, and failed plans expose no continuation (72.403ms)
+✔ source tools independently reject outside paths and symlink escapes, with read-only analysis in untrusted workspaces (7.5305ms)
+✔ source commit reports rejected WorkspaceEdit and real postcondition failure without overwriting concurrent text (8.622666ms)
+✔ Customizer code actions require actual diagnostics, keep optional refactors separate and use commands (5.599208ms)
+✔ the shared Library cancel service aborts a GUI-started installation and clears its cancellable state (4.567708ms)
+✔ Runtime Agent lifecycle forces catalog refresh, downloads/probes a real archive, selects, confirms deletion and verifies disk/state (2641.351333ms)
+✔ editor actions retain untrusted/outside-workspace access while Agent boundaries stay intact (8.723208ms)
+✔ editor CAS, expiry, provider permissions, close and rejected edits do not change the buffer (35.398041ms)
+✔ editor commands consume once under concurrent invocations and report postcondition interference (10.784875ms)
+✔ source pending plans allow 32, reject the 33rd, and reclaim expired plans (22.446292ms)
+✔ source analysis cache bounds retention to 16 documents and disposal clears retained metadata (9.416667ms)
+✔ source plan preview accepts bounded metadata and rejects output above 32 KiB (7.245208ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 31
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3290.979375
+
+✖ failing tests:
+
+test at out/test/capabilityServices.test.js:549:22
+✖ source continuation retains native review and cancellation, and failed plans expose no continuation (72.403ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'OPERATION_FAILED'
+  - 'NEEDS_MANUAL_REVIEW'
+  
+      at TestContext.<anonymous> (<repo>/out/test/capabilityServices.test.js:582:20)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'OPERATION_FAILED',
+    expected: 'NEEDS_MANUAL_REVIEW',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

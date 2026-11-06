@@ -1,3 +1,4 @@
+import * as presetCore from '../../core/customizer/CustomizerPresets'
 import { validPreviewTimings } from '../../core/preview/performance'
 import assert from 'node:assert/strict'
 import test from 'node:test'
@@ -10,15 +11,15 @@ import { CustomizerService } from '../../core/customizer/CustomizerService'
 import { ScadParser } from '../../features/preview/extension/services/ScadParser'
 import { ScadParameters } from '../../features/preview/extension/core/ScadParameters'
 
-function fixture() {
+function fixture(domain?: unknown) {
     let backend!: (state: { kind: 'pending' | 'csg' | 'mesh'; reason?: string; frameReady?: boolean }) => void
     const service = new CustomizerService()
-    const source = 'width=0.5; // [0:0.1:1]'
+    let source = 'width=0.5; // [0:0.1:1]'
     service.load('file:///model.scad', source)
     const watchers = new Map<string, () => void>()
     const renders: { width?: number }[] = []
     const disposable = { dispose() {} }
-    const module = { exports: {} as { ScadSession: new (document: unknown, customizer: CustomizerService) => { dispose(): void; currentOverrides: Record<string, unknown>; setPreviewMode(mode: 'preview' | 'render'): void } } }
+    const module = { exports: {} as { ScadSession: new (document: unknown, customizer: CustomizerService, domain?: unknown) => { dispose(): void; currentOverrides: Record<string, unknown>; setPreviewMode(mode: 'preview' | 'render'): void } } }
     runInNewContext(transformSync(readFileSync(new URL('../../features/preview/extension/core/ScadSession.ts', import.meta.url), 'utf8'), { loader: 'ts', format: 'cjs' }).code, {
         module,
         Buffer,
@@ -26,6 +27,7 @@ function fixture() {
         setTimeout,
         clearTimeout,
         require: (name: string) => {
+            if (name.endsWith('/CustomizerPresets')) return presetCore
             if (name.endsWith('/preview/performance')) return { validPreviewTimings }
             if (name === 'node:path') return path
             if (name.endsWith('/ModelFormat')) return { ModelFormat }
@@ -77,8 +79,8 @@ function fixture() {
             throw new Error(`Unexpected dependency: ${name}`)
         },
     })
-    const session = new module.exports.ScadSession({ uri: { fsPath: '/model.scad', path: '/model.scad', toString: () => 'file:///model.scad' }, getText: () => source }, service)
-    return { service, session, watchers, renders, backend: (state: Parameters<typeof backend>[0]) => backend(state) }
+    const session = new module.exports.ScadSession({ uri: { fsPath: '/model.scad', path: '/model.scad', toString: () => 'file:///model.scad' }, getText: () => source }, service, domain)
+    return { service, session, watchers, renders, changeSource: (text: string) => { source = text; service.load('file:///model.scad', source) }, backend: (state: Parameters<typeof backend>[0]) => backend(state) }
 }
 
 test('preset selection renders immediately before file initialization and ordinary edits always update Preview', () => {
@@ -124,4 +126,61 @@ test('continuous changes are accepted only for a proven CSG backend; release sti
     backend({ kind: 'csg', frameReady: true })
     session.dispose()
     assert.equal(service.canPreviewContinuously(), false)
+})
+
+
+test('Preview routes preset mutations to the shared host domain and refuses a changed target', async () => {
+    const calls: unknown[][] = []
+    let revision = 0
+    let target = 'file:///model.scad'
+    const domain = {
+        service: { target },
+        onDidChange: () => ({ dispose() {} }),
+        presets: { state: () => ({ path: 'file:///bound.json', active: 'A' }), parameterSets: () => ({ A: { width: '0.7' } }) },
+        snapshot: () => ({ target, revision, presets: { path: 'file:///bound.json', names: ['A'] } }),
+        assertTarget: (expected: string, version: number) => { if (expected !== target || version !== revision) throw new Error('TARGET_CHANGED') },
+        preset: async (...args: unknown[]) => { calls.push(args); revision++ },
+    }
+    const { session, renders } = fixture(domain)
+    const actions = session as unknown as { applyParameterSet(name?: string): Promise<void>; saveParameterSet(name: string): Promise<void>; deleteParameterSet(name: string): Promise<void> }
+    await actions.applyParameterSet('A')
+    await actions.saveParameterSet('A')
+    await actions.saveParameterSet('B')
+    await actions.deleteParameterSet('A')
+    await actions.applyParameterSet(undefined)
+    assert.deepEqual(calls.map(call => call.slice(0, 4)), [
+        [target, 0, 'select', 'A'], [target, 1, 'save', 'A'], [target, 2, 'new', 'B'], [target, 3, 'delete', 'A'], [target, 4, 'select', undefined],
+    ])
+    assert.equal(renders.length, 0, 'Preset metadata mirroring must not apply values or render before the domain commits')
+    target = 'file:///other.scad'
+    await assert.rejects(actions.applyParameterSet('A'), /TARGET_CHANGED/)
+    assert.equal(calls.length, 5)
+    session.dispose()
+})
+
+test('renderer-only sessions cannot fall back to independent preset writes', async () => {
+    const { session } = fixture()
+    const actions = session as unknown as { saveParameterSet(name: string): Promise<void> }
+    await assert.rejects(actions.saveParameterSet('A'), /domain is unavailable/)
+    session.dispose()
+})
+
+
+test('Preview incomplete source never prunes stored overrides and resumes with complete definitions', () => {
+    const { service, session, watchers, changeSource, renders } = fixture()
+    service.set('width', 0.7)
+    watchers.get('/model.scad')!()
+    changeSource('width="unfinished')
+    watchers.get('/model.scad')!()
+    assert.deepEqual(service.getOverrides('file:///model.scad'), { width: 0.7 })
+    assert.deepEqual(session.currentOverrides, { width: 0.7 })
+    assert.deepEqual(renders.at(-1), { width: 0.7 })
+    assert.equal((session as unknown as { parameterAnalysisComplete: boolean }).parameterAnalysisComplete, false)
+    assert.throws(() => service.set('width', 0.8), /incomplete/)
+    changeSource('width=0.5; // [0:0.1:1]')
+    watchers.get('/model.scad')!()
+    assert.equal((session as unknown as { parameterAnalysisComplete: boolean }).parameterAnalysisComplete, true)
+    assert.deepEqual(session.currentOverrides, { width: 0.7 })
+    assert.deepEqual(service.getOverrides('file:///model.scad'), { width: 0.7 })
+    session.dispose()
 })

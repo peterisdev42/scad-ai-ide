@@ -30,6 +30,7 @@ async function fixture(t, extraSource = '') {
     }
     const files = new Map()
     const dialogs = { names: [], open: [], save: [] }
+    const revealed = []
     const watchers = []
     class FileSystemError extends Error {
         code = 'FileNotFound'
@@ -44,6 +45,7 @@ async function fixture(t, extraSource = '') {
             },
         },
         window: {
+            showTextDocument: async (uri, options) => { revealed.push({ uri: uri.toString(), selection: options.selection }) },
             tabGroups: { activeTabGroup: {}, onDidChangeTabs: noop },
             onDidChangeActiveTextEditor: noop,
             showInputBox: async () => dialogs.names.shift(),
@@ -65,6 +67,14 @@ async function fixture(t, extraSource = '') {
                 },
                 writeFile: async (value, content) => {
                     files.set(value.toString(), Buffer.from(content).toString('utf8'))
+                },
+                rename: async (from, to) => {
+                    if (!files.has(from.toString())) throw new FileSystemError()
+                    files.set(to.toString(), files.get(from.toString()))
+                    files.delete(from.toString())
+                },
+                delete: async (value) => {
+                    if (!files.delete(value.toString())) throw new FileSystemError()
                 },
             },
             createFileSystemWatcher: () => {
@@ -110,6 +120,7 @@ async function fixture(t, extraSource = '') {
         },
         Uri: { file: (path) => uri(`file://${path}`), joinPath: (base, ...parts) => uri((base.scheme === 'file' ? 'file://' : '') + join(base.path, ...parts)), parse: uri },
         FileSystemError,
+        Range: class { constructor(...coordinates) { this.coordinates = coordinates } },
         RelativePattern: class {},
         TabInputCustom: class {},
     }
@@ -117,6 +128,7 @@ async function fixture(t, extraSource = '') {
     runInNewContext(transformSync(readFileSync(join(root, 'src/features/sidebar/CustomizerPresets.ts'), 'utf8'), { loader: 'ts', format: 'cjs' }).code, {
         module: controllerModule,
         Buffer,
+        structuredClone,
         require: (name) => (name === 'vscode' ? api : name.startsWith('../../') ? require(join(root, 'out', name.replace('../../', '') + '.js')) : require(name)),
     })
     const domainModule = { exports: {} }
@@ -193,6 +205,7 @@ async function fixture(t, extraSource = '') {
         require: (name) => {
             if (name.startsWith('node:')) return require(name)
             if (name === 'vscode') return api
+            if (name.endsWith('/CustomizerPresets')) return require('../out/core/customizer/CustomizerPresets.js')
             if (name.endsWith('/core/preview/performance')) return require('../out/core/preview/performance.js')
             if (name.endsWith('/ScadClient')) return { ScadClient: { cancelRender() {} } }
             if (name.endsWith('/ScadParser')) return require('../out/features/preview/extension/services/ScadParser.js')
@@ -249,11 +262,27 @@ async function fixture(t, extraSource = '') {
         await new Promise((resolve) => server.close(resolve))
         assert.deepEqual(errors, [], 'The bundled native component must run under the webview CSP')
     })
-    await page.goto(`http://127.0.0.1:${server.address().port}`)
-    await page.locator('[data-name="field_0"]').waitFor()
-    await page.locator('.has-vertical-scrollbar').waitFor()
+    // CI bootstrap includes Chromium startup, CSP sheets, font and bundle load.
+    // Keep interaction assertions at 5s; give only initial resource loading a
+    // separate bound and preserve request timings when that bound fails.
+    const requests = []
+    const started = performance.now()
+    page.on('request', (request) => requests.push({ event: 'request', path: new URL(request.url()).pathname, ms: Math.round(performance.now() - started) }))
+    page.on('requestfinished', (request) => requests.push({ event: 'finished', path: new URL(request.url()).pathname, ms: Math.round(performance.now() - started) }))
+    page.on('requestfailed', (request) => requests.push({ event: 'failed', path: new URL(request.url()).pathname, error: request.failure()?.errorText, ms: Math.round(performance.now() - started) }))
+    try {
+        await page.goto(`http://127.0.0.1:${server.address().port}`, { timeout: 30000 })
+        await page.locator('[data-name="field_0"]').waitFor({ timeout: 15000 })
+        await page.locator('.has-vertical-scrollbar').waitFor({ timeout: 15000 })
+    } catch (error) {
+        console.error('Customizer fixture bootstrap failed:', JSON.stringify(requests.slice(-32)))
+        throw error
+    }
     return {
         page,
+        revealed,
+        receive: (message) => receive(message),
+        refresh: () => provider.refresh(),
         domain: provider.domain,
         view,
         contexts,
@@ -267,11 +296,12 @@ async function fixture(t, extraSource = '') {
         files,
         dialogs,
         attachPreview() {
-            const session = new sessionModule.exports.ScadSession({ uri: uri('file:///models/customizer.scad'), getText: () => source }, service)
+            const session = new sessionModule.exports.ScadSession({ uri: uri('file:///models/customizer.scad'), getText: () => source }, service, provider.domain)
             previewSessions.push(session)
             const frames = []
             session.onRenderCompleted((result) => frames.push(JSON.parse(result.buffer.toString())))
             return {
+                session,
                 frames,
                 nextFrame: () =>
                     new Promise((resolve) => {
@@ -284,6 +314,9 @@ async function fixture(t, extraSource = '') {
         },
         refreshPresets() {
             watchers.forEach((watcher) => watcher.callbacks[0]?.())
+        },
+        capturePresetChanges() {
+            return watchers.flatMap(watcher => [...watcher.callbacks])
         },
         configure(key, value) {
             configuration.set(key, value)
@@ -419,7 +452,7 @@ test('decimal sliders, mixed menus, default menu entries and vector labels stay 
     const { page, service } = await fixture(t, 'fraction=0.5; // [0:1]\nmode="auto"; // [auto:Automatic,1:One,2:Two]\nextra=3; // [1,2]\nsize=[1,2,3];')
     const slider = page.getByRole('slider', { name: 'fraction', exact: true })
     assert.equal(await slider.inputValue(), '0.5')
-    assert.equal(await slider.getAttribute('step'), '0.1')
+    assert.equal(await slider.getAttribute('step'), 'any', 'Preserve off-grid state; keyboard increment is tested below')
     assert.equal(await page.locator('[data-name="fraction"] input[type="number"]').count(), 0)
     await slider.focus()
     await page.keyboard.press('ArrowRight')
@@ -462,7 +495,7 @@ test('preset create, save, default, import, partial selection, export and delete
     assert.equal(service.getOverrides('file:///models/customizer.scad').field_1, 19, 'Import does not apply a set')
     await page.getByRole('combobox', { name: 'Parameter preset', exact: true }).selectOption('0')
     await page.waitForFunction(() => document.querySelector('[data-name="field_0"] input').value === '7')
-    assert.deepEqual(service.getOverrides('file:///models/customizer.scad'), { field_0: 7, field_1: 19 })
+    assert.deepEqual(service.getOverrides('file:///models/customizer.scad'), { field_0: 7 }, 'Applying a partial preset resets unrelated old overrides to defaults')
     assert.equal(await page.getByRole('button', { name: 'Save preset', exact: true }).isDisabled(), true)
     service.set('field_2', 23)
     await page.waitForFunction(() => !document.querySelector('#preset-save').disabled)
@@ -918,4 +951,310 @@ test('Agent saves current values into an explicit different preset even when the
     assert.equal(JSON.parse(files.get(file)).parameterSets.B.field_0, '5')
     state = domain.snapshot()
     await assert.rejects(domain.preset(state.target, state.revision, 'new', '   '), /non-empty/)
+})
+
+test('native effective bounds and off-grid values survive GUI, Agent and keyboard updates', async (t) => {
+    const { page, service } = await fixture(t, 'width=120; // [0:5:100]\noffgrid=12; // [0:5:100]\n')
+    const width = page.getByRole('slider', { name: 'width', exact: true })
+    const offgrid = page.getByRole('slider', { name: 'offgrid', exact: true })
+    await width.waitFor()
+    assert.equal(await width.inputValue(), '120')
+    assert.equal(await width.getAttribute('max'), '120')
+    assert.equal(await offgrid.inputValue(), '12', 'HTML range must not round the native default to a step grid')
+    service.set('offgrid', 13)
+    await page.waitForFunction(() => document.querySelector('[data-name="offgrid"] input').value === '13')
+    await offgrid.focus()
+    await offgrid.press('ArrowRight')
+    await page.waitForFunction(() => document.querySelector('[data-name="offgrid"] input').value === '18')
+    assert.equal(service.getOverrides('file:///models/customizer.scad').offgrid, 18)
+    assert.ok(service.getArguments().includes('offgrid=18'))
+})
+
+test('unchanged preset watcher events preserve revision while real file changes invalidate stale actions', async (t) => {
+    const { page, service, domain, files, dialogs, capturePresetChanges, refreshPresets } = await fixture(t)
+    const file = 'file:///models/stable-watch.json'
+    const data = { fileFormatVersion: '1', parameterSets: { A: { field_0: '7' } } }
+    files.set(file, JSON.stringify(data))
+    await openPresetFile(page, dialogs, file)
+    let state = domain.snapshot()
+    await domain.preset(state.target, state.revision, 'select', 'A')
+    state = domain.snapshot()
+    const callbacks = capturePresetChanges()
+    assert.ok(callbacks.length > 0)
+    callbacks.forEach(callback => callback())
+    await new Promise(resolve => setTimeout(resolve, 25))
+    assert.equal(domain.snapshot().revision, state.revision, 'Reading identical file state cannot invalidate an already-read target revision')
+    await domain.preset(state.target, state.revision, 'select', 'A')
+    state = domain.snapshot()
+    data.parameterSets.A.field_0 = '8'
+    files.set(file, JSON.stringify(data))
+    refreshPresets()
+    await page.waitForFunction(() => document.querySelector('[data-name="field_0"] input').value === '8')
+    assert.equal(service.getOverrides(state.target).field_0, 8)
+    assert.ok(domain.snapshot().revision > state.revision)
+    await assert.rejects(domain.preset(state.target, state.revision, 'select', 'A'), error => error.code === 'STALE_STATE')
+})
+
+test('disposed customizer domains reject stale value and reset mutations while shared state remains live', async (t) => {
+    const { service, domain } = await fixture(t)
+    service.set('field_0', 9)
+    const old = domain.snapshot()
+    domain.dispose()
+    service.set('field_1', 11)
+    const before = structuredClone(service.getOverrides(old.target))
+    let rejected
+    try { domain.setValues(old.target, old.revision, { field_0: 10 }) } catch (error) { rejected = error }
+    assert.deepEqual(service.getOverrides(old.target), before, 'A disposed domain must not accept an identity from before disposal')
+    assert.equal(rejected?.code, 'TARGET_CHANGED')
+    assert.throws(() => domain.reset(old.target, old.revision), error => error.code === 'TARGET_CHANGED')
+    await assert.rejects(domain.preset(old.target, old.revision, 'select'), error => error.code === 'TARGET_CHANGED')
+    domain.snapshot()
+    assert.deepEqual(service.getOverrides(old.target), before)
+})
+
+test('disposed preset controllers reject late selection and queued callbacks without clearing live values', async (t) => {
+    const { page, service, domain, files, dialogs, capturePresetChanges } = await fixture(t)
+    const file = 'file:///models/disposal.json'
+    files.set(file, JSON.stringify({ fileFormatVersion: '1', parameterSets: { A: { field_0: '7' } } }))
+    await openPresetFile(page, dialogs, file)
+    service.set('field_0', 9)
+    await page.waitForFunction(() => document.querySelector('[data-name="field_0"] input').value === '9')
+    const queued = capturePresetChanges()
+    assert.ok(queued.length > 0)
+    const before = structuredClone(service.getOverrides('file:///models/customizer.scad'))
+    const bytes = files.get(file)
+    domain.presets.dispose()
+    const rejection = await domain.presets.execute('select').then(() => undefined, error => error)
+    assert.deepEqual(service.getOverrides('file:///models/customizer.scad'), before, 'A disposed action must not reset the still-live shared values')
+    assert.equal(rejection?.code, 'TARGET_CHANGED')
+    domain.presets.bind('file:///models/customizer.scad')
+    assert.equal(domain.presets.state().names.length, 0)
+    for (const callback of queued) callback()
+    await new Promise(resolve => setTimeout(resolve, 25))
+    assert.deepEqual(service.getOverrides('file:///models/customizer.scad'), before)
+    assert.equal(files.get(file), bytes)
+    assert.deepEqual(domain.presets.parameterSets(), {})
+})
+
+test('partial preset baselines preserve an omitted unrepresentable source default as its actual type', async (t) => {
+    const { page, service, domain, files, dialogs } = await fixture(t, 'mode="1"; // [1:Numeric,"1":String,2:Two]\n')
+    const file = 'file:///models/partial-type.json'
+    files.set(file, JSON.stringify({ fileFormatVersion: '1', parameterSets: { A: { field_0: '7' } } }))
+    await openPresetFile(page, dialogs, file)
+    await page.getByRole('combobox', { name: 'Parameter preset', exact: true }).selectOption('0')
+    await page.waitForFunction(() => document.querySelector('#preset-select').selectedOptions[0].textContent === 'A')
+    assert.equal(domain.snapshot().parameters.find(p => p.name === 'mode').value, '1')
+    assert.equal(domain.snapshot().presets.modified, false)
+    assert.equal(await page.locator('#preset-save').isDisabled(), true)
+    service.set('mode', 1)
+    await page.waitForFunction(() => !document.querySelector('#preset-save').disabled)
+    await page.getByRole('button', { name: 'Save preset', exact: true }).click()
+    await page.waitForFunction(() => document.querySelector('#preset-save').disabled)
+    const saved = JSON.parse(files.get(file))
+    assert.equal(saved.parameterSets.A.mode, '1')
+    const current = domain.snapshot()
+    await domain.preset(current.target, current.revision, 'select', 'A')
+    assert.equal(domain.snapshot().parameters.find(p => p.name === 'mode').value, 1)
+})
+
+test('GUI marks a same-encoding enum type change as modified and refuses a lossy save', async (t) => {
+    const { page, service, files, dialogs } = await fixture(t, 'mode=1; // [1:Numeric,"1":String,2:Two]\n')
+    const file = 'file:///models/typed-presets.json'
+    const original = JSON.stringify({ fileFormatVersion: '1', parameterSets: { A: { mode: '1' } } })
+    files.set(file, original)
+    await openPresetFile(page, dialogs, file)
+    await page.getByRole('combobox', { name: 'Parameter preset', exact: true }).selectOption('0')
+    await page.waitForFunction(() => document.querySelector('#preset-save').disabled)
+    service.set('mode', '1')
+    await page.waitForFunction(() => !document.querySelector('#preset-save').disabled)
+    await page.getByRole('button', { name: 'Save preset', exact: true }).click()
+    await page.waitForFunction(() => document.querySelector('#panel-error').textContent.includes('cannot be replayed without loss'))
+    assert.equal(files.get(file), original)
+    assert.equal(service.getOverrides('file:///models/customizer.scad').mode, '1')
+    assert.equal(await page.locator('#preset-save').isEnabled(), true)
+})
+
+test('GUI rejects an unreplayable current preset and succeeds after the user corrects its value', async (t) => {
+    const { page, service, domain, files, dialogs } = await fixture(t, 'label="abcdef"; // 3\n')
+    const before = domain.snapshot()
+    dialogs.names.push('Rejected')
+    await clickPresetMenu(page, 'New preset')
+    await page.waitForFunction(() => document.querySelector('#panel-error').textContent.includes('3 UTF-8 bytes'))
+    assert.deepEqual(domain.snapshot(), before)
+    assert.equal(files.has('file:///models/customizer.json'), false)
+    assert.equal(service.parameters.find(p => p.name === 'label').defaultValue, 'abcdef')
+    assert.equal(await page.getByRole('textbox', { name: 'label', exact: true }).inputValue(), 'abcdef')
+    dialogs.save.push('file:///models/rejected-export.json')
+    await clickPresetMenu(page, 'Export presets')
+    await page.waitForFunction(() => document.querySelector('#panel-error').textContent.includes('3 UTF-8 bytes'))
+    assert.equal(files.has('file:///models/rejected-export.json'), false)
+    const label = page.getByRole('textbox', { name: 'label', exact: true })
+    await label.fill('abc')
+    await label.press('Tab')
+    await page.waitForFunction(() => !document.querySelector('#preset-save').disabled)
+    await page.getByRole('button', { name: 'Save preset', exact: true }).click()
+    await page.waitForFunction(() => document.querySelector('#preset-select').selectedOptions[0].textContent === 'Current')
+    assert.equal(JSON.parse(files.get('file:///models/customizer.json')).parameterSets.Current.label, 'abc')
+    assert.equal(await page.locator('#preset-save').isDisabled(), true)
+})
+
+test('GUI rejects oversize UTF-8 input without truncation and makes incomplete analysis visible', async (t) => {
+    const { page, service } = await fixture(t, 'label="ok"; // 3\n')
+    const label = page.getByRole('textbox', { name: 'label', exact: true })
+    await label.fill('😀')
+    await label.press('Enter')
+    await page.getByText('Use at most 3 UTF-8 bytes', { exact: true }).waitFor({ state: 'visible' })
+    assert.equal(await label.inputValue(), '😀')
+    assert.equal(service.getOverrides('file:///models/customizer.scad').label, undefined)
+    service.load('file:///models/customizer.scad', 'width=40;\nlabel="unfinished')
+    await page.evaluate(() => window.sendToHost({ type: 'ready' }))
+    await page.locator('#analysis-warning').waitFor({ state: 'visible' })
+    const width = page.getByRole('spinbutton', { name: 'width', exact: true })
+    assert.equal(await width.isDisabled(), true)
+})
+
+test('partial presets switch A to B to defaults across GUI, domain and Preview without writing the file', async (t) => {
+    const { page, service, dialogs, files, attachPreview } = await fixture(t)
+    const path = 'file:///models/partial.json'
+    const original = JSON.stringify({ fileFormatVersion: '1', extra: { preserve: true }, parameterSets: { A: { field_0: '7' }, B: { field_1: '42' } } })
+    files.set(path, original)
+    await openPresetFile(page, dialogs, path)
+    const select = page.getByRole('combobox', { name: 'Parameter preset', exact: true })
+    await page.waitForFunction(() => document.querySelector('#preset-select').options.length === 3)
+    const { nextFrame } = attachPreview()
+    let frame = nextFrame()
+    await select.selectOption('0')
+    assert.deepEqual(await frame, { field_0: 7 })
+    frame = nextFrame()
+    service.set('field_2', 99)
+    await frame
+    frame = nextFrame()
+    await select.selectOption('1')
+    assert.deepEqual(await frame, { field_1: 42 })
+    assert.deepEqual(service.getOverrides('file:///models/customizer.scad'), { field_1: 42 })
+    await page.waitForFunction(() => document.querySelector('[data-name="field_0"] input').value === '0')
+    assert.equal(service.value(service.parameters.find(parameter => parameter.name === 'field_2')), 2)
+    frame = nextFrame()
+    await select.selectOption('')
+    assert.deepEqual(await frame, {})
+    assert.deepEqual(service.getOverrides('file:///models/customizer.scad'), {})
+    assert.equal(files.get(path), original)
+})
+
+test('unknown-version preset import is readonly and programmatic apply/save/export cannot bypass it', async (t) => {
+    const { page, domain, service, dialogs, files } = await fixture(t)
+    const path = 'file:///models/future.json'
+    const original = JSON.stringify({ fileFormatVersion: '99', future: { keep: true }, parameterSets: { Future: { field_0: '7' } } })
+    files.set(path, original)
+    service.set('field_1', 19)
+    await openPresetFile(page, dialogs, path)
+    await page.waitForFunction(() => document.querySelector('#panel-error').textContent.includes('Unverified fileFormatVersion'))
+    assert.equal(await page.locator('#preset-select option[value="0"]').isDisabled(), true)
+    assert.equal(await page.locator('#preset-save').isDisabled(), true)
+    const current = domain.snapshot()
+    assert.equal(current.presets.readOnly, true)
+    assert.equal(current.presets.diagnostics[0].ruleId, 'PRESET-007')
+    for (const [action, name] of [['select', 'Future'], ['save', 'Future'], ['new', 'New'], ['export', undefined]]) {
+        await assert.rejects(domain.preset(current.target, current.revision, action, name), /not been verified/)
+    }
+    assert.deepEqual(service.getOverrides('file:///models/customizer.scad'), { field_1: 19 })
+    assert.equal(files.get(path), original)
+})
+
+
+test('multiline strings round trip without HTML input newline sanitization', async (t) => {
+    const { page, service } = await fixture(t, 'label="first\\nsecond";\n')
+    const field = page.getByRole('textbox', { name: 'label', exact: true })
+    assert.equal(await field.inputValue(), 'first\nsecond')
+    service.set('label', 'Agent\nvalue')
+    await page.waitForFunction(() => document.querySelector('[data-name="label"] textarea').value === 'Agent\nvalue')
+    await field.fill('GUI\nvalue')
+    await field.press('Enter')
+    assert.equal(service.getOverrides('file:///models/customizer.scad').label, 'GUI\nvalue')
+})
+
+
+test('Preview actions and Agent share preset state, readonly policy, overrides and atomic persistence', async t => {
+    const { domain, service, files, attachPreview, page, dialogs } = await fixture(t)
+    const file = 'file:///models/customizer.json'
+    const original = { fileFormatVersion: '1', metadata: { keep: true }, parameterSets: { A: { field_0: '30' }, B: { field_1: '40' }, History: { old_key: 'preserve' } } }
+    files.set(file, JSON.stringify(original))
+    await openPresetFile(page, dialogs, file)
+    const preview = attachPreview()
+    await preview.session.applyParameterSet('A')
+    assert.equal(domain.snapshot().presets.active, 'A')
+    assert.deepEqual(service.getOverrides(service.target), { field_0: 30 })
+    await preview.session.applyParameterSet('B')
+    assert.deepEqual(service.getOverrides(service.target), { field_1: 40 })
+    assert.equal(preview.session.activeSetName, 'B')
+    await preview.session.applyParameterSet(undefined)
+    assert.deepEqual(service.getOverrides(service.target), {})
+    preview.session.updateParameterValue('field_0', 13)
+    assert.equal(domain.snapshot().parameters.find(p => p.name === 'field_0').value, 13)
+    await preview.session.saveParameterSet('CreatedByPreview')
+    const saved = JSON.parse(files.get(file))
+    assert.deepEqual(saved.metadata, original.metadata)
+    assert.deepEqual(saved.parameterSets.History, original.parameterSets.History)
+    assert.equal(saved.parameterSets.CreatedByPreview.field_0, '13')
+    assert.equal([...files.keys()].some(key => key.endsWith('.tmp')), false)
+    files.set('file:///models/future.json', JSON.stringify({ fileFormatVersion: '99', parameterSets: { Future: { field_0: '99' } } }))
+    await openPresetFile(page, dialogs, 'file:///models/future.json')
+    await assert.rejects(preview.session.applyParameterSet('Future'), /not been verified/)
+    await assert.rejects(preview.session.saveParameterSet('Future'), /not been verified/)
+    assert.equal(service.getOverrides(service.target).field_0, 13)
+})
+
+
+test('pointer slider interaction uses minimum-anchored steps without rounding stored Agent values', async t => {
+    const { page, service } = await fixture(t, 'width=13; // [2:5:24]\n')
+    const slider = page.getByRole('slider', { name: 'width', exact: true })
+    assert.equal(await slider.inputValue(), '13')
+    await slider.scrollIntoViewIfNeeded()
+    const box = await slider.boundingBox()
+    await page.mouse.click(box.x + box.width * 0.8, box.y + box.height / 2)
+    const value = Number(await slider.inputValue())
+    assert.equal((value - 2) % 5, 0)
+    assert.ok(value <= 22)
+    service.set('width', 23)
+    await page.waitForFunction(() => document.querySelector('[data-name="width"] input').value === '23')
+    assert.equal(service.getOverrides('file:///models/customizer.scad').width, 23)
+})
+
+
+test('spinbox and vector off-grid inputs remain valid and keyboard uses interaction increments', async t => {
+    const { page, service } = await fixture(t, 'number=2.5; // 2\nvector=[2.5,3.5]; // [0:2:10]\n')
+    const number = page.getByRole('spinbutton', { name: 'number', exact: true })
+    const vector = page.getByRole('spinbutton', { name: 'vector X', exact: true })
+    assert.equal(await number.evaluate(el => el.validity.valid), true)
+    assert.equal(await vector.evaluate(el => el.validity.valid), true)
+    await number.focus()
+    await number.press('ArrowUp')
+    assert.equal(service.getOverrides(service.target).number, 4.5)
+    await vector.focus()
+    await vector.press('ArrowUp')
+    assert.deepEqual(service.getOverrides(service.target).vector, [4.5,3.5])
+    assert.equal(await vector.evaluate(el => el.validity.valid), true)
+})
+
+
+test('lost controls explain the empty Sidebar and navigate only with current target and revision', async (t) => {
+    const { page, service, refresh, revealed, messages, receive } = await fixture(t)
+    service.load('file:///models/customizer.scad', 'width=10;\nmodule model() {}\nwidth=20;')
+    refresh()
+    await page.getByText('Parameter declarations were found, but all available controls were removed', { exact: false }).waitFor()
+    await page.getByRole('button', { name: 'Go to overriding assignment' }).click()
+    await page.waitForTimeout(50)
+    assert.equal(revealed.length, 1)
+    assert.equal(revealed[0].uri, service.target)
+    assert.deepEqual(Array.from(revealed[0].selection.coordinates), [2, 0, 2, 9])
+    const navigation = messages.findLast(m => m.type === 'revealOverride')
+    receive({ ...navigation, revision: -1 })
+    receive({ ...navigation, target: 'file:///other.scad' })
+    assert.equal(revealed.length, 1)
+    service.load(service.target, 'width=10;\nmodule model() {}')
+    refresh()
+    await page.waitForFunction(() => document.getElementById('overridden-location').hidden)
+    service.load(service.target, 'module model() {}')
+    refresh()
+    await page.getByText('No customizable parameters. Define literal values before the first code block.', { exact: true }).waitFor()
 })

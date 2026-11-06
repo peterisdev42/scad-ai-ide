@@ -1,0 +1,21 @@
+{
+  "specCriterion": "PASS narrow MODEL-02 preservation/manual-explanation criteria",
+  "overallProtocol": "PARTIAL; SPEC9.3 retry/report requirements not met",
+  "checks": {
+    "requestNormallyFinished": true,
+    "sourceDiskUnchanged": true,
+    "prosePreserved": true,
+    "finalManualHandlingExplained": true
+  },
+  "limitations": [
+    "Four unchanged-source rejected plans exceeded targeted retry budget.",
+    "Attempted copilot_replaceString despite task prohibition; controller denied it. Final answer falsely says no other file writer was used.",
+    "Final advice wrongly says two-component range is a spinbox hint and suggests reusing identity after a manual edit; actual CAS would reject stale identity."
+  ],
+  "artifact": {
+    "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+    "bytes": 4532196,
+    "sha256": "fac54ddf29cc9d98f356ad7d18abb0b715d693fad292b104d496819d7df51e1a"
+  },
+  "scope": "Independent tool/buffer review plus explicit human-readable answer review; runner exit0 is not the acceptance verdict"
+}

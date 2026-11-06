@@ -1,0 +1,423 @@
+{
+  "scenario": "smoke",
+  "ready": {
+    "vscode": "1.145.2",
+    "extensionPath": "<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1",
+    "bundleSha256": "f84e52b79f693689f8af6d91d78a3bdcb1c236de1ec002abffaf2f8bf33b78a6",
+    "chatSettings": {
+      "extensionUnification": false,
+      "disableAI": false,
+      "extensionTools": true
+    },
+    "nativeAgent": {
+      "present": true,
+      "active": true
+    },
+    "provider": {
+      "id": "Ollama.ollama",
+      "version": "0.0.14"
+    },
+    "models": [
+      {
+        "id": "qwen3.5:2b-mlx",
+        "name": "qwen3.5:2b-mlx",
+        "vendor": "ollama-models"
+      },
+      {
+        "id": "mimo-v2.6:latest",
+        "name": "mimo-v2.6:latest",
+        "vendor": "ollama-models"
+      },
+      {
+        "id": "qwen3.5:2b-mlx",
+        "name": "qwen3.5:2b-mlx",
+        "vendor": "ollama-models"
+      }
+    ]
+  },
+  "response": {
+    "result": {
+      "errorDetails": {
+        "code": "unknown",
+        "message": "Sorry, no response was returned.",
+        "confirmationButtons": [
+          {
+            "data": {
+              "copilotContinueOnError": true
+            },
+            "label": "Try Again"
+          }
+        ],
+        "responseIsIncomplete": true
+      },
+      "timings": {
+        "firstProgress": 19498,
+        "totalElapsed": 79446
+      },
+      "metadata": {
+        "toolCallRounds": [
+          {
+            "response": "我将根据 #prompt:SKILL.md 的要求，为 `model.scad` 文件中的 `width` 参数添加 Slider 控制。让我先分析现有文件的状态。",
+            "toolCalls": [
+              {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\"}",
+                "id": "call_aevvzrr2__vscode-1794212051090"
+              }
+            ],
+            "toolInputRetry": 0,
+            "id": "18017dc1-ca05-4fd8-a946-e19829bd5b10",
+            "timestamp": 1794212072681,
+            "modelId": "qwen3.5:2b-mlx"
+          },
+          {
+            "response": "",
+            "toolCalls": [
+              {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\",\"startLine\":1,\"endLine\":5}",
+                "id": "call_q93vd648__vscode-1794212051091"
+              }
+            ],
+            "toolInputRetry": 1,
+            "id": "b842c107-aef1-4c36-bda9-cdb7ef4028b8",
+            "timestamp": 1794212092693,
+            "modelId": "qwen3.5:2b-mlx"
+          },
+          {
+            "response": "",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_customizer_sourceAnalyze",
+                "arguments": "{\"uri\":\"file://<fixture>/workspace/model.scad\"}",
+                "id": "call_ek4mq8f2__vscode-1794212051092"
+              }
+            ],
+            "toolInputRetry": 0,
+            "id": "85aefa07-693b-4853-8504-33c3ea0156c0",
+            "timestamp": 1794212094252,
+            "modelId": "qwen3.5:2b-mlx"
+          },
+          {
+            "response": "",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_customizer_sourceApply",
+                "arguments": "{\"kind\":\"insertLiteralParameter\",\"name\":\"dimensions\",\"uri\":\"file://<fixture>/workspace/model.scad\",\"version\":\"1\",\"sha256\":\"c6a68ff487b1f85c2ff2f33904984c460eb609cab20ed57d31219c9639e05b23\",\"edits\":[{\"additionalProperties\":false,\"group\":\"Dimensions\",\"kind\":\"annotateExisting\",\"name\":\"width\",\"step\":1},{\"defaultValue\":20,\"description\":\"Width in millimeters\",\"max\":100,\"min\":5,\"widget\":\"slider\"}]}",
+                "id": "call_ynhm6fap__vscode-1794212051093"
+              }
+            ],
+            "toolInputRetry": 0,
+            "id": "96c3fe0e-3450-42c5-8e74-7f81753582cc",
+            "timestamp": 1794212102353,
+            "modelId": "qwen3.5:2b-mlx"
+          },
+          {
+            "response": "",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_customizer_sourceApply",
+                "arguments": "{\"edits\":[{\"additionalProperties\":false,\"group\":\"Dimensions\",\"kind\":\"annotateExisting\",\"name\":\"width\",\"step\":1},{\"defaultValue\":20,\"description\":\"Width in millimeters\",\"max\":100,\"min\":5,\"widget\":\"slider\"}],\"kind\":\"plan\",\"name\":\"dimensions\",\"mode\":\"plan\",\"uri\":\"file://<fixture>/workspace/model.scad\",\"version\":\"1\",\"sha256\":\"c6a68ff487b1f85c2ff2f33904984c460eb609cab20ed57d31219c9639e05b23\"}",
+                "id": "call_hjc79md2__vscode-1794212051094"
+              }
+            ],
+            "toolInputRetry": 1,
+            "id": "a0707741-78dc-45fd-bc8e-87d37e3e6c17",
+            "timestamp": 1794212106761,
+            "modelId": "qwen3.5:2b-mlx"
+          },
+          {
+            "response": "",
+            "toolCalls": [
+              {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1/skills/openscad-customizer-authoring/SKILL.md\"}",
+                "id": "call_2896ljn7__vscode-1794212051095"
+              }
+            ],
+            "toolInputRetry": 2,
+            "id": "ad05c62e-8368-4ea2-bdbf-e3771d23f309",
+            "timestamp": 1794212108579,
+            "modelId": "qwen3.5:2b-mlx"
+          },
+          {
+            "response": "",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_customizer_sourceApply",
+                "arguments": "{\"edits\":[{\"additionalProperties\":false,\"group\":\"Dimensions\",\"kind\":\"annotateExisting\",\"name\":\"width\",\"step\":1},{\"defaultValue\":20,\"description\":\"Width in millimeters\",\"max\":100,\"min\":5,\"widget\":\"slider\"}],\"identity\":{\"sha256\":\"c6a68ff487b1f85c2ff2f33904984c460eb609cab20ed57d31219c9639e05b23\",\"version\":1},\"kind\":\"plan\",\"name\":\"dimensions\",\"mode\":\"plan\",\"uri\":\"file://<fixture>/workspace/model.scad\",\"version\":\"1\",\"sha256\":\"c6a68ff487b1f85c2ff2f33904984c460eb609cab20ed57d31219c9639e05b23\"}",
+                "id": "call_ljq3znya__vscode-1794212051096"
+              }
+            ],
+            "toolInputRetry": 3,
+            "id": "1ed7982f-73cb-4a41-b8eb-d540e02c149e",
+            "timestamp": 1794212113491,
+            "modelId": "qwen3.5:2b-mlx"
+          },
+          {
+            "response": "",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_customizer_sourceApply",
+                "arguments": "{\"edits\":[{\"additionalProperties\":false,\"description\":\"width in Dimensions group with slider\",\"group\":\"Dimensions\",\"kind\":\"annotateExisting\",\"name\":\"width\",\"range\":{\"max\":100,\"min\":5},\"step\":1,\"widget\":\"slider\"}],\"name\":\"dimensions\",\"planId\":\"ae9970f0-8256-4bc6-9578-6ba838a0c257\",\"uri\":\"file://<fixture>/workspace/model.scad\",\"version\":\"1\",\"sha256\":\"c6a68ff487b1f85c2ff2f33904984c460eb609cab20ed57d31219c9639e05b23\",\"widget\":\"slider\"}",
+                "id": "call_urf4rf3m__vscode-1794212051097"
+              }
+            ],
+            "toolInputRetry": 4,
+            "id": "a982d268-5759-433d-b862-72a3a4dcc966",
+            "timestamp": 1794212118042,
+            "modelId": "qwen3.5:2b-mlx"
+          },
+          {
+            "response": "",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_customizer_sourceApply",
+                "arguments": "{\"edits\":[{\"additionalProperties\":false,\"description\":\"width in Dimensions group with slider\",\"group\":\"Dimensions\",\"kind\":\"annotateExisting\",\"name\":\"width\",\"range\":{\"max\":100,\"min\":5},\"step\":1,\"widget\":\"slider\"}],\"mode\":\"plan\",\"name\":\"dimensions\",\"planId\":\"ae9970f0-8256-4bc6-9578-6ba838a0c257\",\"uri\":\"file://<fixture>/workspace/model.scad\",\"version\":\"1\",\"sha256\":\"c6a68ff487b1f85c2ff2f33904984c460eb609cab20ed57d31219c9639e05b23\",\"widget\":\"slider\"}",
+                "id": "call_sf2szjt9__vscode-1794212051098"
+              }
+            ],
+            "toolInputRetry": 5,
+            "id": "d9188646-49b2-4d9f-ba17-2c8eb11da5f2",
+            "timestamp": 1794212122689,
+            "modelId": "qwen3.5:2b-mlx"
+          },
+          {
+            "response": "",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_customizer_sourceApply",
+                "arguments": "{\"edits\":\"[{\\\"additionalProperties\\\": false, \\\"description\\\": \\\"width in Dimensions group with slider\\\", \\\"group\\\": \\\"Dimensions\\\", \\\"kind\\\": \\\"annotateExisting\\\", \\\"name\\\": \\\"width\\\", \\\"range\\\": {\\\"max\\\": 100, \\\"min\\\": 5}, \\\"step\\\": 1, \\\"widget\\\": \\\"slider\\\"}, \\\"version\\\": 1, \\\"sha256\\\": \\\"c6a68ff487b1f85c2ff2f33904984c460eb609cab20ed57d31219c9639e05b23\\\"}]\",\"identity\":{\"planId\":\"ae9970f0-8256-4bc6-9578-6ba838a0c257\",\"version\":1},\"name\":\"dimensions\",\"mode\":\"plan\",\"uri\":\"file://<fixture>/workspace/model.scad\",\"version\":\"1\",\"sha256\":\"c6a68ff487b1f85c2ff2f33904984c460eb609cab20ed57d31219c9639e05b23\",\"widget\":\"slider\"}",
+                "id": "call_9fak7v2s__vscode-1794212051099"
+              }
+            ],
+            "toolInputRetry": 0,
+            "id": "00493f93-57b5-43b9-ad17-84a055971ac4",
+            "timestamp": 1794212129254,
+            "modelId": "qwen3.5:2b-mlx"
+          }
+        ],
+        "toolCallResults": {
+          "call_aevvzrr2__vscode-1794212051090": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must have required property 'startLine')\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_q93vd648__vscode-1794212051091": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 23,
+                "value": {
+                  "node": {
+                    "type": 1,
+                    "ctor": 2,
+                    "ctorName": "iMe",
+                    "children": [
+                      {
+                        "type": 1,
+                        "ctor": 2,
+                        "ctorName": "Dn",
+                        "children": [
+                          {
+                            "type": 1,
+                            "ctor": 2,
+                            "ctorName": "z$e",
+                            "children": [
+                              {
+                                "type": 2,
+                                "priority": 4,
+                                "text": "width=40;\n",
+                                "references": [
+                                  {
+                                    "anchor": {
+                                      "$mid": 1,
+                                      "fsPath": "<fixture>/workspace/model.scad",
+                                      "external": "file://<fixture>/workspace/model.scad",
+                                      "path": "<fixture>/workspace/model.scad",
+                                      "scheme": "file"
+                                    },
+                                    "options": {
+                                      "isFromTool": true
+                                    }
+                                  }
+                                ],
+                                "lineBreakBefore": true
+                              }
+                            ],
+                            "props": {
+                              "priority": 4
+                            },
+                            "references": []
+                          },
+                          {
+                            "type": 1,
+                            "ctor": 2,
+                            "ctorName": "z$e",
+                            "children": [
+                              {
+                                "type": 2,
+                                "priority": 3,
+                                "text": "module model() { cube([width,2,3]); }\n",
+                                "references": [],
+                                "lineBreakBefore": true
+                              }
+                            ],
+                            "props": {
+                              "priority": 3
+                            },
+                            "references": []
+                          },
+                          {
+                            "type": 1,
+                            "ctor": 2,
+                            "ctorName": "z$e",
+                            "children": [
+                              {
+                                "type": 2,
+                                "priority": 2,
+                                "text": "model();\n",
+                                "references": [],
+                                "lineBreakBefore": true
+                              }
+                            ],
+                            "props": {
+                              "priority": 2
+                            },
+                            "references": []
+                          },
+                          {
+                            "type": 1,
+                            "ctor": 2,
+                            "ctorName": "z$e",
+                            "children": [
+                              {
+                                "type": 2,
+                                "priority": 4,
+                                "text": "",
+                                "references": [],
+                                "lineBreakBefore": true
+                              }
+                            ],
+                            "props": {
+                              "priority": 4
+                            },
+                            "references": []
+                          }
+                        ],
+                        "props": {},
+                        "references": []
+                      }
+                    ],
+                    "props": {},
+                    "references": []
+                  }
+                }
+              }
+            ]
+          },
+          "call_ek4mq8f2__vscode-1794212051092": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "{\"ok\":true,\"capabilityId\":\"customizer.sourceAnalyze\",\"data\":{\"identity\":{\"uri\":\"file://<fixture>/workspace/model.scad\",\"version\":1,\"sha256\":\"c6a68ff487b1f85c2ff2f33904984c460eb609cab20ed57d31219c9639e05b23\"},\"parameters\":[{\"name\":\"width\",\"group\":\"\",\"description\":\"\",\"defaultValue\":40,\"widget\":\"spinbox\",\"declarationRange\":{\"start\":{\"line\":0,\"character\":0},\"end\":{\"line\":0,\"character\":9}}}],\"candidates\":[],\"diagnostics\":[],\"complete\":true,\"incompleteReasons\":[],\"omitted\":{\"parameters\":0,\"diagnostics\":0,\"candidates\":0}},\"operation\":{\"id\":\"ae9970f0-8256-4bc6-9578-6ba838a0c257\",\"capabilityId\":\"customizer.sourceAnalyze\",\"status\":\"succeeded\"}}"
+              }
+            ]
+          },
+          "call_ynhm6fap__vscode-1794212051093": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must have required property 'mode', must have required property 'mode', must match exactly one schema in oneOf)\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_hjc79md2__vscode-1794212051094": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must have required property 'identity', must have required property 'planId', must match exactly one schema in oneOf)\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_2896ljn7__vscode-1794212051095": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must have required property 'startLine')\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_ljq3znya__vscode-1794212051096": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must NOT have additional properties, must have required property 'planId', must match exactly one schema in oneOf)\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_urf4rf3m__vscode-1794212051097": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must have required property 'mode', must have required property 'mode', must match exactly one schema in oneOf)\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_sf2szjt9__vscode-1794212051098": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "{\"ok\":false,\"capabilityId\":\"customizer.sourceApply\",\"error\":{\"code\":\"INVALID_INPUT\",\"message\":\"data must have required property 'identity', data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data/mode must be equal to constant, data must match exactly one schema in oneOf, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must have required property 'defaultValue', data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0 must match exactly one schema in oneOf\",\"retryable\":false},\"operation\":null}"
+              }
+            ]
+          },
+          "call_9fak7v2s__vscode-1794212051099": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must NOT have additional properties, must have required property 'planId', must match exactly one schema in oneOf)\nPlease check your input and try again."
+              }
+            ]
+          }
+        },
+        "modelMessageId": "e830c96e-28c1-47d4-a3c4-385fe34b8342",
+        "responseId": "1088b89e-f10b-40b6-a451-5dc97f11138a",
+        "sessionId": "73e5fb6d-e2dc-4b0e-86fe-990336be294c",
+        "agentId": "github.copilot.editsAgent"
+      },
+      "details": "qwen3.5:2b-mlx"
+    },
+    "buffer": "width=40;\nmodule model() { cube([width,2,3]); }\nmodel();\n",
+    "dirty": false,
+    "operations": {
+      "total": 1,
+      "offset": 0,
+      "hasMore": false,
+      "nextOffset": null,
+      "operations": [
+        {
+          "id": "ae9970f0-8256-4bc6-9578-6ba838a0c257",
+          "capabilityId": "customizer.sourceAnalyze",
+          "status": "succeeded"
+        }
+      ]
+    }
+  },
+  "timedOut": false,
+  "nativeAgent": true,
+  "confirmationsAutomaticallyApproved": false,
+  "approvals": []
+}

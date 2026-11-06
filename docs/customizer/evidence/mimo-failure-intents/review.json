@@ -1,0 +1,18 @@
+{
+  "specCriterion": "PASS MODEL-04 actual ok=false and semanticPass=false reported without success claim",
+  "overallProtocol": "PASS narrow criterion; wording/input limitations retained",
+  "checks": {
+    "requestNormallyFinished": true,
+    "sourceDiskUnchanged": true,
+    "actualErrorAndMismatchReported": true
+  },
+  "limitations": [
+    "Five native Host schema rejections preceded executed checks; not evidence of perfect first-call input generation."
+  ],
+  "artifact": {
+    "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+    "bytes": 4532196,
+    "sha256": "fac54ddf29cc9d98f356ad7d18abb0b715d693fad292b104d496819d7df51e1a"
+  },
+  "scope": "Independent tool/buffer review plus explicit human-readable answer review; runner exit0 is not the acceptance verdict"
+}

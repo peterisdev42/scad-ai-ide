@@ -1,0 +1,18 @@
+2026-11-09T14:04:23.4867600Z ##[group]Run actions/checkout@v4
+2026-11-09T14:04:26.2226590Z ##[group]Run actions/setup-node@v4
+2026-11-09T14:04:30.2459290Z ##[group]Run npm ci
+2026-11-09T14:04:47.6244570Z ##[group]Run brew install --cask openscad@snapshot
+2026-11-09T14:05:23.5419640Z ##[group]Run npm run check-types
+2026-11-09T14:05:34.6588660Z ##[group]Run npm run lint
+2026-11-09T14:05:40.4352300Z ##[group]Run npm run compile-tests
+2026-11-09T14:05:45.8371120Z ##[group]Run mkdir -p .build
+2026-11-09T14:05:51.0304570Z PASS 6 native schema/import probes; unknown version 99 was read, not evidence that arbitrary future versions can be overwritten.
+2026-11-09T14:05:51.0497250Z ##[group]Run npm run test:libraries
+2026-11-09T14:05:52.4890000Z ﹣ Real Fast Preview and Markdown use the same project library environment (0.184291ms) # SKIP
+2026-11-09T14:05:53.4534340Z ﹣ Online BOSL2: Registry → commit archive → global Store → project link → real CLI → offline Restore (0.562125ms) # SKIP
+2026-11-09T14:05:54.0152510Z ℹ tests 29
+2026-11-09T14:05:54.0154040Z ℹ pass 27
+2026-11-09T14:05:54.0154800Z ℹ fail 0
+2026-11-09T14:05:54.0156090Z ℹ skipped 2
+2026-11-09T14:05:54.0529990Z ##[group]Run actions/upload-artifact@v4
+2026-11-09T14:05:55.6413050Z ##[group]Run node -p 'JSON.stringify({platform:process.platform,arch:process.arch,node:process.version})'

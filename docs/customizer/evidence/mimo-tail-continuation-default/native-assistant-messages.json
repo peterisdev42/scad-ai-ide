@@ -1,0 +1,228 @@
+[
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_zt0tlylc",
+        "name": "scad_ai_ide_customizer_sourceAnalyze",
+        "arguments": "{\"uri\":\"file://<fixture>/workspace/model.scad\",\"includeCandidates\":true,\"maxDiagnostics\":50}",
+        "type": "function"
+      },
+      {
+        "toolCallId": "call_iwidzx3a",
+        "name": "scad_ai_ide_customizer_state",
+        "arguments": "{}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_p7wxudhu",
+        "name": "scad_ai_ide_customizer_sourceApply",
+        "arguments": "{\"mode\":\"plan\",\"uri\":\"file://<fixture>/workspace/model.scad\",\"identity\":{\"sha256\":\"b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480\",\"version\":1},\"edits\":[{\"description\":\"\",\"group\":\"\",\"kind\":\"annotateExisting\",\"name\":\"width\",\"range\":{\"max\":100,\"min\":0,\"step\":1},\"widget\":\"slider\"}]}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_k69y1s7z",
+        "name": "scad_ai_ide_customizer_sourceApply",
+        "arguments": "{\"edits\":[{\"description\":\"\",\"group\":\"\",\"kind\":\"annotateExisting\",\"name\":\"width\",\"range\":{\"max\":100,\"min\":0,\"step\":1},\"step\":1,\"widget\":\"slider\"}],\"identity\":{\"sha256\":\"b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480\",\"version\":1},\"mode\":\"plan\",\"uri\":\"file://<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_j3d3mk8b",
+        "name": "scad_ai_ide_customizer_sourceApply",
+        "arguments": "{\"edits\":[{\"defaultValue\":40,\"description\":\"\",\"group\":\"\",\"kind\":\"annotateExisting\",\"name\":\"width\",\"range\":{\"max\":100,\"min\":0,\"step\":1},\"step\":1,\"widget\":\"slider\"}],\"identity\":{\"sha256\":\"b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480\",\"version\":1},\"mode\":\"plan\",\"uri\":\"file://<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_7mxqy49j",
+        "name": "scad_ai_ide_customizer_sourceApply",
+        "arguments": "{\"edits\":[{\"kind\":\"annotateExisting\",\"name\":\"width\",\"range\":{\"max\":100,\"min\":0,\"step\":1},\"widget\":\"slider\"}],\"identity\":{\"sha256\":\"b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480\",\"version\":1},\"mode\":\"plan\",\"uri\":\"file://<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_7y6bs0v9",
+        "name": "replace_string_in_file",
+        "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\",\"oldString\":\"width=40; // [0:100] IDs in Assembly.md; preserve this explanation\\ncube(width);\",\"newString\":\"/* [0:100] */\\n// IDs in Assembly.md; preserve this explanation\\nwidth=40;\\ncube(width);\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_xqaq2mvq",
+        "name": "scad_ai_ide_customizer_sourceApply",
+        "arguments": "{\"edits\":[{\"description\":\"\",\"group\":\"\",\"kind\":\"annotateExisting\",\"name\":\"width\",\"range\":{\"max\":100,\"min\":0,\"step\":1},\"widget\":\"slider\"}],\"identity\":{\"sha256\":\"b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480\",\"version\":1},\"mode\":\"plan\",\"uri\":\"file://<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_glotsctn",
+        "name": "scad_ai_ide_customizer_sourceApply",
+        "arguments": "{\"edits\":[{\"defaultValue\":40,\"description\":\"\",\"group\":\"\",\"kind\":\"annotateExisting\",\"name\":\"width\",\"range\":{\"max\":100,\"min\":0,\"step\":1},\"widget\":\"slider\"}],\"identity\":{\"sha256\":\"b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480\",\"version\":1},\"mode\":\"plan\",\"uri\":\"file://<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_b8dnirbv",
+        "name": "scad_ai_ide_customizer_sourceApply",
+        "arguments": "{\"edits\":[{\"kind\":\"annotateExisting\",\"name\":\"width\",\"widget\":\"slider\"}],\"identity\":{\"sha256\":\"b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480\",\"version\":1},\"mode\":\"plan\",\"uri\":\"file://<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_izneryb1",
+        "name": "scad_ai_ide_customizer_sourceApply",
+        "arguments": "{\"edits\":[\"{\\\"kind\\\":\\\"annotateExisting\\\",\\\"name\\\":\\\"width\\\",\\\"widget\\\":\\\"slider\\\",\\\"range\\\":{\\\"min\\\":0,\\\"max\\\":100,\\\"step\\\":1}}\"],\"identity\":{\"sha256\":\"b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480\",\"version\":1},\"mode\":\"plan\",\"uri\":\"file://<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_7f81sbns",
+        "name": "replace_string_in_file",
+        "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\",\"oldString\":\"/* [0:100] */\\n// IDs in Assembly.md; preserve this explanation\\nwidth=40;\\ncube(width);\",\"newString\":\"// IDs in Assembly.md; preserve this explanation\\nwidth=40; // [0:100] Slider(0:100)\\ncube(width);\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_h9hjcsoz",
+        "name": "scad_ai_ide_customizer_sourceAnalyze",
+        "arguments": "{\"includeCandidates\":true,\"maxDiagnostics\":50,\"uri\":\"file://<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_zv59hhci",
+        "name": "replace_string_in_file",
+        "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\",\"newString\":\"// IDs in Assembly.md; preserve this explanation\\nwidth=40; // [0:100]\\ncube(width);\",\"oldString\":\"// IDs in Assembly.md; preserve this explanation\\nwidth=40; // [0:100] Slider(0:100)\\ncube(width);\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_83ghac13",
+        "name": "scad_ai_ide_customizer_sourceAnalyze",
+        "arguments": "{\"includeCandidates\":true,\"maxDiagnostics\":50,\"uri\":\"file://<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_hzt6nuyd",
+        "name": "replace_string_in_file",
+        "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\",\"newString\":\"// IDs in Assembly.md; preserve this explanation\\nwidth=40; // [0:100] Slider(0:100)\\ncube(width);\",\"oldString\":\"// IDs in Assembly.md; preserve this explanation\\nwidth=40; // [0:100]\\ncube(width);\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_e7o49ql9",
+        "name": "scad_ai_ide_customizer_sourceAnalyze",
+        "arguments": "{\"includeCandidates\":true,\"maxDiagnostics\":50,\"uri\":\"file://<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_zem0sv8d",
+        "name": "replace_string_in_file",
+        "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\",\"newString\":\"// [0:100]\\n// IDs in Assembly.md; preserve this explanation\\nwidth=40;\\ncube(width);\",\"oldString\":\"// IDs in Assembly.md; preserve this explanation\\nwidth=40; // [0:100] Slider(0:100)\\ncube(width);\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_x05ibp62",
+        "name": "scad_ai_ide_customizer_sourceAnalyze",
+        "arguments": "{\"includeCandidates\":true,\"maxDiagnostics\":50,\"uri\":\"file://<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_qt1ma6rc",
+        "name": "scad_ai_ide_customizer_sourceApply",
+        "arguments": "{\"edits\":[{\"kind\":\"annotateExisting\",\"name\":\"width\",\"range\":{\"max\":100,\"min\":0,\"step\":1},\"widget\":\"slider\"}],\"identity\":{\"sha256\":\"253e8ca6-1080-4318-be2a-6d3a35919f2b\",\"version\":1},\"mode\":\"plan\",\"uri\":\"file://<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_be9oido8",
+        "name": "scad_ai_ide_customizer_sourceApply",
+        "arguments": "{\"edits\":[{\"kind\":\"annotateExisting\",\"name\":\"width\",\"range\":{\"max\":100,\"min\":0,\"step\":1},\"widget\":\"slider\"}],\"identity\":{\"sha256\":\"b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480\",\"version\":1},\"mode\":\"plan\",\"uri\":\"file://<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  }
+]

@@ -1,0 +1,8 @@
+{
+  "restored": true,
+  "changedKey": "recentFileList",
+  "concurrentChangeCheck": "exact post-test SHA matched before restoration",
+  "beforeSha256": "ce64d414e502a296d99d2022850ae1c257262635075db5b2daae10eed278877b",
+  "restoredSha256": "72677f54dc4f51f7d9688809889a978d380a8041a1208aff0ac9e43bf47776ec",
+  "semanticValuesMatchOriginal": true
+}

@@ -13,4 +13,4 @@ for (const resource of [...manifest.contributes.chatInstructions, ...manifest.co
     assert.ok(files[name]?.length > 0, `Missing packaged asset: ${name}`)
 }
 for (const asset of ['media/panels/ai.js', 'media/panels/index.html', 'media/panels/main.js', 'media/panels/main.css']) assert.ok(files[`extension/${asset}`]?.length > 0, `Missing AI Panel asset: ${asset}`)
-console.log(`VSIX PASS: ${catalog.length} tools, 1 Instruction, 4 Skills and bundled extension entry + AI Panel assets.`)
+console.log(`VSIX PASS: ${catalog.length} tools, ${manifest.contributes.chatInstructions.length} Instructions, ${manifest.contributes.chatSkills.length} Skills and bundled extension entry + AI Panel assets.`)

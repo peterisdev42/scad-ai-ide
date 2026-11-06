@@ -1,0 +1,6 @@
+(version 1)
+(allow default)
+; Qt's native QSettings can ignore CFFIXED_USER_HOME. Deny both the
+; preference service operation and direct writes anywhere in the real home.
+(deny user-preference-write)
+(deny file-write* (subpath (param "USER_HOME")))

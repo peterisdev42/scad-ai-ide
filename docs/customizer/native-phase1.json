@@ -1,0 +1,3769 @@
+{
+  "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2",
+  "binary": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+  "version": "OpenSCAD version 2026.11-RC0",
+  "buildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+  "pinnedBinary": false,
+  "platform": "darwin",
+  "node": "v24.16.0",
+  "results": [
+    {
+      "id": "scalar",
+      "source": "width=40;\n",
+      "expectedNativeParameters": [
+        "width"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "width",
+          "defaultValue": 40,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 40,
+          "name": "width",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "width",
+          "group": "",
+          "description": "",
+          "defaultValue": 40,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 9
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "width",
+          "defaultValue": 40,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "width",
+          "defaultValue": 40,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "max-only",
+      "source": "w=40; // [100]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 40,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 1
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 40,
+          "max": 100,
+          "min": 0,
+          "name": "w",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "",
+          "defaultValue": 40,
+          "hint": "[100]",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "declaredRange": {
+            "min": 0,
+            "max": 100
+          },
+          "effectiveRange": {
+            "min": 0,
+            "max": 100
+          },
+          "widget": "slider",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 5
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 6
+            },
+            "end": {
+              "line": 0,
+              "character": 14
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 40,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 1
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": 40,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 1
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "range",
+      "source": "w=40; // [10:100]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 40,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 10,
+            "max": 100
+          },
+          "step": 1
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 40,
+          "max": 100,
+          "min": 10,
+          "name": "w",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "",
+          "defaultValue": 40,
+          "hint": "[10:100]",
+          "range": {
+            "min": 10,
+            "max": 100
+          },
+          "declaredRange": {
+            "min": 10,
+            "max": 100
+          },
+          "effectiveRange": {
+            "min": 10,
+            "max": 100
+          },
+          "widget": "slider",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 5
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 6
+            },
+            "end": {
+              "line": 0,
+              "character": 17
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 40,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 10,
+            "max": 100
+          },
+          "step": 1
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": 40,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 10,
+            "max": 100
+          },
+          "step": 1
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "stepped",
+      "source": "w=40; // [10:5:100]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 40,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 10,
+            "max": 100
+          },
+          "step": 5
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 40,
+          "max": 100,
+          "min": 10,
+          "name": "w",
+          "step": 5,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "",
+          "defaultValue": 40,
+          "hint": "[10:5:100]",
+          "range": {
+            "min": 10,
+            "max": 100,
+            "step": 5
+          },
+          "declaredRange": {
+            "min": 10,
+            "max": 100,
+            "step": 5
+          },
+          "effectiveRange": {
+            "min": 10,
+            "max": 100,
+            "step": 5
+          },
+          "widget": "slider",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 5
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 6
+            },
+            "end": {
+              "line": 0,
+              "character": 19
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 40,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 10,
+            "max": 100
+          },
+          "step": 5
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": 40,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 10,
+            "max": 100
+          },
+          "step": 5
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "spin-step",
+      "source": "w=4.5; // .5\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 4.5,
+          "description": "",
+          "group": "Parameters",
+          "step": 0.5
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 4.5,
+          "name": "w",
+          "step": 0.5,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "",
+          "defaultValue": 4.5,
+          "hint": ".5",
+          "step": 0.5,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 6
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 7
+            },
+            "end": {
+              "line": 0,
+              "character": 12
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 4.5,
+          "description": "",
+          "group": "Parameters",
+          "step": 0.5
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": 4.5,
+          "description": "",
+          "group": "Parameters",
+          "step": 0.5
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "checkbox",
+      "source": "enabled=true;\n",
+      "expectedNativeParameters": [
+        "enabled"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "enabled",
+          "defaultValue": true,
+          "description": "",
+          "group": "Parameters"
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": true,
+          "name": "enabled",
+          "type": "boolean"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "enabled",
+          "group": "",
+          "description": "",
+          "defaultValue": true,
+          "widget": "checkbox",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 13
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "enabled",
+          "defaultValue": true,
+          "description": "",
+          "group": "Parameters"
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "enabled",
+          "defaultValue": true,
+          "description": "",
+          "group": "Parameters"
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "vector",
+      "source": "v=[1,2,3,4]; // [0:10]\n",
+      "expectedNativeParameters": [
+        "v"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "v",
+          "defaultValue": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 10
+          },
+          "step": 1
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "max": 10,
+          "min": 0,
+          "name": "v",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "v",
+          "group": "",
+          "description": "",
+          "defaultValue": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "hint": "[0:10]",
+          "range": {
+            "min": 0,
+            "max": 10
+          },
+          "declaredRange": {
+            "min": 0,
+            "max": 10
+          },
+          "effectiveRange": {
+            "min": 0,
+            "max": 10
+          },
+          "widget": "vector",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 12
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 13
+            },
+            "end": {
+              "line": 0,
+              "character": 22
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "v",
+          "defaultValue": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 10
+          },
+          "step": 1
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "v",
+          "defaultValue": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 10
+          },
+          "step": 1
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "unlisted-default",
+      "source": "mode=\"x\"; // [y,z]\n",
+      "expectedNativeParameters": [
+        "mode"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "mode",
+          "defaultValue": "x",
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "x",
+              "value": "x"
+            },
+            {
+              "label": "y",
+              "value": "y"
+            },
+            {
+              "label": "z",
+              "value": "z"
+            }
+          ]
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": "x",
+          "name": "mode",
+          "options": [
+            {
+              "name": "x",
+              "value": "x"
+            },
+            {
+              "name": "y",
+              "value": "y"
+            },
+            {
+              "name": "z",
+              "value": "z"
+            }
+          ],
+          "type": "string"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "mode",
+          "group": "",
+          "description": "",
+          "defaultValue": "x",
+          "hint": "[y,z]",
+          "choices": [
+            {
+              "label": "x",
+              "value": "x"
+            },
+            {
+              "value": "y",
+              "label": "y"
+            },
+            {
+              "value": "z",
+              "label": "z"
+            }
+          ],
+          "widget": "dropdown",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 9
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 10
+            },
+            "end": {
+              "line": 0,
+              "character": 18
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "mode",
+          "defaultValue": "x",
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "x",
+              "value": "x"
+            },
+            {
+              "label": "y",
+              "value": "y"
+            },
+            {
+              "label": "z",
+              "value": "z"
+            }
+          ]
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "mode",
+          "defaultValue": "x",
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "x",
+              "value": "x"
+            },
+            {
+              "value": "y",
+              "label": "y"
+            },
+            {
+              "value": "z",
+              "label": "z"
+            }
+          ]
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "mixed-enum",
+      "source": "mode=\"auto\"; // [auto:Automatic,1:One,2:Two]\n",
+      "expectedNativeParameters": [
+        "mode"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "mode",
+          "defaultValue": "auto",
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "Automatic",
+              "value": "auto"
+            },
+            {
+              "label": "One",
+              "value": 1
+            },
+            {
+              "label": "Two",
+              "value": 2
+            }
+          ]
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": "auto",
+          "name": "mode",
+          "options": [
+            {
+              "name": "Automatic",
+              "value": "auto"
+            },
+            {
+              "name": "One",
+              "value": 1
+            },
+            {
+              "name": "Two",
+              "value": 2
+            }
+          ],
+          "type": "string"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "mode",
+          "group": "",
+          "description": "",
+          "defaultValue": "auto",
+          "hint": "[auto:Automatic,1:One,2:Two]",
+          "choices": [
+            {
+              "value": "auto",
+              "label": "Automatic"
+            },
+            {
+              "value": 1,
+              "label": "One"
+            },
+            {
+              "value": 2,
+              "label": "Two"
+            }
+          ],
+          "widget": "dropdown",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 12
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 13
+            },
+            "end": {
+              "line": 0,
+              "character": 44
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "mode",
+          "defaultValue": "auto",
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "Automatic",
+              "value": "auto"
+            },
+            {
+              "label": "One",
+              "value": 1
+            },
+            {
+              "label": "Two",
+              "value": 2
+            }
+          ]
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "mode",
+          "defaultValue": "auto",
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "value": "auto",
+              "label": "Automatic"
+            },
+            {
+              "value": 1,
+              "label": "One"
+            },
+            {
+              "value": 2,
+              "label": "Two"
+            }
+          ]
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "quoted-delimiters",
+      "source": "mode=\"a]b,c:d\"; // [\"a]b,c:d\":\"A ] , :\",other:Other]\n",
+      "expectedNativeParameters": [
+        "mode"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "mode",
+          "defaultValue": "a]b,c:d",
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "A ] , :",
+              "value": "a]b,c:d"
+            },
+            {
+              "label": "Other",
+              "value": "other"
+            }
+          ]
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": "a]b,c:d",
+          "name": "mode",
+          "options": [
+            {
+              "name": "A ] , :",
+              "value": "a]b,c:d"
+            },
+            {
+              "name": "Other",
+              "value": "other"
+            }
+          ],
+          "type": "string"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "mode",
+          "group": "",
+          "description": "",
+          "defaultValue": "a]b,c:d",
+          "hint": "[\"a]b,c:d\":\"A ] , :\",other:Other]",
+          "choices": [
+            {
+              "value": "a]b,c:d",
+              "label": "A ] , :"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ],
+          "widget": "dropdown",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 15
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 16
+            },
+            "end": {
+              "line": 0,
+              "character": 52
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "mode",
+          "defaultValue": "a]b,c:d",
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "A ] , :",
+              "value": "a]b,c:d"
+            },
+            {
+              "label": "Other",
+              "value": "other"
+            }
+          ]
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "mode",
+          "defaultValue": "a]b,c:d",
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "value": "a]b,c:d",
+              "label": "A ] , :"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "description",
+      "source": "// First\n// Last\nw=1;\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "Last",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "caption": "Last",
+          "group": "Parameters",
+          "initial": 1,
+          "name": "w",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "Last",
+          "defaultValue": 1,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 2,
+              "character": 0
+            },
+            "end": {
+              "line": 2,
+              "character": 4
+            }
+          },
+          "descriptionRange": {
+            "start": {
+              "line": 1,
+              "character": 0
+            },
+            "end": {
+              "line": 1,
+              "character": 7
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "Last",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "Last",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "description-gap",
+      "source": "// Detached\n\nw=1;\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 1,
+          "name": "w",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "",
+          "defaultValue": 1,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 2,
+              "character": 0
+            },
+            "end": {
+              "line": 2,
+              "character": 4
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "description-indent",
+      "source": "  // Indented\nw=1;\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 1,
+          "name": "w",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "",
+          "defaultValue": 1,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 1,
+              "character": 0
+            },
+            "end": {
+              "line": 1,
+              "character": 4
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "description-block",
+      "source": "/* Block description */\nw=1;\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "initial": 1,
+          "name": "w",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "",
+          "defaultValue": 1,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 1,
+              "character": 0
+            },
+            "end": {
+              "line": 1,
+              "character": 4
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "expanded-range",
+      "source": "w=120; // [0:5:100]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 120,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 120
+          },
+          "step": 5
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 120,
+          "max": 120,
+          "min": 0,
+          "name": "w",
+          "step": 5,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "",
+          "defaultValue": 120,
+          "hint": "[0:5:100]",
+          "range": {
+            "min": 0,
+            "max": 100,
+            "step": 5
+          },
+          "declaredRange": {
+            "min": 0,
+            "max": 100,
+            "step": 5
+          },
+          "effectiveRange": {
+            "min": 0,
+            "max": 120,
+            "step": 5
+          },
+          "widget": "slider",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 6
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 7
+            },
+            "end": {
+              "line": 0,
+              "character": 19
+            }
+          }
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "CUSTOMIZER_DEFAULT_OUT_OF_RANGE",
+          "ruleId": "CUST-RANGE-03",
+          "severity": "warning",
+          "parameter": "w",
+          "message": "The default value is outside the written range [0:100].",
+          "suggestedFix": "Expand this range annotation to include the default, or choose a default inside the range.",
+          "range": {
+            "start": {
+              "line": 0,
+              "character": 7
+            },
+            "end": {
+              "line": 0,
+              "character": 19
+            }
+          },
+          "evidence": {
+            "kind": "explicit-effective-hint",
+            "category": "constraint",
+            "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+          },
+          "fix": {
+            "id": "CUST-RANGE-03",
+            "safety": "review",
+            "title": "Review the default and declared bounds"
+          }
+        }
+      ],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 120,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 120
+          },
+          "step": 5
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": 120,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 120
+          },
+          "step": 5
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "expanded-vector",
+      "source": "v=[-5,120]; // [0:10]\n",
+      "expectedNativeParameters": [
+        "v"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "v",
+          "defaultValue": [
+            -5,
+            120
+          ],
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": -5,
+            "max": 120
+          },
+          "step": 1
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": [
+            -5,
+            120
+          ],
+          "max": 120,
+          "min": -5,
+          "name": "v",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "v",
+          "group": "",
+          "description": "",
+          "defaultValue": [
+            -5,
+            120
+          ],
+          "hint": "[0:10]",
+          "range": {
+            "min": 0,
+            "max": 10
+          },
+          "declaredRange": {
+            "min": 0,
+            "max": 10
+          },
+          "effectiveRange": {
+            "min": -5,
+            "max": 120
+          },
+          "widget": "vector",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 11
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 12
+            },
+            "end": {
+              "line": 0,
+              "character": 21
+            }
+          }
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "CUSTOMIZER_DEFAULT_OUT_OF_RANGE",
+          "ruleId": "CUST-RANGE-03",
+          "severity": "warning",
+          "parameter": "v",
+          "message": "The default value is outside the written range [0:10].",
+          "suggestedFix": "Expand this range annotation to include the default, or choose a default inside the range.",
+          "range": {
+            "start": {
+              "line": 0,
+              "character": 12
+            },
+            "end": {
+              "line": 0,
+              "character": 21
+            }
+          },
+          "evidence": {
+            "kind": "explicit-effective-hint",
+            "category": "constraint",
+            "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+          },
+          "fix": {
+            "id": "CUST-RANGE-03",
+            "safety": "review",
+            "title": "Review the default and declared bounds"
+          }
+        }
+      ],
+      "nativeProjection": [
+        {
+          "name": "v",
+          "defaultValue": [
+            -5,
+            120
+          ],
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": -5,
+            "max": 120
+          },
+          "step": 1
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "v",
+          "defaultValue": [
+            -5,
+            120
+          ],
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": -5,
+            "max": 120
+          },
+          "step": 1
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "off-grid",
+      "source": "w=12; // [0:5:100]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 12,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 5
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 12,
+          "max": 100,
+          "min": 0,
+          "name": "w",
+          "step": 5,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "",
+          "defaultValue": 12,
+          "hint": "[0:5:100]",
+          "range": {
+            "min": 0,
+            "max": 100,
+            "step": 5
+          },
+          "declaredRange": {
+            "min": 0,
+            "max": 100,
+            "step": 5
+          },
+          "effectiveRange": {
+            "min": 0,
+            "max": 100,
+            "step": 5
+          },
+          "widget": "slider",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 5
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 6
+            },
+            "end": {
+              "line": 0,
+              "character": 18
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 12,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 5
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": 12,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 5
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "text-length",
+      "source": "name=\"abcdef\"; // 3\n",
+      "expectedNativeParameters": [
+        "name"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "name",
+          "defaultValue": "abcdef",
+          "description": "",
+          "group": "Parameters",
+          "maxLength": 3
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": "abcdef",
+          "maxLength": 3,
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "name",
+          "group": "",
+          "description": "",
+          "defaultValue": "abcdef",
+          "hint": "3",
+          "maxLength": 3,
+          "widget": "textbox",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 14
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 15
+            },
+            "end": {
+              "line": 0,
+              "character": 19
+            }
+          }
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "CUSTOMIZER_DEFAULT_OUT_OF_RANGE",
+          "ruleId": "CUST-TEXT-02",
+          "severity": "warning",
+          "parameter": "name",
+          "message": "The default text has 6 UTF-8 bytes but the written limit is 3.",
+          "suggestedFix": "Increase this length annotation to fit the default text, or shorten the default text.",
+          "range": {
+            "start": {
+              "line": 0,
+              "character": 15
+            },
+            "end": {
+              "line": 0,
+              "character": 19
+            }
+          },
+          "evidence": {
+            "kind": "explicit-effective-hint",
+            "category": "constraint",
+            "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+          },
+          "fix": {
+            "id": "CUST-TEXT-02",
+            "safety": "review",
+            "title": "Review the default text and byte limit"
+          }
+        }
+      ],
+      "nativeProjection": [
+        {
+          "name": "name",
+          "defaultValue": "abcdef",
+          "description": "",
+          "group": "Parameters",
+          "maxLength": 3
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "name",
+          "defaultValue": "abcdef",
+          "description": "",
+          "group": "Parameters",
+          "maxLength": 3
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "hidden-global",
+      "source": "/* [Hidden] */\nh=1;\n/* [Global] */\ng=2;\n/* [hidden] */\nx=3;\n",
+      "expectedNativeParameters": [
+        "g",
+        "x"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "g",
+          "defaultValue": 2,
+          "description": "",
+          "group": "Global",
+          "step": 1
+        },
+        {
+          "name": "x",
+          "defaultValue": 3,
+          "description": "",
+          "group": "hidden",
+          "step": 1
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Global",
+          "initial": 2,
+          "name": "g",
+          "step": 1,
+          "type": "number"
+        },
+        {
+          "group": "hidden",
+          "initial": 3,
+          "name": "x",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "g",
+          "group": "Global",
+          "description": "",
+          "defaultValue": 2,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 3,
+              "character": 0
+            },
+            "end": {
+              "line": 3,
+              "character": 4
+            }
+          }
+        },
+        {
+          "name": "x",
+          "group": "hidden",
+          "description": "",
+          "defaultValue": 3,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 5,
+              "character": 0
+            },
+            "end": {
+              "line": 5,
+              "character": 4
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "g",
+          "defaultValue": 2,
+          "description": "",
+          "group": "Global",
+          "step": 1
+        },
+        {
+          "name": "x",
+          "defaultValue": 3,
+          "description": "",
+          "group": "hidden",
+          "step": 1
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "g",
+          "defaultValue": 2,
+          "description": "",
+          "group": "Global",
+          "step": 1
+        },
+        {
+          "name": "x",
+          "defaultValue": 3,
+          "description": "",
+          "group": "hidden",
+          "step": 1
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "compound-group",
+      "source": "/* [Tab] [Name] */\nw=1;\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Tab-Name",
+          "step": 1
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Tab-Name",
+          "initial": 1,
+          "name": "w",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "Tab-Name",
+          "description": "",
+          "defaultValue": 1,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 1,
+              "character": 0
+            },
+            "end": {
+              "line": 1,
+              "character": 4
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Tab-Name",
+          "step": 1
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Tab-Name",
+          "step": 1
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "superseded",
+      "source": "w=1; // [10:0:100]\nw=20; // [0:100]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 20,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 1
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 20,
+          "max": 100,
+          "min": 0,
+          "name": "w",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "",
+          "defaultValue": 20,
+          "hint": "[0:100]",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "declaredRange": {
+            "min": 0,
+            "max": 100
+          },
+          "effectiveRange": {
+            "min": 0,
+            "max": 100
+          },
+          "widget": "slider",
+          "declarationRange": {
+            "start": {
+              "line": 1,
+              "character": 0
+            },
+            "end": {
+              "line": 1,
+              "character": 5
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 1,
+              "character": 6
+            },
+            "end": {
+              "line": 1,
+              "character": 16
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 20,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 1
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": 20,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 1
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "expression",
+      "source": "w=1+2; // [0:100]\n",
+      "expectedNativeParameters": [],
+      "expectedIDEParameters": [],
+      "nativeExpectationMatches": true,
+      "actualNative": [],
+      "actualIDE": [],
+      "diagnostics": [],
+      "nativeProjection": [],
+      "ideProjection": [],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "long-vector",
+      "source": "w=[1,2,3,4,5];\n",
+      "expectedNativeParameters": [],
+      "expectedIDEParameters": [],
+      "nativeExpectationMatches": true,
+      "actualNative": [],
+      "actualIDE": [],
+      "diagnostics": [],
+      "nativeProjection": [],
+      "ideProjection": [],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "brace-comment",
+      "source": "// { ignored\nw=1;\nmodule m() {}\nlate=2;\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "{ ignored",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "caption": "{ ignored",
+          "group": "Parameters",
+          "initial": 1,
+          "name": "w",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "{ ignored",
+          "defaultValue": 1,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 1,
+              "character": 0
+            },
+            "end": {
+              "line": 1,
+              "character": 4
+            }
+          },
+          "descriptionRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 12
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "{ ignored",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "{ ignored",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "trailing-prose",
+      "source": "w=1; // [0:22] IDs in Assembly.md; 0 shows the group\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 1,
+          "name": "w",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "",
+          "defaultValue": 1,
+          "hint": "[0:22] IDs in Assembly.md; 0 shows the group",
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 4
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 5
+            },
+            "end": {
+              "line": 0,
+              "character": 52
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "same-line-brace",
+      "source": "w=1; module m() {}\n",
+      "expectedNativeParameters": [],
+      "expectedIDEParameters": [],
+      "nativeExpectationMatches": true,
+      "actualNative": [],
+      "actualIDE": [],
+      "diagnostics": [],
+      "nativeProjection": [],
+      "ideProjection": [],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "same-line-assignments",
+      "source": "a=1; b=2; // [0:10]\n",
+      "expectedNativeParameters": [
+        "a",
+        "b"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "a",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        },
+        {
+          "name": "b",
+          "defaultValue": 2,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 1,
+          "name": "a",
+          "step": 1,
+          "type": "number"
+        },
+        {
+          "group": "Parameters",
+          "initial": 2,
+          "name": "b",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "a",
+          "group": "",
+          "description": "",
+          "defaultValue": 1,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 4
+            }
+          }
+        },
+        {
+          "name": "b",
+          "group": "",
+          "description": "",
+          "defaultValue": 2,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 5
+            },
+            "end": {
+              "line": 0,
+              "character": 9
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "a",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        },
+        {
+          "name": "b",
+          "defaultValue": 2,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "a",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        },
+        {
+          "name": "b",
+          "defaultValue": 2,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "nfc",
+      "source": "café=1;\n",
+      "expectedNativeParameters": [
+        "café"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "café",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 1,
+          "name": "café",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "café",
+          "group": "",
+          "description": "",
+          "defaultValue": 1,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 8
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "café",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "café",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "hint-hex",
+      "source": "w=1; // [0:0x10]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "1",
+              "value": 1
+            },
+            {
+              "label": "0x10",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 1,
+          "name": "w",
+          "options": [
+            {
+              "name": "1",
+              "value": 1
+            },
+            {
+              "name": "0x10",
+              "value": 0
+            }
+          ],
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "",
+          "defaultValue": 1,
+          "hint": "[0:0x10]",
+          "choices": [
+            {
+              "label": "1",
+              "value": 1
+            },
+            {
+              "value": 0,
+              "label": "0x10"
+            }
+          ],
+          "widget": "dropdown",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 4
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 5
+            },
+            "end": {
+              "line": 0,
+              "character": 16
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "1",
+              "value": 1
+            },
+            {
+              "label": "0x10",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "1",
+              "value": 1
+            },
+            {
+              "value": 0,
+              "label": "0x10"
+            }
+          ]
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "string-single-number",
+      "source": "w=\"x\"; // [10]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": "x",
+          "description": "",
+          "group": "Parameters"
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": "x",
+          "name": "w",
+          "type": "string"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "",
+          "defaultValue": "x",
+          "hint": "[10]",
+          "widget": "textbox",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 6
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 7
+            },
+            "end": {
+              "line": 0,
+              "character": 14
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": "x",
+          "description": "",
+          "group": "Parameters"
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": "x",
+          "description": "",
+          "group": "Parameters"
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "phase1-firstLineHint",
+      "source": "// Dimensions\nv=[ // [0:5:100]\n1,2\n];\n",
+      "expectedNativeParameters": [
+        "v"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "v",
+          "defaultValue": [
+            1,
+            2
+          ],
+          "description": "Dimensions",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 5
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "caption": "Dimensions",
+          "group": "Parameters",
+          "initial": [
+            1,
+            2
+          ],
+          "max": 100,
+          "min": 0,
+          "name": "v",
+          "step": 5,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "v",
+          "group": "",
+          "description": "Dimensions",
+          "defaultValue": [
+            1,
+            2
+          ],
+          "hint": "[0:5:100]",
+          "range": {
+            "min": 0,
+            "max": 100,
+            "step": 5
+          },
+          "declaredRange": {
+            "min": 0,
+            "max": 100,
+            "step": 5
+          },
+          "effectiveRange": {
+            "min": 0,
+            "max": 100,
+            "step": 5
+          },
+          "widget": "vector",
+          "declarationRange": {
+            "start": {
+              "line": 1,
+              "character": 0
+            },
+            "end": {
+              "line": 3,
+              "character": 2
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 1,
+              "character": 4
+            },
+            "end": {
+              "line": 1,
+              "character": 16
+            }
+          },
+          "descriptionRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 13
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "v",
+          "defaultValue": [
+            1,
+            2
+          ],
+          "description": "Dimensions",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 5
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "v",
+          "defaultValue": [
+            1,
+            2
+          ],
+          "description": "Dimensions",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 5
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "phase1-groupReset",
+      "source": "/* [Hidden] */\nh=1;\n/* ordinary block */\nw=2;\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 2,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "initial": 2,
+          "name": "w",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "",
+          "defaultValue": 2,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 3,
+              "character": 0
+            },
+            "end": {
+              "line": 3,
+              "character": 4
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 2,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": 2,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "phase1-noNewline",
+      "source": "w=1;",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 1,
+          "name": "w",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "",
+          "defaultValue": 1,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 4
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "phase1-multiline",
+      "source": "// Dimensions\nv=[\n1,2\n]; // [0:5:100]\n",
+      "expectedNativeParameters": [
+        "v"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "v",
+          "defaultValue": [
+            1,
+            2
+          ],
+          "description": "Dimensions",
+          "group": "Parameters"
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "caption": "Dimensions",
+          "group": "Parameters",
+          "initial": [
+            1,
+            2
+          ],
+          "name": "v",
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "v",
+          "group": "",
+          "description": "Dimensions",
+          "defaultValue": [
+            1,
+            2
+          ],
+          "widget": "vector",
+          "declarationRange": {
+            "start": {
+              "line": 1,
+              "character": 0
+            },
+            "end": {
+              "line": 3,
+              "character": 2
+            }
+          },
+          "descriptionRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 13
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "v",
+          "defaultValue": [
+            1,
+            2
+          ],
+          "description": "Dimensions",
+          "group": "Parameters"
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "v",
+          "defaultValue": [
+            1,
+            2
+          ],
+          "description": "Dimensions",
+          "group": "Parameters"
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "phase1-textImport",
+      "source": "label=\"abcdef\"; // 3\necho(label);\n",
+      "expectedNativeParameters": [
+        "label"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "label",
+          "defaultValue": "abcdef",
+          "description": "",
+          "group": "Parameters",
+          "maxLength": 3
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": "abcdef",
+          "maxLength": 3,
+          "name": "label",
+          "type": "string"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "label",
+          "group": "",
+          "description": "",
+          "defaultValue": "abcdef",
+          "hint": "3",
+          "maxLength": 3,
+          "widget": "textbox",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 15
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 16
+            },
+            "end": {
+              "line": 0,
+              "character": 20
+            }
+          }
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "CUSTOMIZER_DEFAULT_OUT_OF_RANGE",
+          "ruleId": "CUST-TEXT-02",
+          "severity": "warning",
+          "parameter": "label",
+          "message": "The default text has 6 UTF-8 bytes but the written limit is 3.",
+          "suggestedFix": "Increase this length annotation to fit the default text, or shorten the default text.",
+          "range": {
+            "start": {
+              "line": 0,
+              "character": 16
+            },
+            "end": {
+              "line": 0,
+              "character": 20
+            }
+          },
+          "evidence": {
+            "kind": "explicit-effective-hint",
+            "category": "constraint",
+            "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+          },
+          "fix": {
+            "id": "CUST-TEXT-02",
+            "safety": "review",
+            "title": "Review the default text and byte limit"
+          }
+        }
+      ],
+      "nativeProjection": [
+        {
+          "name": "label",
+          "defaultValue": "abcdef",
+          "description": "",
+          "group": "Parameters",
+          "maxLength": 3
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "label",
+          "defaultValue": "abcdef",
+          "description": "",
+          "group": "Parameters",
+          "maxLength": 3
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "phase1-utf8Import",
+      "source": "label=\"Ω😀\"; // 1\necho(label);\n",
+      "expectedNativeParameters": [
+        "label"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "label",
+          "defaultValue": "Ω😀",
+          "description": "",
+          "group": "Parameters",
+          "maxLength": 1
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": "Ω😀",
+          "maxLength": 1,
+          "name": "label",
+          "type": "string"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "label",
+          "group": "",
+          "description": "",
+          "defaultValue": "Ω😀",
+          "hint": "1",
+          "maxLength": 1,
+          "widget": "textbox",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 12
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 13
+            },
+            "end": {
+              "line": 0,
+              "character": 17
+            }
+          }
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "CUSTOMIZER_DEFAULT_OUT_OF_RANGE",
+          "ruleId": "CUST-TEXT-02",
+          "severity": "warning",
+          "parameter": "label",
+          "message": "The default text has 6 UTF-8 bytes but the written limit is 1.",
+          "suggestedFix": "Increase this length annotation to fit the default text, or shorten the default text.",
+          "range": {
+            "start": {
+              "line": 0,
+              "character": 13
+            },
+            "end": {
+              "line": 0,
+              "character": 17
+            }
+          },
+          "evidence": {
+            "kind": "explicit-effective-hint",
+            "category": "constraint",
+            "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+          },
+          "fix": {
+            "id": "CUST-TEXT-02",
+            "safety": "review",
+            "title": "Review the default text and byte limit"
+          }
+        }
+      ],
+      "nativeProjection": [
+        {
+          "name": "label",
+          "defaultValue": "Ω😀",
+          "description": "",
+          "group": "Parameters",
+          "maxLength": 1
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "label",
+          "defaultValue": "Ω😀",
+          "description": "",
+          "group": "Parameters",
+          "maxLength": 1
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "phase1-unknownVersion",
+      "source": "w=10; // [0:5:100]\necho(w);\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 10,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 5
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 10,
+          "max": 100,
+          "min": 0,
+          "name": "w",
+          "step": 5,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "",
+          "defaultValue": 10,
+          "hint": "[0:5:100]",
+          "range": {
+            "min": 0,
+            "max": 100,
+            "step": 5
+          },
+          "declaredRange": {
+            "min": 0,
+            "max": 100,
+            "step": 5
+          },
+          "effectiveRange": {
+            "min": 0,
+            "max": 100,
+            "step": 5
+          },
+          "widget": "slider",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 5
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 6
+            },
+            "end": {
+              "line": 0,
+              "character": 18
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 10,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 5
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": 10,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 5
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "phase1-maxNegative",
+      "source": "w=-5; // [10]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": -5,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 10
+          },
+          "step": 1
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": -5,
+          "max": 10,
+          "min": 0,
+          "name": "w",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "",
+          "defaultValue": -5,
+          "hint": "[10]",
+          "range": {
+            "min": 0,
+            "max": 10
+          },
+          "declaredRange": {
+            "min": 0,
+            "max": 10
+          },
+          "effectiveRange": {
+            "min": 0,
+            "max": 10
+          },
+          "widget": "slider",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 5
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 6
+            },
+            "end": {
+              "line": 0,
+              "character": 13
+            }
+          }
+        }
+      ],
+      "diagnostics": [
+        {
+          "code": "CUSTOMIZER_DEFAULT_OUT_OF_RANGE",
+          "ruleId": "CUST-RANGE-03",
+          "severity": "warning",
+          "parameter": "w",
+          "message": "The default value is outside the written range [0:10].",
+          "suggestedFix": "Expand this range annotation to include the default, or choose a default inside the range.",
+          "range": {
+            "start": {
+              "line": 0,
+              "character": 6
+            },
+            "end": {
+              "line": 0,
+              "character": 13
+            }
+          },
+          "evidence": {
+            "kind": "explicit-effective-hint",
+            "category": "constraint",
+            "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+          },
+          "fix": {
+            "id": "CUST-RANGE-03",
+            "safety": "review",
+            "title": "Review the default and declared bounds"
+          }
+        }
+      ],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": -5,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 10
+          },
+          "step": 1
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": -5,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 10
+          },
+          "step": 1
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "phase1-hex",
+      "source": "w=1; // [0:0x10]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "1",
+              "value": 1
+            },
+            {
+              "label": "0x10",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 1,
+          "name": "w",
+          "options": [
+            {
+              "name": "1",
+              "value": 1
+            },
+            {
+              "name": "0x10",
+              "value": 0
+            }
+          ],
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "",
+          "defaultValue": 1,
+          "hint": "[0:0x10]",
+          "choices": [
+            {
+              "label": "1",
+              "value": 1
+            },
+            {
+              "value": 0,
+              "label": "0x10"
+            }
+          ],
+          "widget": "dropdown",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 4
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 5
+            },
+            "end": {
+              "line": 0,
+              "character": 16
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "1",
+              "value": 1
+            },
+            {
+              "label": "0x10",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "1",
+              "value": 1
+            },
+            {
+              "value": 0,
+              "label": "0x10"
+            }
+          ]
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "phase1-stringEscape",
+      "source": "w=\"Ω\"; // [\"\\u03a9\",x]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": "Ω",
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "Ω",
+              "value": "Ω"
+            },
+            {
+              "label": "u03a9",
+              "value": "u03a9"
+            },
+            {
+              "label": "x",
+              "value": "x"
+            }
+          ]
+        }
+      ],
+      "nativeExpectationMatches": true,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": "Ω",
+          "name": "w",
+          "options": [
+            {
+              "name": "Ω",
+              "value": "Ω"
+            },
+            {
+              "name": "u03a9",
+              "value": "u03a9"
+            },
+            {
+              "name": "x",
+              "value": "x"
+            }
+          ],
+          "type": "string"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "w",
+          "group": "",
+          "description": "",
+          "defaultValue": "Ω",
+          "hint": "[\"\\u03a9\",x]",
+          "choices": [
+            {
+              "label": "Ω",
+              "value": "Ω"
+            },
+            {
+              "value": "u03a9",
+              "label": "u03a9"
+            },
+            {
+              "value": "x",
+              "label": "x"
+            }
+          ],
+          "widget": "dropdown",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 6
+            }
+          },
+          "annotationRange": {
+            "start": {
+              "line": 0,
+              "character": 7
+            },
+            "end": {
+              "line": 0,
+              "character": 22
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "nativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": "Ω",
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "Ω",
+              "value": "Ω"
+            },
+            {
+              "label": "u03a9",
+              "value": "u03a9"
+            },
+            {
+              "label": "x",
+              "value": "x"
+            }
+          ]
+        }
+      ],
+      "ideProjection": [
+        {
+          "name": "w",
+          "defaultValue": "Ω",
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "Ω",
+              "value": "Ω"
+            },
+            {
+              "value": "u03a9",
+              "label": "u03a9"
+            },
+            {
+              "value": "x",
+              "label": "x"
+            }
+          ]
+        }
+      ],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    },
+    {
+      "id": "include-brace-cutoff",
+      "source": "include <library/{parts}.scad>\nw=1;\n",
+      "expectedNativeParameters": [],
+      "expectedIDEParameters": [],
+      "nativeExpectationMatches": true,
+      "actualNative": [],
+      "actualIDE": [],
+      "diagnostics": [],
+      "nativeProjection": [],
+      "ideProjection": [],
+      "parity": true,
+      "verificationStatus": "native-other-build"
+    }
+  ]
+}

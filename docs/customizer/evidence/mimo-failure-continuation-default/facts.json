@@ -1,0 +1,107 @@
+{
+  "scenario": "failure",
+  "nativeAgent": true,
+  "selectedModel": "mimo-v2.6:latest",
+  "requestedModel": "mimo-v2.6:latest",
+  "modelIdentity": {
+    "name": "mimo-v2.6:latest",
+    "digest": "0af2fcf0cdba6e967700d7660a35c2ae905be1680d9afb3d377f6e61dbd1dfc0",
+    "size": 8711267221,
+    "modifiedAt": "2026-11-06T10:01:27.986857626+08:00"
+  },
+  "inferenceProfile": "Official provider directly to the local server; no sampling override in this harness",
+  "ollamaEndpoint": "http://127.0.0.1:11434",
+  "model": [
+    {
+      "id": "mimo-v2.6:latest",
+      "name": "mimo-v2.6:latest",
+      "vendor": "ollama-models"
+    },
+    {
+      "id": "mimo-v2.6:latest",
+      "name": "mimo-v2.6:latest",
+      "vendor": "ollama-models"
+    }
+  ],
+  "artifact": {
+    "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+    "bytes": 4533358,
+    "sha256": "242c5671cf6fa6e1703f3c0690f4fb8006d211ca3014f322cb3ba26573159f03"
+  },
+  "requestFinished": true,
+  "timedOut": false,
+  "terminalReason": "nativeRequestReturned",
+  "interrupted": false,
+  "controllerOutcomeMissing": false,
+  "sourceDiskUnchanged": true,
+  "sourceBufferObserved": true,
+  "sourceBufferUnchanged": true,
+  "actualBusinessToolInvocations": 3,
+  "actualCustomizerToolInvocations": 3,
+  "customizerDispatcherMetrics": {
+    "total": 3,
+    "okTrue": 2,
+    "okFalse": 1,
+    "okRate": 0.6666666666666666,
+    "semanticPassTrue": 0,
+    "semanticPassFalse": 1,
+    "scope": "Observed Customizer dispatcher calls only. Excludes built-in tool outcomes and requests rejected before dispatch. Expected business refusals count as ok=false. Invocation ok=true is not task success or target match."
+  },
+  "nativeToolRequestMetadataAvailable": true,
+  "nativeToolRequestSource": "final-response-metadata",
+  "nativeToolRequests": [
+    {
+      "name": "scad_ai_ide_customizer_sourceAnalyze",
+      "id": "call_14pi0pz4__vscode-1794294014995",
+      "toolInputRetry": 0,
+      "hostSchemaRejected": false
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceAnalyze",
+      "id": "call_u1jf3hus__vscode-1794294014996",
+      "toolInputRetry": 0,
+      "hostSchemaRejected": false
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceValidate",
+      "id": "call_m4snhr7i__vscode-1794294014997",
+      "toolInputRetry": 0,
+      "hostSchemaRejected": true,
+      "hostError": "ERROR: Your input to the tool was invalid (must match exactly one schema in oneOf)\nPlease check your input and try again."
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceValidate",
+      "id": "call_9nokwdaw__vscode-1794294014998",
+      "toolInputRetry": 1,
+      "hostSchemaRejected": true,
+      "hostError": "ERROR: Your input to the tool was invalid (must match exactly one schema in oneOf)\nPlease check your input and try again."
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceValidate",
+      "id": "call_19wylwc3__vscode-1794294014999",
+      "toolInputRetry": 2,
+      "hostSchemaRejected": false
+    }
+  ],
+  "nativeHostSchemaRejections": 2,
+  "nativeToolMetadataScope": "Observed final-response metadata or persisted native transcript requests; not necessarily the complete conversation. Host rejection count is unknown without result metadata. Generated requests are not dispatcher execution or successful edits.",
+  "calls": [
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": false,
+      "errorCode": "OUTSIDE_WORKSPACE"
+    },
+    {
+      "capability": "customizer.sourceValidate",
+      "ok": true,
+      "semanticPass": false,
+      "complete": true
+    }
+  ],
+  "acceptance": "REQUIRES REVIEW: these are observations, not a model acceptance PASS"
+}

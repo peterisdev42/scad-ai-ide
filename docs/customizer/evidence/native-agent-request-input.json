@@ -1,0 +1,5 @@
+{
+  "file": "${NATIVE_AGENT_FIXTURE}/workspace/model.scad",
+  "query": "请为 ${NATIVE_AGENT_FIXTURE}/workspace/model.scad 中现有 width 声明添加 Slider，范围10至100、步长5，放入Dimensions分组，描述为 Width in millimeters。使用项目安装的 Customizer Source 工作流完成分析、最小源码编辑和明确目标验证；不要改几何、默认值40或Preset，不保存文件。最后如实报告实际验证结果和未执行的GUI/渲染检查。",
+  "source": "width=40;\nmodule model() { cube([width,2,3]); }\nmodel();\n"
+}

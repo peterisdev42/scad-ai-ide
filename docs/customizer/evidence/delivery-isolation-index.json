@@ -1,0 +1,13 @@
+{
+  "baseCommit": "64a64f3ce667d96911233d6cfe07a08316ef06e8",
+  "path": ".build/delivery-isolation-2026-11-10",
+  "patchSha256": "7f911b7b69d5ed505d969b75874a994bacf62627a88d2b5df0bf2a767ca15d9b",
+  "savedModelRunCount": 45,
+  "savedLogFiles": 359,
+  "readableFileCount": 136,
+  "stopStatus": "Known test sessions terminal; process scan found no matching native model driver or isolated host; no model started during cleanup",
+  "productSourceRestored": true,
+  "testHarnessChange": "Disable invalid legacy cancellation probe before startup",
+  "goalStatus": "paused",
+  "recovery": "Review patch and files on a separate branch; no automatic replay"
+}

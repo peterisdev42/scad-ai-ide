@@ -1,0 +1,1071 @@
+{
+  "scope": "Client-request sampling profile only; not model acceptance or proof of the server internal sampler",
+  "model": "qwen3.5:2b-mlx",
+  "upstream": "http://127.0.0.1:11434",
+  "requestedTemperature": 0,
+  "forwardedChatRequests": 15,
+  "toolsAndMessagesModified": false,
+  "globalSettingsModified": false,
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/version",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/experimental/model-recommendations",
+      "error": "Only local Ollama discovery and chat requests are allowed"
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/version",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/experimental/model-recommendations",
+      "error": "Only local Ollama discovery and chat requests are allowed"
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/version",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/experimental/model-recommendations",
+      "error": "Only local Ollama discovery and chat requests are allowed"
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/version",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/experimental/model-recommendations",
+      "error": "Only local Ollama discovery and chat requests are allowed"
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/version",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/experimental/model-recommendations",
+      "error": "Only local Ollama discovery and chat requests are allowed"
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/version",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/experimental/model-recommendations",
+      "error": "Only local Ollama discovery and chat requests are allowed"
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/version",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/experimental/model-recommendations",
+      "error": "Only local Ollama discovery and chat requests are allowed"
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/version",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/experimental/model-recommendations",
+      "error": "Only local Ollama discovery and chat requests are allowed"
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/version",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/experimental/model-recommendations",
+      "error": "Only local Ollama discovery and chat requests are allowed"
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/version",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/experimental/model-recommendations",
+      "error": "Only local Ollama discovery and chat requests are allowed"
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/version",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/experimental/model-recommendations",
+      "error": "Only local Ollama discovery and chat requests are allowed"
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/version",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/experimental/model-recommendations",
+      "error": "Only local Ollama discovery and chat requests are allowed"
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "model": "qwen3.5:2b-mlx",
+      "requestedTemperature": 0,
+      "tools": 83,
+      "messages": 3,
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "model": "qwen3.5:2b-mlx",
+      "requestedTemperature": 0,
+      "tools": 87,
+      "messages": 5,
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "model": "qwen3.5:2b-mlx",
+      "requestedTemperature": 0,
+      "tools": 87,
+      "messages": 7,
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "model": "qwen3.5:2b-mlx",
+      "requestedTemperature": 0,
+      "tools": 87,
+      "messages": 9,
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "model": "qwen3.5:2b-mlx",
+      "requestedTemperature": 0,
+      "tools": 87,
+      "messages": 11,
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "model": "qwen3.5:2b-mlx",
+      "requestedTemperature": 0,
+      "tools": 87,
+      "messages": 13,
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "model": "qwen3.5:2b-mlx",
+      "requestedTemperature": 0,
+      "tools": 87,
+      "messages": 15,
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "model": "qwen3.5:2b-mlx",
+      "requestedTemperature": 0,
+      "tools": 87,
+      "messages": 17,
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "model": "qwen3.5:2b-mlx",
+      "requestedTemperature": 0,
+      "tools": 87,
+      "messages": 19,
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "model": "qwen3.5:2b-mlx",
+      "requestedTemperature": 0,
+      "tools": 87,
+      "messages": 21,
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "model": "qwen3.5:2b-mlx",
+      "requestedTemperature": 0,
+      "tools": 87,
+      "messages": 23,
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "model": "qwen3.5:2b-mlx",
+      "requestedTemperature": 0,
+      "tools": 87,
+      "messages": 25,
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "model": "qwen3.5:2b-mlx",
+      "requestedTemperature": 0,
+      "tools": 87,
+      "messages": 27,
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "model": "qwen3.5:2b-mlx",
+      "requestedTemperature": 0,
+      "tools": 87,
+      "messages": 29,
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "model": "qwen3.5:2b-mlx",
+      "requestedTemperature": 0,
+      "tools": 87,
+      "messages": 31,
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/ps",
+      "status": 200
+    }
+  ]
+}

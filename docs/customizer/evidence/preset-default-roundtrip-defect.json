@@ -1,0 +1,90 @@
+{
+  "scope": "Real VS Code Host reproduction, not a successful Preset acceptance",
+  "source": "label=\"abcdef\"; // 3\ncube(1);\n",
+  "create": {
+    "ok": true,
+    "capabilityId": "customizer.createPreset",
+    "revision": 3,
+    "data": {
+      "target": "file:///tmp/cpre-6PSPO0/workspace/model.scad",
+      "revision": 3,
+      "parameters": [
+        {
+          "name": "label",
+          "group": "",
+          "description": "",
+          "defaultValue": "abcdef",
+          "hint": "3",
+          "maxLength": 3,
+          "value": "abcdef"
+        }
+      ],
+      "presets": {
+        "readOnly": false,
+        "diagnostics": [
+          {
+            "ruleId": "PRESET-004",
+            "code": "INVALID_VALUE",
+            "severity": "warning",
+            "message": "Snapshot.label: Use at most 3 UTF-8 bytes",
+            "path": [
+              "parameterSets",
+              "Snapshot",
+              "label"
+            ],
+            "suggestedFix": "Provide a value compatible with this model. The IDE rejects loss instead of emulating native truncation or clamping."
+          }
+        ],
+        "names": [
+          "Snapshot"
+        ],
+        "active": "Snapshot",
+        "modified": false,
+        "filename": "model.json",
+        "path": "file:///tmp/cpre-6PSPO0/workspace/model.json",
+        "exists": true
+      },
+      "analysis": {
+        "complete": true,
+        "incompleteReasons": []
+      },
+      "overridesEditSource": false
+    },
+    "operation": {
+      "id": "30f534f6-6e82-42d3-bea6-a71f40409c45",
+      "capabilityId": "customizer.createPreset",
+      "status": "succeeded"
+    }
+  },
+  "saved": {
+    "fileFormatVersion": "1",
+    "parameterSets": {
+      "Snapshot": {
+        "label": "abcdef"
+      }
+    }
+  },
+  "apply": {
+    "ok": false,
+    "capabilityId": "customizer.applyPreset",
+    "error": {
+      "code": "PRESET_INVALID_VALUE",
+      "message": "label: Use at most 3 UTF-8 bytes",
+      "retryable": false
+    },
+    "operation": {
+      "id": "8f7051f4-4ab5-4437-a2de-62eb7f3a637f",
+      "capabilityId": "customizer.applyPreset",
+      "status": "failed",
+      "error": {
+        "code": "PRESET_INVALID_VALUE",
+        "message": "label: Use at most 3 UTF-8 bytes",
+        "retryable": false
+      }
+    }
+  },
+  "sourceBufferUnchanged": true,
+  "sourceDiskUnchanged": true,
+  "dirty": false,
+  "recordedResult": "DEFECT REPRODUCED: create succeeds but applying its own snapshot fails"
+}

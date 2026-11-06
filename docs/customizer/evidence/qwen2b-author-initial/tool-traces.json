@@ -1,0 +1,163 @@
+[
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-09T08:42:30.453Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "",
+            "defaultValue": 40,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            }
+          },
+          {
+            "name": "shape",
+            "group": "",
+            "description": "",
+            "defaultValue": "round",
+            "widget": "textbox",
+            "declarationRange": {
+              "start": {
+                "line": 1,
+                "character": 0
+              },
+              "end": {
+                "line": 1,
+                "character": 14
+              }
+            }
+          },
+          {
+            "name": "internalOffset",
+            "group": "",
+            "description": "",
+            "defaultValue": 0.01,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 2,
+                "character": 0
+              },
+              "end": {
+                "line": 2,
+                "character": 20
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "46c263ff-0d38-4428-b2a2-c6c4de40eef6",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "edits": [
+        {
+          "description": "Width in millimeters",
+          "kind": "annotateExisting",
+          "name": "width",
+          "range": {
+            "max": 100,
+            "min": 10
+          }
+        }
+      ],
+      "identity": {
+        "sha256": "91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad",
+        "version": 1
+      },
+      "mode": "plan",
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-09T08:42:58.992Z",
+    "output": {
+      "ok": false,
+      "capabilityId": "customizer.sourceApply",
+      "error": {
+        "code": "INVALID_INPUT",
+        "message": "data/edits/0 must have required property 'widget', data/edits/0 must have required property 'widget', data/edits/0 must have required property 'defaultValue', data/edits/0/kind must be equal to constant, data/edits/0 must have required property 'widget', data/edits/0/kind must be equal to constant, data/edits/0 must have required property 'group', data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0 must match exactly one schema in oneOf",
+        "retryable": false
+      },
+      "operation": null
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "edits": [
+        {
+          "group": "Dimensions",
+          "kind": "annotateExisting",
+          "name": "width",
+          "range": {
+            "max": 100,
+            "min": 10
+          },
+          "widget": "slider"
+        }
+      ],
+      "identity": {
+        "sha256": "91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad",
+        "version": 1
+      },
+      "mode": "plan",
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-09T08:43:15.172Z",
+    "output": {
+      "ok": false,
+      "capabilityId": "customizer.sourceApply",
+      "error": {
+        "code": "NEEDS_MANUAL_REVIEW",
+        "message": "Moving this ungrouped parameter would change following parameters. Group later targets first.",
+        "retryable": false
+      },
+      "operation": {
+        "id": "9b406c2b-c21b-4264-acd4-5d10c32416cb",
+        "capabilityId": "customizer.sourceApply",
+        "status": "failed",
+        "error": {
+          "code": "NEEDS_MANUAL_REVIEW",
+          "message": "Moving this ungrouped parameter would change following parameters. Group later targets first.",
+          "retryable": false
+        }
+      }
+    }
+  }
+]

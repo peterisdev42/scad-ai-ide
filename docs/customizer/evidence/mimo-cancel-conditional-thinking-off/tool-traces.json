@@ -1,0 +1,739 @@
+[
+  {
+    "capability": "customizer.state",
+    "input": {},
+    "started": "2026-11-10T07:42:37.949Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.state",
+      "revision": 1,
+      "data": {
+        "target": "file://<fixture>/workspace/model.scad",
+        "revision": 1,
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "",
+            "defaultValue": 40,
+            "value": 40
+          }
+        ],
+        "presets": {
+          "readOnly": false,
+          "diagnostics": [],
+          "names": [],
+          "active": "",
+          "modified": false,
+          "filename": "",
+          "exists": false
+        },
+        "analysis": {
+          "complete": true,
+          "incompleteReasons": []
+        },
+        "overridesEditSource": false
+      },
+      "operation": {
+        "id": "bcf2dbbf-ef3d-44e0-8e6d-97844431c068",
+        "capabilityId": "customizer.state",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "uri": "file://<fixture>/workspace/model.scad",
+      "includeCandidates": true,
+      "maxDiagnostics": 50
+    },
+    "started": "2026-11-10T07:43:10.561Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "d100f5011416f1dfdae4ca9dd4a0fb46c627a8ea02f10d167ba3fe36a06bade6"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "",
+            "defaultValue": 40,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "7ffb2246-09a1-4791-af8b-c811b6e9c1ea",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "mode": "plan",
+      "uri": "file://<fixture>/workspace/model.scad",
+      "identity": {
+        "sha256": "d100f5011416f1dfdae4ca9dd4a0fb46c627a8ea02f10d167ba3fe36a06bade6",
+        "version": 1
+      },
+      "edits": [
+        {
+          "description": "Width in millimeters",
+          "group": "Dimensions",
+          "kind": "changeWidget",
+          "name": "width",
+          "range": {
+            "max": 100,
+            "min": 10,
+            "step": 5
+          },
+          "widget": "slider"
+        }
+      ]
+    },
+    "started": "2026-11-10T07:43:19.515Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceApply",
+      "data": {
+        "planId": "eed7f3b4-001a-4a02-9218-38bfd6fe428a",
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "d100f5011416f1dfdae4ca9dd4a0fb46c627a8ea02f10d167ba3fe36a06bade6"
+        },
+        "summary": "Update Customizer source: width",
+        "preview": [
+          {
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 0
+              }
+            },
+            "before": "",
+            "after": "/* [Dimensions] */\n// Width in millimeters\n"
+          },
+          {
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 9
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            },
+            "before": "",
+            "after": " // [10:5:100]"
+          }
+        ],
+        "validation": {
+          "sourceStatus": {
+            "status": "complete",
+            "reasons": []
+          },
+          "contractStatus": "matched",
+          "qualityStatus": "clear",
+          "semanticPass": true,
+          "checked": 1,
+          "matched": 1,
+          "expectationResults": [
+            {
+              "parameter": "width",
+              "matched": true,
+              "issues": [],
+              "details": [],
+              "range": {
+                "start": {
+                  "line": 2,
+                  "character": 0
+                },
+                "end": {
+                  "line": 2,
+                  "character": 9
+                }
+              }
+            }
+          ],
+          "omittedExpectations": 0,
+          "diagnostics": [],
+          "omittedDiagnostics": 0,
+          "runtimeCheck": {
+            "status": "notRequested"
+          },
+          "guiCheck": {
+            "status": "notRequested"
+          },
+          "complete": true,
+          "pass": true
+        },
+        "expiresInSeconds": 120,
+        "continuation": {
+          "tool": "scad_ai_ide_customizer_sourceApply",
+          "input": {
+            "mode": "commit",
+            "planId": "eed7f3b4-001a-4a02-9218-38bfd6fe428a"
+          },
+          "requiresReview": true
+        }
+      },
+      "operation": {
+        "id": "9c4dc859-c742-4d06-ae59-7b19d1c5f0cf",
+        "capabilityId": "customizer.sourceApply",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "includeCandidates": true,
+      "maxDiagnostics": 50,
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T07:43:28.635Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "d100f5011416f1dfdae4ca9dd4a0fb46c627a8ea02f10d167ba3fe36a06bade6"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "",
+            "defaultValue": 40,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "12638edd-d2e3-42ce-a061-631b286653a3",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "edits": [
+        {
+          "description": "Width in millimeters",
+          "group": "Dimensions",
+          "kind": "changeWidget",
+          "name": "width",
+          "range": {
+            "max": 100,
+            "min": 10,
+            "step": 5
+          },
+          "widget": "slider"
+        }
+      ],
+      "identity": {
+        "sha256": "d100f5011416f1dfdae4ca9dd4a0fb46c627a8ea02f10d167ba3fe36a06bade6",
+        "version": 1
+      },
+      "mode": "plan",
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T07:43:36.844Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceApply",
+      "data": {
+        "planId": "46641f65-3564-4701-a636-d415511630f5",
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "d100f5011416f1dfdae4ca9dd4a0fb46c627a8ea02f10d167ba3fe36a06bade6"
+        },
+        "summary": "Update Customizer source: width",
+        "preview": [
+          {
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 0
+              }
+            },
+            "before": "",
+            "after": "/* [Dimensions] */\n// Width in millimeters\n"
+          },
+          {
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 9
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            },
+            "before": "",
+            "after": " // [10:5:100]"
+          }
+        ],
+        "validation": {
+          "sourceStatus": {
+            "status": "complete",
+            "reasons": []
+          },
+          "contractStatus": "matched",
+          "qualityStatus": "clear",
+          "semanticPass": true,
+          "checked": 1,
+          "matched": 1,
+          "expectationResults": [
+            {
+              "parameter": "width",
+              "matched": true,
+              "issues": [],
+              "details": [],
+              "range": {
+                "start": {
+                  "line": 2,
+                  "character": 0
+                },
+                "end": {
+                  "line": 2,
+                  "character": 9
+                }
+              }
+            }
+          ],
+          "omittedExpectations": 0,
+          "diagnostics": [],
+          "omittedDiagnostics": 0,
+          "runtimeCheck": {
+            "status": "notRequested"
+          },
+          "guiCheck": {
+            "status": "notRequested"
+          },
+          "complete": true,
+          "pass": true
+        },
+        "expiresInSeconds": 120,
+        "continuation": {
+          "tool": "scad_ai_ide_customizer_sourceApply",
+          "input": {
+            "mode": "commit",
+            "planId": "46641f65-3564-4701-a636-d415511630f5"
+          },
+          "requiresReview": true
+        }
+      },
+      "operation": {
+        "id": "5a23b795-3833-4e40-be0b-888ffb14c54c",
+        "capabilityId": "customizer.sourceApply",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.state",
+    "input": {},
+    "started": "2026-11-10T07:43:45.013Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.state",
+      "revision": 1,
+      "data": {
+        "target": "file://<fixture>/workspace/model.scad",
+        "revision": 1,
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "",
+            "defaultValue": 40,
+            "value": 40
+          }
+        ],
+        "presets": {
+          "readOnly": false,
+          "diagnostics": [],
+          "names": [],
+          "active": "",
+          "modified": false,
+          "filename": "",
+          "exists": false
+        },
+        "analysis": {
+          "complete": true,
+          "incompleteReasons": []
+        },
+        "overridesEditSource": false
+      },
+      "operation": {
+        "id": "5a6a2f80-9102-44f5-b963-99a453ae58a2",
+        "capabilityId": "customizer.state",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "edits": [
+        {
+          "description": "Width in millimeters",
+          "group": "Dimensions",
+          "kind": "changeWidget",
+          "name": "width",
+          "range": {
+            "max": 100,
+            "min": 10,
+            "step": 5
+          },
+          "widget": "slider"
+        }
+      ],
+      "identity": {
+        "sha256": "d100f5011416f1dfdae4ca9dd4a0fb46c627a8ea02f10d167ba3fe36a06bade6",
+        "version": 1
+      },
+      "mode": "plan",
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T07:43:58.264Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceApply",
+      "data": {
+        "planId": "3198f35a-89e4-4c8a-af63-9959c537005a",
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "d100f5011416f1dfdae4ca9dd4a0fb46c627a8ea02f10d167ba3fe36a06bade6"
+        },
+        "summary": "Update Customizer source: width",
+        "preview": [
+          {
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 0
+              }
+            },
+            "before": "",
+            "after": "/* [Dimensions] */\n// Width in millimeters\n"
+          },
+          {
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 9
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            },
+            "before": "",
+            "after": " // [10:5:100]"
+          }
+        ],
+        "validation": {
+          "sourceStatus": {
+            "status": "complete",
+            "reasons": []
+          },
+          "contractStatus": "matched",
+          "qualityStatus": "clear",
+          "semanticPass": true,
+          "checked": 1,
+          "matched": 1,
+          "expectationResults": [
+            {
+              "parameter": "width",
+              "matched": true,
+              "issues": [],
+              "details": [],
+              "range": {
+                "start": {
+                  "line": 2,
+                  "character": 0
+                },
+                "end": {
+                  "line": 2,
+                  "character": 9
+                }
+              }
+            }
+          ],
+          "omittedExpectations": 0,
+          "diagnostics": [],
+          "omittedDiagnostics": 0,
+          "runtimeCheck": {
+            "status": "notRequested"
+          },
+          "guiCheck": {
+            "status": "notRequested"
+          },
+          "complete": true,
+          "pass": true
+        },
+        "expiresInSeconds": 120,
+        "continuation": {
+          "tool": "scad_ai_ide_customizer_sourceApply",
+          "input": {
+            "mode": "commit",
+            "planId": "3198f35a-89e4-4c8a-af63-9959c537005a"
+          },
+          "requiresReview": true
+        }
+      },
+      "operation": {
+        "id": "f4a32813-b17c-4561-9681-335501140d5f",
+        "capabilityId": "customizer.sourceApply",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.state",
+    "input": {},
+    "started": "2026-11-10T07:44:06.261Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.state",
+      "revision": 1,
+      "data": {
+        "target": "file://<fixture>/workspace/model.scad",
+        "revision": 1,
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "",
+            "defaultValue": 40,
+            "value": 40
+          }
+        ],
+        "presets": {
+          "readOnly": false,
+          "diagnostics": [],
+          "names": [],
+          "active": "",
+          "modified": false,
+          "filename": "",
+          "exists": false
+        },
+        "analysis": {
+          "complete": true,
+          "incompleteReasons": []
+        },
+        "overridesEditSource": false
+      },
+      "operation": {
+        "id": "f1ef8aaa-bf82-4359-bc1f-1f57b0de5889",
+        "capabilityId": "customizer.state",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceValidate",
+    "input": {
+      "expectations": [
+        {
+          "description": "Width in millimeters",
+          "group": "Dimensions",
+          "name": "width",
+          "range": {
+            "max": 100,
+            "min": 10,
+            "step": 5
+          },
+          "type": "number",
+          "widget": "slider"
+        }
+      ],
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T07:44:12.533Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceValidate",
+      "data": {
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "d100f5011416f1dfdae4ca9dd4a0fb46c627a8ea02f10d167ba3fe36a06bade6"
+        },
+        "sourceStatus": {
+          "status": "complete",
+          "reasons": []
+        },
+        "contractStatus": "mismatch",
+        "qualityStatus": "clear",
+        "semanticPass": false,
+        "checked": 1,
+        "matched": 0,
+        "expectationResults": [
+          {
+            "parameter": "width",
+            "matched": false,
+            "issues": [
+              "Expected widget \"slider\"; actual \"spinbox\"",
+              "Expected group \"Dimensions\"; actual \"\"",
+              "Expected description \"Width in millimeters\"; actual \"\"",
+              "Range or step differs"
+            ],
+            "details": [
+              {
+                "code": "EXPECTED_WIDGET",
+                "message": "Expected widget \"slider\"; actual \"spinbox\"",
+                "range": {
+                  "start": {
+                    "line": 0,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 0,
+                    "character": 9
+                  }
+                }
+              },
+              {
+                "code": "EXPECTED_GROUP",
+                "message": "Expected group \"Dimensions\"; actual \"\"",
+                "range": {
+                  "start": {
+                    "line": 0,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 0,
+                    "character": 9
+                  }
+                }
+              },
+              {
+                "code": "EXPECTED_DESCRIPTION",
+                "message": "Expected description \"Width in millimeters\"; actual \"\"",
+                "range": {
+                  "start": {
+                    "line": 0,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 0,
+                    "character": 9
+                  }
+                }
+              },
+              {
+                "code": "EXPECTED_RANGE",
+                "message": "Range or step differs",
+                "range": {
+                  "start": {
+                    "line": 0,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 0,
+                    "character": 9
+                  }
+                }
+              }
+            ],
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            }
+          }
+        ],
+        "omittedExpectations": 0,
+        "diagnostics": [],
+        "omittedDiagnostics": 0,
+        "runtimeCheck": {
+          "status": "notRequested"
+        },
+        "guiCheck": {
+          "status": "notRequested"
+        },
+        "complete": true
+      },
+      "operation": {
+        "id": "f743ec66-1c3b-43e2-aa1c-9091475b5d9b",
+        "capabilityId": "customizer.sourceValidate",
+        "status": "succeeded"
+      }
+    }
+  }
+]

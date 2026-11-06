@@ -1,0 +1,41 @@
+{
+  "artifact": ".build/scad-ai-ide-customizer-architecture-v2.vsix",
+  "bytes": 4531661,
+  "sha256": "8c5f3cc21b32ffa24e4bcf30e956ab118dc726102ca645c658c5ca5073761164",
+  "verifiedManifest": {
+    "tools": 40,
+    "instructions": 2,
+    "skills": 5
+  },
+  "installedHost": "1.140.0",
+  "installedSmoke": "PASS",
+  "installedEvidence": "evidence/installed-adr10-final.txt",
+  "nativeAgent": "Prior qwen3.5:2b-mlx runs failed/partial on their separately recorded artifact; current ADR10 artifact has not been claimed to pass native model acceptance.",
+  "unverified": [
+    "Windows Unicode library include path: actual CI failed",
+    "Remote SSH/WSL/Container",
+    "full pinned binary",
+    "all GUI/Preset service heap lifecycle",
+    "Exact pinned CLI build workflow added but not yet executed; exact pinned Qt/full GUI profile not verified"
+  ],
+  "crossPlatformEvidence": {
+    "commit": "721bbf54291bfe160b48471aef3796dc37107872",
+    "agentRun": 42635584127,
+    "libraryRun": 42635584407,
+    "scope": "Three-platform schema41/import10 and Agent contracts passed; explicit skips retained; Windows real Library Unicode includes FAILED"
+  },
+  "installedPresetSnapshot": {
+    "invalidRejectedBeforeWrite": true,
+    "rejectedStateUnchanged": true,
+    "validSnapshotReplayed": true,
+    "sourceUnchanged": true
+  },
+  "packagedFiles": 134,
+  "buildProfile": "Production package after Host build finished; workflows/scripts/evidence/private prefs excluded",
+  "nativeDesktop": {
+    "build": "2026.11.06 a81e8630",
+    "checksPassed": 12,
+    "evidence": "evidence/native-gui-2026-11-10/verified/manifest.json",
+    "scope": "Actual Qt controls and Preview echo, source buffer/disk and preference SHA unchanged; not all platforms/versions"
+  }
+}

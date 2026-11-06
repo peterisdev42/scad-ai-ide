@@ -1,0 +1,36 @@
+Native Agent evidence directory: <tmp>/customizer-native-agent-ynxyPy
+Installing extensions...
+Extension 'scad-ai-ide-customizer-architecture-v2.vsix' was successfully installed.
+
+DevTools listening on ws://127.0.0.1:52984/devtools/browser/b3889736-0661-4268-a726-9c894bd32414
+Warning: 'remote-debugging-port' is not in the list of known options, but still passed to Electron/Chromium.
+[main 2026-11-09T08:53:26.630Z] [node-compile-cache] main: packaged cache enabled (status: enabled, configured: <repo>/.vscode-test/vscode-darwin-arm64-1.145.2/Visual Studio Code.app/Contents/Resources/app/node-compile-cache/main, active: <repo>/.vscode-test/vscode-darwin-arm64-1.145.2/Visual Studio Code.app/Contents/Resources/app/node-compile-cache/main/v24.22.1-arm64-60e4fe36)
+[main 2026-11-09T08:53:26.656Z] StorageMainService: creating application shared storage
+[main 2026-11-09T08:53:26.787Z] [shared storage] Creating shared storage database at '<tmp>/customizer-native-agent-ynxyPy/shared/sharedStorage/state.vscdb' (wasCreated: true)
+[main 2026-11-09T08:53:26.787Z] [shared storage] Initializing fallback application storage (path: <tmp>/customizer-native-agent-ynxyPy/profile/User/globalStorage/state.vscdb)
+[main 2026-11-09T08:53:26.788Z] [shared storage] Fallback application storage initialized with 4 items
+[main 2026-11-09T08:53:26.788Z] update#setState disabled
+[main 2026-11-09T08:53:26.788Z] update#ctor - updates are disabled by the environment
+[main 2026-11-09T08:53:27.265Z] AgentHostProcessManager: agent host started
+[main 2026-11-09T08:53:27.549Z] [AgentHost:stderr] (node:24220) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `Code Helper --trace-deprecation ...` to show where the warning was created)
+
+Unknown channel: agentHostClientByokLm
+Unknown channel: agentHostClientProxy
+Unknown channel: agentHostClientProxy
+{"vscode":"1.145.2","extensionPath":"<tmp>/customizer-native-agent-ynxyPy/extensions/undefined_publisher.scad-ai-ide-0.0.1","bundleSha256":"818a4aabf481e530fa29d77502c241c81dbbebc9978eec2d092497db35c72b81","chatSettings":{"extensionUnification":false,"disableAI":false,"extensionTools":true},"nativeAgent":{"present":true,"active":true},"provider":{"id":"Ollama.ollama","version":"0.0.14"},"models":[{"id":"qwen3.5:2b-mlx","name":"qwen3.5:2b-mlx","vendor":"ollama-models"},{"id":"mimo-v2.6:latest","name":"mimo-v2.6:latest","vendor":"ollama-models"},{"id":"qwen3.5:2b-mlx","name":"qwen3.5:2b-mlx","vendor":"ollama-models"}]}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Confirmation budget exhausted
+    at file://<repo>/scripts/customizer-native-agent.mjs:154:20 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.16.0

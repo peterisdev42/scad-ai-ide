@@ -1,0 +1,5 @@
+{
+  "status": "PASS",
+  "scope": "Both unsupported cancellation entry flags fail before profile creation, model discovery or native host launch. No model test was run.",
+  "productBase": "64a64f3ce667d96911233d6cfe07a08316ef06e8"
+}

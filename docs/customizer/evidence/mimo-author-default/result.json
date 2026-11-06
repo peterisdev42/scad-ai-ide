@@ -1,0 +1,75 @@
+{
+  "scenario": "author",
+  "artifact": {
+    "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+    "bytes": 4531824,
+    "sha256": "ded44c0ec55f39a48008cded6323a950cc83d8bf8477bb1c0f62d09bb67ad555"
+  },
+  "timeoutMs": 360000,
+  "ready": {
+    "vscode": "1.145.2",
+    "extensionPath": "<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1",
+    "bundleSha256": "d25a2d769f1f2cbab4e23d9e5509e182ccb31e07a14da617581ba85f0ede82a2",
+    "chatSettings": {
+      "extensionUnification": false,
+      "disableAI": false,
+      "extensionTools": true
+    },
+    "nativeAgent": {
+      "present": true,
+      "active": true
+    },
+    "provider": {
+      "id": "Ollama.ollama",
+      "version": "0.0.14"
+    },
+    "models": [
+      {
+        "id": "qwen3.5:2b-mlx",
+        "name": "qwen3.5:2b-mlx",
+        "vendor": "ollama-models"
+      },
+      {
+        "id": "mimo-v2.6:latest",
+        "name": "mimo-v2.6:latest",
+        "vendor": "ollama-models"
+      },
+      {
+        "id": "mimo-v2.6:latest",
+        "name": "mimo-v2.6:latest",
+        "vendor": "ollama-models"
+      }
+    ]
+  },
+  "response": {
+    "snapshot": true,
+    "cancelledForSnapshot": true,
+    "stopReason": "observationDeadline",
+    "buffer": "width=40;\nshape=\"round\";\ninternalOffset=0.01;\nmodule model() { cube([width,2,3]); }\nmodel();\n",
+    "dirty": false,
+    "operations": {
+      "total": 2,
+      "offset": 0,
+      "hasMore": false,
+      "nextOffset": null,
+      "operations": [
+        {
+          "id": "cdc45be1-ebed-4655-bba5-f4d2b13b265d",
+          "capabilityId": "customizer.sourceValidate",
+          "status": "succeeded"
+        },
+        {
+          "id": "9fe79f45-0955-4145-ab57-dbdcb58bbebc",
+          "capabilityId": "customizer.sourceAnalyze",
+          "status": "succeeded"
+        }
+      ]
+    }
+  },
+  "timedOut": true,
+  "interrupted": false,
+  "requestFinished": false,
+  "nativeAgent": true,
+  "confirmationsAutomaticallyApproved": false,
+  "approvals": []
+}

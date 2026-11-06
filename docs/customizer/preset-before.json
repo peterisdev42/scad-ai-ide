@@ -1,0 +1,36 @@
+{
+  "fixtureSource": "{\"fileFormatVersion\":\"1\",\"extra\":{\"keep\":true},\"parameterSets\":{\"A\":{\"width\":\"30\"},\"B\":{\"height\":\"40\"}}}",
+  "io": "injected-read-only",
+  "results": [
+    {
+      "selected": "A",
+      "overrides": {
+        "width": 30
+      },
+      "values": {
+        "width": 30,
+        "height": 20
+      }
+    },
+    {
+      "selected": "B",
+      "overrides": {
+        "width": 30,
+        "height": 40
+      },
+      "values": {
+        "width": 30,
+        "height": 40
+      }
+    },
+    {
+      "selected": "Design default",
+      "overrides": {},
+      "values": {
+        "width": 10,
+        "height": 20
+      }
+    }
+  ],
+  "confirmedResidual": true
+}

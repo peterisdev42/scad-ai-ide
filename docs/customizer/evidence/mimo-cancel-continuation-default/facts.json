@@ -1,0 +1,250 @@
+{
+  "scenario": "cancel",
+  "nativeAgent": true,
+  "requestedModel": "mimo-v2.6:latest",
+  "modelIdentity": {
+    "name": "mimo-v2.6:latest",
+    "digest": "0af2fcf0cdba6e967700d7660a35c2ae905be1680d9afb3d377f6e61dbd1dfc0",
+    "size": 8711267221,
+    "modifiedAt": "2026-11-06T10:01:27.986857626+08:00"
+  },
+  "inferenceProfile": "Official provider directly to the local server; no sampling override in this harness",
+  "ollamaEndpoint": "http://127.0.0.1:11434",
+  "model": [
+    {
+      "id": "mimo-v2.6:latest",
+      "name": "mimo-v2.6:latest",
+      "vendor": "ollama-models"
+    },
+    {
+      "id": "mimo-v2.6:latest",
+      "name": "mimo-v2.6:latest",
+      "vendor": "ollama-models"
+    }
+  ],
+  "artifact": {
+    "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+    "bytes": 4533358,
+    "sha256": "242c5671cf6fa6e1703f3c0690f4fb8006d211ca3014f322cb3ba26573159f03"
+  },
+  "requestFinished": false,
+  "timedOut": true,
+  "interrupted": false,
+  "controllerOutcomeMissing": false,
+  "sourceDiskUnchanged": true,
+  "sourceBufferObserved": true,
+  "sourceBufferUnchanged": true,
+  "actualBusinessToolInvocations": 5,
+  "actualCustomizerToolInvocations": 5,
+  "customizerDispatcherMetrics": {
+    "total": 5,
+    "okTrue": 3,
+    "okFalse": 2,
+    "okRate": 0.6,
+    "semanticPassTrue": 0,
+    "semanticPassFalse": 1,
+    "scope": "Observed Customizer dispatcher calls only. Excludes built-in tool outcomes and requests rejected before dispatch. Expected business refusals count as ok=false. Invocation ok=true is not task success or target match."
+  },
+  "nativeToolRequestMetadataAvailable": false,
+  "nativeToolRequestSource": "persisted-native-transcript",
+  "nativeToolRequests": [
+    {
+      "name": "read_file",
+      "id": "call_ohnzxre7",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "read_file",
+      "id": "call_20h1qlx8",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "read_file",
+      "id": "call_5ku2st9e",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "read_file",
+      "id": "call_8bv3awde",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "read_file",
+      "id": "call_s1o8daw9",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "grep_search",
+      "id": "call_ufa8cql5",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "grep_search",
+      "id": "call_95nr0hq2",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "read_file",
+      "id": "call_7cpfpjnv",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "read_file",
+      "id": "call_qlzqczpm",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceAnalyze",
+      "id": "call_7h5vflkm",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_wtrb0yw0",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_cpngb9vd",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_o9klo0pp",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_23xf9lxn",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_kyd88dvd",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_vnypszwv",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_d27v9eq3",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceValidate",
+      "id": "call_s7gi3et7",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_f3kcsg4r",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_ayfckga9",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_1dpsc9qd",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_3cs7lgwr",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_nbra2ncf",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_en6lem54",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_5phimc07",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_cncba6u1",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_0k3carny",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_rf7fkjut",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_h1wdn37s",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_f26qa0dc",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_9usiif2m",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_ss5osjdv",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_ygtpx897",
+      "hostSchemaRejected": null
+    }
+  ],
+  "nativeHostSchemaRejections": null,
+  "nativeToolMetadataScope": "Observed final-response metadata or persisted native transcript requests; not necessarily the complete conversation. Host rejection count is unknown without result metadata. Generated requests are not dispatcher execution or successful edits.",
+  "calls": [
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "mode": "plan",
+      "ok": true
+    },
+    {
+      "capability": "customizer.sourceValidate",
+      "ok": true,
+      "semanticPass": false,
+      "complete": true
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "mode": "commit",
+      "ok": false,
+      "errorCode": "INVALID_INPUT"
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "mode": "commit",
+      "ok": false,
+      "errorCode": "INVALID_INPUT"
+    }
+  ],
+  "acceptance": "REQUIRES REVIEW: these are observations, not a model acceptance PASS"
+}

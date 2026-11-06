@@ -1,3 +1,4 @@
+import type { CustomizerDomainService } from '../sidebar/CustomizerDomainService'
 import { libraryEnvironment } from '../../platform/libraries/LibraryEnvironment'
 import * as vscode from 'vscode'
 import { RuntimeUnavailableError } from '../../core/runtime/errors'
@@ -12,10 +13,10 @@ import { ScadPreviewEditorProvider } from './extension/views/ScadPreviewEditorPr
 import { configureMeshTopologyWorker } from '../../core/formats/meshTopology'
 import { registerPreviewExporter } from './extension/services/PreviewExporter'
 
-export function registerPreview(context: vscode.ExtensionContext, runtime: ReturnType<typeof registerRuntime>, customizer: CustomizerService) {
+export function registerPreview(context: vscode.ExtensionContext, runtime: ReturnType<typeof registerRuntime>, customizer: CustomizerService, domain?: CustomizerDomainService) {
     registerPreviewExporter(context)
     configureMeshTopologyWorker(vscode.Uri.joinPath(context.extensionUri, 'dist', 'mesh-topology-worker.mjs').fsPath)
-    const sessions = new ScadSessionManager(customizer)
+    const sessions = new ScadSessionManager(customizer, domain)
     const runtimeIdentity = () => {
         const active = runtime.getActiveRuntime()
         return active ? JSON.stringify({ id: active.id, version: active.version, command: active.command }) : undefined

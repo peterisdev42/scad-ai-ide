@@ -1,0 +1,87 @@
+[
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T03:22:21.130Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "",
+            "defaultValue": 40,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            }
+          },
+          {
+            "name": "shape",
+            "group": "",
+            "description": "",
+            "defaultValue": "round",
+            "widget": "textbox",
+            "declarationRange": {
+              "start": {
+                "line": 1,
+                "character": 0
+              },
+              "end": {
+                "line": 1,
+                "character": 14
+              }
+            }
+          },
+          {
+            "name": "internalOffset",
+            "group": "",
+            "description": "",
+            "defaultValue": 0.01,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 2,
+                "character": 0
+              },
+              "end": {
+                "line": 2,
+                "character": 20
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "58ef3e42-f7e5-4e23-b775-bcfe16092c6b",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  }
+]

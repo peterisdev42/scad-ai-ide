@@ -1,0 +1,370 @@
+{
+  "scenario": "tail",
+  "nativeAgent": true,
+  "requestedModel": "mimo-v2.6:latest",
+  "modelIdentity": {
+    "name": "mimo-v2.6:latest",
+    "digest": "0af2fcf0cdba6e967700d7660a35c2ae905be1680d9afb3d377f6e61dbd1dfc0",
+    "size": 8711267221,
+    "modifiedAt": "2026-11-06T10:01:27.986857626+08:00"
+  },
+  "requestedThinkingLevel": false,
+  "thinkingMetadata": {
+    "values": [
+      false,
+      true
+    ],
+    "default": true
+  },
+  "observedThinkingLevels": {
+    "mimo-v2.6:latest": false
+  },
+  "inferenceProfile": "Official Ollama provider supported thinkingLevels=false in isolated profile; full tasks/tools retained; sampling/context unchanged; no global settings changed",
+  "ollamaEndpoint": "http://127.0.0.1:11434",
+  "model": [
+    {
+      "id": "mimo-v2.6:latest",
+      "name": "mimo-v2.6:latest",
+      "vendor": "ollama-models"
+    },
+    {
+      "id": "mimo-v2.6:latest",
+      "name": "mimo-v2.6:latest",
+      "vendor": "ollama-models"
+    }
+  ],
+  "artifact": {
+    "file": "scad-ai-ide-customizer-conditional-guidance.vsix",
+    "bytes": 4533531,
+    "sha256": "4793d7b4e4c6cc96bb130f24cdd3b84dca6b29a1f8351ee444f06238408bc4c5"
+  },
+  "requestFinished": false,
+  "terminalReason": "observationControllerError",
+  "controllerOutcomeMissing": false,
+  "sourceDiskUnchanged": true,
+  "sourceBufferObserved": false,
+  "sourceBufferUnchanged": null,
+  "actualBusinessToolInvocations": 9,
+  "actualCustomizerToolInvocations": 9,
+  "customizerDispatcherMetrics": {
+    "total": 9,
+    "okTrue": 1,
+    "okFalse": 8,
+    "okRate": 0.1111111111111111,
+    "semanticPassTrue": 0,
+    "semanticPassFalse": 0,
+    "scope": "Observed Customizer dispatcher calls only. Excludes built-in tool outcomes and requests rejected before dispatch. Expected business refusals count as ok=false. Invocation ok=true is not task success or target match."
+  },
+  "nativeToolRequestMetadataAvailable": false,
+  "nativeToolRequestSource": "persisted-native-transcript",
+  "nativeToolRequests": [
+    {
+      "name": "read_file",
+      "id": "call_kjfr2v5n",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "read_file",
+      "id": "call_vxyoye7t",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceAnalyze",
+      "id": "call_xyagtk7f",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_j7f3wq0p",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_1yp14y4n",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_tavely5z",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_und8v3p2",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_blcovrtg",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_5czrn18n",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_w9aa9txr",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_z50pmwn4",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_hwzy81sj",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_cjg9fyt4",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_3m4q070d",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_v2bb6w3z",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_gkg6ncts",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_o1bq1p27",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_40suihpz",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_tb9btezf",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_8fvjf0qz",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_9vcpob4e",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_c3rxjjhr",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_1jd3uzpx",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_bo49xs6k",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_kkho1v35",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_vubjic0c",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_rurzi74y",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_izkpjm10",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_333lgsjf",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_p0hxvnqu",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_d6epzzi0",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_hu6amcke",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_tjac1y5c",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_w7iyaeq7",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_o03mcuz0",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_3ek34in2",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_wpxtjp6g",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_ej9ykany",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_j1o6pi03",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_3nt4tl0h",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_9in56c5q",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_anon7zwu",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_dlphgurv",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_96x6shqx",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_1gqgzahj",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_h2pllcps",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_zd02a345",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_0k9gc2e6",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_8gxg0afk",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_61kyuk4s",
+      "hostSchemaRejected": null
+    }
+  ],
+  "nativeHostSchemaRejections": null,
+  "nativeToolMetadataScope": "Observed final-response metadata or persisted native transcript requests; not necessarily the complete conversation. Host rejection count is unknown without result metadata. Generated requests are not dispatcher execution or successful edits.",
+  "calls": [
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "mode": "plan",
+      "ok": false,
+      "errorCode": "NEEDS_MANUAL_REVIEW"
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "mode": "plan",
+      "ok": false,
+      "errorCode": "INVALID_INPUT"
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "mode": "plan",
+      "ok": false,
+      "errorCode": "INVALID_INPUT"
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "mode": "plan",
+      "ok": false,
+      "errorCode": "INVALID_INPUT"
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "mode": "plan",
+      "ok": false,
+      "errorCode": "INVALID_INPUT"
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "mode": "plan",
+      "ok": false,
+      "errorCode": "INVALID_INPUT"
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "mode": "plan",
+      "ok": false,
+      "errorCode": "INVALID_INPUT"
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "mode": "plan",
+      "ok": false,
+      "errorCode": "INVALID_INPUT"
+    }
+  ],
+  "acceptance": "REQUIRES REVIEW: these are observations, not a model acceptance PASS"
+}

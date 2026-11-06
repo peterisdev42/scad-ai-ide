@@ -1,0 +1,16 @@
+{
+  "scope": "Actual native Qt controls and runtime echo; not full pinned binary or IDE parity",
+  "records": [
+    {
+      "id": "default-display",
+      "status": "PASS",
+      "echo": "ECHO: width = 120, offgrid = 12, spin = 1.25, shape = \"round\", text = \"abcdef\", checked = true, vector = [1, 2, 3]"
+    },
+    {
+      "id": "preset-A",
+      "status": "FAIL",
+      "error": "Command failed: <repo>/.build/customizer-native-control 98912 <repo>/.build/customizer-native-gui/mount/OpenSCAD.app preset A\nNative control error: Error Domain=NativeControl Code=20 \"Target control is not in the frontmost window at the click point\" UserInfo={NSLocalizedDescription=Target control is not in the frontmost window at the click point}\n",
+      "observedEcho": "ECHO: width = 120, offgrid = 12, spin = 1.25, shape = \"round\", text = \"abcdef\", checked = true, vector = [1, 2, 3]"
+    }
+  ]
+}

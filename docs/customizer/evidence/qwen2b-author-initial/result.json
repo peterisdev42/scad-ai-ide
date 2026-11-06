@@ -1,0 +1,82 @@
+{
+  "scenario": "author",
+  "ready": {
+    "vscode": "1.145.2",
+    "extensionPath": "<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1",
+    "bundleSha256": "818a4aabf481e530fa29d77502c241c81dbbebc9978eec2d092497db35c72b81",
+    "chatSettings": {
+      "extensionUnification": false,
+      "disableAI": false,
+      "extensionTools": true
+    },
+    "nativeAgent": {
+      "present": true,
+      "active": true
+    },
+    "provider": {
+      "id": "Ollama.ollama",
+      "version": "0.0.14"
+    },
+    "models": [
+      {
+        "id": "qwen3.5:2b-mlx",
+        "name": "qwen3.5:2b-mlx",
+        "vendor": "ollama-models"
+      },
+      {
+        "id": "mimo-v2.6:latest",
+        "name": "mimo-v2.6:latest",
+        "vendor": "ollama-models"
+      },
+      {
+        "id": "qwen3.5:2b-mlx",
+        "name": "qwen3.5:2b-mlx",
+        "vendor": "ollama-models"
+      }
+    ]
+  },
+  "response": {
+    "snapshot": true,
+    "buffer": "width=40;\nshape=\"round\";\ninternalOffset=0.01;\nmodule model() { cube([width,2,3]); }\nmodel();\n",
+    "dirty": false,
+    "operations": {
+      "total": 2,
+      "offset": 0,
+      "hasMore": false,
+      "nextOffset": null,
+      "operations": [
+        {
+          "id": "9b406c2b-c21b-4264-acd4-5d10c32416cb",
+          "capabilityId": "customizer.sourceApply",
+          "status": "failed",
+          "error": {
+            "code": "NEEDS_MANUAL_REVIEW",
+            "message": "Moving this ungrouped parameter would change following parameters. Group later targets first.",
+            "retryable": false
+          }
+        },
+        {
+          "id": "46c263ff-0d38-4428-b2a2-c6c4de40eef6",
+          "capabilityId": "customizer.sourceAnalyze",
+          "status": "succeeded"
+        }
+      ]
+    }
+  },
+  "timedOut": true,
+  "requestFinished": false,
+  "nativeAgent": true,
+  "confirmationsAutomaticallyApproved": true,
+  "approvals": [
+    {
+      "tool": "run_in_terminal",
+      "decision": "skip",
+      "scope": "Unrecognized action was not approved",
+      "argumentsObserved": {
+        "command": "scad_ai_ide_customizer_sourceAnalyze uri=\"file://<fixture>/workspace/model.scad\"",
+        "goal": "获取文件分析信息，包括实际控件、默认值、候选者、源行号和诊断信息"
+      },
+      "displayedInput": "d"
+    }
+  ]
+}

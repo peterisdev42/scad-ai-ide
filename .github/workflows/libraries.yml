@@ -28,24 +28,60 @@ jobs:
                   node-version: '24'
                   cache: npm
             - run: npm ci
-            - name: Install OpenSCAD (Linux)
+            - name: Install verified managed OpenSCAD CLI (Linux)
               if: runner.os == 'Linux'
               run: |
                   sudo apt-get update
-                  sudo apt-get install -y openscad
+                  sudo apt-get install -y libegl1 libgl1 libopengl0
+                  customizer_archive="$RUNNER_TEMP/openscad-cli-linux-x86_64.tar.gz"
+                  customizer_runtime="$RUNNER_TEMP/customizer-native-runtime"
+                  curl --fail --location --silent --show-error 'https://github.com/peterisdev42/openscad-cli-builder/releases/download/openscad-2026.11-RC0/openscad-cli-linux-x86_64.tar.gz' -o "$customizer_archive"
+                  echo "c039d2fac28296b467dc6d85281a76e6a1b13bf078596a402ee34ee9ac8aed0f  $customizer_archive" | sha256sum --check
+                  mkdir -p "$customizer_runtime"
+                  tar -xzf "$customizer_archive" -C "$customizer_runtime"
+                  echo "SCAD_OPENSCAD_EXECUTABLE=$customizer_runtime/openscad-cli-linux-x86_64/bin/openscad" >> "$GITHUB_ENV"
             - name: Install OpenSCAD (macOS)
               if: runner.os == 'macOS'
-              run: brew install --cask openscad@snapshot
-            - name: Install OpenSCAD (Windows)
+              run: |
+                  brew install --cask openscad@snapshot
+                  echo "SCAD_OPENSCAD_EXECUTABLE=$(command -v openscad)" >> "$GITHUB_ENV"
+            - name: Install verified managed OpenSCAD CLI (Windows)
               if: runner.os == 'Windows'
               shell: pwsh
               run: |
-                  winget install --id OpenSCAD.OpenSCAD -e --accept-source-agreements --accept-package-agreements --silent
-                  'SCAD_OPENSCAD_EXECUTABLE=C:\Program Files\OpenSCAD\openscad.exe' >> $env:GITHUB_ENV
+                  $archive = Join-Path $env:RUNNER_TEMP 'openscad-cli-windows-x86_64.zip'
+                  $runtime = Join-Path $env:RUNNER_TEMP 'customizer-native-runtime'
+                  Invoke-WebRequest 'https://github.com/peterisdev42/openscad-cli-builder/releases/download/openscad-2026.11-RC0/openscad-cli-windows-x86_64.zip' -OutFile $archive
+                  $digest = (Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+                  if ($digest -ne '8e17ce1f39a6b32ad6c710076f86037a74fda27c4110c70f613c649945c7c436') { throw 'OpenSCAD archive checksum mismatch' }
+                  Expand-Archive $archive -DestinationPath $runtime
+                  $executable = Join-Path $runtime 'openscad-cli-windows-x86_64/bin/openscad.exe'
+                  "SCAD_OPENSCAD_EXECUTABLE=$executable" >> $env:GITHUB_ENV
+                  & $executable --version
             - run: npm run check-types
             - run: npm run lint
-            - run: npm run test:libraries
             - run: npm run compile-tests
+            - name: Check native Customizer parity
+              shell: bash
+              run: |
+                  mkdir -p .build
+                  node scripts/customizer-native-audit.mjs "$SCAD_OPENSCAD_EXECUTABLE" .build/customizer-native.json --strict
+                  node scripts/customizer-native-import-audit.mjs "$SCAD_OPENSCAD_EXECUTABLE" .build/customizer-native-import.json
+            - name: Diagnose Windows Unicode library environment
+              if: runner.os == 'Windows'
+              shell: bash
+              run: node scripts/customizer-windows-environment-probe.mjs "$SCAD_OPENSCAD_EXECUTABLE" .build/customizer-windows-environment.json
+            - run: npm run test:libraries
+            - name: Preserve native comparison
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: native-customizer-${{ runner.os }}
+                  path: |
+                      .build/customizer-native.json
+                      .build/customizer-native-import.json
+                      .build/customizer-windows-environment.json
+                  if-no-files-found: warn
             - name: Save test report context
               if: always()
               shell: bash

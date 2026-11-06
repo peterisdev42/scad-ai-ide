@@ -1,0 +1,590 @@
+Installing extensions...
+Extension 'scad-ai-ide-customizer-architecture-v2.vsix' was successfully installed.
+[main 2026-11-10T03:20:53.314Z] [node-compile-cache] main: packaged cache inactive (status: disabled, configured: <repo>/.vscode-test/vscode-darwin-arm64-1.140.0/Visual Studio Code.app/Contents/Resources/app/node-compile-cache/main, active: none)
+[main 2026-11-10T03:20:53.332Z] StorageMainService: creating application shared storage
+[main 2026-11-10T03:20:53.424Z] [shared storage] Creating shared storage database at ':memory:' (wasCreated: true)
+[main 2026-11-10T03:20:53.425Z] [shared storage] Initializing fallback application storage (path: in-memory)
+[main 2026-11-10T03:20:53.496Z] [shared storage] Fallback application storage initialized with 3 items
+[main 2026-11-10T03:20:53.497Z] update#setState disabled
+[main 2026-11-10T03:20:53.497Z] update#ctor - updates are disabled by the environment
+[RemoteAgentHost] Reconciling: desired=[], current=[]
+[AgentHost:renderer] Acquiring MessagePort to agent host...
+[main 2026-11-10T03:20:53.907Z] AgentHostProcessManager: agent host started
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey=undefined conversationKey=undefined modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[AgentHost:renderer] MessagePort acquired, creating client...
+Started local extension host with pid 42757.
+[main 2026-11-10T03:20:54.135Z] [AgentHost:stderr] (node:42753) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `Code Helper --trace-deprecation ...` to show where the warning was created)
+
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/Y2YxOWQxZTEtYmYyMC00NTMzLThmY2ItODAyNTY1YzAxZWY5" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[AgentHost:renderer] Protocol connection established; clientId=526fc172-b355-4a3e-aa96-ddae6af9e6bc
+Loading development extension at <temporary-path>
+Extension 'github.copilot-chat' appears in product.json but enables LESS API proposals than the extension wants.
+package.json (LOSES): agentSessionsWorkspace
+agentsWindowConfiguration
+chatDebug
+chatHooks
+envIsConnectionMetered
+extensionsAny
+newSymbolNamesProvider
+interactive
+codeActionAI
+activeComment
+commentReveal
+contribCommentThreadAdditionalMenu
+contribCommentsViewThreadMenus
+contribChatEditorInlineGutterMenu
+documentFiltersExclusive
+embeddings
+findTextInFiles
+findTextInFiles2
+languageModelToolSupportsModel
+findFiles2
+textSearchProvider
+terminalDataWriteEvent
+terminalExecuteCommandEvent
+terminalSelection
+terminalQuickFixProvider
+mappedEditsProvider
+aiRelatedInformation
+aiSettingsSearch
+chatParticipantAdditions
+defaultChatParticipant
+contribSourceControlInputBoxMenu
+authLearnMore
+authIssuers
+testObserver
+aiTextSearchProvider
+chatParticipantPrivate
+chatProvider
+contribDebugCreateConfiguration
+chatReferenceDiagnostic
+textSearchProvider2
+chatReferenceBinaryData
+languageModelSystem
+languageModelCapabilities
+languageModelPricing
+inlineCompletionsAdditions
+chatStatusItem
+chatInputNotification
+taskProblemMatcherStatus
+contribLanguageModelToolSets
+textDocumentChangeReason
+resolvers
+taskExecutionTerminal
+dataChannels
+languageModelThinkingPart
+chatSessionsProvider
+devDeviceId
+contribEditorContentMenu
+chatPromptFiles
+mcpServerDefinitions
+tabInputMultiDiff
+workspaceTrust
+environmentPower
+terminalTitle
+toolInvocationApproveCombination
+chatSessionCustomizationProvider
+product.json (WINS): agentSessionsWorkspace
+agentsWindowConfiguration
+interactive
+terminalDataWriteEvent
+terminalExecuteCommandEvent
+terminalSelection
+terminalQuickFixProvider
+chatParticipantAdditions
+defaultChatParticipant
+embeddings
+chatProvider
+mappedEditsProvider
+aiRelatedInformation
+aiSettingsSearch
+codeActionAI
+findTextInFiles
+findTextInFiles2
+textSearchProvider
+textSearchProvider2
+activeComment
+commentReveal
+contribSourceControlInputBoxMenu
+contribCommentEditorActionsMenu
+contribCommentThreadAdditionalMenu
+contribCommentsViewThreadMenus
+contribChatEditorInlineGutterMenu
+extensionAffinity
+newSymbolNamesProvider
+findFiles2
+chatReferenceDiagnostic
+extensionsAny
+authLearnMore
+testObserver
+aiTextSearchProvider
+documentFiltersExclusive
+chatParticipantPrivate
+contribDebugCreateConfiguration
+inlineCompletionsAdditions
+chatReferenceBinaryData
+languageModelSystem
+languageModelCapabilities
+languageModelThinkingPart
+languageModelToolSupportsModel
+chatStatusItem
+taskProblemMatcherStatus
+contribLanguageModelToolSets
+textDocumentChangeReason
+resolvers
+taskExecutionTerminal
+dataChannels
+chatSessionsProvider
+chatSessionCustomizationProvider
+devDeviceId
+contribEditorContentMenu
+tokenInformation
+toolInvocationApproveCombination
+chatPromptFiles
+mcpServerDefinitions
+tabInputMultiDiff
+workspaceTrust
+chatHooks
+chatDebug
+envIsConnectionMetered
+environmentPower
+terminalTitle
+languageModelPricing
+chatInputNotification
+DELTA: authIssuers
+Proceeding with EXTRA proposals (authIssuers) because extension is in development mode. Still, this EXTENSION WILL BE BROKEN unless product.json is updated.
+[AccountPolicyGate] apply: state=inactive, reason=undefined, isRestricted=false
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[RemoteAgentHost] Reconciling: desired=[], current=[]
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/Y2YxOWQxZTEtYmYyMC00NTMzLThmY2ItODAyNTY1YzAxZWY5" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/Y2YxOWQxZTEtYmYyMC00NTMzLThmY2ItODAyNTY1YzAxZWY5" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+Settings Sync: Account status changed from uninitialized to unavailable
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/Y2YxOWQxZTEtYmYyMC00NTMzLThmY2ItODAyNTY1YzAxZWY5" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+Unknown channel: agentHostClientByokLm
+Unknown channel: agentHostClientProxy
+Unknown channel: agentHostClientProxy
+[main 2026-11-10T03:20:56.003Z] Extension host with pid 42757 exited with code: 0, signal: unknown.
+Exit code:   0
+{
+  "vscode": "1.140.0",
+  "extension": "undefined_publisher.scad-ai-ide",
+  "toolCount": 40,
+  "availableChatModels": 0,
+  "productionDevDenied": true,
+  "sourceAuthoring": {
+    "analyzed": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file://<temporary-path>",
+          "version": 1,
+          "sha256": "aee2bb6ce9a771963a48dae91dcc6843080dbf30e9dfb0aef87941e5831b7348"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "",
+            "defaultValue": 40,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "9ce2a9d4-8716-4480-9942-5635183ea650",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    },
+    "unmet": {
+      "ok": true,
+      "capabilityId": "customizer.sourceValidate",
+      "data": {
+        "identity": {
+          "uri": "file://<temporary-path>",
+          "version": 1,
+          "sha256": "aee2bb6ce9a771963a48dae91dcc6843080dbf30e9dfb0aef87941e5831b7348"
+        },
+        "sourceStatus": {
+          "status": "complete",
+          "reasons": []
+        },
+        "contractStatus": "mismatch",
+        "qualityStatus": "clear",
+        "semanticPass": false,
+        "checked": 1,
+        "matched": 0,
+        "expectationResults": [
+          {
+            "parameter": "width",
+            "matched": false,
+            "issues": [
+              "Expected widget \"slider\"; actual \"spinbox\""
+            ],
+            "details": [
+              {
+                "code": "EXPECTED_WIDGET",
+                "message": "Expected widget \"slider\"; actual \"spinbox\"",
+                "range": {
+                  "start": {
+                    "line": 0,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 0,
+                    "character": 9
+                  }
+                }
+              }
+            ],
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            }
+          }
+        ],
+        "omittedExpectations": 0,
+        "diagnostics": [],
+        "omittedDiagnostics": 0,
+        "runtimeCheck": {
+          "status": "notRequested"
+        },
+        "guiCheck": {
+          "status": "notRequested"
+        },
+        "complete": true
+      },
+      "operation": {
+        "id": "84b684be-101b-40c2-ab82-19e79a0e7c13",
+        "capabilityId": "customizer.sourceValidate",
+        "status": "succeeded"
+      }
+    },
+    "planned": {
+      "ok": true,
+      "capabilityId": "customizer.sourceApply",
+      "data": {
+        "planId": "e89c26c9-16e9-4cbf-8fc3-a92099d9829f",
+        "identity": {
+          "uri": "file://<temporary-path>",
+          "version": 1,
+          "sha256": "aee2bb6ce9a771963a48dae91dcc6843080dbf30e9dfb0aef87941e5831b7348"
+        },
+        "summary": "Update Customizer source: width",
+        "preview": [
+          {
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 9
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            },
+            "before": "",
+            "after": " // [10:5:100]"
+          }
+        ],
+        "validation": {
+          "sourceStatus": {
+            "status": "complete",
+            "reasons": []
+          },
+          "contractStatus": "matched",
+          "qualityStatus": "clear",
+          "semanticPass": true,
+          "checked": 1,
+          "matched": 1,
+          "expectationResults": [
+            {
+              "parameter": "width",
+              "matched": true,
+              "issues": [],
+              "details": [],
+              "range": {
+                "start": {
+                  "line": 0,
+                  "character": 0
+                },
+                "end": {
+                  "line": 0,
+                  "character": 9
+                }
+              }
+            }
+          ],
+          "omittedExpectations": 0,
+          "diagnostics": [],
+          "omittedDiagnostics": 0,
+          "runtimeCheck": {
+            "status": "notRequested"
+          },
+          "guiCheck": {
+            "status": "notRequested"
+          },
+          "complete": true,
+          "pass": true
+        },
+        "expiresInSeconds": 120
+      },
+      "operation": {
+        "id": "bcb74ed9-c508-4711-a3db-92c8df244ed3",
+        "capabilityId": "customizer.sourceApply",
+        "status": "succeeded"
+      }
+    },
+    "committed": {
+      "ok": true,
+      "capabilityId": "customizer.sourceApply",
+      "data": {
+        "applied": true,
+        "identity": {
+          "uri": "file://<temporary-path>",
+          "version": 2,
+          "sha256": "4f5e8cba047a8b3a4c4edcbfc0a2155fb616b7c10b18a3db68c6da97b12839b6"
+        },
+        "changedParameters": [
+          "width"
+        ],
+        "postValidation": {
+          "sourceStatus": {
+            "status": "complete",
+            "reasons": []
+          },
+          "contractStatus": "matched",
+          "qualityStatus": "clear",
+          "semanticPass": true,
+          "checked": 1,
+          "matched": 1,
+          "expectationResults": [
+            {
+              "parameter": "width",
+              "matched": true,
+              "issues": [],
+              "details": [],
+              "range": {
+                "start": {
+                  "line": 0,
+                  "character": 0
+                },
+                "end": {
+                  "line": 0,
+                  "character": 9
+                }
+              }
+            }
+          ],
+          "omittedExpectations": 0,
+          "diagnostics": [],
+          "omittedDiagnostics": 0,
+          "runtimeCheck": {
+            "status": "notRequested"
+          },
+          "guiCheck": {
+            "status": "notRequested"
+          },
+          "complete": true,
+          "pass": true
+        },
+        "semanticPass": true,
+        "savedToDisk": false
+      },
+      "operation": {
+        "id": "a434fcd9-5924-4d2e-a772-1e286fbcc91b",
+        "capabilityId": "customizer.sourceApply",
+        "status": "succeeded"
+      }
+    },
+    "validated": {
+      "ok": true,
+      "capabilityId": "customizer.sourceValidate",
+      "data": {
+        "identity": {
+          "uri": "file://<temporary-path>",
+          "version": 2,
+          "sha256": "4f5e8cba047a8b3a4c4edcbfc0a2155fb616b7c10b18a3db68c6da97b12839b6"
+        },
+        "sourceStatus": {
+          "status": "complete",
+          "reasons": []
+        },
+        "contractStatus": "matched",
+        "qualityStatus": "clear",
+        "semanticPass": true,
+        "checked": 1,
+        "matched": 1,
+        "expectationResults": [
+          {
+            "parameter": "width",
+            "matched": true,
+            "issues": [],
+            "details": [],
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            }
+          }
+        ],
+        "omittedExpectations": 0,
+        "diagnostics": [],
+        "omittedDiagnostics": 0,
+        "runtimeCheck": {
+          "status": "notRequested"
+        },
+        "guiCheck": {
+          "status": "notRequested"
+        },
+        "complete": true
+      },
+      "operation": {
+        "id": "6032a3d7-e4fc-478f-8681-57ec55993ce0",
+        "capabilityId": "customizer.sourceValidate",
+        "status": "succeeded"
+      }
+    },
+    "singleUseRejected": true,
+    "unsavedSource": "width=40; // [10:5:100]\nmodule model() { cube([width,2,3]); }\n",
+    "diskUnchanged": true
+  },
+  "presetSnapshot": {
+    "invalidRejectedBeforeWrite": true,
+    "invalidErrorCode": "PRESET_INVALID_VALUE",
+    "rejectedStateUnchanged": true,
+    "validSnapshotReplayed": true,
+    "sourceUnchanged": true,
+    "sourceDirty": false
+  },
+  "panelsRequired": false,
+  "instructions": [
+    {
+      "path": "./instructions/openscad.instructions.md"
+    },
+    {
+      "path": "./instructions/openscad-customizer.instructions.md"
+    }
+  ],
+  "skills": [
+    {
+      "path": "./skills/openscad-runtime/SKILL.md"
+    },
+    {
+      "path": "./skills/openscad-libraries/SKILL.md"
+    },
+    {
+      "path": "./skills/openscad-customizer/SKILL.md"
+    },
+    {
+      "path": "./skills/openscad-customizer-authoring/SKILL.md"
+    },
+    {
+      "path": "./skills/scad-ai-ide-diagnostics/SKILL.md"
+    }
+  ]
+}
+Installed Production smoke PASS. Isolated evidence: <temporary-path>

@@ -1,0 +1,424 @@
+{
+  "scenario": "failure",
+  "artifact": {
+    "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+    "bytes": 4532700,
+    "sha256": "5cd831f6e9bbc2772be7db99f09f4e31fb15d26fc2745f81073223ec59cb652e"
+  },
+  "timeoutMs": 360000,
+  "ready": {
+    "vscode": "1.145.2",
+    "extensionPath": "<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1",
+    "bundleSha256": "818a4aabf481e530fa29d77502c241c81dbbebc9978eec2d092497db35c72b81",
+    "chatSettings": {
+      "extensionUnification": false,
+      "disableAI": false,
+      "extensionTools": true
+    },
+    "nativeAgent": {
+      "present": true,
+      "active": true
+    },
+    "provider": {
+      "id": "Ollama.ollama",
+      "version": "0.0.14"
+    },
+    "models": [
+      {
+        "id": "qwen3.5:2b-mlx",
+        "name": "qwen3.5:2b-mlx",
+        "vendor": "ollama-models"
+      },
+      {
+        "id": "mimo-v2.6:latest",
+        "name": "mimo-v2.6:latest",
+        "vendor": "ollama-models"
+      },
+      {
+        "id": "qwen3.5:2b-mlx",
+        "name": "qwen3.5:2b-mlx",
+        "vendor": "ollama-models"
+      }
+    ]
+  },
+  "response": {
+    "result": {
+      "errorDetails": {
+        "code": "unknown",
+        "message": "Sorry, no response was returned.",
+        "confirmationButtons": [
+          {
+            "data": {
+              "copilotContinueOnError": true
+            },
+            "label": "Try Again"
+          }
+        ],
+        "responseIsIncomplete": true
+      },
+      "timings": {
+        "firstProgress": 12405,
+        "totalElapsed": 34488
+      },
+      "metadata": {
+        "toolCallRounds": [
+          {
+            "response": "我来按步骤执行这个规范操作：",
+            "toolCalls": [
+              {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\",\"startLine\":1,\"endLine\":5}",
+                "id": "call_3043zr79__vscode-1794213895205"
+              }
+            ],
+            "toolInputRetry": 0,
+            "id": "338f5d7c-1333-46bd-8d8a-f21b392bfcfd",
+            "timestamp": 1794213908923,
+            "modelId": "qwen3.5:2b-mlx"
+          },
+          {
+            "response": "",
+            "toolCalls": [
+              {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\"}",
+                "id": "call_wyso1m5a__vscode-1794213895206"
+              }
+            ],
+            "toolInputRetry": 0,
+            "id": "34d1c5aa-e826-4451-bb31-76ee6456cc79",
+            "timestamp": 1794213920519,
+            "modelId": "qwen3.5:2b-mlx"
+          },
+          {
+            "response": "",
+            "toolCalls": [
+              {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\",\"startLine\":1}",
+                "id": "call_hjsgxa5o__vscode-1794213895207"
+              }
+            ],
+            "toolInputRetry": 1,
+            "id": "e62e4ade-cbee-4e38-9a4a-09eed01fab4e",
+            "timestamp": 1794213922104,
+            "modelId": "qwen3.5:2b-mlx"
+          },
+          {
+            "response": "",
+            "toolCalls": [
+              {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\"}",
+                "id": "call_r95172h8__vscode-1794213895208"
+              }
+            ],
+            "toolInputRetry": 2,
+            "id": "d6c28249-858c-44c7-b1a9-deaf1bbbf99b",
+            "timestamp": 1794213923641,
+            "modelId": "qwen3.5:2b-mlx"
+          },
+          {
+            "response": "",
+            "toolCalls": [
+              {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\"}",
+                "id": "call_wtntt2sa__vscode-1794213895209"
+              }
+            ],
+            "toolInputRetry": 3,
+            "id": "9f0c9aaa-5371-438b-b660-738dabdd9103",
+            "timestamp": 1794213925062,
+            "modelId": "qwen3.5:2b-mlx"
+          },
+          {
+            "response": "",
+            "toolCalls": [
+              {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\"}",
+                "id": "call_o2wsn7av__vscode-1794213895210"
+              }
+            ],
+            "toolInputRetry": 4,
+            "id": "b43d8cb3-5483-44d9-845d-6091b35ea612",
+            "timestamp": 1794213926324,
+            "modelId": "qwen3.5:2b-mlx"
+          },
+          {
+            "response": "",
+            "toolCalls": [
+              {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\",\"startLine\":1,\"endLine\":10}",
+                "id": "call_o73kuo9f__vscode-1794213895211"
+              }
+            ],
+            "toolInputRetry": 5,
+            "id": "0fe61a6a-4ef8-430b-9164-e618c290ba5f",
+            "timestamp": 1794213927907,
+            "modelId": "qwen3.5:2b-mlx"
+          }
+        ],
+        "toolCallResults": {
+          "call_3043zr79__vscode-1794213895205": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 23,
+                "value": {
+                  "node": {
+                    "type": 1,
+                    "ctor": 2,
+                    "ctorName": "iMe",
+                    "children": [
+                      {
+                        "type": 1,
+                        "ctor": 2,
+                        "ctorName": "Dn",
+                        "children": [
+                          {
+                            "type": 1,
+                            "ctor": 2,
+                            "ctorName": "z$e",
+                            "children": [
+                              {
+                                "type": 2,
+                                "priority": 3,
+                                "text": "width=40;\n",
+                                "references": [
+                                  {
+                                    "anchor": {
+                                      "$mid": 1,
+                                      "fsPath": "<fixture>/workspace/model.scad",
+                                      "external": "file://<fixture>/workspace/model.scad",
+                                      "path": "<fixture>/workspace/model.scad",
+                                      "scheme": "file"
+                                    },
+                                    "options": {
+                                      "isFromTool": true
+                                    }
+                                  }
+                                ],
+                                "lineBreakBefore": true
+                              }
+                            ],
+                            "props": {
+                              "priority": 3
+                            },
+                            "references": []
+                          },
+                          {
+                            "type": 1,
+                            "ctor": 2,
+                            "ctorName": "z$e",
+                            "children": [
+                              {
+                                "type": 2,
+                                "priority": 2,
+                                "text": "cube(width);\n",
+                                "references": [],
+                                "lineBreakBefore": true
+                              }
+                            ],
+                            "props": {
+                              "priority": 2
+                            },
+                            "references": []
+                          },
+                          {
+                            "type": 1,
+                            "ctor": 2,
+                            "ctorName": "z$e",
+                            "children": [
+                              {
+                                "type": 2,
+                                "priority": 3,
+                                "text": "",
+                                "references": [],
+                                "lineBreakBefore": true
+                              }
+                            ],
+                            "props": {
+                              "priority": 3
+                            },
+                            "references": []
+                          }
+                        ],
+                        "props": {},
+                        "references": []
+                      }
+                    ],
+                    "props": {},
+                    "references": []
+                  }
+                }
+              }
+            ]
+          },
+          "call_wyso1m5a__vscode-1794213895206": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must have required property 'startLine')\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_hjsgxa5o__vscode-1794213895207": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must have required property 'endLine')\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_r95172h8__vscode-1794213895208": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must have required property 'startLine')\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_wtntt2sa__vscode-1794213895209": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must have required property 'startLine')\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_o2wsn7av__vscode-1794213895210": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must have required property 'startLine')\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_o73kuo9f__vscode-1794213895211": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 23,
+                "value": {
+                  "node": {
+                    "type": 1,
+                    "ctor": 2,
+                    "ctorName": "iMe",
+                    "children": [
+                      {
+                        "type": 1,
+                        "ctor": 2,
+                        "ctorName": "Dn",
+                        "children": [
+                          {
+                            "type": 1,
+                            "ctor": 2,
+                            "ctorName": "z$e",
+                            "children": [
+                              {
+                                "type": 2,
+                                "priority": 3,
+                                "text": "width=40;\n",
+                                "references": [
+                                  {
+                                    "anchor": {
+                                      "$mid": 1,
+                                      "fsPath": "<fixture>/workspace/model.scad",
+                                      "external": "file://<fixture>/workspace/model.scad",
+                                      "path": "<fixture>/workspace/model.scad",
+                                      "scheme": "file"
+                                    },
+                                    "options": {
+                                      "isFromTool": true
+                                    }
+                                  }
+                                ],
+                                "lineBreakBefore": true
+                              }
+                            ],
+                            "props": {
+                              "priority": 3
+                            },
+                            "references": []
+                          },
+                          {
+                            "type": 1,
+                            "ctor": 2,
+                            "ctorName": "z$e",
+                            "children": [
+                              {
+                                "type": 2,
+                                "priority": 2,
+                                "text": "cube(width);\n",
+                                "references": [],
+                                "lineBreakBefore": true
+                              }
+                            ],
+                            "props": {
+                              "priority": 2
+                            },
+                            "references": []
+                          },
+                          {
+                            "type": 1,
+                            "ctor": 2,
+                            "ctorName": "z$e",
+                            "children": [
+                              {
+                                "type": 2,
+                                "priority": 3,
+                                "text": "",
+                                "references": [],
+                                "lineBreakBefore": true
+                              }
+                            ],
+                            "props": {
+                              "priority": 3
+                            },
+                            "references": []
+                          }
+                        ],
+                        "props": {},
+                        "references": []
+                      }
+                    ],
+                    "props": {},
+                    "references": []
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "modelMessageId": "bdbb53ec-b994-477b-b54e-cd5e5d60511f",
+        "responseId": "b6bff3d3-dc19-4dc1-beb6-74cb9bef5d0b",
+        "sessionId": "6f57736b-d45b-487e-88b5-31d4a576a155",
+        "agentId": "github.copilot.editsAgent"
+      },
+      "details": "qwen3.5:2b-mlx"
+    },
+    "buffer": "width=40;\ncube(width);\n",
+    "dirty": false,
+    "operations": {
+      "total": 0,
+      "offset": 0,
+      "hasMore": false,
+      "nextOffset": null,
+      "operations": []
+    }
+  },
+  "timedOut": false,
+  "requestFinished": true,
+  "terminalReason": "nativeRequestError",
+  "nativeAgent": true,
+  "confirmationsAutomaticallyApproved": false,
+  "approvals": []
+}

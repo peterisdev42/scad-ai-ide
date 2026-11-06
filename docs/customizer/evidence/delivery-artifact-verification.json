@@ -1,0 +1,11 @@
+{
+  "productCommit": "64a64f3ce667d96911233d6cfe07a08316ef06e8",
+  "artifact": ".build/scad-ai-ide-validated-64a64f3.vsix",
+  "bytes": 4533358,
+  "sha256": "242c5671cf6fa6e1703f3c0690f4fb8006d211ca3014f322cb3ba26573159f03",
+  "toolSchemasAndDescriptionsMatched": 40,
+  "instructions": 2,
+  "skills": 5,
+  "packagedResourcesByteMatched": true,
+  "scope": "Matches selected delivery baseline. Not a claim of full SPEC/model acceptance."
+}

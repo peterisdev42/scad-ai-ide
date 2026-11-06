@@ -1,0 +1,84 @@
+{
+  "scope": "Actual official Desktop2026.11.06 Qt matrix:12 executed checks; not full pinned binary",
+  "sourceBufferVerifiedEveryStep": true,
+  "sourceDiskUnchanged": true,
+  "preferencesShaUnchanged": true,
+  "presetTitlesIndependentlyVerified": true,
+  "files": [
+    {
+      "evidence": "result.json",
+      "originalSha256": "feef6c98d398b0c588047d7a76e1931a2356b67c5735cf6231310597dd87cfd1",
+      "sha256": "6e76631df080bd8b13b1e920586c2e02101127270477f931a29cd7d26211608f"
+    },
+    {
+      "evidence": "dynamic-checks.json",
+      "originalSha256": "566842762a31f0c0ddd5f59deefaefefa4b1b45b30c821a9d6b7d56aba001507",
+      "sha256": "566842762a31f0c0ddd5f59deefaefefa4b1b45b30c821a9d6b7d56aba001507"
+    },
+    {
+      "evidence": "ax-initial.json",
+      "originalSha256": "b07a060065102bcdbd0050c3b90d74afde37e1628ad7e8678b716fc235d6d9a6",
+      "sha256": "1c14aa64482eea322f36900e138d1d74d6c066da21dd424ef4f2c24de988a80f"
+    },
+    {
+      "evidence": "verified-checkbox.json",
+      "originalSha256": "3503eb978391a99d688c70a97e2a7b9372e943bc54a1e87acab9bd16dd126609",
+      "sha256": "a17abc3f0dc6dedf78aa3b80cf47fe6046b6212c02a7f092381a90b79e9fc5c1"
+    },
+    {
+      "evidence": "verified-default-display.json",
+      "originalSha256": "f22fcf7fe574de514472ac95da928d7f122c03fef01b56cff0e3cf6b839dd4c2",
+      "sha256": "57417fadb4ee2cb6b939b78148fbe56ca0cb8617f256e2bf9f2ed1918dac7d7c"
+    },
+    {
+      "evidence": "verified-enum.json",
+      "originalSha256": "4820241ce879a2417c9f16a1b4352266326103d38a5adec8681afdc86549a52b",
+      "sha256": "e09bb4f391dec8900b7aba9bedb8a5ed4e03792465d59c2958dc2a5b05218b34"
+    },
+    {
+      "evidence": "verified-offgrid-keyboard.json",
+      "originalSha256": "ee3f68810e204f4d686dc5d867fc0ed2e8bbaf8320c9d867b183e33abda2768e",
+      "sha256": "45bece44f9e46c50b937007852573e1cbf97be2ac053e0b09d0c96cf9a4c69a7"
+    },
+    {
+      "evidence": "verified-preset-A.json",
+      "originalSha256": "04abd0ce9fe458ffa7c9e391c9dd9250beb99e76bde4c5e78b442828397049cc",
+      "sha256": "085242125438b7a84e65d10b65093b50610f6e838a155a787361cc546451e2be"
+    },
+    {
+      "evidence": "verified-preset-B.json",
+      "originalSha256": "c78cea407d4fe05e2c473baada747de99525a5156499efc6300f717975ac03ee",
+      "sha256": "70948211352197469341ae0bb8f5bd746bb8fe06a36fc8cfe3202071809b00e2"
+    },
+    {
+      "evidence": "verified-preset-default.json",
+      "originalSha256": "bb4c72001999eec1e1b23a4a47dc76886c1fb3a1937c4824fa9bb7b916c9e8f7",
+      "sha256": "4ae0530051037def4ccbca039babd2e2e94c8344c13373ef5f1178eb5ca188f6"
+    },
+    {
+      "evidence": "verified-spin-arrow.json",
+      "originalSha256": "5defb674f344fcb7f7941cd9d848f6d9d19f196ed08183563caa90518ebbe494",
+      "sha256": "63c09696ad0a39983bf664e8f7e0c2356390f5c62e1513d33ba3d0a23476d3c4"
+    },
+    {
+      "evidence": "verified-text-ascii.json",
+      "originalSha256": "b27306a07f29875e9a2241173ca5b0c37ad8d282a27004905d61efa3e4c1f6de",
+      "sha256": "6e97f468eaaca5362da6664b6b19b33f8a1ce06a93c9a3ca50a0ba6826f94f1d"
+    },
+    {
+      "evidence": "verified-text-utf16.json",
+      "originalSha256": "b6f09822b837e63493c0c50cc5534e2407938058d7d58051973e987e817f3e69",
+      "sha256": "b2257899426dcb861367071871a56edb58ac1e0d9a7ecc2510accf99714a11a6"
+    },
+    {
+      "evidence": "verified-vector-arrow.json",
+      "originalSha256": "657c3a01247e9add7fa9caa285e2ecfe2273cf43829238d95aab55b9aa002bb5",
+      "sha256": "2f8a76e407dcf44022bfba37daeae7b3e141000ff7e5fa2fe02dea058b251814"
+    },
+    {
+      "evidence": "verified-width-arrow.json",
+      "originalSha256": "79fa4e75566661114eaeb0f5b2b44e9b140102bad1b42d3f7ff528f065ebbcad",
+      "sha256": "f5a9a01985c882e5a27d6726b4c629552f69cabd210de82be37810a42df8b3fd"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "status": "FAIL",
+  "reviewType": "Actual tool trace, source snapshot and rendered native response compared by reviewer",
+  "wrapperLimitation": "The native UI completed at 16:48, but this run predated the footer completion check and the wrapper later timed out awaiting transcript flush. Timeout is not the reason for model failure.",
+  "actualCalls": "3 SourceAnalyze; zero SourceApply and SourceValidate",
+  "actualBufferAndDisk": "Unchanged; annotation prose retained; Source Analyze still reported spinbox",
+  "modelClaim": "Claimed SourceApply and replace_string_in_file completed, file saved and task complete",
+  "reason": "Unsupported success/save claims and no safe-repair/manual explanation; not accepted"
+}

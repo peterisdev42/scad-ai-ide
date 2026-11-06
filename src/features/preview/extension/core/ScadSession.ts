@@ -1,3 +1,5 @@
+import type { CustomizerDomainService } from '../../../sidebar/CustomizerDomainService'
+import { parsePresetFile } from '../../../../core/customizer/CustomizerPresets'
 import { validPreviewTimings } from '../../../../core/preview/performance'
 import type { CustomizerService } from '../../../../core/customizer/CustomizerService'
 import { Disposable, EventEmitter, RelativePattern, TextDocument, Uri, workspace } from 'vscode'
@@ -21,6 +23,8 @@ export class ScadSession {
     private documentSubscription: Disposable
     private valuesSubscription: { dispose(): void }
     private initialized = false
+    private analysisComplete = true
+    public get parameterAnalysisComplete() { return this.analysisComplete }
     private syncingCustomizer = false
     private renderTimer: ReturnType<typeof setTimeout> | undefined
     private disposed = false
@@ -104,13 +108,25 @@ export class ScadSession {
         if (this.disposed) return
         const parser = new ScadParser(this.document.getText())
         const saved = this.customizer.getOverrides(this.documentUri.toString())
-        this.scadParameters.updateDefinitions(parser.parameters)
-        if (!this.initialized) {
+        this.analysisComplete = parser.complete
+        if (parser.complete) {
+            this.syncingCustomizer = true
+            try {
+                this.scadParameters.updateDefinitions(parser.parameters)
+                this.scadParameters.replaceOverrides(saved)
+            } finally { this.syncingCustomizer = false }
             this.initialized = true
-            this.scadParameters.replaceOverrides(saved)
+            this.customizer.replaceOverrides(this.documentUri.toString(), this.scadParameters.getOverrides())
+        } else {
+            // Retain the last complete definitions and all stored values during
+            // temporary edits. No partial schema may prune the shared bucket.
+            this.syncingCustomizer = true
+            try { this.scadParameters.replaceOverrides(saved, false) }
+            finally { this.syncingCustomizer = false }
         }
         this.scadRenderer.render(this.documentUri.fsPath, this.scadParameters.getOverrides(), this.previewMode)
     }
+    private presetSubscription?: Disposable
     private jsonWatcher?: FileWatcher
     private scadParameters: ScadParameters
     private scadRenderer: ScadRenderer
@@ -123,6 +139,7 @@ export class ScadSession {
     public readonly onRenderCompleted = this._onRenderCompleted.event
 
     private _onParametersChanged = new EventEmitter<{
+        analysisComplete?: boolean
         parameters: ScadParameter[]
         parameterSets: Record<string, Record<string, string>>
         activeSetName: string | undefined
@@ -142,6 +159,7 @@ export class ScadSession {
     constructor(
         private readonly document: TextDocument,
         private readonly customizer: CustomizerService,
+        private readonly domain?: CustomizerDomainService,
     ) {
         if (/\.csg$/i.test(this.documentUri.path)) this.selectedPreviewMode = 'preview'
         this.scadRenderer = new ScadRenderer({
@@ -170,13 +188,15 @@ export class ScadSession {
                 if (this.initialized && !this.syncingCustomizer) {
                     this.customizer.replaceOverrides(this.documentUri.toString(), event.overrides)
                 }
-                this._onParametersChanged.fire(event)
+                this._onParametersChanged.fire({ ...event, analysisComplete: this.analysisComplete })
             },
         })
 
         // A preset can arrive before the asynchronous file watcher has read the source.
-        this.scadParameters.updateDefinitions(new ScadParser(document.getText()).parameters)
-        this.scadParameters.replaceOverrides(customizer.getOverrides(this.documentUri.toString()))
+        const initialParser = new ScadParser(document.getText())
+        this.analysisComplete = initialParser.complete
+        this.scadParameters.updateDefinitions(initialParser.parameters)
+        this.scadParameters.replaceOverrides(customizer.getOverrides(this.documentUri.toString()), initialParser.complete)
 
         this.valuesSubscription = customizer.onDidChangeValues((target, reason) => {
             if (target !== this.documentUri.toString() || this.disposed) {
@@ -187,7 +207,7 @@ export class ScadSession {
             if (changed) {
                 this.syncingCustomizer = true
                 try {
-                    this.scadParameters.replaceOverrides(values)
+                    this.scadParameters.replaceOverrides(values, this.analysisComplete)
                 } finally {
                     this.syncingCustomizer = false
                 }
@@ -211,7 +231,9 @@ export class ScadSession {
             this.renderTimer = setTimeout(() => this.refreshDocument(), 250)
         })
 
+        this.presetSubscription = domain?.onDidChange(() => this.syncPresetBinding())
         this.setupJsonWatcher()
+        this.syncPresetBinding()
     }
 
     private get jsonFileUri(): Uri {
@@ -222,49 +244,40 @@ export class ScadSession {
         return Uri.file(jsonPath)
     }
 
+    /** Discovery reads the sidecar only. All selections and writes use the host domain. */
+    private syncPresetBinding(): boolean {
+        if (!this.domain || this.domain.service.target !== this.documentUri.toString()) return false
+        const state = this.domain.presets.state()
+        if (!state.path) return false
+        this.syncingCustomizer = true
+        try { this.scadParameters.syncPresetState(this.domain.presets.parameterSets(), state.active || undefined) }
+        finally { this.syncingCustomizer = false }
+        return true
+    }
+
+    private acceptDiscoveredPresets(content: string) {
+        if (this.disposed || this.syncPresetBinding()) return
+        const data = parsePresetFile(content)
+        this.syncingCustomizer = true
+        try { this.scadParameters.syncPresetState(data.parameterSets, undefined) }
+        finally { this.syncingCustomizer = false }
+    }
+
     private setupJsonWatcher() {
         this.jsonWatcher = new FileWatcher({
             path: this.jsonFileUri.fsPath,
             onChange: async ({ content }) => {
-                try {
-                    const data = JSON.parse(content)
-                    if (data && typeof data === 'object') {
-                        data.parameterSets = data.parameterSets ?? {}
-                        this.scadParameters.updateParameterSets(data.parameterSets)
-
-                        const oldValues = JSON.stringify(this.scadParameters.getOverrides())
-                        const activeSetName = this.scadParameters.getActiveSetName()
-                        if (activeSetName) {
-                            if (!(activeSetName in data.parameterSets)) {
-                                this.applyParameterSet(undefined)
-                            } else {
-                                // Hot-reload the active set to ingest external JSON changes into the flat overrides bucket
-                                this.scadParameters.setActiveSet(activeSetName)
-
-                                if (JSON.stringify(this.scadParameters.getOverrides()) !== oldValues) {
-                                    this.scadRenderer.render(this.documentUri.fsPath, this.scadParameters.getOverrides(), this.previewMode)
-                                }
-                            }
-                        }
-                    }
-                } catch {
-                    // ignore parsing errors
-                }
+                try { this.acceptDiscoveredPresets(content) }
+                catch (error) { this._onLog.fire(`Preset reload failed; current values are preserved: ${(error as Error).message}`) }
             },
         })
-
-        this.loadJson()
+        void this.loadJson()
     }
 
     private async loadJson() {
-        try {
-            const content = await workspace.fs.readFile(this.jsonFileUri)
-            const data = JSON.parse(Buffer.from(content).toString('utf-8'))
-            if (!this.disposed && data.parameterSets) {
-                this.scadParameters.updateParameterSets(data.parameterSets)
-            }
-        } catch {
-            // file doesn't exist or isn't valid JSON
+        try { this.acceptDiscoveredPresets(Buffer.from(await workspace.fs.readFile(this.jsonFileUri)).toString('utf8')) }
+        catch (error) {
+            if ((error as { code?: string }).code !== 'FileNotFound') this._onLog.fire(`Preset read failed; the original file is unchanged: ${(error as Error).message}`)
         }
     }
 
@@ -285,57 +298,39 @@ export class ScadSession {
     }
 
     public updateParameterValue(name: string, value: string | number | boolean | number[] | undefined) {
+        if (this.domain) {
+            const snapshot = this.domain.snapshot()
+            if (value === undefined) this.domain.reset(this.documentUri.toString(), snapshot.revision, name)
+            else this.domain.setValues(this.documentUri.toString(), snapshot.revision, { [name]: value })
+            return
+        }
         this.scadParameters.updateValue(name, value)
 
         this.scadRenderer.renderLatest(this.documentUri.fsPath, this.scadParameters.getOverrides(), this.previewMode)
     }
 
-    public async saveParameterSet(name: string) {
-        const partial = this.scadParameters.calculateActiveSetPartial()
-
-        let data: {
-            parameterSets?: Record<string, Record<string, string>>
-            fileFormatVersion?: string
-            [key: string]: unknown
-        } = {}
-        try {
-            const content = await workspace.fs.readFile(this.jsonFileUri)
-            data = JSON.parse(Buffer.from(content).toString('utf-8'))
-        } catch {
-            // Create fresh structure if no existing explicit file
-        }
-
-        data.parameterSets = data.parameterSets || {}
-        data.parameterSets[name] = partial
-        data.fileFormatVersion = '1'
-
-        await workspace.fs.writeFile(this.jsonFileUri, Buffer.from(JSON.stringify(data, null, 2), 'utf-8'))
-        this.scadParameters.updateParameterSets(data.parameterSets)
-        this.scadParameters.setActiveSet(name)
-    }
-
-    public async deleteParameterSet(name: string) {
-        if (this.scadParameters.getActiveSetName() === name) {
-            this.applyParameterSet(undefined)
-        }
-
-        try {
-            const content = await workspace.fs.readFile(this.jsonFileUri)
-            const data = JSON.parse(Buffer.from(content).toString('utf-8'))
-            if (data.parameterSets && data.parameterSets[name]) {
-                delete data.parameterSets[name]
-                await workspace.fs.writeFile(this.jsonFileUri, Buffer.from(JSON.stringify(data, null, 2), 'utf-8'))
-                this.scadParameters.updateParameterSets(data.parameterSets)
+    private async presetAction(action: 'select' | 'save' | 'delete', name?: string) {
+        if (!this.domain) throw new Error('Customizer host domain is unavailable')
+        const target = this.documentUri.toString()
+        let snapshot = this.domain.snapshot()
+        this.domain.assertTarget(target, snapshot.revision)
+        // Discovery is read-only until an explicit user operation binds that file.
+        if (!snapshot.presets.path && (name || action !== 'select')) {
+            try {
+                await workspace.fs.readFile(this.jsonFileUri)
+                snapshot = await this.domain.preset(target, snapshot.revision, 'import', undefined, this.jsonFileUri)
+            } catch (error) {
+                if ((error as { code?: string }).code !== 'FileNotFound' || action !== 'save') throw error
             }
-        } catch {
-            // ignore error if file doesn't exist
         }
+        const operation = action === 'save' && name && !snapshot.presets.names.includes(name) ? 'new' : action
+        await this.domain.preset(target, snapshot.revision, operation, name)
+        this.syncPresetBinding()
     }
 
-    public applyParameterSet(name: string | undefined) {
-        this.scadParameters.setActiveSet(name)
-        this.scadRenderer.render(this.documentUri.fsPath, this.scadParameters.getOverrides(), this.previewMode)
-    }
+    public async saveParameterSet(name: string) { await this.presetAction('save', name) }
+    public async deleteParameterSet(name: string) { await this.presetAction('delete', name) }
+    public async applyParameterSet(name: string | undefined) { await this.presetAction('select', name) }
 
     public refreshRender() {
         if (!this.disposed) {
@@ -359,6 +354,7 @@ export class ScadSession {
         ScadClient.cancelRender(this.documentUri.fsPath)
         this.scadWatcher.close()
         this.jsonWatcher?.close()
+        this.presetSubscription?.dispose()
         this.customizer.setContinuousPreview(this.documentUri.toString(), false)
         this._onBackendChanged.dispose()
         this._onRenderStarted.dispose()

@@ -2,6 +2,7 @@ import { createContext } from '@lit/context'
 import { ScadParameter } from '../../shared/types/ScadParameter'
 
 export type ParameterContext = {
+    analysisComplete?: boolean
     parameters: ScadParameter[]
     parameterSets: Record<string, Record<string, string>>
     activeSetName: string | undefined

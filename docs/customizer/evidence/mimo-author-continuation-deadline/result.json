@@ -1,0 +1,82 @@
+{
+  "scenario": "author",
+  "artifact": {
+    "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+    "bytes": 4533358,
+    "sha256": "242c5671cf6fa6e1703f3c0690f4fb8006d211ca3014f322cb3ba26573159f03"
+  },
+  "timeoutMs": 900000,
+  "ready": {
+    "vscode": "1.145.2",
+    "extensionPath": "<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1",
+    "bundleSha256": "d81950e5fbc0de17062f6458a2f4c838138820543e6259d8e2ff463d637c9ee2",
+    "chatSettings": {
+      "extensionUnification": false,
+      "disableAI": false,
+      "extensionTools": true
+    },
+    "nativeAgent": {
+      "present": true,
+      "active": true
+    },
+    "provider": {
+      "id": "Ollama.ollama",
+      "version": "0.0.14"
+    },
+    "models": [
+      {
+        "id": "qwen3.5:2b-mlx",
+        "name": "qwen3.5:2b-mlx",
+        "vendor": "ollama-models"
+      },
+      {
+        "id": "mimo-v2.6:latest",
+        "name": "mimo-v2.6:latest",
+        "vendor": "ollama-models"
+      },
+      {
+        "id": "mimo-v2.6:latest",
+        "name": "mimo-v2.6:latest",
+        "vendor": "ollama-models"
+      }
+    ]
+  },
+  "response": {
+    "snapshot": true,
+    "cancelledForSnapshot": true,
+    "stopReason": "observationDeadline",
+    "buffer": "width=40;\nshape=\"round\";\ninternalOffset=0.01;\nmodule model() { cube([width,2,3]); }\nmodel();\n",
+    "dirty": false,
+    "operations": {
+      "total": 2,
+      "offset": 0,
+      "hasMore": false,
+      "nextOffset": null,
+      "operations": [
+        {
+          "id": "ac004582-bd60-4f6d-8825-203b63656a1b",
+          "capabilityId": "customizer.sourceApply",
+          "status": "succeeded"
+        },
+        {
+          "id": "bf4f6a47-049e-4917-a7db-e6d8e7bd3eb2",
+          "capabilityId": "customizer.sourceAnalyze",
+          "status": "succeeded"
+        }
+      ]
+    }
+  },
+  "timedOut": true,
+  "interrupted": false,
+  "requestFinished": false,
+  "nativeAgent": true,
+  "confirmationsAutomaticallyApproved": true,
+  "approvals": [
+    {
+      "tool": "scad_ai_ide_customizer_sourceApply",
+      "decision": "allow",
+      "scope": "Controlled Source Apply or exact read-only fixture directory listing",
+      "displayedInput": "Input\n{ \"mode\": \"commit\", \"planId\": \"8a925cdf-7910-4d53-876f-91cccbfdd4f0\", \"uri\": \"file://<fixture>/workspace/model.scad\" }\nSee more\nAllow in this Session\nSkip\nSet BYOK utility models\nUnlocks full AI features.\nConfigure\nmodel.scad\nAgent\nmimo-v2.6:latest\nMax 262K\nLocal\nDefault permissions\n15%\n 0 \n 0\nOpenSCAD 2026.10-TEST4\nOpenSCAD\nLF\nUTF-8\nSpaces: 4\nLn 1, Col 1\n1 confirmation pending\nPlan or commit Customizer source edits: file://<fixture>/workspace/model.scad"
+    }
+  ]
+}
