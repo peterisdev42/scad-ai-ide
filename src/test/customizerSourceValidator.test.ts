@@ -36,3 +36,25 @@ test('validation compares the effective control rather than rejecting legal reas
     assert.equal(validateCustomizerSource('width=10; // [1:1:200]\nwidth=10+20;', [expected]).semanticPass, false)
     assert.equal(validateCustomizerSource('width=10; // [1:1:200]\n/* [Hidden] */\nwidth=30;', [{ name: 'width', visible: false }]).semanticPass, true)
 })
+
+
+test('unmet explicit targets are business results, never source errors or missing-syntax warnings', () => {
+    for (const source of ['cube(10);', 'width=40;', 'width=20+20; // [1:1:200]']) {
+        const result = validateCustomizerSource(source, [{ name: 'width', widget: 'slider', requireDescription: true }])
+        assert.equal(result.semanticPass, false)
+        assert.deepEqual(result.diagnostics, [])
+        assert.equal(result.expectationResults.length, 1)
+        assert.equal(result.expectationResults[0].matched, false)
+        assert.ok(result.expectationResults[0].issues.length > 0)
+    }
+    assert.equal(validateCustomizerSource('width=40; derived=width/2;').semanticPass, true)
+})
+
+test('large unmet target results remain bounded without becoming source diagnostics', () => {
+    const result = validateCustomizerSource('label="x";', Array.from({ length: 100 }, () => ({ name: 'label', defaultValue: 'x'.repeat(4096) })))
+    assert.equal(result.semanticPass, false)
+    assert.equal(result.complete, false)
+    assert.ok(result.omittedExpectations > 0)
+    assert.deepEqual(result.diagnostics, [])
+    assert.ok(Buffer.byteLength(JSON.stringify(result), 'utf8') < 68000)
+})

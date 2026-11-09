@@ -12,7 +12,7 @@ export function registerCustomizerDiagnostics(context: vscode.ExtensionContext) 
         if (!vscode.workspace.getConfiguration('scad-ai-ide.customizer', document.uri).get('sourceDiagnostics', true)) { collection.delete(document.uri); return }
         const analysis = analyzeCustomizerSource(document.getText(), { includeCandidates: false, maxDiagnostics: 200 })
         collection.set(document.uri, analysis.diagnostics.map((d) => {
-            const diagnostic = new vscode.Diagnostic(new vscode.Range(d.range.start.line, d.range.start.character, d.range.end.line, d.range.end.character), d.message, severity[d.severity])
+            const diagnostic = new vscode.Diagnostic(new vscode.Range(d.range.start.line, d.range.start.character, d.range.end.line, d.range.end.character), d.suggestedFix ? `${d.message}\n${d.suggestedFix}` : d.message, severity[d.severity])
             diagnostic.code = d.code
             diagnostic.source = 'OpenSCAD Customizer'
             return diagnostic
@@ -25,7 +25,7 @@ export function registerCustomizerDiagnostics(context: vscode.ExtensionContext) 
         timers.set(key, setTimeout(() => { timers.delete(key); update(document) }, 200))
     }
     context.subscriptions.push(collection,
-        vscode.languages.registerCodeActionsProvider({ language: 'openscad' }, new CustomizerCodeActions(), { providedCodeActionKinds: [vscode.CodeActionKind.QuickFix] }),
+        vscode.languages.registerCodeActionsProvider({ language: 'openscad' }, new CustomizerCodeActions(), { providedCodeActionKinds: [vscode.CodeActionKind.QuickFix, vscode.CodeActionKind.RefactorRewrite] }),
         vscode.workspace.onDidOpenTextDocument(schedule),
         vscode.workspace.onDidChangeTextDocument((event) => schedule(event.document)),
         vscode.workspace.onDidSaveTextDocument(schedule),

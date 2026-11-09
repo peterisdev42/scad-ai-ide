@@ -1,4 +1,4 @@
-import { scanCustomizer, type Parameter, type SourceSpan, type ScannedDeclaration } from './CustomizerParser'
+import { scanCustomizer, parseLiteral, splitOutsideStrings, type Parameter, type SourceSpan, type ScannedDeclaration } from './CustomizerParser'
 import type { CustomizerDiagnostic, CustomizerSourceAnalysis, CustomizerWidget, SourceRange } from './CustomizerSourceTypes'
 
 export const SOURCE_LIMIT = 1024 * 1024
@@ -26,13 +26,8 @@ export function analyzeCustomizerSource(source: string, options: { maxDiagnostic
     const scan = scanCustomizer(source)
     const coordinates = sourceCoordinates(source)
     const diagnostics: CustomizerDiagnostic[] = []
-    const explicitHint = (text: string) => text.startsWith('[') || /^[+-]?(?:0x[0-9a-f]+|(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?)$/i.test(text)
     const lastDeclarations = new Map<string, ScannedDeclaration>()
-    const annotatedDeclarations = new Map<string, ScannedDeclaration>()
-    for (const declaration of scan.declarations) {
-        lastDeclarations.set(declaration.name, declaration)
-        if (declaration.parameter && explicitHint(declaration.parameter.hint?.trim() ?? '')) annotatedDeclarations.set(declaration.name, declaration)
-    }
+    for (const declaration of scan.declarations) lastDeclarations.set(declaration.name, declaration)
     const byParameter = new Map(scan.declarations.filter((d) => d.parameter).map((d) => [d.parameter!, d]))
     const visible = new Set(scan.parameters)
     const parameters = scan.parameters.map((p) => {
@@ -40,35 +35,49 @@ export function analyzeCustomizerSource(source: string, options: { maxDiagnostic
         return { ...p, widget: widgetFor(p), declarationRange: coordinates(d), annotationRange: d.annotation && coordinates(d.annotation), descriptionRange: d.description && coordinates(d.description) }
     })
     for (const d of scan.declarations) {
-        // Reassignment is legal SCAD. Diagnose only the declaration the GUI uses;
-        // stale defaults/hints on superseded declarations cannot be fixed here.
-        if (lastDeclarations.get(d.name) !== d || !d.beforeFirstBrace || d.group === 'Hidden') continue
+        // Only explicit annotations on an effective, supported control are linted.
+        // Ordinary SCAD, missing hints and unsupported forms are not errors.
+        if (lastDeclarations.get(d.name) !== d || !d.beforeFirstBrace || d.group === 'Hidden' || !d.parameter || !d.annotation) continue
         const p = d.parameter
-        const hint = d.annotation ? source.slice(d.annotation.start + 2, d.annotation.end).trim() : ''
-        const intent = explicitHint(hint)
-        const add = (code: string, message: string, severity: CustomizerDiagnostic['severity'] = 'warning') => diagnostics.push({ code: `CUSTOMIZER_${code}`, severity, parameter: d.name, message, range: coordinates(d.annotation ?? d) })
-        const earlier = annotatedDeclarations.get(d.name)
-        if (!intent && d.value === undefined && earlier && earlier !== d) {
-            const earlierLine = coordinates(earlier).start.line + 1
-            diagnostics.push({ code: 'CUSTOMIZER_DUPLICATE_ASSIGNMENT', severity: 'information', parameter: d.name, range: coordinates(d), message: `Customizer does not expose '${d.name}': this final assignment is not a supported literal and supersedes the annotated declaration on line ${earlierLine}. Keep a literal parameter and use a separate variable for computed values if a control is intended.` })
+        if (typeof p.defaultValue === 'boolean') continue
+        const hint = source.slice(d.annotation.start + 2, d.annotation.end).trim()
+        const numericControl = typeof p.defaultValue === 'number' || Array.isArray(p.defaultValue)
+        const add = (code: string, message: string, suggestedFix: string) => diagnostics.push({ code: `CUSTOMIZER_${code}`, severity: 'warning', parameter: d.name, message, suggestedFix, range: coordinates(d.annotation!) } satisfies CustomizerDiagnostic)
+        if (hint.startsWith('[')) {
+            const closingParts = splitOutsideStrings(hint, ']')
+            if (closingParts.length === 1) {
+                // A bracketed prose note is not sufficient evidence of Widget intent.
+                if (/^\[\s*[+-]?(?:\d|\.\d)/.test(hint) || /[:,]/.test(hint)) add('MALFORMED_HINT', 'The written Widget hint is missing its closing ].', 'Close any quoted values/labels, then close the Widget hint with ], or remove the incomplete annotation.')
+                continue
+            }
+            // A closed prefix followed by prose is ordinary/unsupported comment text,
+            // not a missing bracket. Keep the GUI Parser's whole-comment semantics.
+            if (closingParts.length !== 2 || closingParts[1]) continue
+            const body = hint.slice(1, -1)
+            const numbers = splitOutsideStrings(body, ':').map(parseLiteral)
+            if (numericControl && numbers.length >= 1 && numbers.length <= 3 && numbers.every((value) => typeof value === 'number')) {
+                const values = numbers as number[]
+                const min = values.length === 1 ? 0 : values[0]
+                const max = values[values.length - 1]
+                if (min > max) add('INVALID_RANGE', `The written minimum ${min} exceeds the maximum ${max}.`, 'Set the minimum no greater than the maximum in this range annotation.')
+                else if (values.length === 3 && values[1] <= 0) add('INVALID_RANGE', `The written step ${values[1]} must be positive.`, 'Use a positive step, or remove the explicit step to keep [min:max].')
+            } else if ((numericControl || typeof p.defaultValue === 'string') && splitOutsideStrings(body, ',').some((entry) => !entry)) {
+                add('INVALID_CHOICES', 'The written Widget hint contains an empty option.', 'Remove the empty option/comma, add its value, or remove the empty annotation.')
+            }
+        } else {
+            const value = parseLiteral(hint)
+            if (typeof value === 'number') {
+                if (numericControl && value <= 0) add('MALFORMED_HINT', `The written numeric step ${value} must be positive.`, 'Use a positive numeric step, or remove the step annotation.')
+                else if (typeof p.defaultValue === 'string' && (!Number.isSafeInteger(value) || value < 0)) add('MALFORMED_HINT', 'The written text length must be a nonnegative integer.', 'Use a nonnegative integer length, or remove the text-length annotation.')
+            }
         }
-        if (!intent) continue
-        if (d.value === undefined) { add('UNSUPPORTED_DEFAULT', 'Customizer requires a literal default; expressions are never evaluated.', 'information'); continue }
-        if (!p) continue
-        if (hint.startsWith('[') && !hint.endsWith(']')) add('MALFORMED_HINT', 'Close the Customizer hint with ].')
-        else if (/^\[/.test(hint) && !p.range && !p.choices) add('INVALID_RANGE', 'Unsupported hint or invalid range: use min <= max and a positive step.')
-        else if (!hint.startsWith('[') && p.step === undefined && p.maxLength === undefined) add('MALFORMED_HINT', 'Use a positive numeric step or a nonnegative integer text length.')
-        if (p.maxLength !== undefined && typeof p.defaultValue === 'string' && p.defaultValue.length > p.maxLength) add('DEFAULT_OUT_OF_RANGE', 'Default text exceeds its declared maximum length.')
+        if (p.maxLength !== undefined && typeof p.defaultValue === 'string' && p.defaultValue.length > p.maxLength) add('DEFAULT_OUT_OF_RANGE', `The default text has ${p.defaultValue.length} characters but the written limit is ${p.maxLength}.`, 'Increase this length annotation to fit the default text, or shorten the default text.')
         if (p.range) {
             const values = Array.isArray(p.defaultValue) ? p.defaultValue : [p.defaultValue as number]
-            if (values.some((v) => v < p.range!.min || v > p.range!.max)) add('DEFAULT_OUT_OF_RANGE', 'Default value is outside the declared range.')
-            else if (p.range.step && values.some((v) => Math.abs((v - p.range!.min) / p.range!.step! - Math.round((v - p.range!.min) / p.range!.step!)) > 1e-7)) add('DEFAULT_OFF_STEP', 'Default value is off the explicit step grid.')
+            if (values.some((v) => v < p.range!.min || v > p.range!.max)) add('DEFAULT_OUT_OF_RANGE', `The default value is outside the written range [${p.range.min}:${p.range.max}].`, 'Expand this range annotation to include the default, or choose a default inside the range.')
         }
-        if (p.choices) {
-            // Preserve the legacy GUI's inserted default but validate the actual hint choices.
-            const actual = d.declaredChoices
-            if (!actual?.some((c) => c.value === p.defaultValue) || actual.some((c) => typeof c.value !== typeof p.defaultValue) || new Set(actual.map((c) => c.value)).size !== actual.length) add('INVALID_CHOICES', 'Choices must be unique, match the default type and include the default value.')
-        }
+        // An unlisted default is automatically included in choices by the Parser.
+        // Off-step defaults, mixed choices and duplicate labels are not syntax errors.
     }
     const candidates = options.includeCandidates === false ? [] : scan.declarations.filter((d) => !d.parameter || !visible.has(d.parameter)).map((d) => ({ name: d.name, range: coordinates(d), reason: d.group === 'Hidden' ? 'hidden' : !d.beforeFirstBrace ? 'afterFirstBrace' : d.value === undefined ? 'unsupportedDefault' : 'superseded', confidence: 'certain' as const }))
     const max = Math.max(0, Math.min(200, options.maxDiagnostics ?? 100))

@@ -48,7 +48,7 @@ export function parseLiteral(text: string): ParameterValue | undefined {
     return undefined
 }
 
-function splitOutsideStrings(text: string, delimiter: string): string[] {
+export function splitOutsideStrings(text: string, delimiter: string): string[] {
     const parts: string[] = []
     let start = 0
     let quoted = false

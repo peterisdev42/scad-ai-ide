@@ -1,10 +1,11 @@
 import { analyzeCustomizerSource, sourceCoordinates } from './CustomizerSourceAnalyzer'
 import { scanCustomizer } from './CustomizerParser'
-import type { CustomizerSourceAnalysis, SourceExpectation, CustomizerDiagnostic } from './CustomizerSourceTypes'
+import type { CustomizerSourceAnalysis, SourceExpectation, CustomizerDiagnostic, SourceRange } from './CustomizerSourceTypes'
 
 export function validateCustomizerSource(source: string, expectations: SourceExpectation[] = [], includeWarnings = true, analysis: CustomizerSourceAnalysis = analyzeCustomizerSource(source)) {
     const diagnostics: CustomizerDiagnostic[] = [...analysis.diagnostics]
     let matched = 0
+    const expectationResults: Array<{ parameter: string; matched: boolean; issues: string[]; range: SourceRange }> = []
     const declarations = scanCustomizer(source).declarations
     const effective = new Map(declarations.map((declaration) => [declaration.name, declaration]))
     const coordinates = sourceCoordinates(source)
@@ -20,7 +21,7 @@ export function validateCustomizerSource(source: string, expectations: SourceExp
             if (expected.type && expected.type !== type) issues.push('Hidden default type differs')
             if (expected.defaultValue !== undefined && JSON.stringify(expected.defaultValue) !== JSON.stringify(declaration.value)) issues.push('Hidden default value differs')
             if (expected.group !== undefined && expected.group !== declaration.group) issues.push('Hidden group differs')
-            if (['widget', 'range', 'choices', 'step', 'maxLength', 'description', 'requireDescription'].some((key) => expected[key as keyof SourceExpectation] !== undefined)) issues.push('Hidden controls have no observable widget or description; validate visibility alone')
+            if (['widget', 'range', 'choices', 'step', 'maxLength', 'description'].some((key) => expected[key as keyof SourceExpectation] !== undefined) || expected.requireDescription) issues.push('Hidden controls have no observable widget or description; validate visibility alone')
         }
         if (actual) {
             if (expected.visible === false) issues.push('Parameter is still visible')
@@ -34,17 +35,19 @@ export function validateCustomizerSource(source: string, expectations: SourceExp
             if (expected.choices && (!actual.choices || actual.choices.length !== expected.choices.length || expected.choices.some((c) => !actual.choices!.some((a) => a.value === c.value && (c.label === undefined || c.label === a.label))))) issues.push('Choice values or labels differ')
         }
         if (!issues.length) matched++
-        else diagnostics.push({ code: 'CUSTOMIZER_EXPECTED_WIDGET_MISMATCH', parameter: expected.name, severity: 'error', message: issues.join('; '), range: actual?.declarationRange ?? (effective.has(expected.name) ? coordinates(effective.get(expected.name)!) : { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } }) })
+        expectationResults.push({ parameter: expected.name, matched: issues.length === 0, issues, range: actual?.declarationRange ?? (effective.has(expected.name) ? coordinates(effective.get(expected.name)!) : { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } }) })
     }
     let truncated = false
     let bytes = 0
-    const bounded = diagnostics.filter((d) => {
-        const size = Buffer.byteLength(JSON.stringify(d), 'utf8')
+    const boundedItems = <T>(items: T[]) => items.filter((item) => {
+        const size = Buffer.byteLength(JSON.stringify(item), 'utf8')
         if (size > 8192 || bytes + size > 65536) { truncated = true; return false }
         bytes += size
         return true
     })
+    const bounded = boundedItems(diagnostics)
+    const boundedExpectations = boundedItems(expectationResults)
     const complete = analysis.complete && !truncated
     const semanticPass = complete && matched === expectations.length && !diagnostics.some((d) => d.severity === 'error' || d.severity === 'warning')
-    return { semanticPass, checked: expectations.length, matched, diagnostics: includeWarnings ? bounded : bounded.filter((d) => d.severity === 'error'), omittedDiagnostics: diagnostics.length - bounded.length, runtimeCheck: { status: 'notRequested' as const }, guiCheck: { status: 'notRequested' as const }, complete }
+    return { semanticPass, checked: expectations.length, matched, expectationResults: boundedExpectations, omittedExpectations: expectationResults.length - boundedExpectations.length, diagnostics: includeWarnings ? bounded : bounded.filter((d) => d.severity === 'error'), omittedDiagnostics: diagnostics.length - bounded.length, runtimeCheck: { status: 'notRequested' as const }, guiCheck: { status: 'notRequested' as const }, complete }
 }

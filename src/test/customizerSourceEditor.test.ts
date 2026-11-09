@@ -41,7 +41,7 @@ test('structured edits refuse ambiguous comments/expressions/multiple declaratio
     assert.throws(() => planCustomizerEdits('width=40;\nheight=20;\n', [{ ...slider, group: 'Dimensions' }]), /following parameters/)
     assert.throws(() => planCustomizerEdits('width=40;\n', [{ ...slider, description: 'Bad\nx=99;' }]), /Single-line/)
     assert.throws(() => planCustomizerEdits('width=40;\n', [{ ...slider, group: 'Bad */ x=99;' }]), /group/)
-    assert.throws(() => planCustomizerEdits('width=40;\n', [{ ...slider, range: { min: 10, max: 100, step: 7 } }]), /contract/)
+    assert.equal(planCustomizerEdits('width=40;\n', [{ ...slider, range: { min: 10, max: 100, step: 7 } }]).validation.semanticPass, true)
     assert.throws(() => planCustomizerEdits('width=40;\n', [{ kind: 'changeWidget', name: 'width', widget: 'checkbox' }]), /contract/)
 })
 
@@ -56,4 +56,10 @@ test('literal insertion preserves BOM and is idempotent; multiline vectors keep 
     const multi = 'size = [20,\r\n30, 40];\r\ncube(size);\r\n'
     const changed = planCustomizerEdits(multi, [{ ...intent, kind: 'annotateExisting' }])
     assert.ok(changed.source.endsWith('size = [20,\r\n30, 40]; // [0:5:100]\r\ncube(size);\r\n'))
+})
+
+
+test('structured Widget edits preserve explanations after a bracketed comment by refusing ambiguous replacement', () => {
+    const source = 'width=40; // [0:100] IDs in Assembly.md; preserve this explanation\n'
+    assert.throws(() => planCustomizerEdits(source, [slider]), /Preserve text after/)
 })

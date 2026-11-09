@@ -473,7 +473,7 @@ test('Customizer Quick Fixes use the semantic planner for invalid steps, explici
     class Range { constructor(readonly start: unknown, readonly end: unknown) {} }
     class WorkspaceEdit { edits: unknown[] = []; replace(uri: unknown, range: unknown, text: string) { this.edits.push({ uri, range, text }) } }
     class CodeAction { edit?: WorkspaceEdit; constructor(readonly title: string, readonly kind: unknown) {} }
-    const api = { Range, WorkspaceEdit, CodeAction, CodeActionKind: { QuickFix: 'quickfix' }, workspace: { isTrusted: true, getConfiguration: () => ({ get: () => true }) } }
+    const api = { Range, WorkspaceEdit, CodeAction, CodeActionKind: { QuickFix: 'quickfix', RefactorRewrite: 'refactor.rewrite' }, workspace: { isTrusted: true, getConfiguration: () => ({ get: () => true }) } }
     const module = load<typeof import('../features/language/CustomizerCodeActions')>('../features/language/CustomizerCodeActions.js', api)
     for (const [source, title] of [
         ['width=40; // [10:0:100]\n', 'Customizer: remove invalid explicit step'],
@@ -484,6 +484,7 @@ test('Customizer Quick Fixes use the semantic planner for invalid steps, explici
         const document = { uri: Uri.file('/workspace/model.scad'), getText: () => source, positionAt: (offset: number) => ({ line: 0, character: offset }) }
         const actions = new module.CustomizerCodeActions().provideCodeActions(document as unknown as vscode.TextDocument, { start: { line: 0 }, end: { line: 0 } } as vscode.Range)
         assert.ok(actions.some((a) => a.title === title && a.edit), title)
+        assert.equal(String(actions.find((a) => a.title === title)!.kind), title.includes('remove invalid') ? 'quickfix' : 'refactor.rewrite')
     }
     api.workspace.isTrusted = false
     assert.deepEqual(JSON.parse(JSON.stringify(new module.CustomizerCodeActions().provideCodeActions({ uri: Uri.file('/workspace/model.scad') } as unknown as vscode.TextDocument, {} as vscode.Range))), [])

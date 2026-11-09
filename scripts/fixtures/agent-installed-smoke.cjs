@@ -27,6 +27,12 @@ exports.run = async () => {
     const analysis = await vscode.lm.invokeTool('scad_ai_ide_customizer_sourceAnalyze', { input: { uri: sourceUri.toString() }, toolInvocationToken: undefined })
     const analyzed = JSON.parse(analysis.content[0].value)
     assert.equal(analyzed.ok, true)
+    const unmetResult = await vscode.lm.invokeTool('scad_ai_ide_customizer_sourceValidate', { input: { uri: sourceUri.toString(), expectations: [{ name: 'width', widget: 'slider' }] }, toolInvocationToken: undefined })
+    const unmet = JSON.parse(unmetResult.content[0].value)
+    assert.equal(unmet.ok, true)
+    assert.equal(unmet.data.semanticPass, false)
+    assert.deepEqual(unmet.data.diagnostics, [])
+    assert.equal(unmet.data.expectationResults[0].matched, false)
     const { version, sha256 } = analyzed.data.identity
     const planned = await api.capabilities.invoke('customizer.sourceApply', { mode: 'plan', uri: sourceUri.toString(), identity: { version, sha256 }, edits: [{ kind: 'changeWidget', name: 'width', widget: 'slider', range: { min: 10, max: 100, step: 5 } }] }, { actor: 'agent' })
     assert.equal(planned.ok, true, JSON.stringify(planned))
@@ -43,7 +49,7 @@ exports.run = async () => {
     assert.equal(reused.ok, false)
     assert.equal(reused.error.code, 'PLAN_EXPIRED')
     assert.doesNotMatch(Buffer.from(await vscode.workspace.fs.readFile(sourceUri)).toString(), /\[10:5:100\]/)
-    const sourceAuthoring = { analyzed, planned, committed, validated, singleUseRejected: true, unsavedSource: sourceDocument.getText(), diskUnchanged: true }
+    const sourceAuthoring = { analyzed, unmet, planned, committed, validated, singleUseRejected: true, unsavedSource: sourceDocument.getText(), diskUnchanged: true }
     await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor')
     await vscode.workspace.fs.delete(sourceUri)
     await fs.writeFile(process.env.SCAD_SMOKE_RESULT, JSON.stringify({ vscode: vscode.version, extension: extension.id, toolCount: names.length, availableChatModels, productionDevDenied: true, sourceAuthoring, panelsRequired: false, instructions: extension.packageJSON.contributes.chatInstructions, skills: extension.packageJSON.contributes.chatSkills }, null, 2))

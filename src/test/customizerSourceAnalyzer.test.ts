@@ -33,14 +33,14 @@ test('groups, Hidden, post-brace variables and duplicates retain legacy visibili
 })
 test('ordinary variables, prose and expressions without intent produce no warnings', () => {
     assert.deepEqual(codes('// computed\na=width/10;\nb=3; // width between 10 and 100\nb2=3; // 3 inches recommended\nc=[1,2,3,4,5];\ns="//[bad]";'), [])
-    assert.ok(codes('a=width/10; // [0:10]').includes('CUSTOMIZER_UNSUPPORTED_DEFAULT'))
+    assert.deepEqual(codes('a=width/10; // [0:10]'), [])
 })
 test('deterministic invalid ranges, steps, defaults, choices and malformed hints', () => {
     for (const [source, code] of [
         ['a=10; // [10:0:100]', 'INVALID_RANGE'], ['a=10; // [100:10]', 'INVALID_RANGE'],
-        ['a=101; // [0:100]', 'DEFAULT_OUT_OF_RANGE'], ['a=11; // [0:5:100]', 'DEFAULT_OFF_STEP'],
+        ['a=101; // [0:100]', 'DEFAULT_OUT_OF_RANGE'],
         ['a=1; // [0:10', 'MALFORMED_HINT'], ['a=1; // 0', 'MALFORMED_HINT'],
-        ['a="x"; // [y,z]', 'INVALID_CHOICES'], ['a=1; // [one,two]', 'INVALID_CHOICES'],
+        ['a=1; // [1,,2]', 'INVALID_CHOICES'],
     ]) assert.ok(codes(source).includes('CUSTOMIZER_' + code), source)
     assert.deepEqual(codes('a="a,b"; // ["a,b":"A:B", "c":"C"]'), [])
     assert.equal(analyzeCustomizerSource('a=1e2; // [0:50:200]').parameters[0].defaultValue, 100)
@@ -90,14 +90,51 @@ test('superseded invalid hints/defaults stop reporting once the effective declar
     assert.deepEqual(codes('shape="missing"; // [round,square]\nshape="round"; // [round,square]\n'), [])
 })
 
-test('an actual lost control points to the final expression, is informational and clears after repair', () => {
-    const source = 'width=10; // [1:1:200]\nwidth=10+20;\n'
-    const result = analyzeCustomizerSource(source)
-    assert.equal(result.parameters.length, 0)
-    assert.equal(result.diagnostics.length, 1)
-    assert.equal(result.diagnostics[0].code, 'CUSTOMIZER_DUPLICATE_ASSIGNMENT')
-    assert.equal(result.diagnostics[0].severity, 'information')
-    assert.equal(result.diagnostics[0].range.start.line, 1)
-    assert.match(result.diagnostics[0].message, /width.*final assignment.*line 1/)
-    assert.deepEqual(codes(source.replace('10+20', '30')), [])
+test('ordinary SCAD and optional or unsupported Customizer usage never generate diagnostics', () => {
+    for (const source of [
+        'width=10; // [1:1:200]\nwidth=10+20;',
+        'width=10+20; // [1:1:200]',
+        'width=30; height=40; derived=width/2;',
+        'quality=2; // [0:5:100]',
+        'shape="round"; // [square,circle]',
+        'quality=1; // [one,two]',
+        'quality=1; // [1:One,1:Also One,2:Two]',
+        'flag=true; // [0:1]',
+        'vector=[1,2,3,4,5]; // [0:100]',
+        'internal=2;\n/* [Hidden] */\ninternal=width/2;',
+        'width=40; // [TODO check the width later',
+    ]) assert.deepEqual(analyzeCustomizerSource(source).diagnostics, [], source)
+})
+
+test('every warning is tied to written syntax, has a concrete fix and clears after that repair', () => {
+    for (const [broken, fixed] of [
+        ['a=10; // [10:0:100]', 'a=10; // [10:100]'],
+        ['a=10; // [100:10]', 'a=10; // [10:100]'],
+        ['a=1; // [0:10', 'a=1; // [0:10]'],
+        ['a=1; // 0', 'a=1; // 1'],
+        ['a=1; // [1,,2]', 'a=1; // [1,2]'],
+        ['a=101; // [0:100]', 'a=101; // [0:200]'],
+        ['label="long"; // 2', 'label="long"; // 4'],
+    ]) {
+        const result = analyzeCustomizerSource(broken)
+        assert.ok(result.diagnostics.length > 0, broken)
+        assert.ok(result.diagnostics.every((d) => d.severity === 'warning' && !!d.suggestedFix && !!result.parameters[0].annotationRange), broken)
+        assert.deepEqual(analyzeCustomizerSource(fixed).diagnostics, [], fixed)
+        assert.deepEqual(analyzeCustomizerSource(broken.slice(0, broken.indexOf('//'))).diagnostics, [])
+    }
+})
+
+
+test('closed bracket comments followed by prose are not falsely diagnosed as missing a bracket', () => {
+    const comment = '// [0:22] IDs in Assembly.md; 0 shows the selected group'
+    for (const ending of ['\n', '\r\n']) {
+        const result = analyzeCustomizerSource(`assembly_id=0; ${comment}${ending}`)
+        assert.deepEqual(result.diagnostics, [])
+        assert.equal(result.parameters[0].widget, 'spinbox', 'Do not claim GUI range support for trailing prose the Parser does not consume')
+        assert.deepEqual(codes(`// IDs in Assembly.md; 0 shows the selected group${ending}assembly_id=0; // [0:22]${ending}`), [])
+    }
+    assert.deepEqual(codes('name="a]b"; // ["a]b":"Label ]",other:Other] explanation'), [])
+    assert.deepEqual(codes('assembly_id=0; // [0:22] see [IDs]'), [])
+    assert.ok(codes('assembly_id=0; // [0:22').includes('CUSTOMIZER_MALFORMED_HINT'))
+    assert.ok(codes('name="x"; // ["x]":Label').includes('CUSTOMIZER_MALFORMED_HINT'), 'A ] inside quotes does not close the hint')
 })

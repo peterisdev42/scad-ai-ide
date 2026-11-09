@@ -1,5 +1,5 @@
 import { CapabilityError } from '../capabilities/CapabilityTypes'
-import { scanCustomizer, parseLiteral } from './CustomizerParser'
+import { scanCustomizer, parseLiteral, splitOutsideStrings } from './CustomizerParser'
 import { analyzeCustomizerSource } from './CustomizerSourceAnalyzer'
 import { validateCustomizerSource } from './CustomizerSourceValidator'
 import type { SourceEditIntent, SourceExpectation, SourceTextEdit } from './CustomizerSourceTypes'
@@ -100,6 +100,8 @@ export function planCustomizerEdits(source: string, intents: SourceEditIntent[])
                 const hint = annotation(intent)
                 if (existing.annotation) {
                     const old = result.slice(existing.annotation.start + 2, existing.annotation.end).trim()
+                    const closingParts = old.startsWith('[') ? splitOutsideStrings(old, ']') : []
+                    if (closingParts.length > 1 && (closingParts.length !== 2 || closingParts[1])) reject('Preserve text after the bracketed comment; move the explanation to a separate comment before changing the Widget.')
                     if (old && !(old.startsWith('[') || /^[+-]?(?:0x[0-9a-f]+|(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?)$/i.test(old)) && !/^range\s*:\s*[+-]?[\d.]+\s*\.\.\s*[+-]?[\d.]+(?:\s+step\s+[\d.]+)?$/i.test(old)) reject('Preserve ordinary trailing comments; convert them manually.')
                     local.push({ start: existing.annotation.start, end: existing.annotation.end, text: hint ? '// ' + hint : '' })
                 } else if (hint) local.push({ start: existing.end, end: existing.end, text: ' // ' + hint })
@@ -134,7 +136,7 @@ export function planCustomizerEdits(source: string, intents: SourceEditIntent[])
     const unchanged = (scan: ReturnType<typeof scanCustomizer>) => scan.declarations.filter((d) => !targets.has(d.name)).map((d) => ({ name: d.name, value: d.value, group: d.group, beforeFirstBrace: d.beforeFirstBrace, parameter: d.parameter }))
     if (JSON.stringify(unchanged(original)) !== JSON.stringify(unchanged(finalScan))) reject('The edit would change another declaration or its Customizer meaning.')
     const validation = validateCustomizerSource(result, expectations)
-    if (!validation.semanticPass) throw new CapabilityError('POSTCONDITION_FAILED', `Plan does not meet its contract: ${validation.diagnostics.map((d) => d.message).join('; ').slice(0, 2000)}`)
+    if (!validation.semanticPass) throw new CapabilityError('POSTCONDITION_FAILED', `Plan does not meet its contract: ${[...validation.diagnostics.map((d) => d.message), ...validation.expectationResults.flatMap((result) => result.issues.map((issue) => `${result.parameter}: ${issue}`))].join('; ').slice(0, 2000)}`)
     const edits: SourceTextEdit[] = []
     let cursor = 0, pending = ''
     for (const piece of pieces) {

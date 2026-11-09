@@ -1899,7 +1899,7 @@
             {
                 "name": "scad_ai_ide_customizer_sourceValidate",
                 "displayName": "Validate Customizer source",
-                "modelDescription": "Read and validate current workspace .scad buffer against optional explicit widget/type/group/default/range/choice expectations. Unlike customizer_state, validates source declarations, not Overrides. Without expectations proves only static consistency. complete=false or semanticPass=false is failure. Runtime and GUI checks are separately notRequested; use existing Preview when requested. Correct diagnostics and validate again.",
+                "modelDescription": "Read and validate current workspace .scad buffer against optional explicit widget/type/group/default/range/choice expectations. Unlike customizer_state, validates source declarations, not Overrides. Without expectations proves only static consistency. complete=false or semanticPass=false is failure. Runtime and GUI checks are separately notRequested; use existing Preview when requested. Correct diagnostics and validate again. Unmet explicit targets are returned in expectationResults, never as syntax errors or Problems diagnostics. With no expectations, missing Customizer grammar and normal SCAD usage are not diagnostic failures.",
                 "canBeReferencedInPrompt": true,
                 "toolReferenceName": "scad_customizer_sourceValidate",
                 "inputSchema": {
