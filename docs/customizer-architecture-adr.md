@@ -214,3 +214,16 @@ ADR09复测：同一qwen3.5:2b-mlx通过官方Skill入口实际读取Skill并调
 ### 原生 Desktop 差分补充：待实测的交互层
 
 2026-11-09新增官方2026.11.06二进制41例CLI差分，全匹配；相关Customizer/ParameterWidget/parameter源码与pinned相同。源码复核发现Slider.setValue和commitChange经过网格位置，Text控件使用QLineEdit.setMaxLength，不能将CLI的off-grid/UTF-8 import结论扩展为Desktop交互结论。当前原生GUI因已验证锁屏尚未获得控件动态证据；完整矩阵见customizer/native-gui-validation.md。保留用户批准的无损存储、step交互与GUI-Agent一致性政策，不未经实测修改公开行为或宣称Desktop完全一致。
+
+
+## ADR-CUST-10 — 不可重放的当前值快照（PROPOSED，待用户决定）
+
+真实最低Host复现：`label="abcdef"; // 3` 的源码默认值按已批准政策保留；createPreset成功写出`Snapshot.label="abcdef"`，立即apply同一集失败PRESET_INVALID_VALUE。成功结果同时含PRESET-004诊断，不能据此认为保存正确。源码buffer/disk未变，未dirty。证据：customizer/evidence/preset-default-roundtrip-defect.json。当前生产逻辑尚未更改。
+
+新增native导入差分：显式导入abcdef得到abc，省略字段保持abcdef。max-only `[100]` 的负默认值另有边界：schema显示min0，但NumberParameter没有显式minimum成员，CLI显式导入-5仍为-5；不可把schema、import和Qt控件处理视作同一层。10例本机CLI已执行，见customizer/native-import-default-boundaries.json；最初将负数导入预期为0的假设断言失败，已按实际结果与源码修订，未改产品校验。
+
+方案A（推荐）：当前值不能通过现有无损validator时，new/save/没有已有sets时的export Current在写文件及更新active/baseline之前拒绝，沿用PRESET_INVALID_VALUE，明确指出参数及限制。用户可修正约束注释或显式输入合规值后再保存。不改源码默认值、不截断、不改文件格式。delete及导出已有原始sets不依赖当前快照的合法性；未知版本只读限制仍优先适用。可见变化是此前报告成功的不可重放快照现在报错，故先请用户确认。
+
+方案B：仅省略等于源码默认值且不满足输入约束的字段，保存partial集并提示。可重放时沿用当前源码默认值；若未来源码默认值改变，历史快照也随之改变。这改变快照含义，未经确认不实施。原生有损截断、擅自扩大文本限制或改写源码默认值均不作为备选。
+
+拟定验收：真实Host分别覆盖超长ASCII、多字节文本、max-only负默认值；new/save/export Current失败时不存在新文件，已有文件bytes、active、baseline、Overrides、revision和源码dirty语义不变；修改为合规值后可保存并重新apply。删除已有集和原样export已有sets在当前默认值不合规时仍可操作，未知版本仍拒绝写入。两GUI及Agent使用同一controller，分别验证可见错误。上述新门禁尚未执行，不标PASS。

@@ -1,0 +1,40 @@
+2026-11-09T13:29:16.4424448Z ℹ suites 0
+2026-11-09T13:29:16.4424604Z ℹ pass 26
+2026-11-09T13:29:16.4424765Z ℹ fail 1
+2026-11-09T13:29:16.4424940Z ℹ cancelled 0
+2026-11-09T13:29:16.4425116Z ℹ skipped 2
+2026-11-09T13:29:16.4425286Z ℹ todo 0
+2026-11-09T13:29:16.4425478Z ℹ duration_ms 4245.4358
+2026-11-09T13:29:16.4431450Z
+2026-11-09T13:29:16.4431876Z ✖ failing tests:
+2026-11-09T13:29:16.4432020Z
+2026-11-09T13:29:16.4432233Z test at src\test\libraries\environment.test.ts:2:2546
+2026-11-09T13:29:16.4432976Z ✖ Real OpenSCAD resolves a linked library, changes geometry after version switch and retains Store on removal (807.5594ms)
+2026-11-09T13:29:16.4434302Z   Error: Command failed: C:\Program Files\OpenSCAD\openscad.exe --export-format asciistl -o C:\Users\runneradmin\AppData\Local\Temp\scad-library-X0bnJ0\model.stl C:\Users\runneradmin\AppData\Local\Temp\scad-library-X0bnJ0\项目 A\main.scad
+2026-11-09T13:29:16.4435396Z   Can't open input file 'C:\Users\runneradmin\AppData\Local\Temp\scad-library-X0bnJ0\?? A\main.scad'!
+2026-11-09T13:29:16.4435797Z
+2026-11-09T13:29:16.4435926Z
+2026-11-09T13:29:16.4436147Z       at genericNodeError (node:internal/errors:986:15)
+2026-11-09T13:29:16.4436461Z       at wrappedFn (node:internal/errors:540:14)
+2026-11-09T13:29:16.4436788Z       at ChildProcess.exithandler (node:child_process:417:12)
+2026-11-09T13:29:16.4437403Z       at ChildProcess.emit (node:events:514:28)
+2026-11-09T13:29:16.4437746Z       at maybeClose (node:internal/child_process:1172:16)
+2026-11-09T13:29:16.4438145Z       at ChildProcess._handle.onexit (node:internal/child_process:335:5) {
+2026-11-09T13:29:16.4438469Z     code: 1,
+2026-11-09T13:29:16.4439027Z     killed: false,
+2026-11-09T13:29:16.4439236Z     signal: null,
+2026-11-09T13:29:16.4440332Z     cmd: 'C:\\Program Files\\OpenSCAD\\openscad.exe --export-format asciistl -o C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-library-X0bnJ0\\model.stl C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-library-X0bnJ0\\项目 A\\main.scad',
+2026-11-09T13:29:16.4441429Z     stdout: '',
+2026-11-09T13:29:16.4442413Z     stderr: "Can't open input file 'C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-library-X0bnJ0\\?? A\\main.scad'!\r\n\r\n"
+2026-11-09T13:29:16.4442985Z   }
+2026-11-09T13:29:16.5058207Z ##[error]Process completed with exit code 1.
+2026-11-09T13:29:16.5181025Z ##[group]Run node -p 'JSON.stringify({platform:process.platform,arch:process.arch,node:process.version})'
+2026-11-09T13:29:16.5181484Z [36;1mnode -p 'JSON.stringify({platform:process.platform,arch:process.arch,node:process.version})'[0m
+2026-11-09T13:29:16.5190644Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2026-11-09T13:29:16.5190875Z env:
+2026-11-09T13:29:16.5190989Z   QT_QPA_PLATFORM: offscreen
+2026-11-09T13:29:16.5191116Z   SCAD_REQUIRE_CLI: 1
+2026-11-09T13:29:16.5191229Z   SCAD_LIBRARIES_ONLINE: 0
+2026-11-09T13:29:16.5191408Z   SCAD_OPENSCAD_EXECUTABLE: C:\Program Files\OpenSCAD\openscad.exe
+2026-11-09T13:29:16.5191612Z ##[endgroup]
+2026-11-09T13:29:16.8128991Z {"platform":"win32","arch":"x64","node":"v24.22.2"}

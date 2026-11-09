@@ -34,12 +34,18 @@ for (const name of names.filter(name => name.replaceAll('\\', '/').includes('/Gi
     }
 }
 files.set('native-assistant-messages.json', JSON.stringify(messages, null, 2))
+const metadata = result.response?.result?.metadata
+const nativeToolRequests = (metadata?.toolCallRounds ?? []).flatMap(round => (round.toolCalls ?? []).map(call => {
+    const resultText = (metadata.toolCallResults?.[call.id]?.content ?? []).map(part => part.value ?? '').join('\n')
+    return { name: call.name, id: call.id, toolInputRetry: round.toolInputRetry, hostSchemaRejected: resultText.startsWith('ERROR: Your input to the tool was invalid'), hostError: resultText.startsWith('ERROR: Your input to the tool was invalid') ? resultText : undefined }
+}))
+const customizerCalls = calls.filter(call => call.capability.startsWith('customizer.'))
 const facts = {
     scenario: input.scenario,
     nativeAgent: result.nativeAgent,
     selectedModel: result.response?.result?.details,
     requestedModel: input.model,
-    model: result.ready.models?.filter(model => model.id === 'qwen3.5:2b-mlx'),
+    model: result.ready.models?.filter(model => model.id === input.model),
     artifact: result.artifact ?? input.artifact ?? 'Historical run: VSIX hash not captured; bundled extension hash is in result.ready',
     requestFinished: result.requestFinished,
     timedOut: result.timedOut,
@@ -49,7 +55,12 @@ const facts = {
     sourceDiskUnchanged: disk === input.source,
     sourceBufferObserved: typeof buffer === 'string',
     sourceBufferUnchanged: typeof buffer === 'string' ? buffer === input.source : null,
-    actualCustomizerToolInvocations: calls.length,
+    actualBusinessToolInvocations: calls.length,
+    actualCustomizerToolInvocations: customizerCalls.length,
+    nativeToolRequestMetadataAvailable: Array.isArray(metadata?.toolCallRounds),
+    nativeToolRequests,
+    nativeHostSchemaRejections: nativeToolRequests.filter(call => call.hostSchemaRejected).length,
+    nativeToolMetadataScope: 'Available final response metadata only; generated requests and Host schema rejections are not dispatcher execution or successful edits. Missing metadata does not prove no attempts.',
     calls: calls.map(call => ({ capability: call.capability, mode: call.input?.mode, ok: call.output?.ok, errorCode: call.output?.error?.code, semanticPass: call.output?.data?.semanticPass, complete: call.output?.data?.complete })),
     acceptance: 'REQUIRES REVIEW: these are observations, not a model acceptance PASS',
 }

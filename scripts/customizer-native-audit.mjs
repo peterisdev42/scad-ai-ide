@@ -17,7 +17,14 @@ if (version.status !== 0) throw new Error(version.error?.message || version.stde
 let build
 try { build = JSON.parse(readFileSync(resolve(dirname(binary), '../build-info.json'), 'utf8')) } catch { /* Arbitrary installations may not expose build metadata. */ }
 const directory = mkdtempSync(join(tmpdir(), 'scad-customizer-parity-'))
-const report = { referenceOpenSCADCommit: fixtures.referenceOpenSCADCommit, binary: resolve(binary), version: (version.stdout + version.stderr).trim(), buildCommit: build?.commit ?? null, pinnedBinary: build?.commit === fixtures.referenceOpenSCADCommit, platform: process.platform, node: process.version, results: [] }
+// GUI builds can gate NFC identifiers behind an experimental switch; some
+// managed builds accept them without exposing that switch. Probe option support
+// without source execution, then record the exact corpus invocation profile.
+const featureProbe = spawnSync(binary, ['--enable=unicode-identifiers', '--version'], { encoding: 'utf8', timeout: 15000 })
+const featureProbeOutput = (featureProbe.stdout ?? '') + (featureProbe.stderr ?? '')
+if (featureProbe.status !== 0 && !/unrecogni[sz]ed option.*--enable/.test(featureProbeOutput)) throw new Error(featureProbe.error?.message || featureProbeOutput)
+const nativeOptions = featureProbe.status === 0 ? ['--enable=unicode-identifiers'] : []
+const report = { referenceOpenSCADCommit: fixtures.referenceOpenSCADCommit, nativeOptions, unicodeFeatureSwitchSupported: featureProbe.status === 0, binary: resolve(binary), version: (version.stdout + version.stderr).trim(), buildCommit: build?.commit ?? null, pinnedBinary: build?.commit === fixtures.referenceOpenSCADCommit, platform: process.platform, node: process.version, results: [] }
 try {
     for (const fixture of fixtures.cases) {
         const file = join(directory, fixture.id + '.scad'), output = join(directory, fixture.id + '.param')
@@ -27,7 +34,7 @@ try {
             mkdirSync(dirname(target), { recursive: true }); writeFileSync(target, content)
         }
         writeFileSync(file, fixture.source)
-        const native = spawnSync(binary, ['-o', output, file], { encoding: 'utf8', timeout: 15000, maxBuffer: 1024 * 1024 })
+        const native = spawnSync(binary, [...nativeOptions, '-o', output, file], { encoding: 'utf8', timeout: 15000, maxBuffer: 1024 * 1024 })
         if (native.status !== 0) throw new Error(`${fixture.id}: ${native.error?.message || native.stderr}`)
         const actualNative = JSON.parse(readFileSync(output, 'utf8')).parameters ?? []
         const ide = analyzeCustomizerSource(fixture.source)

@@ -1,0 +1,97 @@
+2026-11-09T13:29:57.3502888Z ℹ suites 0
+2026-11-09T13:29:57.3503072Z ℹ pass 23
+2026-11-09T13:29:57.3503260Z ℹ fail 7
+2026-11-09T13:29:57.3503445Z ℹ cancelled 0
+2026-11-09T13:29:57.3503642Z ℹ skipped 1
+2026-11-09T13:29:57.3503823Z ℹ todo 0
+2026-11-09T13:29:57.3504022Z ℹ duration_ms 2243.59
+2026-11-09T13:29:57.3552005Z
+2026-11-09T13:29:57.3552538Z ✖ failing tests:
+2026-11-09T13:29:57.3553329Z
+2026-11-09T13:29:57.3553682Z test at out\test\capabilityServices.test.js:491:22
+2026-11-09T13:29:57.3554484Z ✖ source plan/commit reads unsaved buffers, never writes disk and consumes plans once (17.7805ms)
+2026-11-09T13:29:57.3555561Z   Error: Source target is unavailable or outside the canonical workspace: ENOENT: no such file or directory, lstat 'D:\C:\Users\RUNNER~1\AppData\Local\Temp\scad-source-dpZt0v\model.scad'
+2026-11-09T13:29:57.3556739Z       at CustomizerSourceDomainService.document (D:\a\scad-ai-ide\scad-ai-ide\out\features\sidebar\CustomizerSourceDomainService.js:77:19)
+2026-11-09T13:29:57.3557794Z       at async CustomizerSourceDomainService.analyze (D:\a\scad-ai-ide\scad-ai-ide\out\features\sidebar\CustomizerSourceDomainService.js:97:26)
+2026-11-09T13:29:57.3558735Z       at async TestContext.<anonymous> (D:\a\scad-ai-ide\scad-ai-ide\out\test\capabilityServices.test.js:495:26)
+2026-11-09T13:29:57.3559343Z       at async Test.run (node:internal/test_runner/test:1409:7)
+2026-11-09T13:29:57.3559840Z       at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+2026-11-09T13:29:57.3560269Z     code: 'OUTSIDE_WORKSPACE',
+2026-11-09T13:29:57.3560508Z     retryable: false
+2026-11-09T13:29:57.3561053Z   }
+2026-11-09T13:29:57.3561150Z
+2026-11-09T13:29:57.3561334Z test at out\test\capabilityServices.test.js:511:22
+2026-11-09T13:29:57.3562081Z ✖ source CAS rejects version, hash-only changes, closed targets, expiry, trust loss and cancellation (13.8535ms)
+2026-11-09T13:29:57.3563164Z   Error: Source target is unavailable or outside the canonical workspace: ENOENT: no such file or directory, lstat 'D:\C:\Users\RUNNER~1\AppData\Local\Temp\scad-source-lRjVa9\model.scad'
+2026-11-09T13:29:57.3564306Z       at CustomizerSourceDomainService.document (D:\a\scad-ai-ide\scad-ai-ide\out\features\sidebar\CustomizerSourceDomainService.js:77:19)
+2026-11-09T13:29:57.3565353Z       at async CustomizerSourceDomainService.analyze (D:\a\scad-ai-ide\scad-ai-ide\out\features\sidebar\CustomizerSourceDomainService.js:97:26)
+2026-11-09T13:29:57.3566228Z       at async Object.plan (D:\a\scad-ai-ide\scad-ai-ide\out\test\capabilityServices.test.js:485:30)
+2026-11-09T13:29:57.3567671Z       at async TestContext.<anonymous> (D:\a\scad-ai-ide\scad-ai-ide\out\test\capabilityServices.test.js:515:26)
+2026-11-09T13:29:57.3568346Z       at async Test.run (node:internal/test_runner/test:1409:7)
+2026-11-09T13:29:57.3568842Z       at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+2026-11-09T13:29:57.3570262Z     code: 'OUTSIDE_WORKSPACE',
+2026-11-09T13:29:57.3570572Z     retryable: false
+2026-11-09T13:29:57.3570901Z   }
+2026-11-09T13:29:57.3571061Z
+2026-11-09T13:29:57.3571280Z test at out\test\capabilityServices.test.js:537:22
+2026-11-09T13:29:57.3572301Z ✖ source tools independently reject outside paths and symlink escapes, with read-only analysis in untrusted workspaces (19.6394ms)
+2026-11-09T13:29:57.3573548Z   Error: Source target is unavailable or outside the canonical workspace: ENOENT: no such file or directory, lstat 'D:\C:\Users\RUNNER~1\AppData\Local\Temp\scad-source-uAUMR7\model.scad'
+2026-11-09T13:29:57.3574815Z       at CustomizerSourceDomainService.document (D:\a\scad-ai-ide\scad-ai-ide\out\features\sidebar\CustomizerSourceDomainService.js:77:19)
+2026-11-09T13:29:57.3575983Z       at async CustomizerSourceDomainService.analyze (D:\a\scad-ai-ide\scad-ai-ide\out\features\sidebar\CustomizerSourceDomainService.js:97:26)
+2026-11-09T13:29:57.3576979Z       at async TestContext.<anonymous> (D:\a\scad-ai-ide\scad-ai-ide\out\test\capabilityServices.test.js:549:23)
+2026-11-09T13:29:57.3577732Z       at async Test.run (node:internal/test_runner/test:1409:7)
+2026-11-09T13:29:57.3578321Z       at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+2026-11-09T13:29:57.3578838Z     code: 'OUTSIDE_WORKSPACE',
+2026-11-09T13:29:57.3579188Z     retryable: false
+2026-11-09T13:29:57.3579466Z   }
+2026-11-09T13:29:57.3579625Z
+2026-11-09T13:29:57.3579896Z test at out\test\capabilityServices.test.js:557:22
+2026-11-09T13:29:57.3594428Z ✖ source commit reports rejected WorkspaceEdit and real postcondition failure without overwriting concurrent text (14.7717ms)
+2026-11-09T13:29:57.3596458Z   Error: Source target is unavailable or outside the canonical workspace: ENOENT: no such file or directory, lstat 'D:\C:\Users\RUNNER~1\AppData\Local\Temp\scad-source-RujtIw\model.scad'
+2026-11-09T13:29:57.3600701Z       at CustomizerSourceDomainService.document (D:\a\scad-ai-ide\scad-ai-ide\out\features\sidebar\CustomizerSourceDomainService.js:77:19)
+2026-11-09T13:29:57.3602971Z       at async CustomizerSourceDomainService.analyze (D:\a\scad-ai-ide\scad-ai-ide\out\features\sidebar\CustomizerSourceDomainService.js:97:26)
+2026-11-09T13:29:57.3604396Z       at async Object.plan (D:\a\scad-ai-ide\scad-ai-ide\out\test\capabilityServices.test.js:485:30)
+2026-11-09T13:29:57.3605601Z       at async TestContext.<anonymous> (D:\a\scad-ai-ide\scad-ai-ide\out\test\capabilityServices.test.js:561:26)
+2026-11-09T13:29:57.3606927Z       at async Test.run (node:internal/test_runner/test:1409:7)
+2026-11-09T13:29:57.3607719Z       at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+2026-11-09T13:29:57.3609645Z     code: 'OUTSIDE_WORKSPACE',
+2026-11-09T13:29:57.3610004Z     retryable: false
+2026-11-09T13:29:57.3610280Z   }
+2026-11-09T13:29:57.3610424Z
+2026-11-09T13:29:57.3610713Z test at out\test\capabilityServices.test.js:814:22
+2026-11-09T13:29:57.3611801Z ✖ source pending plans allow 32, reject the 33rd, and reclaim expired plans (13.3544ms)
+2026-11-09T13:29:57.3613394Z   Error: Source target is unavailable or outside the canonical workspace: ENOENT: no such file or directory, lstat 'D:\C:\Users\RUNNER~1\AppData\Local\Temp\scad-source-O6qKWQ\model.scad'
+2026-11-09T13:29:57.3615765Z       at CustomizerSourceDomainService.document (D:\a\scad-ai-ide\scad-ai-ide\out\features\sidebar\CustomizerSourceDomainService.js:77:19)
+2026-11-09T13:29:57.3617930Z       at async CustomizerSourceDomainService.analyze (D:\a\scad-ai-ide\scad-ai-ide\out\features\sidebar\CustomizerSourceDomainService.js:97:26)
+2026-11-09T13:29:57.3618857Z       at async Object.plan (D:\a\scad-ai-ide\scad-ai-ide\out\test\capabilityServices.test.js:485:30)
+2026-11-09T13:29:57.3619622Z       at async TestContext.<anonymous> (D:\a\scad-ai-ide\scad-ai-ide\out\test\capabilityServices.test.js:818:13)
+2026-11-09T13:29:57.3620235Z       at async Test.run (node:internal/test_runner/test:1409:7)
+2026-11-09T13:29:57.3620998Z       at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+2026-11-09T13:29:57.3621475Z     code: 'OUTSIDE_WORKSPACE',
+2026-11-09T13:29:57.3621715Z     retryable: false
+2026-11-09T13:29:57.3621907Z   }
+2026-11-09T13:29:57.3622051Z
+2026-11-09T13:29:57.3622249Z test at out\test\capabilityServices.test.js:828:22
+2026-11-09T13:29:57.3623037Z ✖ source analysis cache bounds retention to 16 documents and disposal clears retained metadata (18.2547ms)
+2026-11-09T13:29:57.3624227Z   Error: Source target is unavailable or outside the canonical workspace: ENOENT: no such file or directory, lstat 'D:\C:\Users\RUNNER~1\AppData\Local\Temp\scad-source-jZPSwR\cache-0.scad'
+2026-11-09T13:29:57.3625517Z       at CustomizerSourceDomainService.document (D:\a\scad-ai-ide\scad-ai-ide\out\features\sidebar\CustomizerSourceDomainService.js:77:19)
+2026-11-09T13:29:57.3626556Z       at async CustomizerSourceDomainService.analyze (D:\a\scad-ai-ide\scad-ai-ide\out\features\sidebar\CustomizerSourceDomainService.js:97:26)
+2026-11-09T13:29:57.3628779Z       at async TestContext.<anonymous> (D:\a\scad-ai-ide\scad-ai-ide\out\test\capabilityServices.test.js:838:30)
+2026-11-09T13:29:57.3629711Z       at async Test.run (node:internal/test_runner/test:1409:7)
+2026-11-09T13:29:57.3630365Z       at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+2026-11-09T13:29:57.3630809Z     code: 'OUTSIDE_WORKSPACE',
+2026-11-09T13:29:57.3631044Z     retryable: false
+2026-11-09T13:29:57.3631232Z   }
+2026-11-09T13:29:57.3631329Z
+2026-11-09T13:29:57.3631523Z test at out\test\capabilityServices.test.js:852:22
+2026-11-09T13:29:57.3632206Z ✖ source plan preview accepts bounded metadata and rejects output above 32 KiB (13.5841ms)
+2026-11-09T13:29:57.3633238Z   Error: Source target is unavailable or outside the canonical workspace: ENOENT: no such file or directory, lstat 'D:\C:\Users\RUNNER~1\AppData\Local\Temp\scad-source-p3gmc5\model.scad'
+2026-11-09T13:29:57.3634407Z       at CustomizerSourceDomainService.document (D:\a\scad-ai-ide\scad-ai-ide\out\features\sidebar\CustomizerSourceDomainService.js:77:19)
+2026-11-09T13:29:57.3635452Z       at async CustomizerSourceDomainService.analyze (D:\a\scad-ai-ide\scad-ai-ide\out\features\sidebar\CustomizerSourceDomainService.js:97:26)
+2026-11-09T13:29:57.3636346Z       at async TestContext.<anonymous> (D:\a\scad-ai-ide\scad-ai-ide\out\test\capabilityServices.test.js:856:30)
+2026-11-09T13:29:57.3636928Z       at async Test.run (node:internal/test_runner/test:1409:7)
+2026-11-09T13:29:57.3637442Z       at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+2026-11-09T13:29:57.3637874Z     code: 'OUTSIDE_WORKSPACE',
+2026-11-09T13:29:57.3638369Z     retryable: false
+2026-11-09T13:29:57.3638560Z   }
+2026-11-09T13:29:57.4343642Z ##[error]Process completed with exit code 1.

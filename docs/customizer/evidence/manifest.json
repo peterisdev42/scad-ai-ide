@@ -435,5 +435,93 @@
       "ANSI",
       "repo/home/tmp prefixes"
     ]
+  },
+  {
+    "name": "ci-a874f3f-linux-contracts",
+    "evidence": "ci-a874f3f-linux-contracts.txt",
+    "sha256": "3f2e65e5395e06b60d83121127140eae8ba9398047df4acd68d8237e38e7e3c2",
+    "scope": "Current a874f3f CI summary/log excerpts; failures and skips retained"
+  },
+  {
+    "name": "ci-a874f3f-linux-library",
+    "evidence": "ci-a874f3f-linux-library.txt",
+    "sha256": "b58bbfb95cfb0c08a454ee00abcd41367a9e5c8e8316894da16caf90e562ece0",
+    "scope": "Current a874f3f CI summary/log excerpts; failures and skips retained"
+  },
+  {
+    "name": "ci-a874f3f-macos-contracts",
+    "evidence": "ci-a874f3f-macos-contracts.txt",
+    "sha256": "b8a45ed26bc2eddbc4d78a9c2ef3a4905396f29347b47e5382993501c2b6a9c6",
+    "scope": "Current a874f3f CI summary/log excerpts; failures and skips retained"
+  },
+  {
+    "name": "ci-a874f3f-macos-library",
+    "evidence": "ci-a874f3f-macos-library.txt",
+    "sha256": "7993286b092d0a2826c9a1485e1097cf750300a5c83dae943cecb071bb5e1faf",
+    "scope": "Current a874f3f CI summary/log excerpts; failures and skips retained"
+  },
+  {
+    "name": "ci-a874f3f-panel",
+    "evidence": "ci-a874f3f-panel.txt",
+    "sha256": "fb24c56a2d9152e8d42383a494b11f5aabd644466ba4abdf3e261cb4ccf4768d",
+    "scope": "Current a874f3f CI summary/log excerpts; failures and skips retained"
+  },
+  {
+    "name": "ci-a874f3f-summary",
+    "evidence": "ci-a874f3f-summary.json",
+    "sha256": "ce535120a5f3b266066515a4317f03dc3d7d7ecc510b6f98ab4da70e9694009e",
+    "scope": "Current a874f3f CI summary/log excerpts; failures and skips retained"
+  },
+  {
+    "name": "ci-a874f3f-windows-contracts",
+    "evidence": "ci-a874f3f-windows-contracts.txt",
+    "sha256": "870704ca00090f7850379180857013432c5da5a4ae50fa231d482022433dc3d0",
+    "scope": "Current a874f3f CI summary/log excerpts; failures and skips retained"
+  },
+  {
+    "name": "ci-a874f3f-windows-library",
+    "evidence": "ci-a874f3f-windows-library.txt",
+    "sha256": "b387e64bb999d5b7531125207b9edb835fa1146297bb5b4ccab414dd80637089",
+    "scope": "Current a874f3f CI summary/log excerpts; failures and skips retained"
+  },
+  {
+    "name": "preset-default-roundtrip-defect",
+    "evidence": "preset-default-roundtrip-defect.json",
+    "sha256": "d279ef42a3ff9fa74fd79d040c65f6ab23f2811416aaa2fd72b2b7638ff022d7",
+    "scope": "Real Host defect reproduction, not acceptance PASS"
+  },
+  {
+    "name": "installed-native-profile",
+    "evidence": "installed-native-profile.txt",
+    "originalLog": "/tmp/customizer-native-profile-installed.log",
+    "originalSha256": "9d40a5e140d519c7a1073ecc1ee0cf0ad22bbfbad8a5487e4b306b23cce85d4a",
+    "redactions": [
+      "ANSI",
+      "repo/home/temp prefixes"
+    ]
+  },
+  {
+    "name": "darwin-import-721bbf5",
+    "evidence": "ci-721bbf5/darwin-import.json",
+    "sha256": "632fed651421b16da65678cf35fd7bc7673c7980188bd2fcf48f8443dfd5d0a4",
+    "scope": "Actual cross-platform 10-case import audit; Windows Library failure remains independent"
+  },
+  {
+    "name": "linux-import-721bbf5",
+    "evidence": "ci-721bbf5/linux-import.json",
+    "sha256": "161b619c4f21b21b631a7f541c4b30b1fed5388342e468cdd076ea15ab86f1aa",
+    "scope": "Actual cross-platform 10-case import audit; Windows Library failure remains independent"
+  },
+  {
+    "name": "native-artifacts-721bbf5",
+    "evidence": "ci-721bbf5/native-artifacts.json",
+    "sha256": "4ec794f04e1db6ef9d1b46e25a208d5aa356ae1870572478a4b9fa41f8667c7e",
+    "scope": "Actual cross-platform 10-case import audit; Windows Library failure remains independent"
+  },
+  {
+    "name": "win32-import-721bbf5",
+    "evidence": "ci-721bbf5/win32-import.json",
+    "sha256": "28c8ec2aadd16ea3a38878bdf29ffc9959d74ab73fd6b9c137d47a16fa80c5fd",
+    "scope": "Actual cross-platform 10-case import audit; Windows Library failure remains independent"
   }
 ]

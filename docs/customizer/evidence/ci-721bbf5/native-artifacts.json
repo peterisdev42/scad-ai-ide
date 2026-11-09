@@ -1,0 +1,48 @@
+{
+  "commit": "721bbf54291bfe160b48471aef3796dc37107872",
+  "libraryRun": 42635584407,
+  "agentRun": 42635584127,
+  "agentJobs": "All four jobs succeeded (explicit skips retained in prior identical contracts matrix)",
+  "libraryJobs": {
+    "linux": "success",
+    "macos": "success",
+    "windows": "failure: Unicode include path"
+  },
+  "artifacts": [
+    {
+      "platform": "linux",
+      "artifactId": 13683615174,
+      "archiveSha256": "96156248382a164726cb2c04677024c1f918ba21be2e6645df765c7086789fc0",
+      "digestMatches": true,
+      "nativeOptions": [],
+      "schemaReportSha256": "649d625afc6c15db83e694c0c47c2831bdecfe25c7145265ea772784ee359c92",
+      "schemaCases": 41,
+      "importCases": 10,
+      "importStatus": "PASS"
+    },
+    {
+      "platform": "win32",
+      "artifactId": 13683580406,
+      "archiveSha256": "42c3e70bc8d484ce8b0cab681d89faab5c772f384b67edc838c5b2f1a2c782d1",
+      "digestMatches": true,
+      "nativeOptions": [],
+      "schemaReportSha256": "4cabb544fd194a9ba61b8852c523fb597b7f359660d6bd77ccb76d6da6a9d245",
+      "schemaCases": 41,
+      "importCases": 10,
+      "importStatus": "PASS"
+    },
+    {
+      "platform": "darwin",
+      "artifactId": 13682558217,
+      "archiveSha256": "c61f3c63fa8e52286329d15a5ab47ed4a18607dc60b783f73ae1bc9e4d73c607",
+      "digestMatches": true,
+      "nativeOptions": [
+        "--enable=unicode-identifiers"
+      ],
+      "schemaReportSha256": "011c9f3316f8a30d96a3859a31d254177ad1a486615d1a3866103c9f2c55f677",
+      "schemaCases": 41,
+      "importCases": 10,
+      "importStatus": "PASS"
+    }
+  ]
+}

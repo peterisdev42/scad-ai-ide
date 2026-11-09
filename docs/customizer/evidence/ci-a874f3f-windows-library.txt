@@ -1,0 +1,25 @@
+2026-11-09T14:04:22.5599627Z ##[group]Run actions/checkout@v4
+2026-11-09T14:04:29.5874692Z ##[group]Run actions/setup-node@v4
+2026-11-09T14:04:39.5246998Z ##[group]Run npm ci
+2026-11-09T14:05:33.7186455Z ##[group]Run $archive = Join-Path $env:RUNNER_TEMP 'openscad-cli-windows-x86_64.zip'
+2026-11-09T14:05:36.1125984Z ##[group]Run npm run check-types
+2026-11-09T14:05:41.8844285Z ##[group]Run npm run lint
+2026-11-09T14:05:48.5439963Z ##[group]Run npm run compile-tests
+2026-11-09T14:05:52.9651912Z ##[group]Run mkdir -p .build
+2026-11-09T14:05:56.3453345Z PASS 6 native schema/import probes; unknown version 99 was read, not evidence that arbitrary future versions can be overwritten.
+2026-11-09T14:05:56.3718613Z ##[group]Run node scripts/customizer-windows-environment-probe.mjs "$SCAD_OPENSCAD_EXECUTABLE" .build/customizer-windows-environment.json
+2026-11-09T14:05:57.0977782Z       "stderr": "WARNING: Can't find include file 'fixture-library/smoke.scad'. in file ../项目 A/main.scad, line 1\r\n",
+2026-11-09T14:05:57.0988739Z       "stderr": "WARNING: Can't find include file 'fixture-library/smoke.scad'. in file ../项目 B/main.scad, line 1\r\n",
+2026-11-09T14:05:57.1215062Z ##[group]Run npm run test:libraries
+2026-11-09T14:05:58.7892119Z ﹣ Real Fast Preview and Markdown use the same project library environment (0.2021ms) # SKIP
+2026-11-09T14:05:59.3341273Z ﹣ Online BOSL2: Registry → commit archive → global Store → project link → real CLI → offline Restore (1.573ms) # SKIP
+2026-11-09T14:05:59.9259690Z ℹ tests 29
+2026-11-09T14:05:59.9259993Z ℹ pass 26
+2026-11-09T14:05:59.9260140Z ℹ fail 1
+2026-11-09T14:05:59.9260452Z ℹ skipped 2
+2026-11-09T14:05:59.9272694Z   WARNING: Can't find include file 'fixture-library/smoke.scad'. in file , line 1
+2026-11-09T14:05:59.9274971Z     code: 3221226505,
+2026-11-09T14:05:59.9277388Z     stderr: "WARNING: Can't find include file 'fixture-library/smoke.scad'. in file , line 1\r\n"
+2026-11-09T14:05:59.9900720Z ##[error]Process completed with exit code 1.
+2026-11-09T14:06:00.0109950Z ##[group]Run actions/upload-artifact@v4
+2026-11-09T14:06:00.9029305Z ##[group]Run node -p 'JSON.stringify({platform:process.platform,arch:process.arch,node:process.version})'

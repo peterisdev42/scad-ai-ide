@@ -1,0 +1,34 @@
+2026-11-09T14:04:24.1931540Z ##[group]Run actions/checkout@v4
+2026-11-09T14:04:27.0264190Z ##[group]Run actions/setup-node@v4
+2026-11-09T14:04:32.2488890Z ##[group]Run npm ci
+2026-11-09T14:04:46.9323320Z ##[group]Run npm run test:agents:manifest
+2026-11-09T14:04:48.8056380Z ℹ tests 2
+2026-11-09T14:04:48.8057150Z ℹ pass 2
+2026-11-09T14:04:48.8057530Z ℹ fail 0
+2026-11-09T14:04:48.8058050Z ℹ skipped 0
+2026-11-09T14:04:48.8212760Z ##[group]Run npm run check:agents
+2026-11-09T14:04:49.4648950Z ##[group]Run npm run check-types
+2026-11-09T14:04:55.9257080Z ##[group]Run npm run lint
+2026-11-09T14:04:59.4845740Z ##[group]Run npm run check:customizer:architecture
+2026-11-09T14:05:00.4274310Z ##[group]Run npm run test:customizer:compatibility
+2026-11-09T14:05:04.5183530Z ℹ tests 41
+2026-11-09T14:05:04.5185190Z ℹ pass 41
+2026-11-09T14:05:04.5187550Z ℹ fail 0
+2026-11-09T14:05:04.5189610Z ℹ skipped 0
+2026-11-09T14:05:04.5313260Z ##[group]Run npm run test:customizer:source
+2026-11-09T14:05:08.7336210Z ℹ tests 45
+2026-11-09T14:05:08.7338060Z ℹ pass 45
+2026-11-09T14:05:08.7338550Z ℹ fail 0
+2026-11-09T14:05:08.7339140Z ℹ skipped 0
+2026-11-09T14:05:08.7473930Z ##[group]Run npm run test:capabilities
+2026-11-09T14:05:14.4886120Z ℹ tests 31
+2026-11-09T14:05:14.4887370Z ℹ pass 31
+2026-11-09T14:05:14.4887640Z ℹ fail 0
+2026-11-09T14:05:14.4888200Z ℹ skipped 0
+2026-11-09T14:05:14.5044310Z ##[group]Run npm run test:libraries
+2026-11-09T14:05:15.7797470Z ﹣ Real Fast Preview and Markdown use the same project library environment (0.083542ms) # SKIP
+2026-11-09T14:05:16.2647160Z ﹣ Online BOSL2: Registry → commit archive → global Store → project link → real CLI → offline Restore (1.076833ms) # SKIP
+2026-11-09T14:05:16.7894720Z ℹ tests 29
+2026-11-09T14:05:16.7895130Z ℹ pass 26
+2026-11-09T14:05:16.7895410Z ℹ fail 0
+2026-11-09T14:05:16.7895830Z ℹ skipped 3

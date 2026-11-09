@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs'
 import { mkdtemp, mkdir, writeFile, symlink, rm } from 'node:fs/promises'
 import * as os from 'node:os'
 import * as vm from 'node:vm'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { CustomizerService } from '../core/customizer/CustomizerService'
 import { CapabilityError } from '../core/capabilities/CapabilityTypes'
 import { CapabilityRegistry, capabilityCatalog } from '../core/capabilities/CapabilityRegistry'
@@ -30,10 +31,10 @@ class Uri {
     scheme = 'file'; authority = ''; query = ''; fragment = ''
     constructor(readonly fsPath: string) {}
     get path() { return this.fsPath }
-    toString() { return `file://${this.fsPath}` }
+    toString() { return this.scheme === 'file' ? pathToFileURL(this.fsPath).href : `${this.scheme}://${this.fsPath}` }
     with(value: { path?: string }) { return new Uri(value.path ?? this.path) }
     static file(value: string) { return new Uri(value) }
-    static parse(value: string) { const url = new URL(value); const uri = new Uri(decodeURIComponent(url.pathname)); uri.scheme = url.protocol.slice(0, -1); uri.authority = url.host; uri.query = url.search.slice(1); uri.fragment = url.hash.slice(1); return uri }
+    static parse(value: string) { const url = new URL(value); const uri = new Uri(url.protocol === 'file:' ? fileURLToPath(url) : decodeURIComponent(url.pathname)); uri.scheme = url.protocol.slice(0, -1); uri.authority = url.host; uri.query = url.search.slice(1); uri.fragment = url.hash.slice(1); return uri }
     static joinPath(base: Uri, ...parts: string[]) { return new Uri(path.join(base.fsPath, ...parts)) }
 }
 /** Load compiled modules with the same injected host; no global require patch or real VS Code dependency. */
@@ -227,7 +228,7 @@ test('all catalog handlers execute without panels and preserve exact service arg
         }
         for (const definition of capabilityCatalog) {
             let input = inputs[definition.id] ?? {}
-            if (definition.service.startsWith('CustomizerDomainService.preset:')) input = { target: 'file:///workspace/model.scad', revision: 1, ...(['customizer.importPresets', 'customizer.exportPresets'].includes(definition.id) ? { uri: 'file:///workspace/preset.json' } : { name: 'Preset' }) }
+            if (definition.service.startsWith('CustomizerDomainService.preset:')) input = { target: 'file:///workspace/model.scad', revision: 1, ...(['customizer.importPresets', 'customizer.exportPresets'].includes(definition.id) ? { uri: Uri.file(path.join(os.tmpdir(), 'scad-handler-preset.json')).toString() } : { name: 'Preset' }) }
             if (definition.id === 'operation.cancel') input = { id: (capabilities.dispatcher.operations.status() as { operations: Array<{ id: string }> }).operations[0].id }
             const result = await capabilities.dispatcher.invoke(definition.id, input, { actor: 'agent' })
             assert.equal(result.ok, true, `${definition.id}: ${JSON.stringify(result)}`)
@@ -440,7 +441,8 @@ test('source tools independently reject outside paths and symlink escapes, with 
         const other = path.join(outside, 'other.scad')
         await writeFile(other, 'a=1;')
         await symlink(other, path.join(f.root, 'escape.scad'))
-        await symlink(outside, path.join(f.root, 'escape-dir'))
+        await symlink(outside, path.join(f.root, 'escape-dir'), process.platform === 'win32' ? 'junction' : 'dir')
+        assert.equal(readFileSync(path.join(f.root, 'escape-dir', 'other.scad'), 'utf8'), 'a=1;', 'The alias must actually reach the outside file before testing canonical rejection')
         for (const uri of [Uri.file(other), Uri.file(path.join(f.root, 'escape.scad')), Uri.file(path.join(f.root, 'escape-dir', 'other.scad'))]) await assert.rejects(f.domain.analyze(uri.toString()), (e: unknown) => (e as CapabilityError).code === 'OUTSIDE_WORKSPACE')
         await assert.rejects(f.domain.analyze('https://example.com/model.scad'), (e: unknown) => (e as CapabilityError).code === 'INVALID_URI')
         f.api.workspace.isTrusted = false

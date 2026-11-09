@@ -37,7 +37,7 @@ Preset codec/只读诊断与Host事务分离。侧栏、Agent和Preview的选择
 | PARTIAL | Partial | 按批准defaults+当前集；A→B→Default两个入口和Preview通过 |
 | RES | Partial | catalog生成校验及7个packaged相对链接通过；原生Skill入口与Analyze调用已实测；完整模型编辑/验证任务未通过 |
 | LSP | Unverified | 与Customizer独立集合、配置/关闭生命周期Host通过；native键盘缩进已在最低Host通过 |
-| RELEASE | Unverified | 本机构建/VSIX安装已执行；候选VSIX重建及安装通过，CI其他系统/Remote未执行 |
+| RELEASE | Unverified | 本机构建/VSIX安装已执行；候选VSIX重建及安装通过；三平台contracts通过，Windows真实Library仍失败；Remote未执行 |
 
 ## 验证与限制
 
@@ -49,7 +49,7 @@ Preset codec/只读诊断与Host事务分离。侧栏、Agent和Preview的选择
 
 架构检查：core7→14文件、非空行812→1150；增加规则/词法/独立事务的职责边界，无core runtime循环或host依赖。该检查不证明全项目无循环，也不替代维护性审查。100KiB本机p95约1.22ms，1MiB单样本5.22ms；非跨平台指标。
 
-指定 qwen3.5:2b-mlx 的原生工作流已进入实际工具执行，但完整模型验收尚未通过；最终VSIX、证据归档、清理后35项浏览器和32项最低Host验收已执行。Windows/Linux/Remote、pinned全程序、native Desktop、heap/完整订阅内存profile仍缺证据；本地可执行范围继续推进，不能先标完成。
+指定 qwen3.5:2b-mlx 的原生工作流已进入实际工具执行，但完整模型验收尚未通过；最终VSIX、证据归档、清理后35项浏览器和32项最低Host验收已执行。三平台CI和指定服务的真实Host heap已补证据；Windows Unicode include失败，Remote、pinned全程序、native Desktop控件及更广GUI/GPU内存仍缺证据；本地可执行范围继续推进，不能先标完成。
 
 
 当前产物：[artifact](customizer/artifact.json)，[持久证据索引](customizer/evidence/manifest.json)，[模型验收事实](customizer/evidence/native-agent-summary.json)。当前目标保持active；没有将缺失的模型/平台证据判作完成。
@@ -57,3 +57,10 @@ Preset codec/只读诊断与Host事务分离。侧栏、Agent和Preview的选择
 指定模型的逐项结果、真实调用、失败回答与观察脚本限制见 [qwen3.5:2b-mlx 验收](customizer/model-acceptance.md)。没有把模型的“任务完成”声明当作后置验证。
 
 真实最低Host Source/Editor内存验证已有三快照的1→2→1实例对照；范围与整体heap背景增长见 [生命周期验证](customizer/lifecycle-validation.md)。官方Desktop CLI另有41例匹配，GUI动态验收仍待锁屏解除，不能由CLI替代。
+
+
+当前分支提交a874f3f的真实CI：Agent三平台contracts及panel全部成功，native各41+6通过；Linux/macOS Library成功，Windows因Unicode路径失败。证据见customizer/evidence/ci-a874f3f-summary.json。三平台结果没有替代SSH/WSL/Container或桌面交互。
+
+新增未通过项：超限源码默认值能写出不可重新apply的Preset，真实Host已复现；ADR10待用户决定保存策略。当前生产实现尚未修复，不能把已实现Preset全路径标为完成。最新10例本机native导入边界另存，不回写历史CI证据。
+
+最新已结束CI对应721bbf5：三平台native各41 schema + 10 import通过；Agent四jobs成功（跳过范围同前述矩阵），Linux/macOS真实Library成功，Windows Unicode Library失败。新增边界与归档digest见customizer/evidence/ci-721bbf5/native-artifacts.json。当前生产Preset roundtrip缺陷仍待ADR10决定；GUI仍待解锁，整体目标未完成。

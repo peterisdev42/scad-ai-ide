@@ -164,3 +164,37 @@ main未合并；实现保留在独立分支；阶段进度和未验收范围保�
 新137文件VSIX为4,532,774 bytes，SHA256 41b515c77f65b7636cb140e8d59b1520d58d56dd4388ce65f9a1eb7eea67f22d，manifest校验和最低Production安装通过。旧artifact元数据已标历史，模型失败仍关联当时产物。下一步提交独立分支执行真实跨平台CI；当前尚未宣称新CI通过。
 
 原生有界窗口进程已结束，未取得有效AXWindow/截图，不计控件PASS；其结果确认源码和用户偏好SHA均未变。权限已授权，仍等待Mac解锁后新建测试进程。
+
+
+## 当前续作：跨平台真实CI与快照缺陷
+
+当前已推送独立分支HEAD a874f3ff9dc05e2c9dae9db97c7cffee2a4b99d0；main仍为4463d610，未合并。此前“下一步提交/CI未执行”是历史记录。Agent run42631083903的Linux/macOS/Windows contracts及panel四jobs全部成功；Libraries run42631083471的Linux/macOS成功，Windows真实Library失败。三平台native41例schema与6例import均通过，artifact下载SHA匹配，JSON逐条重新检查；见customizer/evidence/ci-a874f3f-summary.json与native-ci-{linux,macos,windows}/。这不代表Windows整套验收通过，也不覆盖Remote。
+
+Windows诊断显示ASCII includes成功，Unicode目录的绝对路径、相对路径与junction均失败/进程异常，不能未经证明把OPENSCADPATH改为相对路径当成修复。失败保留，没有删除Unicode测试。较早两次CI的CRLF资源检查、缺CSS和平台URI测试夹具问题已修正；保留旧失败，不改产品workspace安全边界。
+
+NFC参数名的native验证显式记录feature profile：macOS GUI构建启用--enable=unicode-identifiers；managed Linux/Windows构建无此开关。41例匹配不是任意OpenSCAD默认构建支持Unicode标识符的证明。
+
+真实Host新发现Preset roundtrip缺陷，保存成功后自己的快照不能重新apply；尚未修改公开行为。ADR10已给出拒绝不可重放快照与省略默认字段两种方案，待确认。新增本机native import10例通过；首次错误预期max-only负值导入被夹断的断言失败，源码与实测说明没有显式minimum成员时仍保留-5，已如实修订测试假设。
+
+
+CI精确计数：三平台manifest2/compatibility41/source45通过；capabilities在Linux/macOS31通过，Windows30通过/1跳过（POSIX runtime夹具）。默认Library26通过/3跳过；真实CLI Library在Linux/macOS27通过/2跳过，Windows26通过/1失败/2跳过。两项real-CLI跳过为无Preview Exporter及未启用online；panel为Customizer35、Agent1、Library6通过。job成功不等于其中无跳过，见归档摘要和筛选日志。
+
+官方Desktop CLI新增导入10例也通过；第一次受限沙箱内启动报neon特征不可读并失败，改用已授权的原生执行权限后成功，未将首次失败记PASS。packaged compatibility reference补充Unicode实验开关与schema/import不同职责；候选VSIX因此需要后续重建，当前artifact.json仍描述此前包，不当作包含此次资源修订。
+
+候选VSIX已包含上述compatibility reference修订，137files/4533822bytes，SHA256 4cb3a7e7771d175e4acb36a8a6f8bbd3926ce9d5fa7425276df31548707ccf6c；packaged reference逐字节比对、40tools/2Instructions/5Skills校验及最低1.140.0隔离Production安装smoke均通过。artifact.json已更新，前一包另存历史记录。本次没有修复待确认ADR10的生产行为。
+
+
+## 当前收齐：721bbf5 跨平台新增探针
+
+已推送721bbf54291bfe160b48471aef3796dc37107872。Agent run42635584127四jobs成功；Library run42635584407已全部结束：Linux/macOS成功，Windows真实Unicode includes仍失败。三平台各41 schema + 10 import通过，三个下载归档digest全部匹配；新增四例的实际echo已逐条核对，见customizer/evidence/ci-721bbf5/。没有把前一轮6例报告覆盖为10例，也未称Windows Library通过。
+
+之后仅改进导入runner的失败证据保留：逐例捕获错误、记录实际schema/echo/hex并继续，汇总非零退出。受控错误输出验证实际exit1，10条failed及实际输出均留存；这是runner失败传播检查，不是native验收。改后本机managed与官方Desktop各10例仍通过。该报告处理改动尚未跑新一轮远端CI，远端结果精确对应721bbf5，不混同提交。
+
+当前待决：ADR10方案A/B。当前待环境：已授权AX但桌面仍锁屏，Qt控件尚未验收。指定模型失败、Windows Unicode失败、Remote未执行、完整pinned binary未运行等仍保留。没有合并main，也没有宣称Phase4完成。
+
+
+## 续作：模型输入校验层复核
+
+上一轮属于progress（新增三平台41+10差分、真实Host快照缺陷证据、重建安装包）。本轮重新核对原始MODEL-01元数据，确认1次Analyze实际执行、4次SourceApply生成请求被Host schema拒绝、1次get_errors类型拒绝，之后native no response。新增生成/拒绝/dispatcher分层事实，修正“无实际Apply”可能被读成“未尝试”的歧义；不将no response唯一归因网络或provider。模型结果仍未通过，没有发起相同无变化的模型重跑。
+
+model-acceptance.md修正产物关联：旧运行精确hash5cd831f6…652e，不冒充当前重建包4cb3a7e7…ccf6c已经模型验证。跨平台/Host heap的后续状态也替换了该页过时的泛化Unverified。原生证据提取器本轮仅对原始真实运行重提取，旧结果保持，新增tool-input-review.json作补充。

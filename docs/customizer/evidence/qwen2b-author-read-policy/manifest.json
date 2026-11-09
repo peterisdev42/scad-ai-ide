@@ -62,5 +62,14 @@
       "isolated fixture prefix",
       "repository prefix"
     ]
+  },
+  {
+    "file": "tool-input-review.json",
+    "sha256": "f4f98c40cd1e5f9cb13ff566358cc47d2c60887924acab28af34046d74dbdc93",
+    "source": "Original result.json native metadata, independently compared with dispatcher traces",
+    "redactions": [
+      "isolated fixture prefix",
+      "repository prefix"
+    ]
   }
 ]

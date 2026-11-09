@@ -1,7 +1,7 @@
 {
   "artifact": ".build/scad-ai-ide-customizer-architecture-v2.vsix",
-  "bytes": 4532774,
-  "sha256": "41b515c77f65b7636cb140e8d59b1520d58d56dd4388ce65f9a1eb7eea67f22d",
+  "bytes": 4533822,
+  "sha256": "4cb3a7e7771d175e4acb36a8a6f8bbd3926ce9d5fa7425276df31548707ccf6c",
   "verifiedManifest": {
     "tools": 40,
     "instructions": 2,
@@ -9,12 +9,20 @@
   },
   "installedHost": "1.140.0",
   "installedSmoke": "PASS",
-  "installedEvidence": "evidence/installed-ci-fixes.txt",
-  "nativeAgent": "qwen3.5:2b-mlx failed on the prior artifact. CI-only script/manifest changes do not establish model acceptance for this artifact.",
+  "installedEvidence": "evidence/installed-native-profile.txt",
+  "nativeAgent": "qwen3.5:2b-mlx failed on the prior artifact; updated compatibility reference does not establish model acceptance.",
   "unverified": [
-    "Windows/Linux/Remote current candidate CI pending",
-    "native Desktop controls (permissions granted, current screen locked)",
+    "Windows Unicode library include path: actual CI failed",
+    "Remote SSH/WSL/Container",
+    "native Desktop controls: permissions granted, screen locked",
     "full pinned binary",
-    "all GUI/Preset service heap lifecycle"
-  ]
+    "all GUI/Preset service heap lifecycle",
+    "ADR10 current snapshot roundtrip: reproduced defect, policy confirmation pending"
+  ],
+  "crossPlatformEvidence": {
+    "commit": "721bbf54291bfe160b48471aef3796dc37107872",
+    "agentRun": 42635584127,
+    "libraryRun": 42635584407,
+    "scope": "Three-platform schema41/import10 and Agent contracts passed; explicit skips retained; Windows real Library Unicode includes FAILED"
+  }
 }

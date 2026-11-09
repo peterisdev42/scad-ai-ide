@@ -53,7 +53,7 @@ StringParameter maximumSize 参数遮蔽成员；长度保留声明值。native 
 
 ## Definition of Done
 
-权威语义、规则、安全事务、状态分离与主要GUI/Preset路径已实现；生命周期/配额/性能验收继续。当前候选VSIX重新构建安装已通过；真实模型、pinned全程序、native Desktop、Windows/Linux/Remote、heap证据不足。缓存销毁已有边界测试，不等于heap profile。跨平台CI新增兼容门与浏览器入口只是配置，尚未远程执行。Before/After与风险清单已在交付检查中记录；全目标验收未完成。
+权威语义、规则、安全事务、状态分离与主要GUI/Preset路径已实现；生命周期/配额/性能验收继续。当前候选VSIX重新构建安装已通过；真实模型未全通过，pinned全程序、native Desktop控件及Remote仍缺证据；三平台CI与指定服务的真实Host heap已有下述限定范围证据。缓存销毁已有边界测试，不等于heap profile。跨平台CI已远程执行：三平台Agent contracts及native差分通过，Linux/macOS真实Libraries通过，Windows Unicode include失败；Remote未执行。Before/After与风险清单已在交付检查中记录；全目标验收未完成。
 
 
 ## Phase 4 当前验收更新
@@ -74,3 +74,12 @@ StringParameter maximumSize 参数遮蔽成员；长度保留声明值。native 
 最低Host1.140.0、真实TextDocument/事件/文件系统：32文档、16cache、32+32plans，预热+6轮dispose；三份V8完整Host snapshot证实两类实例各1→2→1，新增实例无保留，每轮释放3.60–3.80MB。宿主总heap区间仍8,028,740 bytes，不据此宣称全扩展无泄漏。首次socket路径过长启动失败保留。数据与范围见 [生命周期验证](customizer/lifecycle-validation.md)。原先的注入端口数据保留为不同证据，不冒充本项。
 
 另以官方2026.11.06 Desktop二进制执行41例.param差分全部匹配，见 `customizer/native-desktop-cli.json`；GUI控件还未通过动态验收。当前Accessibility/CGPostEvent权限已生效，但WindowServer锁屏（CGSSessionScreenIsLocked=1）阻止激活/截图，正在等待解锁。原生用户偏好写入由OS沙箱拒绝；初次环境隔离失效所改recentFileList已按原备份恢复并验证语义相同。
+
+
+## 最新跨平台与新增失败门
+
+当前提交a874f3f：Agent run42631083903四jobs全部成功，Library run42631083471的Linux/macOS成功、Windows失败。三平台各41 native schema + 6 import通过并核对归档digest；详见customizer/evidence/ci-a874f3f-summary.json。Windows Unicode include绝对/相对/junction均失败，未用跳过掩盖。NFC测试有明确实验feature profile，不代表默认编译选项。
+
+新发现Preset当前值快照roundtrip失败：真实Host create成功，但同一集apply报PRESET_INVALID_VALUE；源未变。ADR10待确认，新保存门禁及对应GUI/Host验收尚未执行。native文本显式默认值截断/省略保留、numeric max-only导入边界已补入10例本机探针；不能拿它替代跨平台6例之外的验收。
+
+最新已结束CI对应721bbf5：三平台native各41 schema + 10 import通过；Agent四jobs成功（跳过范围同前述矩阵），Linux/macOS真实Library成功，Windows Unicode Library失败。新增边界与归档digest见customizer/evidence/ci-721bbf5/native-artifacts.json。当前生产Preset roundtrip缺陷仍待ADR10决定；GUI仍待解锁，整体目标未完成。

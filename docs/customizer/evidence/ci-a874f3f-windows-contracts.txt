@@ -1,0 +1,35 @@
+2026-11-09T14:04:25.1684729Z ##[group]Run actions/checkout@v4
+2026-11-09T14:04:34.0159341Z ##[group]Run actions/setup-node@v4
+2026-11-09T14:04:43.3691776Z ##[group]Run npm ci
+2026-11-09T14:05:44.6437715Z ##[group]Run npm run test:agents:manifest
+2026-11-09T14:05:46.3600490Z ℹ tests 2
+2026-11-09T14:05:46.3601178Z ℹ pass 2
+2026-11-09T14:05:46.3601782Z ℹ fail 0
+2026-11-09T14:05:46.3602369Z ℹ skipped 0
+2026-11-09T14:05:46.4423221Z ##[group]Run npm run check:agents
+2026-11-09T14:05:47.4988372Z ##[group]Run npm run check-types
+2026-11-09T14:05:53.7767553Z ##[group]Run npm run lint
+2026-11-09T14:06:04.6647638Z ##[group]Run npm run check:customizer:architecture
+2026-11-09T14:06:06.2810092Z ##[group]Run npm run test:customizer:compatibility
+2026-11-09T14:06:11.2192640Z ℹ tests 41
+2026-11-09T14:06:11.2195353Z ℹ pass 41
+2026-11-09T14:06:11.2195670Z ℹ fail 0
+2026-11-09T14:06:11.2196017Z ℹ skipped 0
+2026-11-09T14:06:11.2941160Z ##[group]Run npm run test:customizer:source
+2026-11-09T14:06:16.4516947Z ℹ tests 45
+2026-11-09T14:06:16.4517528Z ℹ pass 45
+2026-11-09T14:06:16.4517750Z ℹ fail 0
+2026-11-09T14:06:16.4518179Z ℹ skipped 0
+2026-11-09T14:06:16.5277949Z ##[group]Run npm run test:capabilities
+2026-11-09T14:06:23.2026584Z ﹣ Runtime Agent lifecycle forces catalog refresh, downloads/probes a real archive, selects, confirms deletion and verifies disk/state (0.2275ms) # SKIP
+2026-11-09T14:06:23.2030766Z ℹ tests 31
+2026-11-09T14:06:23.2031065Z ℹ pass 30
+2026-11-09T14:06:23.2031210Z ℹ fail 0
+2026-11-09T14:06:23.2031515Z ℹ skipped 1
+2026-11-09T14:06:23.2809361Z ##[group]Run npm run test:libraries
+2026-11-09T14:06:25.0205724Z ﹣ Real Fast Preview and Markdown use the same project library environment (0.1789ms) # SKIP
+2026-11-09T14:06:25.8487696Z ﹣ Online BOSL2: Registry → commit archive → global Store → project link → real CLI → offline Restore (1.0425ms) # SKIP
+2026-11-09T14:06:26.3499260Z ℹ tests 29
+2026-11-09T14:06:26.3499753Z ℹ pass 26
+2026-11-09T14:06:26.3499986Z ℹ fail 0
+2026-11-09T14:06:26.3500490Z ℹ skipped 3
