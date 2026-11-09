@@ -1,3 +1,4 @@
+import { snapNumericInteraction } from '../../../../../core/customizer/CustomizerConstraints'
 import { css, html, LitElement, nothing } from 'lit'
 import { customElement, property, state, query } from 'lit/decorators.js'
 
@@ -164,8 +165,11 @@ export class ScadNumberField extends LitElement {
 
         // Apply stepping logic
         if (this.step !== undefined) {
-            const inv = 1.0 / this.step
-            newValue = Math.round(newValue * inv) / inv
+            if (this.min !== undefined && this.max !== undefined) newValue = snapNumericInteraction(newValue, this.min, this.max, this.step)
+            else {
+                const inv = 1.0 / this.step
+                newValue = Math.round(newValue * inv) / inv
+            }
         } else {
             // Just visually avoid nasty floating point fragments
             newValue = Math.round(newValue * 1000) / 1000
@@ -206,18 +210,17 @@ export class ScadNumberField extends LitElement {
 
     private commitInput() {
         if (!this.isEditing) return
-        this.isEditing = false
-
         if (!this.inputEl) return
-
-        let newValue = parseFloat(this.inputEl.value)
-
-        // Fallback to current value visually if NaN
-        if (isNaN(newValue)) return
-
-        // Clamp manual entry
-        if (this.min !== undefined) newValue = Math.max(this.min, newValue)
-        if (this.max !== undefined) newValue = Math.min(this.max, newValue)
+        this.inputEl.setCustomValidity('')
+        const text = this.inputEl.value.trim()
+        const newValue = Number(text)
+        const valid = text !== '' && Number.isFinite(newValue) && (this.min === undefined || newValue >= this.min) && (this.max === undefined || newValue <= this.max)
+        if (!valid) {
+            this.inputEl.setCustomValidity('Enter a finite value within the displayed bounds.')
+            this.inputEl.reportValidity()
+            return
+        }
+        this.isEditing = false
 
         if (newValue !== this.value) {
             this.value = newValue
@@ -226,11 +229,28 @@ export class ScadNumberField extends LitElement {
     }
 
     private handleKeyDown(e: KeyboardEvent) {
+        e.stopPropagation()
         if (e.key === 'Enter') {
             this.commitInput()
         } else if (e.key === 'Escape') {
             this.isEditing = false // Cancel edit mode softly
         }
+    }
+
+    private handleControlKeyDown(e: KeyboardEvent) {
+        if (this.readonly || this.isEditing) return
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            this.isEditing = true
+            return
+        }
+        const direction = ({ ArrowUp: 1, ArrowRight: 1, ArrowDown: -1, ArrowLeft: -1, PageUp: 10, PageDown: -10 } as Record<string, number>)[e.key]
+        if (!direction) return
+        e.preventDefault()
+        let value = Number((this.value + direction * (this.step ?? 1)).toPrecision(15))
+        if (this.min !== undefined) value = Math.max(this.min, value)
+        if (this.max !== undefined) value = Math.min(this.max, value)
+        if (Number.isFinite(value) && value !== this.value) { this.value = value; this.fireChangeEvent() }
     }
 
     private fireChangeEvent() {
@@ -245,10 +265,10 @@ export class ScadNumberField extends LitElement {
         }
 
         return html`
-            <div class="container" @pointerdown=${this.handlePointerDown}>
+            <div class="container" tabindex=${this.readonly ? -1 : 0} role="spinbutton" aria-label=${this.getAttribute('aria-label') ?? 'Value'} aria-valuenow=${this.value} aria-valuemin=${this.min ?? nothing} aria-valuemax=${this.max ?? nothing} @keydown=${this.handleControlKeyDown} @pointerdown=${this.handlePointerDown}>
                 ${this.min !== undefined && this.max !== undefined ? html`<div class="progress-bar" style="width: ${percentage}%"></div>` : nothing}
                 <span class="value-text">${this.value}${this.suffix}</span>
-                ${this.isEditing ? html` <input type="number" .value=${this.value.toString()} .min=${this.min?.toString() || ''} .max=${this.max?.toString() || ''} .step=${this.step?.toString() || 'any'} @blur=${this.commitInput} @keydown=${this.handleKeyDown} /> ` : nothing}
+                ${this.isEditing ? html` <input type="number" .value=${this.value.toString()} .min=${this.min?.toString() || ''} .max=${this.max?.toString() || ''} .step=${'any'} @blur=${this.commitInput} @keydown=${this.handleKeyDown} /> ` : nothing}
             </div>
         `
     }

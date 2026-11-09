@@ -1,0 +1,24 @@
+{
+  "status": "BLOCKED_ENVIRONMENT",
+  "scenario": "MODEL-01 native Agent observation",
+  "nativeChatRequested": true,
+  "provider": "Ollama.ollama 0.0.14",
+  "modelsDiscovered": [
+    "qwen3.5:0.8b-mlx",
+    "mimo-v2.6:latest"
+  ],
+  "actualCustomizerToolInvocations": 0,
+  "sourceChanged": false,
+  "modelInferenceVerified": false,
+  "reason": "Native Chat showed default Agent readiness/sign-in/extension timeout; an empty command result is not a successful model run.",
+  "model02To04": "NOT RUN",
+  "originalLog": "/tmp/customizer-phase4-native-agent-stock-copilot.log",
+  "originalLogSha256": "6e1f3d72a0375644db11de11a3ed2dc8ca83b59a276b2e3ded4a97752c5845a6",
+  "notes": [
+    "Earlier harness attempts used test/development hosts or omitted the copied extension install index; those attempts establish no model acceptance.",
+    "The final observation used a normal Production host with isolated profile/extensions, installed candidate VSIX, stock Ollama and same-version bundled Copilot files registered locally.",
+    "No model response or source-tool trace was produced; do not attribute the failure to model reasoning or tool-calling quality."
+  ],
+  "historical": true,
+  "supersededBy": "native-agent-summary.json: qwen3.5:2b-mlx now executes actual native tools"
+}

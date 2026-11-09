@@ -1,0 +1,58 @@
+npm notice run scad-ai-ide@0.0.1 test:customizer:source
+npm notice run npm run compile-tests && node --test out/test/customizerSource*.test.js
+npm notice run scad-ai-ide@0.0.1 compile-tests
+npm notice run tsc -p . --outDir out
+Customizer analyzer 107124 bytes p95=1.22ms; darwin/arm64 Node v24.16.0
+Customizer analyzer 1048576 bytes single sample=5.22ms; not a cross-platform benchmark
+✔ source analyzer retains existing GUI fixtures and all supported widgets (4.549791ms)
+✔ shared scanner tracks exact UTF-16 declaration/comment spans, Unicode, strings and CRLF (0.747083ms)
+✔ groups, Hidden, post-brace variables and duplicates retain legacy visibility (0.166458ms)
+✔ ordinary variables, prose and expressions without intent produce no warnings (0.148125ms)
+✔ deterministic invalid ranges, steps, defaults, choices and malformed hints (1.619791ms)
+✔ incomplete and bounded analyses never claim completeness (0.110625ms)
+✔ 100 KiB source analysis benchmark reports p95 and remains below 100 ms locally (18.647417ms)
+✔ oversized metadata is omitted rather than fabricated or leaked as an unbounded result (0.485375ms)
+✔ legal range hints and effective literal reassignments do not produce duplicate warnings (0.179ms)
+✔ superseded invalid hints/defaults stop reporting once the effective declaration is corrected (0.176625ms)
+✔ ordinary SCAD and optional or unsupported Customizer usage never generate diagnostics (0.592ms)
+✔ every warning is tied to written syntax, has a concrete fix and clears after that repair (0.356708ms)
+✔ closed bracket comments followed by prose are not falsely diagnosed as missing a bracket (0.134ms)
+✔ annotation semantics use native comment tokens rather than source hexadecimal literals (0.084416ms)
+✔ the 64 KiB metadata budget covers parameters, diagnostics and candidates together (4.182458ms)
+✔ source byte boundary includes exactly 1 MiB and rejects multibyte overflow (7.670125ms)
+✔ 501 parameter and candidate inputs obey both count and aggregate metadata bounds (1.585209ms)
+✔ compatibility corpus covers every semantic audit axis and identifies native evidence (6.186458ms)
+✔ extracted literal and delimiter modules preserve lexical safety without evaluating source (0.422042ms)
+✔ minimal edits preserve CRLF, indentation, geometry, directives and final newline; idempotent (4.345458ms)
+✔ batch group intents preserve neighboring groups and all non-target declarations (1.804458ms)
+✔ insert literal, move group, hide parameter, quoted choices and explicit range conversion (0.674167ms)
+✔ structured edits refuse ambiguous comments/expressions/multiple declarations and invalid contracts (0.628125ms)
+✔ literal insertion preserves BOM and is idempotent; multiline vectors keep geometry untouched (0.933ms)
+✔ structured Widget edits preserve explanations after a bracketed comment by refusing ambiguous replacement (0.102042ms)
+✔ source plans enforce the actual 50-edit boundary, not only intent count (4.764542ms)
+✔ CUST-ANN-01 repairs one annotation, preserves unrelated warnings and is idempotent (5.710291ms)
+✔ CUST-ANN-02 repairs one annotation, preserves unrelated warnings and is idempotent (0.376084ms)
+✔ CUST-RANGE-02 repairs one annotation, preserves unrelated warnings and is idempotent (0.596791ms)
+✔ CUST-ANN-03 repairs one annotation, preserves unrelated warnings and is idempotent (1.24075ms)
+✔ review-only fixes do not swap bounds, change defaults, truncate text or delete complex options (0.646542ms)
+✔ ordinary bracketed prose never gains a fix or a warning from isolated punctuation (0.616458ms)
+✔ preset storage stages and atomically replaces only the expected original (0.645333ms)
+✔ external edits before or during staging survive with STALE_PRESET and no temp leak (0.305541ms)
+✔ failed staging, rename and final target guard preserve the original and clean temporary data (0.1855ms)
+✔ concurrent extension writers cannot overwrite a completed transaction with an old snapshot (0.13575ms)
+✔ file creation detects another writer creating the previously missing destination (0.103042ms)
+✔ validator compares every explicit expectation and reports independent skipped checks (4.570417ms)
+✔ missing, wrong-widget, hidden and unsupported defaults fail explicit visible contracts (0.219208ms)
+✔ no targets means only static consistency; warnings filtering never hides a failed pass (0.608958ms)
+✔ validation compares the effective control rather than rejecting legal reassignment counts (0.189542ms)
+✔ unmet explicit targets are business results, never source errors or missing-syntax warnings (0.612334ms)
+✔ large unmet target results remain bounded without becoming source diagnostics (4.421625ms)
+✔ source completeness, explicit goals and quality are independent without changing legacy semanticPass (0.250542ms)
+ℹ tests 44
+ℹ suites 0
+ℹ pass 44
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 81.907083

@@ -1,0 +1,79 @@
+[
+  {
+    "content": "我来按步骤执行这个规范操作：",
+    "toolRequests": [
+      {
+        "toolCallId": "call_3043zr79",
+        "name": "read_file",
+        "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\",\"startLine\":1,\"endLine\":5}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_wyso1m5a",
+        "name": "read_file",
+        "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_hjsgxa5o",
+        "name": "read_file",
+        "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\",\"startLine\":1}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_r95172h8",
+        "name": "read_file",
+        "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_wtntt2sa",
+        "name": "read_file",
+        "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_o2wsn7av",
+        "name": "read_file",
+        "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_o73kuo9f",
+        "name": "read_file",
+        "arguments": "{\"filePath\":\"<fixture>/workspace/model.scad\",\"startLine\":1,\"endLine\":10}",
+        "type": "function"
+      }
+    ]
+  }
+]

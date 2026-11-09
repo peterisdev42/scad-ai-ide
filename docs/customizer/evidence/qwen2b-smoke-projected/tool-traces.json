@@ -1,0 +1,91 @@
+[
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-09T08:14:54.274Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "c6a68ff487b1f85c2ff2f33904984c460eb609cab20ed57d31219c9639e05b23"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "",
+            "defaultValue": 40,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "ae9970f0-8256-4bc6-9578-6ba838a0c257",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "edits": [
+        {
+          "additionalProperties": false,
+          "description": "width in Dimensions group with slider",
+          "group": "Dimensions",
+          "kind": "annotateExisting",
+          "name": "width",
+          "range": {
+            "max": 100,
+            "min": 5
+          },
+          "step": 1,
+          "widget": "slider"
+        }
+      ],
+      "mode": "plan",
+      "name": "dimensions",
+      "planId": "ae9970f0-8256-4bc6-9578-6ba838a0c257",
+      "uri": "file://<fixture>/workspace/model.scad",
+      "version": "1",
+      "sha256": "c6a68ff487b1f85c2ff2f33904984c460eb609cab20ed57d31219c9639e05b23",
+      "widget": "slider"
+    },
+    "started": "2026-11-09T08:15:22.705Z",
+    "output": {
+      "ok": false,
+      "capabilityId": "customizer.sourceApply",
+      "error": {
+        "code": "INVALID_INPUT",
+        "message": "data must have required property 'identity', data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data/mode must be equal to constant, data must match exactly one schema in oneOf, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must have required property 'defaultValue', data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0 must NOT have additional properties, data/edits/0/kind must be equal to constant, data/edits/0 must match exactly one schema in oneOf",
+        "retryable": false
+      },
+      "operation": null
+    }
+  }
+]

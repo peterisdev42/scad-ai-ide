@@ -1,0 +1,236 @@
+{
+  "scenario": "author",
+  "artifact": {
+    "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+    "bytes": 4532700,
+    "sha256": "5cd831f6e9bbc2772be7db99f09f4e31fb15d26fc2745f81073223ec59cb652e"
+  },
+  "timeoutMs": 360000,
+  "ready": {
+    "vscode": "1.145.2",
+    "extensionPath": "<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1",
+    "bundleSha256": "818a4aabf481e530fa29d77502c241c81dbbebc9978eec2d092497db35c72b81",
+    "chatSettings": {
+      "extensionUnification": false,
+      "disableAI": false,
+      "extensionTools": true
+    },
+    "nativeAgent": {
+      "present": true,
+      "active": true
+    },
+    "provider": {
+      "id": "Ollama.ollama",
+      "version": "0.0.14"
+    },
+    "models": [
+      {
+        "id": "qwen3.5:2b-mlx",
+        "name": "qwen3.5:2b-mlx",
+        "vendor": "ollama-models"
+      },
+      {
+        "id": "mimo-v2.6:latest",
+        "name": "mimo-v2.6:latest",
+        "vendor": "ollama-models"
+      },
+      {
+        "id": "qwen3.5:2b-mlx",
+        "name": "qwen3.5:2b-mlx",
+        "vendor": "ollama-models"
+      }
+    ]
+  },
+  "response": {
+    "result": {
+      "errorDetails": {
+        "code": "unknown",
+        "message": "Sorry, no response was returned.",
+        "confirmationButtons": [
+          {
+            "data": {
+              "copilotContinueOnError": true
+            },
+            "label": "Try Again"
+          }
+        ],
+        "responseIsIncomplete": true
+      },
+      "timings": {
+        "firstProgress": 7534,
+        "totalElapsed": 47819
+      },
+      "metadata": {
+        "toolCallRounds": [
+          {
+            "response": "我将按照 OpenSCAD Customizer 授权指南（`prompt:SKILL.md`）来执行任务。首先需要分析目标文件。",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_customizer_sourceAnalyze",
+                "arguments": "{\"uri\":\"file://<fixture>/workspace/model.scad\"}",
+                "id": "call_rdxxer22__vscode-1794214917835"
+              }
+            ],
+            "toolInputRetry": 0,
+            "id": "c120aad9-d78b-44aa-b676-35b132e8a5e2",
+            "timestamp": 1794214927609,
+            "modelId": "qwen3.5:2b-mlx"
+          },
+          {
+            "response": "",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_customizer_sourceApply",
+                "arguments": "{\"kind\":\"annotateExisting\",\"name\":\"dimensions\",\"widget\":\"slider\",\"defaultValue\":\"10\",\"description\":\"Width in millimeters\",\"group\":\"Dimensions\"}",
+                "id": "call_pj58biam__vscode-1794214917836"
+              }
+            ],
+            "toolInputRetry": 0,
+            "id": "730bca5f-dc68-46df-9e6d-bba1d807a2b1",
+            "timestamp": 1794214940475,
+            "modelId": "qwen3.5:2b-mlx"
+          },
+          {
+            "response": "",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_customizer_sourceApply",
+                "arguments": "{\"kind\":\"annotateExisting\",\"model\":\"plan\",\"name\":\"dimensions\",\"mode\":\"plan\",\"widget\":\"slider\",\"description\":\"Width in millimeters\",\"group\":\"Dimensions\"}",
+                "id": "call_riwiuhrz__vscode-1794214917837"
+              }
+            ],
+            "toolInputRetry": 1,
+            "id": "462fc39a-fdf7-489b-877c-7b9e36f66808",
+            "timestamp": 1794214943129,
+            "modelId": "qwen3.5:2b-mlx"
+          },
+          {
+            "response": "",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_customizer_sourceApply",
+                "arguments": "{\"kind\":\"annotateExisting\",\"model\":\"plan\",\"name\":\"dimensions\",\"uri\":\"file://<fixture>/workspace/model.scad\",\"mode\":\"plan\",\"widget\":\"slider\",\"description\":\"Width in millimeters\",\"group\":\"Dimensions\"}",
+                "id": "call_rrc17rmq__vscode-1794214917838"
+              }
+            ],
+            "toolInputRetry": 2,
+            "id": "207ea3bc-ac83-4d1c-be92-172cff84c606",
+            "timestamp": 1794214956859,
+            "modelId": "qwen3.5:2b-mlx"
+          },
+          {
+            "response": "",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_customizer_sourceApply",
+                "arguments": "{\"kind\":\"insertLiteralParameter\",\"model\":\"plan\",\"uri\":\"file://<fixture>/workspace/model.scad\",\"identity\":{\"sha256\":\"91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad\",\"version\":1},\"edits\":[{\"choices\":[{\"description\":\"Width in millimeters\",\"kind\":\"annotateExisting\",\"name\":\"dimensions\",\"range\":{\"max\":100,\"min\":10}},{\"description\":\"Numeric vector (1–4 components)\",\"kind\":\"annotateExisting\",\"name\":\"dimensions\",\"widget\":\"slider\"}],\"group\":\"Dimensions\",\"kind\":\"insertLiteralParameter\",\"name\":\"width\"}],\"mode\":\"plan\"}",
+                "id": "call_bynjcseq__vscode-1794214917839"
+              }
+            ],
+            "toolInputRetry": 3,
+            "id": "163a3195-9fa2-4d91-844b-c43ce11be420",
+            "timestamp": 1794214961941,
+            "modelId": "qwen3.5:2b-mlx"
+          },
+          {
+            "response": "",
+            "toolCalls": [
+              {
+                "name": "get_errors",
+                "arguments": "{\"filePaths\":\"[<fixture>/workspace/model.scad]\"}",
+                "id": "call_2bn9tucb__vscode-1794214917840"
+              }
+            ],
+            "toolInputRetry": 4,
+            "id": "a4f6d9b0-30b5-47d7-83ba-b4b87413506f",
+            "timestamp": 1794214963401,
+            "modelId": "qwen3.5:2b-mlx"
+          }
+        ],
+        "toolCallResults": {
+          "call_rdxxer22__vscode-1794214917835": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "{\"ok\":true,\"capabilityId\":\"customizer.sourceAnalyze\",\"data\":{\"identity\":{\"uri\":\"file://<fixture>/workspace/model.scad\",\"version\":1,\"sha256\":\"91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad\"},\"parameters\":[{\"name\":\"width\",\"group\":\"\",\"description\":\"\",\"defaultValue\":40,\"widget\":\"spinbox\",\"declarationRange\":{\"start\":{\"line\":0,\"character\":0},\"end\":{\"line\":0,\"character\":9}}},{\"name\":\"shape\",\"group\":\"\",\"description\":\"\",\"defaultValue\":\"round\",\"widget\":\"textbox\",\"declarationRange\":{\"start\":{\"line\":1,\"character\":0},\"end\":{\"line\":1,\"character\":14}}},{\"name\":\"internalOffset\",\"group\":\"\",\"description\":\"\",\"defaultValue\":0.01,\"widget\":\"spinbox\",\"declarationRange\":{\"start\":{\"line\":2,\"character\":0},\"end\":{\"line\":2,\"character\":20}}}],\"candidates\":[],\"diagnostics\":[],\"complete\":true,\"incompleteReasons\":[],\"omitted\":{\"parameters\":0,\"diagnostics\":0,\"candidates\":0}},\"operation\":{\"id\":\"d85a07d1-6227-4b1e-a3ad-93ac190e0fb9\",\"capabilityId\":\"customizer.sourceAnalyze\",\"status\":\"succeeded\"}}"
+              }
+            ]
+          },
+          "call_pj58biam__vscode-1794214917836": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must have required property 'mode', must have required property 'mode', must match exactly one schema in oneOf)\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_riwiuhrz__vscode-1794214917837": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must have required property 'uri', must have required property 'planId', must match exactly one schema in oneOf)\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_rrc17rmq__vscode-1794214917838": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must have required property 'identity', must have required property 'planId', must match exactly one schema in oneOf)\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_bynjcseq__vscode-1794214917839": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must NOT have additional properties, must have required property 'planId', must match exactly one schema in oneOf)\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_2bn9tucb__vscode-1794214917840": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must be array)\nPlease check your input and try again."
+              }
+            ]
+          }
+        },
+        "modelMessageId": "a331c418-c013-4446-be4d-023fbed4eb46",
+        "responseId": "f71bcf04-8c4f-42e6-a585-ccbfcf4e041d",
+        "sessionId": "204c1a9f-e94c-4844-bb42-fee807affef9",
+        "agentId": "github.copilot.editsAgent"
+      },
+      "details": "qwen3.5:2b-mlx"
+    },
+    "buffer": "width=40;\nshape=\"round\";\ninternalOffset=0.01;\nmodule model() { cube([width,2,3]); }\nmodel();\n",
+    "dirty": false,
+    "operations": {
+      "total": 1,
+      "offset": 0,
+      "hasMore": false,
+      "nextOffset": null,
+      "operations": [
+        {
+          "id": "d85a07d1-6227-4b1e-a3ad-93ac190e0fb9",
+          "capabilityId": "customizer.sourceAnalyze",
+          "status": "succeeded"
+        }
+      ]
+    }
+  },
+  "timedOut": false,
+  "interrupted": false,
+  "requestFinished": true,
+  "terminalReason": "nativeRequestError",
+  "nativeAgent": true,
+  "confirmationsAutomaticallyApproved": false,
+  "approvals": []
+}

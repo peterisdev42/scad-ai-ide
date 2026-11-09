@@ -1,0 +1,15 @@
+{
+  "version": "2026.11.06",
+  "source": "https://files.openscad.org/snapshots/OpenSCAD-2026.11.06.dmg",
+  "checksumSource": "https://files.openscad.org/snapshots/OpenSCAD-2026.11.06.dmg.sha256",
+  "dmgSha256": "bf3c71ae90420b2cd08f09d4dfc42a5bd0d2481b23f895b671820fdabe7ce6ac",
+  "checksumVerified": true,
+  "displayedGitPrefix": "a81e8630",
+  "resolvedLocalCommit": "a81e863051c42ee04168683e945aca58d32d04a2",
+  "pinnedBinary": false,
+  "relevantSourceDiff": "empty for src/core/customizer src/io/export_param.cc src/gui/parameter src/gui/ParameterWidget.cc src/gui/ParameterWidget.h",
+  "cliParity": "41/41 matches; native-desktop-cli.json",
+  "guiControls": "Not accepted yet; current dynamic attempt blocked by actual lockscreen",
+  "permissions": "User explicitly authorized native automation; Accessibility and CGPostEvent verified true. Latest actual condition: CGSSessionScreenIsLocked=1; unlock requested.",
+  "preferenceIsolation": "Environment override failed in first attempt. Only recentFileList changed; restored original parsed values after exact-SHA concurrency check. Subsequent native OS sandbox denies user-preference writes and real-home file writes; first sandbox window test kept preference SHA unchanged."
+}

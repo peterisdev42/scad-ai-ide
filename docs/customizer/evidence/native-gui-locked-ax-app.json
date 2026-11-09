@@ -1,0 +1,45 @@
+{
+  "attributeError" : 0,
+  "attributes" : [
+    "AXFunctionRowTopLevelElements",
+    "AXFrame",
+    "AXChildren",
+    "AXFocusedUIElement",
+    "AXFrontmost",
+    "AXRole",
+    "AXExtrasMenuBar",
+    "AXMainWindow",
+    "AXFocusedWindow",
+    "AXTitle",
+    "AXChildrenInNavigationOrder",
+    "AXEnhancedUserInterface",
+    "AXPreferredLanguage",
+    "AXRoleDescription",
+    "AXHidden",
+    "AXMenuBar",
+    "AXWindows",
+    "AXSize",
+    "AXPosition"
+  ],
+  "menus" : [
+    {
+      "AXEnabled" : true,
+      "AXRole" : "AXMenuBarItem",
+      "AXTitle" : "Apple",
+      "path" : "menu"
+    },
+    {
+      "AXEnabled" : true,
+      "AXRole" : "AXMenuBarItem",
+      "AXTitle" : "OpenSCAD",
+      "path" : "menu"
+    }
+  ],
+  "windows" : [
+    {
+      "AXRole" : "AXApplication",
+      "AXTitle" : "OpenSCAD",
+      "path" : "0"
+    }
+  ]
+}

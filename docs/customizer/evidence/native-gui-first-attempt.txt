@@ -1,0 +1,40 @@
+Native GUI fixture: /tmp/cgui-jgYcEQ; PID=34294
+Assertion failed: (did_initialize), function CGS_REQUIRE_INIT, file CGInitialization.c, line 44.
+Assertion failed: (did_initialize), function CGS_REQUIRE_INIT, file CGInitialization.c, line 44.
+Assertion failed: (did_initialize), function CGS_REQUIRE_INIT, file CGInitialization.c, line 44.
+Assertion failed: (did_initialize), function CGS_REQUIRE_INIT, file CGInitialization.c, line 44.
+Assertion failed: (did_initialize), function CGS_REQUIRE_INIT, file CGInitialization.c, line 44.
+Assertion failed: (did_initialize), function CGS_REQUIRE_INIT, file CGInitialization.c, line 44.
+Assertion failed: (did_initialize), function CGS_REQUIRE_INIT, file CGInitialization.c, line 44.
+Assertion failed: (did_initialize), function CGS_REQUIRE_INIT, file CGInitialization.c, line 44.
+Assertion failed: (did_initialize), function CGS_REQUIRE_INIT, file CGInitialization.c, line 44.
+Assertion failed: (did_initialize), function CGS_REQUIRE_INIT, file CGInitialization.c, line 44.
+Assertion failed: (did_initialize), function CGS_REQUIRE_INIT, file CGInitialization.c, line 44.
+Assertion failed: (did_initialize), function CGS_REQUIRE_INIT, file CGInitialization.c, line 44.
+{
+  "scope": "Actual native Qt window read-only screenshot; dynamic interactions NOT RUN (Accessibility trust unavailable)",
+  "executable": "<repo>/.build/customizer-native-gui/mount/OpenSCAD.app/Contents/MacOS/OpenSCAD",
+  "source": "/* [Dimensions] */\n// Width in millimeters\nwidth=120; // [0:5:100]\noffgrid=12; // [0:5:100]\nspin=1.25; // .25\n/* [Appearance] */\nshape=\"round\"; // [round:Round, square:Square]\ntext=\"abcdef\"; // 4\nchecked=true;\nvector=[1,2,3]; // [0:0.5:10]\n/* [Hidden] */\ninternalOffset=0.01;\ncube([width,2,3]);\n",
+  "captured": false,
+  "exitCode": null,
+  "sourceUnchanged": true,
+  "existingPreferenceShaBefore": "ce64d414e502a296d99d2022850ae1c257262635075db5b2daae10eed278877b",
+  "existingPreferenceShaAfter": "68e7fd5e42ae0039b9a1d0b0179edebeb82ba50b4177555634f48aefc9598556",
+  "existingPreferencesUnchanged": false,
+  "childProfile": "/tmp/cgui-jgYcEQ/profile"
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: No native model window was captured
+    at file://<repo>/scripts/customizer-native-gui.mjs:51:12 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.16.0

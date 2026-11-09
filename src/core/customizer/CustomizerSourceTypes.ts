@@ -1,9 +1,13 @@
+import type { CustomizerRuleId } from './CustomizerRules'
 import type { Parameter, ParameterValue } from './CustomizerParser'
 
 export type CustomizerWidget = 'slider' | 'spinbox' | 'dropdown' | 'checkbox' | 'textbox' | 'vector'
 export interface SourceRange { start: { line: number; character: number }; end: { line: number; character: number } }
 export interface SourceDocumentIdentity { uri: string; version: number; sha256: string }
 export interface CustomizerDiagnostic {
+    ruleId: CustomizerRuleId
+    evidence: { kind: 'explicit-effective-hint'; category: 'annotation' | 'constraint'; referenceOpenSCADCommit: string }
+    fix: { id: CustomizerRuleId; safety: 'safe' | 'review'; title: string }
     code: string
     severity: 'error' | 'warning' | 'information' | 'hint'
     message: string
@@ -22,6 +26,7 @@ export interface CustomizerSourceAnalysis {
     candidates: Array<{ name: string; range: SourceRange; reason: string; confidence: 'certain' | 'possible' }>
     diagnostics: CustomizerDiagnostic[]
     complete: boolean
+    incompleteReasons: string[]
     omitted: { parameters: number; diagnostics: number; candidates: number }
 }
 export interface SourceExpectation {

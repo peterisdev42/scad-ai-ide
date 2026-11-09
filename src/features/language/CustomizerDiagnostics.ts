@@ -1,9 +1,23 @@
+import { notifications } from '../../platform/notifications'
 import * as vscode from 'vscode'
 import { analyzeCustomizerSource } from '../../core/customizer/CustomizerSourceAnalyzer'
 import { CustomizerCodeActions } from './CustomizerCodeActions'
+import { CustomizerEditorActions, CUSTOMIZER_EDITOR_ACTION } from './CustomizerEditorActions'
 
 /** Independent of LSP, Runtime and Workspace Trust; no source is executed. */
 export function registerCustomizerDiagnostics(context: vscode.ExtensionContext) {
+    const actions = new CustomizerEditorActions()
+    context.subscriptions.push(actions, vscode.commands.registerCommand(CUSTOMIZER_EDITOR_ACTION, async (id: unknown) => {
+        try {
+            const result = await actions.commit(typeof id === 'string' ? id : '')
+            if (!result.verified) void notifications.customizerError(result.error!.message, result.identity.uri)
+            return result
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error)
+            void notifications.customizerError(`Customizer: ${message}`, 'source-action')
+            return { applied: false, error: { code: (error as { code?: string }).code ?? 'EDIT_FAILED', message } }
+        }
+    }))
     const collection = vscode.languages.createDiagnosticCollection('scad-ai-ide-customizer')
     const timers = new Map<string, ReturnType<typeof setTimeout>>()
     const severity = { error: vscode.DiagnosticSeverity.Error, warning: vscode.DiagnosticSeverity.Warning, information: vscode.DiagnosticSeverity.Information, hint: vscode.DiagnosticSeverity.Hint }
@@ -25,7 +39,7 @@ export function registerCustomizerDiagnostics(context: vscode.ExtensionContext) 
         timers.set(key, setTimeout(() => { timers.delete(key); update(document) }, 200))
     }
     context.subscriptions.push(collection,
-        vscode.languages.registerCodeActionsProvider({ language: 'openscad' }, new CustomizerCodeActions(), { providedCodeActionKinds: [vscode.CodeActionKind.QuickFix, vscode.CodeActionKind.RefactorRewrite] }),
+        vscode.languages.registerCodeActionsProvider({ language: 'openscad' }, new CustomizerCodeActions(actions), { providedCodeActionKinds: [vscode.CodeActionKind.QuickFix, vscode.CodeActionKind.RefactorRewrite] }),
         vscode.workspace.onDidOpenTextDocument(schedule),
         vscode.workspace.onDidChangeTextDocument((event) => schedule(event.document)),
         vscode.workspace.onDidSaveTextDocument(schedule),

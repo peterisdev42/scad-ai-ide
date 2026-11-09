@@ -19,6 +19,37 @@ test('capability contract preserves caller, cancellation and explicit failure id
 import { capabilityCatalog, CapabilityRegistry } from '../core/capabilities/CapabilityRegistry'
 import { CapabilityDispatcher } from '../core/capabilities/CapabilityDispatcher'
 import { safePreview } from '../core/capabilities/SafeOutput'
+import legacySourceApplySchema from './fixtures/customizer-source-apply-schema-v1.json'
+import Ajv from 'ajv'
+
+test('Source Apply exposes object properties to model clients without changing the accepted input contract', () => {
+    const schema = capabilityCatalog.find(entry => entry.id === 'customizer.sourceApply')!.inputSchema as { type?: string; properties?: Record<string, unknown> }
+    assert.equal(schema.type, 'object')
+    assert.deepEqual(Object.keys(schema.properties ?? {}).sort(), ['edits', 'identity', 'mode', 'planId', 'uri'])
+    const ajv = new Ajv({ strict: true })
+    const before = ajv.compile(legacySourceApplySchema)
+    const after = ajv.compile(schema)
+    const base = { mode: 'plan', uri: 'file:///workspace/model.scad', identity: { version: 1, sha256: 'a'.repeat(64) }, edits: [{ kind: 'annotateExisting', name: 'width', widget: 'slider', range: { min: 10, max: 100, step: 5 } }] }
+    const inputs: unknown[] = [base, { mode: 'commit', planId: 'observed-plan' }, {}, null, [], 'plan',
+        { ...base, mode: 'unused' }, { ...base, approved: true }, { ...base, planId: 'mixed-modes' },
+        { ...base, identity: { version: '1', sha256: 'a'.repeat(64) } }, { ...base, edits: [] },
+        { mode: 'commit' }, { mode: 'commit', planId: 'x', uri: base.uri },
+    ]
+    for (const intent of [
+        { kind: 'annotateExisting', name: 'width', widget: 'slider', range: { min: 10, max: 100 } },
+        { kind: 'changeWidget', name: 'width', widget: 'slider', range: { min: 10, max: 100 } },
+        { kind: 'moveGroup', name: 'width', group: 'Dimensions' },
+        { kind: 'hideParameter', name: 'width' },
+        { kind: 'insertLiteralParameter', name: 'width', widget: 'slider', defaultValue: 40, range: { min: 10, max: 100 } },
+    ]) {
+        const input = { ...base, edits: [intent] }
+        assert.equal(before(input), true)
+        inputs.push(input, { ...input, approved: true })
+    }
+    assert.equal(before(base), true)
+    assert.equal(after(base), true)
+    for (const input of inputs) assert.equal(after(input), before(input), JSON.stringify(input))
+})
 
 function dispatcher(invoke: CapabilityHandler['invoke'] = (input) => input) {
     const registry = new CapabilityRegistry()

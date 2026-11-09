@@ -1,0 +1,1606 @@
+{
+  "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2",
+  "cases": [
+    {
+      "id": "scalar",
+      "source": "width=40;\n",
+      "expectedNativeParameters": [
+        "width"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "width",
+          "defaultValue": 40,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "width",
+          "defaultValue": 40,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "width",
+          "defaultValue": 40,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "max-only",
+      "source": "w=40; // [100]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 40,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 1
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 40,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 1
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 40,
+          "description": "",
+          "range": {
+            "min": 0,
+            "max": 100
+          }
+        }
+      ]
+    },
+    {
+      "id": "range",
+      "source": "w=40; // [10:100]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 40,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 10,
+            "max": 100
+          },
+          "step": 1
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 40,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 10,
+            "max": 100
+          },
+          "step": 1
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 40,
+          "description": "",
+          "range": {
+            "min": 10,
+            "max": 100
+          }
+        }
+      ]
+    },
+    {
+      "id": "stepped",
+      "source": "w=40; // [10:5:100]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 40,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 10,
+            "max": 100
+          },
+          "step": 5
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 40,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 10,
+            "max": 100
+          },
+          "step": 5
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 40,
+          "description": "",
+          "range": {
+            "min": 10,
+            "max": 100
+          }
+        }
+      ]
+    },
+    {
+      "id": "spin-step",
+      "source": "w=4.5; // .5\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 4.5,
+          "description": "",
+          "group": "Parameters",
+          "step": 0.5
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 4.5,
+          "description": "",
+          "group": "Parameters",
+          "step": 0.5
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 4.5,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "checkbox",
+      "source": "enabled=true;\n",
+      "expectedNativeParameters": [
+        "enabled"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "enabled",
+          "defaultValue": true,
+          "description": "",
+          "group": "Parameters"
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "enabled",
+          "defaultValue": true,
+          "description": "",
+          "group": "Parameters"
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "enabled",
+          "defaultValue": true,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "vector",
+      "source": "v=[1,2,3,4]; // [0:10]\n",
+      "expectedNativeParameters": [
+        "v"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "v",
+          "defaultValue": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 10
+          },
+          "step": 1
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "v",
+          "defaultValue": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 10
+          },
+          "step": 1
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "v",
+          "defaultValue": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "description": "",
+          "range": {
+            "min": 0,
+            "max": 10
+          }
+        }
+      ]
+    },
+    {
+      "id": "unlisted-default",
+      "source": "mode=\"x\"; // [y,z]\n",
+      "expectedNativeParameters": [
+        "mode"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "mode",
+          "defaultValue": "x",
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "x",
+              "value": "x"
+            },
+            {
+              "label": "y",
+              "value": "y"
+            },
+            {
+              "label": "z",
+              "value": "z"
+            }
+          ]
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "mode",
+          "defaultValue": "x",
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "x",
+              "value": "x"
+            },
+            {
+              "label": "y",
+              "value": "y"
+            },
+            {
+              "label": "z",
+              "value": "z"
+            }
+          ]
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "mode",
+          "defaultValue": "x",
+          "description": "",
+          "choices": [
+            {
+              "label": "x",
+              "value": "x"
+            },
+            {
+              "value": "y",
+              "label": "y"
+            },
+            {
+              "value": "z",
+              "label": "z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mixed-enum",
+      "source": "mode=\"auto\"; // [auto:Automatic,1:One,2:Two]\n",
+      "expectedNativeParameters": [
+        "mode"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "mode",
+          "defaultValue": "auto",
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "Automatic",
+              "value": "auto"
+            },
+            {
+              "label": "One",
+              "value": 1
+            },
+            {
+              "label": "Two",
+              "value": 2
+            }
+          ]
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "mode",
+          "defaultValue": "auto",
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "Automatic",
+              "value": "auto"
+            },
+            {
+              "label": "One",
+              "value": 1
+            },
+            {
+              "label": "Two",
+              "value": 2
+            }
+          ]
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "mode",
+          "defaultValue": "auto",
+          "description": "",
+          "choices": [
+            {
+              "value": "auto",
+              "label": "Automatic"
+            },
+            {
+              "value": 1,
+              "label": "One"
+            },
+            {
+              "value": 2,
+              "label": "Two"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quoted-delimiters",
+      "source": "mode=\"a]b,c:d\"; // [\"a]b,c:d\":\"A ] , :\",other:Other]\n",
+      "expectedNativeParameters": [
+        "mode"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "mode",
+          "defaultValue": "a]b,c:d",
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "A ] , :",
+              "value": "a]b,c:d"
+            },
+            {
+              "label": "Other",
+              "value": "other"
+            }
+          ]
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "mode",
+          "defaultValue": "a]b,c:d",
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "A ] , :",
+              "value": "a]b,c:d"
+            },
+            {
+              "label": "Other",
+              "value": "other"
+            }
+          ]
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "mode",
+          "defaultValue": "a]b,c:d",
+          "description": "",
+          "choices": [
+            {
+              "value": "a]b,c:d",
+              "label": "A ] , :"
+            },
+            {
+              "value": "other",
+              "label": "Other"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "description",
+      "source": "// First\n// Last\nw=1;\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "Last",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "Last",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "First\nLast"
+        }
+      ]
+    },
+    {
+      "id": "description-gap",
+      "source": "// Detached\n\nw=1;\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "Detached"
+        }
+      ]
+    },
+    {
+      "id": "description-indent",
+      "source": "  // Indented\nw=1;\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "Indented"
+        }
+      ]
+    },
+    {
+      "id": "description-block",
+      "source": "/* Block description */\nw=1;\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "Block description"
+        }
+      ]
+    },
+    {
+      "id": "expanded-range",
+      "source": "w=120; // [0:5:100]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 120,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 120
+          },
+          "step": 5
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 120,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 120
+          },
+          "step": 5
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 120,
+          "description": "",
+          "range": {
+            "min": 0,
+            "max": 100
+          }
+        }
+      ]
+    },
+    {
+      "id": "expanded-vector",
+      "source": "v=[-5,120]; // [0:10]\n",
+      "expectedNativeParameters": [
+        "v"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "v",
+          "defaultValue": [
+            -5,
+            120
+          ],
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": -5,
+            "max": 120
+          },
+          "step": 1
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "v",
+          "defaultValue": [
+            -5,
+            120
+          ],
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": -5,
+            "max": 120
+          },
+          "step": 1
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "v",
+          "defaultValue": [
+            -5,
+            120
+          ],
+          "description": "",
+          "range": {
+            "min": 0,
+            "max": 10
+          }
+        }
+      ]
+    },
+    {
+      "id": "off-grid",
+      "source": "w=12; // [0:5:100]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 12,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 5
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 12,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 5
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 12,
+          "description": "",
+          "range": {
+            "min": 0,
+            "max": 100
+          }
+        }
+      ]
+    },
+    {
+      "id": "text-length",
+      "source": "name=\"abcdef\"; // 3\n",
+      "expectedNativeParameters": [
+        "name"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "name",
+          "defaultValue": "abcdef",
+          "description": "",
+          "group": "Parameters",
+          "maxLength": 3
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "name",
+          "defaultValue": "abcdef",
+          "description": "",
+          "group": "Parameters",
+          "maxLength": 3
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "name",
+          "defaultValue": "abcdef",
+          "description": "",
+          "maxLength": 3
+        }
+      ]
+    },
+    {
+      "id": "hidden-global",
+      "source": "/* [Hidden] */\nh=1;\n/* [Global] */\ng=2;\n/* [hidden] */\nx=3;\n",
+      "expectedNativeParameters": [
+        "g",
+        "x"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "g",
+          "defaultValue": 2,
+          "description": "",
+          "group": "Global",
+          "step": 1
+        },
+        {
+          "name": "x",
+          "defaultValue": 3,
+          "description": "",
+          "group": "hidden",
+          "step": 1
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "g",
+          "defaultValue": 2,
+          "description": "",
+          "group": "Global",
+          "step": 1
+        },
+        {
+          "name": "x",
+          "defaultValue": 3,
+          "description": "",
+          "group": "hidden",
+          "step": 1
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "g",
+          "defaultValue": 2,
+          "description": ""
+        },
+        {
+          "name": "x",
+          "defaultValue": 3,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "compound-group",
+      "source": "/* [Tab] [Name] */\nw=1;\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Tab-Name",
+          "step": 1
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Tab-Name",
+          "step": 1
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "superseded",
+      "source": "w=1; // [10:0:100]\nw=20; // [0:100]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 20,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 1
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 20,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 1
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 20,
+          "description": "",
+          "range": {
+            "min": 0,
+            "max": 100
+          }
+        }
+      ]
+    },
+    {
+      "id": "expression",
+      "source": "w=1+2; // [0:100]\n",
+      "expectedNativeParameters": [],
+      "expectedIDEParameters": [],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": []
+    },
+    {
+      "id": "long-vector",
+      "source": "w=[1,2,3,4,5];\n",
+      "expectedNativeParameters": [],
+      "expectedIDEParameters": [],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": []
+    },
+    {
+      "id": "brace-comment",
+      "source": "// { ignored\nw=1;\nmodule m() {}\nlate=2;\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "{ ignored",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "{ ignored",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "{ ignored"
+        }
+      ]
+    },
+    {
+      "id": "trailing-prose",
+      "source": "w=1; // [0:22] IDs in Assembly.md; 0 shows the group\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "same-line-brace",
+      "source": "w=1; module m() {}\n",
+      "expectedNativeParameters": [],
+      "expectedIDEParameters": [],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "same-line-assignments",
+      "source": "a=1; b=2; // [0:10]\n",
+      "expectedNativeParameters": [
+        "a",
+        "b"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "a",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        },
+        {
+          "name": "b",
+          "defaultValue": 2,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "a",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        },
+        {
+          "name": "b",
+          "defaultValue": 2,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "a",
+          "defaultValue": 1,
+          "description": ""
+        },
+        {
+          "name": "b",
+          "defaultValue": 2,
+          "description": "",
+          "range": {
+            "min": 0,
+            "max": 10
+          }
+        }
+      ]
+    },
+    {
+      "id": "nfc",
+      "source": "café=1;\n",
+      "expectedNativeParameters": [
+        "café"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "café",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "café",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": []
+    },
+    {
+      "id": "hint-hex",
+      "source": "w=1; // [0:0x10]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "1",
+              "value": 1
+            },
+            {
+              "label": "0x10",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "1",
+              "value": 1
+            },
+            {
+              "label": "0x10",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "range": {
+            "min": 0,
+            "max": 16
+          }
+        }
+      ]
+    },
+    {
+      "id": "string-single-number",
+      "source": "w=\"x\"; // [10]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": "x",
+          "description": "",
+          "group": "Parameters"
+        }
+      ],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": "x",
+          "description": "",
+          "group": "Parameters"
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "baselineIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": "x",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "id": "phase1-firstLineHint",
+      "source": "// Dimensions\nv=[ // [0:5:100]\n1,2\n];\n",
+      "expectedNativeParameters": [
+        "v"
+      ],
+      "expectedNativeProjection": [
+        {
+          "name": "v",
+          "defaultValue": [
+            1,
+            2
+          ],
+          "description": "Dimensions",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 5
+        }
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "v",
+          "defaultValue": [
+            1,
+            2
+          ],
+          "description": "Dimensions",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 5
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "verificationStatus": "native-other-build-source-equivalent-customizer"
+    },
+    {
+      "id": "phase1-groupReset",
+      "source": "/* [Hidden] */\nh=1;\n/* ordinary block */\nw=2;\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 2,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 2,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "verificationStatus": "native-other-build-source-equivalent-customizer"
+    },
+    {
+      "id": "phase1-noNewline",
+      "source": "w=1;",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "step": 1
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "verificationStatus": "native-other-build-source-equivalent-customizer"
+    },
+    {
+      "id": "phase1-multiline",
+      "source": "// Dimensions\nv=[\n1,2\n]; // [0:5:100]\n",
+      "expectedNativeParameters": [
+        "v"
+      ],
+      "expectedNativeProjection": [
+        {
+          "name": "v",
+          "defaultValue": [
+            1,
+            2
+          ],
+          "description": "Dimensions",
+          "group": "Parameters"
+        }
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "v",
+          "defaultValue": [
+            1,
+            2
+          ],
+          "description": "Dimensions",
+          "group": "Parameters"
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "verificationStatus": "native-other-build-source-equivalent-customizer"
+    },
+    {
+      "id": "phase1-textImport",
+      "source": "label=\"abcdef\"; // 3\necho(label);\n",
+      "expectedNativeParameters": [
+        "label"
+      ],
+      "expectedNativeProjection": [
+        {
+          "name": "label",
+          "defaultValue": "abcdef",
+          "description": "",
+          "group": "Parameters",
+          "maxLength": 3
+        }
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "label",
+          "defaultValue": "abcdef",
+          "description": "",
+          "group": "Parameters",
+          "maxLength": 3
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "verificationStatus": "native-other-build-source-equivalent-customizer"
+    },
+    {
+      "id": "phase1-utf8Import",
+      "source": "label=\"Ω😀\"; // 1\necho(label);\n",
+      "expectedNativeParameters": [
+        "label"
+      ],
+      "expectedNativeProjection": [
+        {
+          "name": "label",
+          "defaultValue": "Ω😀",
+          "description": "",
+          "group": "Parameters",
+          "maxLength": 1
+        }
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "label",
+          "defaultValue": "Ω😀",
+          "description": "",
+          "group": "Parameters",
+          "maxLength": 1
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "verificationStatus": "native-other-build-source-equivalent-customizer"
+    },
+    {
+      "id": "phase1-unknownVersion",
+      "source": "w=10; // [0:5:100]\necho(w);\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 10,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 5
+        }
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 10,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 100
+          },
+          "step": 5
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "verificationStatus": "native-other-build-source-equivalent-customizer"
+    },
+    {
+      "id": "phase1-maxNegative",
+      "source": "w=-5; // [10]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": -5,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 10
+          },
+          "step": 1
+        }
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": -5,
+          "description": "",
+          "group": "Parameters",
+          "range": {
+            "min": 0,
+            "max": 10
+          },
+          "step": 1
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "verificationStatus": "native-other-build-source-equivalent-customizer"
+    },
+    {
+      "id": "phase1-hex",
+      "source": "w=1; // [0:0x10]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "1",
+              "value": 1
+            },
+            {
+              "label": "0x10",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": 1,
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "1",
+              "value": 1
+            },
+            {
+              "label": "0x10",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "verificationStatus": "native-other-build-source-equivalent-customizer"
+    },
+    {
+      "id": "phase1-stringEscape",
+      "source": "w=\"Ω\"; // [\"\\u03a9\",x]\n",
+      "expectedNativeParameters": [
+        "w"
+      ],
+      "expectedNativeProjection": [
+        {
+          "name": "w",
+          "defaultValue": "Ω",
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "Ω",
+              "value": "Ω"
+            },
+            {
+              "label": "u03a9",
+              "value": "u03a9"
+            },
+            {
+              "label": "x",
+              "value": "x"
+            }
+          ]
+        }
+      ],
+      "expectedIDEParameters": [
+        {
+          "name": "w",
+          "defaultValue": "Ω",
+          "description": "",
+          "group": "Parameters",
+          "choices": [
+            {
+              "label": "Ω",
+              "value": "Ω"
+            },
+            {
+              "label": "u03a9",
+              "value": "u03a9"
+            },
+            {
+              "label": "x",
+              "value": "x"
+            }
+          ]
+        }
+      ],
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+      "verificationStatus": "native-other-build-source-equivalent-customizer"
+    },
+    {
+      "id": "include-brace-cutoff",
+      "source": "include <library/{parts}.scad>\nw=1;\n",
+      "files": {
+        "library/{parts}.scad": "\n"
+      },
+      "expectedNativeParameters": [],
+      "expectedIDEParameters": [],
+      "expectedNativeProjection": [],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1"
+    }
+  ],
+  "projectionVersion": 2,
+  "projectionScope": "CLI .param name/default/description/group/range/exported step/ordered choices/maxLength; not desktop interaction"
+}

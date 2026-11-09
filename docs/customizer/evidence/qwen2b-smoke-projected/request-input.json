@@ -1,0 +1,6 @@
+{
+  "scenario": "smoke",
+  "file": "<fixture>/workspace/model.scad",
+  "query": "/openscad-customizer-authoring 目标文件为 file://<fixture>/workspace/model.scad。为现有 width 添加 Slider，范围10至100、步长5，放入Dimensions分组，描述为 Width in millimeters。 保留几何、源码默认值与Preset，不保存文件。使用项目安装的Skill完成分析、适用时的最小编辑和明确目标验证；如实报告实际结果及未执行的GUI/渲染检查。",
+  "source": "width=40;\nmodule model() { cube([width,2,3]); }\nmodel();\n"
+}

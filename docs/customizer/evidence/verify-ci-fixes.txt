@@ -1,0 +1,3 @@
+npm notice run scad-ai-ide@0.0.1 verify:agents:vsix
+npm notice run node scripts/verify-agent-vsix.mjs <repo>/.build/scad-ai-ide-customizer-architecture-v2.vsix
+VSIX PASS: 40 tools, 2 Instructions, 5 Skills and bundled extension entry + AI Panel assets.

@@ -1,4 +1,7 @@
-import { scanCustomizer, parseLiteral, splitOutsideStrings, type Parameter, type SourceSpan, type ScannedDeclaration } from './CustomizerParser'
+import { customizerRules, safeHintReplacement, hasUnclosedHintIntent, CUSTOMIZER_REFERENCE, type CustomizerRuleId } from './CustomizerRules'
+import { parseCustomizerAnnotation } from './CustomizerAnnotation'
+import { utf8Length } from './CustomizerConstraints'
+import { scanCustomizer, splitOutsideStrings, type Parameter, type SourceSpan, type ScannedDeclaration } from './CustomizerParser'
 import type { CustomizerDiagnostic, CustomizerSourceAnalysis, CustomizerWidget, SourceRange } from './CustomizerSourceTypes'
 
 export const SOURCE_LIMIT = 1024 * 1024
@@ -21,8 +24,8 @@ export function widgetFor(parameter: Parameter): CustomizerWidget {
 }
 
 export function analyzeCustomizerSource(source: string, options: { maxDiagnostics?: number; includeCandidates?: boolean } = {}): CustomizerSourceAnalysis {
-    const empty: CustomizerSourceAnalysis = { parameters: [], candidates: [], diagnostics: [], complete: false, omitted: { parameters: 0, diagnostics: 0, candidates: 0 } }
-    if (source.length > SOURCE_LIMIT || Buffer.byteLength(source, 'utf8') > SOURCE_LIMIT) return empty
+    const empty: CustomizerSourceAnalysis = { parameters: [], candidates: [], diagnostics: [], complete: false, incompleteReasons: ['sourceLimit'], omitted: { parameters: 0, diagnostics: 0, candidates: 0 } }
+    if (source.length > SOURCE_LIMIT || utf8Length(source) > SOURCE_LIMIT) return empty
     const scan = scanCustomizer(source)
     const coordinates = sourceCoordinates(source)
     const diagnostics: CustomizerDiagnostic[] = []
@@ -42,58 +45,62 @@ export function analyzeCustomizerSource(source: string, options: { maxDiagnostic
         if (typeof p.defaultValue === 'boolean') continue
         const hint = source.slice(d.annotation.start + 2, d.annotation.end).trim()
         const numericControl = typeof p.defaultValue === 'number' || Array.isArray(p.defaultValue)
-        const add = (code: string, message: string, suggestedFix: string) => diagnostics.push({ code: `CUSTOMIZER_${code}`, severity: 'warning', parameter: d.name, message, suggestedFix, range: coordinates(d.annotation!) } satisfies CustomizerDiagnostic)
+        const add = (ruleId: CustomizerRuleId, message: string, suggestedFix: string) => {
+            const rule = customizerRules[ruleId]
+            diagnostics.push({ code: rule.code, ruleId, severity: rule.severity, parameter: d.name, message, suggestedFix, range: coordinates(d.annotation!), evidence: { kind: 'explicit-effective-hint', category: rule.category, referenceOpenSCADCommit: CUSTOMIZER_REFERENCE }, fix: { id: ruleId, safety: safeHintReplacement(ruleId, hint) === undefined ? 'review' : 'safe', title: rule.title } } satisfies CustomizerDiagnostic)
+        }
         if (hint.startsWith('[')) {
             const closingParts = splitOutsideStrings(hint, ']')
             if (closingParts.length === 1) {
                 // A bracketed prose note is not sufficient evidence of Widget intent.
-                if (/^\[\s*[+-]?(?:\d|\.\d)/.test(hint) || /[:,]/.test(hint)) add('MALFORMED_HINT', 'The written Widget hint is missing its closing ].', 'Close any quoted values/labels, then close the Widget hint with ], or remove the incomplete annotation.')
+                if (hasUnclosedHintIntent(hint)) add('CUST-ANN-01', 'The written Widget hint is missing its closing ].', 'Close any quoted values/labels, then close the Widget hint with ], or remove the incomplete annotation.')
                 continue
             }
             // A closed prefix followed by prose is ordinary/unsupported comment text,
             // not a missing bracket. Keep the GUI Parser's whole-comment semantics.
             if (closingParts.length !== 2 || closingParts[1]) continue
             const body = hint.slice(1, -1)
-            const numbers = splitOutsideStrings(body, ':').map(parseLiteral)
-            if (numericControl && numbers.length >= 1 && numbers.length <= 3 && numbers.every((value) => typeof value === 'number')) {
-                const values = numbers as number[]
-                const min = values.length === 1 ? 0 : values[0]
-                const max = values[values.length - 1]
-                if (min > max) add('INVALID_RANGE', `The written minimum ${min} exceeds the maximum ${max}.`, 'Set the minimum no greater than the maximum in this range annotation.')
-                else if (values.length === 3 && values[1] <= 0) add('INVALID_RANGE', `The written step ${values[1]} must be positive.`, 'Use a positive step, or remove the explicit step to keep [min:max].')
+            const annotation = parseCustomizerAnnotation(hint)
+            if (numericControl && annotation.kind === 'range') {
+                const { min, max, step } = annotation
+                if (min > max) add('CUST-RANGE-01', `The written minimum ${min} exceeds the maximum ${max}.`, 'Set the minimum no greater than the maximum in this range annotation.')
+                else if (step !== undefined && step <= 0) add('CUST-RANGE-02', `The written step ${step} must be positive.`, 'Use a positive step, or remove the explicit step to keep [min:max].')
             } else if ((numericControl || typeof p.defaultValue === 'string') && splitOutsideStrings(body, ',').some((entry) => !entry)) {
-                add('INVALID_CHOICES', 'The written Widget hint contains an empty option.', 'Remove the empty option/comma, add its value, or remove the empty annotation.')
+                add('CUST-ANN-03', 'The written Widget hint contains an empty option.', 'Remove the empty option/comma, add its value, or remove the empty annotation.')
             }
         } else {
-            const value = parseLiteral(hint)
-            if (typeof value === 'number') {
-                if (numericControl && value <= 0) add('MALFORMED_HINT', `The written numeric step ${value} must be positive.`, 'Use a positive numeric step, or remove the step annotation.')
-                else if (typeof p.defaultValue === 'string' && (!Number.isSafeInteger(value) || value < 0)) add('MALFORMED_HINT', 'The written text length must be a nonnegative integer.', 'Use a nonnegative integer length, or remove the text-length annotation.')
+            const annotation = parseCustomizerAnnotation(hint)
+            if (annotation.kind === 'number') {
+                const value = annotation.value
+                if (numericControl && value <= 0) add('CUST-ANN-02', `The written numeric step ${value} must be positive.`, 'Use a positive numeric step, or remove the step annotation.')
+                else if (typeof p.defaultValue === 'string' && (!Number.isSafeInteger(value) || value < 0)) add('CUST-TEXT-01', 'The written text length must be a nonnegative integer.', 'Use a nonnegative integer length, or remove the text-length annotation.')
             }
         }
-        if (p.maxLength !== undefined && typeof p.defaultValue === 'string' && p.defaultValue.length > p.maxLength) add('DEFAULT_OUT_OF_RANGE', `The default text has ${p.defaultValue.length} characters but the written limit is ${p.maxLength}.`, 'Increase this length annotation to fit the default text, or shorten the default text.')
+        if (p.maxLength !== undefined && typeof p.defaultValue === 'string' && utf8Length(p.defaultValue) > p.maxLength) add('CUST-TEXT-02', `The default text has ${utf8Length(p.defaultValue)} UTF-8 bytes but the written limit is ${p.maxLength}.`, 'Increase this length annotation to fit the default text, or shorten the default text.')
         if (p.range) {
             const values = Array.isArray(p.defaultValue) ? p.defaultValue : [p.defaultValue as number]
-            if (values.some((v) => v < p.range!.min || v > p.range!.max)) add('DEFAULT_OUT_OF_RANGE', `The default value is outside the written range [${p.range.min}:${p.range.max}].`, 'Expand this range annotation to include the default, or choose a default inside the range.')
+            if (values.some((v) => v < p.range!.min || v > p.range!.max)) add('CUST-RANGE-03', `The default value is outside the written range [${p.range.min}:${p.range.max}].`, 'Expand this range annotation to include the default, or choose a default inside the range.')
         }
         // An unlisted default is automatically included in choices by the Parser.
         // Off-step defaults, mixed choices and duplicate labels are not syntax errors.
     }
     const candidates = options.includeCandidates === false ? [] : scan.declarations.filter((d) => !d.parameter || !visible.has(d.parameter)).map((d) => ({ name: d.name, range: coordinates(d), reason: d.group === 'Hidden' ? 'hidden' : !d.beforeFirstBrace ? 'afterFirstBrace' : d.value === undefined ? 'unsupportedDefault' : 'superseded', confidence: 'certain' as const }))
     const max = Math.max(0, Math.min(200, options.maxDiagnostics ?? 100))
+    let metadataBytes = 0
     const bounded = <T>(items: T[], limit: number) => {
         const output: T[] = []
-        let bytes = 0
         for (const item of items) {
-            const size = Buffer.byteLength(JSON.stringify(item), 'utf8')
-            if (output.length >= limit || size > 8192 || bytes + size > 65536) break
-            output.push(item); bytes += size
+            const size = utf8Length(JSON.stringify(item))
+            if (output.length >= limit || size > 8192 || metadataBytes + size > 65536 - 1024) break
+            output.push(item); metadataBytes += size
         }
         return output
     }
-    const safeParameters = bounded(parameters, 500)
+    // Diagnostics are needed even when a parameter projection hits its limit.
+    // One shared budget covers all arrays; 1 KiB reserves wrapper/reason overhead.
     const safeDiagnostics = bounded(diagnostics, max)
+    const safeParameters = bounded(parameters, 500)
     const safeCandidates = bounded(candidates, 500)
     const omitted = { parameters: parameters.length - safeParameters.length, diagnostics: diagnostics.length - safeDiagnostics.length, candidates: candidates.length - safeCandidates.length }
-    return { parameters: safeParameters, candidates: safeCandidates, diagnostics: safeDiagnostics, complete: scan.complete && !Object.values(omitted).some(Boolean), omitted }
+    return { parameters: safeParameters, candidates: safeCandidates, diagnostics: safeDiagnostics, complete: scan.complete && !Object.values(omitted).some(Boolean), incompleteReasons: [...scan.incompleteReasons, ...(Object.values(omitted).some(Boolean) ? ['metadataLimit'] : [])], omitted }
 }

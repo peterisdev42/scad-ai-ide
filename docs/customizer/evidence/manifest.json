@@ -1,0 +1,439 @@
+[
+  {
+    "name": "core-library-preview",
+    "evidence": "core-library-preview.txt",
+    "originalLog": "/tmp/customizer-phase4-acceptance-all.log",
+    "originalSha256": "0b22d152d8955d7df125918f457a73c36261663e38bc3b6a6de8f89587f6e9a2",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "library-native-online",
+    "evidence": "library-native-online.txt",
+    "originalLog": "/tmp/customizer-phase4-native-library-regression.log",
+    "originalSha256": "5beca60a59c9de93d06f96411236c6f79743d3636532a07b6189ef50a48eb1e7",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "host-minimum",
+    "evidence": "host-minimum.txt",
+    "originalLog": "/tmp/customizer-phase3-final-host.log",
+    "originalSha256": "9fc2dc41960d5c4e6ccfa00b0ee7784858cd0e2bc9aaeb38d8bec6d4484ef36d",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "browser",
+    "evidence": "browser.txt",
+    "originalLog": "/tmp/customizer-phase4-final-ui.log",
+    "originalSha256": "4f5ea94301f0f88ab3442448812317e446ebf28afb092fc9ab784a7d1275373a",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "preview-incomplete",
+    "evidence": "preview-incomplete.txt",
+    "originalLog": "/tmp/customizer-phase4-preview-incomplete-tests2.log",
+    "originalSha256": "3eea25a5cdf22878e8ed95ffd382ca730af85f05f19ff9a2aa44128fc6834a16",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "preview-cleanup",
+    "evidence": "preview-cleanup.txt",
+    "originalLog": "/tmp/customizer-phase4-cleanup-preview.log",
+    "originalSha256": "b59d87ef9ba2736e1d718cde9873f19386aae9de9ce498bef03a15d98bbbd0c7",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "preview-native-accessibility",
+    "evidence": "preview-native-accessibility.txt",
+    "originalLog": "/tmp/customizer-phase4-inert-native-accessibility.log",
+    "originalSha256": "67462ddc09a122b0650b72e0d39d27589f55bc773bbb879448b77c9a03779c6c",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "source-bounds",
+    "evidence": "source-bounds.txt",
+    "originalLog": "/tmp/customizer-phase4-bounds-source.log",
+    "originalSha256": "b636d7e3be1e68aaafffd63f0694c245c07926a5515f74e235aa4238566ce5e3",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "capability-bounds",
+    "evidence": "capability-bounds.txt",
+    "originalLog": "/tmp/customizer-phase4-bounds-capabilities.log",
+    "originalSha256": "5def9b577ef7ca529d29afff6f62faf447d563c384ee3359cc6f3139f25fd62b",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "architecture",
+    "evidence": "architecture.txt",
+    "originalLog": "/tmp/customizer-phase4-architecture.log",
+    "originalSha256": "60b7cf27348d8afe6971c2a2a59f6104426220926842e830f764ae132201b763",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "compatibility",
+    "evidence": "compatibility.txt",
+    "originalLog": "/tmp/customizer-phase3-compatibility.log",
+    "originalSha256": "99aa06baaee9aa1269dfb7a15b8aa2b0395ee98e95570e3be379bd663691439c",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "installed-before-dead-code-cleanup",
+    "evidence": "installed-before-dead-code-cleanup.txt",
+    "originalLog": "/tmp/customizer-phase4-installed.log",
+    "originalSha256": "3d1886b743712eb179c72281ab07dec3b2cc18be2d08e2457973cd10e3e64a6d",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "host-native-focus",
+    "evidence": "host-native-focus.txt",
+    "originalLog": "/tmp/customizer-phase4-native-focus-host.log",
+    "originalSha256": "da23513207f4a7e5c2e0d91af6566282f95062976ff0963422d6acf89ff811e0",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "browser-latest",
+    "evidence": "browser-latest.txt",
+    "originalLog": "/tmp/customizer-phase4-spinbox-ui.log",
+    "originalSha256": "42d63983c7b237785803e117fd294540c614d76171c8a0bbb12637ac6d3f2a7b",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "installed-latest",
+    "evidence": "installed-latest.txt",
+    "originalLog": "/tmp/customizer-phase4-installed-latest.log",
+    "originalSha256": "38c8bfcacd1c83b5e289e3abb368205678bd5f0c28e5d9aff37da97a0c3e56a1",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "package-latest",
+    "evidence": "package-latest.txt",
+    "originalLog": "/tmp/customizer-phase4-vsix-latest.log",
+    "originalSha256": "708dcafd7ea219984b16c0ae56d5171b0b1af7183808eb76f1f7ab015cfd1dbe",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "core-library-preview-schema",
+    "evidence": "core-library-preview-schema.txt",
+    "originalLog": "/tmp/customizer-final-schema-regression.log",
+    "originalSha256": "cbbf418809d108d1c9716e1c1120cfcbe6ece0518663d279346d0beffee17415",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "capability-explicit-contract",
+    "evidence": "capability-explicit-contract.txt",
+    "originalLog": "/tmp/customizer-explicit-contract-tests.log",
+    "originalSha256": "e1bcda5cbafef08cfe008a37ba9f99a68ef4ba87d061fa7d0aeca95ad9a8573c",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "package-explicit-contract",
+    "evidence": "package-explicit-contract.txt",
+    "originalLog": "/tmp/customizer-explicit-contract-vsix.log",
+    "originalSha256": "dbd535ace4deae0546e35d7476d45221c94afb1fde4366b6dee1e70141f40c87",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "verify-explicit-contract",
+    "evidence": "verify-explicit-contract.txt",
+    "originalLog": "/tmp/customizer-explicit-contract-verify.log",
+    "originalSha256": "0802f7dc59dfb84cb855de9af69b57930d1673145462e35f8a6cdbebe0626ed4",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "installed-explicit-contract",
+    "evidence": "installed-explicit-contract.txt",
+    "originalLog": "/tmp/customizer-explicit-contract-installed.log",
+    "originalSha256": "a783d9239d1be3b0c7a01c8d02e59b23859fda92f8e2ddb748bb51a86b31b2db",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "host32-first-failure",
+    "evidence": "host32-first-failure.txt",
+    "originalLog": "/tmp/customizer-final-host32.log",
+    "originalSha256": "71432cfb08a03d0e7617da2a877f62b69262dd971e3506cb4aec3b36bd6576c1",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "host32-enter-targeted",
+    "evidence": "host32-enter-targeted.txt",
+    "originalLog": "/tmp/customizer-final-enter-check.log",
+    "originalSha256": "91c64f7c51030b53366296c2750d50988e63601473dec68fbbe4bd0ed517990a",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "host32-repeat",
+    "evidence": "host32-repeat.txt",
+    "originalLog": "/tmp/customizer-final-host32-repeat.log",
+    "originalSha256": "03fcf72d7376e6f11a7af53b0fc86566f03d6809b2a26acac104eecd6e3b8280",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "source-prose-1200",
+    "evidence": "source-prose-1200.txt",
+    "originalLog": "/tmp/customizer-phase4-prose-corpus.log",
+    "originalSha256": "b5f4f89ad83cafcdd714a905a1bfd400f64904266766180ea35a2878c2ba6757",
+    "redactions": [
+      "ANSI color",
+      "repo/home/globalStorage/tmp prefixes"
+    ]
+  },
+  {
+    "name": "qwen2b-author-initial-log",
+    "evidence": "qwen2b-author-initial-log.txt",
+    "originalLog": "/tmp/customizer-qwen2b-author-explicit.log",
+    "originalSha256": "5ff0b952ae6a3d6de144d17880c9d8930265a71189b77e232a09ba1e9630bbcd",
+    "redactions": [
+      "ANSI color",
+      "repo/home/tmp prefixes"
+    ]
+  },
+  {
+    "name": "qwen2b-author-controller-budget-log",
+    "evidence": "qwen2b-author-controller-budget-log.txt",
+    "originalLog": "/tmp/customizer-qwen2b-author-final.log",
+    "originalSha256": "1b940ef6844a27cfa2faa8c2da817a57b93444d7e75551370ad1037a0303e2a5",
+    "redactions": [
+      "ANSI color",
+      "repo/home/tmp prefixes"
+    ]
+  },
+  {
+    "name": "qwen2b-author-bounded-log",
+    "evidence": "qwen2b-author-bounded-log.txt",
+    "originalLog": "/tmp/customizer-qwen2b-author-bounded.log",
+    "originalSha256": "64b2ae4d2d9831672f8098f7d71c5f0588585dcb09561b7ddeafe2ca779866c8",
+    "redactions": [
+      "ANSI color",
+      "repo/home/tmp prefixes"
+    ]
+  },
+  {
+    "name": "qwen2b-author-read-policy-log",
+    "evidence": "qwen2b-author-read-policy-log.txt",
+    "originalLog": "/tmp/customizer-qwen2b-author-read-policy.log",
+    "originalSha256": "9c7538b582a32b041dc825e01506a1c5f0b57fc1d4a6c700919301b73c57c3ab",
+    "redactions": [
+      "ANSI color",
+      "repo/home/tmp prefixes"
+    ]
+  },
+  {
+    "name": "qwen2b-tail-log",
+    "evidence": "qwen2b-tail-log.txt",
+    "originalLog": "/tmp/customizer-qwen2b-tail-final.log",
+    "originalSha256": "1aa5d99b005eda237d3aa115d9e214f4b07d96337a6597a8e96be77442c30e2e",
+    "redactions": [
+      "ANSI color",
+      "repo/home/tmp prefixes"
+    ]
+  },
+  {
+    "name": "qwen2b-expression-log",
+    "evidence": "qwen2b-expression-log.txt",
+    "originalLog": "/tmp/customizer-qwen2b-expression-final.log",
+    "originalSha256": "8152733ce18b44f4600564c86c1ac5fc505b624cb392cba3eb2ed2eac32d3cfe",
+    "redactions": [
+      "ANSI color",
+      "repo/home/tmp prefixes"
+    ]
+  },
+  {
+    "name": "qwen2b-failure-log",
+    "evidence": "qwen2b-failure-log.txt",
+    "originalLog": "/tmp/customizer-qwen2b-failure-final.log",
+    "originalSha256": "6d75bf51dc53a5d4e439662fc17007958cc3548b531c040e489540042e664780",
+    "redactions": [
+      "ANSI color",
+      "repo/home/tmp prefixes"
+    ]
+  },
+  {
+    "name": "host-memory-startup-failure",
+    "evidence": "host-memory-startup-failure.txt",
+    "originalLog": "/tmp/customizer-real-host-memory.log",
+    "originalSha256": "5cc3f6831dadf90eb663d5cae27ea5ec7ba8095de9fa7d14a9beee8ae09ea04c",
+    "redactions": [
+      "ANSI color",
+      "repo/home/tmp prefixes"
+    ]
+  },
+  {
+    "name": "host-memory-two-snapshots",
+    "evidence": "host-memory-two-snapshots.txt",
+    "originalLog": "/tmp/customizer-real-host-memory2.log",
+    "originalSha256": "a55b6f37b9316e7d34915418ad4e9341cb0252584475bf103beeea1f7da01bb6",
+    "redactions": [
+      "ANSI color",
+      "repo/home/tmp prefixes"
+    ]
+  },
+  {
+    "name": "host-memory-three-snapshots",
+    "evidence": "host-memory-three-snapshots.txt",
+    "originalLog": "/tmp/customizer-real-host-memory3.log",
+    "originalSha256": "d833e442e00b21b97d887a31890b457257ccac05f7bbf5d160c8b79674d15097",
+    "redactions": [
+      "ANSI color",
+      "repo/home/tmp prefixes"
+    ]
+  },
+  {
+    "name": "native-gui-first-attempt",
+    "evidence": "native-gui-first-attempt.txt",
+    "originalLog": "/tmp/customizer-native-gui-window.log",
+    "originalSha256": "20f5739003fa8ee92f132e92e6cb0d094a211ca381f46e7b03e77425eff41389",
+    "redactions": [
+      "repo/home prefixes"
+    ]
+  },
+  {
+    "name": "native-gui-sandbox-window",
+    "evidence": "native-gui-sandbox-window.txt",
+    "originalLog": "/tmp/customizer-native-gui-window2.log",
+    "originalSha256": "6eca35c52678fbfcdd3c1a46282f47b52535e8da1b921a909110e5c5dcb1bf8e",
+    "redactions": [
+      "repo/home prefixes"
+    ]
+  },
+  {
+    "name": "desktop-cli-parity",
+    "evidence": "desktop-cli-parity.txt",
+    "originalLog": "/tmp/customizer-desktop-cli-parity.log",
+    "originalSha256": "d3f0f92665ade64135af08132b5ed5c47ab926f3862f42f6bf403bc3b2622d24",
+    "redactions": [
+      "repo/home prefixes"
+    ]
+  },
+  {
+    "name": "ci-newlines",
+    "evidence": "ci-newlines.txt",
+    "originalLog": "/tmp/customizer-ci-newlines.log",
+    "originalSha256": "af3d1487f4a17703e53e6fb17b7bad5609eb69c341102c612e549c8cc4b67e13",
+    "redactions": [
+      "ANSI",
+      "repo/home/tmp prefixes"
+    ]
+  },
+  {
+    "name": "ci-library-panel-build",
+    "evidence": "ci-library-panel-build.txt",
+    "originalLog": "/tmp/customizer-ci-library-panel-build.log",
+    "originalSha256": "3b07d4be6050d216b18574fb998c14941f7a4ed0b5ad6a8dced8680849b20324",
+    "redactions": [
+      "ANSI",
+      "repo/home/tmp prefixes"
+    ]
+  },
+  {
+    "name": "package-ci-fixes",
+    "evidence": "package-ci-fixes.txt",
+    "originalLog": "/tmp/customizer-ci-fixes-vsix.log",
+    "originalSha256": "463af357d9298630b71ac3e170f8a64e76c80ee700343ac871a02cb03e9beefc",
+    "redactions": [
+      "ANSI",
+      "repo/home/tmp prefixes"
+    ]
+  },
+  {
+    "name": "verify-ci-fixes",
+    "evidence": "verify-ci-fixes.txt",
+    "originalLog": "/tmp/customizer-ci-fixes-verify.log",
+    "originalSha256": "0802f7dc59dfb84cb855de9af69b57930d1673145462e35f8a6cdbebe0626ed4",
+    "redactions": [
+      "ANSI",
+      "repo/home/tmp prefixes"
+    ]
+  },
+  {
+    "name": "installed-ci-fixes",
+    "evidence": "installed-ci-fixes.txt",
+    "originalLog": "/tmp/customizer-ci-fixes-installed.log",
+    "originalSha256": "5c2e0930e79ad8961d3b8612054d4c7c030bda83842e5b1f9df912c740f7efd2",
+    "redactions": [
+      "ANSI",
+      "repo/home/tmp prefixes"
+    ]
+  },
+  {
+    "name": "native-gui-locked",
+    "evidence": "native-gui-locked.txt",
+    "originalLog": "/tmp/customizer-native-gui-dynamic2.log",
+    "originalSha256": "983193495bb33469ffa0937972a7801e9c00d9cd880b38d859d5fc6a89d3be83",
+    "redactions": [
+      "ANSI",
+      "repo/home/tmp prefixes"
+    ]
+  }
+]

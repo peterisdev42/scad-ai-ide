@@ -1,0 +1,211 @@
+{
+  "buildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1",
+  "results": [
+    {
+      "id": "firstLineHint",
+      "source": "// Dimensions\nv=[ // [0:5:100]\n1,2\n];\n",
+      "parameters": {
+        "parameters": [
+          {
+            "caption": "Dimensions",
+            "group": "Parameters",
+            "initial": [
+              1,
+              2
+            ],
+            "max": 100,
+            "min": 0,
+            "name": "v",
+            "step": 5,
+            "type": "number"
+          }
+        ],
+        "title": "firstLineHint"
+      }
+    },
+    {
+      "id": "groupReset",
+      "source": "/* [Hidden] */\nh=1;\n/* ordinary block */\nw=2;\n",
+      "parameters": {
+        "parameters": [
+          {
+            "initial": 2,
+            "name": "w",
+            "step": 1,
+            "type": "number"
+          }
+        ],
+        "title": "groupReset"
+      }
+    },
+    {
+      "id": "noNewline",
+      "source": "w=1;",
+      "parameters": {
+        "parameters": [
+          {
+            "group": "Parameters",
+            "initial": 1,
+            "name": "w",
+            "step": 1,
+            "type": "number"
+          }
+        ],
+        "title": "noNewline"
+      }
+    },
+    {
+      "id": "multiline",
+      "source": "// Dimensions\nv=[\n1,2\n]; // [0:5:100]\n",
+      "parameters": {
+        "parameters": [
+          {
+            "caption": "Dimensions",
+            "group": "Parameters",
+            "initial": [
+              1,
+              2
+            ],
+            "name": "v",
+            "type": "number"
+          }
+        ],
+        "title": "multiline"
+      }
+    },
+    {
+      "id": "textImport",
+      "source": "label=\"abcdef\"; // 3\necho(label);\n",
+      "parameters": {
+        "parameters": [
+          {
+            "group": "Parameters",
+            "initial": "abcdef",
+            "maxLength": 3,
+            "name": "label",
+            "type": "string"
+          }
+        ],
+        "title": "textImport"
+      },
+      "importedValues": {
+        "label": "123456"
+      },
+      "echo": "ECHO: \"123\"\n"
+    },
+    {
+      "id": "utf8Import",
+      "source": "label=\"Ω😀\"; // 1\necho(label);\n",
+      "parameters": {
+        "parameters": [
+          {
+            "group": "Parameters",
+            "initial": "Ω😀",
+            "maxLength": 1,
+            "name": "label",
+            "type": "string"
+          }
+        ],
+        "title": "utf8Import"
+      },
+      "importedValues": {
+        "label": "Ω😀"
+      },
+      "echo": "ECHO: \"�\"\n"
+    },
+    {
+      "id": "unknownVersion",
+      "source": "w=10; // [0:5:100]\necho(w);\n",
+      "parameters": {
+        "parameters": [
+          {
+            "group": "Parameters",
+            "initial": 10,
+            "max": 100,
+            "min": 0,
+            "name": "w",
+            "step": 5,
+            "type": "number"
+          }
+        ],
+        "title": "unknownVersion"
+      },
+      "importedValues": {
+        "w": "12"
+      },
+      "echo": "ECHO: 12\n"
+    },
+    {
+      "id": "maxNegative",
+      "source": "w=-5; // [10]\n",
+      "parameters": {
+        "parameters": [
+          {
+            "group": "Parameters",
+            "initial": -5,
+            "max": 10,
+            "min": 0,
+            "name": "w",
+            "step": 1,
+            "type": "number"
+          }
+        ],
+        "title": "maxNegative"
+      }
+    },
+    {
+      "id": "hex",
+      "source": "w=1; // [0:0x10]\n",
+      "parameters": {
+        "parameters": [
+          {
+            "group": "Parameters",
+            "initial": 1,
+            "name": "w",
+            "options": [
+              {
+                "name": "1",
+                "value": 1
+              },
+              {
+                "name": "0x10",
+                "value": 0
+              }
+            ],
+            "type": "number"
+          }
+        ],
+        "title": "hex"
+      }
+    },
+    {
+      "id": "stringEscape",
+      "source": "w=\"Ω\"; // [\"\\u03a9\",x]\n",
+      "parameters": {
+        "parameters": [
+          {
+            "group": "Parameters",
+            "initial": "Ω",
+            "name": "w",
+            "options": [
+              {
+                "name": "Ω",
+                "value": "Ω"
+              },
+              {
+                "name": "u03a9",
+                "value": "u03a9"
+              },
+              {
+                "name": "x",
+                "value": "x"
+              }
+            ],
+            "type": "string"
+          }
+        ],
+        "title": "stringEscape"
+      }
+    }
+  ]
+}

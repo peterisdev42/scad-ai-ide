@@ -1,0 +1,25 @@
+{
+  "capturedAt": "2026-11-09T08:45:12.621Z",
+  "name": "qwen3.5:2b-mlx",
+  "model": "qwen3.5:2b-mlx",
+  "modified_at": "2026-11-09T15:26:12.753593464+08:00",
+  "size": 3117475695,
+  "digest": "9dd89c688f18f01cb3636d01f9512d8daae2a531b3e726f59d68cf7b91c8358e",
+  "details": {
+    "parent_model": "",
+    "format": "safetensors",
+    "family": "",
+    "families": null,
+    "parameter_size": "",
+    "quantization_level": "mxfp8",
+    "runner": "mlx"
+  },
+  "capabilities": [
+    "completion",
+    "vision",
+    "thinking",
+    "tools"
+  ],
+  "parameters": "temperature                    1\ntop_k                          20\ntop_p                          0.95\nmin_p                          0\npresence_penalty               1.5\nrepeat_penalty                 1",
+  "notes": "Local Ollama metadata only. Capability advertisement does not prove native Agent acceptance."
+}

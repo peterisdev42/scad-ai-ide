@@ -1,3 +1,4 @@
+import { registerCustomizerPresetDiagnostics } from './features/language/CustomizerPresetDiagnostics'
 import { CustomizerSourceDomainService } from './features/sidebar/CustomizerSourceDomainService'
 import { createAiPanelState } from './features/agents/CapabilityPresentation'
 import { registerAgentTools } from './features/agents/registerAgentTools'
@@ -28,10 +29,11 @@ export async function activate(context: vscode.ExtensionContext) {
     const github = registerGitHub(context)
     const runtime = registerRuntime(context, new RuntimeManager(discover), github.request)
     const customizer = new CustomizerService()
-    const preview = registerPreview(context, runtime, customizer)
+    const customizerView = new CustomizerViewProvider(customizer, context.extensionUri)
+    registerCustomizerPresetDiagnostics(context, customizerView.domain)
+    const preview = registerPreview(context, runtime, customizer, customizerView.domain)
     registerOwnedMarkdownPreview(context, runtime)
     const { ready: markdownReady, ...markdown } = registerMarkdown(context, runtime)
-    const customizerView = new CustomizerViewProvider(customizer, context.extensionUri)
     const development = new DeveloperCacheController(context, async (key) => {
         if (key.startsWith('runtime.catalog.') || /runtime-catalog-.*\.json$/.test(key)) await runtime.clearCatalogCache()
         if (key.startsWith('libraries.registry.') || key.replaceAll('\\', '/').startsWith('libraries/v1/cache/')) await libraries.clearRegistryCache()

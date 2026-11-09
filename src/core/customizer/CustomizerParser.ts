@@ -1,120 +1,10 @@
-export type ParameterValue = string | number | boolean | number[]
+import type { Parameter, ParameterValue } from './CustomizerModel'
+export type { Parameter, ParameterValue } from './CustomizerModel'
 
-export interface Parameter {
-    name: string
-    group: string
-    description: string
-    defaultValue: ParameterValue
-    range?: { min: number; max: number; step?: number }
-    choices?: { label: string; value: string | number }[]
-    step?: number
-    maxLength?: number
-    hint?: string
-}
-
-const numeric = /^[+-]?(?:0x[0-9a-f]+|(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?)$/i
-const numberValue = (text: string): number => (text.startsWith('-') ? -Number(text.slice(1)) : Number(text.replace(/^\+/, '')))
-
-export function parseLiteral(text: string): ParameterValue | undefined {
-    text = text.trim()
-    if (text === 'true' || text === 'false') {
-        return text === 'true'
-    }
-    if (numeric.test(text)) {
-        const value = numberValue(text)
-        return Number.isFinite(value) ? value : undefined
-    }
-    if (/^"(?:\\[\s\S]|[^"\\])*"$/.test(text)) {
-        // Match OpenSCAD's string escapes, including its six-digit Unicode form.
-        return text.slice(1, -1).replace(/\\(u[0-9a-fA-F]{4}|U[0-9a-fA-F]{6}|x[0-7][0-9a-fA-F]|\r?\n|[\s\S])|\r?\n/g, (_, escape: string | undefined) => {
-            if (!escape || /^\r?\n$/.test(escape)) return ''
-            if (/^[uUx]/.test(escape) && escape.length > 1) {
-                const codepoint = parseInt(escape.slice(1), 16)
-                return codepoint <= 0x10ffff ? String.fromCodePoint(escape[0] === 'x' && codepoint === 0 ? 32 : codepoint) : '\ufffd'
-            }
-            return { n: '\n', r: '\r', t: '\t' }[escape] ?? escape
-        })
-    }
-    if (text.startsWith('[') && text.endsWith(']')) {
-        const entries = text
-            .slice(1, -1)
-            .replace(/,\s*$/, '')
-            .split(',')
-            .map((entry) => entry.trim())
-        if (entries.length >= 1 && entries.length <= 4 && entries.every((entry) => numeric.test(entry) && Number.isFinite(numberValue(entry)))) {
-            return entries.map(numberValue)
-        }
-    }
-    return undefined
-}
-
-export function splitOutsideStrings(text: string, delimiter: string): string[] {
-    const parts: string[] = []
-    let start = 0
-    let quoted = false
-    for (let index = 0; index < text.length; index++) {
-        if (quoted && text[index] === '\\') {
-            index++
-            continue
-        }
-        if (text[index] === '"') {
-            quoted = !quoted
-        }
-        if (!quoted && text[index] === delimiter) {
-            parts.push(text.slice(start, index).trim())
-            start = index + 1
-        }
-    }
-    parts.push(text.slice(start).trim())
-    return parts
-}
-
-function annotate(parameter: Parameter, comment: string): Parameter['choices'] | undefined {
-    parameter.hint = comment
-    const annotation = /^\s*\[([\s\S]*)\]\s*$/.exec(comment)?.[1]
-    const isNumeric = typeof parameter.defaultValue === 'number' || Array.isArray(parameter.defaultValue)
-    if (annotation === undefined) {
-        if (numeric.test(comment)) {
-            const value = numberValue(comment)
-            if (isNumeric && value > 0 && Number.isFinite(value)) {
-                parameter.step = value
-            } else if (typeof parameter.defaultValue === 'string' && Number.isSafeInteger(value) && value >= 0) {
-                parameter.maxLength = value
-            }
-        }
-        return
-    }
-    const parts = splitOutsideStrings(annotation, ':')
-    if (isNumeric && parts.length <= 3 && parts.every((part) => numeric.test(part))) {
-        const values = parts.map(numberValue)
-        const min = values.length === 1 ? 0 : values[0]
-        const max = values.at(-1)!
-        const step = values.length === 3 ? values[1] : undefined
-        if (values.every(Number.isFinite) && min <= max && (step === undefined || step > 0)) {
-            parameter.range = { min, max, step }
-        }
-        return
-    }
-    if (parts.length <= 3 && parts.every((part) => numeric.test(part))) return
-    if (Array.isArray(parameter.defaultValue) || typeof parameter.defaultValue === 'boolean') {
-        return
-    }
-    const choices = splitOutsideStrings(annotation, ',').map((entry) => {
-        const [raw, ...labels] = splitOutsideStrings(entry, ':')
-        const parsed = parseLiteral(raw)
-        const value = typeof parsed === 'number' || typeof parsed === 'string' ? parsed : raw && (parsed === undefined || typeof parsed === 'boolean') ? raw : undefined
-        const label = labels.join(':')
-        return { value, label: label ? String(parseLiteral(label) ?? label) : String(value) }
-    })
-    if (choices.length && choices.every((choice) => typeof choice.value === 'string' || typeof choice.value === 'number')) {
-        parameter.choices = choices as NonNullable<Parameter['choices']>
-        const declaredChoices = [...parameter.choices]
-        if (!parameter.choices.some((choice) => choice.value === parameter.defaultValue)) {
-            parameter.choices.unshift({ label: String(parameter.defaultValue), value: parameter.defaultValue as string | number })
-        }
-        return declaredChoices
-    }
-}
+export { parseLiteral } from './CustomizerLiteral'
+export { splitOutsideStrings } from './CustomizerAnnotation'
+import { parseLiteral } from './CustomizerLiteral'
+import { annotate } from './CustomizerAnnotation'
 
 /** Scan source without evaluating expressions or following includes. Only standalone
  * literal assignments before the first real opening brace are customizable. */
@@ -135,6 +25,7 @@ export interface ScannedDeclaration {
 export function scanCustomizer(source: string) {
     const declarations: ScannedDeclaration[] = []
     let complete = true
+    const incompleteReasons = new Set<string>()
     let lineStart = 0
     let lineEnd = source.indexOf('\n')
     const firstContent = (start: number, end: number) => {
@@ -143,13 +34,21 @@ export function scanCustomizer(source: string) {
     }
     let firstOnLine = firstContent(lineStart, lineEnd)
     let statementStart = -1
-    let descriptionStart = -1
-    let descriptionEnd = -1
+    let statementAnnotation: SourceSpan | undefined
     let statementDescriptionSpan: SourceSpan | undefined
+    const precedingDescription = (offset: number) => {
+        const currentLine = source.lastIndexOf('\n', offset - 1) + 1
+        if (currentLine === 0) return undefined
+        const end = currentLine - (source[currentLine - 2] === '\r' ? 2 : 1)
+        const start = source.lastIndexOf('\n', currentLine - 2) + 1
+        return source.startsWith('//', start) ? { start, end } : undefined
+    }
     let lastDeclaration: ScannedDeclaration | undefined
     const parameters = new Map<string, Parameter>()
     let group = ''
-    let descriptions: string[] = []
+    let pendingGroup: { name: string; after: number } | undefined
+    let statementGroup = ''
+    let lineSemicolons = 0
     let statement = ''
     let statementHasContent = false
     let depth = 0
@@ -157,27 +56,42 @@ export function scanCustomizer(source: string) {
     let beforeFirstBrace = true
     let lastParameter: Parameter | undefined
     let statementDescription = ''
+    const stopCustomizerAtLine = (offset: number) => {
+        if (beforeFirstBrace) {
+            const cutoff = source.lastIndexOf('\n', offset - 1) + 1
+            for (let d = declarations.length - 1; d >= 0 && declarations[d].start >= cutoff; d--) {
+                const declaration = declarations[d]
+                declaration.beforeFirstBrace = false
+                if (parameters.get(declaration.name) === declaration.parameter) parameters.delete(declaration.name)
+                declaration.parameter = undefined
+            }
+        }
+        beforeFirstBrace = false
+    }
     for (let index = 0; index < source.length; index++) {
         const char = source[index]
+        if (pendingGroup && index > pendingGroup.after) { group = pendingGroup.name; pendingGroup = undefined }
+        if (char === '\n') lineSemicolons = 0
         if (char === '"') {
             statementHasContent = true
             statement += char
             while (++index < source.length) {
                 statement += source[index]
+                if (source[index] === '\n') lineSemicolons = 0
                 if (source[index] === '\\') {
                     statement += source[++index] ?? ''
                 } else if (source[index] === '"') {
                     break
                 }
             }
-            if (index >= source.length) complete = false
+            if (index >= source.length) { complete = false; incompleteReasons.add('unterminatedString') }
             continue
         }
         if (char === '/' && (source[index + 1] === '/' || source[index + 1] === '*')) {
             const block = source[index + 1] === '*'
             const end = source.indexOf(block ? '*/' : '\n', index + 2)
             const stop = end < 0 ? source.length : end
-            if (block && end < 0) complete = false
+            if (block && end < 0) { complete = false; incompleteReasons.add('unterminatedBlockComment') }
             const comment = source.slice(index + 2, stop).trim()
             while (lineEnd >= 0 && lineEnd < index) {
                 lineStart = lineEnd + 1
@@ -189,24 +103,18 @@ export function scanCustomizer(source: string) {
                 index = stop + (block && end >= 0 ? 1 : -1)
                 continue
             }
-            const heading = block && standalone && /^(?:\[[^\]]+\]\s*)+$/.test(comment) ? [...comment.matchAll(/\[([^\]]+)\]/g)].map((match) => match[1].trim()).join('-') : undefined
-            if (heading && !statementHasContent) {
-                group = heading
-                descriptions = []
-                descriptionStart = -1
-            } else if (!block && lastParameter && !standalone) {
-                const declaredChoices = annotate(lastParameter, comment)
-                if (lastDeclaration) {
-                    lastDeclaration.declaredChoices = declaredChoices
-                    lastDeclaration.annotation = { start: index, end: stop - (source[stop - 1] === '\r' ? 1 : 0) }
-                }
-            } else if (!block && lastDeclaration && !standalone) {
+            // collectGroups accepts every single-line block, including an empty
+            // group reset. A heading only applies to declarations on later lines.
+            if (block && !source.slice(index, stop).includes('\n')) {
+                const heading = [...comment.matchAll(/\[([^\]]*)\]/g)].map(match => match[1]).join('-').trim()
+                pendingGroup = { name: heading, after: lineEnd < 0 ? source.length : lineEnd }
+            } else if (!block && statementHasContent && lineSemicolons === 0 && source.lastIndexOf('\n', statementStart - 1) === source.lastIndexOf('\n', index - 1)) {
+                statementAnnotation = { start: index, end: stop - (source[stop - 1] === '\r' ? 1 : 0) }
+            } else if (!block && lastDeclaration && !standalone && lineSemicolons === 1 && source.lastIndexOf('\n', lastDeclaration.start - 1) === source.lastIndexOf('\n', index - 1)) {
+                if (lastParameter) lastDeclaration.declaredChoices = annotate(lastParameter, comment)
                 lastDeclaration.annotation = { start: index, end: stop - (source[stop - 1] === '\r' ? 1 : 0) }
-            } else if (standalone && !statementHasContent) {
-                if (descriptionStart < 0) descriptionStart = index
-                descriptionEnd = stop + (block && end >= 0 ? 2 : !block && source[stop - 1] === '\r' ? -1 : 0)
-                descriptions.push(comment.replace(/^\s*\* ?/gm, '').trim())
             }
+            if (block && source.slice(index, stop).includes('\n')) lineSemicolons = 0
             statement += ' '
             index = stop + (block && end >= 0 ? 1 : -1)
             continue
@@ -214,23 +122,24 @@ export function scanCustomizer(source: string) {
         if (char === '<' && /^\s*(?:include|use)\s*$/.test(statement)) {
             // Library directives have no required semicolon; do not swallow the next assignment.
             const end = source.indexOf('>', index + 1)
-            if (end < 0) { complete = false; break }
+            if (end < 0) { complete = false; incompleteReasons.add('unterminatedInclude'); break }
+            // Pinned CommentParser's cutoff scans raw angle paths. Reproduce its
+            // brace-in-filename quirk without treating the path as SCAD syntax.
+            const brace = source.slice(index + 1, end).indexOf('{')
+            if (brace >= 0) stopCustomizerAtLine(index + 1 + brace)
             index = end
             statement = ''
             statementHasContent = false
             statementStart = -1
-            descriptions = []
-            descriptionStart = -1
             continue
         }
         if (char === '{' || char === '}') {
+            stopCustomizerAtLine(index)
             beforeFirstBrace = false
             braceDepth += char === '{' ? 1 : -1
             statement = ''
             statementHasContent = false
             statementStart = -1
-            descriptions = []
-            descriptionStart = -1
             lastParameter = undefined
             lastDeclaration = undefined
             depth = 0
@@ -244,31 +153,36 @@ export function scanCustomizer(source: string) {
         if (!statementHasContent && !/\s/.test(char)) {
             statementHasContent = true
             statementStart = index
-            statementDescriptionSpan = descriptionStart >= 0 ? { start: descriptionStart, end: descriptionEnd } : undefined
-            descriptionStart = -1
-            statementDescription = descriptions.join('\n')
-            descriptions = []
+            statementAnnotation = undefined
+            statementDescriptionSpan = precedingDescription(index)
+            statementDescription = statementDescriptionSpan ? source.slice(statementDescriptionSpan.start + 2, statementDescriptionSpan.end).replace(/^[ \t]+/, '').replace(/\/\//g, ' ') : ''
+            statementGroup = group
         }
         if (char === '(' || char === '[') {
             depth++
         } else if (char === ')' || char === ']') {
             depth--
         }
+        if (char === ';') lineSemicolons++
         if (char === ';' && depth === 0) {
-            const assignment = /^\s*([\p{L}_$][\p{L}\p{N}_$]*)\s*=\s*([\s\S]*?)\s*$/u.exec(statement)
+            const assignment = /^\s*([\p{L}_$][\p{L}\p{N}\p{M}_$]*)\s*=\s*([\s\S]*?)\s*$/u.exec(statement)
             lastParameter = undefined
             lastDeclaration = undefined
             if (assignment) {
-                lastDeclaration = { name: assignment[1], group, start: statementStart, end: index + 1, value: parseLiteral(assignment[2]), beforeFirstBrace, description: statementDescriptionSpan }
+                lastDeclaration = { name: assignment[1].normalize('NFC'), group: statementGroup, start: statementStart, end: index + 1, value: parseLiteral(assignment[2]), beforeFirstBrace, description: statementDescriptionSpan }
                 declarations.push(lastDeclaration)
             }
-            if (assignment) parameters.delete(assignment[1])
-            if (assignment && beforeFirstBrace && group !== 'Hidden') {
+            if (assignment) parameters.delete(assignment[1].normalize('NFC'))
+            if (assignment && beforeFirstBrace && statementGroup !== 'Hidden') {
                 const defaultValue = parseLiteral(assignment[2])
                 if (defaultValue !== undefined) {
-                    lastParameter = { name: assignment[1], group, description: statementDescription, defaultValue }
-                    parameters.set(assignment[1], lastParameter)
+                    lastParameter = { name: assignment[1].normalize('NFC'), group: statementGroup, description: statementDescription, defaultValue }
+                    parameters.set(assignment[1].normalize('NFC'), lastParameter)
                     lastDeclaration!.parameter = lastParameter
+                    if (statementAnnotation) {
+                        lastDeclaration!.annotation = statementAnnotation
+                        lastDeclaration!.declaredChoices = annotate(lastParameter, source.slice(statementAnnotation.start + 2, statementAnnotation.end).trim())
+                    }
                 }
             }
             statement = ''
@@ -279,8 +193,10 @@ export function scanCustomizer(source: string) {
             statement += char
         }
     }
-    if (depth !== 0 || braceDepth !== 0 || /^\s*[\p{L}_$][\p{L}\p{N}_$]*\s*=/u.test(statement)) complete = false
-    return { parameters: [...parameters.values()], declarations, complete }
+    if (depth !== 0) { complete = false; incompleteReasons.add('unbalancedDelimiters') }
+    if (braceDepth !== 0) { complete = false; incompleteReasons.add('unbalancedBraces') }
+    if (/^\s*[\p{L}_$][\p{L}\p{N}\p{M}_$]*\s*=/u.test(statement)) { complete = false; incompleteReasons.add('unfinishedAssignment') }
+    return { parameters: [...parameters.values()], declarations, complete, incompleteReasons: [...incompleteReasons] }
 }
 
 /** Backwards-compatible GUI API; analysis and authoring use the same scanner. */
@@ -288,15 +204,4 @@ export function parseCustomizer(source: string): Parameter[] {
     return scanCustomizer(source).parameters
 }
 
-/** Match the precision of the literal defaults instead of rounding decimal controls to integers. */
-export function numericStep(parameter: Parameter): number {
-    if (parameter.range?.step !== undefined) return parameter.range.step
-    if (parameter.step !== undefined) return parameter.step
-    const values = Array.isArray(parameter.defaultValue) ? parameter.defaultValue : [parameter.defaultValue]
-    if (parameter.range) values.push(parameter.range.min)
-    const decimals = values.reduce<number>((precision, value) => {
-        const [fraction, exponent = '0'] = String(value).toLowerCase().split('e')
-        return Math.max(precision, (fraction.split('.')[1]?.length ?? 0) - Number(exponent))
-    }, 0)
-    return 10 ** -Math.min(decimals, 15)
-}
+export { numericStep } from './CustomizerConstraints'

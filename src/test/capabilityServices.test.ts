@@ -80,7 +80,7 @@ test('Customizer has full schema with no panel, atomic validation, shared Previe
     assert.equal(initial.parameters.length, 4)
     assert.equal(initial.parameters[0].range?.step, 5)
     assert.deepEqual(JSON.parse(JSON.stringify(initial.parameters[1].defaultValue)), [1, 2, 3])
-    assert.throws(() => domain.setValues(initial.target!, initial.revision, { label: 'Valid', width: 11 }), /steps/)
+    assert.throws(() => domain.setValues(initial.target!, initial.revision, { label: 'Valid', width: 101 }), /between/)
     assert.deepEqual(service.getOverrides(initial.target!), {})
     let previews = 0
     service.onDidChangeValues(() => previews++)
@@ -469,25 +469,39 @@ test('source commit reports rejected WorkspaceEdit and real postcondition failur
     }
 })
 
-test('Customizer Quick Fixes use the semantic planner for invalid steps, explicit range prose, widget hints and groups', () => {
-    class Range { constructor(readonly start: unknown, readonly end: unknown) {} }
-    class WorkspaceEdit { edits: unknown[] = []; replace(uri: unknown, range: unknown, text: string) { this.edits.push({ uri, range, text }) } }
-    class CodeAction { edit?: WorkspaceEdit; constructor(readonly title: string, readonly kind: unknown) {} }
-    const api = { Range, WorkspaceEdit, CodeAction, CodeActionKind: { QuickFix: 'quickfix', RefactorRewrite: 'refactor.rewrite' }, workspace: { isTrusted: true, getConfiguration: () => ({ get: () => true }) } }
+test('Customizer code actions require actual diagnostics, keep optional refactors separate and use commands', () => {
+    class CodeAction { constructor(readonly title: string, readonly kind: unknown) {} }
+    const api = { CodeAction, CodeActionKind: { QuickFix: 'quickfix', RefactorRewrite: 'refactor.rewrite' }, workspace: { isTrusted: true, getConfiguration: () => ({ get: () => true }) } }
     const module = load<typeof import('../features/language/CustomizerCodeActions')>('../features/language/CustomizerCodeActions.js', api)
+    const analyzer = require('../core/customizer/CustomizerSourceAnalyzer') as typeof import('../core/customizer/CustomizerSourceAnalyzer')
+    let writable = true
+    const prepared: Array<{ source: string; edits: unknown[] }> = []
+    const executor = {
+        canEdit: () => writable,
+        prepare: (_: vscode.TextDocument, plan: { source: string; edits: unknown[] }, title: string) => { prepared.push(plan); return { title, command: 'fixture.commit', arguments: [String(prepared.length)] } },
+    }
+    const provider = new module.CustomizerCodeActions(executor)
+    const makeDocument = (source: string) => ({ uri: Uri.file('/outside-workspace/model.scad'), getText: () => source, positionAt: (offset: number) => ({ line: 0, character: offset }) }) as unknown as vscode.TextDocument
+    const range = { start: { line: 0 }, end: { line: 0 } } as vscode.Range
     for (const [source, title] of [
         ['width=40; // [10:0:100]\n', 'Customizer: remove invalid explicit step'],
         ['width=40; // range: 10..100 step 5\n', 'Customizer: convert explicit range comment to slider hint'],
         ['width=40;\n', 'Customizer: make numeric step explicit'],
         ['width=40;\n', 'Customizer: place parameter in Global group'],
     ]) {
-        const document = { uri: Uri.file('/workspace/model.scad'), getText: () => source, positionAt: (offset: number) => ({ line: 0, character: offset }) }
-        const actions = new module.CustomizerCodeActions().provideCodeActions(document as unknown as vscode.TextDocument, { start: { line: 0 }, end: { line: 0 } } as vscode.Range)
-        assert.ok(actions.some((a) => a.title === title && a.edit), title)
-        assert.equal(String(actions.find((a) => a.title === title)!.kind), title.includes('remove invalid') ? 'quickfix' : 'refactor.rewrite')
+        const document = makeDocument(source)
+        const diagnostics = analyzer.analyzeCustomizerSource(source).diagnostics.map(d => ({ code: d.code, range: d.range, source: 'OpenSCAD Customizer' }))
+        const actions = provider.provideCodeActions(document, range, { diagnostics, triggerKind: 1, only: undefined } as unknown as vscode.CodeActionContext)
+        const action = actions.find(item => item.title === title)
+        assert.ok(action?.command, title)
+        assert.equal(action.edit, undefined)
+        assert.equal(String(action.kind), title.includes('remove invalid') ? 'quickfix' : 'refactor.rewrite')
+        if (title.includes('remove invalid')) assert.equal(provider.provideCodeActions(document, range).some(item => String(item.kind) === 'quickfix'), false)
     }
     api.workspace.isTrusted = false
-    assert.deepEqual(JSON.parse(JSON.stringify(new module.CustomizerCodeActions().provideCodeActions({ uri: Uri.file('/workspace/model.scad') } as unknown as vscode.TextDocument, {} as vscode.Range))), [])
+    assert.ok(provider.provideCodeActions(makeDocument('width=40;\n'), range).length, 'Static editor actions remain available in untrusted workspaces')
+    writable = false
+    assert.deepEqual(JSON.parse(JSON.stringify(provider.provideCodeActions({ uri: Uri.file('/readonly/model.scad') } as unknown as vscode.TextDocument, range))), [])
 })
 
 
@@ -589,4 +603,120 @@ test('Runtime Agent lifecycle forces catalog refresh, downloads/probes a real ar
         assert.equal(runtime.getState().runtimes.length, 0)
         assert.equal(runtime.getActiveRuntime(), undefined)
     } finally { bound.dispose(); subscriptions.forEach((s) => s.dispose()); await rm(root, { recursive: true, force: true }) }
+})
+
+async function editorActionFixture() {
+    const fixture = await sourceFixture()
+    let writable = true, now = 0
+    Object.assign(fixture.api.workspace, { fs: { isWritableFileSystem: () => writable } })
+    const module = load<typeof import('../features/language/CustomizerEditorActions')>('../features/language/CustomizerEditorActions.js', fixture.api)
+    const editor = new module.CustomizerEditorActions(() => now)
+    const planner = require('../core/customizer/CustomizerFixPlanner') as typeof import('../core/customizer/CustomizerFixPlanner')
+    fixture.change('width=40; // [10:0:100]\n')
+    const prepare = () => String(editor.prepare(fixture.document as unknown as vscode.TextDocument, planner.planCustomizerFix(fixture.text, 'CUST-RANGE-02', 'width'), 'Fix step').arguments![0])
+    return { fixture, editor, prepare, readonly() { writable = false }, expire() { now += 120001 }, async dispose() { editor.dispose(); await fixture.dispose() } }
+}
+
+test('editor actions retain untrusted/outside-workspace access while Agent boundaries stay intact', async () => {
+    const f = await editorActionFixture()
+    try {
+        f.fixture.api.workspace.getWorkspaceFolder = () => undefined
+        await assert.rejects(f.fixture.domain.analyze(f.fixture.uri), (error: unknown) => (error as CapabilityError).code === 'OUTSIDE_WORKSPACE')
+        f.fixture.api.workspace.isTrusted = false
+        await assert.rejects(f.fixture.domain.apply({ mode: 'plan', uri: f.fixture.uri }), (error: unknown) => (error as CapabilityError).code === 'UNTRUSTED_WORKSPACE')
+        const id = f.prepare()
+        const result = await f.editor.commit(id)
+        assert.equal(result.applied, true)
+        assert.equal(result.verified, true)
+        assert.equal(result.savedToDisk, false)
+        assert.match(f.fixture.text, /\[10:100\]/)
+        assert.equal(readFileSync(f.fixture.file, 'utf8'), 'width=40;\n')
+        await assert.rejects(f.editor.commit(id), (error: unknown) => (error as CapabilityError).code === 'PLAN_EXPIRED')
+    } finally { await f.dispose() }
+})
+
+test('editor CAS, expiry, provider permissions, close and rejected edits do not change the buffer', async () => {
+    for (const scenario of ['stale', 'hash', 'expiry', 'readonly', 'closed', 'rejected']) {
+        const f = await editorActionFixture()
+        try {
+            const id = f.prepare()
+            if (scenario === 'stale') f.fixture.change(f.fixture.text)
+            if (scenario === 'hash') f.fixture.change('// Concurrent edit\n' + f.fixture.text, false)
+            if (scenario === 'expiry') f.expire()
+            if (scenario === 'readonly') f.readonly()
+            if (scenario === 'closed') f.fixture.close()
+            if (scenario === 'rejected') f.fixture.reject()
+            const original = f.fixture.text
+            await assert.rejects(f.editor.commit(id), scenario)
+            assert.equal(f.fixture.text, original, scenario)
+            assert.equal(f.fixture.applied, 0)
+        } finally { await f.dispose() }
+    }
+})
+
+test('editor commands consume once under concurrent invocations and report postcondition interference', async () => {
+    const f = await editorActionFixture()
+    try {
+        const id = f.prepare()
+        const results = await Promise.allSettled([f.editor.commit(id), f.editor.commit(id)])
+        assert.equal(results.filter(result => result.status === 'fulfilled').length, 1)
+        assert.equal(f.fixture.applied, 1)
+    } finally { await f.dispose() }
+    const changed = await editorActionFixture()
+    try {
+        const id = changed.prepare()
+        changed.fixture.interfere()
+        const result = await changed.editor.commit(id)
+        assert.equal(result.applied, true)
+        assert.equal(result.verified, false)
+        assert.equal(result.error?.code, 'POSTCONDITION_FAILED')
+        assert.equal(changed.fixture.text, 'width=200;\n')
+    } finally { await changed.dispose() }
+})
+
+
+test('source pending plans allow 32, reject the 33rd, and reclaim expired plans', async () => {
+    const f = await sourceFixture()
+    try {
+        for (let i = 0; i < 32; i++) await f.plan()
+        await assert.rejects(f.plan(), { code: 'LIMIT_EXCEEDED' })
+        assert.equal(f.applied, 0)
+        f.expire()
+        assert.ok((await f.plan()).planId)
+    } finally { await f.dispose() }
+})
+
+test('source analysis cache bounds retention to 16 documents and disposal clears retained metadata', async () => {
+    const f = await sourceFixture()
+    const retained = f.domain as unknown as { cache: Map<string, unknown> }
+    const uris: string[] = []
+    try {
+        for (let i = 0; i < 17; i++) {
+            const file = path.join(f.root, `cache-${i}.scad`)
+            await writeFile(file, 'width=40;\n')
+            f.document.uri = Uri.file(file)
+            uris.push(f.document.uri.toString())
+            const analysis = await f.domain.analyze(uris[i])
+            analysis.parameters[0].description = 'caller mutation'
+            assert.notEqual((await f.domain.analyze(uris[i])).parameters[0].description, 'caller mutation')
+            assert.ok(retained.cache.size <= 16)
+        }
+        assert.equal(retained.cache.size, 16)
+        assert.equal(retained.cache.has(uris[0]), false)
+        assert.equal(retained.cache.has(uris[16]), true)
+    } finally { await f.dispose() }
+    assert.equal(retained.cache.size, 0)
+})
+
+test('source plan preview accepts bounded metadata and rejects output above 32 KiB', async () => {
+    const f = await sourceFixture()
+    try {
+        f.change(Array.from({ length: 11 }, (_, i) => `width${i}=40;`).join('\n') + '\n')
+        const { identity } = await f.domain.analyze(f.uri)
+        const intents = Array.from({ length: 11 }, (_, i) => ({ kind: 'annotateExisting', name: `width${i}`, widget: 'slider', range: { min: 0, max: 100 }, description: 'x'.repeat(3000) }))
+        const planned = await f.domain.apply({ mode: 'plan', uri: f.uri, identity, edits: intents.slice(0, 10) }) as { preview: unknown }
+        assert.ok(Buffer.byteLength(JSON.stringify(planned.preview)) <= 32768)
+        await assert.rejects(f.domain.apply({ mode: 'plan', uri: f.uri, identity, edits: intents }), { code: 'LIMIT_EXCEEDED' })
+        assert.equal(f.applied, 0)
+    } finally { await f.dispose() }
 })

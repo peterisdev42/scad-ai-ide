@@ -59,6 +59,7 @@ export class CustomizerViewProvider implements vscode.WebviewViewProvider, vscod
 <p id="panel-error" class="error" role="alert" hidden></p>
 </div>
 <p id="empty" class="message">Open an OpenSCAD file to customize its parameters.</p>
+<p id="analysis-warning" class="message" role="status" hidden></p>
 <div id="tree" role="tree" aria-label="Model parameters"></div>
 <div id="status" class="sr-only" role="status" aria-live="polite"></div>
 </div></main></div><div id="tooltip" role="tooltip" hidden></div>
@@ -130,7 +131,7 @@ export class CustomizerViewProvider implements vscode.WebviewViewProvider, vscod
             } else if (data.type === 'set' && name) {
                 if (data.phase === 'input' && !this.service.canPreviewContinuously()) return
                 // Service validation also checks values received from untrusted webview messages.
-                this.service.set(name, data.value as ParameterValue, data.phase === 'input' ? 'input' : 'commit')
+                this.domain.setValues(String(data.target), Number(data.revision), { [name]: data.value as ParameterValue }, data.phase === 'input' ? 'input' : 'commit')
             }
         } catch (error) {
             void this.view?.webview.postMessage({ type: 'error', target: this.service.target, revision: this.revision, name, message: error instanceof Error ? error.message : String(error) })
@@ -169,6 +170,7 @@ export class CustomizerViewProvider implements vscode.WebviewViewProvider, vscod
             revision: this.revision,
             filename: uri ? posix.parse(uri.path).name : '',
             filenameTitle: uri ? vscode.workspace.asRelativePath(uri) : '',
+            analysis: this.service.analysisStatus,
             parameters: this.service.parameters.map((parameter) => ({ ...parameter, value: this.service.value(parameter) })),
             scrollSettings: this.getScrollSettings(),
         })

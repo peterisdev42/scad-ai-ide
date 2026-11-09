@@ -1,33 +1,8 @@
-import { parseCustomizer, type Parameter, type ParameterValue } from './CustomizerParser'
+import type { Parameter, ParameterValue } from './CustomizerModel'
+import { analyzeCustomizerSource } from './CustomizerSourceAnalyzer'
 
-export function validateValue(parameter: Parameter, value: unknown): string | undefined {
-    if (parameter.choices) {
-        return parameter.choices.some((choice) => choice.value === value) ? undefined : 'Choose a listed value'
-    }
-    const vector = Array.isArray(parameter.defaultValue)
-    if (vector ? !Array.isArray(value) || value.length !== (parameter.defaultValue as number[]).length : typeof value !== typeof parameter.defaultValue || Array.isArray(value)) {
-        return 'Value has the wrong type or vector length'
-    }
-    const numbers = vector ? Array.from(value as unknown[]) : typeof value === 'number' ? [value] : []
-    if (numbers.some((entry) => typeof entry !== 'number' || !Number.isFinite(entry))) {
-        return 'Enter a finite number'
-    }
-    if (parameter.maxLength !== undefined && typeof value === 'string' && value.length > parameter.maxLength) {
-        return `Use at most ${parameter.maxLength} characters`
-    }
-    if (parameter.range) {
-        const { min, max, step } = parameter.range
-        for (const number of numbers as number[]) {
-            if (number < min || number > max) {
-                return `Enter a value between ${min} and ${max}`
-            }
-            if (step && Math.abs((number - min) / step - Math.round((number - min) / step)) > 1e-7) {
-                return `Use steps of ${step} from ${min}`
-            }
-        }
-    }
-    return undefined
-}
+import { validateValue } from './CustomizerConstraints'
+export { validateValue } from './CustomizerConstraints'
 
 export function equalValues(left: ParameterValue, right: ParameterValue): boolean {
     return Array.isArray(left) && Array.isArray(right) ? left.length === right.length && left.every((value, index) => value === right[index]) : left === right
@@ -38,6 +13,7 @@ export type CustomizerChangeReason = 'values' | 'preset' | 'input' | 'commit'
 export class CustomizerService {
     target?: string
     parameters: Parameter[] = []
+    analysisStatus = { complete: true, incompleteReasons: [] as string[] }
     private readonly overrides = new Map<string, Map<string, ParameterValue>>()
 
     private readonly continuousTargets = new Set<string>()
@@ -85,7 +61,11 @@ export class CustomizerService {
 
     load(target: string, source: string): void {
         this.target = target
-        this.parameters = parseCustomizer(source)
+        const analysis = analyzeCustomizerSource(source, { includeCandidates: false, maxDiagnostics: 200 })
+        this.analysisStatus = { complete: analysis.complete, incompleteReasons: analysis.incompleteReasons }
+        this.parameters = analysis.parameters.map(({ widget: _widget, declarationRange: _declaration, annotationRange: _annotation, descriptionRange: _description, ...parameter }) => parameter)
+        // Temporary incomplete buffers must not erase stored per-file overrides.
+        if (!analysis.complete) return
         const values = this.overrides.get(target)
         for (const [name, value] of values ?? []) {
             const parameter = this.parameters.find((item) => item.name === name)
@@ -98,6 +78,7 @@ export class CustomizerService {
     clear(): void {
         this.target = undefined
         this.parameters = []
+        this.analysisStatus = { complete: true, incompleteReasons: [] }
     }
 
     value(parameter: Parameter): ParameterValue {
@@ -111,6 +92,7 @@ export class CustomizerService {
     /** Validate the entire batch before touching overrides; GUI single writes use this same path. */
     setMany(input: Record<string, ParameterValue>, reason: CustomizerChangeReason = 'values'): void {
         if (!this.target) throw new Error('Parameter is no longer available')
+        if (!this.analysisStatus.complete) throw new Error('Source analysis is incomplete; finish the source edit before changing parameter values')
         const validated = Object.entries(input).map(([name, value]) => {
             const parameter = this.parameters.find((item) => item.name === name)
             if (!parameter) throw new Error(`Parameter is no longer available: ${name}`)

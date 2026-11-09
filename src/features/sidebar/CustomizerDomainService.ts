@@ -1,7 +1,7 @@
 import { assertWorkspacePath } from '../../platform/WorkspacePaths'
 import type { CapabilityContext } from '../../core/capabilities/CapabilityTypes'
 import * as vscode from 'vscode'
-import { CustomizerService } from '../../core/customizer/CustomizerService'
+import { CustomizerService, type CustomizerChangeReason } from '../../core/customizer/CustomizerService'
 import type { ParameterValue } from '../../core/customizer/CustomizerParser'
 import { CustomizerPresets } from './CustomizerPresets'
 import { CapabilityError } from '../../core/capabilities/CapabilityTypes'
@@ -34,21 +34,22 @@ export class CustomizerDomainService implements vscode.Disposable {
     private publish() { this.presets.bind(this.service.target); this.changed.fire() }
     snapshot() {
         this.loadTarget()
-        return { target: this.service.target, revision: this.revision, parameters: this.service.parameters.map((p) => ({ ...p, value: this.service.value(p) })), presets: this.presets.state(), overridesEditSource: false }
+        return { target: this.service.target, revision: this.revision, parameters: this.service.parameters.map((p) => ({ ...p, value: this.service.value(p) })), presets: this.presets.state(), analysis: this.service.analysisStatus, overridesEditSource: false }
     }
     assertTarget(target: string, revision: number) {
         this.loadTarget()
         if (!target || target !== this.service.target) throw new CapabilityError('TARGET_CHANGED', 'Read the active Customizer target again.', true)
         if (revision !== this.revision) throw new CapabilityError('STALE_STATE', 'Customizer changed. Read parameters again.', true)
     }
-    setValues(target: string, revision: number, values: Record<string, ParameterValue>) {
+    setValues(target: string, revision: number, values: Record<string, ParameterValue>, reason: CustomizerChangeReason = 'values') {
         this.assertTarget(target, revision)
         if (this.busy) throw new CapabilityError('BUSY', 'A preset operation is already running.', true)
-        try { this.service.setMany(values) } catch (error) { throw new CapabilityError('INVALID_VALUE', error instanceof Error ? error.message : String(error)) }
+        try { this.service.setMany(values, reason) } catch (error) { throw new CapabilityError('INVALID_VALUE', error instanceof Error ? error.message : String(error)) }
         return this.snapshot()
     }
     reset(target: string, revision: number, name?: string) {
         this.assertTarget(target, revision)
+        if (this.busy) throw new CapabilityError('BUSY', 'A preset operation is already running.', true)
         if (name && !this.service.parameters.some((p) => p.name === name)) throw new CapabilityError('INVALID_VALUE', 'Unknown parameter')
         this.service.reset(name)
         return this.snapshot()
@@ -56,6 +57,7 @@ export class CustomizerDomainService implements vscode.Disposable {
     async preset(target: string, revision: number, action: string, name?: string, uri?: vscode.Uri, context: CapabilityContext = { actor: 'gui' }) {
         this.assertTarget(target, revision)
         if (this.busy) throw new CapabilityError('BUSY', 'A preset operation is already running.', true)
+        if (!this.service.analysisStatus.complete && action !== 'import') throw new CapabilityError('SOURCE_UNSUPPORTED', 'Source analysis is incomplete; finish the source before using presets.')
         this.busy = true
         try {
             if (context.actor === 'agent' && action !== 'select') {

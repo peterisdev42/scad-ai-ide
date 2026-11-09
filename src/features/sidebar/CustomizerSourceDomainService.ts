@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { createHash, randomUUID } from 'node:crypto'
+import { randomUUID } from 'node:crypto'
 import { assertWorkspacePath } from '../../platform/WorkspacePaths'
 import { CapabilityError, type CapabilityContext } from '../../core/capabilities/CapabilityTypes'
 import { analyzeCustomizerSource, SOURCE_LIMIT } from '../../core/customizer/CustomizerSourceAnalyzer'
@@ -7,7 +7,8 @@ import { planCustomizerEdits } from '../../core/customizer/CustomizerSourceEdito
 import { validateCustomizerSource } from '../../core/customizer/CustomizerSourceValidator'
 import type { SourceDocumentIdentity, SourceEditIntent, SourceExpectation } from '../../core/customizer/CustomizerSourceTypes'
 
-export const sourceIdentity = (document: vscode.TextDocument): SourceDocumentIdentity => ({ uri: document.uri.toString(), version: document.version, sha256: createHash('sha256').update(document.getText(), 'utf8').digest('hex') })
+export { documentIdentity as sourceIdentity } from '../../platform/CustomizerDocumentTransaction'
+import { documentIdentity as sourceIdentity, assertDocumentIdentity, applyCustomizerBufferEdits } from '../../platform/CustomizerDocumentTransaction'
 type Plan = ReturnType<typeof planCustomizerEdits> & { identity: SourceDocumentIdentity; expires: number }
 
 /** Explicit buffer access, workspace boundaries and single-use source CAS, independent of Overrides. */
@@ -37,9 +38,7 @@ export class CustomizerSourceDomainService implements vscode.Disposable {
     private trust() { if (!vscode.workspace.isTrusted) throw new CapabilityError('UNTRUSTED_WORKSPACE', 'Source editing requires Workspace Trust.') }
     private cancel(context?: CapabilityContext) { if (context?.signal?.aborted) throw new CapabilityError('CANCELLED', 'Source operation cancelled.') }
     private check(document: vscode.TextDocument, identity: SourceDocumentIdentity) {
-        const current = sourceIdentity(document)
-        if (document.isClosed || current.uri !== identity.uri) throw new CapabilityError('TARGET_CHANGED', 'Source target changed or closed.')
-        if (current.version !== identity.version || current.sha256 !== identity.sha256) throw new CapabilityError('STALE_SOURCE', 'Source changed. Analyze and plan again.', true)
+        assertDocumentIdentity(document, identity)
     }
     async analyze(uri: string, options: { includeCandidates?: boolean; maxDiagnostics?: number } = {}) {
         const document = await this.document(uri)
@@ -79,13 +78,7 @@ export class CustomizerSourceDomainService implements vscode.Disposable {
         if (!plan || plan.expires <= this.now()) throw new CapabilityError('PLAN_EXPIRED', 'Plan expired or already consumed. Analyze and plan again.')
         const document = await this.document(plan.identity.uri)
         this.trust(); this.cancel(context); this.check(document, plan.identity)
-        const edit = new vscode.WorkspaceEdit()
-        for (const replacement of plan.edits) edit.replace(document.uri, new vscode.Range(document.positionAt(replacement.start), document.positionAt(replacement.end)), replacement.text)
-        // No await between the final CAS and submitting the WorkspaceEdit. VS Code also
-        // tracks document versions when forwarding WorkspaceEdit to the main thread.
-        const applied = plan.edits.length === 0 || await vscode.workspace.applyEdit(edit)
-        if (!applied) throw new CapabilityError('POSTCONDITION_FAILED', 'WorkspaceEdit was rejected; no success is claimed.')
-        const actual = document.getText()
+        const { actual } = await applyCustomizerBufferEdits(document, plan.identity, plan.edits, () => { this.trust(); this.cancel(context) })
         const validated = validateCustomizerSource(actual, plan.expectations)
         const postValidation = { ...validated, pass: validated.semanticPass }
         return { applied: true, identity: sourceIdentity(document), changedParameters: plan.changedParameters, postValidation, semanticPass: postValidation.semanticPass && actual === plan.source && !document.isClosed, ...(!postValidation.semanticPass || actual !== plan.source || document.isClosed ? { error: { code: 'POSTCONDITION_FAILED', message: 'Buffer differs from the planned result. Inspect current source and use Undo if needed.' } } : {}), savedToDisk: false }

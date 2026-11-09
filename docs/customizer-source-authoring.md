@@ -1,6 +1,6 @@
 # Customizer source authoring
 
-Implemented against repository baseline `4c92043e8b8ac9414f4135de053852bade2581db` and the 2026-11-06 Customizer Agent Authoring SPEC. The code is implemented; the SPEC's full real-model and cross-platform acceptance gate is **not yet complete**. Optional Hooks remain deferred.
+Historical implementation baseline: `4c92043e8b8ac9414f4135de053852bade2581db` and the 2026-11-06 Customizer Agent Authoring SPEC. Current 2026-11-09 architecture and acceptance supersede the historical verification below; see [ADR](customizer-architecture-adr.md), [acceptance](customizer-acceptance.md) and [progress](customizer-progress.md). The code is implemented; the SPEC's full real-model and cross-platform acceptance gate is **not yet complete**. Optional Hooks remain deferred.
 
 ## User workflow
 
@@ -29,11 +29,11 @@ A successful static validation does not prove rendering, GUI interaction, geomet
 
 Problems uses `scad-ai-ide-customizer` independently of LSP and AI providers, with 200ms debouncing, open/edit/save/configuration updates and close/dispose cleanup. Disable through `scad-ai-ide.customizer.sourceDiagnostics`. Files above 1 MiB are skipped by diagnostics and rejected by source tools; an incomplete analysis never passes validation.
 
-Quick Fixes reuse the semantic edit planner:
+Quick Fixes require matching current Problems diagnostics, use a rule-specific local proof, and commit an opaque one-shot command with version/SHA checks. Editor fixes support untitled and writable providers, including files outside the workspace and static edits in untrusted workspaces; Agent Source Apply retains its stricter workspace/trust/file restrictions. Optional refactors use the semantic planner:
 
 - Remove a known invalid explicit slider step while preserving the supplied min/max.
-- Convert an explicit comment such as `// range: 10..100 step 5` into a slider hint.
-- Make an existing number's current step explicit, or add a Global group when this cannot change other declarations.
+- Refactor an explicit comment such as `// range: 10..100 step 5` into a slider hint.
+- Refactor an existing number's current step explicit, or add a Global group when this cannot change other declarations.
 
 No automatic fix invents a business range or changes an out-of-range default. Ordinary comments, geometry and includes remain intact. Off-grid defaults and expressions require an explicit editing decision.
 
@@ -45,9 +45,9 @@ Literal types match the existing Parser: finite numbers (including supported exp
 
 Structured plans require an unambiguous declaration target and reject multiple-declaration edits, incomplete analyses, unsafe adjacent code, ambiguous trailing comments and group changes that alter other declarations. New insertion into an ungrouped header may require explicit grouping first. New literal parameters are not wired into geometry automatically. Inserted groups are scoped and non-target declarations retain their prior semantic records. File EOL, indentation, BOM, final newline and untouched text are preserved. Repeating the same supported intent produces no edits.
 
-Analysis caching is bounded to 16 documents, keyed by URI/version/hash/options, and invalidated on changes/close. Bounds: 1 MiB/source; 500 returned parameters/candidates; 100 Agent diagnostics (200 editor); 64 KiB per result collection, 8 KiB per entry; 50 edits/plan; 32 pending plans; 32 KiB preview; 120-second expiry. Omitted metadata sets complete=false. A failed real postcondition reports the actual applied state without overwriting concurrent changes; use Undo or inspect and replan. Untrusted workspaces permit read-only source analysis/validation but deny both sourceApply modes.
+Analysis caching is bounded to 16 documents, keyed by URI/version/hash/options, and invalidated on changes/close. Bounds: 1 MiB/source; 500 returned parameters/candidates; 100 Agent diagnostics (200 editor); 64 KiB across all result collections, 8 KiB per entry; 50 edits/plan; 32 pending plans; 32 KiB preview; 120-second expiry. Omitted metadata sets complete=false. A failed real postcondition reports the actual applied state without overwriting concurrent changes; use Undo or inspect and replan. Untrusted workspaces permit read-only source analysis/validation but deny both sourceApply modes.
 
-## Verification evidence
+## Historical verification evidence (prior SPEC, not current acceptance)
 
 The reproducible commands are in [agent-verification.md](agent-verification.md). Local evidence is stored under `.build/customizer-source-*` (ignored artifacts). Run with an isolated trusted workspace and profile; no user source fixture is committed or implicitly saved.
 
@@ -67,7 +67,7 @@ The reproducible commands are in [agent-verification.md](agent-verification.md).
 The final 4.52 MB VSIX passed resource inspection and installed Production verification, including actual source analyze/plan/commit/validate, single-use rejection, unsaved-buffer and unchanged-disk checks. Isolated installed evidence: `.build/customizer-source-installed.log`; Host evidence: `.build/customizer-source-host-clean-1.140.log` and `.build/customizer-source-host-clean-1.145.log`. The installed profile reported zero available chat models; these results establish tool execution, not model-driven source authoring. Prior host failures must be distinguished from source-path failures; no model reply or tool-discovery result replaces end-to-end authoring evidence.
 
 
-## Final local acceptance record
+## Historical local acceptance record (not current acceptance)
 
 Commands completed: `check:agents`, `check-types`, `lint`, `npm test`, `test:capabilities`, `test:customizer:source`, `test:customizer`, `test:agents:ui`, `package`, actual VSIX packaging, `verify:agents:vsix`, `test:agents:installed`, and full `test:integration` on the minimum and current installed hosts. The CI contracts job now schedules Ubuntu/macOS/Windows; those remote jobs have not run locally.
 
@@ -84,3 +84,12 @@ Explicit target verification remains independent: `sourceValidate` returns `sema
 
 
 A comment such as `// [0:22] IDs in Assembly.md; 0 shows the selected group` already has a closing bracket and must not produce a missing-bracket warning. The current Parser accepts a bracketed hint only when it occupies the complete inline comment; trailing prose is left as unsupported/ordinary comment text rather than diagnosed or silently reinterpreted. For a recognized Slider, put the explanation on the preceding comment line and keep `parameter = 0; // [0:22]` alone on the declaration line. Structured Widget edits refuse to discard such trailing prose. Brackets inside quoted enum values/labels are ignored when checking for the true closing delimiter.
+
+
+## Current semantic and validation contract
+
+Declared annotation bounds remain author intent and diagnostic evidence; effective native numeric bounds include defaults. Numeric step is an interaction increment, not a validity grid. The native StringParameter constructor preserves the declared maximumSize due to parameter shadowing; native import truncates UTF-8 bytes, while the IDE explicitly rejects oversize input without loss. Multiline strings retain line breaks in both GUIs. See pinned source and 41-case differential evidence in the architecture report.
+
+Source validation returns sourceStatus, contractStatus and qualityStatus, plus legacy semanticPass/complete. Each target has details with stable mismatch codes and ranges. No expectations means contractStatus=notRequested; incomplete analysis yields unverified target checks. Default Problems remains about explicit annotation defects, never unmet optional contracts.
+
+Preset diagnostics use a separate OpenSCAD Preset collection and PRESET-001..007 identifiers. Only the explicitly bound JSON is diagnosed; its unsaved buffer takes precedence for analysis without applying values. Unknown versions remain preserved/read-only. Preview, sidebar and Agent delegate selections/writes to the same host domain. Writes stage and compare original bytes before provider rename, with extension-local serialization; the final read/rename interval is not a cross-process CAS.

@@ -1,7 +1,7 @@
 import * as assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { parseCustomizer, numericStep } from '../core/customizer/CustomizerParser'
-import { encodePresetValue, parsePresetFile, presetOverrides } from '../core/customizer/CustomizerPresets'
+import { encodePresetValue, parsePresetFile, presetOverrides, analyzePresetFile, assertPresetCompatible, decodePresetValue } from '../core/customizer/CustomizerPresets'
 import { CustomizerService, validateValue } from '../core/customizer/CustomizerService'
 import { RuntimeManager } from '../core/runtime/RuntimeManager'
 
@@ -61,7 +61,7 @@ test('comments and quoted delimiters do not create parameters or corrupt annotat
 test('validates finite numbers, types, ranges, steps and enum values', () => {
     const [width, , , , shape] = parseCustomizer(source)
     assert.equal(validateValue(width, 45), undefined)
-    assert.match(validateValue(width, 41)!, /steps/)
+    assert.equal(validateValue(width, 41), undefined, 'Native import accepts off-grid values')
     assert.match(validateValue(width, 105)!, /between/)
     assert.match(validateValue(width, NaN)!, /finite/)
     assert.match(validateValue(width, '45')!, /type/)
@@ -128,7 +128,7 @@ computed = [1, 2 * 3];`)
 })
 
 test('scanner supports multiline literals, multiple statements and library directives without evaluating code', () => {
-    const parameters = parseCustomizer(`include <library/{parts}.scad>
+    const parameters = parseCustomizer(`include <library/parts.scad>
 use <functions.scad>;
 // Model dimensions
 // X, Y and Z in millimeters
@@ -151,8 +151,8 @@ after_brace = 5;
         parameters.map((parameter) => parameter.name),
         ['size', 'a', 'b', 'after_definition', 'after_geometry'],
     )
-    assert.equal(parameters[0].description, 'Model dimensions\nX, Y and Z in millimeters')
-    assert.deepEqual(parameters[0].range, { min: 0, max: 100, step: 5 })
+    assert.equal(parameters[0].description, 'X, Y and Z in millimeters')
+    assert.equal(parameters[0].range, undefined, 'Native reads the annotation only from the declaration first line')
 })
 
 test('groups, Hidden, Global, block descriptions and malformed hints stay isolated', () => {
@@ -179,7 +179,7 @@ number = 2; // -1
         ['units', 'count', 'choice', 'invalid', 'number'],
     )
     assert.equal(parameters[0].group, 'Global')
-    assert.match(parameters[1].description, /The visible count\.\nA second line/)
+    assert.equal(parameters[1].description, '', 'Block comments are not native descriptions')
     assert.equal(parameters[1].range, undefined)
     assert.deepEqual(parameters[2].choices, [
         { label: 'Label, with colon: yes', value: 'a:b' },
@@ -198,10 +198,10 @@ test('vectors and text constraints validate at the host boundary and reset witho
     for (const bad of [[2], [2, 4, 6], [2, NaN], [2, Infinity], [2, '4'], null, {}, '2,4']) {
         assert.ok(validateValue(size, bad))
     }
-    assert.match(validateValue(size, [2, 3])!, /steps/)
+    assert.equal(validateValue(size, [2, 3]), undefined)
     assert.match(validateValue(size, [2, 12])!, /between/)
     assert.equal(validateValue(size, [4, 6]), undefined)
-    assert.match(validateValue(label, 'abcde')!, /4 characters/)
+    assert.match(validateValue(label, 'abcde')!, /4 UTF-8 bytes/)
     service.set('size', [4, 6])
     assert.deepEqual(service.getArguments(), ['-D', 'size=[4,6]'])
     service.set('size', [2, 4])
@@ -268,8 +268,8 @@ test('OpenSCAD preset files round-trip every widget, mixed enums and hidden meta
     assert.deepEqual(values, { width: 0.7, label: 'quoted "text"', visible: false, size: [3, 4], mode: 2 })
     assert.deepEqual(Object.fromEntries(Object.entries(values).map(([name, value]) => [name, encodePresetValue(value)])), { width: '0.7', label: 'quoted "text"', visible: 'false', size: '[3,4]', mode: '2' })
     assert.deepEqual(presetOverrides(parameters, { internal: '42' }), {})
-    assert.throws(() => presetOverrides(parameters, { width: '0.71', visible: 'false' }), /width:.*steps/)
-    for (const value of ['null', '[]', '{}', '{"parameterSets":[]}', '{"fileFormatVersion":"2","parameterSets":{}}', '{"parameterSets":{"Bad":{"width":2}}}']) {
+    assert.deepEqual(presetOverrides(parameters, { width: '0.71', visible: 'false' }), { width: 0.71, visible: false })
+    for (const value of ['null', '[]', '{}', '{"parameterSets":[]}', '{"parameterSets":{"Bad":{"width":2}}}']) {
         assert.throws(() => parsePresetFile(value))
     }
 })
@@ -291,4 +291,77 @@ test('preset changes notify their target even when selecting the same values aga
         ['first', 'preset'],
         ['first', 'preset'],
     ])
+})
+
+test('declared constraints remain observable while runtime validation uses native effective limits without quantizing', () => {
+    const [scalar, vector, stepped] = parseCustomizer('w=120; // [0:5:100]\nv=[-5,120]; // [0:10]\ns=12; // [0:5:100]\n')
+    assert.deepEqual(scalar.declaredRange, { min: 0, max: 100, step: 5 })
+    assert.deepEqual(scalar.effectiveRange, { min: 0, max: 120, step: 5 })
+    assert.deepEqual(vector.effectiveRange, { min: -5, max: 120, step: undefined })
+    assert.equal(validateValue(scalar, 119), undefined)
+    assert.equal(validateValue(vector, [-4,119]), undefined)
+    assert.equal(validateValue(stepped, 12), undefined)
+    assert.ok(validateValue(scalar, 121))
+    const original = [...vector.defaultValue as number[]]
+    numericStep(vector)
+    assert.deepEqual(vector.defaultValue, original, 'Precision inference must not mutate a vector default')
+})
+
+test('text input validates native UTF-8 byte limits and never truncates source defaults or preset data', () => {
+    const [text, zero] = parseCustomizer('label="Ω😀"; // 3\nempty=""; // 0\n')
+    assert.equal(text.defaultValue, 'Ω😀')
+    assert.equal(text.maxLength, 3, 'Native maximumSize is not widened by its shadowed constructor parameter')
+    assert.equal(validateValue(text, 'Ω'), undefined)
+    assert.match(validateValue(text, '😀')!, /3 UTF-8 bytes/)
+    assert.equal(validateValue(zero, ''), undefined)
+    assert.ok(validateValue(zero, 'x'))
+    const encoded = { label: 'Ω😀' }
+    assert.throws(() => presetOverrides([text], encoded), /UTF-8 bytes/)
+    assert.deepEqual(encoded, { label: 'Ω😀' })
+})
+
+test('incomplete source is explicit and does not erase existing overrides', () => {
+    const service = new CustomizerService()
+    service.load('model', 'width=40;\n')
+    service.set('width', 45)
+    service.load('model', 'width=40;\nlabel="unfinished')
+    assert.equal(service.analysisStatus.complete, false)
+    assert.ok(service.analysisStatus.incompleteReasons.includes('unterminatedString'))
+    assert.deepEqual(service.getOverrides('model'), { width: 45 })
+    assert.throws(() => service.set('width', 50), /incomplete/)
+    service.load('model', 'width=40;\n')
+    assert.equal(service.analysisStatus.complete, true)
+    assert.equal(service.value(service.parameters[0]), 45)
+})
+
+
+test('unknown preset versions can be analyzed without being authorized for apply or overwrite', () => {
+    const source = JSON.stringify({ fileFormatVersion: '99', extra: { preserve: true }, parameterSets: { A: { width: '12' } } })
+    const file = parsePresetFile(source)
+    assert.equal(file.fileFormatVersion, '99')
+    assert.deepEqual(file.extra, { preserve: true })
+    const inspected = analyzePresetFile(source, parseCustomizer('width=10; // [0:5:100]\n'))
+    assert.equal(inspected.readOnly, true)
+    assert.equal(inspected.compatible, false)
+    assert.ok(inspected.diagnostics.some(issue => issue.ruleId === 'PRESET-007'))
+    assert.throws(() => assertPresetCompatible(file), /not been verified/)
+    assert.equal(JSON.stringify(file), source)
+    assert.equal(analyzePresetFile('{broken').diagnostics[0].ruleId, 'PRESET-001')
+    assert.equal(analyzePresetFile('{"parameterSets":[]}').diagnostics[0].ruleId, 'PRESET-002')
+    assert.equal(analyzePresetFile('{"parameterSets":{"A":{"width":12}}}').diagnostics[0].ruleId, 'PRESET-003')
+})
+
+test('preset decoding follows native mixed-menu order, bool encoding and NFC without altering raw keys', () => {
+    const [numericFirst, stringFirst, enabled, unicode] = parseCustomizer('n=1; // [1:Numeric,"1":String]\ns="1"; // ["1":String,1:Numeric]\nenabled=true;\ncafé=10;\n')
+    assert.equal(decodePresetValue(numericFirst, '1'), 1)
+    assert.equal(decodePresetValue(stringFirst, '1'), '1')
+    assert.equal(decodePresetValue(enabled, '0'), false)
+    assert.equal(decodePresetValue(enabled, '1'), true)
+    const raw = { 'cafe\u0301': '12' }
+    assert.deepEqual(presetOverrides([unicode], raw), { café: 12 })
+    assert.deepEqual(Object.keys(raw), ['cafe\u0301'])
+    assert.equal(decodePresetValue(unicode, '0x10'), undefined)
+    assert.equal(decodePresetValue({ ...unicode, defaultValue: [1,2] }, '[0x10,2]'), undefined)
+    const review = analyzePresetFile('{"fileFormatVersion":"1","parameterSets":{"A":{"missing":"1","n":"not-an-option"}}}', [numericFirst], true)
+    assert.deepEqual(review.diagnostics.map(issue => issue.ruleId), ['PRESET-005','PRESET-006'])
 })

@@ -55,11 +55,20 @@ test('literal insertion preserves BOM and is idempotent; multiline vectors keep 
     assert.equal(planCustomizerEdits(plan.source, [intent]).edits.length, 0)
     const multi = 'size = [20,\r\n30, 40];\r\ncube(size);\r\n'
     const changed = planCustomizerEdits(multi, [{ ...intent, kind: 'annotateExisting' }])
-    assert.ok(changed.source.endsWith('size = [20,\r\n30, 40]; // [0:5:100]\r\ncube(size);\r\n'))
+    assert.ok(changed.source.endsWith('size = [20, // [0:5:100]\r\n30, 40];\r\ncube(size);\r\n'))
 })
 
 
 test('structured Widget edits preserve explanations after a bracketed comment by refusing ambiguous replacement', () => {
     const source = 'width=40; // [0:100] IDs in Assembly.md; preserve this explanation\n'
     assert.throws(() => planCustomizerEdits(source, [slider]), /Preserve text after/)
+})
+
+
+test('source plans enforce the actual 50-edit boundary, not only intent count', () => {
+    const source = Array.from({ length: 26 }, (_, i) => `width${i}=40;`).join('\n') + '\n'
+    const intents = Array.from({ length: 26 }, (_, i): SourceEditIntent => ({ kind: 'annotateExisting', name: `width${i}`, widget: 'slider', range: { min: 0, max: 100 }, description: `Width ${i}` }))
+    assert.equal(planCustomizerEdits(source, intents.slice(0, 25)).edits.length, 50)
+    assert.throws(() => planCustomizerEdits(source, intents), { code: 'LIMIT_EXCEEDED' })
+    assert.throws(() => planCustomizerEdits(source, Array.from({ length: 51 }, (_, i) => ({ ...intents[0], name: `width${i}` }))), /1–50/)
 })

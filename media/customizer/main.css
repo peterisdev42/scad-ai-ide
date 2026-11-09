@@ -50,6 +50,7 @@ body.vscode-high-contrast {
 }
 button,
 input,
+textarea,
 select {
     font: inherit;
 }
@@ -58,6 +59,7 @@ button {
 }
 button,
 input,
+textarea,
 select {
     border-radius: 0;
 }
@@ -182,6 +184,7 @@ select {
     justify-content: flex-end;
     font-size: calc(var(--vscode-font-size) * 0.923);
 }
+textarea,
 input:not([type='checkbox']):not([type='range']),
 select {
     width: 100%;
@@ -200,6 +203,7 @@ select {
     padding-right: 0;
     text-align-last: center;
 }
+textarea:focus,
 input:focus,
 select:focus {
     outline: 1px solid var(--vscode-focusBorder);
@@ -466,3 +470,5 @@ body.vscode-reduce-motion .customizer-scrollable > .invisible.fade {
 .preset-menu-item:disabled {
     color: var(--vscode-disabledForeground);
 }
+
+textarea { resize: vertical; min-height: 22px; white-space: pre; }

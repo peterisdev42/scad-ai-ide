@@ -1,0 +1,156 @@
+npm notice run scad-ai-ide@0.0.1 test:preview
+npm notice run node esbuild.js && node --import tsx --test src/test/preview/*.test.ts
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+(node:68579) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CSG identities and source colors survive explode transforms and difference cutters do not enlarge part bounds (3.250542ms)
+✔ CSG assistance colors touching geometry by source scope rather than connected shells (1.266166ms)
+✔ uncolored top-level CSG groups retain paths, and unsupported primitives fall back without inventing bounds (0.308416ms)
+✔ rotations, nested matrices and polyhedron points produce world-space conservative bounds (0.128375ms)
+✔ expired matching budgets return the original geometry-color fallback (0.150333ms)
+(node:68580) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ Cube edges snap to exact 45-degree views after every corner (perspective) (8.646042ms)
+✔ Cube edges snap to exact 45-degree views after every corner (orthographic) (4.136625ms)
+✔ All 26 cube views converge from every other view, including opposites and rolled cameras (28.475417ms)
+✔ An edge selection interrupts an unfinished corner animation and stays at the selected edge (0.35725ms)
+✔ Initial Top–Left–Front fit keeps tall and wide models in frame in both projections (8.568166ms)
+✔ preset selection renders immediately before file initialization and ordinary edits always update Preview (16.645583ms)
+✔ continuous changes are accepted only for a proven CSG backend; release still renders after changing to mesh (5.253792ms)
+✔ Preview routes preset mutations to the shared host domain and refuses a changed target (6.743125ms)
+✔ renderer-only sessions cannot fall back to independent preset writes (2.841042ms)
+✔ Preview incomplete source never prunes stored overrides and resumes with complete definitions (12.61475ms)
+✔ configuration detection handles expressions, comments, strings and multiline vectors (0.51825ms)
+✔ geometry, includes, module calls and unknown or incomplete syntax stay eligible (0.07775ms)
+✔ empty model classification preserves real compiler failures (0.160292ms)
+✔ CLI empty results are distinct from failures; configuration skips execution and dirty geometry is rendered (226.407542ms)
+✔ preview command opens configuration and model files without filtering or notifications (2.948625ms)
+(node:68583) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ unsupported platforms reject Fast Preview and identify Full Render (0.454958ms)
+✔ normal CLI cannot masquerade as Preview Exporter (0.19175ms)
+✔ download rejects a changed published checksum before archive extraction (67.548583ms)
+✔ download verifies archive contents against pinned SHA256 (8.107209ms)
+✔ mode changes cancel old work, publish only latest, and Full Render keeps native mesh (53.103333ms)
+✔ continuous parameters abort obsolete work and coalesce to newest request (10.021292ms)
+✔ cache reuse avoids exporter work; invalidation and disposal prevent stale publication (53.418792ms)
+✔ exporter errors are surfaced with no legacy or mesh fallback (4.024334ms)
+✔ continuous input never starves frames and only the newest pending sample runs (17.172333ms)
+✔ host phase timings survive prepared-scene transport metadata parsing (11.174834ms)
+✔ Changing only dependency fingerprint prevents reuse of a previous library version (4.431584ms)
+(node:68585) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ image renderer shares exporter meshes and disposes every shared resource exactly once (16.568833ms)
+✔ CPU picking follows Products and editor transforms, without final topology generation (4.009292ms)
+✔ prepared scene validation rejects invalid convexity and untrusted provenance before GPU allocation (0.896875ms)
+✔ phase timing validation keeps measured zero/fractions, rejects nonfinite and unknown values (0.44975ms)
+(node:68586) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ Key light shadow camera covers small, large and displaced models (3.297708ms)
+✔ Mesh stl preview preserves raw bytes, reloads file changes and disposes its watcher without a Runtime (83.575125ms)
+✔ Mesh 3mf preview preserves raw bytes, reloads file changes and disposes its watcher without a Runtime (3.401208ms)
+✔ Older or disposed mesh reads cannot overwrite newer results, and read errors are reported (2.389333ms)
+✔ Source, binary editors and both preview types share toggle commands (2.80875ms)
+✔ standalone STL clipping uses only the mesh worker and requires no CLI/exporter (350.306084ms)
+✔ standard 3MF colors, units and clipping stay independent from prepared previews (172.461875ms)
+(node:68589) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ Mouse panning maps CSS pixel displacement 1:1 in both camera modes (1.672875ms)
+✔ Build plate center and printable lower-left origins align correctly (0.360542ms)
+✔ Print-plate reset frames the plate for fitting XY models and the model for oversized XY (0.261542ms)
+✔ Turntable yaw/pitch use fixed angular gain, preserve target/distance and avoid accumulated roll (0.309292ms)
+✔ Turntable recovers rolled views and protects exact Top/Bottom without flipping (0.233792ms)
+✔ Middle, right and modifier drags all pan by exactly the pointer displacement (0.32375ms)
+✔ preview adapts the IDE parser without overriding expressions or hidden values (6.487792ms)
+✔ presets retain explicit values, reject invalid numbers, and reset overrides (0.652167ms)
+✔ shared customizer notifies both editors and isolates file overrides and subscriptions (0.421959ms)
+✔ vectors and text limits survive preview synchronization, presets and definition changes (0.921958ms)
+✔ Preview projection uses effective bounds and keeps source defaults unchanged (0.579833ms)
+(node:68591) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ part detection welds STL seams but keeps disconnected shells separate, for indexed and nonindexed meshes (0.882709ms)
+✔ part colors distinguish shells and restore source vertex colors and manual overrides (1.080958ms)
+✔ shared 3MF instances receive independent colors and retain their original material after toggling (0.51925ms)
+(node:68599) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ standard mesh picking and measurement follow translation and nonuniform scaling without native queries (5.654625ms)
+(node:68600) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ real exporter v1 fixture: cube (8.740041ms)
+✔ real exporter v1 fixture: sphere (2.193416ms)
+✔ real exporter v1 fixture: cylinder (0.920417ms)
+✔ real exporter v1 fixture: union (1.938541ms)
+✔ real exporter v1 fixture: difference (1.562833ms)
+✔ real exporter v1 fixture: intersection (1.668042ms)
+✔ real exporter v1 fixture: nested (1.44925ms)
+✔ real exporter v1 fixture: transform (0.458375ms)
+✔ real exporter v1 fixture: modifiers (0.837917ms)
+✔ real exporter v1 fixture: polygon (0.913917ms)
+✔ real exporter v1 fixture: grid (1.5935ms)
+✔ real exporter v1 fixture: empty (1.095666ms)
+✔ schema, provenance, finite tuples, indices, transforms, terms and budgets are enforced (1.096416ms)
+✔ difference picking sees the through-hole and wall; clipping produces correct caps (2.788875ms)
+✔ products truth table uses intersections AND NOT subtractions; union is OR (0.090333ms)
+✔ row-major translation, rotation, mirror and large-coordinate rebasing agree with Three (1.624375ms)
+✔ highlight and background keep distinct products and original flags (0.622959ms)
+✔ syntax diagnostics retain the file and line without CLI output noise (2.793583ms)
+✔ syntax failures replace stale models with a persistent centered message and recover after a successful render (46.615541ms)
+✔ syntax failures before webview readiness are replayed, while empty models and other errors keep their handling (5.582916ms)
+✔ a superseded canvas cannot overwrite timings or acknowledge the next host request (3.855583ms)
+✔ CSG is exported only when requested, cached for the current model and invalidated after a new render (4.309625ms)
+✔ obsolete CSG responses are discarded and in-flight exports abort when the model starts changing (6.1275ms)
+✔ failed CSG assistance quietly falls back and is not repeatedly exported on camera updates or retoggles (6.329875ms)
+✔ missing Runtime offers simple installation guidance and opens Available (37.7795ms)
+✔ compiler failures still show output and do not open Runtime management (2.506792ms)
+✔ dismissing missing-Runtime guidance does not open another panel (5.266209ms)
+✔ startup and multiple preview failures share one unresolved Runtime problem (4.575709ms)
+✔ opening Runtime or refreshing release lists does not rerender an unchanged or missing Runtime (35.336584ms)
+✔ Runtime discovery, switching and removal refresh previews once after settling (2.258291ms)
+✔ reinstalling the same active Runtime retries rendering once, without retrying missing-Runtime errors (3.205166ms)
+(node:68605) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ theme-derived model, build plate and grids remain distinct in light, dark and low-contrast custom themes (0.464792ms)
+✔ theme refresh updates existing default materials and preserves explicit 3MF colors (0.803584ms)
+✔ existing build plate and grid buffers follow theme changes without replacing geometry or origin (105.024208ms)
+✔ Default model is neutral and user color survives theme switches until reset (0.189958ms)
+✔ Plate palette stays charcoal across bright, dark and strongly tinted custom themes (0.444583ms)
+(node:68606) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ View cube exposes exactly 6 face, 12 edge and 8 corner directions (0.757625ms)
+✔ All 26 cube regions are independently pickable by outward-facing geometry (7.964ms)
+✔ Face labels follow OpenSCAD Z-up coordinates and pole directions are exact (0.524875ms)
+✔ Face labels have fixed, outward-facing orientations tied to the requested adjacent faces (0.272542ms)
+✔ Every cube target has a valid reference pose (0.651458ms)
+✔ Side, edge and corner clicks restore Z-up while poles retain the nearest local roll (7.663292ms)
+ℹ tests 99
+ℹ suites 0
+ℹ pass 99
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 619.102458

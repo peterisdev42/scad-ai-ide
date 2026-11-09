@@ -1,0 +1,252 @@
+{
+  "scope": "Real isolated VS Code Extension Host V8 heap; production source/editor classes, real TextDocuments and subscriptions. Does not profile renderer, GPU, every feature or every provider.",
+  "vscode": "1.140.0",
+  "node": "v24.21.0",
+  "platform": "darwin",
+  "architecture": "arm64",
+  "sourceMode": "Compiled production classes loaded in development Host; not a measurement of the installed minified bundle",
+  "documentCount": 32,
+  "sourceBytes": 117044,
+  "warmup": {
+    "round": 0,
+    "capacities": {
+      "cache": 16,
+      "sourcePlans": 32,
+      "editorPlans": 32
+    },
+    "before": {
+      "usedSize": 43205004,
+      "totalSize": 45400064,
+      "embedderHeapUsedSize": 104,
+      "backingStorageSize": 7430761
+    },
+    "occupied": {
+      "usedSize": 47612080,
+      "totalSize": 50118656,
+      "embedderHeapUsedSize": 104,
+      "backingStorageSize": 7461214
+    },
+    "afterDispose": {
+      "usedSize": 43778612,
+      "totalSize": 45924352,
+      "embedderHeapUsedSize": 104,
+      "backingStorageSize": 7461214
+    },
+    "releasedBytes": 3833468
+  },
+  "samples": [
+    {
+      "round": 1,
+      "capacities": {
+        "cache": 16,
+        "sourcePlans": 32,
+        "editorPlans": 32
+      },
+      "before": {
+        "usedSize": 43819260,
+        "totalSize": 45924352,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7461214
+      },
+      "occupied": {
+        "usedSize": 47624824,
+        "totalSize": 50118656,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7526750
+      },
+      "afterDispose": {
+        "usedSize": 43892636,
+        "totalSize": 46186496,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7526750
+      },
+      "releasedBytes": 3732188
+    },
+    {
+      "round": 2,
+      "capacities": {
+        "cache": 16,
+        "sourcePlans": 32,
+        "editorPlans": 32
+      },
+      "before": {
+        "usedSize": 51178604,
+        "totalSize": 52871168,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7526819
+      },
+      "occupied": {
+        "usedSize": 55446532,
+        "totalSize": 57065472,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "afterDispose": {
+        "usedSize": 51845748,
+        "totalSize": 53133312,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "releasedBytes": 3600784
+    },
+    {
+      "round": 3,
+      "capacities": {
+        "cache": 16,
+        "sourcePlans": 32,
+        "editorPlans": 32
+      },
+      "before": {
+        "usedSize": 51853320,
+        "totalSize": 53395456,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "occupied": {
+        "usedSize": 55663048,
+        "totalSize": 57589760,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "afterDispose": {
+        "usedSize": 51866908,
+        "totalSize": 53657600,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "releasedBytes": 3796140
+    },
+    {
+      "round": 4,
+      "capacities": {
+        "cache": 16,
+        "sourcePlans": 32,
+        "editorPlans": 32
+      },
+      "before": {
+        "usedSize": 51867480,
+        "totalSize": 53657600,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "occupied": {
+        "usedSize": 55678780,
+        "totalSize": 57589760,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "afterDispose": {
+        "usedSize": 51882644,
+        "totalSize": 53657600,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "releasedBytes": 3796136
+    },
+    {
+      "round": 5,
+      "capacities": {
+        "cache": 16,
+        "sourcePlans": 32,
+        "editorPlans": 32
+      },
+      "before": {
+        "usedSize": 51883340,
+        "totalSize": 53657600,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "occupied": {
+        "usedSize": 55711436,
+        "totalSize": 57589760,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "afterDispose": {
+        "usedSize": 51915276,
+        "totalSize": 53657600,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "releasedBytes": 3796160
+    },
+    {
+      "round": 6,
+      "capacities": {
+        "cache": 16,
+        "sourcePlans": 32,
+        "editorPlans": 32
+      },
+      "before": {
+        "usedSize": 51915772,
+        "totalSize": 53657600,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "occupied": {
+        "usedSize": 55717480,
+        "totalSize": 57589760,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "afterDispose": {
+        "usedSize": 51921376,
+        "totalSize": 53657600,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "releasedBytes": 3796104
+    }
+  ],
+  "snapshots": {
+    "baseline": {
+      "file": "/tmp/cmem-aphgUF/baseline.heapsnapshot",
+      "bytes": 67259423,
+      "sha256": "ddc28e1a341a93375f0b9da9b8c636161ef43083aa3a604ee66191f42554236b",
+      "instances": {
+        "CustomizerSourceDomainService": 1,
+        "CustomizerEditorActions": 1
+      },
+      "compressedArchive": {
+        "file": ".build/customizer-host-memory/baseline.heapsnapshot.gz",
+        "bytes": 12589118,
+        "sha256": "bbc903e241790b76a852e4f3578e35854416881a12da9b3df9eda6f3e16a3fdd"
+      }
+    },
+    "occupied": {
+      "file": "/tmp/cmem-aphgUF/occupied-round-one.heapsnapshot",
+      "bytes": 67500851,
+      "sha256": "4f86e2a3301d29e1d179bf4925d0848d5366b94f7349d5541de3064c514fd8a5",
+      "instances": {
+        "CustomizerSourceDomainService": 2,
+        "CustomizerEditorActions": 2
+      },
+      "compressedArchive": {
+        "file": ".build/customizer-host-memory/occupied.heapsnapshot.gz",
+        "bytes": 12669321,
+        "sha256": "176eae37c1f46ed114d263a896a3dc8b940ac353c4dfd8f83f9558ed3637a0ce"
+      }
+    },
+    "final": {
+      "file": "/tmp/cmem-aphgUF/after-six-rounds.heapsnapshot",
+      "bytes": 79445576,
+      "sha256": "c36e364eb5f9727fc60745d076d42944b7abc9e25f89f75fd034d20a8afc2cf0",
+      "instances": {
+        "CustomizerSourceDomainService": 1,
+        "CustomizerEditorActions": 1
+      },
+      "compressedArchive": {
+        "file": ".build/customizer-host-memory/final.heapsnapshot.gz",
+        "bytes": 14606455,
+        "sha256": "a7e4c0d381cd2561e86fcbed676e135b70614cf72cc22bb8b3b5ff69d71d3f80"
+      }
+    }
+  },
+  "savedOrCommitted": false,
+  "postDisposeHeapRangeBytes": 8028740,
+  "retainedInstanceDelta": {
+    "CustomizerSourceDomainService": 0,
+    "CustomizerEditorActions": 0
+  },
+  "verdict": "PASS only for tested source/editor lifecycle; no global leak-free claim"
+}

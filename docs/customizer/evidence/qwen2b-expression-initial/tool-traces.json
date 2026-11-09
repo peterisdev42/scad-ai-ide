@@ -1,0 +1,90 @@
+[
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-09T08:24:45.944Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "31a6a088cf5428dac05bde0befb708878c001f4c3cff8ce64473cdc4eae43499"
+        },
+        "parameters": [
+          {
+            "name": "base",
+            "group": "",
+            "description": "",
+            "defaultValue": 80,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 8
+              }
+            }
+          }
+        ],
+        "candidates": [
+          {
+            "name": "width",
+            "range": {
+              "start": {
+                "line": 1,
+                "character": 0
+              },
+              "end": {
+                "line": 1,
+                "character": 13
+              }
+            },
+            "reason": "unsupportedDefault",
+            "confidence": "certain"
+          }
+        ],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "4ed14165-ba3f-4f16-8520-78dbd671c579",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "kind": "annotateExisting|annotation",
+      "maxLength": "1024",
+      "name": "width",
+      "mode": "plan",
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-09T08:25:22.067Z",
+    "output": {
+      "ok": false,
+      "capabilityId": "customizer.sourceApply",
+      "error": {
+        "code": "INVALID_INPUT",
+        "message": "data must have required property 'identity', data must have required property 'edits', data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must have required property 'planId', data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data/mode must be equal to constant, data must match exactly one schema in oneOf, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties",
+        "retryable": false
+      },
+      "operation": null
+    }
+  }
+]

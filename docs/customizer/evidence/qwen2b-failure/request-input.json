@@ -1,0 +1,11 @@
+{
+  "scenario": "failure",
+  "file": "<fixture>/workspace/model.scad",
+  "query": "/openscad-customizer-authoring 目标文件为 file://<fixture>/workspace/model.scad。只读验收，不修改文件：用SourceValidate检查width是否已经是Slider(10:5:100)，并用SourceAnalyze检查同目录不存在的missing.scad。对实际ok=false及semanticPass=false如实报告；不要修复或宣称验证成功。 保留几何、源码默认值与Preset，不保存文件。使用项目安装的Skill完成分析、适用时的最小编辑和明确目标验证；如实报告实际结果及未执行的GUI/渲染检查。",
+  "source": "width=40;\ncube(width);\n",
+  "artifact": {
+    "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+    "bytes": 4532700,
+    "sha256": "5cd831f6e9bbc2772be7db99f09f4e31fb15d26fc2745f81073223ec59cb652e"
+  }
+}

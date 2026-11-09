@@ -51,7 +51,7 @@ export class Parameters extends LitElement {
             gap: 0.25rem;
         }
 
-        vscode-textfield {
+        textarea {
             width: 100%;
         }
 
@@ -96,7 +96,10 @@ export class Parameters extends LitElement {
         const groups = this.groupParameters(parameters)
         const setNames = Object.keys(parameterSets || {})
 
+        const incomplete = this.parameterContext.analysisComplete === false
         return html`
+            ${incomplete ? html`<p role="status">Source analysis is incomplete. Finish the source edit before changing parameters or presets. Stored values are preserved.</p>` : nothing}
+            <div class="parameter-controls" ?inert=${incomplete} aria-disabled=${incomplete}>
             <scad-collapsible heading="Preset" open>
                 <div class="preset-controls">
                     <vscode-single-select
@@ -134,6 +137,7 @@ export class Parameters extends LitElement {
                     </scad-collapsible>
                 `,
             )}
+            </div>
             <div class="export-container">
                 <vscode-button title="Send Model to 3D Slicer" @click=${() => this.modelContext.sendToSlicer()}> Print </vscode-button>
                 <vscode-button title="Write Model to File System" @click=${() => this.modelContext.export()}> Export </vscode-button>
@@ -163,7 +167,7 @@ export class Parameters extends LitElement {
             .replace(/([A-Z])/g, ' $1')
             .trim()
             .replace(/\s+/g, ' ')
-            .replace(new RegExp(`^${groupName}`, 'i'), '')
+            .replace(new RegExp(`^${groupName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i'), '')
 
         return name
             .split(' ')
@@ -177,6 +181,7 @@ export class Parameters extends LitElement {
     }
 
     private handleInputChange(name: string, value: unknown) {
+        if (this.parameterContext.analysisComplete === false) return
         if (this.parameterContext.override) {
             this.parameterContext.override(name, value as string | number | boolean | number[])
         }
@@ -217,9 +222,9 @@ export class Parameters extends LitElement {
             case 'boolean':
                 return html` <vscode-checkbox ?indeterminate=${false} .checked=${currentValue} @change=${(e: Event) => this.handleInputChange(param.name, (e.target as HTMLInputElement).checked)}></vscode-checkbox> `
             case 'number':
-                return html` <scad-number-field .value=${typeof currentValue === 'number' ? currentValue : Number(currentValue) || param.min || 0} .min=${param.min} .max=${param.max} .step=${param.step} @change=${(e: NumberFieldChangeEvent) => this.handleInputChange(param.name, e.detail.value)}></scad-number-field> `
+                return html` <scad-number-field aria-label=${param.name} .value=${typeof currentValue === 'number' ? currentValue : Number(currentValue) || param.min || 0} .min=${param.min} .max=${param.max} .step=${param.step} @change=${(e: NumberFieldChangeEvent) => this.handleInputChange(param.name, e.detail.value)}></scad-number-field> `
             case 'string':
-                return html` <vscode-textfield size="3" .value=${currentValue} @change=${(e: Event) => this.handleInputChange(param.name, (e.target as HTMLInputElement).value)}></vscode-textfield> `
+                return html` <textarea rows="1" aria-label=${param.name} .value=${String(currentValue)} @change=${(e: Event) => this.handleInputChange(param.name, (e.target as HTMLTextAreaElement).value)}></textarea> `
             default:
                 return nothing
         }

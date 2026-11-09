@@ -138,3 +138,68 @@ test('closed bracket comments followed by prose are not falsely diagnosed as mis
     assert.ok(codes('assembly_id=0; // [0:22').includes('CUSTOMIZER_MALFORMED_HINT'))
     assert.ok(codes('name="x"; // ["x]":Label').includes('CUSTOMIZER_MALFORMED_HINT'), 'A ] inside quotes does not close the hint')
 })
+
+test('annotation semantics use native comment tokens rather than source hexadecimal literals', () => {
+    const result = analyzeCustomizerSource('w=1; // [100:0x10]\n')
+    assert.equal(result.parameters[0].widget, 'dropdown')
+    assert.deepEqual(result.parameters[0].choices, [{ label: '1', value: 1 }, { label: '0x10', value: 100 }])
+    assert.deepEqual(result.diagnostics, [])
+    const unicode = analyzeCustomizerSource('cafe\u0301=10;\ncafé=20; // [0:100]\n')
+    assert.equal(unicode.parameters.length, 1)
+    assert.equal(unicode.parameters[0].name, 'café')
+    assert.equal(unicode.parameters[0].defaultValue, 20)
+})
+
+test('the 64 KiB metadata budget covers parameters, diagnostics and candidates together', () => {
+    const source = Array.from({ length: 600 }, (_, index) => `p_${index}=1; // [0:0:10]\nx_${index}=p_${index}/2;\n`).join('')
+    const result = analyzeCustomizerSource(source, { maxDiagnostics: 200 })
+    assert.ok(Buffer.byteLength(JSON.stringify(result), 'utf8') <= 65536)
+    assert.ok(result.parameters.length <= 500)
+    assert.ok(result.diagnostics.length <= 200)
+    assert.ok(result.candidates.length <= 500)
+    assert.equal(result.complete, false)
+    assert.ok(result.incompleteReasons.includes('metadataLimit'))
+    assert.ok(Object.values(result.omitted).some(value => value > 0))
+    assert.ok(result.diagnostics.length > 0, 'Partial schema output must not starve Problems of diagnostic evidence')
+})
+
+test('source byte boundary includes exactly 1 MiB and rejects multibyte overflow', () => {
+    const limit = 1024 * 1024
+    const source = '//' + 'x'.repeat(limit - 2)
+    const start = performance.now()
+    assert.equal(analyzeCustomizerSource(source).complete, true)
+    console.log(`Customizer analyzer ${limit} bytes single sample=${(performance.now() - start).toFixed(2)}ms; not a cross-platform benchmark`)
+    assert.equal(analyzeCustomizerSource(source + 'x').complete, false)
+    const multibyte = '//' + 'Ω'.repeat(limit / 2)
+    assert.ok(multibyte.length < limit)
+    assert.deepEqual(analyzeCustomizerSource(multibyte).incompleteReasons, ['sourceLimit'])
+})
+
+test('501 parameter and candidate inputs obey both count and aggregate metadata bounds', () => {
+    for (const literal of ['1', 'width/2']) {
+        const source = Array.from({ length: 501 }, (_, i) => `p${i}=${literal};`).join('\n')
+        const result = analyzeCustomizerSource(source)
+        assert.equal(result.complete, false)
+        assert.ok(result.parameters.length <= 500)
+        assert.ok(result.candidates.length <= 500)
+        assert.ok(result.omitted.parameters + result.omitted.candidates > 0)
+        assert.ok(Buffer.byteLength(JSON.stringify(result)) <= 65536)
+        assert.ok(result.incompleteReasons.includes('metadataLimit'))
+    }
+})
+
+test('seeded long-tail prose corpus never creates a missing-bracket diagnostic', () => {
+    let seed = 0x5cad2026
+    const next = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed }
+    const fragments = ['IDs in Assembly.md', '0 shows selected group', '中文说明', '😀', ']', '[', '"', '\\', ':', ',', ';', 'TODO check this later', '{', '}', 'range: not a new control']
+    const hints = ['[0:22]', '[0:2:22]', '[1,2,3]', '["a]b":"A,B", "c":"C:D"]']
+    for (let index = 0; index < 1200; index++) {
+        const hint = hints[next() % hints.length]
+        let suffix = ' Explanation: '
+        const count = 1 + next() % 40
+        for (let item = 0; item < count; item++) suffix += fragments[next() % fragments.length] + ' '
+        if (index % 100 === 0) suffix += '普通说明 '.repeat(2500)
+        const source = `width=1; // ${hint}${suffix}\nmodule model() { cube(width); }\n`
+        assert.deepEqual(analyzeCustomizerSource(source).diagnostics, [], `ordinary tail corpus case ${index}`)
+    }
+})

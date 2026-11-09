@@ -1,0 +1,43 @@
+{
+  "status": "NATIVE_AGENT_AVAILABLE_ACCEPTANCE_NOT_MET",
+  "historicalEnvironmentBlock": "native-agent-enablement-before.json",
+  "provider": "Ollama.ollama 0.0.14",
+  "model": "qwen3.5:2b-mlx",
+  "modelMetadata": "qwen2b-model.json",
+  "host": "1.145.2",
+  "artifact": "../artifact.json",
+  "modelInferenceVerified": true,
+  "syntheticModelLoop": false,
+  "scenarios": {
+    "MODEL-01": {
+      "status": "NOT PASSED: native request error",
+      "evidence": "qwen2b-author-read-policy",
+      "reason": "Actual Analyze succeeded; native request ended with no response. No Plan/Commit/Validate, buffer and disk unchanged. No confirmation denial or observation timeout in this final run.",
+      "historicalEvidence": [
+        "qwen2b-author-initial",
+        "qwen2b-author-confirmation-budget",
+        "qwen2b-author"
+      ]
+    },
+    "MODEL-02": {
+      "status": "FAIL",
+      "evidence": "qwen2b-tail",
+      "reason": "Claimed editing/saving despite only Analyze and unchanged source"
+    },
+    "MODEL-03": {
+      "status": "Partial",
+      "evidence": "qwen2b-expression",
+      "reason": "Read-only/no syntax-error/no fold criteria met; invalid widget claim and invented slider() advice"
+    },
+    "MODEL-04": {
+      "status": "NOT PASSED; target tool checks NOT EXECUTED",
+      "evidence": "qwen2b-failure",
+      "reason": "Repeated built-in read_file calls; no Validate/Analyze checks; native no response"
+    }
+  },
+  "notes": [
+    "Native Agent readiness and actual Customizer tool invocation are now established; historical zero-call environment block is superseded.",
+    "Observations are independent of model success claims; missing tests are not marked passed.",
+    "No current evidence establishes that model size, prompt size or schema alone caused the observed failures."
+  ]
+}

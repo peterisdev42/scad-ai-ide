@@ -1,0 +1,42 @@
+npm notice run scad-ai-ide@0.0.1 test:capabilities
+npm notice run npm run compile-tests && node --test out/test/capabilities.test.js out/test/capabilityServices.test.js
+npm notice run scad-ai-ide@0.0.1 compile-tests
+npm notice run tsc -p . --outDir out
+✔ capability contract preserves caller, cancellation and explicit failure identity (0.529833ms)
+✔ all catalog schemas compile strictly, completeness and duplicate bindings are enforced (97.638417ms)
+✔ schemas reject forged approval, unknown fields, missing targets, invalid enums and excessive reads (69.317375ms)
+✔ dispatcher denies unavailable handlers even when invoked directly and preserves failed terminal state (122.527834ms)
+✔ running operations expose progress, cancellation reaches AbortSignal and never claims success (54.518792ms)
+✔ cache previews redact credentials and personal identifiers, cap depth/entries/bytes, handle cycles (0.703958ms)
+✔ source tool schemas reject arbitrary edits, numeric strings, forged permission and mixed plan/commit fields (56.858167ms)
+✔ cancellation accepts exactly an Agent operation ID or a supported GUI domain (53.53675ms)
+✔ Customizer has full schema with no panel, atomic validation, shared Preview events and stale guards (8.630834ms)
+✔ Customizer preset deletion cannot be approved by model input and leaves state unchanged (2.917459ms)
+✔ Production denies every Dev cache read/mutation path when called directly (8.167583ms)
+✔ Workspace paths reject outside files and canonical symlink escapes; allow workspace files and new sidecars (7.8965ms)
+✔ LM adapter registers side-effect confirmation and bridges cancellation to structured failures (92.369ms)
+✔ Library GUI and Agent share exact-version transactions, explicit projects, verification and human-confirmed two-phase cleanup (67.813875ms)
+✔ all catalog handlers execute without panels and preserve exact service arguments and safe outputs (75.101208ms)
+✔ Development cache inspection is bounded/redacted; confirmation, stale state and partial clear failures preserve managed artifacts (7.351458ms)
+✔ preset import rejects an asynchronous target switch with TARGET_CHANGED before rebinding files (2.995416ms)
+✔ source plan/commit reads unsaved buffers, never writes disk and consumes plans once (7.30075ms)
+✔ source CAS rejects version, hash-only changes, closed targets, expiry, trust loss and cancellation (21.595709ms)
+✔ source tools independently reject outside paths and symlink escapes, with read-only analysis in untrusted workspaces (4.594542ms)
+✔ source commit reports rejected WorkspaceEdit and real postcondition failure without overwriting concurrent text (7.8905ms)
+✔ Customizer code actions require actual diagnostics, keep optional refactors separate and use commands (6.4845ms)
+✔ the shared Library cancel service aborts a GUI-started installation and clears its cancellable state (11.65375ms)
+✔ Runtime Agent lifecycle forces catalog refresh, downloads/probes a real archive, selects, confirms deletion and verifies disk/state (1327.994166ms)
+✔ editor actions retain untrusted/outside-workspace access while Agent boundaries stay intact (8.094541ms)
+✔ editor CAS, expiry, provider permissions, close and rejected edits do not change the buffer (34.649291ms)
+✔ editor commands consume once under concurrent invocations and report postcondition interference (9.509125ms)
+✔ source pending plans allow 32, reject the 33rd, and reclaim expired plans (12.229459ms)
+✔ source analysis cache bounds retention to 16 documents and disposal clears retained metadata (7.625667ms)
+✔ source plan preview accepts bounded metadata and rejects output above 32 KiB (7.669875ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1817.88975

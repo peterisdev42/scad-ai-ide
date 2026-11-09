@@ -1,4 +1,4 @@
-import { numericStep } from '../../src/core/customizer/CustomizerParser'
+import { numericStep, validateValue, snapNumericInteraction } from '../../src/core/customizer/CustomizerConstraints'
 import { attachCustomizerScrollbar } from './scrollbar.js'
 
 ;(() => {
@@ -90,13 +90,8 @@ import { attachCustomizerScrollbar } from './scrollbar.js'
         else if (Array.isArray(p.defaultValue)) value = record.inputs.map((input) => (input.value.trim() ? Number(input.value) : NaN))
         else if (typeof p.defaultValue === 'number') value = record.inputs[0].value.trim() ? Number(record.inputs[0].value) : NaN
         else value = record.inputs[0].value
-        const numbers = Array.isArray(value) ? value : typeof value === 'number' ? [value] : []
-        if (numbers.some((number) => !Number.isFinite(number))) return setError(record, 'Enter a finite number')
-        if (p.range) {
-            if (numbers.some((number) => number < p.range.min || number > p.range.max)) return setError(record, `Enter a value between ${p.range.min} and ${p.range.max}`)
-            const step = p.range.step
-            if (step && numbers.some((number) => Math.abs((number - p.range.min) / step - Math.round((number - p.range.min) / step)) > 1e-7)) return setError(record, `Use steps of ${step} from ${p.range.min}`)
-        }
+        const error = validateValue(p, value)
+        if (error) return setError(record, error)
         setError(record)
         if (!keepEditing)
             record.inputs.forEach((input) => {
@@ -108,12 +103,54 @@ import { attachCustomizerScrollbar } from './scrollbar.js'
         const input = element('input')
         input.type = 'number'
         input.value = String(value)
-        input.step = String(numericStep(p))
+        input.step = 'any'
         // No artificial bounds on an unannotated spinbox.
-        if (p.range) {
-            input.min = String(p.range.min)
-            input.max = String(p.range.max)
+        const range = p.effectiveRange ?? p.range
+        if (range) {
+            input.min = String(range.min)
+            input.max = String(range.max)
         }
+        const increment = direction => {
+            const current = Number(input.value)
+            if (!input.value.trim() || !Number.isFinite(current)) return false
+            let value = Number((current + direction * numericStep(p)).toPrecision(15))
+            const bounds = p.effectiveRange ?? p.range
+            if (bounds) value = Math.min(bounds.max, Math.max(bounds.min, value))
+            input.value = String(value)
+            return true
+        }
+        input.addEventListener('keydown', event => {
+            if (input.type !== 'number') return
+            const direction = { ArrowUp: 1, ArrowDown: -1, PageUp: 10, PageDown: -10 }[event.key]
+            if (!direction) return
+            event.preventDefault()
+            if (increment(direction)) {
+                input.dispatchEvent(new Event('input', { bubbles: true }))
+                input.dispatchEvent(new Event('change', { bubbles: true }))
+            }
+        })
+        // Native number spinners use an integer increment for step=any. Adapt
+        // pointer-generated increments, while typed/Agent/Preset values remain
+        // untouched and never acquire native stepMismatch validity errors.
+        let pointerValue
+        input.addEventListener('pointerdown', () => {
+            if (input.type !== 'number') return
+            pointerValue = input.value.trim() ? Number(input.value) : undefined
+            const finish = () => {
+                pointerValue = undefined
+                window.removeEventListener('pointerup', finish)
+                window.removeEventListener('pointercancel', finish)
+            }
+            window.addEventListener('pointerup', finish, { once: true })
+            window.addEventListener('pointercancel', finish, { once: true })
+        })
+        input.addEventListener('input', event => {
+            if (event.isTrusted && pointerValue !== undefined && Number.isFinite(pointerValue)) {
+                const direction = Math.sign(Number(input.value) - pointerValue)
+                if (direction) { input.value = String(pointerValue); increment(direction) }
+                pointerValue = Number(input.value)
+            }
+        })
         input.setAttribute('aria-label', index === undefined ? p.name : `${p.name} ${['X', 'Y', 'Z', 'W'][index]}`)
         return input
     }
@@ -135,7 +172,8 @@ import { attachCustomizerScrollbar } from './scrollbar.js'
         error.hidden = true
         const record = { parameter: p, row, inputs: [], reset, error }
         const id = `parameter-${rows.size}`
-        const help = [p.description, p.range ? `Range: ${p.range.min}–${p.range.max}; step: ${numericStep(p)}` : p.step ? `Step: ${p.step}` : '', p.maxLength !== undefined ? `Maximum length: ${p.maxLength}` : '', `Default: ${Array.isArray(p.defaultValue) ? p.defaultValue.join(', ') : p.defaultValue}`].filter(Boolean).join('\n\n')
+        const range = p.effectiveRange ?? p.range
+        const help = [p.description, range ? `Range: ${range.min}–${range.max}; step: ${numericStep(p)}` : p.step ? `Step: ${p.step}` : '', p.maxLength !== undefined ? `Maximum input: ${p.maxLength} UTF-8 bytes (oversize input is rejected)` : '', `Default: ${Array.isArray(p.defaultValue) ? p.defaultValue.join(', ') : p.defaultValue}`].filter(Boolean).join('\n\n')
         row.dataset.help = help
         const accessibleHelp = element('span', 'sr-only', help)
         accessibleHelp.id = `${id}-help`
@@ -160,14 +198,34 @@ import { attachCustomizerScrollbar } from './scrollbar.js'
             if (p.range) {
                 input.type = 'range'
                 // Decimal ranges should remain usable when no step was supplied.
-                input.step = String(numericStep(p))
+                // A range input silently rounds programmatic off-grid values when
+                // step is numeric. Preserve the actual value; keyboard movement uses
+                // the declared interaction increment without quantizing the default.
+                input.step = 'any'
                 input.value = String(p.value)
+                input.addEventListener('input', event => {
+                    if (!event.isTrusted) return
+                    const bounds = record.parameter.effectiveRange ?? record.parameter.range
+                    input.value = String(snapNumericInteraction(Number(input.value), bounds.min, bounds.max, numericStep(record.parameter)))
+                })
+                input.addEventListener('keydown', (event) => {
+                    const direction = { ArrowLeft: -1, ArrowDown: -1, ArrowRight: 1, ArrowUp: 1, PageDown: -10, PageUp: 10 }[event.key]
+                    if (!direction) return
+                    event.preventDefault()
+                    const limits = record.parameter.effectiveRange ?? record.parameter.range
+                    const value = Number((Number(input.value) + direction * numericStep(record.parameter)).toPrecision(15))
+                    input.value = String(Math.min(limits.max, Math.max(limits.min, value)))
+                    input.dispatchEvent(new Event('input', { bubbles: true }))
+                    input.dispatchEvent(new Event('change', { bubbles: true }))
+                })
             }
             record.inputs.push(input)
         } else {
-            const input = element('input')
-            input.type = 'text'
-            if (p.maxLength !== undefined) input.maxLength = p.maxLength
+            const input = element('textarea')
+            input.rows = 1
+            input.setAttribute('aria-keyshortcuts', 'Enter Shift+Enter')
+            // HTML maxlength counts UTF-16 and can silently truncate pasted text.
+            // The shared validator checks the native UTF-8 byte limit without loss.
             record.inputs.push(input)
         }
         record.inputs.forEach((input, index) => {
@@ -180,7 +238,7 @@ import { attachCustomizerScrollbar } from './scrollbar.js'
             })
             input.addEventListener('change', () => commit(record))
             input.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter' && input.type !== 'checkbox') {
+                if (event.key === 'Enter' && input.type !== 'checkbox' && !(input.tagName === 'TEXTAREA' && event.shiftKey)) {
                     event.preventDefault()
                     commit(record)
                 }
@@ -231,7 +289,8 @@ import { attachCustomizerScrollbar } from './scrollbar.js'
         })
         const modified = !equal(p.value, p.defaultValue)
         record.row.classList.toggle('modified', modified)
-        record.reset.disabled = !modified
+        record.reset.disabled = !modified || state.analysis?.complete === false
+        record.inputs.forEach(input => { input.disabled = state.analysis?.complete === false })
     }
     const createGroup = (name, key, kind = 'parameters') => {
         const section = element('div')
@@ -276,6 +335,9 @@ import { attachCustomizerScrollbar } from './scrollbar.js'
         return children
     }
     const render = (next) => {
+        const warning = document.getElementById('analysis-warning')
+        warning.hidden = next.analysis?.complete !== false
+        warning.textContent = warning.hidden ? '' : 'Source analysis is incomplete. Finish the source edit or reduce the file size before changing values.'
         const nextSignature = JSON.stringify([next.target, next.parameters.map(({ value, ...parameter }) => parameter)])
         if (state.target !== next.target) scrollbar.resetPosition()
         state = next
@@ -288,6 +350,7 @@ import { attachCustomizerScrollbar } from './scrollbar.js'
         presets.names.forEach((name, index) => {
             const option = element('option', '', name + (presets.active === name && presets.modified ? ' · Unsaved' : ''))
             option.value = String(index)
+            option.disabled = !!presets.readOnly
             options.push(option)
         })
         if (!presets.active && next.parameters.some((parameter) => !equal(parameter.value, parameter.defaultValue))) {
@@ -298,8 +361,8 @@ import { attachCustomizerScrollbar } from './scrollbar.js'
         }
         presetSelect.replaceChildren(...options)
         presetSelect.value = presets.active ? String(presets.names.indexOf(presets.active)) : options.at(-1).value === 'custom' ? 'custom' : ''
-        document.getElementById('preset-save').disabled = !presets.modified
-        document.getElementById('preset-delete').disabled = !presets.active
+        document.getElementById('preset-save').disabled = !!presets.readOnly || !presets.modified
+        document.getElementById('preset-delete').disabled = !!presets.readOnly || !presets.active
         presetFile.textContent = presets.filename ?? ''
         presetFile.hidden = !presets.path
         const separator = tree.querySelector('.preset-separator')
@@ -319,8 +382,13 @@ import { attachCustomizerScrollbar } from './scrollbar.js'
             button.parentElement.dataset.help = description
         }
         const panelError = document.getElementById('panel-error')
-        panelError.textContent = presets.error ?? ''
-        panelError.hidden = !presets.error
+        const presetNotice = presets.error ?? presets.diagnostics?.find(issue => issue.code === 'VERSION_COMPAT' && presets.readOnly)?.message ?? ''
+        panelError.className = presets.error ? 'error' : 'message'
+        panelError.setAttribute('role', presets.error ? 'alert' : 'status')
+        panelError.textContent = presetNotice
+        panelError.hidden = !presetNotice
+        document.getElementById('preset-new').disabled = !!presets.readOnly
+        document.getElementById('preset-export').disabled = !!presets.readOnly
         document.getElementById('empty').hidden = !!state.parameters.length
         document.getElementById('empty').textContent = state.target ? 'No customizable parameters. Define literal values before the first code block.' : 'Open an OpenSCAD file to customize its parameters.'
         if (signature === nextSignature) {

@@ -38,7 +38,7 @@ export function applySourceEdits(source: string, edits: SourceTextEdit[]) {
 
 /** Plan against one snapshot. All replacements are local; complex moves are refused. */
 export function planCustomizerEdits(source: string, intents: SourceEditIntent[]) {
-    if (!intents.length || intents.length > 50 || new Set(intents.map((i) => i.name)).size !== intents.length) reject('Supply 1–50 distinct parameter intents.')
+    if (!intents.length || intents.length > 50 || new Set(intents.map((i) => i.name.normalize('NFC'))).size !== intents.length) reject('Supply 1–50 distinct parameter intents.')
     if (!analyzeCustomizerSource(source).complete) throw new CapabilityError('SOURCE_UNSUPPORTED', 'Source is incomplete or exceeds analysis limits.')
     const eol = source.includes('\r\n') ? '\r\n' : '\n'
     let result = source
@@ -67,12 +67,12 @@ export function planCustomizerEdits(source: string, intents: SourceEditIntent[])
     const expectations: SourceExpectation[] = []
     const original = scanCustomizer(source)
     // Work backwards so an explicit group on a later target bounds an earlier group.
-    const ordered = [...intents].sort((a, b) => (original.declarations.find((d) => d.name === b.name)?.start ?? -1) - (original.declarations.find((d) => d.name === a.name)?.start ?? -1))
+    const ordered = [...intents].sort((a, b) => (original.declarations.find((d) => d.name === b.name.normalize('NFC'))?.start ?? -1) - (original.declarations.find((d) => d.name === a.name.normalize('NFC'))?.start ?? -1))
     for (const intent of ordered) {
         if (!['annotateExisting', 'insertLiteralParameter', 'changeWidget', 'moveGroup', 'hideParameter'].includes(intent.kind)) reject('Unsupported edit intent.')
-        if (!/^[\p{L}_$][\p{L}\p{N}_$]*$/u.test(intent.name)) reject('Invalid parameter identifier.')
+        if (!/^[\p{L}_$][\p{L}\p{N}\p{M}_$]*$/u.test(intent.name)) reject('Invalid parameter identifier.')
         const scan = scanCustomizer(result)
-        const matches = scan.declarations.filter((d) => d.name === intent.name)
+        const matches = scan.declarations.filter((d) => d.name === intent.name.normalize('NFC'))
         const existing = matches[0]
         if (intent.kind === 'insertLiteralParameter') {
             if (matches.length) {
@@ -94,7 +94,7 @@ export function planCustomizerEdits(source: string, intents: SourceEditIntent[])
             const lineStart = result.lastIndexOf('\n', existing.start - 1) + 1
             const lineEndIndex = result.indexOf('\n', existing.end)
             const lineEnd = lineEndIndex < 0 ? result.length : lineEndIndex
-            if (result.slice(lineStart, existing.start).trim() || /\S/.test(result.slice(existing.annotation?.end ?? existing.end, lineEnd))) reject('Use a standalone declaration without adjacent code or block comments.')
+            if (result.slice(lineStart, existing.start).trim() || /\S/.test(result.slice(Math.max(existing.annotation?.end ?? 0, existing.end), lineEnd))) reject('Use a standalone declaration without adjacent code or block comments.')
             const local: SourceTextEdit[] = []
             if (intent.kind !== 'moveGroup' && intent.kind !== 'hideParameter') {
                 const hint = annotation(intent)
@@ -104,7 +104,13 @@ export function planCustomizerEdits(source: string, intents: SourceEditIntent[])
                     if (closingParts.length > 1 && (closingParts.length !== 2 || closingParts[1])) reject('Preserve text after the bracketed comment; move the explanation to a separate comment before changing the Widget.')
                     if (old && !(old.startsWith('[') || /^[+-]?(?:0x[0-9a-f]+|(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?)$/i.test(old)) && !/^range\s*:\s*[+-]?[\d.]+\s*\.\.\s*[+-]?[\d.]+(?:\s+step\s+[\d.]+)?$/i.test(old)) reject('Preserve ordinary trailing comments; convert them manually.')
                     local.push({ start: existing.annotation.start, end: existing.annotation.end, text: hint ? '// ' + hint : '' })
-                } else if (hint) local.push({ start: existing.end, end: existing.end, text: ' // ' + hint })
+                } else if (hint) {
+                    // Native getComment reads the declaration's first line, including
+                    // a vector that continues onto later lines.
+                    const firstNewline = result.indexOf('\n', existing.start)
+                    const offset = firstNewline >= 0 && firstNewline < existing.end ? firstNewline - (result[firstNewline - 1] === '\r' ? 1 : 0) : existing.end
+                    local.push({ start: offset, end: offset, text: ' // ' + hint })
+                }
             }
             let prefix = ''
             const group = intent.kind === 'hideParameter' ? 'Hidden' : intent.group
@@ -131,7 +137,7 @@ export function planCustomizerEdits(source: string, intents: SourceEditIntent[])
         const { kind: _kind, ...expected } = intent
         expectations.push(intent.kind === 'hideParameter' ? { name: intent.name, visible: false } : expected)
     }
-    const targets = new Set(intents.map((i) => i.name))
+    const targets = new Set(intents.map((i) => i.name.normalize('NFC')))
     const finalScan = scanCustomizer(result)
     const unchanged = (scan: ReturnType<typeof scanCustomizer>) => scan.declarations.filter((d) => !targets.has(d.name)).map((d) => ({ name: d.name, value: d.value, group: d.group, beforeFirstBrace: d.beforeFirstBrace, parameter: d.parameter }))
     if (JSON.stringify(unchanged(original)) !== JSON.stringify(unchanged(finalScan))) reject('The edit would change another declaration or its Customizer meaning.')
@@ -150,5 +156,6 @@ export function planCustomizerEdits(source: string, intents: SourceEditIntent[])
     if (cursor < source.length || pending) {
         if (source.slice(cursor) !== pending) edits.push({ start: cursor, end: source.length, text: pending })
     }
+    if (edits.length > 50) throw new CapabilityError('LIMIT_EXCEEDED', 'Plan exceeds 50 source edits; use a smaller batch.')
     return { edits, source: result, expectations, validation, changedParameters: intents.map((i) => i.name) }
 }

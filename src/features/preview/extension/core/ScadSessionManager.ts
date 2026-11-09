@@ -1,3 +1,4 @@
+import type { CustomizerDomainService } from '../../../sidebar/CustomizerDomainService'
 import type { CustomizerService } from '../../../../core/customizer/CustomizerService'
 import { TextDocument, Uri } from 'vscode'
 import { ScadSession } from './ScadSession'
@@ -10,7 +11,7 @@ import { ScadSession } from './ScadSession'
 export class ScadSessionManager {
     private sessions = new Map<string, ScadSession>()
 
-    constructor(private readonly customizer: CustomizerService) {}
+    constructor(private readonly customizer: CustomizerService, private readonly domain?: CustomizerDomainService) {}
 
     /**
      * Gets an existing session for a URI or creates a new one if it doesn't
@@ -21,7 +22,7 @@ export class ScadSessionManager {
         let session = this.sessions.get(key)
 
         if (!session) {
-            session = new ScadSession(document, this.customizer)
+            session = new ScadSession(document, this.customizer, this.domain)
             this.sessions.set(key, session)
         }
 

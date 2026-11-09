@@ -1,0 +1,21 @@
+{
+  "artifact": ".build/scad-ai-ide-customizer-architecture-v2.vsix",
+  "bytes": 4531434,
+  "sha256": "5407b1b4c0e04a514c2f2c2a003dcb021b95d24c8add7d9f0dfe24cc061bb637",
+  "verifiedManifest": {
+    "tools": 40,
+    "instructions": 2,
+    "skills": 5
+  },
+  "installedHost": "1.140.0",
+  "installedSmoke": "PASS",
+  "nativeAgent": "BLOCKED_ENVIRONMENT; zero actual Customizer invocations",
+  "unverified": [
+    "Windows/Linux/Remote",
+    "native Desktop",
+    "full pinned binary",
+    "heap profile"
+  ],
+  "historical": true,
+  "pathStatus": "Historical hash only; the artifact path has since been overwritten by newer candidates."
+}

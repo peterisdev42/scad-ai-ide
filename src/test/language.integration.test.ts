@@ -1,3 +1,4 @@
+import { focusTestEditor } from './HostEditorFocus'
 import * as assert from 'node:assert/strict'
 import { mkdtemp, writeFile, rm } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
@@ -18,7 +19,7 @@ async function eventually(check: () => boolean | Promise<boolean>) {
 
 /** The command acknowledgement can precede the editor edit in current VS Code hosts. */
 async function typeText(editor: vscode.TextEditor, text: string) {
-    await vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup')
+    await focusTestEditor(editor.document)
     await eventually(() => vscode.window.activeTextEditor?.document === editor.document)
     const version = editor.document.version
     await vscode.commands.executeCommand('type', { text })

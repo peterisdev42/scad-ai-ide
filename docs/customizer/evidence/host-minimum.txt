@@ -1,0 +1,301 @@
+npm notice run scad-ai-ide@0.0.1 test:integration
+npm notice run npm run compile-tests && npm run compile && vscode-test
+npm notice run scad-ai-ide@0.0.1 compile-tests
+npm notice run tsc -p . --outDir out
+npm notice run scad-ai-ide@0.0.1 compile
+npm notice run npm run check:agents && npm run check-types && npm run lint && node esbuild.js
+npm notice run scad-ai-ide@0.0.1 check:agents
+npm notice run node scripts/agent-manifest.mjs
+Validated 40 tools, 2 instruction and 5 skills.
+Verified 11 GUI groups and 41 business action contracts.
+npm notice run scad-ai-ide@0.0.1 check-types
+npm notice run tsc --noEmit && tsc -p tsconfig.webview.json
+npm notice run scad-ai-ide@0.0.1 lint
+npm notice run eslint src
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+- Resolving version...
+✔ Validated version: 1.140.0
+✔ Found existing install in ${REPO}/.vscode-test/vscode-darwin-arm64-1.140.0
+[main 2026-11-09T04:55:11.217Z] [node-compile-cache] main: packaged cache inactive (status: disabled, configured: ${REPO}/.vscode-test/vscode-darwin-arm64-1.140.0/Visual Studio Code.app/Contents/Resources/app/node-compile-cache/main, active: none)
+[main 2026-11-09T04:55:11.222Z] StorageMainService: creating application shared storage
+[main 2026-11-09T04:55:11.290Z] [shared storage] Creating shared storage database at ':memory:' (wasCreated: true)
+[main 2026-11-09T04:55:11.291Z] [shared storage] Initializing fallback application storage (path: in-memory)
+[main 2026-11-09T04:55:11.336Z] [shared storage] Fallback application storage initialized with 3 items
+[main 2026-11-09T04:55:11.336Z] update#setState disabled
+[main 2026-11-09T04:55:11.336Z] update#ctor - updates are disabled by the environment
+[RemoteAgentHost] Reconciling: desired=[], current=[]
+[AgentHost:renderer] Acquiring MessagePort to agent host...
+[main 2026-11-09T04:55:11.667Z] AgentHostProcessManager: agent host started
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey=undefined conversationKey=undefined modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[AgentHost:renderer] MessagePort acquired, creating client...
+Started local extension host with pid 24557.
+Loading development extension at ${REPO}
+Extension 'github.copilot-chat' appears in product.json but enables LESS API proposals than the extension wants.
+package.json (LOSES): agentSessionsWorkspace
+agentsWindowConfiguration
+chatDebug
+chatHooks
+envIsConnectionMetered
+extensionsAny
+newSymbolNamesProvider
+interactive
+codeActionAI
+activeComment
+commentReveal
+contribCommentThreadAdditionalMenu
+contribCommentsViewThreadMenus
+contribChatEditorInlineGutterMenu
+documentFiltersExclusive
+embeddings
+findTextInFiles
+findTextInFiles2
+languageModelToolSupportsModel
+findFiles2
+textSearchProvider
+terminalDataWriteEvent
+terminalExecuteCommandEvent
+terminalSelection
+terminalQuickFixProvider
+mappedEditsProvider
+aiRelatedInformation
+aiSettingsSearch
+chatParticipantAdditions
+defaultChatParticipant
+contribSourceControlInputBoxMenu
+authLearnMore
+authIssuers
+testObserver
+aiTextSearchProvider
+chatParticipantPrivate
+chatProvider
+contribDebugCreateConfiguration
+chatReferenceDiagnostic
+textSearchProvider2
+chatReferenceBinaryData
+languageModelSystem
+languageModelCapabilities
+languageModelPricing
+inlineCompletionsAdditions
+chatStatusItem
+chatInputNotification
+taskProblemMatcherStatus
+contribLanguageModelToolSets
+textDocumentChangeReason
+resolvers
+taskExecutionTerminal
+dataChannels
+languageModelThinkingPart
+chatSessionsProvider
+devDeviceId
+contribEditorContentMenu
+chatPromptFiles
+mcpServerDefinitions
+tabInputMultiDiff
+workspaceTrust
+environmentPower
+terminalTitle
+toolInvocationApproveCombination
+chatSessionCustomizationProvider
+product.json (WINS): agentSessionsWorkspace
+agentsWindowConfiguration
+interactive
+terminalDataWriteEvent
+terminalExecuteCommandEvent
+terminalSelection
+terminalQuickFixProvider
+chatParticipantAdditions
+defaultChatParticipant
+embeddings
+chatProvider
+mappedEditsProvider
+aiRelatedInformation
+aiSettingsSearch
+codeActionAI
+findTextInFiles
+findTextInFiles2
+textSearchProvider
+textSearchProvider2
+activeComment
+commentReveal
+contribSourceControlInputBoxMenu
+contribCommentEditorActionsMenu
+contribCommentThreadAdditionalMenu
+contribCommentsViewThreadMenus
+contribChatEditorInlineGutterMenu
+extensionAffinity
+newSymbolNamesProvider
+findFiles2
+chatReferenceDiagnostic
+extensionsAny
+authLearnMore
+testObserver
+aiTextSearchProvider
+documentFiltersExclusive
+chatParticipantPrivate
+contribDebugCreateConfiguration
+inlineCompletionsAdditions
+chatReferenceBinaryData
+languageModelSystem
+languageModelCapabilities
+languageModelThinkingPart
+languageModelToolSupportsModel
+chatStatusItem
+taskProblemMatcherStatus
+contribLanguageModelToolSets
+textDocumentChangeReason
+resolvers
+taskExecutionTerminal
+dataChannels
+chatSessionsProvider
+chatSessionCustomizationProvider
+devDeviceId
+contribEditorContentMenu
+tokenInformation
+toolInvocationApproveCombination
+chatPromptFiles
+mcpServerDefinitions
+tabInputMultiDiff
+workspaceTrust
+chatHooks
+chatDebug
+envIsConnectionMetered
+environmentPower
+terminalTitle
+languageModelPricing
+chatInputNotification
+DELTA: authIssuers
+Proceeding with EXTRA proposals (authIssuers) because extension is in development mode. Still, this EXTENSION WILL BE BROKEN unless product.json is updated.
+[main 2026-11-09T04:55:11.876Z] [AgentHost:stderr] (node:24554) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `Code Helper --trace-deprecation ...` to show where the warning was created)
+
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[AgentHost:renderer] Protocol connection established; clientId=3cc42280-a801-45da-ae78-46898462d04c
+[AccountPolicyGate] apply: state=inactive, reason=undefined, isRestricted=false
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[RemoteAgentHost] Reconciling: desired=[], current=[]
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+Settings Sync: Account status changed from uninitialized to unavailable
+
+  Agent capabilities extension host
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+    ✔ installed manifest, registered LM tools and bundled resources agree without open panels (212ms)
+    ✔ AI Panel metadata covers every registered tool and all awareness resources without running a capability
+    ✔ actual host target changes reject stale Agent writes and parameter changes reach shared CLI arguments (77ms)
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+Unknown channel: agentHostClientByokLm
+Unknown channel: agentHostClientProxy
+Unknown channel: agentHostClientProxy
+    ✔ Preset Problems diagnose only the bound JSON and follow its unsaved buffer (585ms)
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+Unknown channel: agentHostClientProxy
+    ✔ source tools edit unsaved buffers with CAS and refresh GUI schema, diagnostics and Quick Fixes (1976ms)
+(node:24557) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `Code Helper (Plugin) --trace-deprecation ...` to show where the warning was created)
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[AccountPolicyGate] apply: state=inactive, reason=undefined, isRestricted=false
+    ✔ Customizer Problems obey configuration, save and close lifecycle in the real Host (2068ms)
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+    ✔ editor fixes use fresh commands outside the workspace and in untitled buffers, and reject readonly providers (927ms)
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+    1) agent source transaction preserves the earlier unsaved buffer through native Undo and Redo
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+    2) editor source transaction preserves the earlier unsaved buffer through native Undo and Redo
+  SCAD AI IDE integration
+    ✔ registers native Quick Access and an HTML Customizer with four plain navigation items
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+    ✔ panel navigation reuses tabs without creating editor groups (1221ms)
+    ✔ customizer follows SCAD files, retains target after focus changes and toggles overrides without editing source (66ms)
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+    ✔ HTML Customizer validates messages and rejects edits from a stale document (42ms)
+    ✔ configuration selects a validated runtime and rejects invalid overrides (1187ms)
+  OpenSCAD language integration
+    3) native Enter indents unbraced bodies once, nested vectors and block comments
+    ✔ VS Code folds explicit region markers
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+    ✔ real LSP supplies completion, hover, definition, rename, symbols, formatting and diagnostics (231ms)
+    ✔ real LSP folds unindented structure and regions, including unsaved edits (99ms)
+  Markdown preview integration
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+    ✔ Source follows the active editor theme and theme-specific token customizations (276ms)
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+    ✔ the built-in Markdown engine renders both fence aliases through the selected CLI (1074ms)
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+    ✔ Markdown editor injects OpenSCAD tokens for both fence aliases and restores Markdown after the fence (1879ms)
+  Library Manager extension host
+    ✔ Libraries opens the real three-page webview and rejects untrusted message shapes
+    ✔ Registry publishes its local list before a pending request and refreshes it on each visit
+    ✔ Silent Registry refresh preserves cached rows, exposes failures and clears errors after recovery
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/YjdiNzczOWYtZGUxZi00OTFkLTkxMjUtOWFmNmNmZmRkOWU4" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+    ✔ Real LSP resolves the same include name to distinct locked versions in two projects (92ms)
+    ✔ Development cache tools reject production and test mode before reading storage
+    ✔ Development cache tools enumerate and clear individual state, disk and memory fields
+    ✔ Clearing a persisted Registry field drains pending writes and removes its legacy fallback and live copy
+    ✔ Global bulk actions validate modes, report local verification and preserve project-used content
+    ✔ Development folder action uses only the extension-owned global storage path
+    ✔ Cache highlighting uses the installed JSON TextMate grammar with editor theme colors
+  28 passing (28s)
+  3 failing
+  1) Agent capabilities extension host
+       agent source transaction preserves the earlier unsaved buffer through native Undo and Redo:
+
+      AssertionError [ERR_ASSERTION]: Native test window did not gain focus
+      + expected - actual
+
+      -false
+      +true
+      
+  	at focusTestEditor (out/test/HostEditorFocus.js:50:16)
+  	at async Context.<anonymous> (out/test/capabilities.integration.test.js:475:17)
+
+  2) Agent capabilities extension host
+       editor source transaction preserves the earlier unsaved buffer through native Undo and Redo:
+
+      AssertionError [ERR_ASSERTION]: Native test window did not gain focus
+      + expected - actual
+
+      -false
+      +true
+      
+  	at focusTestEditor (out/test/HostEditorFocus.js:50:16)
+  	at async Context.<anonymous> (out/test/capabilities.integration.test.js:475:17)
+
+  3) OpenSCAD language integration
+       native Enter indents unbraced bodies once, nested vectors and block comments:
+
+      AssertionError [ERR_ASSERTION]: Native test window did not gain focus
+      + expected - actual
+
+      -false
+      +true
+      
+  	at focusTestEditor (out/test/HostEditorFocus.js:50:16)
+  	at async typeText (out/test/language.integration.test.js:54:5)
+  	at async Context.<anonymous> (out/test/language.integration.test.js:72:17)
+
+3 tests failed.
+[main 2026-11-09T04:55:40.062Z] Extension host with pid 24557 exited with code: 0, signal: unknown.
+Exit code:   1

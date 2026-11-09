@@ -24,6 +24,7 @@ export type ExtensionToWebviewMessage =
       }
     | {
           type: 'updateParameters'
+          analysisComplete?: boolean
           parameters: ScadParameter[]
           parameterSets: Record<string, Record<string, string>>
           activeSetName: string | undefined

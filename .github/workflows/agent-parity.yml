@@ -12,14 +12,20 @@ jobs:
         runs-on: ${{ matrix.os }}
         steps:
             - uses: actions/checkout@v4
+              with:
+                  # The architecture gate compares against the fixed audit SHA.
+                  fetch-depth: 0
             - uses: actions/setup-node@v4
               with:
                   node-version: '24'
                   cache: npm
             - run: npm ci
+            - run: npm run test:agents:manifest
             - run: npm run check:agents
             - run: npm run check-types
             - run: npm run lint
+            - run: npm run check:customizer:architecture
+            - run: npm run test:customizer:compatibility
             - run: npm run test:customizer:source
             - run: npm run test:capabilities
             - run: npm run test:libraries
@@ -34,5 +40,6 @@ jobs:
             - run: npm ci
             - run: npx playwright install --with-deps chromium
             - run: npm run check:agents
+            - run: npm run test:customizer
             - run: npm run test:agents:ui
             - run: npm run test:libraries:ui

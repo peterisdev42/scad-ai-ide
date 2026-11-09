@@ -1,0 +1,216 @@
+# Customizer Phase 0.5 目标架构与迁移 ADR
+
+日期 2026-11-09。基准及 feature ledger 见 [Phase 0](customizer-audit.md)。以下决定在实现前形成；用户已原则批准方案 B，当前适用的输入与安全边界以末尾“用户审阅后修订”为准。
+
+## 总体方案比较
+
+A：原文件逐项补丁。改动少，但 annotate/Analyzer/DOM/Service 的规则重复会继续增长，不能解决约束和修复漂移。
+
+B：职责重组，保留经过验证的扫描状态机与 piece planner，提取纯 literal/annotation/constraints；新增结构化 rule catalog、受控 fix planner、独立 Preset validation；host 只负责事务与生命周期。迁移调用方，删除被提取的重复规则。这是所选方案：收益直接对应已确认缺陷，不引入通用 AST 框架。
+
+C：用完整 SCAD AST/native 进程取代静态分析。覆盖潜力强，但每次编辑启动 native、跨平台打包和语法依赖成本高；不能在无 native 时保持低延迟，不选。
+
+```mermaid
+flowchart TD
+  Buffer[当前未保存源码] --> Scanner[单一 Scanner / Literal / Annotation]
+  Scanner --> Snapshot[语义快照: declared / effective]
+  Snapshot --> Constraints[共享值约束]
+  Constraints --> Runtime[Overrides / CLI / Preview]
+  Constraints --> GUI[Webview]
+  Snapshot --> Rules[Rule catalog / evidence / fix policy]
+  Rules --> Problems[Problems adapter]
+  Rules --> Fix[纯 Fix planner / 后置验证]
+  Snapshot --> Contract[独立 Contract Validator]
+  Contract --> Agent[Agent DTO: legacy + additive statuses]
+  Fix --> CAS[Shared buffer transaction: version / hash]
+  Editor[Editor: writable / untitled] --> CAS
+  AgentWrite[Agent: trust / canonical workspace] --> CAS
+  CAS --> Undo[WorkspaceEdit / Undo / 不保存]
+  Snapshot --> Preset[Preset validator / transactional I/O]
+  Preset --> Runtime
+```
+
+## ADR-CUST-01: 词法与语义边界（REFACTOR）
+
+- Current implementation / entrypoint: CustomizerParser.ts:scanCustomizer/parseLiteral/annotate，所有消费者依此扫描。
+- Evidence: CommentParser.cc:getDescription 仅前一行列首；当前测试断言多行/块描述。Hint lexer 不等于 SCAD literal lexer。
+- Completeness & architecture finding: 发现可用，语义缺口确定；单文件职责混合。
+- Alternatives: A 单文件增强；B 提取纯 literal 与 annotation、保留 scanner；C 完整 AST。
+- Decision: B；Scanner 仍是唯一有效声明发现者，避免第二套正则解析。Parameter 保留兼容出口，增加显式约束字段和不完整原因。
+- Maintenance: Hint 语法与源码字符串转义独立测试，Analyzer 不再猜 widget。
+- Compatibility / migration: 描述识别、NFC、同一行边界等修正改变可见 schema，先提交具体差分确认；不改源文件。
+- Stages / rollback: Phase 1 fixtures→提取→消费者迁移；可按单个提交回退，不触碰用户数据。
+- Verification: 正负 fixtures、Unicode/CRLF/BOM、重复赋值/include/use、上游源码和可用 native 对照。
+
+## ADR-CUST-02: declared/effective constraints（REFACTOR + NEW）
+
+- Current: Parameter.range 同时供 Validator、Service 和 DOM；step 网格重复验证。
+- Evidence: ParameterObject.cc:parseNumericLimits 扩展边界，Number/Vector importValue 不拒绝 off-grid；StringParameter 有扩大长度的表面意图，但 native probe 仍返回原长度（同名形参遮蔽成员），不能按意图实现。
+- Finding: 默认值可能不通过自身校验，GUI/Agent/native 不一致。
+- Alternatives: A 覆盖 range 改含义；B 保留 range 为声明值，新增 declaredRange/effectiveRange，提取 browser-safe validateValue；C 每个 adapter 处理。
+- Decision: B，旧 range/expectation.range 语义保留；GUI/Service/Preset 仅使用 effective constraints。numericStep 是交互增量，不是合法值网格。文本长度不扩展，遵循 native probe；不引入自动截断。
+- Maintenance: 浏览器和 host 导入同一纯函数，删除 DOM 重复校验；不依赖 VS Code/Buffer。
+- Compatibility: 扩大可接受输入、描述变化均列待确认；不会夹断源码/default 或重写 Preset。文本 Unicode 计量必须独立记录未知。
+- Stages / rollback: Phase 1 模型，Phase 2 UI，Phase 3 Preset；保留 legacy projection 可逐层回退。
+- Verification: out-of-range scalar/vector、off-step、默认项、GUI set→service→CLI→Preset 一致性。
+
+## ADR-CUST-03: Rules 与安全 Fix（REPLACE CodeActions；NEW catalog/fix planner）
+
+- Current: Analyzer 的 legacy code 和自由文案；CodeActions 自己正则并直接附 WorkspaceEdit。
+- Evidence: provideCodeActions 未接 CodeActionContext；无执行时版本检查。
+- Finding: 规则/修复漂移，stale action 风险。
+- Alternatives: A resolveCodeAction 生成 edit；B command 调用统一身份/后置校验后提交；C 仅人工提示。
+- Decision: B。legacy code 保留；添加 ruleId、evidence、fixId/safety。safe 仅局部唯一替换；review/manual 仅指导。按实际诊断关联 action；Refactor 独立。command 采用 current URI/version/hash 边界；editor 支持实际可写 file/untitled/provider 文档，Agent 保持 trust/canonical workspace 边界，不把 action 参数当权限。
+- Maintenance: rule 元数据驱动修复与文档校验；不维护第二套 annotation 猜测。
+- Compatibility: 旧 code 不改；灯泡名称尽量保留；取消/过期返回明确结果，不静默保存。安全门收紧需列具体确认。
+- Stages / rollback: Phase 2，纯 planner→host command→provider→Host test；原不安全 edit 路径删除。
+- Verification: 正反例、幂等、尾注保留、stale/trust/path/cancel、Undo，零 step 不发明新值。
+
+## ADR-CUST-04: Validator 输出（REFACTOR）
+
+- Current: semanticPass 聚合 complete、warnings、target match；issues:string[]。
+- Evidence: validateCustomizerSource；现有测试正确要求 includeWarnings=false 不改变 pass。
+- Alternatives: A 改 semanticPass 含义（破坏兼容）；B 保留并增加 sourceStatus/contractStatus/qualityStatus 和 details codes。
+- Decision: B，不把 contract 注入 Problems；限制所有新字段字节和输出项；扫描复用仅在不引入缓存歧义时进行。
+- Maintenance: 明确业务结果，调用者无需解析文案。
+- Compatibility: 纯添加 DTO 字段，legacy checked/matched/issues/semanticPass 均保留。
+- Stages / rollback: Phase 2 添加字段与契约测试，调用者渐进读取。
+- Verification: 隐藏/缺失/错误 widget、warning 隐藏、截断、空目标。
+
+## ADR-CUST-05: 状态与 GUI（REFACTOR；保留树）
+
+- Current: DomainService 持有 active target/revision；ViewProvider 处理消息与 file picker；GUI set 直接调 service。
+- Evidence: receiveMessage/set 不检查 preset busy；DOM 自校验；incomplete 无状态。
+- Alternatives: A 独立 DTO/store 全重写；B 现有 domain 是唯一状态源，view 仅消息/展示；C Desktop tabs。
+- Decision: B + 共享约束。树适合 VS Code 窄侧栏，Global 根节点差异文档化；不引入新 store；GUI 值写经过 domain，保留连续预览 reason。
+- Compatibility: revision、target 和 command 不改；旧 overrides 每文件隔离。改善 incomplete 提示属于新增可见行为，列确认。
+- Maintenance: 不新增平行状态，减少双份校验。
+- Stages / rollback: Phase 2；浏览器 fixture 与真实 Host 各自记录。
+- Verification: 所有 widget、键盘/焦点/aria、空/不完整、切换文件、输入错误、continuous Preview。
+
+## ADR-CUST-06: Preset（REFACTOR + NEW validation）
+
+- Current: 纯 parse/decode + I/O watcher；apply 合并旧覆盖；writeFile 重读后无磁盘 CAS。
+- Evidence: CustomizerPresets.ts:apply/execute/reload；ParameterSet.cc NFC 与字符串编码。
+- Alternatives: A 保持叠加；B 选择 preset 以 defaults+该集重建 overrides；磁盘提交可用重读比较+临时文件 rename；C 新版本文件格式。
+- Decision: 格式保持；先测试 A/B→default，提出 B 行为变更待用户确认。validator 独立只针对绑定/显式文件。保留未知参数/额外字段；错误应用前全量验证；文件并发保护不宣称跨进程绝对原子 CAS。
+- Maintenance: structured Preset issues 与源 linter 分离，Host I/O 不推断 widget。
+- Compatibility: 文件版本/部分集和未知参数策略有行为变化时先确认，绝不自动删除数据；所有写只在用户动作范围内。
+- Stages / rollback: Phase 3 分离验证→事务→watcher；原数据不迁移。
+- Verification: 部分集合、损坏 JSON、坏值、未知版本/参数、外部编辑/删除、取消/切换与 Preview。
+
+## ADR-CUST-07: Agent 与发布（KEEP registrations；REFACTOR resources；NEW evidence）
+
+- Current: catalog 单源生成 tools/resources/parity；source 与 runtime skills 分离。
+- Evidence: registerCapabilities、agent-manifest、已有 baseline handlers 全调用测试；实际模型自动选择未验证。
+- Alternatives: A 合并 Source/Overrides tools；B 保持已发布工具并完善描述/引用和失败协议。
+- Decision: B，避免扩大写权限和 schema 迁移成本。新增 diagnostics/compatibility references，生成校验防漂移。注册、调用 smoke、真实模型任务三种证据分开。
+- Compatibility: 不改 tool name/input schemas/确认机制、engines；现有资源路径继续有效。
+- Maintenance: 不重复知识规则；VSIX 内容和 installed Host 验证。
+- Stages / rollback: Phase 3 资源，Phase 4 package/host；无账号/模型环境标 NOT RUN。
+- Verification: generate/check、VSIX resources、LM invocation、真实模型 MODEL-01..04 单列。
+
+## 模块处置账本
+
+| 模块 | 决策 | 收益/成本与验证 |
+|---|---|---|
+| CustomizerParser | REFACTOR | 保留 scanner，提取 literal/annotation；减少混合职责，fixtures 对照 |
+| CustomizerSourceTypes | REFACTOR | additive 元数据，保持工具兼容，字节限额测试 |
+| CustomizerSourceAnalyzer | REFACTOR | catalog/evidence/fix，禁止扩大默认误报 |
+| CustomizerSourceValidator | REFACTOR | 独立状态、稳定 details codes，兼容 semanticPass |
+| CustomizerSourceEditor | KEEP | piece diff 最小编辑与未目标语义校验有价值；补冲突/组合用例，无证据支持整套 AST 替换 |
+| CustomizerDiagnostics | REFACTOR | rule 元数据→Problems，保留 debounce/dispose/settings |
+| CustomizerCodeActions | REPLACE | 诊断关联、command CAS，删旧 edit 快照路径 |
+| CustomizerSourceDomainService | REFACTOR | 重用 CAS 与限额，增加 safe fix plan 接口，不复制权限检查 |
+| CustomizerService | REFACTOR | 约束提取，无 host 依赖 |
+| CustomizerDomainService | REFACTOR | GUI/Agent 同一忙碌与 revision 边界 |
+| CustomizerViewProvider | REFACTOR | 纯 adapter，不新增领域状态 |
+| media/customizer/main.js | REFACTOR | 删除重复校验，改善 incomplete 与错误展示 |
+| core CustomizerPresets | REFACTOR | 独立结构化验证，保留无损编码 |
+| sidebar CustomizerPresets | REFACTOR | 部分集/并发/错误回滚与 watcher |
+| registerCapabilities/catalog | KEEP | 稳定外部 schema；必要描述更新后重生成 |
+| instructions/2 Customizer skills | REFACTOR | 补引用、低 token 与失败协议 |
+| agent-manifest | KEEP | 当前单源生成有价值，增加资源覆盖校验 |
+| literal/annotation/constraints/rule catalog/fix planner/Preset validator | NEW | 最小纯函数职责，无 native/VS Code 依赖 |
+| 原 Parser 提取后的重复函数、DOM 重复校验、旧 action edit 路径 | DELETE | 随调用方迁移删除；测试/rg 证明无平行执行路径 |
+| fixtures/evidence/progress | NEW | 原生/静态/Host/模型/平台证据分层 |
+
+## 已审阅的具体可见差分（以末尾约束修订为准）
+
+1. 描述仅紧邻上一行列首 //；块/缩进/跨空行和多行累积改为不识别，普通注释原文不修改。
+2. native 验证成立后，numeric effective bounds 包含默认值、GUI/Agent/Preset 接受 off-grid 值，step 作为交互增量；range 仍为原始声明。不会改模型默认值。
+3. 部分 Preset 切换由旧 override 叠加改为 defaults+当前集；选 Design default 清空 override；保存的 JSON 不改格式。
+4. 高置信度诊断增加规则/evidence/fix metadata，validate 增加独立状态/details；旧 code/semanticPass 不变；Quick Fix 变为执行时 CAS 的 command，分别评估 editor 可写文档与 Agent workspace-only 边界。
+5. 分组、NFC 与 Hint/native 差分的语义修正仅在逐例有证据后实施；未知 Preset 版本保留并允许只读分析，应用与覆写必须有兼容性依据；UI 显示不完整分析状态。
+
+## 阶段与回退
+
+0/0.5 文档先完成；1 上游 fixtures 与纯语义；2 规则/修复/GUI/Host；3 Preset/Agent/resources；4 全量单测/浏览器/真实 Extension Host/VSIX/installed smoke/清理/性能报告。每阶段记录 exact commands 与 exit status，不能把 compile 当验收。未具备 native/模型/平台环境的项保持 Unverified，记录复现步骤。最终不合并 main，也不自动迁移用户文件。
+
+## 2026-11-09 用户审阅后修订（进入 Phase 1–4）
+
+用户原则批准方案 B 与后续开发，并批准 partial Preset 使用 defaults + 当前集。以下约束覆盖此前建议中不够准确的表述：
+
+- **文本长度**：pinned StringParameter 构造函数中的 maximumSize 形参遮蔽成员；给形参赋值不扩大成员限制。jsonValue 仍导出声明限制；importValue(store=true) 对 std::string 按 UTF-8 字节 substr 截断，可能截在多字节字符中。静态声明与导入必须分别差分，绝不宣称官方扩大文本长度。
+- **输入职责**：语法解析保留声明；语义层计算有效数值边界；UI 负责将输入框文本转换为强类型候选；共享 validator 负责类型、有限性、有效边界、文本限制与枚举成员检验。step 是交互增量。Validator 不规范化、不截断、不夹断，不修改默认值；Preset decoder 仅解码并匹配类型。官方 import 的夹断/截断单独记录兼容差异；IDE 拒绝有损应用，向用户报告，不能静默改变工程数值或字符串。NFC 仅用于标识符匹配，不改用户源文本。
+- **编辑边界分别评估**：Agent sourceApply 保持显式 workspace file URI + canonical root + trust + CAS + TTL + 确认。编辑器 Quick Fix 是用户明确执行的单文档动作，允许本地工作区外 file 和 untitled 的静态注释编辑；不继承 Agent 的 workspace-only 或 Workspace Trust 限制，不执行模型。两者共享纯修复/后置验证和身份事务检查，host adapter 分别校验目标 scheme/权限；虚拟只读文档不提供写动作。不能以安全重构为由回退现有编辑器能力。
+- **未知 Preset 版本**：可解析、只读诊断并保留原版本/所有字段；不能因 pinned reader 忽略版本就断言任意未来版本兼容。仅有特定版本的兼容证据时才允许相应读行为；尚未验证的版本禁止 apply/save/new/delete/export-overwrite，UI/Agent 明确提示，原 JSON 不动。用户第二项“按上游兼容并提示”按第一项详细限制实施。
+- **验收标准**：新增 text schema + import 截断差分（ASCII 和多字节），共享 validator 不丢数据测试；Preset A→B→Default 的 GUI/Domain/Preview 一致测试；Quick Fix 在 workspace 外 file、untitled、untrusted 和 readonly scheme 的独立 Host 测试，Agent 越界/trust 拒绝保持；未知版本 read-only analysis 允许，apply/write 禁止并原文件不变。所有不可用/失败/未运行如实记录。
+
+此前“拒绝非工作区文件写入”的 Quick Fix 建议废止，仅适用于 Agent Source Apply；此前未知版本“一律直接允许应用/写入”的建议不采用。重大进一步变化将追加 ADR 和差分依据。
+
+
+## Phase 1 实施证据补充
+
+- Description、NFC、同一行截止/注释归属、comment lexer 的 decimal/WORD 最长匹配已按 CLI 差分修正。多行向量的 Hint 写到声明首行，末行尾注不被假装识别。原 sourceEdit 的最小 patch 与未目标声明后置校验保留。
+- 新增 declaredRange/effectiveRange，legacy range 继续表示声明值。GUI/Service/Preset value validator 共用同一纯实现；Analyzer/Validator 元数据字节计算使用 browser-safe UTF-8 计数，不再依赖 Buffer。
+- 浏览器 range 的 step 属性会舍入外部赋值，这是 DOM 的隐含规范化，不应静默改变 default/Agent/Preset 值。选择 step=any 保存实际值，显式键盘事件按 numericStep 递增；舍弃增加第二个数值输入框的方案，避免重复焦点/输入状态。真实浏览器测试证明 default12、Agent13、ArrowRight18 和有效上界120；没有声称已验证 native Desktop 指针量化。
+- 数值 maximum-only 的隐式下界是 native 的特殊情况：default=-5 时 `.param` 仍是 min0（不会扩大隐式下界），当前模型忠实保留这一结果并可提供约束冲突提示；不会为统一口号伪造 native 自动扩展。
+- include 文件名里的 `{` 在 pinned CommentParser 原始行扫描中仍触发截止。已用存在的空 include 文件复现并纳入 fixture；Scanner 单独处理 Customizer cutoff，不把 filename 的括号当作语言 scope。
+- 文本输入上限按 UTF-8 bytes 验证，保留默认原文；DOM 不设置会静默截断的 maxlength。官方 import 的 ASCII/多字节截断通过独立 native runner 记录原始 echo 字节，不在 IDE 中复制有损截断。
+
+
+## ADR-CUST-08 — Preview Preset 委托与事务存储（2026-11-09，实施中）
+
+证据：Preview SidePanel → ScadWebviewPanel → ScadSession 的旧路径是可达生产入口；旧 save 捕获任意读取失败后创建新文件，会覆写损坏/不可读取的用户 JSON；独立 watcher 在外部变更时重放旧 active set，与侧栏/Agent 的 modified/revision 不一致。故该路径不能 KEEP 为第二个业务实现。
+
+选择：Preview 保留 SCAD renderer/session 和未绑定侧车 JSON 的只读发现。显式选择/保存/删除经注入的 CustomizerDomainService，复用同一 Preset controller、版本策略、目标修订、busy、删除确认及 codec；无 domain 时拒绝写操作，不能回退独立 I/O。已绑定模型镜像 host sets/active identity，元数据更新不写 overrides；实际值由 CustomizerService 事件传播并触发 Preview。后台 session 操作必须匹配当前 target。Preview 消息处理 await 结果，失败由既有通知路径显示。
+
+存储：新增纯 CustomizerPresetTransaction 协调，provider 适配留在 host controller。读取原始 bytes → 同 URI extension lock → 复核 bytes/目标 → 暂存同目录随机文件 → 再复核 → provider rename；失败不更新 active/baseline，清理暂存。保留原版本、未知成员及非目标 sets。不能证明所有 provider rename 原子性，不提供跨进程最终 read/rename CAS；这两个边界明确保留为验收限制。没有降级为原位截断覆写。
+
+取舍：选择委托现有已验证 domain，而不是另建 Preview Preset manager 或仅复用 parse 函数。只读发现与显式绑定职责分开；没有自动绑定任意 JSON，没有任意 JSON 全局诊断。该决定属于用户批准的职责重组；后续重大语义改变仍须补 ADR/依据。
+
+模块决定：ScadSession Preset writer/replay DELETE；ScadSession renderer KEEP；ScadParameters preset selection REFACTOR 为共享 codec 的纯适配；CustomizerPresets I/O REFACTOR；CustomizerPresetTransaction NEW；activation 注入 REFACTOR。生产写入口必须只剩共同 controller。
+
+已执行依据：`/tmp/customizer-phase3-unified-all2.log` core204 / preview98通过；新增 storage 5项测试覆盖外部修改、并发、创建竞态、stage/rename/目标失败、临时清理；Preview session测试覆盖按修订委托、metadata不触发render、后台target拒绝、无domain拒绝。浏览器、Host、provider/Remote与最终VSIX仍须单独验收。
+
+
+### Phase 4 follow-up: interaction and actual edit quotas
+
+Pinned ParameterSlider.cc positions are minimum-anchored and end at the last whole step. Browser range step=any preserves externally supplied values; trusted pointer interaction now uses shared snapNumericInteraction while programmatic/default/Preset/Agent inputs remain unsnapped. Preview drag uses the same helper when bounded, manual numeric input rejects invalid values without clamping, and keyboard increments remain explicit. Textareas preserve multiline strings; group names are regex-escaped in Preview labels.
+
+Quota audit found SourceEditor bounded intent count but could emit more than50 actual edits. It now rejects plans over50 actual edits; tests demonstrate50 accepted/52 refused, pending32/33, cache16/17 and disposal, preview32KiB, exact1MiB/multibyte overflow and501-item aggregate limits. No existing safety quota was relaxed. Tests/limits do not establish native OS focus, remote-provider atomicity or cross-process CAS.
+
+
+### Preview incomplete-source preservation
+
+Phase4审计发现renderer的本地ScadParameters.updateDefinitions仍可在临时不完整源码时过滤并回写共享Overrides。修正为ScadParser消费同一有界Analyzer并传complete；不完整时保留最后完整定义及原始已存Overrides，不回写partial schema，恢复后再完整验证。host消息显式携带analysisComplete，Preview显示status并以inert暂停参数/Preset交互；domain拒绝编辑仍是最终保护。会话测试覆盖保留→拒绝值编辑→恢复；Chromium真实焦点与原生Accessibility tree验证inert（Playwright role locator计数本身不能证明原生可访问性）。首次类型检查缺消息字段、首次locator计数断言均失败，已修正并保留日志。
+
+架构复杂度证据：`npm run check:customizer:architecture` 针对core runtime静态import图检查，14个core文件、15个可达模块，无runtime import循环、无VSCode/Node/features/platform依赖。对比基准core7→14文件、非空行812→1150（+338，约42%）；增加独立Hint lexer、约束、规则/fix和Preset事务，删除DOM重复校验及Preview独立写文件/重放路径。指标不是复杂度或正确性的充分证明；没有声称整个项目无循环依赖。
+
+## ADR-CUST-09 — Source Apply 的对象 schema 投影（2026-11-09）
+
+真实qwen3.5:2b-mlx原生Agent已执行Source Analyze（2次错误URI被拒绝后自行纠正），随后生成不存在的command/includeWarnings/mode=unused等Source Apply参数并停在确认。此结果不证明模型错误由schema导致，但暴露了传输边界：sourceApply是唯一根部缺type/object/properties、仅oneOf的业务工具；operation.cancel已有显式object投影。官方Ollama provider将schema原样送入function.parameters，不替此工具生成对象字段。
+
+选择：将两模式共有的参数定义提到根type:object/properties，根additionalProperties=false；保留oneOf两种模式的精确allowed keys、required和mode const。避免重复嵌套定义，保持工具名、合法输入集合、所有额度和拒绝approved/command/跨模式字段的约束。未拆成新工具，也未将错误URI、字符串数字或mode=unused自动规范化。
+
+兼容依据：原分支的每条字段约束原样迁到根部，每个分支仍有同一allowed-key集合、required和互斥mode值，因此接受集合不变。固定旧schema fixture验证两模式、全部5种edit intent、非法类型/缺字段/额外授权字段/混合模式输入与新schema判定一致。native模型行为需用相同模型重测，不据schema测试宣称模型验收通过。
+
+另外补充Skill的真实参数形状与不可使用command字符串的说明。新native测试通过官方Skill slash入口执行，观察实际确认及buffer/validation，保留此前未显式选择Skill的失败记录；没有改动身份检查或提交授权。
+
+
+ADR09复测：同一qwen3.5:2b-mlx通过官方Skill入口实际读取Skill并调用Analyze，但仍将identity展开到根、加入未知字段，range也未遵循请求。工具以INVALID_INPUT拒绝，buffer/disk未变化；Native最终“no response”。对象投影并未建立模型成功，不据此宣称根schema是唯一原因；旧/新结果都保留。继续异常场景验收。
+
+### 原生 Desktop 差分补充：待实测的交互层
+
+2026-11-09新增官方2026.11.06二进制41例CLI差分，全匹配；相关Customizer/ParameterWidget/parameter源码与pinned相同。源码复核发现Slider.setValue和commitChange经过网格位置，Text控件使用QLineEdit.setMaxLength，不能将CLI的off-grid/UTF-8 import结论扩展为Desktop交互结论。当前原生GUI因已验证锁屏尚未获得控件动态证据；完整矩阵见customizer/native-gui-validation.md。保留用户批准的无损存储、step交互与GUI-Agent一致性政策，不未经实测修改公开行为或宣称Desktop完全一致。

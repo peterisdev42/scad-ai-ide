@@ -1,6 +1,6 @@
 import { memoryCaches } from '../../../../core/cache/CacheRegistry'
 import { readCsgPartHints, type CsgPartHint } from '../../../../core/preview/csgParts'
-import { notifications, confirmDeleteParameterSet } from '../../../../platform/notifications'
+import { notifications } from '../../../../platform/notifications'
 import { randomBytes } from 'node:crypto'
 import { ScadClient } from '../services/ScadClient'
 import { EmptyModelError } from '../services/previewEligibility'
@@ -139,13 +139,11 @@ export class ScadWebviewPanel {
                             return
                         }
                         case 'deleteParameterSet': {
-                            if (await confirmDeleteParameterSet(message.name)) {
-                                await this.session.deleteParameterSet?.(message.name)
-                            }
+                            await this.session.deleteParameterSet?.(message.name)
                             return
                         }
                         case 'applyParameterSet':
-                            this.session.applyParameterSet?.(message.name)
+                            await this.session.applyParameterSet?.(message.name)
                             return
                         case 'exportModel':
                             await this.exportModel()
@@ -264,10 +262,11 @@ export class ScadWebviewPanel {
         )
 
         this.session.onParametersChanged(
-            ({ parameters, parameterSets, activeSetName, overrides }) => {
+            ({ parameters, parameterSets, activeSetName, overrides, analysisComplete }) => {
                 if (this.isWebviewReady) {
                     this.postMessage({
                         type: 'updateParameters',
+                        analysisComplete,
                         parameters,
                         parameterSets,
                         activeSetName,
@@ -355,9 +354,10 @@ export class ScadWebviewPanel {
         const parameterSets = this.session.currentParameterSets
         const activeSetName = this.session.activeSetName
 
-        if (params && params.length > 0) {
+        if (params) {
             this.postMessage({
                 type: 'updateParameters',
+                analysisComplete: this.session.parameterAnalysisComplete ?? true,
                 parameters: params,
                 parameterSets,
                 activeSetName,

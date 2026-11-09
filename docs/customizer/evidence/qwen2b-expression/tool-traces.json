@@ -1,0 +1,71 @@
+[
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "includeCandidates": true,
+      "maxDiagnostics": 20,
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-09T08:46:10.087Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "31a6a088cf5428dac05bde0befb708878c001f4c3cff8ce64473cdc4eae43499"
+        },
+        "parameters": [
+          {
+            "name": "base",
+            "group": "",
+            "description": "",
+            "defaultValue": 80,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 8
+              }
+            }
+          }
+        ],
+        "candidates": [
+          {
+            "name": "width",
+            "range": {
+              "start": {
+                "line": 1,
+                "character": 0
+              },
+              "end": {
+                "line": 1,
+                "character": 13
+              }
+            },
+            "reason": "unsupportedDefault",
+            "confidence": "certain"
+          }
+        ],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "a500db06-b0af-4d36-a3e7-b45e4e95d703",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  }
+]

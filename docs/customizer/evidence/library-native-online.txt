@@ -1,0 +1,42 @@
+npm notice run scad-ai-ide@0.0.1 test:libraries
+npm notice run node --import tsx --test src/test/libraries/*.test.ts
+✔ Independent Node extension hosts serialize changes to the same Store (408.287459ms)
+✔ Abandoned heartbeat leases can be recovered before replaying a project transaction (2.74125ms)
+✔ Environment isolates workspaces, preserves base env and fingerprints version/link changes (76.972583ms)
+✔ Real OpenSCAD resolves a linked library, changes geometry after version switch and retains Store on removal (154.247583ms)
+✔ Windows uses semicolons and retains inherited case-insensitive OPENSCADPATH; POSIX uses colons (0.462208ms)
+(node:72975) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ Real Fast Preview and Markdown use the same project library environment (319.092583ms)
+✔ Cleanup refuses known references, requires explicit confirmation and rechecks after confirmation (86.283ms)
+✔ Unreadable known projects block cleanup; forged deletion IDs are rejected (17.9585ms)
+✔ A known project without any dependencies does not masquerade as an unreadable reference (9.799625ms)
+✔ Unreferenced cleanup removes all unused versions across repositories and preserves project-used versions (57.734792ms)
+✔ Bulk cleanup rechecks project references after confirmation and never deletes newly added versions (28.680625ms)
+✔ Delete-all mode removes referenced sources without changing project manifests or lockfiles (24.240292ms)
+✔ Immutable store deduplicates concurrent installs, separates commits/repositories and detects corruption (124.862ms)
+✔ Failed/cancelled downloads and unsafe redirects never publish an entity (5.828167ms)
+✔ ZIP rejects traversal, Windows names, Unicode/case collisions and symlinks (5.261ms)
+✔ ZIP checksum corruption is rejected; orphaned metadata is visible rather than reused (13.173875ms)
+✔ Online BOSL2: Registry → commit archive → global Store → project link → real CLI → offline Restore (6793.462417ms)
+✔ Two projects isolate versions; lockfile-only restore works offline and removal preserves global content (91.088875ms)
+✔ Mount failures roll back project version and never overwrite unmanaged directories (20.183458ms)
+✔ Interrupted publication restores old links and files before another operation (25.600083ms)
+✔ Copy fallback requires confirmation, detects edited copies and can be declined (19.259542ms)
+✔ Project symlink roots and foreign mount links are not followed during mutation (12.017083ms)
+✔ Registry v1/v2 validates exact repository-pinned versions and preserves null latest (1.2185ms)
+✔ Snapshot and sync errors remain explicit; unreviewed layouts never guessed (0.452708ms)
+✔ Manifests and locks reject unsafe paths, ranges and cross-platform collisions (0.228666ms)
+✔ Registry supports ETag/304, validated disk cache and offline cold restart (24.013875ms)
+✔ Registry globalState list is immediately available while refresh is pending, shared by callers and preserved on failure (3.701ms)
+✔ Registry imports its old disk list, prefers valid globalState and ignores corrupt or foreign cache data (6.674833ms)
+✔ A bad Registry response cannot overwrite cached results; failed persistence does not discard a fresh list (2.15825ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6884.58175
