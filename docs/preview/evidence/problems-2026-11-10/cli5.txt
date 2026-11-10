@@ -1,0 +1,13 @@
+✔ configuration detection handles expressions, comments, strings and multiline vectors (0.387791ms)
+✔ geometry, includes, module calls and unknown or incomplete syntax stay eligible (0.054791ms)
+✔ empty model classification preserves real compiler failures (0.118417ms)
+✔ CLI empty results are distinct from failures; configuration skips execution and dirty geometry is rendered (97.365292ms)
+✔ preview command opens configuration and model files without filtering or notifications (1.434625ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 176.481292

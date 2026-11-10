@@ -1,3 +1,4 @@
+import { PreviewOutput } from './renderDiagnostics'
 import { libraryEnvironment } from '../../../../platform/libraries/LibraryEnvironment'
 import type { PreviewTimings } from '../../../../core/preview/performance'
 import { readCliDependencies, type FileDependency } from '../../../../core/formats/dependencies'
@@ -106,29 +107,39 @@ export class ScadClient {
             await new Promise<void>((resolve, reject) => {
                 const child = spawn(command.executable, args, { cwd: dirname(scadPath), signal, env, shell: false })
                 this.activeProcesses.set(key, child)
-                let stderr = ''
+                const stderr = new PreviewOutput()
+                let logged = 0
+                const logLimit = 131072
                 child.stdin.on('error', () => {})
                 child.stdin.end(source)
                 // Drain stdout as well: verbose CLI output must never block rendering.
                 child.stdout.on('data', (data: Buffer) => this.outputChannel.append(data.toString()))
                 child.stderr.on('data', (data: Buffer) => {
                     const chunk = data.toString()
-                    stderr += chunk
-                    this.outputChannel.append(chunk)
-                    onStderr?.(chunk)
+                    stderr.append(chunk)
+                    if (logged < logLimit) {
+                        const bounded = chunk.slice(0, logLimit - logged)
+                        this.outputChannel.append(bounded)
+                        onStderr?.(bounded)
+                        logged += bounded.length
+                        if (logged === logLimit) {
+                            this.outputChannel.appendLine('[OpenSCAD output truncated]')
+                            onStderr?.('\n[OpenSCAD output truncated]\n')
+                        }
+                    }
                 })
                 child.on('error', reject)
-                child.on('close', (code) => {
+                child.on('close', (code, terminationSignal) => {
                     const current = this.activeProcesses.get(key) === child
                     if (current) {
                         this.activeProcesses.delete(key)
                     }
                     if (!current) {
                         reject(new Error('Render cancelled'))
-                    } else if (isEmptyModelOutput(stderr)) {
+                    } else if (isEmptyModelOutput(stderr.text)) {
                         reject(new EmptyModelError())
-                    } else if (code !== 0) {
-                        reject(new Error(`OpenSCAD exited with code ${code}\n${stderr}`))
+                    } else if (code !== 0 || stderr.hasErrors) {
+                        reject(new Error(`OpenSCAD exited with ${terminationSignal ? `signal ${terminationSignal}` : `code ${code}`}\n${stderr.text}`))
                     } else {
                         resolve()
                     }

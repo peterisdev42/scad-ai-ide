@@ -23,7 +23,7 @@ before(async () => {
 })
 after(async () => browser?.close())
 
-async function fixture(t, mode = 'render', deviceScaleFactor = 1, content = csg, partHints) {
+async function fixture(t, mode = 'render', deviceScaleFactor = 1, content = csg, partHints, expectedErrors = []) {
     const server = createServer((request, response) => {
         const path = new URL(request.url, 'http://fixture').pathname
         if (path === '/') {
@@ -82,7 +82,8 @@ async function fixture(t, mode = 'render', deviceScaleFactor = 1, content = csg,
     t.after(async () => {
         await page.close()
         await new Promise((resolve) => server.close(resolve))
-        assert.deepEqual(errors, [])
+        assert.equal(errors.length, expectedErrors.length)
+        errors.forEach((error, index) => assert.match(error, expectedErrors[index]))
     })
     await page.goto(`http://127.0.0.1:${server.address().port}`)
     await page.locator('scad-app').waitFor()
@@ -375,8 +376,8 @@ test('rapid tessellation changes publish the latest mesh and dispose the replace
     assert.equal(result.disposed, true)
 })
 
-test('standard renderer errors remain actionable', async (t) => {
-    const page = await fixture(t, 'preview')
+test('standard renderer errors remain actionable and are sent to host Problems', async (t) => {
+    const page = await fixture(t, 'preview', 1, csg, undefined, [/^\[OpenSCAD Preview\] Standard mesh render failed$/])
     await ready(page)
     await page.locator('scad-preview').evaluate((p) => {
         p.stage.modelRepresentation.render = () => {
@@ -385,6 +386,7 @@ test('standard renderer errors remain actionable', async (t) => {
         p.stage.renderFrame()
     })
     await page.getByText('Standard mesh render failed', { exact: true }).waitFor()
+    await page.waitForFunction(() => window.hostMessages.some(m => m.type === 'error' && m.message === 'Standard mesh render failed'))
 })
 
 test('quick mode offers surface measurement and full mode keeps exact vertex and edge tools', async (t) => {
@@ -505,4 +507,14 @@ test('CSG color assistance is requested lazily and applied without replacing the
     await page.waitForFunction(() => document.querySelector('scad-app').viewSettingsContext.get('partColors') === true)
     assert.equal(await page.evaluate(() => window.hostMessages.filter((m) => m.type === 'setPartColors' && m.enabled).length), 1)
     assert.equal(await page.evaluate(() => window.hostMessages.filter((m) => m.type === 'setPreviewMode').length), 0)
+})
+
+
+test('invalid mesh decoding reaches host Problems with the failing model version', async t => {
+    const page = await fixture(t, 'render', 1, csg, undefined, [/^\[OpenSCAD Preview\]/])
+    await ready(page)
+    await page.evaluate(() => window.dispatchEvent(new MessageEvent('message', { data: { type: 'update', format: 'stl', content: btoa('invalid mesh'), modelVersion: 702 } })))
+    await page.waitForFunction(() => window.hostMessages.some(m => m.type === 'error' && m.modelVersion === 702 && m.message))
+    const error = await page.evaluate(() => window.hostMessages.find(m => m.type === 'error' && m.modelVersion === 702))
+    assert.ok(error.message.length > 0)
 })

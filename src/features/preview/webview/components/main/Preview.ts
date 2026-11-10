@@ -141,6 +141,10 @@ export class Preview extends LitElement {
         this.setupThemeObserver()
     }
 
+    private reportIssue(message: string, modelVersion?: number) {
+        this.dispatchEvent(new CustomEvent('preview-error', { detail: { message, modelVersion }, bubbles: true, composed: true }))
+    }
+
     async initStage() {
         const stage = (this.stage = new Stage(this.container, this.theme, { forceWebGL: this.forceWebGL }))
         stage.setToolStatusCallback((status) => {
@@ -149,6 +153,7 @@ export class Preview extends LitElement {
         stage.setErrorCallback((error) => {
             if (this.stage === stage && !this.recovering) {
                 this.previewIssue = error
+                this.reportIssue(error, this.modelContext?.modelVersion)
                 this.preparing = false
             }
         })
@@ -158,7 +163,9 @@ export class Preview extends LitElement {
         try {
             await stage.ready
         } catch (error) {
-            this.dispatchEvent(new CustomEvent('preview-error', { detail: String(error), bubbles: true, composed: true }))
+            this.previewIssue = String(error)
+            this.preparing = false
+            this.reportIssue(this.previewIssue)
             return
         }
         if (!this.isConnected || this.stage !== stage) return
@@ -181,6 +188,7 @@ export class Preview extends LitElement {
         if (this.recovering || !this.stage) return
         if (this.forceWebGL) {
             this.previewIssue = `Graphics recovery failed: ${reason}`
+            this.reportIssue(this.previewIssue)
             return
         }
         this.recovering = true
@@ -201,6 +209,7 @@ export class Preview extends LitElement {
             this.previewIssue = ''
         } catch (error) {
             this.previewIssue = `Graphics recovery failed: ${String(error)}`
+            this.reportIssue(this.previewIssue)
         } finally {
             this.recovering = false
         }
@@ -245,6 +254,7 @@ export class Preview extends LitElement {
             .catch((error) => {
                 if (this.stage !== stage || this.modelContext.modelVersion !== model.modelVersion || this.modelContext.base64Data !== model.base64Data || this.recovering) return
                 this.previewIssue = error instanceof Error ? error.message : String(error)
+                this.reportIssue(this.previewIssue, model.modelVersion)
                 this.preparing = false
             })
         this.loadedModel = { format: model.format, base64Data: model.base64Data, modelVersion: model.modelVersion }
