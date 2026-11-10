@@ -1,0 +1,72 @@
+[
+  {
+    "file": "browser18.txt",
+    "bytes": 1948,
+    "sha256": "2ed0793066b60509e86498cb06685b7f49a3bdf2f19b8587d1c873aa3a0eb31e"
+  },
+  {
+    "file": "cli5.txt",
+    "bytes": 620,
+    "sha256": "8afa11e358f5ee6ac83170b7c653e462595495ac9d513d24830d21746a4821ab"
+  },
+  {
+    "file": "compile.txt",
+    "bytes": 817,
+    "sha256": "0da5d7dc53d876f3f1e242d2ff06f007cdaf1d3322280df33ab3e4f292bf9f8f"
+  },
+  {
+    "file": "final-lint.txt",
+    "bytes": 64,
+    "sha256": "9733fca2b567c3403d4db443ce064674568f419c45f267369b70fb01d416b24c"
+  },
+  {
+    "file": "final-typecheck.txt",
+    "bytes": 84,
+    "sha256": "1c43bcd6dbfd15377a41e88ecc2b3e6062aeb0f68c972b8d5f91b44327d29247"
+  },
+  {
+    "file": "host-api1.txt",
+    "bytes": 15187,
+    "sha256": "f9d754d35b93e6f21e41932230e0d2614d8664f384e8dcd5cffa006524899df0"
+  },
+  {
+    "file": "host-native-test-typecheck-initial-failure.txt",
+    "bytes": 723,
+    "sha256": "7e8e723ec48861500b90dd0afd5b3132002e74927b388db94c8b8cf460509079"
+  },
+  {
+    "file": "host-native-test-typecheck.txt",
+    "bytes": 84,
+    "sha256": "1c43bcd6dbfd15377a41e88ecc2b3e6062aeb0f68c972b8d5f91b44327d29247"
+  },
+  {
+    "file": "host-native2.txt",
+    "bytes": 13588,
+    "sha256": "253248d68e2e9f2c167ef13f2da289525233129245ab4363e1f5c31827c8edb8"
+  },
+  {
+    "file": "native-rpi-summary.json",
+    "bytes": 2761,
+    "sha256": "1d2b6195e6aed15ee1f91cf54b6c3404bb8902dd9cccc6877b79aba73570fad8"
+  },
+  {
+    "file": "native-sandbox-failure.txt",
+    "bytes": 80,
+    "sha256": "fe9cadde4d98b95a2457f94a38d07e2e94c712b5b8c7d7755bcfe3ec6c02a801"
+  },
+  {
+    "file": "preview103.txt",
+    "bytes": 13259,
+    "sha256": "179b837c57061cc779a949fc2f8f16a0ae942ddf6988a13b3c527ce28f0561cc"
+  },
+  {
+    "file": "regression.txt",
+    "bytes": 40492,
+    "sha256": "41edc69044bd1355c1ffb7712099d3517bef6cd1abcbb478728c2095efe3f9b9"
+  },
+  {
+    "file": "test-fixture-initial-failure.txt",
+    "bytes": 15015,
+    "sha256": "56b86e38e9ff4ef21ccba13f67b2b850b2bf112b2d8f90a1b1fc4e74398d4f4a"
+  }
+]

@@ -5,6 +5,7 @@ import { randomBytes } from 'node:crypto'
 import { ScadClient } from '../services/ScadClient'
 import { EmptyModelError } from '../services/previewEligibility'
 import { showRenderError } from '../services/renderError'
+import { PreviewProblems } from '../services/PreviewProblems'
 import { syntaxErrorMessage } from '../services/renderDiagnostics'
 import { Disposable, Memento, ProgressLocation, Uri, Webview, WebviewPanel, env, window, workspace } from 'vscode'
 import * as os from 'os'
@@ -17,6 +18,7 @@ import type { PreviewSession } from '../core/PreviewSession'
 import { queryMeshTopology } from '../../../../core/formats/meshTopology'
 
 export class ScadWebviewPanel {
+    private readonly problems: PreviewProblems
     private readonly panel: WebviewPanel
     private disposables: Disposable[] = []
     private isWebviewReady: boolean = false
@@ -42,6 +44,8 @@ export class ScadWebviewPanel {
         private readonly workspaceState: Memento,
     ) {
         this.panel = panel
+        this.problems = new PreviewProblems(session.documentUri)
+        this.disposables.push(this.problems)
         this.disposables.push(memoryCaches.register(`Preview part metadata: ${session.documentUri.toString()}`, () => ({ hints: this.partHintsCache?.hints ?? [] }), () => {
             this.partHintsController?.abort()
             this.partHintsCache = undefined
@@ -120,7 +124,10 @@ export class ScadWebviewPanel {
                             if (!this.awaitingRender && message.modelVersion === this.lastRender?.modelVersion) this.session.acceptPerformance?.(message.timings)
                             return
                         case 'frameReady':
-                            if (!this.awaitingRender && message.modelVersion === this.lastRender?.modelVersion && ['webgpu', 'webgl2'].includes(message.graphics) && Number.isFinite(message.elapsedMs)) this.session.acceptFrame?.(message.graphics, message.elapsedMs)
+                            if (!this.awaitingRender && message.modelVersion === this.lastRender?.modelVersion && ['webgpu', 'webgl2'].includes(message.graphics) && Number.isFinite(message.elapsedMs)) {
+                                this.problems.clear('view')
+                                this.session.acceptFrame?.(message.graphics, message.elapsedMs)
+                            }
                             return
                         case 'setPreviewMode':
                             if (message.mode === 'preview' || message.mode === 'render') this.session.setPreviewMode?.(message.mode)
@@ -155,10 +162,13 @@ export class ScadWebviewPanel {
                             await this.workspaceState.update(this.sceneStateKey, message.snapshot)
                             return
                         case 'error':
+                            if (message.modelVersion !== undefined && (this.awaitingRender || message.modelVersion !== this.lastRender?.modelVersion)) return
+                            this.problems.report(message.message, 'view')
                             void notifications.previewError(message.message, this.session.documentUri.toString())
                             return
                     }
                 } catch (error) {
+                    this.problems.report(error, 'view')
                     void notifications.previewError(error, this.session.documentUri.toString())
                 }
             },
@@ -177,6 +187,7 @@ export class ScadWebviewPanel {
         // Subscribe to session events
         this.session.onRenderStarted(
             () => {
+                this.problems.clear('render')
                 this.awaitingRender = true
                 this.partHintsController?.abort()
                 this.partHintsCache = undefined
@@ -203,6 +214,7 @@ export class ScadWebviewPanel {
                     return
                 }
 
+                this.problems.clear('render')
                 this.awaitingRender = false
                 this.previewMessage = undefined
                 const encodeStarted = performance.now()
@@ -226,6 +238,7 @@ export class ScadWebviewPanel {
 
         this.session.onRenderError(
             (err) => {
+                this.problems.report(err, 'render')
                 const syntaxMessage = this.session.sourceFormat ? undefined : syntaxErrorMessage(err)
                 if (!(err instanceof EmptyModelError) && this.session.previewMode === 'preview') {
                     this.previewMessage = { type: 'previewIssue', message: syntaxMessage ?? err.message }

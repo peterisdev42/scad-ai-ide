@@ -1,0 +1,42 @@
+{
+  "source": "/Users/q/Documents/Code/scalable_field_camera/rpi.scad",
+  "sourceSha256": "0923614219b0de3f53b44baa968006d4668b4cdcb49aa94ab462e1653e87b6e6",
+  "command": [
+    ".build/customizer-native-gui/mount/OpenSCAD.app/Contents/MacOS/OpenSCAD",
+    "-o",
+    "/tmp/rpi-preview-diagnosis.csg",
+    "/Users/q/Documents/Code/scalable_field_camera/rpi.scad"
+  ],
+  "exitCode": 139,
+  "stderrBytes": 190612900,
+  "stderrSha256": "5f936606c9080f6c219508f8ffd9cfbf239e3928caf8aae6c043a30b70197203",
+  "first20Lines": [
+    "WARNING: \"vBoard_l\" was assigned on line 5 but was overwritten in file rpi.scad, line 42",
+    "WARNING: \"vBoard_w\" was assigned on line 7 but was overwritten in file rpi.scad, line 44",
+    "WARNING: \"vBoard_h\" was assigned on line 9 but was overwritten in file rpi.scad, line 46",
+    "WARNING: \"vCase_l\" was assigned on line 11 but was overwritten in file rpi.scad, line 48",
+    "WARNING: \"vCase_w\" was assigned on line 13 but was overwritten in file rpi.scad, line 50",
+    "WARNING: \"vCase_h\" was assigned on line 15 but was overwritten in file rpi.scad, line 52",
+    "WARNING: \"vWall\" was assigned on line 17 but was overwritten in file rpi.scad, line 54",
+    "WARNING: \"vCavity_h\" was assigned on line 19 but was overwritten in file rpi.scad, line 56",
+    "WARNING: \"vUSB_c_l\" was assigned on line 21 but was overwritten in file rpi.scad, line 58",
+    "WARNING: \"vUSB_c_w\" was assigned on line 23 but was overwritten in file rpi.scad, line 60",
+    "WARNING: \"vSD_l\" was assigned on line 25 but was overwritten in file rpi.scad, line 62",
+    "WARNING: \"vSD_w\" was assigned on line 27 but was overwritten in file rpi.scad, line 64",
+    "WARNING: \"vMount_d\" was assigned on line 29 but was overwritten in file rpi.scad, line 66",
+    "WARNING: \"vMount_inset\" was assigned on line 31 but was overwritten in file rpi.scad, line 68",
+    "WARNING: undefined operation (-undefined) in file rpi.scad, line 73",
+    "WARNING: undefined operation (undefined / number) in file rpi.scad, line 73",
+    "WARNING: undefined operation (-undefined) in file rpi.scad, line 73",
+    "WARNING: undefined operation (undefined / number) in file rpi.scad, line 73",
+    "WARNING: Unable to convert translate([[-45, -45, -7], undef, undef]) parameter to a vec3 or vec2 of numbers in file rpi.scad, line 73",
+    "WARNING: undefined operation (-undefined) in file rpi.scad, line 73"
+  ],
+  "distinctErrorLines": [
+    "ERROR: Stack exhausted while trying to convert a vector to EchoString"
+  ],
+  "rawStderrLocalPath": "/tmp/rpi-preview-diagnosis-native.stderr",
+  "rawStderrCopiedToGit": false,
+  "sourceModified": false,
+  "scope": "Real native CLI reproduction, not a model run or installed extension acceptance"
+}

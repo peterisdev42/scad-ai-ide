@@ -108,11 +108,12 @@ export class Bridge {
         this.post({ type: 'persistScene', snapshot })
     }
 
-    public reportError(error: unknown) {
+    public reportError(error: unknown, modelVersion?: number) {
         console.error('[OpenSCAD Preview]', error)
         this.post({
             type: 'error',
-            message: error?.toString(),
+            message: String(error),
+            modelVersion,
         })
     }
 

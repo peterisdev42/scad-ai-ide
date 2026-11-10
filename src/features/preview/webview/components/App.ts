@@ -507,7 +507,7 @@ export class App extends LitElement {
             <scad-split-layout split="horizontal" fixed-pane="end" handle-position=${bottomPanel ? this.debugPanelSize : '100%'} @vsc-split-layout-change=${(e: CustomEvent) => this.handleResize('bottom', e)}>
                 <scad-split-layout slot="start" split="vertical" fixed-pane="end" handle-position=${sidePanel ? this.parameterPanelSize : '100%'} @vsc-split-layout-change=${(e: CustomEvent) => this.handleResize('right', e)}>
                     <div slot="start" style="position:relative;width:100%;height:100%;">
-                        <scad-preview @renderer-restarting=${(event:CustomEvent<{properties:Map<string,ObjectProperties>}>)=>{this.pendingProperties=event.detail.properties;this._stageWired=false;this.requestUpdate()}} @stage-ready=${() => this.requestUpdate()}></scad-preview>
+                        <scad-preview @preview-error=${(event: CustomEvent<{ message: string; modelVersion?: number }>) => this.bridge.reportError(event.detail.message, event.detail.modelVersion)} @renderer-restarting=${(event:CustomEvent<{properties:Map<string,ObjectProperties>}>)=>{this.pendingProperties=event.detail.properties;this._stageWired=false;this.requestUpdate()}} @stage-ready=${() => this.requestUpdate()}></scad-preview>
                         <scad-toolbar @clear-measurements=${this.clearMeasurements}></scad-toolbar>
                         <scad-options @reset-view=${() => this.previewEl?.stage?.resetView()}></scad-options>
                     </div>

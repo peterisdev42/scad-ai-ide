@@ -1,3 +1,8 @@
+import { ScadSession } from '../features/preview/extension/core/ScadSession'
+import { ScadClient } from '../features/preview/extension/services/ScadClient'
+import { ScadWebviewPanel } from '../features/preview/extension/views/ScadWebviewPanel'
+import { PreviewProblems } from '../features/preview/extension/services/PreviewProblems'
+import { EmptyModelError } from '../features/preview/extension/services/previewEligibility'
 import { focusTestEditor } from './HostEditorFocus'
 import * as assert from 'node:assert/strict'
 import { mkdtemp, readFile, writeFile, rm } from 'node:fs/promises'
@@ -75,6 +80,83 @@ suite('Agent capabilities extension host', () => {
             assert.equal(document.isDirty, true)
             assert.equal(await readFile(uri.fsPath, 'utf8'), source)
         } finally {
+            await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor')
+            await rm(root, { recursive: true, force: true })
+        }
+    })
+    test('Preview Problems are readable by the host diagnostics API, scoped and cleared on recovery or disposal', async () => {
+        const uri = vscode.Uri.file(path.join(os.tmpdir(), 'preview-problems-test', 'model.scad'))
+        const include = vscode.Uri.file(path.join(os.tmpdir(), 'preview-problems-test', 'lib.scad'))
+        const reporter = new PreviewProblems(uri)
+        const other = new PreviewProblems(uri)
+        const read = (target = uri) => vscode.languages.getDiagnostics(target).filter(d => d.source === 'OpenSCAD Preview')
+        try {
+            reporter.report(new Error('ERROR: Parser error: syntax error in file model.scad, line 3'), 'render')
+            assert.equal(read().length, 1)
+            assert.equal(read()[0].severity, vscode.DiagnosticSeverity.Error)
+            assert.equal(read()[0].range.start.line, 2)
+            assert.equal(read()[0].code, 'PREVIEW_RENDER_FAILED')
+            reporter.report(new Error('Render cancelled'), 'render')
+            assert.equal(read().length, 1, 'Cancellation must not replace a real issue')
+            reporter.clear('render')
+            assert.equal(read().length, 0)
+            reporter.report(new Error('ERROR: assertion failed in file lib.scad, line 7'), 'render')
+            assert.equal(read(include)[0].range.start.line, 6)
+            assert.equal(read(include)[0].relatedInformation?.[0].location.uri.toString(), uri.toString())
+            reporter.report(new Error('WebGL initialization failed'), 'view')
+            other.report(new Error('Another preview failed'), 'render')
+            assert.equal(read().length, 2)
+            reporter.clear('render')
+            assert.equal(read(include).length, 0)
+            assert.equal(read().length, 2, 'Compiler success must not clear graphics or other view errors')
+            reporter.clear('view')
+            assert.equal(read().length, 1)
+            reporter.report(new EmptyModelError(), 'render')
+            assert.equal(read().find(d => d.code === 'PREVIEW_EMPTY_MODEL')?.severity, vscode.DiagnosticSeverity.Information)
+            reporter.dispose()
+            assert.equal(read().length, 1)
+            other.dispose()
+            assert.equal(read().length, 0)
+            reporter.report(new Error('Late completion'), 'render')
+            assert.equal(read().length, 0)
+        } finally { reporter.dispose(); other.dispose() }
+    })
+    test('native Preview failure reaches Problems through the actual session and clears after unsaved repair', async function () {
+        this.timeout(30000)
+        const executable = process.env.SCAD_TEST_OPENSCAD
+        if (!executable) { this.skip(); return }
+        const root = await mkdtemp(path.join(os.tmpdir(), 'scad-preview-problems-native-'))
+        const uri = vscode.Uri.file(path.join(root, 'model.scad'))
+        const source = 'cube([1,2,3];'
+        await writeFile(uri.fsPath, source)
+        const document = await vscode.workspace.openTextDocument(uri)
+        const customizer = new CustomizerService()
+        ScadClient.configure(async () => ({ executable, argsPrefix: [] }))
+        const session = new ScadSession(document, customizer)
+        const panel = vscode.window.createWebviewPanel('scad.preview.problems.test', 'Preview Problems test', { viewColumn: vscode.ViewColumn.Active, preserveFocus: true }, {})
+        const view = new ScadWebviewPanel(panel, vscode.Uri.file(path.resolve('.')), session, { get: (_key: string, fallback: unknown) => fallback, update: async () => {}, keys: () => [] } as unknown as vscode.Memento)
+        const waitFor = async (check: () => boolean) => {
+            const deadline = Date.now() + 15000
+            while (!check()) { assert.ok(Date.now() < deadline, 'Native Preview result did not arrive'); await new Promise(resolve => setTimeout(resolve, 50)) }
+        }
+        let completed = false
+        const completion = session.onRenderCompleted(() => { completed = true })
+        try {
+            session.refreshRender()
+            await waitFor(() => vscode.languages.getDiagnostics(uri).some(d => d.code === 'PREVIEW_RENDER_FAILED'))
+            const issue = vscode.languages.getDiagnostics(uri).find(d => d.code === 'PREVIEW_RENDER_FAILED')!
+            assert.equal(issue.severity, vscode.DiagnosticSeverity.Error)
+            assert.match(issue.message, /Parser error/i)
+            const repair = new vscode.WorkspaceEdit()
+            repair.replace(uri, new vscode.Range(document.positionAt(0), document.positionAt(source.length)), 'cube(2);')
+            assert.equal(await vscode.workspace.applyEdit(repair), true)
+            await waitFor(() => completed)
+            assert.ok(!vscode.languages.getDiagnostics(uri).some(d => d.code === 'PREVIEW_RENDER_FAILED'))
+            assert.equal(document.isDirty, true)
+            assert.equal(await readFile(uri.fsPath, 'utf8'), source)
+        } finally {
+            completion.dispose(); view.dispose(); session.dispose(); ScadClient.dispose()
+            await vscode.window.showTextDocument(document)
             await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor')
             await rm(root, { recursive: true, force: true })
         }

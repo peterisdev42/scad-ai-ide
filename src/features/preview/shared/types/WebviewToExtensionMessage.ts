@@ -21,4 +21,4 @@ export type WebviewToExtensionMessage =
     | { type: 'exportModel' }
     | { type: 'sendToSlicer' }
     | { type: 'persistScene'; snapshot: unknown }
-    | { type: 'error'; message: string }
+    | { type: 'error'; message: string; modelVersion?: number }

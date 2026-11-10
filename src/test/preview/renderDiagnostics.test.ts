@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import * as vm from 'node:vm'
 import { transformSync } from 'esbuild'
-import { syntaxErrorMessage } from '../../features/preview/extension/services/renderDiagnostics'
+import { PreviewOutput, previewErrorDetails, syntaxErrorMessage } from '../../features/preview/extension/services/renderDiagnostics'
 import { EmptyModelError } from '../../features/preview/extension/services/previewEligibility'
 import { ModelFormat } from '../../features/preview/shared/types/ModelFormat'
 import type { ScadWebviewPanel } from '../../features/preview/extension/views/ScadWebviewPanel'
@@ -21,9 +21,11 @@ test('syntax diagnostics retain the file and line without CLI output noise', () 
     }
 })
 
-function panelFixture(render: (...args: unknown[]) => Promise<Buffer> = async () => Buffer.from('color([1,0,0,1]){cube(size=1);}')) {
+function panelFixture(render: (...args: unknown[]) => Promise<Buffer> = async () => Buffer.from('color([1,0,0,1]){cube(size=1);}'), mode: 'render' | 'preview' = 'render') {
     const messages: ExtensionToWebviewMessage[] = []
     const notices: Error[] = []
+    const problems = new Map<string, unknown>()
+    let disposedProblems = false
     const timings: unknown[] = [],
         frames: unknown[] = []
     let ready!: (message: { type: 'ready' }) => void
@@ -44,6 +46,7 @@ function panelFixture(render: (...args: unknown[]) => Promise<Buffer> = async ()
             if (id.endsWith('/formats/meshTopology')) return { queryMeshTopology: async () => ({ version: 1, meshes: [] }) }
             if (id.endsWith('/platform/notifications')) return { notifications: { previewError: (error: Error) => notices.push(error) } }
             if (id.endsWith('/renderError')) return { showRenderError: (error: Error) => notices.push(error) }
+            if (id.endsWith('/PreviewProblems')) return { PreviewProblems: class { report(error: unknown, stage: string) { problems.set(stage, error) } clear(stage: string) { problems.delete(stage) } dispose() { disposedProblems = true; problems.clear() } } }
             if (id.endsWith('/renderDiagnostics')) return { syntaxErrorMessage }
             if (id.endsWith('/previewEligibility')) return { EmptyModelError }
             if (id.endsWith('/ScadClient')) return { ScadClient: { render } }
@@ -62,8 +65,10 @@ function panelFixture(render: (...args: unknown[]) => Promise<Buffer> = async ()
             },
         },
         onDidDispose: () => disposable,
+        dispose() {},
     }
     const session = {
+        previewMode: mode,
         documentUri: { fsPath: '/models/cube(20).scad', toString: () => 'file:///models/cube(20).scad' },
         onRenderStarted: (listener: typeof start) => {
             start = listener
@@ -79,8 +84,8 @@ function panelFixture(render: (...args: unknown[]) => Promise<Buffer> = async ()
         onParametersChanged: () => disposable,
         onLog: () => disposable,
     }
-    new module.exports.ScadWebviewPanel(panel as never, '/extension' as never, session as never, { get: () => null } as never)
-    return { messages, notices, timings, frames, receive: (message: unknown) => ready(message as never), ready: () => ready({ type: 'ready' }), start: () => start(), complete: () => complete({ buffer: Buffer.from('model'), format: ModelFormat.STL }), fail: (error: Error) => fail(error) }
+    const view = new module.exports.ScadWebviewPanel(panel as never, '/extension' as never, session as never, { get: () => null } as never)
+    return { view, problems, disposedProblems: () => disposedProblems, messages, notices, timings, frames, receive: (message: unknown) => ready(message as never), ready: () => ready({ type: 'ready' }), start: () => start(), complete: () => complete({ buffer: Buffer.from('model'), format: ModelFormat.STL }), fail: (error: Error) => fail(error) }
 }
 
 test('syntax failures replace stale models with a persistent centered message and recover after a successful render', () => {
@@ -216,4 +221,60 @@ test('failed CSG assistance quietly falls back and is not repeatedly exported on
     await mock.receive({ type: 'setPartColors', enabled: true, modelVersion: version })
     assert.equal(calls, 1)
     assert.equal(mock.notices.length, 0)
+})
+
+
+test('preview Problems cover render and webview errors, reject stale models and clear recovered scopes', () => {
+    const mock = panelFixture()
+    mock.fail(parserError)
+    assert.equal(mock.problems.get('render'), parserError)
+    mock.start()
+    assert.equal(mock.problems.size, 0)
+    mock.complete()
+    const version = (mock.messages.findLast(m => m.type === 'update') as { modelVersion: number }).modelVersion
+    mock.receive({ type: 'error', message: 'Invalid mesh payload', modelVersion: version - 1 })
+    assert.equal(mock.problems.size, 0)
+    mock.receive({ type: 'error', message: 'Invalid mesh payload', modelVersion: version })
+    assert.equal(mock.problems.get('view'), 'Invalid mesh payload')
+    mock.receive({ type: 'frameReady', modelVersion: version, graphics: 'webgl2', elapsedMs: 1 })
+    assert.equal(mock.problems.size, 0)
+    mock.fail(new Error('Runtime unavailable'))
+    assert.ok(mock.problems.has('render'))
+    mock.complete()
+    assert.equal(mock.problems.size, 0)
+})
+
+test('Problems error projection deduplicates bounded errors and only attributes explicit locations', () => {
+    const error = new Error('WARNING: x in file wrong.scad, line 99\nERROR: Stack exhausted\nERROR: Stack exhausted')
+    assert.deepEqual(previewErrorDetails(error), [{ message: 'ERROR: Stack exhausted' }])
+    assert.deepEqual(previewErrorDetails(parserError), [{ message: 'ERROR: Parser error: syntax error in file cube(20).scad, line 2', file: 'cube(20).scad', line: 2 }])
+    assert.equal(previewErrorDetails(new Error('No runtime available'))[0].message, 'No runtime available')
+    assert.ok(previewErrorDetails('x'.repeat(1048576))[0].message.length <= 8192)
+    assert.equal(previewErrorDetails(new Error(Array.from({ length: 50 }, (_, i) => `ERROR: failure ${i}`).join('\n'))).length, 20)
+})
+
+
+test('stderr capture retains middle errors across split chunks without unbounded output', () => {
+    const output = new PreviewOutput()
+    output.append('WARNING: repeated warning\n'.repeat(10000))
+    output.append('ERR')
+    output.append('OR: recursive module failed in file model.scad, line 73')
+    output.append('\n')
+    output.append('WARNING: repeated warning\n'.repeat(10000))
+    assert.equal(output.hasErrors, true)
+    assert.ok(output.text.length < 140000)
+    assert.equal(previewErrorDetails(new Error(output.text))[0].line, 73)
+    assert.match(output.text, /output truncated/)
+})
+
+
+test('fast Preview exporter failures reach Problems before the preview-only UI early return', () => {
+    const mock = panelFixture(undefined, 'preview')
+    const error = new Error('Preview Exporter failed: ERROR: evaluator recursion limit')
+    mock.fail(error)
+    assert.equal(mock.problems.get('render'), error)
+    assert.equal(mock.messages.at(-1)?.type, 'previewIssue')
+    mock.view.dispose()
+    assert.equal(mock.disposedProblems(), true)
+    assert.equal(mock.problems.size, 0)
 })

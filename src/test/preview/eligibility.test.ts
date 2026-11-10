@@ -10,6 +10,7 @@ import { join } from 'node:path'
 import * as vm from 'node:vm'
 import { createRequire } from 'node:module'
 import { transformSync } from 'esbuild'
+import { PreviewOutput } from '../../features/preview/extension/services/renderDiagnostics'
 import { canPreviewSource, EmptyModelError, isEmptyModelOutput } from '../../features/preview/extension/services/previewEligibility'
 import * as previewFiles from '../../features/preview/extension/services/previewFile'
 import { ModelFormat } from '../../features/preview/shared/types/ModelFormat'
@@ -54,6 +55,7 @@ test('CLI empty results are distinct from failures; configuration skips executio
         Buffer,
         performance,
         require: (id: string) => {
+            if (id.endsWith('/renderDiagnostics')) return { PreviewOutput }
             if (id.endsWith('/dependencies')) return cliDependencies
             if (id.endsWith('/previewExporter/runtime')) return {}
             if (id.endsWith('/PreviewExporter')) return {}
@@ -81,6 +83,11 @@ test('CLI empty results are distinct from failures; configuration skips executio
         await assert.rejects(client.render(path), EmptyModelError)
         mode = 'error'
         await assert.rejects(client.render(path), (error: Error) => error.name !== 'EmptyModelError' && error.message.includes('assertion failed'))
+        await writeFile(cli, `const fs = require('node:fs'); process.stdin.resume(); process.stdin.on('end', () => { fs.writeFileSync(process.argv[process.argv.indexOf('-o')+1], Buffer.from(${JSON.stringify(mesh.toString('base64'))}, 'base64')); process.stderr.write('WARNING: flood\\n'.repeat(20000)); process.stderr.write('ERROR: evaluator failed in file model.scad, line 1\\n'); process.stderr.write('WARNING: tail\\n'.repeat(20000)); process.exitCode = 0; });`)
+        const output: string[] = []
+        await assert.rejects(client.render(path, {}, ModelFormat.STL, chunk => output.push(chunk)), (error: Error) => error.message.includes('ERROR: evaluator failed') && error.message.length < 300000)
+        assert.ok(output.join('').length < 132000, 'Webview/Output logging must remain bounded')
+        await writeFile(cli, `const fs = require('node:fs'); process.stdin.resume(); process.stdin.on('end', () => fs.writeFileSync(process.argv[process.argv.indexOf('-o')+1], Buffer.from(${JSON.stringify(mesh.toString('base64'))}, 'base64')));`)
         mode = 'geometry'
         source = 'cube(1);'
         const timings: PreviewTimings = {}
