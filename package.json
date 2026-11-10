@@ -888,7 +888,7 @@
             {
                 "name": "scad_ai_ide_customizer_createPreset",
                 "displayName": "createPreset OpenSCAD presets",
-                "modelDescription": "createPreset for exact target URI and revision from customizer_state. Named presets use existing OpenSCAD JSON format; explicit file URIs must be inside the host workspace. Returns verified parameter/preset state; preserves other presets and metadata.",
+                "modelDescription": "createPreset for exact target URI and revision from customizer_state. Named presets use existing OpenSCAD JSON format; explicit file URIs must be inside the host workspace. Returns verified parameter/preset state; preserves other presets and metadata. Current-value snapshots must replay without value or type loss; otherwise PRESET_INVALID_VALUE preserves files and state.",
                 "canBeReferencedInPrompt": true,
                 "toolReferenceName": "scad_customizer_createPreset",
                 "inputSchema": {
@@ -925,7 +925,7 @@
             {
                 "name": "scad_ai_ide_customizer_savePreset",
                 "displayName": "savePreset OpenSCAD presets",
-                "modelDescription": "savePreset for exact target URI and revision from customizer_state. Named presets use existing OpenSCAD JSON format; explicit file URIs must be inside the host workspace. Returns verified parameter/preset state; preserves other presets and metadata.",
+                "modelDescription": "savePreset for exact target URI and revision from customizer_state. Named presets use existing OpenSCAD JSON format; explicit file URIs must be inside the host workspace. Returns verified parameter/preset state; preserves other presets and metadata. Current-value snapshots must replay without value or type loss; otherwise PRESET_INVALID_VALUE preserves files and state.",
                 "canBeReferencedInPrompt": true,
                 "toolReferenceName": "scad_customizer_savePreset",
                 "inputSchema": {
@@ -1025,7 +1025,7 @@
             {
                 "name": "scad_ai_ide_customizer_exportPresets",
                 "displayName": "exportPresets OpenSCAD presets",
-                "modelDescription": "exportPresets for exact target URI and revision from customizer_state. Named presets use existing OpenSCAD JSON format; explicit file URIs must be inside the host workspace. Returns verified parameter/preset state; preserves other presets and metadata.",
+                "modelDescription": "exportPresets for exact target URI and revision from customizer_state. Named presets use existing OpenSCAD JSON format; explicit file URIs must be inside the host workspace. Returns verified parameter/preset state; preserves other presets and metadata. Current-value snapshots must replay without value or type loss; otherwise PRESET_INVALID_VALUE preserves files and state. Exporting existing sets does not validate the current snapshot.",
                 "canBeReferencedInPrompt": true,
                 "toolReferenceName": "scad_customizer_exportPresets",
                 "inputSchema": {

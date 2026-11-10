@@ -18,7 +18,7 @@ Preset codec/只读诊断与Host事务分离。侧栏、Agent和Preview的选择
 |---|---|---|
 | DISC | Partial | 本机CLI/静态已验证：按行brace截止、有效赋值、同一行多声明、NFC；41例差分 |
 | TYPE | Partial | 本机已验证支持子集：literal/hint独立词法、有限标量/1–4向量，不求值 |
-| NUM | Broken | 有效范围/step/交互本机CLI与浏览器通过；native Desktop仍Unverified |
+| NUM | Broken | 有效范围/step/交互本机CLI与浏览器通过；官方Desktop12项交互已验证；完整pinned GUI仍Unverified |
 | ENUM | Partial | 默认补项、混合类型/顺序、native preset首次匹配通过 |
 | TEXT | Partial | UTF-8导入差分及两个GUI换行/无损拒绝通过；与native有损截断的差异明确保留 |
 | GROUP | Partial | pinned组语义和GUI投影已验证；Desktop具体布局不宣称一致 |
@@ -61,6 +61,9 @@ Preset codec/只读诊断与Host事务分离。侧栏、Agent和Preview的选择
 
 当前分支提交a874f3f的真实CI：Agent三平台contracts及panel全部成功，native各41+6通过；Linux/macOS Library成功，Windows因Unicode路径失败。证据见customizer/evidence/ci-a874f3f-summary.json。三平台结果没有替代SSH/WSL/Container或桌面交互。
 
-新增未通过项：超限源码默认值能写出不可重新apply的Preset，真实Host已复现；ADR10待用户决定保存策略。当前生产实现尚未修复，不能把已实现Preset全路径标为完成。最新10例本机native导入边界另存，不回写历史CI证据。
+新增未通过项：超限源码默认值能写出不可重新apply的Preset，真实Host已复现；ADR10待用户决定保存策略。此为历史发现；2026-11-10用户批准ADR10方案A后已修复，并通过核心/浏览器/真实Host及安装包路径验证。最新10例本机native导入边界另存，不回写历史CI证据。
 
 最新已结束CI对应721bbf5：三平台native各41 schema + 10 import通过；Agent四jobs成功（跳过范围同前述矩阵），Linux/macOS真实Library成功，Windows Unicode Library失败。新增边界与归档digest见customizer/evidence/ci-721bbf5/native-artifacts.json。当前生产Preset roundtrip缺陷仍待ADR10决定；GUI仍待解锁，整体目标未完成。
+
+
+2026-11-10最终增量：ADR10当前快照拒绝有损保存、强类型baseline、现有集导出/删除不被当前无效值阻塞；官方Desktop12项真实GUI+echo通过，用户偏好SHA不变。当前核心215/Preview99/浏览器38通过，最低Host最终33通过；中间32+1输入多p失败保留且根因未明。此前的包并行输出竞争已发现，交付包须以串行重建并重新安装后的artifact.json为准。pinned CLI新增CI入口尚未执行，不能写作已验证。

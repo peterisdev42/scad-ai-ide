@@ -1,0 +1,2112 @@
+[
+  {
+    "id": "width-keyboard",
+    "echo": "ECHO: width = 120, offgrid = 12, spin = 1.5, shape = \"round\", text = \"abcdef\", checked = true, vector = [1, 2, 3]",
+    "controls": [
+      {
+        "AXDescription": "Render (not preview) to enable measurements",
+        "AXEnabled": false,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Measure Distance",
+        "AXValue": 0,
+        "path": "0.6"
+      },
+      {
+        "AXDescription": "Render (not preview) to enable measurements",
+        "AXEnabled": false,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Measure Angle",
+        "AXValue": 0,
+        "path": "0.7"
+      },
+      {
+        "AXDescription": "Perspective",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Perspective",
+        "AXValue": 1,
+        "path": "0.14"
+      },
+      {
+        "AXDescription": "Orthogonal",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Orthogonal",
+        "AXValue": 0,
+        "path": "0.15"
+      },
+      {
+        "AXDescription": "Show Axes &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘2</span>",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Axes",
+        "AXValue": 1,
+        "path": "0.16"
+      },
+      {
+        "AXDescription": "Show Scale Markers",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Scale Markers",
+        "AXValue": 1,
+        "path": "0.17"
+      },
+      {
+        "AXDescription": "Show Edges &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘1</span>",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Edges",
+        "AXValue": 0,
+        "path": "0.18"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Automatic Preview",
+        "AXValue": 1,
+        "path": "0.21"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "Show Details",
+        "path": "0.22"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXTextField",
+        "AXTitle": "",
+        "AXValue": "New set 1",
+        "path": "0.23.0"
+      },
+      {
+        "AXDescription": "More actions",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "...",
+        "path": "0.26"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Dimensions",
+        "AXValue": 1,
+        "path": "0.27"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "120",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "120",
+        "path": "0.31"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "24",
+        "AXMinValue": "0",
+        "AXRole": "AXSlider",
+        "AXTitle": "",
+        "AXValue": "24",
+        "path": "0.32"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "100",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "10",
+        "path": "0.35"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "20",
+        "AXMinValue": "0",
+        "AXRole": "AXSlider",
+        "AXTitle": "",
+        "AXValue": "2",
+        "path": "0.36"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "1.7976931348623157e+308",
+        "AXMinValue": "-1.7976931348623157e+308",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "1.5",
+        "path": "0.39"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Appearance",
+        "AXValue": 1,
+        "path": "0.40"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "Round",
+        "path": "0.43"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXTextField",
+        "AXTitle": "",
+        "AXValue": "abcd",
+        "path": "0.46"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "",
+        "AXValue": 1,
+        "path": "0.49"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "1",
+        "path": "0.52"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "2",
+        "path": "0.53"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "3",
+        "path": "0.54"
+      }
+    ]
+  },
+  {
+    "id": "offgrid-keyboard",
+    "echo": "ECHO: width = 120, offgrid = 10, spin = 1.5, shape = \"round\", text = \"abcdef\", checked = true, vector = [1, 2, 3]",
+    "controls": [
+      {
+        "AXDescription": "Render (not preview) to enable measurements",
+        "AXEnabled": false,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Measure Distance",
+        "AXValue": 0,
+        "path": "0.6"
+      },
+      {
+        "AXDescription": "Render (not preview) to enable measurements",
+        "AXEnabled": false,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Measure Angle",
+        "AXValue": 0,
+        "path": "0.7"
+      },
+      {
+        "AXDescription": "Perspective",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Perspective",
+        "AXValue": 1,
+        "path": "0.14"
+      },
+      {
+        "AXDescription": "Orthogonal",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Orthogonal",
+        "AXValue": 0,
+        "path": "0.15"
+      },
+      {
+        "AXDescription": "Show Axes &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘2</span>",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Axes",
+        "AXValue": 1,
+        "path": "0.16"
+      },
+      {
+        "AXDescription": "Show Scale Markers",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Scale Markers",
+        "AXValue": 1,
+        "path": "0.17"
+      },
+      {
+        "AXDescription": "Show Edges &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘1</span>",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Edges",
+        "AXValue": 0,
+        "path": "0.18"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Automatic Preview",
+        "AXValue": 1,
+        "path": "0.21"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "Show Details",
+        "path": "0.22"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXTextField",
+        "AXTitle": "",
+        "AXValue": "New set 1",
+        "path": "0.23.0"
+      },
+      {
+        "AXDescription": "More actions",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "...",
+        "path": "0.26"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Dimensions",
+        "AXValue": 1,
+        "path": "0.27"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "120",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "120",
+        "path": "0.31"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "24",
+        "AXMinValue": "0",
+        "AXRole": "AXSlider",
+        "AXTitle": "",
+        "AXValue": "24",
+        "path": "0.32"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "100",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "15",
+        "path": "0.35"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "20",
+        "AXMinValue": "0",
+        "AXRole": "AXSlider",
+        "AXTitle": "",
+        "AXValue": "3",
+        "path": "0.36"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "1.7976931348623157e+308",
+        "AXMinValue": "-1.7976931348623157e+308",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "1.5",
+        "path": "0.39"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Appearance",
+        "AXValue": 1,
+        "path": "0.40"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "Round",
+        "path": "0.43"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXTextField",
+        "AXTitle": "",
+        "AXValue": "abcd",
+        "path": "0.46"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "",
+        "AXValue": 1,
+        "path": "0.49"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "1",
+        "path": "0.52"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "2",
+        "path": "0.53"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "3",
+        "path": "0.54"
+      }
+    ]
+  },
+  {
+    "id": "shape-selection",
+    "echo": "ECHO: width = 120, offgrid = 15, spin = 1.5, shape = \"square\", text = \"abcdef\", checked = true, vector = [1, 2, 3]",
+    "controls": [
+      {
+        "AXDescription": "Render (not preview) to enable measurements",
+        "AXEnabled": false,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Measure Distance",
+        "AXValue": 0,
+        "path": "0.6"
+      },
+      {
+        "AXDescription": "Render (not preview) to enable measurements",
+        "AXEnabled": false,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Measure Angle",
+        "AXValue": 0,
+        "path": "0.7"
+      },
+      {
+        "AXDescription": "Perspective",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Perspective",
+        "AXValue": 1,
+        "path": "0.14"
+      },
+      {
+        "AXDescription": "Orthogonal",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Orthogonal",
+        "AXValue": 0,
+        "path": "0.15"
+      },
+      {
+        "AXDescription": "Show Axes &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘2</span>",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Axes",
+        "AXValue": 1,
+        "path": "0.16"
+      },
+      {
+        "AXDescription": "Show Scale Markers",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Scale Markers",
+        "AXValue": 1,
+        "path": "0.17"
+      },
+      {
+        "AXDescription": "Show Edges &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘1</span>",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Edges",
+        "AXValue": 0,
+        "path": "0.18"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Automatic Preview",
+        "AXValue": 1,
+        "path": "0.21"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "Show Details",
+        "path": "0.22"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXTextField",
+        "AXTitle": "",
+        "AXValue": "New set 1",
+        "path": "0.23.0"
+      },
+      {
+        "AXDescription": "More actions",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "...",
+        "path": "0.26"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Dimensions",
+        "AXValue": 1,
+        "path": "0.27"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "120",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "120",
+        "path": "0.31"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "24",
+        "AXMinValue": "0",
+        "AXRole": "AXSlider",
+        "AXTitle": "",
+        "AXValue": "24",
+        "path": "0.32"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "100",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "15",
+        "path": "0.35"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "20",
+        "AXMinValue": "0",
+        "AXRole": "AXSlider",
+        "AXTitle": "",
+        "AXValue": "3",
+        "path": "0.36"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "1.7976931348623157e+308",
+        "AXMinValue": "-1.7976931348623157e+308",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "1.5",
+        "path": "0.39"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Appearance",
+        "AXValue": 1,
+        "path": "0.40"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "Square",
+        "path": "0.43"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXTextField",
+        "AXTitle": "",
+        "AXValue": "abcd",
+        "path": "0.46"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "",
+        "AXValue": 1,
+        "path": "0.49"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "1",
+        "path": "0.52"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "2",
+        "path": "0.53"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "3",
+        "path": "0.54"
+      }
+    ]
+  },
+  {
+    "id": "text-ascii",
+    "echo": "ECHO: width = 120, offgrid = 15, spin = 1.5, shape = \"square\", text = \"abcdef\", checked = true, vector = [1, 2, 3]",
+    "controls": [
+      {
+        "AXDescription": "Render (not preview) to enable measurements",
+        "AXEnabled": false,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Measure Distance",
+        "AXValue": 0,
+        "path": "0.6"
+      },
+      {
+        "AXDescription": "Render (not preview) to enable measurements",
+        "AXEnabled": false,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Measure Angle",
+        "AXValue": 0,
+        "path": "0.7"
+      },
+      {
+        "AXDescription": "Perspective",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Perspective",
+        "AXValue": 1,
+        "path": "0.14"
+      },
+      {
+        "AXDescription": "Orthogonal",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Orthogonal",
+        "AXValue": 0,
+        "path": "0.15"
+      },
+      {
+        "AXDescription": "Show Axes &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘2</span>",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Axes",
+        "AXValue": 1,
+        "path": "0.16"
+      },
+      {
+        "AXDescription": "Show Scale Markers",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Scale Markers",
+        "AXValue": 1,
+        "path": "0.17"
+      },
+      {
+        "AXDescription": "Show Edges &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘1</span>",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Edges",
+        "AXValue": 0,
+        "path": "0.18"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Automatic Preview",
+        "AXValue": 1,
+        "path": "0.21"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "Show Details",
+        "path": "0.22"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXTextField",
+        "AXTitle": "",
+        "AXValue": "New set 1",
+        "path": "0.23.0"
+      },
+      {
+        "AXDescription": "More actions",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "...",
+        "path": "0.26"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Dimensions",
+        "AXValue": 1,
+        "path": "0.27"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "120",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "120",
+        "path": "0.31"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "24",
+        "AXMinValue": "0",
+        "AXRole": "AXSlider",
+        "AXTitle": "",
+        "AXValue": "24",
+        "path": "0.32"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "100",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "15",
+        "path": "0.35"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "20",
+        "AXMinValue": "0",
+        "AXRole": "AXSlider",
+        "AXTitle": "",
+        "AXValue": "3",
+        "path": "0.36"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "1.7976931348623157e+308",
+        "AXMinValue": "-1.7976931348623157e+308",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "1.5",
+        "path": "0.39"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Appearance",
+        "AXValue": 1,
+        "path": "0.40"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "Square",
+        "path": "0.43"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXTextField",
+        "AXTitle": "",
+        "AXValue": "1234",
+        "path": "0.46"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "",
+        "AXValue": 1,
+        "path": "0.49"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "1",
+        "path": "0.52"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "2",
+        "path": "0.53"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "3",
+        "path": "0.54"
+      }
+    ]
+  },
+  {
+    "id": "text-unicode",
+    "echo": "ECHO: width = 120, offgrid = 15, spin = 1.5, shape = \"square\", text = \"abcdef\", checked = true, vector = [1, 2, 3]",
+    "controls": [
+      {
+        "AXDescription": "Render (not preview) to enable measurements",
+        "AXEnabled": false,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Measure Distance",
+        "AXValue": 0,
+        "path": "0.6"
+      },
+      {
+        "AXDescription": "Render (not preview) to enable measurements",
+        "AXEnabled": false,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Measure Angle",
+        "AXValue": 0,
+        "path": "0.7"
+      },
+      {
+        "AXDescription": "Perspective",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Perspective",
+        "AXValue": 1,
+        "path": "0.14"
+      },
+      {
+        "AXDescription": "Orthogonal",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Orthogonal",
+        "AXValue": 0,
+        "path": "0.15"
+      },
+      {
+        "AXDescription": "Show Axes &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘2</span>",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Axes",
+        "AXValue": 1,
+        "path": "0.16"
+      },
+      {
+        "AXDescription": "Show Scale Markers",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Scale Markers",
+        "AXValue": 1,
+        "path": "0.17"
+      },
+      {
+        "AXDescription": "Show Edges &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘1</span>",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Edges",
+        "AXValue": 0,
+        "path": "0.18"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Automatic Preview",
+        "AXValue": 1,
+        "path": "0.21"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "Show Details",
+        "path": "0.22"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXTextField",
+        "AXTitle": "",
+        "AXValue": "New set 1",
+        "path": "0.23.0"
+      },
+      {
+        "AXDescription": "More actions",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "...",
+        "path": "0.26"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Dimensions",
+        "AXValue": 1,
+        "path": "0.27"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "120",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "120",
+        "path": "0.31"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "24",
+        "AXMinValue": "0",
+        "AXRole": "AXSlider",
+        "AXTitle": "",
+        "AXValue": "24",
+        "path": "0.32"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "100",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "15",
+        "path": "0.35"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "20",
+        "AXMinValue": "0",
+        "AXRole": "AXSlider",
+        "AXTitle": "",
+        "AXValue": "3",
+        "path": "0.36"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "1.7976931348623157e+308",
+        "AXMinValue": "-1.7976931348623157e+308",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "1.5",
+        "path": "0.39"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Appearance",
+        "AXValue": 1,
+        "path": "0.40"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "Square",
+        "path": "0.43"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXTextField",
+        "AXTitle": "",
+        "AXValue": "Ω😀x",
+        "path": "0.46"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "",
+        "AXValue": 1,
+        "path": "0.49"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "1",
+        "path": "0.52"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "2",
+        "path": "0.53"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "3",
+        "path": "0.54"
+      }
+    ]
+  },
+  {
+    "id": "checkbox",
+    "echo": "ECHO: width = 120, offgrid = 15, spin = 1.5, shape = \"square\", text = \"Ω😀x\", checked = true, vector = [1, 2, 3]",
+    "controls": [
+      {
+        "AXDescription": "Render (not preview) to enable measurements",
+        "AXEnabled": false,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Measure Distance",
+        "AXValue": 0,
+        "path": "0.6"
+      },
+      {
+        "AXDescription": "Render (not preview) to enable measurements",
+        "AXEnabled": false,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Measure Angle",
+        "AXValue": 0,
+        "path": "0.7"
+      },
+      {
+        "AXDescription": "Perspective",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Perspective",
+        "AXValue": 1,
+        "path": "0.14"
+      },
+      {
+        "AXDescription": "Orthogonal",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Orthogonal",
+        "AXValue": 0,
+        "path": "0.15"
+      },
+      {
+        "AXDescription": "Show Axes &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘2</span>",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Axes",
+        "AXValue": 1,
+        "path": "0.16"
+      },
+      {
+        "AXDescription": "Show Scale Markers",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Scale Markers",
+        "AXValue": 1,
+        "path": "0.17"
+      },
+      {
+        "AXDescription": "Show Edges &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘1</span>",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Edges",
+        "AXValue": 0,
+        "path": "0.18"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Automatic Preview",
+        "AXValue": 1,
+        "path": "0.21"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "Show Details",
+        "path": "0.22"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXTextField",
+        "AXTitle": "",
+        "AXValue": "New set 1",
+        "path": "0.23.0"
+      },
+      {
+        "AXDescription": "More actions",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "...",
+        "path": "0.26"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Dimensions",
+        "AXValue": 1,
+        "path": "0.27"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "120",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "120",
+        "path": "0.31"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "24",
+        "AXMinValue": "0",
+        "AXRole": "AXSlider",
+        "AXTitle": "",
+        "AXValue": "24",
+        "path": "0.32"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "100",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "15",
+        "path": "0.35"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "20",
+        "AXMinValue": "0",
+        "AXRole": "AXSlider",
+        "AXTitle": "",
+        "AXValue": "3",
+        "path": "0.36"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "1.7976931348623157e+308",
+        "AXMinValue": "-1.7976931348623157e+308",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "1.5",
+        "path": "0.39"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Appearance",
+        "AXValue": 1,
+        "path": "0.40"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "Square",
+        "path": "0.43"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXTextField",
+        "AXTitle": "",
+        "AXValue": "Ω😀x",
+        "path": "0.46"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "",
+        "AXValue": 0,
+        "path": "0.49"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "1",
+        "path": "0.52"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "2",
+        "path": "0.53"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "3",
+        "path": "0.54"
+      }
+    ]
+  },
+  {
+    "id": "vector-keyboard",
+    "echo": "ECHO: width = 120, offgrid = 15, spin = 1.5, shape = \"square\", text = \"Ω😀x\", checked = true, vector = [1, 2, 3]",
+    "controls": [
+      {
+        "AXDescription": "Render (not preview) to enable measurements",
+        "AXEnabled": false,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Measure Distance",
+        "AXValue": 0,
+        "path": "0.6"
+      },
+      {
+        "AXDescription": "Render (not preview) to enable measurements",
+        "AXEnabled": false,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Measure Angle",
+        "AXValue": 0,
+        "path": "0.7"
+      },
+      {
+        "AXDescription": "Perspective",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Perspective",
+        "AXValue": 1,
+        "path": "0.14"
+      },
+      {
+        "AXDescription": "Orthogonal",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Orthogonal",
+        "AXValue": 0,
+        "path": "0.15"
+      },
+      {
+        "AXDescription": "Show Axes &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘2</span>",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Axes",
+        "AXValue": 1,
+        "path": "0.16"
+      },
+      {
+        "AXDescription": "Show Scale Markers",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Scale Markers",
+        "AXValue": 1,
+        "path": "0.17"
+      },
+      {
+        "AXDescription": "Show Edges &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘1</span>",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Edges",
+        "AXValue": 0,
+        "path": "0.18"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Automatic Preview",
+        "AXValue": 1,
+        "path": "0.21"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "Show Details",
+        "path": "0.22"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXTextField",
+        "AXTitle": "",
+        "AXValue": "New set 1",
+        "path": "0.23.0"
+      },
+      {
+        "AXDescription": "More actions",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "...",
+        "path": "0.26"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Dimensions",
+        "AXValue": 1,
+        "path": "0.27"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "120",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "120",
+        "path": "0.31"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "24",
+        "AXMinValue": "0",
+        "AXRole": "AXSlider",
+        "AXTitle": "",
+        "AXValue": "24",
+        "path": "0.32"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "100",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "15",
+        "path": "0.35"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "20",
+        "AXMinValue": "0",
+        "AXRole": "AXSlider",
+        "AXTitle": "",
+        "AXValue": "3",
+        "path": "0.36"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "1.7976931348623157e+308",
+        "AXMinValue": "-1.7976931348623157e+308",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "1.5",
+        "path": "0.39"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Appearance",
+        "AXValue": 1,
+        "path": "0.40"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "Square",
+        "path": "0.43"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXTextField",
+        "AXTitle": "",
+        "AXValue": "Ω😀x",
+        "path": "0.46"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "",
+        "AXValue": 0,
+        "path": "0.49"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "1",
+        "path": "0.52"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "2",
+        "path": "0.53"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "3",
+        "path": "0.54"
+      }
+    ]
+  },
+  {
+    "id": "preset-A",
+    "echo": "ECHO: width = 120, offgrid = 15, spin = 1.5, shape = \"square\", text = \"Ω😀x\", checked = true, vector = [1, 2, 3]",
+    "controls": [
+      {
+        "AXDescription": "Render (not preview) to enable measurements",
+        "AXEnabled": false,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Measure Distance",
+        "AXValue": 0,
+        "path": "0.6"
+      },
+      {
+        "AXDescription": "Render (not preview) to enable measurements",
+        "AXEnabled": false,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Measure Angle",
+        "AXValue": 0,
+        "path": "0.7"
+      },
+      {
+        "AXDescription": "Perspective",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Perspective",
+        "AXValue": 1,
+        "path": "0.14"
+      },
+      {
+        "AXDescription": "Orthogonal",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Orthogonal",
+        "AXValue": 0,
+        "path": "0.15"
+      },
+      {
+        "AXDescription": "Show Axes &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘2</span>",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Axes",
+        "AXValue": 1,
+        "path": "0.16"
+      },
+      {
+        "AXDescription": "Show Scale Markers",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Scale Markers",
+        "AXValue": 1,
+        "path": "0.17"
+      },
+      {
+        "AXDescription": "Show Edges &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘1</span>",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Edges",
+        "AXValue": 0,
+        "path": "0.18"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Automatic Preview",
+        "AXValue": 1,
+        "path": "0.21"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "Show Details",
+        "path": "0.22"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXTextField",
+        "AXTitle": "",
+        "AXValue": "New set 1",
+        "path": "0.23.1"
+      },
+      {
+        "AXDescription": "More actions",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "...",
+        "path": "0.26"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Dimensions",
+        "AXValue": 1,
+        "path": "0.27"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "120",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "120",
+        "path": "0.31"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "24",
+        "AXMinValue": "0",
+        "AXRole": "AXSlider",
+        "AXTitle": "",
+        "AXValue": "24",
+        "path": "0.32"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "100",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "15",
+        "path": "0.35"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "20",
+        "AXMinValue": "0",
+        "AXRole": "AXSlider",
+        "AXTitle": "",
+        "AXValue": "3",
+        "path": "0.36"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "1.7976931348623157e+308",
+        "AXMinValue": "-1.7976931348623157e+308",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "1.5",
+        "path": "0.39"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Appearance",
+        "AXValue": 1,
+        "path": "0.40"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "Square",
+        "path": "0.43"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXTextField",
+        "AXTitle": "",
+        "AXValue": "Ω😀x",
+        "path": "0.46"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "",
+        "AXValue": 0,
+        "path": "0.49"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "1",
+        "path": "0.52"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "2",
+        "path": "0.53"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "3",
+        "path": "0.54"
+      }
+    ]
+  },
+  {
+    "id": "preset-B",
+    "echo": "ECHO: width = 120, offgrid = 15, spin = 1.5, shape = \"square\", text = \"Ω😀x\", checked = true, vector = [0.5, 2, 3]",
+    "controls": [
+      {
+        "AXDescription": "Render (not preview) to enable measurements",
+        "AXEnabled": false,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Measure Distance",
+        "AXValue": 0,
+        "path": "0.6"
+      },
+      {
+        "AXDescription": "Render (not preview) to enable measurements",
+        "AXEnabled": false,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Measure Angle",
+        "AXValue": 0,
+        "path": "0.7"
+      },
+      {
+        "AXDescription": "Perspective",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Perspective",
+        "AXValue": 1,
+        "path": "0.14"
+      },
+      {
+        "AXDescription": "Orthogonal",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Orthogonal",
+        "AXValue": 0,
+        "path": "0.15"
+      },
+      {
+        "AXDescription": "Show Axes &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘2</span>",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Axes",
+        "AXValue": 1,
+        "path": "0.16"
+      },
+      {
+        "AXDescription": "Show Scale Markers",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Scale Markers",
+        "AXValue": 1,
+        "path": "0.17"
+      },
+      {
+        "AXDescription": "Show Edges &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘1</span>",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Edges",
+        "AXValue": 0,
+        "path": "0.18"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Automatic Preview",
+        "AXValue": 1,
+        "path": "0.21"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "Show Details",
+        "path": "0.22"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXTextField",
+        "AXTitle": "",
+        "AXValue": "New set 1",
+        "path": "0.23.0"
+      },
+      {
+        "AXDescription": "More actions",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "...",
+        "path": "0.26"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Dimensions",
+        "AXValue": 1,
+        "path": "0.27"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "120",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "120",
+        "path": "0.31"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "24",
+        "AXMinValue": "0",
+        "AXRole": "AXSlider",
+        "AXTitle": "",
+        "AXValue": "24",
+        "path": "0.32"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "100",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "15",
+        "path": "0.35"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "20",
+        "AXMinValue": "0",
+        "AXRole": "AXSlider",
+        "AXTitle": "",
+        "AXValue": "3",
+        "path": "0.36"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "1.7976931348623157e+308",
+        "AXMinValue": "-1.7976931348623157e+308",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "1.5",
+        "path": "0.39"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Appearance",
+        "AXValue": 1,
+        "path": "0.40"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "Square",
+        "path": "0.43"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXTextField",
+        "AXTitle": "",
+        "AXValue": "Ω😀x",
+        "path": "0.46"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "",
+        "AXValue": 0,
+        "path": "0.49"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "0.5",
+        "path": "0.52"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "2",
+        "path": "0.53"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "3",
+        "path": "0.54"
+      }
+    ]
+  },
+  {
+    "id": "preset-default",
+    "echo": "ECHO: width = 120, offgrid = 15, spin = 1.5, shape = \"square\", text = \"Ω😀x\", checked = true, vector = [0.5, 2, 3]",
+    "controls": [
+      {
+        "AXDescription": "Render (not preview) to enable measurements",
+        "AXEnabled": false,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Measure Distance",
+        "AXValue": 0,
+        "path": "0.6"
+      },
+      {
+        "AXDescription": "Render (not preview) to enable measurements",
+        "AXEnabled": false,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Measure Angle",
+        "AXValue": 0,
+        "path": "0.7"
+      },
+      {
+        "AXDescription": "Perspective",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Perspective",
+        "AXValue": 1,
+        "path": "0.14"
+      },
+      {
+        "AXDescription": "Orthogonal",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Orthogonal",
+        "AXValue": 0,
+        "path": "0.15"
+      },
+      {
+        "AXDescription": "Show Axes &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘2</span>",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Axes",
+        "AXValue": 1,
+        "path": "0.16"
+      },
+      {
+        "AXDescription": "Show Scale Markers",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Scale Markers",
+        "AXValue": 1,
+        "path": "0.17"
+      },
+      {
+        "AXDescription": "Show Edges &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘1</span>",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Show Edges",
+        "AXValue": 0,
+        "path": "0.18"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Automatic Preview",
+        "AXValue": 1,
+        "path": "0.21"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "Show Details",
+        "path": "0.22"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXTextField",
+        "AXTitle": "",
+        "AXValue": "New set 1",
+        "path": "0.23.1"
+      },
+      {
+        "AXDescription": "More actions",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "...",
+        "path": "0.26"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Dimensions",
+        "AXValue": 1,
+        "path": "0.27"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "120",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "120",
+        "path": "0.31"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "24",
+        "AXMinValue": "0",
+        "AXRole": "AXSlider",
+        "AXTitle": "",
+        "AXValue": "24",
+        "path": "0.32"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "100",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "15",
+        "path": "0.35"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "20",
+        "AXMinValue": "0",
+        "AXRole": "AXSlider",
+        "AXTitle": "",
+        "AXValue": "3",
+        "path": "0.36"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "1.7976931348623157e+308",
+        "AXMinValue": "-1.7976931348623157e+308",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "1.5",
+        "path": "0.39"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "Appearance",
+        "AXValue": 1,
+        "path": "0.40"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXMenuButton",
+        "AXTitle": "Square",
+        "path": "0.43"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXTextField",
+        "AXTitle": "",
+        "AXValue": "Ω😀x",
+        "path": "0.46"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXRole": "AXCheckBox",
+        "AXTitle": "",
+        "AXValue": 0,
+        "path": "0.49"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "0.5",
+        "path": "0.52"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "2",
+        "path": "0.53"
+      },
+      {
+        "AXDescription": "",
+        "AXEnabled": true,
+        "AXMaxValue": "10",
+        "AXMinValue": "0",
+        "AXRole": "AXIncrementor",
+        "AXTitle": "",
+        "AXValue": "3",
+        "path": "0.54"
+      }
+    ]
+  }
+]

@@ -523,5 +523,71 @@
     "evidence": "ci-721bbf5/win32-import.json",
     "sha256": "28c8ec2aadd16ea3a38878bdf29ffc9959d74ab73fd6b9c137d47a16fa80c5fd",
     "scope": "Actual cross-platform 10-case import audit; Windows Library failure remains independent"
+  },
+  {
+    "name": "adr10-host",
+    "evidence": "adr10-host.txt",
+    "sha256": "74232bf12c6b5a3c9bea448174c9b7cee90e9007582e423ea7903b4ad9a562ef",
+    "scope": "Executed ADR10 validation; default Library skips retained, installed code exercise is not a native model run"
+  },
+  {
+    "name": "adr10-full-host",
+    "evidence": "adr10-full-host.txt",
+    "sha256": "8d779cf1186cf5bfcd3b62c22af9c8e2d88197624a704150e7b0d243035c5c75",
+    "scope": "Executed ADR10 validation; default Library skips retained, installed code exercise is not a native model run"
+  },
+  {
+    "name": "adr10-browser",
+    "evidence": "adr10-browser.txt",
+    "sha256": "7e374dcbf4e9c3f6a63ba1a20f20b3da87a30b5b0f41760e2c949208fe794936",
+    "scope": "Executed ADR10 validation; default Library skips retained, installed code exercise is not a native model run"
+  },
+  {
+    "name": "adr10-regression",
+    "evidence": "adr10-regression.txt",
+    "sha256": "c7b3471eac30f75c2029597464c3d4dc89ee0d4888c29962b329e2ae54fa2df2",
+    "scope": "Executed ADR10 validation; default Library skips retained, installed code exercise is not a native model run"
+  },
+  {
+    "name": "adr10-capabilities",
+    "evidence": "adr10-capabilities.txt",
+    "sha256": "01c132b4ee40790d7e423a287c1f052e0ea455c0202353cb263d8efde363aca9",
+    "scope": "Executed ADR10 validation; default Library skips retained, installed code exercise is not a native model run"
+  },
+  {
+    "name": "installed-adr10-functional",
+    "evidence": "installed-adr10-functional.txt",
+    "sha256": "76a5bd3306d9e8fc66e44a539fed340bb16335e6c81077444ba3f9e43d7e8a6b",
+    "scope": "Executed ADR10 validation; default Library skips retained, installed code exercise is not a native model run"
+  },
+  {
+    "name": "adr10-host-final-2026-11-10",
+    "evidence": "adr10-host-final.txt",
+    "sha256": "a46ac605800db82b632b83fc7aacf737e398913e6e3d935350f9b75eedbb6dfa",
+    "scope": "Actual executed acceptance evidence with known failures retained; see file for scope"
+  },
+  {
+    "name": "adr10-browser-final-2026-11-10",
+    "evidence": "adr10-browser-final.txt",
+    "sha256": "13c29167806cb9352dab4f4c67600e779ed977419c59d8690af794c6f89cca39",
+    "scope": "Actual executed acceptance evidence with known failures retained; see file for scope"
+  },
+  {
+    "name": "adr10-host-input-failure-2026-11-10",
+    "evidence": "adr10-host-input-failure.txt",
+    "sha256": "276b75deb22e6328249ff9113af494b232430b29a72982d10506e415db087505",
+    "scope": "Actual executed acceptance evidence with known failures retained; see file for scope"
+  },
+  {
+    "name": "installed-adr10-final-2026-11-10",
+    "evidence": "installed-adr10-final.txt",
+    "sha256": "a54529d419f649dcc2654b70ba110d7570f733a04e246e827826a766a94df81a",
+    "scope": "Actual executed acceptance evidence with known failures retained; see file for scope"
+  },
+  {
+    "name": "manifest-2026-11-10",
+    "evidence": "native-gui-2026-11-10/manifest.json",
+    "sha256": "a734c472b4e2088548dda15b472e6f5c13521e684a0e67a9c944e23528c3bf75",
+    "scope": "Actual executed acceptance evidence with known failures retained; see file for scope"
   }
 ]

@@ -52,5 +52,45 @@ exports.run = async () => {
     const sourceAuthoring = { analyzed, unmet, planned, committed, validated, singleUseRejected: true, unsavedSource: sourceDocument.getText(), diskUnchanged: true }
     await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor')
     await vscode.workspace.fs.delete(sourceUri)
-    await fs.writeFile(process.env.SCAD_SMOKE_RESULT, JSON.stringify({ vscode: vscode.version, extension: extension.id, toolCount: names.length, availableChatModels, productionDevDenied: true, sourceAuthoring, panelsRequired: false, instructions: extension.packageJSON.contributes.chatInstructions, skills: extension.packageJSON.contributes.chatSkills }, null, 2))
+    const snapshotUri = vscode.Uri.joinPath(folder.uri, 'snapshot.scad')
+    const snapshotFile = vscode.Uri.joinPath(folder.uri, 'snapshot.json')
+    const snapshotSource = 'label="abcdef"; // 3\ncube(1);\n'
+    await vscode.workspace.fs.writeFile(snapshotUri, Buffer.from(snapshotSource))
+    const snapshotDocument = await vscode.workspace.openTextDocument(snapshotUri)
+    await vscode.window.showTextDocument(snapshotDocument)
+    const snapshotState = async () => {
+        const result = await api.capabilities.invoke('customizer.state', {}, { actor: 'agent' })
+        assert.ok(result.ok)
+        return result.data
+    }
+    const snapshotAction = async (id, input) => {
+        const state = await snapshotState()
+        return api.capabilities.invoke(id, { target: state.target, revision: state.revision, ...input }, { actor: 'agent' })
+    }
+    const beforeSnapshot = await snapshotState()
+    assert.equal(beforeSnapshot.target, snapshotUri.toString())
+    const invalidSnapshot = await snapshotAction('customizer.createPreset', { name: 'Invalid' })
+    assert.equal(invalidSnapshot.ok, false)
+    assert.equal(invalidSnapshot.error.code, 'PRESET_INVALID_VALUE')
+    assert.deepEqual(await snapshotState(), beforeSnapshot)
+    await assert.rejects(async () => vscode.workspace.fs.stat(snapshotFile), error => error.code === 'FileNotFound')
+    for (const [id, input] of [
+        ['customizer.set', { values: { label: 'abc' } }],
+        ['customizer.createPreset', { name: 'Valid' }],
+        ['customizer.applyPreset', { name: '' }],
+        ['customizer.applyPreset', { name: 'Valid' }],
+    ]) {
+        const result = await snapshotAction(id, input)
+        assert.ok(result.ok, JSON.stringify(result))
+    }
+    assert.equal(api.customizer.getOverrides(snapshotUri.toString()).label, 'abc')
+    assert.equal(snapshotDocument.getText(), snapshotSource)
+    assert.equal(snapshotDocument.isDirty, false)
+    assert.equal(Buffer.from(await vscode.workspace.fs.readFile(snapshotUri)).toString(), snapshotSource)
+    const presetSnapshot = { invalidRejectedBeforeWrite: true, invalidErrorCode: invalidSnapshot.error.code, rejectedStateUnchanged: true, validSnapshotReplayed: true, sourceUnchanged: true, sourceDirty: false }
+    await vscode.commands.executeCommand('workbench.action.closeActiveEditor')
+    api.customizer.clear()
+    await vscode.workspace.fs.delete(snapshotUri)
+    await vscode.workspace.fs.delete(snapshotFile)
+    await fs.writeFile(process.env.SCAD_SMOKE_RESULT, JSON.stringify({ vscode: vscode.version, extension: extension.id, toolCount: names.length, availableChatModels, productionDevDenied: true, sourceAuthoring, presetSnapshot, panelsRequired: false, instructions: extension.packageJSON.contributes.chatInstructions, skills: extension.packageJSON.contributes.chatSkills }, null, 2))
 }

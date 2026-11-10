@@ -3,7 +3,8 @@ import { commitPresetFile } from '../../core/customizer/CustomizerPresetTransact
 import { CapabilityError } from '../../core/capabilities/CapabilityTypes'
 import { posix } from 'node:path'
 import * as vscode from 'vscode'
-import { encodePresetValue, parsePresetFile, presetOverrides, presetVersionCompatible, assertPresetCompatible, analyzePresetFile, type PresetFile } from '../../core/customizer/CustomizerPresets'
+import { encodePresetSnapshot, parsePresetFile, presetOverrides, presetVersionCompatible, assertPresetCompatible, analyzePresetFile, type PresetFile } from '../../core/customizer/CustomizerPresets'
+import type { ParameterValue } from '../../core/customizer/CustomizerModel'
 import type { CustomizerService } from '../../core/customizer/CustomizerService'
 
 interface Presets {
@@ -11,7 +12,7 @@ interface Presets {
     file: PresetFile
     active?: string
     error?: string
-    baseline?: Record<string, string>
+    baseline?: Record<string, ParameterValue>
     exists: boolean
 }
 
@@ -168,8 +169,9 @@ export class CustomizerPresets implements vscode.Disposable {
             guard()
             await this.write(uri, destination.bytes, file, () => { if (!current()) throw new CapabilityError('TARGET_CHANGED', 'Preset target changed.', true); guard() })
         } else if (action === 'new' || action === 'save' || action === 'delete') {
+            const snapshot = action === 'delete' ? undefined : this.snapshot()
+            const baseline = snapshot ? Object.fromEntries(this.service.parameters.map(parameter => [parameter.name, structuredClone(this.service.value(parameter))])) : undefined
             if (action === 'save' && (!name || name === presets.active) && !this.modified(presets)) return
-            const snapshot = this.snapshot()
             if (action === 'new') {
                 if (!name || !current()) throw new CapabilityError('TARGET_CHANGED', 'A preset name and current target are required.', true)
                 name = name.trim()
@@ -203,7 +205,7 @@ export class CustomizerPresets implements vscode.Disposable {
             presets.file = file
             if (openedNewFile) this.watch(target)
             presets.active = action === 'delete' ? undefined : name
-            presets.baseline = action === 'delete' ? undefined : snapshot
+            presets.baseline = baseline
             presets.exists = true
             presets.error = undefined
         } else throw new CapabilityError('INVALID_INPUT', 'Unknown preset action.')
@@ -212,8 +214,8 @@ export class CustomizerPresets implements vscode.Disposable {
 
     private modified(presets: Presets): boolean {
         return this.service.parameters.some((parameter) => {
-            const baseline = presets.active && presets.baseline ? presets.baseline[parameter.name] : encodePresetValue(parameter.defaultValue)
-            return baseline !== encodePresetValue(this.service.value(parameter))
+            const baseline = presets.active && presets.baseline ? presets.baseline[parameter.name] : parameter.defaultValue
+            return JSON.stringify(baseline) !== JSON.stringify(this.service.value(parameter))
         })
     }
 
@@ -224,13 +226,13 @@ export class CustomizerPresets implements vscode.Disposable {
         const overrides = presetOverrides(this.service.parameters, presets.file.parameterSets[name])
         presets.active = name
         presets.error = undefined
-        presets.baseline = Object.fromEntries(this.service.parameters.map(parameter => [parameter.name, encodePresetValue(Object.hasOwn(overrides, parameter.name) ? overrides[parameter.name] : parameter.defaultValue)]))
+        presets.baseline = Object.fromEntries(this.service.parameters.map(parameter => [parameter.name, structuredClone(Object.hasOwn(overrides, parameter.name) ? overrides[parameter.name] : parameter.defaultValue)]))
         // An explicit selection must render even if the values match an earlier selection.
         this.service.replaceOverrides(target, overrides, 'preset')
     }
 
     private snapshot(): Record<string, string> {
-        return Object.fromEntries(this.service.parameters.map((parameter) => [parameter.name, encodePresetValue(this.service.value(parameter))]))
+        return encodePresetSnapshot(this.service.parameters, parameter => this.service.value(parameter))
     }
 
     dispose() {

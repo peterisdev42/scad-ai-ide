@@ -1,0 +1,22 @@
+{
+  "scope": "Actual native Qt process; screenshot and AX checks are separate observations, not a blanket PASS",
+  "sandbox": "OS denies all user-preference writes and direct file writes in the real home",
+  "executable": "<repo>/.build/customizer-native-gui/mount/OpenSCAD.app/Contents/MacOS/OpenSCAD",
+  "source": "/* [Dimensions] */\n// Width in millimeters\nwidth=120; // [0:5:100]\noffgrid=12; // [0:5:100]\nspin=1.25; // .25\n/* [Appearance] */\nshape=\"round\"; // [round:Round, square:Square]\ntext=\"abcdef\"; // 4\nchecked=true;\nvector=[1,2,3]; // [0:0.5:10]\n/* [Hidden] */\ninternalOffset=0.01;\necho(width=width,offgrid=offgrid,spin=spin,shape=shape,text=text,checked=checked,vector=vector);\ncube([width,2,3]);\n",
+  "captured": true,
+  "accessibilityObserved": true,
+  "windows": [
+    {
+      "width": 823,
+      "id": 65627,
+      "height": 451,
+      "title": "model.scad"
+    }
+  ],
+  "exitCode": null,
+  "sourceUnchanged": true,
+  "existingPreferenceShaBefore": "72677f54dc4f51f7d9688809889a978d380a8041a1208aff0ac9e43bf47776ec",
+  "existingPreferenceShaAfter": "72677f54dc4f51f7d9688809889a978d380a8041a1208aff0ac9e43bf47776ec",
+  "existingPreferencesUnchanged": true,
+  "childProfile": "<fixture>/profile"
+}

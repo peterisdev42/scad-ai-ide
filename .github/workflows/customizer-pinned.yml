@@ -1,0 +1,73 @@
+name: Pinned OpenSCAD Customizer differential
+on:
+    push:
+        paths:
+            - '.github/workflows/customizer-pinned.yml'
+            - 'scripts/customizer-native-audit.mjs'
+            - 'scripts/customizer-native-import-audit.mjs'
+            - 'src/test/fixtures/customizer-compatibility.json'
+    pull_request:
+        paths:
+            - '.github/workflows/customizer-pinned.yml'
+            - 'scripts/customizer-native-audit.mjs'
+            - 'scripts/customizer-native-import-audit.mjs'
+            - 'src/test/fixtures/customizer-compatibility.json'
+permissions:
+    contents: read
+jobs:
+    pinned-linux:
+        runs-on: ubuntu-24.04
+        timeout-minutes: 45
+        env:
+            REFERENCE_OPENSCAD_SHA: bcf45a22caa954ca56ca287994cb6dbc368c67b2
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '24'
+                  cache: npm
+            - run: npm ci
+            - run: npm run compile-tests
+            - name: Checkout exact upstream source and submodules
+              uses: actions/checkout@v4
+              with:
+                  repository: openscad/openscad
+                  ref: bcf45a22caa954ca56ca287994cb6dbc368c67b2
+                  path: .build/pinned-openscad-source
+                  submodules: recursive
+                  persist-credentials: false
+            - name: Install native build dependencies
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y build-essential cmake ninja-build pkg-config flex bison libboost-program-options-dev libboost-regex-dev libcgal-dev libdouble-conversion-dev libeigen3-dev libfontconfig-dev libfreetype-dev libglib2.0-dev libgmp-dev libharfbuzz-dev libmpfr-dev libtbb-dev libxml2-dev libzip-dev
+                  dpkg-query -W cmake g++ flex bison libcgal-dev libboost-program-options-dev libtbb-dev > .build/pinned-native-environment.txt
+            - name: Build exact pinned CLI with geometry kernels
+              run: |
+                  test "$(git -C .build/pinned-openscad-source rev-parse HEAD)" = "$REFERENCE_OPENSCAD_SHA"
+                  git -C .build/pinned-openscad-source submodule status --recursive > .build/pinned-native-submodules.txt
+                  cmake -S .build/pinned-openscad-source -B .build/pinned-openscad-build -G Ninja -DCMAKE_BUILD_TYPE=Release -DHEADLESS=ON -DNULLGL=ON -DENABLE_CGAL=ON -DENABLE_MANIFOLD=ON -DEXPERIMENTAL=ON -DENABLE_TESTS=OFF -DUSE_MIMALLOC=OFF -DENABLE_CAIRO=OFF -DENABLE_HIDAPI=OFF -DENABLE_SPNAV=OFF -DENABLE_GAMEPAD=OFF -DCMAKE_REQUIRE_FIND_PACKAGE_Lib3MF=OFF
+                  cmake --build .build/pinned-openscad-build --parallel 2
+                  install -D .build/pinned-openscad-build/openscad .build/pinned-runtime/bin/openscad
+                  cp .build/pinned-openscad-build/CMakeCache.txt .build/pinned-native-CMakeCache.txt
+            - name: Record build identity and executable hash
+              run: |
+                  node --input-type=module <<'JS'
+                  import { readFileSync, writeFileSync } from 'node:fs';
+                  import { createHash } from 'node:crypto';
+                  const binary = '.build/pinned-runtime/bin/openscad';
+                  writeFileSync('.build/pinned-runtime/build-info.json', JSON.stringify({ commit: process.env.REFERENCE_OPENSCAD_SHA, target: 'linux-x64', headless: true, nullgl: true, cgal: true, manifold: true, experimental: true, sha256: createHash('sha256').update(readFileSync(binary)).digest('hex'), scope: 'Exact pinned CLI build; not the pinned Qt GUI or a cross-platform executable' }, null, 2) + '\n');
+                  JS
+            - name: Execute pinned schema differential
+              run: node scripts/customizer-native-audit.mjs .build/pinned-runtime/bin/openscad .build/pinned-native.json --strict
+            - name: Execute pinned import probes
+              run: node scripts/customizer-native-import-audit.mjs .build/pinned-runtime/bin/openscad .build/pinned-native-import.json
+            - uses: actions/upload-artifact@v4
+              if: always()
+              with:
+                  name: pinned-customizer-linux
+                  if-no-files-found: warn
+                  path: |
+                      .build/pinned-native*.json
+                      .build/pinned-native*.txt
+                      .build/pinned-runtime/build-info.json
+                      .build/pinned-runtime/bin/openscad

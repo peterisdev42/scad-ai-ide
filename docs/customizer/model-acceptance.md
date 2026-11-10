@@ -43,7 +43,7 @@ node scripts/customizer-native-agent.mjs
 
 `SCAD_AGENT_SCENARIO`支持author、tail、expression、failure；返回的原始目录可以用 `node scripts/customizer-native-evidence.mjs <run-directory> <evidence-directory>` 归档脱敏证据。脚本exit0仅说明观察完成，必须逐项核对实际任务与最终源码，不能直接标模型PASS。
 
-本次模型四场景没有完整PASS。整个SPEC目标仍active。三平台CI和指定Source/Editor服务的真实Host三份heap快照已有后续证据；Windows真实Library Unicode include失败，Remote、原生OpenSCAD Desktop控件、完整pinned binary及更广GUI/GPU内存仍未完成。模型结果没有被这些独立证据替代。
+本次模型四场景没有完整PASS。整个SPEC目标仍active。三平台CI和指定Source/Editor服务的真实Host三份heap快照已有后续证据；Windows真实Library Unicode include失败，Remote、完整pinned Qt、完整pinned binary及更广GUI/GPU内存仍未完成；官方2026.11.06 Desktop已有后续12项Qt+echo通过证据。模型结果没有被这些独立证据替代。
 
 
 ## MODEL-01 原生输入拒绝层复核

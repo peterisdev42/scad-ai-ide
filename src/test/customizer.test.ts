@@ -1,7 +1,7 @@
 import * as assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { parseCustomizer, numericStep } from '../core/customizer/CustomizerParser'
-import { encodePresetValue, parsePresetFile, presetOverrides, analyzePresetFile, assertPresetCompatible, decodePresetValue } from '../core/customizer/CustomizerPresets'
+import { encodePresetValue, encodePresetSnapshot, parsePresetFile, presetOverrides, analyzePresetFile, assertPresetCompatible, decodePresetValue } from '../core/customizer/CustomizerPresets'
 import { CustomizerService, validateValue } from '../core/customizer/CustomizerService'
 import { RuntimeManager } from '../core/runtime/RuntimeManager'
 
@@ -318,6 +318,31 @@ test('text input validates native UTF-8 byte limits and never truncates source d
     const encoded = { label: 'Ω😀' }
     assert.throws(() => presetOverrides([text], encoded), /UTF-8 bytes/)
     assert.deepEqual(encoded, { label: 'Ω😀' })
+})
+
+test('current preset snapshots reject invalid defaults without altering them', () => {
+    for (const source of ['label="abcdef"; // 3\n', 'label="Ω😀"; // 3\n', 'width=-5; // [100]\n']) {
+        const parameters = parseCustomizer(source)
+        const before = structuredClone(parameters)
+        assert.throws(() => encodePresetSnapshot(parameters, parameter => parameter.defaultValue), { code: 'PRESET_INVALID_VALUE' })
+        assert.deepEqual(parameters, before)
+    }
+})
+
+test('current preset snapshots replay valid widget values with their original types', () => {
+    const parameters = parseCustomizer('w=10; // [0:5:100]\nlabel="abc"; // 8\nvisible=true;\nsize=[1,2]; // [0:10]\nmode=1; // [1:Numeric,"1":String,2:Two]\n')
+    const values = { w: 12, label: 'Ω😀', visible: false, size: [3,5], mode: 2 }
+    const snapshot = encodePresetSnapshot(parameters, parameter => values[parameter.name as keyof typeof values])
+    assert.deepEqual(presetOverrides(parameters, snapshot), values)
+})
+
+test('current preset snapshots reject enum values shadowed by an earlier native interpretation', () => {
+    const [numericFirst] = parseCustomizer('mode=1; // [1:Numeric,"1":String]\n')
+    const [stringFirst] = parseCustomizer('mode="1"; // ["1":String,1:Numeric]\n')
+    assert.equal(validateValue(numericFirst, '1'), undefined, 'The GUI value is valid but cannot be serialized losslessly')
+    assert.throws(() => encodePresetSnapshot([numericFirst], () => '1'), { code: 'PRESET_INVALID_VALUE' })
+    assert.throws(() => encodePresetSnapshot([stringFirst], () => 1), { code: 'PRESET_INVALID_VALUE' })
+    assert.deepEqual(encodePresetSnapshot([numericFirst], () => 1), { mode: '1' })
 })
 
 test('incomplete source is explicit and does not erase existing overrides', () => {

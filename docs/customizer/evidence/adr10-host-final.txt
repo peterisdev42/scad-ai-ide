@@ -1,0 +1,353 @@
+npm notice run scad-ai-ide@0.0.1 test:integration
+npm notice run npm run compile-tests && npm run compile && vscode-test
+npm notice run scad-ai-ide@0.0.1 compile-tests
+npm notice run tsc -p . --outDir out
+npm notice run scad-ai-ide@0.0.1 compile
+npm notice run npm run check:agents && npm run check-types && npm run lint && node esbuild.js
+npm notice run scad-ai-ide@0.0.1 check:agents
+npm notice run node scripts/agent-manifest.mjs
+Validated 40 tools, 2 instruction and 5 skills.
+Verified 11 GUI groups and 41 business action contracts.
+npm notice run scad-ai-ide@0.0.1 check-types
+npm notice run tsc --noEmit && tsc -p tsconfig.webview.json
+npm notice run scad-ai-ide@0.0.1 lint
+npm notice run eslint src
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[main 2026-11-10T01:43:44.555Z] [node-compile-cache] main: packaged cache inactive (status: disabled, configured: <repo>/.vscode-test/vscode-darwin-arm64-1.140.0/Visual Studio Code.app/Contents/Resources/app/node-compile-cache/main, active: none)
+[main 2026-11-10T01:43:44.573Z] StorageMainService: creating application shared storage
+[main 2026-11-10T01:43:44.641Z] [shared storage] Creating shared storage database at ':memory:' (wasCreated: true)
+[main 2026-11-10T01:43:44.641Z] [shared storage] Initializing fallback application storage (path: in-memory)
+[main 2026-11-10T01:43:44.702Z] [shared storage] Fallback application storage initialized with 3 items
+[main 2026-11-10T01:43:44.702Z] update#setState disabled
+[main 2026-11-10T01:43:44.702Z] update#ctor - updates are disabled by the environment
+[RemoteAgentHost] Reconciling: desired=[], current=[]
+[AgentHost:renderer] Acquiring MessagePort to agent host...
+[main 2026-11-10T01:43:45.048Z] AgentHostProcessManager: agent host started
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey=undefined conversationKey=undefined modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[AgentHost:renderer] MessagePort acquired, creating client...
+Started local extension host with pid 7177.
+[main 2026-11-10T01:43:45.261Z] [AgentHost:stderr] (node:7174) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `Code Helper --trace-deprecation ...` to show where the warning was created)
+
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/MWNhNjExODUtY2Y3ZS00M2NhLWJiNDQtYWJmOWM5MTcwNTAz" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[AgentHost:renderer] Protocol connection established; clientId=fa4b2136-8e4d-47b0-9132-eb4f4fa11bd5
+[AccountPolicyGate] apply: state=inactive, reason=undefined, isRestricted=false
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/MWNhNjExODUtY2Y3ZS00M2NhLWJiNDQtYWJmOWM5MTcwNTAz" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/MWNhNjExODUtY2Y3ZS00M2NhLWJiNDQtYWJmOWM5MTcwNTAz" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[RemoteAgentHost] Reconciling: desired=[], current=[]
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/MWNhNjExODUtY2Y3ZS00M2NhLWJiNDQtYWJmOWM5MTcwNTAz" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+Loading development extension at <repo>
+Extension 'github.copilot-chat' appears in product.json but enables LESS API proposals than the extension wants.
+package.json (LOSES): agentSessionsWorkspace
+agentsWindowConfiguration
+chatDebug
+chatHooks
+envIsConnectionMetered
+extensionsAny
+newSymbolNamesProvider
+interactive
+codeActionAI
+activeComment
+commentReveal
+contribCommentThreadAdditionalMenu
+contribCommentsViewThreadMenus
+contribChatEditorInlineGutterMenu
+documentFiltersExclusive
+embeddings
+findTextInFiles
+findTextInFiles2
+languageModelToolSupportsModel
+findFiles2
+textSearchProvider
+terminalDataWriteEvent
+terminalExecuteCommandEvent
+terminalSelection
+terminalQuickFixProvider
+mappedEditsProvider
+aiRelatedInformation
+aiSettingsSearch
+chatParticipantAdditions
+defaultChatParticipant
+contribSourceControlInputBoxMenu
+authLearnMore
+authIssuers
+testObserver
+aiTextSearchProvider
+chatParticipantPrivate
+chatProvider
+contribDebugCreateConfiguration
+chatReferenceDiagnostic
+textSearchProvider2
+chatReferenceBinaryData
+languageModelSystem
+languageModelCapabilities
+languageModelPricing
+inlineCompletionsAdditions
+chatStatusItem
+chatInputNotification
+taskProblemMatcherStatus
+contribLanguageModelToolSets
+textDocumentChangeReason
+resolvers
+taskExecutionTerminal
+dataChannels
+languageModelThinkingPart
+chatSessionsProvider
+devDeviceId
+contribEditorContentMenu
+chatPromptFiles
+mcpServerDefinitions
+tabInputMultiDiff
+workspaceTrust
+environmentPower
+terminalTitle
+toolInvocationApproveCombination
+chatSessionCustomizationProvider
+product.json (WINS): agentSessionsWorkspace
+agentsWindowConfiguration
+interactive
+terminalDataWriteEvent
+terminalExecuteCommandEvent
+terminalSelection
+terminalQuickFixProvider
+chatParticipantAdditions
+defaultChatParticipant
+embeddings
+chatProvider
+mappedEditsProvider
+aiRelatedInformation
+aiSettingsSearch
+codeActionAI
+findTextInFiles
+findTextInFiles2
+textSearchProvider
+textSearchProvider2
+activeComment
+commentReveal
+contribSourceControlInputBoxMenu
+contribCommentEditorActionsMenu
+contribCommentThreadAdditionalMenu
+contribCommentsViewThreadMenus
+contribChatEditorInlineGutterMenu
+extensionAffinity
+newSymbolNamesProvider
+findFiles2
+chatReferenceDiagnostic
+extensionsAny
+authLearnMore
+testObserver
+aiTextSearchProvider
+documentFiltersExclusive
+chatParticipantPrivate
+contribDebugCreateConfiguration
+inlineCompletionsAdditions
+chatReferenceBinaryData
+languageModelSystem
+languageModelCapabilities
+languageModelThinkingPart
+languageModelToolSupportsModel
+chatStatusItem
+taskProblemMatcherStatus
+contribLanguageModelToolSets
+textDocumentChangeReason
+resolvers
+taskExecutionTerminal
+dataChannels
+chatSessionsProvider
+chatSessionCustomizationProvider
+devDeviceId
+contribEditorContentMenu
+tokenInformation
+toolInvocationApproveCombination
+chatPromptFiles
+mcpServerDefinitions
+tabInputMultiDiff
+workspaceTrust
+chatHooks
+chatDebug
+envIsConnectionMetered
+environmentPower
+terminalTitle
+languageModelPricing
+chatInputNotification
+DELTA: authIssuers
+Proceeding with EXTRA proposals (authIssuers) because extension is in development mode. Still, this EXTENSION WILL BE BROKEN unless product.json is updated.
+Settings Sync: Account status changed from uninitialized to unavailable
+[CloudSandboxApi] No 'github' session with scopes [read:user, user:email, repo, workflow]
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+
+  Agent capabilities extension host
+    ✔ installed manifest, registered LM tools and bundled resources agree without open panels (305ms)
+    ✔ AI Panel metadata covers every registered tool and all awareness resources without running a capability
+Unknown channel: agentHostClientByokLm
+Unknown channel: agentHostClientProxy
+    ✔ actual host target changes reject stale Agent writes and parameter changes reach shared CLI arguments (91ms)
+Unknown channel: agentHostClientProxy
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/MWNhNjExODUtY2Y3ZS00M2NhLWJiNDQtYWJmOWM5MTcwNTAz" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+    ✔ Preset Problems diagnose only the bound JSON and follow its unsaved buffer (603ms)
+    ✔ real preset file transactions preserve metadata, react to external edits and block unknown versions (227ms)
+    ✔ preset snapshots reject loss without writes and allow existing-file export and deletion (247ms)
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/MWNhNjExODUtY2Y3ZS00M2NhLWJiNDQtYWJmOWM5MTcwNTAz" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+Unknown channel: agentHostClientProxy
+    ✔ source tools edit unsaved buffers with CAS and refresh GUI schema, diagnostics and Quick Fixes (2069ms)
+(node:7177) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `Code Helper (Plugin) --trace-deprecation ...` to show where the warning was created)
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/MWNhNjExODUtY2Y3ZS00M2NhLWJiNDQtYWJmOWM5MTcwNTAz" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[AccountPolicyGate] apply: state=inactive, reason=undefined, isRestricted=false
+    ✔ Customizer Problems obey configuration, save and close lifecycle in the real Host (2081ms)
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/MWNhNjExODUtY2Y3ZS00M2NhLWJiNDQtYWJmOWM5MTcwNTAz" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+    ✔ editor fixes use fresh commands outside the workspace and in untitled buffers, and reject readonly providers (994ms)
+Native test application activation requested: true
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/MWNhNjExODUtY2Y3ZS00M2NhLWJiNDQtYWJmOWM5MTcwNTAz" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+    ✔ agent source transaction preserves the earlier unsaved buffer through native Undo and Redo (259ms)
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/MWNhNjExODUtY2Y3ZS00M2NhLWJiNDQtYWJmOWM5MTcwNTAz" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+Native test application activation requested: true
+    ✔ editor source transaction preserves the earlier unsaved buffer through native Undo and Redo (384ms)
+  SCAD AI IDE integration
+    ✔ registers native Quick Access and an HTML Customizer with four plain navigation items
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/MWNhNjExODUtY2Y3ZS00M2NhLWJiNDQtYWJmOWM5MTcwNTAz" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+    ✔ panel navigation reuses tabs without creating editor groups (956ms)
+    ✔ customizer follows SCAD files, retains target after focus changes and toggles overrides without editing source (63ms)
+    ✔ HTML Customizer validates messages and rejects edits from a stale document
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/MWNhNjExODUtY2Y3ZS00M2NhLWJiNDQtYWJmOWM5MTcwNTAz" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+    ✔ configuration selects a validated runtime and rejects invalid overrides (1680ms)
+  OpenSCAD language integration
+Native test application activation requested: true
+Native test application activation requested: true
+Native test application activation requested: true
+Native test application activation requested: true
+Native test application activation requested: true
+Native test application activation requested: true
+Native test application activation requested: true
+Native test application activation requested: true
+Native test application activation requested: true
+Native test application activation requested: true
+Native test application activation requested: true
+Native test application activation requested: true
+Native test application activation requested: true
+Native test application activation requested: true
+Native test application activation requested: true
+Native test application activation requested: true
+Native test application activation requested: true
+Native test application activation requested: true
+Native test application activation requested: true
+    ✔ native Enter indents unbraced bodies once, nested vectors and block comments (2565ms)
+    ✔ VS Code folds explicit region markers
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/MWNhNjExODUtY2Y3ZS00M2NhLWJiNDQtYWJmOWM5MTcwNTAz" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+    ✔ real LSP supplies completion, hover, definition, rename, symbols, formatting and diagnostics (232ms)
+    ✔ real LSP folds unindented structure and regions, including unsaved edits (105ms)
+  Markdown preview integration
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/MWNhNjExODUtY2Y3ZS00M2NhLWJiNDQtYWJmOWM5MTcwNTAz" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+    ✔ Source follows the active editor theme and theme-specific token customizations (258ms)
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/MWNhNjExODUtY2Y3ZS00M2NhLWJiNDQtYWJmOWM5MTcwNTAz" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/MWNhNjExODUtY2Y3ZS00M2NhLWJiNDQtYWJmOWM5MTcwNTAz" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+    ✔ the built-in Markdown engine renders both fence aliases through the selected CLI (1163ms)
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/MWNhNjExODUtY2Y3ZS00M2NhLWJiNDQtYWJmOWM5MTcwNTAz" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+    ✔ Markdown editor injects OpenSCAD tokens for both fence aliases and restores Markdown after the fence (1933ms)
+  Library Manager extension host
+    ✔ Libraries opens the real three-page webview and rejects untrusted message shapes (40ms)
+    ✔ Registry publishes its local list before a pending request and refreshes it on each visit
+    ✔ Silent Registry refresh preserves cached rows, exposes failures and clears errors after recovery
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/MWNhNjExODUtY2Y3ZS00M2NhLWJiNDQtYWJmOWM5MTcwNTAz" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+    ✔ Real LSP resolves the same include name to distinct locked versions in two projects (89ms)
+    ✔ Development cache tools reject production and test mode before reading storage
+    ✔ Development cache tools enumerate and clear individual state, disk and memory fields
+    ✔ Clearing a persisted Registry field drains pending writes and removes its legacy fallback and live copy
+    ✔ Global bulk actions validate modes, report local verification and preserve project-used content
+    ✔ Development folder action uses only the extension-owned global storage path
+    ✔ Cache highlighting uses the installed JSON TextMate grammar with editor theme colors
+  33 passing (17s)
+[main 2026-11-10T01:44:02.400Z] Extension host with pid 7177 exited with code: 0, signal: unknown.
+Exit code:   0

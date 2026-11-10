@@ -1,0 +1,608 @@
+[
+  {
+    "AXRole" : "AXWindow",
+    "AXSubrole" : "AXStandardWindow",
+    "AXTitle" : "model.scad",
+    "path" : "0"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXMenuButton",
+    "AXTitle" : "",
+    "AXValue" : 0,
+    "path" : "0.0"
+  },
+  {
+    "AXDescription" : "Preview &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">F5<\/span>",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Preview",
+    "path" : "0.1"
+  },
+  {
+    "AXDescription" : "Render &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">F6<\/span>",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Render",
+    "path" : "0.2"
+  },
+  {
+    "AXDescription" : "View All &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⇧⌘V<\/span>",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "View All",
+    "path" : "0.3"
+  },
+  {
+    "AXDescription" : "Zoom In &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘]<\/span>",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Zoom In",
+    "path" : "0.4"
+  },
+  {
+    "AXDescription" : "Zoom Out &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘[<\/span>",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Zoom Out",
+    "path" : "0.5"
+  },
+  {
+    "AXDescription" : "Reset View",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Reset View",
+    "path" : "0.6"
+  },
+  {
+    "AXDescription" : "Render (not preview) to enable measurements",
+    "AXEnabled" : false,
+    "AXRole" : "AXCheckBox",
+    "AXTitle" : "Measure Distance",
+    "AXValue" : 0,
+    "path" : "0.7"
+  },
+  {
+    "AXDescription" : "Render (not preview) to enable measurements",
+    "AXEnabled" : false,
+    "AXRole" : "AXCheckBox",
+    "AXTitle" : "Measure Angle",
+    "AXValue" : 0,
+    "path" : "0.8"
+  },
+  {
+    "AXDescription" : "Right &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘7<\/span>",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Right",
+    "path" : "0.9"
+  },
+  {
+    "AXDescription" : "Left &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘6<\/span>",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Left",
+    "path" : "0.10"
+  },
+  {
+    "AXDescription" : "Back &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘9<\/span>",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Back",
+    "path" : "0.11"
+  },
+  {
+    "AXDescription" : "Front &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘8<\/span>",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Front",
+    "path" : "0.12"
+  },
+  {
+    "AXDescription" : "Top &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘4<\/span>",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Top",
+    "path" : "0.13"
+  },
+  {
+    "AXDescription" : "Bottom &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘5<\/span>",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Bottom",
+    "path" : "0.14"
+  },
+  {
+    "AXDescription" : "Perspective",
+    "AXEnabled" : true,
+    "AXRole" : "AXCheckBox",
+    "AXTitle" : "Perspective",
+    "AXValue" : 1,
+    "path" : "0.15"
+  },
+  {
+    "AXDescription" : "Orthogonal",
+    "AXEnabled" : true,
+    "AXRole" : "AXCheckBox",
+    "AXTitle" : "Orthogonal",
+    "AXValue" : 0,
+    "path" : "0.16"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXStaticText",
+    "AXValue" : "Compilation generated 1 warning. For details see the error log and console window.",
+    "path" : "0.17"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "",
+    "path" : "0.18"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "",
+    "path" : "0.19"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXStaticText",
+    "AXTitle" : "",
+    "path" : "0.20"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXStaticText",
+    "AXValue" : "OpenSCAD 2026.11.06 (git a81e8630)",
+    "path" : "0.20.0"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXStaticText",
+    "AXValue" : "Viewport: translate = [ 2.94 1.14 -0.30 ], rotate = [ 55.00 0.00 25.00 ], distance = 115.81, fov = 22.50 (798x945)",
+    "path" : "0.20.1"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXTabGroup",
+    "AXTitle" : "",
+    "path" : "0.21"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXCheckBox",
+    "AXTitle" : "Automatic Preview",
+    "AXValue" : 1,
+    "path" : "0.22"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXMenuButton",
+    "AXTitle" : "Show Details",
+    "path" : "0.23"
+  },
+  {
+    "AXDescription" : "preset selection",
+    "AXEnabled" : true,
+    "AXRole" : "AXMenuButton",
+    "AXTitle" : "<design default>",
+    "path" : "0.24"
+  },
+  {
+    "AXDescription" : "Add new preset",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "+",
+    "path" : "0.25"
+  },
+  {
+    "AXDescription" : "Remove current preset",
+    "AXEnabled" : false,
+    "AXRole" : "AXButton",
+    "AXTitle" : "-",
+    "path" : "0.26"
+  },
+  {
+    "AXDescription" : "More actions",
+    "AXEnabled" : true,
+    "AXRole" : "AXMenuButton",
+    "AXTitle" : "...",
+    "path" : "0.27"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXCheckBox",
+    "AXTitle" : "Dimensions",
+    "AXValue" : 1,
+    "path" : "0.28"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXStaticText",
+    "AXValue" : "width",
+    "path" : "0.29"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXStaticText",
+    "AXValue" : "",
+    "path" : "0.30"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXStaticText",
+    "AXValue" : "Width in millimeters",
+    "path" : "0.31"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXMaxValue" : "120",
+    "AXMinValue" : "0",
+    "AXRole" : "AXIncrementor",
+    "AXTitle" : "",
+    "AXValue" : "120",
+    "path" : "0.32"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXMaxValue" : "24",
+    "AXMinValue" : "0",
+    "AXRole" : "AXSlider",
+    "AXTitle" : "",
+    "AXValue" : "24",
+    "path" : "0.33"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXStaticText",
+    "AXValue" : "offgrid",
+    "path" : "0.34"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXStaticText",
+    "AXValue" : "",
+    "path" : "0.35"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXMaxValue" : "100",
+    "AXMinValue" : "0",
+    "AXRole" : "AXIncrementor",
+    "AXTitle" : "",
+    "AXValue" : "10",
+    "path" : "0.36"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXMaxValue" : "20",
+    "AXMinValue" : "0",
+    "AXRole" : "AXSlider",
+    "AXTitle" : "",
+    "AXValue" : "2",
+    "path" : "0.37"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXStaticText",
+    "AXValue" : "spin",
+    "path" : "0.38"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXStaticText",
+    "AXValue" : "",
+    "path" : "0.39"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXMaxValue" : "1.7976931348623157e+308",
+    "AXMinValue" : "-1.7976931348623157e+308",
+    "AXRole" : "AXIncrementor",
+    "AXTitle" : "",
+    "AXValue" : "1.25",
+    "path" : "0.40"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXCheckBox",
+    "AXTitle" : "Appearance",
+    "AXValue" : 1,
+    "path" : "0.41"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXStaticText",
+    "AXValue" : "shape",
+    "path" : "0.42"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXStaticText",
+    "AXValue" : "",
+    "path" : "0.43"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXMenuButton",
+    "AXTitle" : "Round",
+    "path" : "0.44"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXStaticText",
+    "AXValue" : "text",
+    "path" : "0.45"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXStaticText",
+    "AXValue" : "",
+    "path" : "0.46"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXTextField",
+    "AXTitle" : "",
+    "AXValue" : "abcd",
+    "path" : "0.47"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXStaticText",
+    "AXValue" : "checked",
+    "path" : "0.48"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXStaticText",
+    "AXValue" : "",
+    "path" : "0.49"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXCheckBox",
+    "AXTitle" : "",
+    "AXValue" : 1,
+    "path" : "0.50"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXStaticText",
+    "AXValue" : "vector",
+    "path" : "0.51"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXStaticText",
+    "AXValue" : "",
+    "path" : "0.52"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXMaxValue" : "10",
+    "AXMinValue" : "0",
+    "AXRole" : "AXIncrementor",
+    "AXTitle" : "",
+    "AXValue" : "1",
+    "path" : "0.53"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXMaxValue" : "10",
+    "AXMinValue" : "0",
+    "AXRole" : "AXIncrementor",
+    "AXTitle" : "",
+    "AXValue" : "2",
+    "path" : "0.54"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXMaxValue" : "10",
+    "AXMinValue" : "0",
+    "AXRole" : "AXIncrementor",
+    "AXTitle" : "",
+    "AXValue" : "3",
+    "path" : "0.55"
+  },
+  {
+    "AXDescription" : "Closes the dock widget",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Close",
+    "path" : "0.56"
+  },
+  {
+    "AXDescription" : "New File &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘N<\/span>",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "New File",
+    "path" : "0.57"
+  },
+  {
+    "AXDescription" : "Open File &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘O<\/span>",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Open File",
+    "path" : "0.58"
+  },
+  {
+    "AXDescription" : "Save &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘S<\/span>",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Save",
+    "path" : "0.59"
+  },
+  {
+    "AXDescription" : "Undo &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘Z<\/span>",
+    "AXEnabled" : false,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Undo",
+    "path" : "0.60"
+  },
+  {
+    "AXDescription" : "Redo &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⇧⌘Z<\/span>",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Redo",
+    "path" : "0.61"
+  },
+  {
+    "AXDescription" : "Unindent &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⇧⌘I<\/span>",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Unindent",
+    "path" : "0.62"
+  },
+  {
+    "AXDescription" : "Indent &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">⌘I<\/span>",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Indent",
+    "path" : "0.63"
+  },
+  {
+    "AXDescription" : "Preview &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">F5<\/span>",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Preview",
+    "path" : "0.64"
+  },
+  {
+    "AXDescription" : "Render &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">F6<\/span>",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Render",
+    "path" : "0.65"
+  },
+  {
+    "AXDescription" : "3D Print &nbsp;<span style=\"color: gray; font-size: small; font-style: italic\">F8<\/span>",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "3D Print",
+    "path" : "0.66"
+  },
+  {
+    "AXDescription" : "Export as STL (ascii)",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Export as STL (ascii)",
+    "path" : "0.67"
+  },
+  {
+    "AXDescription" : "Export as DXF",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Export as DXF",
+    "path" : "0.68"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXGroup",
+    "AXTitle" : "",
+    "path" : "0.69"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXTextArea",
+    "AXTitle" : "",
+    "AXValue" : "\/* [Dimensions] *\/\n\/\/ Width in millimeters\nwidth=120; \/\/ [0:5:100]\noffgrid=12; \/\/ [0:5:100]\nspin=1.25; \/\/ .25\n\/* [Appearance] *\/\nshape=\"round\"; \/\/ [round:Round, square:Square]\ntext=\"abcdef\"; \/\/ 4\nchecked=true;\nvector=[1,2,3]; \/\/ [0:0.5:10]\n\/* [Hidden] *\/\ninternalOffset=0.01;\ncube([width,2,3]);\n",
+    "path" : "0.69.0"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXTabGroup",
+    "AXTitle" : "model.scad",
+    "path" : "0.70"
+  },
+  {
+    "AXDescription" : "",
+    "AXEnabled" : true,
+    "AXRole" : "AXRadioButton",
+    "AXTitle" : "model.scad",
+    "path" : "0.70.0"
+  },
+  {
+    "AXDescription" : "Closes the dock widget",
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXTitle" : "Close",
+    "path" : "0.71"
+  },
+  {
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXSubrole" : "AXCloseButton",
+    "path" : "0.72"
+  },
+  {
+    "AXEnabled" : true,
+    "AXHelp" : "this button also has an action to zoom the window",
+    "AXRole" : "AXButton",
+    "AXSubrole" : "AXFullScreenButton",
+    "path" : "0.73"
+  },
+  {
+    "AXRole" : "AXGroup",
+    "path" : "0.73.0"
+  },
+  {
+    "AXRole" : "AXGroup",
+    "path" : "0.73.0.0"
+  },
+  {
+    "AXEnabled" : true,
+    "AXRole" : "AXButton",
+    "AXSubrole" : "AXMinimizeButton",
+    "path" : "0.74"
+  },
+  {
+    "AXEnabled" : true,
+    "AXRole" : "AXStaticText",
+    "AXValue" : "model.scad",
+    "path" : "0.75"
+  }
+]

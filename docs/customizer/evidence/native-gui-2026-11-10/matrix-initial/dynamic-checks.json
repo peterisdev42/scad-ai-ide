@@ -1,0 +1,10 @@
+{
+  "scope": "Actual native Qt controls and runtime echo; not full pinned binary or IDE parity",
+  "records": [
+    {
+      "id": "default-display",
+      "status": "FAIL",
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'New set 1'\n- '<design default>'\n"
+    }
+  ]
+}

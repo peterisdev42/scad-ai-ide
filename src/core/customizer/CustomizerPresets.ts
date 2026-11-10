@@ -45,6 +45,21 @@ export function encodePresetValue(value: ParameterValue): string {
     return Array.isArray(value) ? JSON.stringify(value) : String(value)
 }
 
+/** Only serialize a current-value snapshot that this codec can apply without
+ * loss. Source defaults remain unchanged even when they violate input limits. */
+export function encodePresetSnapshot(parameters: Parameter[], currentValue: (parameter: Parameter) => ParameterValue): Record<string, string> {
+    return Object.fromEntries(parameters.map(parameter => {
+        const value = currentValue(parameter)
+        const error = validateValue(parameter, value)
+        if (error) throw new CapabilityError('PRESET_INVALID_VALUE', `${parameter.name}: ${error}`)
+        const encoded = encodePresetValue(value)
+        if (JSON.stringify(decodePresetValue(parameter, encoded)) !== JSON.stringify(value)) {
+            throw new CapabilityError('PRESET_INVALID_VALUE', `${parameter.name}: This value cannot be replayed without loss in the OpenSCAD preset format. Choose an unambiguous value before saving.`)
+        }
+        return [parameter.name, encoded]
+    }))
+}
+
 function presetNumber(raw: string): number | undefined {
     const text = raw.trim()
     if (!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[Ee][+-]?\d+)?$/.test(text)) return undefined

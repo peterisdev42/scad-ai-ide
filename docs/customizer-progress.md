@@ -198,3 +198,36 @@ CI精确计数：三平台manifest2/compatibility41/source45通过；capabilitie
 上一轮属于progress（新增三平台41+10差分、真实Host快照缺陷证据、重建安装包）。本轮重新核对原始MODEL-01元数据，确认1次Analyze实际执行、4次SourceApply生成请求被Host schema拒绝、1次get_errors类型拒绝，之后native no response。新增生成/拒绝/dispatcher分层事实，修正“无实际Apply”可能被读成“未尝试”的歧义；不将no response唯一归因网络或provider。模型结果仍未通过，没有发起相同无变化的模型重跑。
 
 model-acceptance.md修正产物关联：旧运行精确hash5cd831f6…652e，不冒充当前重建包4cb3a7e7…ccf6c已经模型验证。跨平台/Host heap的后续状态也替换了该页过时的泛化Unverified。原生证据提取器本轮仅对原始真实运行重提取，旧结果保持，新增tool-input-review.json作补充。
+
+
+## 阻断审计：等待 ADR10 决定和解锁
+
+本轮以当前真实状态复核：工作树在审计前干净，HEAD0703805（本地证据/报告改进提交），远端已验收提交721bbf5；main仍4463d610，未合并。Agent run42635584127四jobs全部completed/success；Library run42635584407三jobs均completed，Linux/macOS成功、Windows失败。没有仍在运行的测试进程或CI需要等待，本轮不是verified wait。
+
+上一轮是progress：模型输入拒绝层复核及提取器改进带来新证据。本轮只有状态复核，没有新的功能或验收进展；不能把重复状态查询算作progress。自请求ADR10的回合、模型输入复核续作到本回合，同一依赖持续存在：未收到对快照保存可见行为的决定；实际CGSSessionScreenIsLocked仍Yes。辅助功能授权已生效，不再请求重复授权。未把自动goal continuation视作批准。
+
+已授权且不依赖这两项的兼容性/跨平台/Host/资源/模型证据工作已完成当前可执行部分。剩余Preset修复会改变公开保存行为，按用户明确要求等确认；Qt控件必须解锁后动态操作。Windows Unicode运行时失败、模型任务未通过、Remote及完整pinned binary未执行继续保留，不因阻断而标通过。不能靠重复同一无变更测试、静默换模型或放松校验完成验收。
+
+同一阻断达到三个连续goal回合且当前无可独立推进的实质步骤，因此将goal设为blocked（并非complete/paused）。恢复条件：用户选择ADR10方案A（推荐拒绝不可重放快照）或B，及解锁Mac后回复。完整SPEC目标保留，后续按原范围继续。
+
+
+## 2026-11-10 用户确认后恢复
+
+用户批准ADR10方案A，并回复已解锁，goal由用户恢复active；上一节blocked属于历史状态，不再是当前阻断。未重复索要辅助功能授权。实际AXWindow、菜单、参数控件和截图已取得；测试继续使用OS拒绝偏好与真实home写入的隔离规则，三轮结束均验证原偏好SHA及合成源码disk不变。
+
+已实现ADR10当前快照校验及强类型baseline比较。core215/Preview99、Library26+3SKIP通过；真实最低Host新增定向1项通过（四种不合规当前值、Agent/GUI两actor、文件/修订/Overrides/源码不变、有效值修正后重放、已有集导出及storage controller删除），浏览器36通过。完整Host回归正在另跑，不以定向或compile代替。
+
+Qt首次菜单操作因Jump To与可见性项重名而拒绝，已限定Window直接项；AXIncrement动作与真实键盘步长并不等价，首轮spin增至DBL_MAX的AX观察未计正常步长PASS。第二轮固定等待读取过早echo，且修改Design Default会自动创建New set1，原假定索引无效；第三轮获得A/B实际popup内容，尚未证明选择成功。保留这些失败，补充语义定位、动作发现、焦点与窗口归属检查后继续动态验收。无用户文件或偏好被这些测试改写。
+
+
+## 2026-11-10 实测收尾与待运行的 pinned CLI
+
+官方Desktop最终12个自动检查全部通过，独立核对Default/A/B/Default精确标题及每步原始编辑器内容，source disk与用户偏好SHA不变。原生popup支持AXCell/AXStaticText两种role，菜单选择在同一调用向精确PID发送实际导航键；系统WindowManager layer19遮挡鼠标时仍拒绝点击，没有放松窗口归属保护。此前所有失败及错误B预期保留；ParameterObjects.importValues会reset缺失键，native B与已批准IDE政策一致。
+
+ADR10进一步修正：存储typed baseline，而非将编码字符串反解，以免部分Preset省略无法编码的源默认值时虚报modified。浏览器38通过，含该反例和相同编码不同类型的有损保存拒绝。core215/Preview99/Library26+3SKIP保持。
+
+最终Host串行复测33通过。先前一次最终复测32通过/1失败（native Enter多p），已保留；添加了仅owned合成文档的失败输入事件trace，复测未重现，不能声称偶发根因已修复。也发现两次并行构建共享dist导致候选包含未压缩输出；该包无效，不发布，现改为Host结束后串行重新package及实际安装验证。
+
+为补精确pinned二进制缺口，增加独立Linux CLI源码构建工作流，固定bcf45a22及其子模块、启用CGAL/Manifold、HEADLESS/NULLGL及experimental，运行现有41+10原生探针并归档身份/hash。当前仅已解析YAML，尚未推送执行；不能以工作流存在代替构建或差分通过。native GUI及模型等独立证据不互相冒充。
+
+最终串行Production包134files/4531661bytes，SHA256 8c5f3cc21b32ffa24e4bcf30e956ab118dc726102ca645c658c5ca5073761164，排除全部.github工作流、测试脚本和审计证据。最低1.140.0实际安装后再次验证Source计划/提交/验证及Preset拒绝前无写入、state不变、有效快照重放，均通过，见installed-adr10-final.txt。此前482fc65f…为较早ADR10包；并行构建造成的5.25MB包不作为交付物。当前artifact.json仅关联这个精确串行包。

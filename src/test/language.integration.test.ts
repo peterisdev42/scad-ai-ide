@@ -28,12 +28,18 @@ async function typeText(editor: vscode.TextEditor, text: string) {
 
 suite('OpenSCAD language integration', () => {
     test('native Enter indents unbraced bodies once, nested vectors and block comments', async () => {
+        const owned = new Set<vscode.TextDocument>()
+        const inputTrace: unknown[] = []
+        const changes = vscode.workspace.onDidChangeTextDocument(event => {
+            if (owned.has(event.document) && inputTrace.length < 1000) inputTrace.push({ uri: event.document.uri.toString(), version: event.document.version, reason: event.reason, changes: event.contentChanges.map(change => ({ text: change.text, offset: change.rangeOffset, length: change.rangeLength })) })
+        })
         const settings = vscode.workspace.getConfiguration('editor')
         const previous = settings.inspect<string>('autoIndent')?.globalValue
         await settings.update('autoIndent', 'full', vscode.ConfigurationTarget.Global)
         try {
             for (const header of ['if (enabled)', 'else', 'for (i = [0:2])', 'translate([1, 2, 3])', 'translate([1, 2, 3]) rotate([0, 90, 0])']) {
                 const document = await vscode.workspace.openTextDocument({ language: 'openscad', content: header })
+                owned.add(document)
                 const editor = await vscode.window.showTextDocument(document)
                 editor.options = { insertSpaces: true, tabSize: 4 }
                 editor.selection = new vscode.Selection(document.positionAt(header.length), document.positionAt(header.length))
@@ -56,6 +62,7 @@ suite('OpenSCAD language integration', () => {
                 ['/* notes\n * first', ' * '],
             ]) {
                 const document = await vscode.workspace.openTextDocument({ language: 'openscad', content: source })
+                owned.add(document)
                 const editor = await vscode.window.showTextDocument(document)
                 editor.options = { insertSpaces: true, tabSize: 4 }
                 editor.selection = new vscode.Selection(document.positionAt(source.length), document.positionAt(source.length))
@@ -64,7 +71,11 @@ suite('OpenSCAD language integration', () => {
                 assert.equal(document.lineAt(document.lineCount - 1).text, expected, source)
                 await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor')
             }
+        } catch (error) {
+            console.error('Native Enter owned-document input trace:', JSON.stringify(inputTrace))
+            throw error
         } finally {
+            changes.dispose()
             await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor')
             await settings.update('autoIndent', previous, vscode.ConfigurationTarget.Global)
         }

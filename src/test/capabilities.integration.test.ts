@@ -1,6 +1,7 @@
 import { focusTestEditor } from './HostEditorFocus'
 import * as assert from 'node:assert/strict'
-import { mkdtemp, writeFile, rm } from 'node:fs/promises'
+import { mkdtemp, readFile, writeFile, rm } from 'node:fs/promises'
+import { CustomizerPresets } from '../features/sidebar/CustomizerPresets'
 import * as os from 'node:os'
 import * as path from 'node:path'
 import * as vscode from 'vscode'
@@ -192,6 +193,90 @@ suite('Agent capabilities extension host', () => {
             assert.equal(Buffer.from(await vscode.workspace.fs.readFile(preset)).toString('utf8'), future)
             assert.equal(document.getText(), originalSource)
             assert.equal(document.isDirty, false)
+        } finally {
+            await vscode.commands.executeCommand('workbench.action.closeAllEditors')
+            api.customizer.clear()
+            await rm(root, { recursive: true, force: true })
+        }
+    })
+    test('preset snapshots reject loss without writes and allow existing-file export and deletion', async function () {
+        this.timeout(30000)
+        const folder = vscode.workspace.workspaceFolders?.[0]
+        assert.ok(folder && vscode.workspace.isTrusted, 'Provide a trusted fixture workspace')
+        const root = await mkdtemp(path.join(folder.uri.fsPath, 'preset-snapshot-'))
+        const api = await vscode.extensions.all.find(item => item.packageJSON.name === 'scad-ai-ide')!.activate() as Awaited<ReturnType<typeof activate>>
+        const state = async () => {
+            const result = await api.capabilities.invoke('customizer.state', {}, { actor: 'agent' })
+            assert.ok(result.ok)
+            return result.data as { target: string; revision: number }
+        }
+        const invoke = async (id: string, input: object = {}, actor: 'agent' | 'gui' = 'agent') => {
+            const current = await state()
+            return api.capabilities.invoke(id, { target: current.target, revision: current.revision, ...input }, { actor })
+        }
+        const success = async (id: string, input: object = {}) => { const result = await invoke(id, input); assert.ok(result.ok, JSON.stringify(result)) }
+        try {
+            for (const fixture of [
+                { id: 'ascii', source: 'label="abcdef"; // 3\n', name: 'label', value: 'abc' },
+                { id: 'utf8', source: 'label="Ω😀"; // 3\n', name: 'label', value: 'Ω' },
+                { id: 'numeric', source: 'width=-5; // [100]\n', name: 'width', value: 5 },
+                { id: 'ambiguous', source: 'mode=1; // [1:Numeric,"1":String,2:Two]\n', name: 'mode', value: 2 },
+            ]) {
+                const source = vscode.Uri.file(path.join(root, fixture.id + '.scad'))
+                const preset = vscode.Uri.file(path.join(root, fixture.id + '.json'))
+                const exported = vscode.Uri.file(path.join(root, fixture.id + '-export.json'))
+                const original = fixture.source + 'cube(1);\n'
+                await writeFile(source.fsPath, original)
+                const document = await vscode.workspace.openTextDocument(source)
+                await vscode.window.showTextDocument(document)
+                const deadline = Date.now() + 5000
+                while ((await state()).target !== source.toString()) { assert.ok(Date.now() < deadline); await new Promise(resolve => setTimeout(resolve, 25)) }
+                if (fixture.id === 'ambiguous') await success('customizer.set', { values: { mode: '1' } })
+                const reject = async (id: string, input: object, actor: 'agent' | 'gui') => {
+                    const before = await state()
+                    const overrides = structuredClone(api.customizer.getOverrides(source.toString()))
+                    const result = await invoke(id, input, actor)
+                    assert.equal(result.ok, false, JSON.stringify(result))
+                    if (!result.ok) assert.equal(result.error.code, 'PRESET_INVALID_VALUE')
+                    assert.deepEqual(await state(), before, 'Rejecting must preserve revision, active and baseline state')
+                    assert.deepEqual(api.customizer.getOverrides(source.toString()), overrides)
+                    assert.equal(document.getText(), original)
+                    assert.equal(document.isDirty, false)
+                }
+                await reject('customizer.createPreset', { name: 'Bad' }, 'agent')
+                await reject('customizer.savePreset', {}, 'gui')
+                await reject('customizer.exportPresets', { uri: exported.toString() }, 'agent')
+                for (const uri of [preset, exported]) await assert.rejects(async () => vscode.workspace.fs.stat(uri), (error: unknown) => error instanceof vscode.FileSystemError && error.code === 'FileNotFound')
+                const existing = { fileFormatVersion: '1', metadata: { keep: true }, parameterSets: { A: { [fixture.name]: String(fixture.value) }, Historical: { old_key: 'retain' } } }
+                const bytes = JSON.stringify(existing)
+                await writeFile(preset.fsPath, bytes)
+                await success('customizer.importPresets', { uri: preset.toString() })
+                await reject('customizer.createPreset', { name: 'Bad' }, 'gui')
+                await reject('customizer.savePreset', { name: 'A' }, 'agent')
+                assert.equal(await readFile(preset.fsPath, 'utf8'), bytes)
+                await success('customizer.exportPresets', { uri: exported.toString() })
+                assert.deepEqual(JSON.parse(await readFile(exported.fsPath, 'utf8')), existing)
+                // Real storage deletion; the domain's separate confirmation is
+                // not bypassed or automatically approved through an Agent call.
+                const deletion = new CustomizerPresets(api.customizer, () => {})
+                try {
+                    deletion.bind(source.toString())
+                    await deletion.execute('import', undefined, preset)
+                    await deletion.execute('delete', 'Historical')
+                    const saved = JSON.parse(await readFile(preset.fsPath, 'utf8'))
+                    assert.deepEqual(saved.metadata, existing.metadata)
+                    assert.deepEqual(saved.parameterSets, { A: existing.parameterSets.A })
+                } finally { deletion.dispose() }
+                await success('customizer.set', { values: { [fixture.name]: fixture.value } })
+                await success('customizer.createPreset', { name: 'Valid' })
+                await success('customizer.applyPreset', { name: '' })
+                await success('customizer.applyPreset', { name: 'Valid' })
+                assert.equal(api.customizer.getOverrides(source.toString())[fixture.name], fixture.value)
+                assert.equal(document.getText(), original)
+                assert.equal(document.isDirty, false)
+                assert.equal(await readFile(source.fsPath, 'utf8'), original)
+            }
+            assert.equal((await vscode.workspace.fs.readDirectory(vscode.Uri.file(root))).some(([name]) => name.endsWith('.tmp')), false)
         } finally {
             await vscode.commands.executeCommand('workbench.action.closeAllEditors')
             api.customizer.clear()

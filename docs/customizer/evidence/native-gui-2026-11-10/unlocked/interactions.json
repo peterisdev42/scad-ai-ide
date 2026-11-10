@@ -1,0 +1,138 @@
+[
+  {
+    "label": "width",
+    "action": "decrement",
+    "before": {
+      "AXDescription": "",
+      "AXEnabled": true,
+      "AXMaxValue": "120",
+      "AXMinValue": "0",
+      "AXRole": "AXIncrementor",
+      "AXTitle": "",
+      "AXValue": "120",
+      "path": "0.32"
+    },
+    "after": {
+      "AXDescription": "",
+      "AXEnabled": true,
+      "AXMaxValue": "120",
+      "AXMinValue": "0",
+      "AXRole": "AXIncrementor",
+      "AXTitle": "",
+      "AXValue": "108",
+      "path": "0.32"
+    }
+  },
+  {
+    "label": "offgrid",
+    "action": "increment",
+    "before": {
+      "AXDescription": "",
+      "AXEnabled": true,
+      "AXMaxValue": "20",
+      "AXMinValue": "0",
+      "AXRole": "AXSlider",
+      "AXTitle": "",
+      "AXValue": "2",
+      "path": "0.37"
+    },
+    "after": {
+      "AXDescription": "",
+      "AXEnabled": true,
+      "AXMaxValue": "20",
+      "AXMinValue": "0",
+      "AXRole": "AXSlider",
+      "AXTitle": "",
+      "AXValue": "3",
+      "path": "0.37"
+    }
+  },
+  {
+    "label": "spin",
+    "action": "increment",
+    "before": {
+      "AXDescription": "",
+      "AXEnabled": true,
+      "AXMaxValue": "1.7976931348623157e+308",
+      "AXMinValue": "-1.7976931348623157e+308",
+      "AXRole": "AXIncrementor",
+      "AXTitle": "",
+      "AXValue": "1.25",
+      "path": "0.40"
+    },
+    "after": {
+      "AXDescription": "",
+      "AXEnabled": true,
+      "AXMaxValue": "1.7976931348623157e+308",
+      "AXMinValue": "-1.7976931348623157e+308",
+      "AXRole": "AXIncrementor",
+      "AXTitle": "",
+      "AXValue": "1.7976931348623157e+308",
+      "path": "0.40"
+    }
+  },
+  {
+    "label": "text",
+    "action": "set",
+    "before": {
+      "AXDescription": "",
+      "AXEnabled": true,
+      "AXRole": "AXTextField",
+      "AXTitle": "",
+      "AXValue": "abcd",
+      "path": "0.47"
+    },
+    "after": {
+      "AXDescription": "",
+      "AXEnabled": true,
+      "AXRole": "AXTextField",
+      "AXTitle": "",
+      "AXValue": "1234",
+      "path": "0.44"
+    }
+  },
+  {
+    "label": "checked",
+    "action": "press",
+    "before": {
+      "AXDescription": "",
+      "AXEnabled": true,
+      "AXRole": "AXCheckBox",
+      "AXTitle": "",
+      "AXValue": 1,
+      "path": "0.47"
+    },
+    "after": {
+      "AXDescription": "",
+      "AXEnabled": true,
+      "AXRole": "AXCheckBox",
+      "AXTitle": "",
+      "AXValue": 0,
+      "path": "0.47"
+    }
+  },
+  {
+    "label": "vector",
+    "action": "increment",
+    "before": {
+      "AXDescription": "",
+      "AXEnabled": true,
+      "AXMaxValue": "10",
+      "AXMinValue": "0",
+      "AXRole": "AXIncrementor",
+      "AXTitle": "",
+      "AXValue": "1",
+      "path": "0.50"
+    },
+    "after": {
+      "AXDescription": "",
+      "AXEnabled": true,
+      "AXMaxValue": "10",
+      "AXMinValue": "0",
+      "AXRole": "AXIncrementor",
+      "AXTitle": "",
+      "AXValue": "2",
+      "path": "0.50"
+    }
+  }
+]

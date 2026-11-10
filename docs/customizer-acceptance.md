@@ -82,4 +82,13 @@ StringParameter maximumSize 参数遮蔽成员；长度保留声明值。native 
 
 新发现Preset当前值快照roundtrip失败：真实Host create成功，但同一集apply报PRESET_INVALID_VALUE；源未变。ADR10待确认，新保存门禁及对应GUI/Host验收尚未执行。native文本显式默认值截断/省略保留、numeric max-only导入边界已补入10例本机探针；不能拿它替代跨平台6例之外的验收。
 
-最新已结束CI对应721bbf5：三平台native各41 schema + 10 import通过；Agent四jobs成功（跳过范围同前述矩阵），Linux/macOS真实Library成功，Windows Unicode Library失败。新增边界与归档digest见customizer/evidence/ci-721bbf5/native-artifacts.json。当前生产Preset roundtrip缺陷仍待ADR10决定；GUI仍待解锁，整体目标未完成。
+最新已结束CI对应721bbf5：三平台native各41 schema + 10 import通过；Agent四jobs成功（跳过范围同前述矩阵），Linux/macOS真实Library成功，Windows Unicode Library失败。新增边界与归档digest见customizer/evidence/ci-721bbf5/native-artifacts.json。该段为721bbf5历史状态；ADR10已于2026-11-10批准实施，GUI解锁后的最终状态见下。
+
+
+## 2026-11-10 当前验收更新
+
+ADR10方案A已批准并实现：当前值保存前共享校验及无损编码重放检查；delete/已有sets export不依赖当前快照。强类型baseline正确区分同编码的数字/字符串，也保留部分集省略的原始默认值。core215/Preview99通过、默认Library26通过/3跳过、浏览器38通过。最低Host全套最终33通过（evidence/adr10-host-final.txt）；同日上一轮32通过/1失败，native Enter多p，故障事件trace已加入仅合成文档的诊断，复测未重现，根因仍未知，失败不删除。
+
+官方Desktop Qt矩阵12项通过且每步核对echo、buffer/disk及原偏好SHA。NATIVE-UI-01..08的精确范围见customizer/native-gui-validation.md，不代表完整pinned Qt或全平台GUI。旧锁屏和controller失败保留。原生指定模型失败、Windows Unicode真实Library失败、Remote未执行仍未改为通过。
+
+精确pinned上游CLI仍缺完整构建证据；新增独立Linux CI构建入口（HEADLESS/NULLGL、CGAL+Manifold、experimental），将运行同一41+10差分，目前只完成YAML解析，不标构建或运行PASS。

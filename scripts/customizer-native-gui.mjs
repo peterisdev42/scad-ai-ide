@@ -12,9 +12,10 @@ const helper = path.join(root, '.build/customizer-native-window')
 const directory = await mkdtemp('/tmp/cgui-')
 const profile = path.join(directory, 'profile')
 await mkdir(profile)
-const source = '/* [Dimensions] */\n// Width in millimeters\nwidth=120; // [0:5:100]\noffgrid=12; // [0:5:100]\nspin=1.25; // .25\n/* [Appearance] */\nshape="round"; // [round:Round, square:Square]\ntext="abcdef"; // 4\nchecked=true;\nvector=[1,2,3]; // [0:0.5:10]\n/* [Hidden] */\ninternalOffset=0.01;\ncube([width,2,3]);\n'
+const source = '/* [Dimensions] */\n// Width in millimeters\nwidth=120; // [0:5:100]\noffgrid=12; // [0:5:100]\nspin=1.25; // .25\n/* [Appearance] */\nshape="round"; // [round:Round, square:Square]\ntext="abcdef"; // 4\nchecked=true;\nvector=[1,2,3]; // [0:0.5:10]\n/* [Hidden] */\ninternalOffset=0.01;\necho(width=width,offgrid=offgrid,spin=spin,shape=shape,text=text,checked=checked,vector=vector);\ncube([width,2,3]);\n'
 const file = path.join(directory, 'model.scad')
 await writeFile(file, source)
+await writeFile(path.join(directory, 'model.json'), JSON.stringify({ fileFormatVersion: '1', parameterSets: { A: { width: '30', shape: 'square' }, B: { spin: '2' } } }, null, 2))
 // The environment changes only this child process. Never repurpose HOME.
 // Observe existing preferences by hash so isolation is not merely assumed.
 const preference = path.join(process.env.HOME, 'Library/Preferences/org.openscad.OpenSCAD.plist')
@@ -41,7 +42,9 @@ try {
             if (captured) break
         } catch (error) { log += '\nWindow observation: ' + error.message }
     }
-    if (!exited && process.env.SCAD_NATIVE_GUI_HOLD === '1') {
+    if (!exited && process.env.SCAD_NATIVE_GUI_CHECK === '1') {
+        execFileSync(process.execPath, [path.join(root, 'scripts/customizer-native-gui-check.mjs'), directory], { stdio: 'inherit', timeout: 180000 })
+    } else if (!exited && process.env.SCAD_NATIVE_GUI_HOLD === '1') {
         console.log('Native window remains live for scoped control checks; write finish in its fixture directory to stop.')
         const deadline = Date.now() + 600000
         while (!exited && Date.now() < deadline && !(await stat(path.join(directory, 'finish')).then(() => true, () => false))) await new Promise(resolve => setTimeout(resolve, 1000))

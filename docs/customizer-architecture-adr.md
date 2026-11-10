@@ -216,7 +216,7 @@ ADR09复测：同一qwen3.5:2b-mlx通过官方Skill入口实际读取Skill并调
 2026-11-09新增官方2026.11.06二进制41例CLI差分，全匹配；相关Customizer/ParameterWidget/parameter源码与pinned相同。源码复核发现Slider.setValue和commitChange经过网格位置，Text控件使用QLineEdit.setMaxLength，不能将CLI的off-grid/UTF-8 import结论扩展为Desktop交互结论。当前原生GUI因已验证锁屏尚未获得控件动态证据；完整矩阵见customizer/native-gui-validation.md。保留用户批准的无损存储、step交互与GUI-Agent一致性政策，不未经实测修改公开行为或宣称Desktop完全一致。
 
 
-## ADR-CUST-10 — 不可重放的当前值快照（PROPOSED，待用户决定）
+## ADR-CUST-10 — 不可重放的当前值快照（2026-11-10 用户批准方案 A）
 
 真实最低Host复现：`label="abcdef"; // 3` 的源码默认值按已批准政策保留；createPreset成功写出`Snapshot.label="abcdef"`，立即apply同一集失败PRESET_INVALID_VALUE。成功结果同时含PRESET-004诊断，不能据此认为保存正确。源码buffer/disk未变，未dirty。证据：customizer/evidence/preset-default-roundtrip-defect.json。当前生产逻辑尚未更改。
 
@@ -227,3 +227,15 @@ ADR09复测：同一qwen3.5:2b-mlx通过官方Skill入口实际读取Skill并调
 方案B：仅省略等于源码默认值且不满足输入约束的字段，保存partial集并提示。可重放时沿用当前源码默认值；若未来源码默认值改变，历史快照也随之改变。这改变快照含义，未经确认不实施。原生有损截断、擅自扩大文本限制或改写源码默认值均不作为备选。
 
 拟定验收：真实Host分别覆盖超长ASCII、多字节文本、max-only负默认值；new/save/export Current失败时不存在新文件，已有文件bytes、active、baseline、Overrides、revision和源码dirty语义不变；修改为合规值后可保存并重新apply。删除已有集和原样export已有sets在当前默认值不合规时仍可操作，未知版本仍拒绝写入。两GUI及Agent使用同一controller，分别验证可见错误。上述新门禁尚未执行，不标PASS。
+
+
+ADR10实施更新：2026-11-10用户明确批准方案A，并确认Mac已解锁。新增纯encodePresetSnapshot，先执行共享约束校验，再核对官方字符串编码解码后的值和类型；new/save/export Current使用它，delete不计算当前快照，export已有sets仍保留现有字段及格式语义。save在无修改早退前也校验，避免无效默认值被报告成功。modified比较独立保存的强类型baseline，避免数字1与字符串"1"同编码掩盖实际修改。数字/字符串枚举的后序同编码项虽是合法GUI值，但无法在既有官方格式中无损重放，纳入已批准的拒绝策略，不改文件格式或选项顺序。
+
+已执行：core新增三项（含ASCII/UTF8/max-only负数、多控件合法重放、混合枚举类型丢失），npm test为core215/Preview99通过、默认Library26通过/3跳过；最低1.140.0真实Host新增定向1项通过，内部四类fixture检验Agent/GUI dispatcher拒绝、无新文件、旧bytes和revision/Overrides/source不变，修正值后可创建/应用，以及已有sets导出与真实storage controller删除不依赖无效当前默认值。该删除证据不宣称点击了GUI确认弹窗。浏览器36通过，包含New/Export错误可见与真实文本修改后保存。首次Host测试编译缺readFile及Thenable/Promise类型错误已修正；首次Chromium受限沙箱Mach端口启动失败保留，授权原生执行后通过。
+
+原生Desktop动态证据已开始取得：显示offgrid12→10、textabcdef→abcd，但初始runtime echo仍12/abcdef；不得把显示裁剪直接说成默认运行值改变。原生键盘spin1.25→1.5及对应echo已观察；Preset列表A/B已实际读取，但自动选择与其他交互仍需可靠目标/焦点及预览完成门禁，首轮失败/不充分结果不计PASS。详见后续GUI验收记录。
+
+
+ADR10后续复核修订：baseline不能由官方字符串编码反解，因为部分Preset省略的source default本身可能无法无损编码。host现在独立保存深拷贝的ParameterValue baseline，modified直接比较类型和值，文件格式仍是官方字符串。新增浏览器反例：默认字符串"1"但enum数字1在先，部分集省略mode时不虚报modified；有意改为数字1后可保存并正确重放。最终浏览器38通过。
+
+原生GUI验收补充：官方Desktop12项交互与echo全部执行通过，source buffer/disk及偏好不变；A→B→Default符合defaults+当前集。Qt默认显示量化/裁剪并不等价于runtime默认值改变。详见customizer/native-gui-validation.md。保留无损IDE输入政策，不擅自模仿Qt显示裁剪或UTF16长度限制。没有宣称完整pinned GUI或Windows/Linux桌面已验证。

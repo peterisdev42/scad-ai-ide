@@ -1,0 +1,65 @@
+{
+  "scope": "Actual native Qt controls and runtime echo; not full pinned binary or IDE parity",
+  "records": [
+    {
+      "id": "default-display",
+      "status": "PASS",
+      "echo": "ECHO: width = 120, offgrid = 12, spin = 1.25, shape = \"round\", text = \"abcdef\", checked = true, vector = [1, 2, 3]"
+    },
+    {
+      "id": "preset-A",
+      "status": "PASS",
+      "echo": "ECHO: width = 30, offgrid = 12, spin = 1.25, shape = \"square\", text = \"abcdef\", checked = true, vector = [1, 2, 3]"
+    },
+    {
+      "id": "preset-B",
+      "status": "PASS",
+      "echo": "ECHO: width = 120, offgrid = 12, spin = 2, shape = \"round\", text = \"abcdef\", checked = true, vector = [1, 2, 3]"
+    },
+    {
+      "id": "preset-default",
+      "status": "PASS",
+      "echo": "ECHO: width = 120, offgrid = 12, spin = 1.25, shape = \"round\", text = \"abcdef\", checked = true, vector = [1, 2, 3]"
+    },
+    {
+      "id": "width-arrow",
+      "status": "PASS",
+      "echo": "ECHO: width = 115, offgrid = 12, spin = 1.25, shape = \"round\", text = \"abcdef\", checked = true, vector = [1, 2, 3]"
+    },
+    {
+      "id": "offgrid-keyboard",
+      "status": "PASS",
+      "echo": "ECHO: width = 115, offgrid = 15, spin = 1.25, shape = \"round\", text = \"abcdef\", checked = true, vector = [1, 2, 3]"
+    },
+    {
+      "id": "spin-arrow",
+      "status": "PASS",
+      "echo": "ECHO: width = 115, offgrid = 15, spin = 1.5, shape = \"round\", text = \"abcdef\", checked = true, vector = [1, 2, 3]"
+    },
+    {
+      "id": "enum",
+      "status": "PASS",
+      "echo": "ECHO: width = 115, offgrid = 15, spin = 1.5, shape = \"square\", text = \"abcdef\", checked = true, vector = [1, 2, 3]"
+    },
+    {
+      "id": "text-ascii",
+      "status": "PASS",
+      "echo": "ECHO: width = 115, offgrid = 15, spin = 1.5, shape = \"square\", text = \"1234\", checked = true, vector = [1, 2, 3]"
+    },
+    {
+      "id": "text-utf16",
+      "status": "PASS",
+      "echo": "ECHO: width = 115, offgrid = 15, spin = 1.5, shape = \"square\", text = \"Ω😀x\", checked = true, vector = [1, 2, 3]"
+    },
+    {
+      "id": "checkbox",
+      "status": "PASS",
+      "echo": "ECHO: width = 115, offgrid = 15, spin = 1.5, shape = \"square\", text = \"Ω😀x\", checked = false, vector = [1, 2, 3]"
+    },
+    {
+      "id": "vector-arrow",
+      "status": "PASS",
+      "echo": "ECHO: width = 115, offgrid = 15, spin = 1.5, shape = \"square\", text = \"Ω😀x\", checked = false, vector = [1.5, 2, 3]"
+    }
+  ]
+}
