@@ -1,0 +1,52 @@
+[
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_14pi0pz4",
+        "name": "scad_ai_ide_customizer_sourceAnalyze",
+        "arguments": "{\"uri\":\"file://<fixture>/workspace/model.scad\",\"includeCandidates\":true,\"maxDiagnostics\":50}",
+        "type": "function"
+      },
+      {
+        "toolCallId": "call_u1jf3hus",
+        "name": "scad_ai_ide_customizer_sourceAnalyze",
+        "arguments": "{\"uri\":\"file://<fixture>/workspace/missing.scad\",\"includeCandidates\":true,\"maxDiagnostics\":50}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_m4snhr7i",
+        "name": "scad_ai_ide_customizer_sourceValidate",
+        "arguments": "{\"uri\":\"file://<fixture>/workspace/model.scad\",\"expectations\":[{\"defaultValue\":40,\"name\":\"width\",\"range\":{\"max\":100,\"min\":10,\"step\":5},\"type\":\"number\",\"visible\":true,\"widget\":\"slider\"}],\"includeWarnings\":true}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_9nokwdaw",
+        "name": "scad_ai_ide_customizer_sourceValidate",
+        "arguments": "{\"expectations\":[{\"defaultValue\":40,\"name\":\"width\",\"range\":{\"max\":100,\"min\":10,\"step\":5},\"type\":\"number\",\"visible\":true,\"widget\":\"slider\"}],\"includeWarnings\":true,\"uri\":\"file://<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_19wylwc3",
+        "name": "scad_ai_ide_customizer_sourceValidate",
+        "arguments": "{\"expectations\":[{\"name\":\"width\",\"range\":{\"max\":100,\"min\":10,\"step\":5},\"type\":\"number\",\"visible\":true,\"widget\":\"slider\"}],\"includeWarnings\":true,\"uri\":\"file://<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  }
+]

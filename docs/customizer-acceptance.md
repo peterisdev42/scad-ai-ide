@@ -1,3 +1,5 @@
+> 2026-11-10 最终交接：目标已暂停，模型测试已停止；产品基线为 64a64f3，完整 SPEC 未通过。以[最终报告](customizer/final-delivery.md)及其 PASS / FAIL / SKIP / NOT RUN 清单为准。以下保留阶段历史，不代表当前正在运行。
+
 # Customizer SPEC 验收台账
 
 当前状态（2026-11-10）：Phase0/0.5审计与批准已完成，Phase1–3主要实现完成，Phase4继续验收，整个SPEC未完成。ADR10方案A已实施。当前core215、Preview99、最低Host33通过；浏览器完整40通过，最新加载诊断复测侧栏37/Preview3分别通过。实际官方Desktop Qt12项通过；精确pinned Linux HEADLESS CLI完整构建及41 schema+10 import通过，首次产物归档缺失正在另轮修复。新GUI Domain/Preset真实Host堆回收五类额外实例均0→1→0。mimo四个MODEL窄断言已通过，但MODEL-01/02存在SPEC9.3重试/回答协议缺陷，qwen完整任务未达标；Windows真实Unicode include失败，Remote及完整pinned Qt/全平台GUI未执行。不以API、编译、工具注册或模型自述代替验收。

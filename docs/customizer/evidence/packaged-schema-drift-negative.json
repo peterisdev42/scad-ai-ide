@@ -1,0 +1,6 @@
+{
+  "scope": "Intentional negative check against current catalog; historical242c5671 artifact remains separately valid for its own source revision",
+  "expectedRejected": true,
+  "actualExitCode": 1,
+  "reason": "Packaged SourceApply schema differs from current conditional catalog; tool count alone would miss drift"
+}

@@ -9,6 +9,11 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
 
+// The historical cancellation probe approved a later confirmation path.
+// Keep it disabled in the delivery baseline; draft repairs and raw evidence
+// are quarantined until a separate end-to-end acceptance is completed.
+assert.ok(process.env.SCAD_AGENT_SCENARIO !== 'cancel' && process.env.SCAD_AGENT_CANCEL_SOURCE_COMMIT !== '1', 'Native cancellation probe is disabled: its historical controller result is invalid. See docs/customizer/final-delivery.md.')
+
 const root = fileURLToPath(new URL('../', import.meta.url))
 const executable = process.env.SCAD_VSCODE_EXECUTABLE
 assert.ok(executable, 'Set SCAD_VSCODE_EXECUTABLE to a cached or installed VS Code executable')

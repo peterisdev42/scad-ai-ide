@@ -1,5 +1,5 @@
 {
-  "artifact": ".build/scad-ai-ide-customizer-architecture-v2.vsix",
+  "artifact": ".build/scad-ai-ide-validated-64a64f3.vsix",
   "bytes": 4533358,
   "sha256": "242c5671cf6fa6e1703f3c0690f4fb8006d211ca3014f322cb3ba26573159f03",
   "verifiedManifest": {
@@ -10,7 +10,7 @@
   "installedHost": "1.140.0",
   "installedSmoke": "PASS",
   "installedEvidence": "evidence/installed-adr11-continuation.txt",
-  "nativeAgent": "New ADR11 artifact awaiting real mimo four-scenario and native cancellation retest; previous successful tasks and protocol defects belong to their exact older artifacts.",
+  "nativeAgent": "NOT ALL PASSED.242 baseline Author/Tail timed out; its cancellation controller probe is invalid.4793 conditional candidate has a successful default-thinking Author run, but remains separate and is not the selected delivery baseline.",
   "unverified": [
     "Windows Unicode library include: actual CI FAILED",
     "Remote SSH/WSL/Container: NOT RUN",
@@ -23,9 +23,9 @@
     "libraryRun": 42635584407,
     "scope": "Three-platform schema41/import10 and Agent contracts passed; explicit skips retained; Windows real Library Unicode includes FAILED",
     "latestContracts": {
-      "commit": "34c64eba072ff8202fd85d77046b789e03374e22",
-      "run": 42748900048,
-      "scope": "All three contracts jobs succeeded including core23; panel32PASS/8bootstrapFAIL retained"
+      "commit": "64a64f3ce667d96911233d6cfe07a08316ef06e8",
+      "run": 42768676661,
+      "scope": "All four Agent jobs succeeded; Libraries run42768676492 Linux/macOS succeeded, Windows Unicode include FAILED"
     },
     "latestPanel": {
       "commit": "9dec262",
@@ -47,28 +47,73 @@
     "evidence": "evidence/native-gui-2026-11-10/verified/manifest.json",
     "scope": "Actual Qt controls and Preview echo, source buffer/disk and preference SHA unchanged; not all platforms/versions"
   },
-  "sourceCommit": "33229d6 plus approved ADR11 continuation and duplicate watcher fix; exact source/bundle/resource hashes below",
+  "sourceCommit": "64a64f3ce667d96911233d6cfe07a08316ef06e8",
   "pinnedCLI": {
-    "commit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2",
-    "target": "linux-x64",
-    "headless": true,
-    "nullgl": true,
-    "cgal": true,
-    "manifold": true,
-    "experimental": true,
-    "sha256": "c2cde5c9f3f43fa4aa2eb9fd46f1fad2e5913c2bf22d538f701760d82626cae8",
-    "scope": "Exact pinned CLI build; not the pinned Qt GUI or a cross-platform executable",
-    "run": 42748900128,
-    "job": 129607539571,
-    "evidence": "evidence/pinned-34c64eb/artifact-verification.json",
-    "zipSha256": "774ea6b921a049f844c580cc9b52f4e754b9130a4cdcc9299adb56358961f342",
+    "run": 42766900749,
+    "job": 129665400258,
+    "artifactId": 13741911144,
+    "zipSha256": "3eeb7cf565261ceb9ec07149506ba1a33e6fb75470521806aac64104df34b822",
+    "zipBytes": 5764181,
+    "digestMatchesAPI": true,
+    "binarySha256": "c2cde5c9f3f43fa4aa2eb9fd46f1fad2e5913c2bf22d538f701760d82626cae8",
+    "binaryMatchesBuildInfo": true,
+    "buildInfo": {
+      "commit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2",
+      "target": "linux-x64",
+      "headless": true,
+      "nullgl": true,
+      "cgal": true,
+      "manifold": true,
+      "experimental": true,
+      "sha256": "c2cde5c9f3f43fa4aa2eb9fd46f1fad2e5913c2bf22d538f701760d82626cae8",
+      "scope": "Exact pinned CLI build; not the pinned Qt GUI or a cross-platform executable"
+    },
     "schemaMatches": 41,
-    "importPasses": 10
+    "importPasses": 10,
+    "allImportIdentityLabelsPinned": true,
+    "files": [
+      {
+        "file": "pinned-native-CMakeCache.txt",
+        "bytes": 50327,
+        "sha256": "99258c22a3d6ae20dbe4793c23b1c727995263f9d49bb72b6647037c88e6cbf5"
+      },
+      {
+        "file": "pinned-native-environment.txt",
+        "bytes": 217,
+        "sha256": "31a82aa29374171701b3279d32a02f7be03717618be6d7530dc3587aec18b084"
+      },
+      {
+        "file": "pinned-native-import.json",
+        "bytes": 8004,
+        "sha256": "c8a2a487d3a97aef691ca9fb7a9d7e4b506d817668f4b4519611a1be02c49fdb"
+      },
+      {
+        "file": "pinned-native-submodules.txt",
+        "bytes": 453,
+        "sha256": "f4b0a510d9f07a14ab36c4116c72207f3552015a1e7d623716561928fe43d111"
+      },
+      {
+        "file": "pinned-native.json",
+        "bytes": 84923,
+        "sha256": "5c28449cc63b25e726c5855a3cf2a0a9fc6f6a0b248fcd64ef4b371c80272d6a"
+      },
+      {
+        "file": "pinned-runtime/bin/openscad",
+        "bytes": 16456888,
+        "sha256": "c2cde5c9f3f43fa4aa2eb9fd46f1fad2e5913c2bf22d538f701760d82626cae8"
+      },
+      {
+        "file": "pinned-runtime/build-info.json",
+        "bytes": 353,
+        "sha256": "d259e08abf971a9497fefc134f612cdfae00d31e14d2d02e90c11ec9d091bc2d"
+      }
+    ],
+    "scope": "Exact pinned Linux CLI HEADLESS/NULLGL CGAL+Manifold+experimental; not Qt/all-platform GUI."
   },
   "guiDomainHeap": {
     "evidence": "evidence/host-gui-lifecycle-memory.json",
     "measuredRounds": 6,
-    "objects": "SourceDomain, EditorActions, CustomizerService, CustomizerDomainService, CustomizerPresets: 0→1→0 each",
+    "objects": "SourceDomain, EditorActions, CustomizerService, CustomizerDomainService, CustomizerPresets: 0\u21921\u21920 each",
     "scope": "Actual isolated Host compiled classes, real filesystem watcher; not whole installed minified extension or renderer/GPU"
   },
   "packagedResourceHashes": {
@@ -81,5 +126,13 @@
     "src/features/sidebar/CustomizerPresets.ts": "425ba95566bf51433c5a219d256e4c16b8b2cda56472f7b5d9fd83c43016c3db",
     "src/core/capabilities/catalog.json": "d63ce1cfd300eebb42441bd715d21fc0419fa4ecdbd33f63d1d2cd030befb043"
   },
-  "bundleSha256": "d81950e5fbc0de17062f6458a2f4c838138820543e6259d8e2ff463d637c9ee2"
+  "bundleSha256": "d81950e5fbc0de17062f6458a2f4c838138820543e6259d8e2ff463d637c9ee2",
+  "deliveryStatus": "Paused handoff; full SPEC not accepted",
+  "isolation": ".build/delivery-isolation-2026-11-10",
+  "laterLimitedCandidate": {
+    "artifact": ".build/scad-ai-ide-customizer-conditional-guidance.vsix",
+    "sha256": "4793d7b4e4c6cc96bb130f24cdd3b84dca6b29a1f8351ee444f06238408bc4c5",
+    "bytes": 4533531,
+    "scope": "Mode-conditional schema candidate: core218/Preview99, minimum Host targeted1, installed smoke and default-thinking MODEL-01 passed. Not full acceptance; subsequent nested-kind draft was not packaged or Host/model verified."
+  }
 }

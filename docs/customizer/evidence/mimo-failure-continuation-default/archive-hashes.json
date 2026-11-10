@@ -1,0 +1,34 @@
+[
+  {
+    "file": "disk.scad",
+    "sha256": "d100f5011416f1dfdae4ca9dd4a0fb46c627a8ea02f10d167ba3fe36a06bade6"
+  },
+  {
+    "file": "facts.json",
+    "sha256": "f4af533c6362b2a01c4b9344d59ff39dc3fa802a06ea16baa636b029adee74d5"
+  },
+  {
+    "file": "native-assistant-messages.json",
+    "sha256": "0881443bdf3497fd1c776b83ce1ca8a7af9d7020d93049402809109b1e18e0ef"
+  },
+  {
+    "file": "ready.json",
+    "sha256": "e8abda3ccbdca9968959ecdcea8feec34fab8177d95a85760f4defe2d3b00ed2"
+  },
+  {
+    "file": "request-input.json",
+    "sha256": "1c11693cf713de213acd118bec6b9bce3e23a2b55854128067a631e7bbcb17b0"
+  },
+  {
+    "file": "result.json",
+    "sha256": "54838f7677f8dc037d4efbac40a9c7b671739ba441edd556e52a0c796a09f95a"
+  },
+  {
+    "file": "tool-traces.json",
+    "sha256": "723da781134c6d55c2db738ca44d5c5838a1e6ee41e23cff61393b4c2e1bee9d"
+  },
+  {
+    "file": "workbench.txt",
+    "sha256": "fd8e3fe4705d96ea54ce4774be0321fc8dd8a97d14333287082c6c59bdb935b2"
+  }
+]

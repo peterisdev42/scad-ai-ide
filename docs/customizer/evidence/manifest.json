@@ -7,7 +7,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "0b22d152d8955d7df125918f457a73c36261663e38bc3b6a6de8f89587f6e9a2"
   },
   {
     "name": "library-native-online",
@@ -17,7 +18,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "5beca60a59c9de93d06f96411236c6f79743d3636532a07b6189ef50a48eb1e7"
   },
   {
     "name": "host-minimum",
@@ -27,7 +29,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "845ea6294939b5a24af947e2fc5233ecd948958f7727711640a16a1b31281ed9"
   },
   {
     "name": "browser",
@@ -37,7 +40,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "4f5ea94301f0f88ab3442448812317e446ebf28afb092fc9ab784a7d1275373a"
   },
   {
     "name": "preview-incomplete",
@@ -47,7 +51,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "3eea25a5cdf22878e8ed95ffd382ca730af85f05f19ff9a2aa44128fc6834a16"
   },
   {
     "name": "preview-cleanup",
@@ -57,7 +62,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "b59d87ef9ba2736e1d718cde9873f19386aae9de9ce498bef03a15d98bbbd0c7"
   },
   {
     "name": "preview-native-accessibility",
@@ -67,7 +73,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "67462ddc09a122b0650b72e0d39d27589f55bc773bbb879448b77c9a03779c6c"
   },
   {
     "name": "source-bounds",
@@ -77,7 +84,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "b636d7e3be1e68aaafffd63f0694c245c07926a5515f74e235aa4238566ce5e3"
   },
   {
     "name": "capability-bounds",
@@ -87,7 +95,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "5def9b577ef7ca529d29afff6f62faf447d563c384ee3359cc6f3139f25fd62b"
   },
   {
     "name": "architecture",
@@ -97,7 +106,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "60b7cf27348d8afe6971c2a2a59f6104426220926842e830f764ae132201b763"
   },
   {
     "name": "compatibility",
@@ -107,7 +117,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "99aa06baaee9aa1269dfb7a15b8aa2b0395ee98e95570e3be379bd663691439c"
   },
   {
     "name": "installed-before-dead-code-cleanup",
@@ -117,7 +128,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "8be5261db442b2827d131fd03f99351e481334620838634895802a1a1d835843"
   },
   {
     "name": "host-native-focus",
@@ -127,7 +139,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "dd5eb69967b8a16bd6a3645b2cce72a67546646a59ed2edb32297046790ea6e1"
   },
   {
     "name": "browser-latest",
@@ -137,7 +150,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "42d63983c7b237785803e117fd294540c614d76171c8a0bbb12637ac6d3f2a7b"
   },
   {
     "name": "installed-latest",
@@ -147,7 +161,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "b699b59fd428fe39e3850b01cfe451c230b75400f199ef7e54091b4ae7757d70"
   },
   {
     "name": "package-latest",
@@ -157,7 +172,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "6f899d11bda6da0067f698a255af9e1c44d282fea14708bd0a79de83334376a8"
   },
   {
     "name": "core-library-preview-schema",
@@ -167,7 +183,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "cbbf418809d108d1c9716e1c1120cfcbe6ece0518663d279346d0beffee17415"
   },
   {
     "name": "capability-explicit-contract",
@@ -177,7 +194,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "e1bcda5cbafef08cfe008a37ba9f99a68ef4ba87d061fa7d0aeca95ad9a8573c"
   },
   {
     "name": "package-explicit-contract",
@@ -187,7 +205,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "228a1edb2f1afe7612d89c236da84faa4cdfbefc3610a54ab182fadb9f9ac0be"
   },
   {
     "name": "verify-explicit-contract",
@@ -197,7 +216,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "7feb5505652023ccd11c17e89a7712c09688d93d1a23774d35e068822572f873"
   },
   {
     "name": "installed-explicit-contract",
@@ -207,7 +227,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "ffb217dc19beb835d109e8920dbf36ae2edac98fed831f1f464d68a8c0272382"
   },
   {
     "name": "host32-first-failure",
@@ -217,7 +238,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "7e77fa0169074d15fadc652d30e9e0609d2f4f1163169de4dbc050c497526bbb"
   },
   {
     "name": "host32-enter-targeted",
@@ -227,7 +249,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "b29167c8e4a8fb54606904ca977c254f2304d8908117075dabe847a881bc8611"
   },
   {
     "name": "host32-repeat",
@@ -237,7 +260,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "e25e00f86db82bba5d59f0d27ec6199d5a2ce2c976ccade23d47b4444616d4da"
   },
   {
     "name": "source-prose-1200",
@@ -247,7 +271,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/globalStorage/tmp prefixes"
-    ]
+    ],
+    "sha256": "b5f4f89ad83cafcdd714a905a1bfd400f64904266766180ea35a2878c2ba6757"
   },
   {
     "name": "qwen2b-author-initial-log",
@@ -257,7 +282,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/tmp prefixes"
-    ]
+    ],
+    "sha256": "2ce2d44fa988cf049fb048d040ccdfff83173de97491a8241a697f7945ec5e3f"
   },
   {
     "name": "qwen2b-author-controller-budget-log",
@@ -267,7 +293,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/tmp prefixes"
-    ]
+    ],
+    "sha256": "d0a3da90ee2ed9a04fce9fe0382036748a3e4d5b0ca9830c7774994ad531c5bb"
   },
   {
     "name": "qwen2b-author-bounded-log",
@@ -277,7 +304,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/tmp prefixes"
-    ]
+    ],
+    "sha256": "29d3ba410af279fc0873713ea2e0fa13770bcdfcab04c7ada399d9bd8a86d098"
   },
   {
     "name": "qwen2b-author-read-policy-log",
@@ -287,7 +315,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/tmp prefixes"
-    ]
+    ],
+    "sha256": "daa9b5eace1911382e3edbffce58b11aa4b7920a072bba7d8586f4e3f3f716c1"
   },
   {
     "name": "qwen2b-tail-log",
@@ -297,7 +326,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/tmp prefixes"
-    ]
+    ],
+    "sha256": "1e262a9be8f612e50bbf018c98ae84c42ce11fbce24d47140d7647e726b32590"
   },
   {
     "name": "qwen2b-expression-log",
@@ -307,7 +337,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/tmp prefixes"
-    ]
+    ],
+    "sha256": "61aac6dcbdfb91735e9c1099717bd3602b42d388ca4b9c2ef7d4a90a138985f9"
   },
   {
     "name": "qwen2b-failure-log",
@@ -317,7 +348,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/tmp prefixes"
-    ]
+    ],
+    "sha256": "48e9e611074ecac0bea9db1c790e0c82242e1d403ab3ec5f19d17d4dd664133a"
   },
   {
     "name": "host-memory-startup-failure",
@@ -327,7 +359,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/tmp prefixes"
-    ]
+    ],
+    "sha256": "00e656463622d40da9d2744abe34902ba5e4b3af09738e0bf59f80fd7f354c1a"
   },
   {
     "name": "host-memory-two-snapshots",
@@ -337,7 +370,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/tmp prefixes"
-    ]
+    ],
+    "sha256": "7d5a0218d64043324082d3df9c8905e25bbc16f3f5646e06723c1f48d4100e0a"
   },
   {
     "name": "host-memory-three-snapshots",
@@ -347,7 +381,8 @@
     "redactions": [
       "ANSI color",
       "repo/home/tmp prefixes"
-    ]
+    ],
+    "sha256": "e286f0b371e0af45dfec8f3de63a3ef60977d5cd8d5411d44849afeed77b18f4"
   },
   {
     "name": "native-gui-first-attempt",
@@ -356,7 +391,8 @@
     "originalSha256": "20f5739003fa8ee92f132e92e6cb0d094a211ca381f46e7b03e77425eff41389",
     "redactions": [
       "repo/home prefixes"
-    ]
+    ],
+    "sha256": "f89bd143c720d80b25e4be043c93984274f2f9bc5d1e1e1cd936e3793d9d2f26"
   },
   {
     "name": "native-gui-sandbox-window",
@@ -365,7 +401,8 @@
     "originalSha256": "6eca35c52678fbfcdd3c1a46282f47b52535e8da1b921a909110e5c5dcb1bf8e",
     "redactions": [
       "repo/home prefixes"
-    ]
+    ],
+    "sha256": "eee6d633b12ffd06c312a31f36d40e8d71fe1cd5707fb089d317bc5f5599d716"
   },
   {
     "name": "desktop-cli-parity",
@@ -374,7 +411,8 @@
     "originalSha256": "d3f0f92665ade64135af08132b5ed5c47ab926f3862f42f6bf403bc3b2622d24",
     "redactions": [
       "repo/home prefixes"
-    ]
+    ],
+    "sha256": "d3f0f92665ade64135af08132b5ed5c47ab926f3862f42f6bf403bc3b2622d24"
   },
   {
     "name": "ci-newlines",
@@ -384,7 +422,8 @@
     "redactions": [
       "ANSI",
       "repo/home/tmp prefixes"
-    ]
+    ],
+    "sha256": "af3d1487f4a17703e53e6fb17b7bad5609eb69c341102c612e549c8cc4b67e13"
   },
   {
     "name": "ci-library-panel-build",
@@ -394,7 +433,8 @@
     "redactions": [
       "ANSI",
       "repo/home/tmp prefixes"
-    ]
+    ],
+    "sha256": "3b07d4be6050d216b18574fb998c14941f7a4ed0b5ad6a8dced8680849b20324"
   },
   {
     "name": "package-ci-fixes",
@@ -404,7 +444,8 @@
     "redactions": [
       "ANSI",
       "repo/home/tmp prefixes"
-    ]
+    ],
+    "sha256": "67bddf702f628d2e14749a8816b63730fbf4ba98156b7145b7e108aca4524a96"
   },
   {
     "name": "verify-ci-fixes",
@@ -414,7 +455,8 @@
     "redactions": [
       "ANSI",
       "repo/home/tmp prefixes"
-    ]
+    ],
+    "sha256": "7feb5505652023ccd11c17e89a7712c09688d93d1a23774d35e068822572f873"
   },
   {
     "name": "installed-ci-fixes",
@@ -424,7 +466,8 @@
     "redactions": [
       "ANSI",
       "repo/home/tmp prefixes"
-    ]
+    ],
+    "sha256": "514bce39870de4deffb29e468789a985d7f4ec29646615d482381869aca6a898"
   },
   {
     "name": "native-gui-locked",
@@ -434,7 +477,8 @@
     "redactions": [
       "ANSI",
       "repo/home/tmp prefixes"
-    ]
+    ],
+    "sha256": "cdc33e5f3e022139d292f956fc92935db32af24be5e49ec9c964df0402ef0915"
   },
   {
     "name": "ci-a874f3f-linux-contracts",
@@ -498,7 +542,8 @@
     "redactions": [
       "ANSI",
       "repo/home/temp prefixes"
-    ]
+    ],
+    "sha256": "87d9abaf16ae156dea84d470fa92d374b1c7957c281281048074e0a1e0360088"
   },
   {
     "name": "darwin-import-721bbf5",
@@ -849,5 +894,2231 @@
     "sha256": "755f5a61873414db39e332ce4ad01d371b519fd62480555399daea31019d20e8",
     "originalSha256": "e731466623435cc28e6be4f8030445b1ef58563f7a44e4a0716993af5ff9936b",
     "scope": "Executed ADR11 or watcher acceptance; failed runs retained and classified in current ledger"
+  },
+  {
+    "name": "adr11-full-regression.txt",
+    "evidence": "adr11-full-regression.txt",
+    "sha256": "fe3f9aa903487c8c922fe2bc4651627f3e9f80ed3c48afd36e3beefc688844a0",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "artifact-intents-fac54ddf.json",
+    "evidence": "artifact-intents-fac54ddf.json",
+    "sha256": "d149164fe992f874b7ea3f1bf2145c95b320f02e7aba74b1674ef669a940f928",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "ci-d2a337e-windows-native-library.txt",
+    "evidence": "ci-d2a337e-windows-native-library.txt",
+    "sha256": "2103b5009d02080396bf719a7a90d3c2cb7b7d56a706550f76d5ba541419f940",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "ci-d2a337e-windows-source-fixture.txt",
+    "evidence": "ci-d2a337e-windows-source-fixture.txt",
+    "sha256": "88552964d50aed5c1e531915471cee255407db4dc2de2862cc07b74f22c151f1",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "ci-d2a337e.json",
+    "evidence": "ci-d2a337e.json",
+    "sha256": "4d795267cb6d853b9ffda2b43578fc3d31a5513c65475718b1443c219933be4f",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "delivery-artifact-verification.json",
+    "evidence": "delivery-artifact-verification.json",
+    "sha256": "c08cc282f1681491f98b5f7d6c0656293c3f900f1796906292eefa07496f8458",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "delivery-cancellation-guard.json",
+    "evidence": "delivery-cancellation-guard.json",
+    "sha256": "2ba3126722da7d0895935e0f578b4e9f71b28f6258eac280ecb6b6db06423e39",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "delivery-compile.txt",
+    "evidence": "delivery-compile.txt",
+    "sha256": "0da5d7dc53d876f3f1e242d2ff06f007cdaf1d3322280df33ab3e4f292bf9f8f",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "delivery-isolation-index.json",
+    "evidence": "delivery-isolation-index.json",
+    "sha256": "43cf2eddce24dca853e85575b9679cb7509f30d66b4b973a6661319ce1a08cf5",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "delivery-regression.txt",
+    "evidence": "delivery-regression.txt",
+    "sha256": "98e0c052cfa15c16a743d2ed4c0efaa4c6438aecf4dd21711d002bbcd6b2f768",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "final-model-results.json",
+    "evidence": "final-model-results.json",
+    "sha256": "ac2e0f54a4bb6ec9bb6d1e5c432983b49d5ba274c788b6f5085a1741cfd30d69",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "host-lifecycle-memory.json",
+    "evidence": "host-lifecycle-memory.json",
+    "sha256": "c1c08122f67de25834d73ae0c0e897496f7f8389142bfb94894ae24b8f0c2152",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "lifecycle-memory.json",
+    "evidence": "lifecycle-memory.json",
+    "sha256": "08e87e3dd78a1be0e041127ad3656ec69dfeb8a6298de0cc7e7bfa13e79f96bd",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-default/archive-hashes.json",
+    "evidence": "mimo-author-conditional-default/archive-hashes.json",
+    "sha256": "d497f9e740d57e25d98f0da49772b386b94bfa71cabf9332b589bc6948c89acc",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-default/disk.scad",
+    "evidence": "mimo-author-conditional-default/disk.scad",
+    "sha256": "91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-default/facts.json",
+    "evidence": "mimo-author-conditional-default/facts.json",
+    "sha256": "c1de95245be90538f5fe1d5035b18283d43434539a71d4da88cd18c5b700b295",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-default/manifest.json",
+    "evidence": "mimo-author-conditional-default/manifest.json",
+    "sha256": "36bd8fb4553258e6eafa8cda74162d9599b11cca422afffcbecde78963441f5b",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-default/native-assistant-messages.json",
+    "evidence": "mimo-author-conditional-default/native-assistant-messages.json",
+    "sha256": "507aa429f19067b87a280a0f7af74d83f02eec90e2e2a9e9288d8ac08e94bf3c",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-default/ready.json",
+    "evidence": "mimo-author-conditional-default/ready.json",
+    "sha256": "51f38a02e6d96c141de5e550dd6cbff0640383aec6f51b762e472a83bb2f1232",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-default/request-input.json",
+    "evidence": "mimo-author-conditional-default/request-input.json",
+    "sha256": "34dbacdbb9d4e3a849110e4874c9d5604758628c3aeea109fe88a01587db6180",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-default/result.json",
+    "evidence": "mimo-author-conditional-default/result.json",
+    "sha256": "c77786de031165446a04928e16c8bb49f4692e1ca5595c72fc99dae5884c8aa0",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-default/review.json",
+    "evidence": "mimo-author-conditional-default/review.json",
+    "sha256": "441ade3715045423efeeec4ad8da48cc1ae4583a6b672a71ca7a85b2249e7fb8",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-default/tool-traces.json",
+    "evidence": "mimo-author-conditional-default/tool-traces.json",
+    "sha256": "9736a90da9bf791158887e51969a80901573c1f6be765ff3423a55676bd43dd2",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-default/workbench.txt",
+    "evidence": "mimo-author-conditional-default/workbench.txt",
+    "sha256": "f8b8dbbf217bb8ae15a6e661127505c2006673e172b27df51cf0f5f759afae9c",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-thinking-off/archive-hashes.json",
+    "evidence": "mimo-author-conditional-thinking-off/archive-hashes.json",
+    "sha256": "71a2a7f72b70e1634cb3536f165fc66aa0b097829655666e4fadbe08602d19b6",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-thinking-off/disk.scad",
+    "evidence": "mimo-author-conditional-thinking-off/disk.scad",
+    "sha256": "91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-thinking-off/facts.json",
+    "evidence": "mimo-author-conditional-thinking-off/facts.json",
+    "sha256": "57914346f1387afb06d35964ef3688749dd99f533a970fa71863989c90459092",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-thinking-off/manifest.json",
+    "evidence": "mimo-author-conditional-thinking-off/manifest.json",
+    "sha256": "bbee777c3c1dc14872865e7a1af79db187153a96c615f979cd9afdf3474a5c73",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-thinking-off/native-assistant-messages.json",
+    "evidence": "mimo-author-conditional-thinking-off/native-assistant-messages.json",
+    "sha256": "2c57787b4849b18b17be880e4737b015a3815b368e9af192229b0f02526fa48c",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-thinking-off/ready.json",
+    "evidence": "mimo-author-conditional-thinking-off/ready.json",
+    "sha256": "aa46b5479194a2e747366cdaac4b96af07ca96552302abcc42961261bd7c0644",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-thinking-off/request-input.json",
+    "evidence": "mimo-author-conditional-thinking-off/request-input.json",
+    "sha256": "b03d0ddbc23bdb35a626ebb7330fd0ede0bdc8686cc51d083856193395b04114",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-thinking-off/result.json",
+    "evidence": "mimo-author-conditional-thinking-off/result.json",
+    "sha256": "a2506d1eb6de9f456e45226de0f4a4183da1d5fa7739fc8b4c8f2ab6448414c6",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-thinking-off/tool-traces.json",
+    "evidence": "mimo-author-conditional-thinking-off/tool-traces.json",
+    "sha256": "44c4b1267fff4720600abe788889e512fb6ab70cd77f5feaf8980a04ad647485",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-conditional-thinking-off/workbench.txt",
+    "evidence": "mimo-author-conditional-thinking-off/workbench.txt",
+    "sha256": "f71ff30aa2d84b0d1c16bcb5931b60ee56958593733faff9b0d194332c626157",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-continuation-deadline/archive-hashes.json",
+    "evidence": "mimo-author-continuation-deadline/archive-hashes.json",
+    "sha256": "d43f838332f2b3c7319beed4f8c3b8b1265050b39be995551f5cdd91fac98f6d",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-continuation-deadline/disk.scad",
+    "evidence": "mimo-author-continuation-deadline/disk.scad",
+    "sha256": "91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-continuation-deadline/facts.json",
+    "evidence": "mimo-author-continuation-deadline/facts.json",
+    "sha256": "e3af1cefb185513798e2100dc509aeaee7432d9fbcf21a8530abb97c9dd3d3bf",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-continuation-deadline/manifest.json",
+    "evidence": "mimo-author-continuation-deadline/manifest.json",
+    "sha256": "210836167a2e8ddb020ac463e87fc6170f7c269aa2efa54c10aba64d0bd388a7",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-continuation-deadline/native-assistant-messages.json",
+    "evidence": "mimo-author-continuation-deadline/native-assistant-messages.json",
+    "sha256": "54050ebc4ca85a6ed35b8235abb8f1d4e4378161adea12f731252e68e489fd33",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-continuation-deadline/ready.json",
+    "evidence": "mimo-author-continuation-deadline/ready.json",
+    "sha256": "e8abda3ccbdca9968959ecdcea8feec34fab8177d95a85760f4defe2d3b00ed2",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-continuation-deadline/request-input.json",
+    "evidence": "mimo-author-continuation-deadline/request-input.json",
+    "sha256": "6625a262e148e5d2faba062d2ac02c6120e01b046c104cff85edb106b3a64b84",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-continuation-deadline/result.json",
+    "evidence": "mimo-author-continuation-deadline/result.json",
+    "sha256": "f8c1711b4ffe731a69d45c20bbd7a85eb7cd49dfb18fec38b4bd5814a9baeea8",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-continuation-deadline/tool-traces.json",
+    "evidence": "mimo-author-continuation-deadline/tool-traces.json",
+    "sha256": "1348fa431459dc75bcf78c2c887ae1e0d1eb9fabf4dcd82ba31f25d10d90a165",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-continuation-deadline/workbench.txt",
+    "evidence": "mimo-author-continuation-deadline/workbench.txt",
+    "sha256": "b76fd137266e30c010035a20758a2e2f83960298f280b3076267d801f25e2de5",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-default/disk.scad",
+    "evidence": "mimo-author-default/disk.scad",
+    "sha256": "91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-default/facts.json",
+    "evidence": "mimo-author-default/facts.json",
+    "sha256": "bfd4c61ef759890b172cc9d0643b9e0313bd1bb7fd6c34d7ac89e3664431589b",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-default/manifest.json",
+    "evidence": "mimo-author-default/manifest.json",
+    "sha256": "76adee2301b4f9f2782999f384f2706621ad6ef5549ce0a9125ecb6b493f7c6c",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-default/native-assistant-messages.json",
+    "evidence": "mimo-author-default/native-assistant-messages.json",
+    "sha256": "22c90b53d2cd1ae569796beab7d732c524d34060c6ac1772134ea13ade4531e0",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-default/ready.json",
+    "evidence": "mimo-author-default/ready.json",
+    "sha256": "2c8496d2671e8759d5a95a4852a4665bb8a03ad5ea5167c81b098767caf3359f",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-default/request-input.json",
+    "evidence": "mimo-author-default/request-input.json",
+    "sha256": "3cf3e53bcd19e99254727d812b8688ced476819c3062e3372785def3ba7722bd",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-default/result.json",
+    "evidence": "mimo-author-default/result.json",
+    "sha256": "19014a0d61c59761c275ed102c4b7caead29f79569a7f9afabe2fe04cc034c7a",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-default/tool-traces.json",
+    "evidence": "mimo-author-default/tool-traces.json",
+    "sha256": "983da757a17446a541782e0d4207d4a7b5306656ffa2f9300047d69b93219888",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-default/workbench.txt",
+    "evidence": "mimo-author-default/workbench.txt",
+    "sha256": "6673334815dab0478fff1be67fd8c677c10039ad39dc0f587510390c3e44b431",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-intents/buffer.scad",
+    "evidence": "mimo-author-intents/buffer.scad",
+    "sha256": "96edeee8fb5ab7ddcf45d7d79a336c5f08e73c5f86a8ad657bfa3fef4954d63f",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-intents/disk.scad",
+    "evidence": "mimo-author-intents/disk.scad",
+    "sha256": "91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-intents/facts.json",
+    "evidence": "mimo-author-intents/facts.json",
+    "sha256": "4e6ba876394dff144c16b0525db27f48d4025725f7bb3a124f5991e4750cfd45",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-intents/manifest.json",
+    "evidence": "mimo-author-intents/manifest.json",
+    "sha256": "e1d742a43c3375a793b9e0a4fcd955871fdc31dd19b918aa6b6adce5a2334157",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-intents/native-assistant-messages.json",
+    "evidence": "mimo-author-intents/native-assistant-messages.json",
+    "sha256": "5ddb63fa33f5bbaa18434a03aa7bcbf4f57d20dafe1cf6f9dafcda493bf9a836",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-intents/ready.json",
+    "evidence": "mimo-author-intents/ready.json",
+    "sha256": "2c8496d2671e8759d5a95a4852a4665bb8a03ad5ea5167c81b098767caf3359f",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-intents/request-input.json",
+    "evidence": "mimo-author-intents/request-input.json",
+    "sha256": "109a8eea55aa161e8778523f2efd039e2280bbed4f3db7cf3c8a3c330f418b9c",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-intents/result.json",
+    "evidence": "mimo-author-intents/result.json",
+    "sha256": "4601a3e182451117f133e3cf71aecf3e863fef2a0f44d8c03a771ed6a075f211",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-intents/review.json",
+    "evidence": "mimo-author-intents/review.json",
+    "sha256": "b7c5c4425b6e07c66680535bc47c080e8ca476775b84bcbaffd1ce656b8683e5",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-intents/tool-traces.json",
+    "evidence": "mimo-author-intents/tool-traces.json",
+    "sha256": "9dfbdc41338d58d4938f0135a93d7e7bc67626f36b69e8d34760ac39c9489f21",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-author-intents/workbench.txt",
+    "evidence": "mimo-author-intents/workbench.txt",
+    "sha256": "94d70128a7239dbe05fdd9a8de6ca4fa19c28a62f664d10a8a9b4647d6ea2a7f",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-conditional-thinking-off/archive-hashes.json",
+    "evidence": "mimo-cancel-conditional-thinking-off/archive-hashes.json",
+    "sha256": "3e56484cf659210ff38b21d56080a7cc5f53a0c2d1794ec82680be476e8c0448",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-conditional-thinking-off/disk.scad",
+    "evidence": "mimo-cancel-conditional-thinking-off/disk.scad",
+    "sha256": "d100f5011416f1dfdae4ca9dd4a0fb46c627a8ea02f10d167ba3fe36a06bade6",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-conditional-thinking-off/facts.json",
+    "evidence": "mimo-cancel-conditional-thinking-off/facts.json",
+    "sha256": "af19c52add1a9756771121759c1bb19ddc84a2087912ba737849193b233d0b61",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-conditional-thinking-off/manifest.json",
+    "evidence": "mimo-cancel-conditional-thinking-off/manifest.json",
+    "sha256": "f87bad58531f783821393201afd967599c5a4491d18b14abda829c21f2f8f15b",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-conditional-thinking-off/native-assistant-messages.json",
+    "evidence": "mimo-cancel-conditional-thinking-off/native-assistant-messages.json",
+    "sha256": "d64cd1990b2ea79413f5c10dadbc06bd16a2f20da45631f82c09b9e8c13964a4",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-conditional-thinking-off/native-tool-executions.json",
+    "evidence": "mimo-cancel-conditional-thinking-off/native-tool-executions.json",
+    "sha256": "f0a6cc73949aeb584cec65a651555afd7dd69c5824a431fc563b22c8e2eac783",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-conditional-thinking-off/ready.json",
+    "evidence": "mimo-cancel-conditional-thinking-off/ready.json",
+    "sha256": "aa46b5479194a2e747366cdaac4b96af07ca96552302abcc42961261bd7c0644",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-conditional-thinking-off/request-input.json",
+    "evidence": "mimo-cancel-conditional-thinking-off/request-input.json",
+    "sha256": "0f41a2e587d7f732497352106da7462aea835067a2fecba4a5bd0e25cd8e4f19",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-conditional-thinking-off/result.json",
+    "evidence": "mimo-cancel-conditional-thinking-off/result.json",
+    "sha256": "79f932382a92bc7868dd7e5b6d98a73737accd9acc1cfdc78acfc0d4bbea7498",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-conditional-thinking-off/review.json",
+    "evidence": "mimo-cancel-conditional-thinking-off/review.json",
+    "sha256": "dd6bf4aac2443ba44b65b3621cac7729549f02c225ff1b240b9f4b20c0a4c498",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-conditional-thinking-off/tool-traces.json",
+    "evidence": "mimo-cancel-conditional-thinking-off/tool-traces.json",
+    "sha256": "ab1ae1d8cb72f1419b8c2d09e9f19226e257aff0c68cd358c13b16bb9c5bb61f",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-conditional-thinking-off/workbench.txt",
+    "evidence": "mimo-cancel-conditional-thinking-off/workbench.txt",
+    "sha256": "c660a9a3475118a5c950b86ae0392d1aba51a975641639bb9a7a8a70430f06a4",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-continuation-default/archive-hashes.json",
+    "evidence": "mimo-cancel-continuation-default/archive-hashes.json",
+    "sha256": "201ed937339018b0c5da259f3a72c93b04447141eb832b62b2caf6c7dd897ab0",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-continuation-default/disk.scad",
+    "evidence": "mimo-cancel-continuation-default/disk.scad",
+    "sha256": "d100f5011416f1dfdae4ca9dd4a0fb46c627a8ea02f10d167ba3fe36a06bade6",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-continuation-default/facts.json",
+    "evidence": "mimo-cancel-continuation-default/facts.json",
+    "sha256": "c0d91044eb43af44ef5bfb2934bc6ccb11abc732b3cd4e8118e1c2ddb2ff51b8",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-continuation-default/manifest.json",
+    "evidence": "mimo-cancel-continuation-default/manifest.json",
+    "sha256": "7042530b072d7e65348f21f0d7f2c2f07c33889310be6a37467618a344c51a04",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-continuation-default/native-assistant-messages.json",
+    "evidence": "mimo-cancel-continuation-default/native-assistant-messages.json",
+    "sha256": "25856d281841f93a5747d418f4eb9abb641c6f965f111160d5a46d0e8b86dd4b",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-continuation-default/ready.json",
+    "evidence": "mimo-cancel-continuation-default/ready.json",
+    "sha256": "e8abda3ccbdca9968959ecdcea8feec34fab8177d95a85760f4defe2d3b00ed2",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-continuation-default/request-input.json",
+    "evidence": "mimo-cancel-continuation-default/request-input.json",
+    "sha256": "54245bf58305489abaa5d85b5907b44642eaf869ca908121d9c537d01aebb20f",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-continuation-default/result.json",
+    "evidence": "mimo-cancel-continuation-default/result.json",
+    "sha256": "587646e342864f1633bc3856082e70469a8b3a364b79f8ac68dc5b6e0d53f3a6",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-continuation-default/review.json",
+    "evidence": "mimo-cancel-continuation-default/review.json",
+    "sha256": "b6b96d8d99a9571421837734bbb411070fea239d9f17ac73975c71186c0c3ccd",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-continuation-default/tool-traces.json",
+    "evidence": "mimo-cancel-continuation-default/tool-traces.json",
+    "sha256": "bfe955a27e5dc68f9dad8dc6ae44763a02ede3ec54c522fddea44d763567fcfc",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-cancel-continuation-default/workbench.txt",
+    "evidence": "mimo-cancel-continuation-default/workbench.txt",
+    "sha256": "0ecdc03f0139f2a599f38ca68859748c6cec30788ae6eb5212dd87eed0399237",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-conditional-thinking-off/archive-hashes.json",
+    "evidence": "mimo-expression-conditional-thinking-off/archive-hashes.json",
+    "sha256": "ea19ae17c9b0ae7892f622cced8558f2664dd24cb1250b2a4ddc4163f23ca183",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-conditional-thinking-off/disk.scad",
+    "evidence": "mimo-expression-conditional-thinking-off/disk.scad",
+    "sha256": "31a6a088cf5428dac05bde0befb708878c001f4c3cff8ce64473cdc4eae43499",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-conditional-thinking-off/facts.json",
+    "evidence": "mimo-expression-conditional-thinking-off/facts.json",
+    "sha256": "8ec0811d0fe23bfa67cf2de730ac744f32e52bf588cde3a74ce43054e04b3647",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-conditional-thinking-off/manifest.json",
+    "evidence": "mimo-expression-conditional-thinking-off/manifest.json",
+    "sha256": "31eb6f8f25c166cb76d256dac550fb61940f1d32d933c362db0371d22e6a294f",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-conditional-thinking-off/native-assistant-messages.json",
+    "evidence": "mimo-expression-conditional-thinking-off/native-assistant-messages.json",
+    "sha256": "61b370de76eb118a7fd75670bcfdef66d516436ab9a2f8314c373def16ce5ccf",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-conditional-thinking-off/native-tool-executions.json",
+    "evidence": "mimo-expression-conditional-thinking-off/native-tool-executions.json",
+    "sha256": "5dad25c281056844da26b6063e1d12e79602ef0909d1bd5e8e77eaa138cbfd5a",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-conditional-thinking-off/ready.json",
+    "evidence": "mimo-expression-conditional-thinking-off/ready.json",
+    "sha256": "aa46b5479194a2e747366cdaac4b96af07ca96552302abcc42961261bd7c0644",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-conditional-thinking-off/request-input.json",
+    "evidence": "mimo-expression-conditional-thinking-off/request-input.json",
+    "sha256": "e8ef48b1363e6666cbb30a59b9ca5e2d1e851fd4525e23ce38c125d8d249a714",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-conditional-thinking-off/result.json",
+    "evidence": "mimo-expression-conditional-thinking-off/result.json",
+    "sha256": "82428b000c5be34d40571dedc23aee40056692ed751a6e8881371530181de28c",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-conditional-thinking-off/tool-traces.json",
+    "evidence": "mimo-expression-conditional-thinking-off/tool-traces.json",
+    "sha256": "7d19e0c63085eeb2f5dffc37d7fd0e8c8155356e2f9da2b3643f9dfedb5e87b2",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-conditional-thinking-off/workbench.txt",
+    "evidence": "mimo-expression-conditional-thinking-off/workbench.txt",
+    "sha256": "70812c34a1c5d39c9f45528b6fcbacceb7f868da980e1e5884b016425f31283e",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-continuation-default/archive-hashes.json",
+    "evidence": "mimo-expression-continuation-default/archive-hashes.json",
+    "sha256": "6378b83abadecc6577dcfb8ab4b57005e4744e5e82b7998bcf5b0fd0cd4ad2ba",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-continuation-default/disk.scad",
+    "evidence": "mimo-expression-continuation-default/disk.scad",
+    "sha256": "31a6a088cf5428dac05bde0befb708878c001f4c3cff8ce64473cdc4eae43499",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-continuation-default/facts.json",
+    "evidence": "mimo-expression-continuation-default/facts.json",
+    "sha256": "b803924a56d8741a869bc6113e305f5dab1c0347d0dd079ca12f0754d51532a6",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-continuation-default/manifest.json",
+    "evidence": "mimo-expression-continuation-default/manifest.json",
+    "sha256": "cd4be3abcc5d985864839bb72853af650f6495d49e3981f45590606fa92aa980",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-continuation-default/native-assistant-messages.json",
+    "evidence": "mimo-expression-continuation-default/native-assistant-messages.json",
+    "sha256": "26fbf4a3163b75eb67cbed9d859571850f9c4e4eb88a2170088baab0ef09ddb5",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-continuation-default/ready.json",
+    "evidence": "mimo-expression-continuation-default/ready.json",
+    "sha256": "e8abda3ccbdca9968959ecdcea8feec34fab8177d95a85760f4defe2d3b00ed2",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-continuation-default/request-input.json",
+    "evidence": "mimo-expression-continuation-default/request-input.json",
+    "sha256": "1c786a2574d0ea1ddd9975c9167a4977a38af535258bf37c4a73015c3187a7ad",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-continuation-default/result.json",
+    "evidence": "mimo-expression-continuation-default/result.json",
+    "sha256": "b295b1fcbdbe6d1230d494ea6643e7d27964b36ad30a37e9e7c653775fec3eb2",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-continuation-default/tool-traces.json",
+    "evidence": "mimo-expression-continuation-default/tool-traces.json",
+    "sha256": "1b0942ad09b37131ae718afda2a3fdd3eec0e6c123a186e882bed7608c1d4458",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-continuation-default/workbench.txt",
+    "evidence": "mimo-expression-continuation-default/workbench.txt",
+    "sha256": "df6e44f2adabfd75a960f04063dc08ba75ae05b7dc3f52f02fcbd373ade934b8",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-intents/disk.scad",
+    "evidence": "mimo-expression-intents/disk.scad",
+    "sha256": "31a6a088cf5428dac05bde0befb708878c001f4c3cff8ce64473cdc4eae43499",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-intents/facts.json",
+    "evidence": "mimo-expression-intents/facts.json",
+    "sha256": "b11462f6c2bb3c1ccaebb6c0a70134e412d874c8467b908a9819e26329fde041",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-intents/manifest.json",
+    "evidence": "mimo-expression-intents/manifest.json",
+    "sha256": "457fdf3e11bfa7bbc0938215eda6dca23e9ee257c375ab1225ca0506c55c661a",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-intents/native-assistant-messages.json",
+    "evidence": "mimo-expression-intents/native-assistant-messages.json",
+    "sha256": "3fa2e1347612cccb9f6d0952187539ad5b8f4d59cf9efe7b6e4f74cf230bb0df",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-intents/ready.json",
+    "evidence": "mimo-expression-intents/ready.json",
+    "sha256": "2c8496d2671e8759d5a95a4852a4665bb8a03ad5ea5167c81b098767caf3359f",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-intents/request-input.json",
+    "evidence": "mimo-expression-intents/request-input.json",
+    "sha256": "8d7fc0002b8cb502c6bdde4b5d69299c9af216487c4a4ca54badfbba64a204a2",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-intents/result.json",
+    "evidence": "mimo-expression-intents/result.json",
+    "sha256": "a1ee3b25184f6867099c2baadb90524c5a3c89849ae9ca5f19fadc94f5dae655",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-intents/review.json",
+    "evidence": "mimo-expression-intents/review.json",
+    "sha256": "106f80f28b11ead1cad84485b6d8a67645343c32503756da1b2da636bed1fed5",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-intents/tool-traces.json",
+    "evidence": "mimo-expression-intents/tool-traces.json",
+    "sha256": "77a073577594f6843433c4e93bb39b3614ab1fb4561ab3c9181879e7d55b0e43",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-expression-intents/workbench.txt",
+    "evidence": "mimo-expression-intents/workbench.txt",
+    "sha256": "fa1b783b19c0159e0be38c9d4076449993b9abd78cdfeb816945fb500a6f81e8",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-conditional-thinking-off/archive-hashes.json",
+    "evidence": "mimo-failure-conditional-thinking-off/archive-hashes.json",
+    "sha256": "c7afc7659a83bbaf1acd491f861cdf3d9ea94756b68d586970de5f1cc5a6d485",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-conditional-thinking-off/disk.scad",
+    "evidence": "mimo-failure-conditional-thinking-off/disk.scad",
+    "sha256": "d100f5011416f1dfdae4ca9dd4a0fb46c627a8ea02f10d167ba3fe36a06bade6",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-conditional-thinking-off/facts.json",
+    "evidence": "mimo-failure-conditional-thinking-off/facts.json",
+    "sha256": "17d6cba9fec192929dc716a84328687b62f2c6edf1f828f300d3ab00c0664a9c",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-conditional-thinking-off/manifest.json",
+    "evidence": "mimo-failure-conditional-thinking-off/manifest.json",
+    "sha256": "4d05327569a1d184f347e70833f984e2c6884370484c4f484998d75379188617",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-conditional-thinking-off/native-assistant-messages.json",
+    "evidence": "mimo-failure-conditional-thinking-off/native-assistant-messages.json",
+    "sha256": "a6125c32ec4669ca91cd6989f9596433ca8308e41dd6aa66a158c6bf10db745b",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-conditional-thinking-off/native-tool-executions.json",
+    "evidence": "mimo-failure-conditional-thinking-off/native-tool-executions.json",
+    "sha256": "275ff8ea467ee3c8c44ee3dcc0d9a920187705690da6762bf2ee7ca0e4677ccd",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-conditional-thinking-off/ready.json",
+    "evidence": "mimo-failure-conditional-thinking-off/ready.json",
+    "sha256": "aa46b5479194a2e747366cdaac4b96af07ca96552302abcc42961261bd7c0644",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-conditional-thinking-off/request-input.json",
+    "evidence": "mimo-failure-conditional-thinking-off/request-input.json",
+    "sha256": "3a71c1a23e82c746a5533c125ae343aab7943b742f505ccc59582501680c4e08",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-conditional-thinking-off/result.json",
+    "evidence": "mimo-failure-conditional-thinking-off/result.json",
+    "sha256": "42bc8475c44f0dce9595663badf94e4efca77835628c08260f9e7241cdf1bdc8",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-conditional-thinking-off/tool-traces.json",
+    "evidence": "mimo-failure-conditional-thinking-off/tool-traces.json",
+    "sha256": "99be6b92299246be7322f6a03192276bd4d3cbee6ac831f9972964ef47d81951",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-conditional-thinking-off/workbench.txt",
+    "evidence": "mimo-failure-conditional-thinking-off/workbench.txt",
+    "sha256": "bb5ad42fab2ecefdc31adc5e06a8629e79abe85d2963c49871366bda4ebf0f84",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-continuation-default/archive-hashes.json",
+    "evidence": "mimo-failure-continuation-default/archive-hashes.json",
+    "sha256": "d274debe11546ea1369c2a64a2abec125ba2bb23f78ba216688f8a286d7ab798",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-continuation-default/disk.scad",
+    "evidence": "mimo-failure-continuation-default/disk.scad",
+    "sha256": "d100f5011416f1dfdae4ca9dd4a0fb46c627a8ea02f10d167ba3fe36a06bade6",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-continuation-default/facts.json",
+    "evidence": "mimo-failure-continuation-default/facts.json",
+    "sha256": "f4af533c6362b2a01c4b9344d59ff39dc3fa802a06ea16baa636b029adee74d5",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-continuation-default/manifest.json",
+    "evidence": "mimo-failure-continuation-default/manifest.json",
+    "sha256": "328912f72b23b2f1651f13ed525a7be41607720659106bf0dff285b9faf55d0a",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-continuation-default/native-assistant-messages.json",
+    "evidence": "mimo-failure-continuation-default/native-assistant-messages.json",
+    "sha256": "0881443bdf3497fd1c776b83ce1ca8a7af9d7020d93049402809109b1e18e0ef",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-continuation-default/ready.json",
+    "evidence": "mimo-failure-continuation-default/ready.json",
+    "sha256": "e8abda3ccbdca9968959ecdcea8feec34fab8177d95a85760f4defe2d3b00ed2",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-continuation-default/request-input.json",
+    "evidence": "mimo-failure-continuation-default/request-input.json",
+    "sha256": "1c11693cf713de213acd118bec6b9bce3e23a2b55854128067a631e7bbcb17b0",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-continuation-default/result.json",
+    "evidence": "mimo-failure-continuation-default/result.json",
+    "sha256": "54838f7677f8dc037d4efbac40a9c7b671739ba441edd556e52a0c796a09f95a",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-continuation-default/tool-traces.json",
+    "evidence": "mimo-failure-continuation-default/tool-traces.json",
+    "sha256": "723da781134c6d55c2db738ca44d5c5838a1e6ee41e23cff61393b4c2e1bee9d",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-continuation-default/workbench.txt",
+    "evidence": "mimo-failure-continuation-default/workbench.txt",
+    "sha256": "fd8e3fe4705d96ea54ce4774be0321fc8dd8a97d14333287082c6c59bdb935b2",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-intents/disk.scad",
+    "evidence": "mimo-failure-intents/disk.scad",
+    "sha256": "d100f5011416f1dfdae4ca9dd4a0fb46c627a8ea02f10d167ba3fe36a06bade6",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-intents/facts.json",
+    "evidence": "mimo-failure-intents/facts.json",
+    "sha256": "b1ee29ec3fad72c3b428a6dd7d6a8900cb5237f3fd5e32bdf90b4c8828d5c438",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-intents/manifest.json",
+    "evidence": "mimo-failure-intents/manifest.json",
+    "sha256": "ef557ab4d11644807918344be06673219f431ff0f8c4de25e8312253e2c9b724",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-intents/native-assistant-messages.json",
+    "evidence": "mimo-failure-intents/native-assistant-messages.json",
+    "sha256": "4816348753a88850b4f53f1a492816130361b9b5396ea0182f927a3ff63061eb",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-intents/ready.json",
+    "evidence": "mimo-failure-intents/ready.json",
+    "sha256": "2c8496d2671e8759d5a95a4852a4665bb8a03ad5ea5167c81b098767caf3359f",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-intents/request-input.json",
+    "evidence": "mimo-failure-intents/request-input.json",
+    "sha256": "3e56bb6e50d6862734f0279dc7e1166ee36a3c0865604e0148247f0720fb0c05",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-intents/result.json",
+    "evidence": "mimo-failure-intents/result.json",
+    "sha256": "ca6d07b2a853453c05763961e97b366f174ed5f3265bfcc7bcd350b1b056d24b",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-intents/review.json",
+    "evidence": "mimo-failure-intents/review.json",
+    "sha256": "ed268e06dc1465a21b372620216b3ae474f7fd8dd65c5501a94612a9f03ce6f5",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-intents/tool-traces.json",
+    "evidence": "mimo-failure-intents/tool-traces.json",
+    "sha256": "9ae4823b5a927ef8b14c312548c1ae3c19f3900a4d1f8bcf9fcaf8cc13e9b127",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-failure-intents/workbench.txt",
+    "evidence": "mimo-failure-intents/workbench.txt",
+    "sha256": "7b45ea8e2e7d09936907a6d16d6799c15656981d27952816bb0f8e26499e2e41",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-conditional-thinking-off/archive-hashes.json",
+    "evidence": "mimo-tail-conditional-thinking-off/archive-hashes.json",
+    "sha256": "18f177a1a5e43e7dc229d5ea5d495d66f828372f1dacd8a1b23c21d287fd2df3",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-conditional-thinking-off/disk.scad",
+    "evidence": "mimo-tail-conditional-thinking-off/disk.scad",
+    "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-conditional-thinking-off/facts.json",
+    "evidence": "mimo-tail-conditional-thinking-off/facts.json",
+    "sha256": "ffe616c3df3c888a44a3becc38c4d3175b1c86d8900d7ef9e3263cb37df4f42b",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-conditional-thinking-off/manifest.json",
+    "evidence": "mimo-tail-conditional-thinking-off/manifest.json",
+    "sha256": "2be6f7e802682e4f90b1bc30337a535e44d7bc5ffeb327b110185c88bc0cd5aa",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-conditional-thinking-off/native-assistant-messages.json",
+    "evidence": "mimo-tail-conditional-thinking-off/native-assistant-messages.json",
+    "sha256": "c78995c249465876d7e7fa5bffcf98290e9abb0168c0548a871afc2a4364ff3f",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-conditional-thinking-off/ready.json",
+    "evidence": "mimo-tail-conditional-thinking-off/ready.json",
+    "sha256": "aa46b5479194a2e747366cdaac4b96af07ca96552302abcc42961261bd7c0644",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-conditional-thinking-off/request-input.json",
+    "evidence": "mimo-tail-conditional-thinking-off/request-input.json",
+    "sha256": "5feb1bad57e8786e6f90dd89ad8f7e9660802b0929eeb1a4bfca3d8658cb1f65",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-conditional-thinking-off/result.json",
+    "evidence": "mimo-tail-conditional-thinking-off/result.json",
+    "sha256": "314a8a6dad0dfa5773d8ea9cc47469bfdbb8e3f58e199fccbefabeaf9b0f54cd",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-conditional-thinking-off/tool-traces.json",
+    "evidence": "mimo-tail-conditional-thinking-off/tool-traces.json",
+    "sha256": "cbb833f6bb132db9ecffb38f9a8715c7a21c0856506586ab3f688a1456ae4c9c",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-conditional-thinking-off/workbench.txt",
+    "evidence": "mimo-tail-conditional-thinking-off/workbench.txt",
+    "sha256": "0fcc77ee4788aa1e1e9c5217af09a6ec64da7049aa19bb2e7150198307db05db",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-continuation-default/archive-hashes.json",
+    "evidence": "mimo-tail-continuation-default/archive-hashes.json",
+    "sha256": "2dc9236ed50344f75a1dbfeba06547560582b66969600514fd13ff9258996b54",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-continuation-default/disk.scad",
+    "evidence": "mimo-tail-continuation-default/disk.scad",
+    "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-continuation-default/facts.json",
+    "evidence": "mimo-tail-continuation-default/facts.json",
+    "sha256": "aa6b192d76cd4d3501ba1fba8fb65833536165d4b59f315ca44625041d3d9a8b",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-continuation-default/manifest.json",
+    "evidence": "mimo-tail-continuation-default/manifest.json",
+    "sha256": "11b3e7b38bd1557483864765bfab0e598e16bb0f7e8dce4677abea6784cbb92b",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-continuation-default/native-assistant-messages.json",
+    "evidence": "mimo-tail-continuation-default/native-assistant-messages.json",
+    "sha256": "60e35558c44197ef196ac9594933fe197f5674345219e5ba98837aa02c1f966d",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-continuation-default/ready.json",
+    "evidence": "mimo-tail-continuation-default/ready.json",
+    "sha256": "e8abda3ccbdca9968959ecdcea8feec34fab8177d95a85760f4defe2d3b00ed2",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-continuation-default/request-input.json",
+    "evidence": "mimo-tail-continuation-default/request-input.json",
+    "sha256": "88f4bc4a4c929af1dceb96babc5dc567ad47076bddd17b8afcce3ab43aa6814a",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-continuation-default/result.json",
+    "evidence": "mimo-tail-continuation-default/result.json",
+    "sha256": "99312200551f9d0966c79a500ce9fbbc1c8e37a626e5966786c9bdbb6fc20148",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-continuation-default/tool-traces.json",
+    "evidence": "mimo-tail-continuation-default/tool-traces.json",
+    "sha256": "e7b846c238026e58898ea8c50225b3f45e593952abebe5306dadcc4b35053b55",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-continuation-default/workbench.txt",
+    "evidence": "mimo-tail-continuation-default/workbench.txt",
+    "sha256": "c8bacae2053b9f738458bee2d588e0bd0887aa76cdc798423749a1b2b62e1ebc",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-intents/disk.scad",
+    "evidence": "mimo-tail-intents/disk.scad",
+    "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-intents/facts.json",
+    "evidence": "mimo-tail-intents/facts.json",
+    "sha256": "25b7c6dd706e4b15f7a564f8fae71a69818f77e2265e8e82f1cff766bf3a0f1a",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-intents/manifest.json",
+    "evidence": "mimo-tail-intents/manifest.json",
+    "sha256": "d798e1abbfd2f3b061996c3f60af54d2e411882de55ff053bd4471616424109b",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-intents/native-assistant-messages.json",
+    "evidence": "mimo-tail-intents/native-assistant-messages.json",
+    "sha256": "3ade2b36a68b0c5230e804e911297445e496b074b61ce344b7a3874df1e6f028",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-intents/ready.json",
+    "evidence": "mimo-tail-intents/ready.json",
+    "sha256": "2c8496d2671e8759d5a95a4852a4665bb8a03ad5ea5167c81b098767caf3359f",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-intents/request-input.json",
+    "evidence": "mimo-tail-intents/request-input.json",
+    "sha256": "b2adce1cd952d2fd0a5778efc4839db464e7fd0ad60f062b59cace49336cfefd",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-intents/result.json",
+    "evidence": "mimo-tail-intents/result.json",
+    "sha256": "a05fe37ee5ba01040bfa8dc3fa46560ae67d83dcfc7e7cdb402c35a4e3c894e4",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-intents/review.json",
+    "evidence": "mimo-tail-intents/review.json",
+    "sha256": "b8d9758313f7ac3d3b737f2a52509bd0d185f8d9db11ab8a0f4435ab6ba3cfd7",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-intents/tool-traces.json",
+    "evidence": "mimo-tail-intents/tool-traces.json",
+    "sha256": "eb9481d33b56e4f2bc02c7e978e318fd7e6f72c8c724ed7113d291646773aaf9",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "mimo-tail-intents/workbench.txt",
+    "evidence": "mimo-tail-intents/workbench.txt",
+    "sha256": "e2cc2b546529a387f6bd0722cb89130739b5d3323c61b185b43b0b49078d6fc8",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-agent-enablement-before.json",
+    "evidence": "native-agent-enablement-before.json",
+    "sha256": "caebe50ee512b636d65ce3c493cb99c78260837e2a4abeb1d1fe39b612a996ef",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-agent-ready.json",
+    "evidence": "native-agent-ready.json",
+    "sha256": "62c15986453043bd305ca4ef9af17469d8829269557e9fdfa7d32e50d2ce9b7e",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-agent-request-input.json",
+    "evidence": "native-agent-request-input.json",
+    "sha256": "7dc427cb0e49e9d8f529184c057c0485b885fd8b46b5c864d570b0e53ce77cfc",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-agent-response.json",
+    "evidence": "native-agent-response.json",
+    "sha256": "426a90d1307e0a5a6934f3f752a0b7dc46f3a5a3f483ed88c860b2c3e6d0a5ea",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-agent-result.json",
+    "evidence": "native-agent-result.json",
+    "sha256": "104c768f9f4c18e4a27c6523413e061a302cef2b1ce4d38dbc3262fef1e34a0f",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-agent-summary.json",
+    "evidence": "native-agent-summary.json",
+    "sha256": "135493cc4caf30f3e999bb372c98858470c6b6e74965eb60cdda9704b5177023",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-agent-workbench.txt",
+    "evidence": "native-agent-workbench.txt",
+    "sha256": "156201611195187bf083025319089796998932e9f32392c799f2609efdcfc5e3",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-ci-linux/archive.json",
+    "evidence": "native-ci-linux/archive.json",
+    "sha256": "9885d25c20c6b9d2e0881080e04e57bab7c7bcbc1c72b0119301e9f82905f2f4",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-ci-linux/customizer-native-import.json",
+    "evidence": "native-ci-linux/customizer-native-import.json",
+    "sha256": "fef9b137c01abdc349337200c3b42a06953db9db82d40eeac3b2c70a6d2ee341",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-ci-linux/customizer-native.json",
+    "evidence": "native-ci-linux/customizer-native.json",
+    "sha256": "649d625afc6c15db83e694c0c47c2831bdecfe25c7145265ea772784ee359c92",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-ci-macos/archive.json",
+    "evidence": "native-ci-macos/archive.json",
+    "sha256": "bec55f2983a8d32307df610cf82e8b8b1730731045ba214e2a8f1b84c0db2185",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-ci-macos/customizer-native-import.json",
+    "evidence": "native-ci-macos/customizer-native-import.json",
+    "sha256": "1066338c961fec6b955aa2cad76ffeb7ecfe4a29b31a322c891a861055174b01",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-ci-macos/customizer-native.json",
+    "evidence": "native-ci-macos/customizer-native.json",
+    "sha256": "011c9f3316f8a30d96a3859a31d254177ad1a486615d1a3866103c9f2c55f677",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-ci-windows/archive.json",
+    "evidence": "native-ci-windows/archive.json",
+    "sha256": "975831fd9d85793e4a67db5f397089e7c2c122dcce91c2e2817f1f39f8f70174",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-ci-windows/customizer-native-import.json",
+    "evidence": "native-ci-windows/customizer-native-import.json",
+    "sha256": "7c29348ff4005bdcc61fd5cb9671f7f757e32c03eda4820ea19cfe8acf409d39",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-ci-windows/customizer-native.json",
+    "evidence": "native-ci-windows/customizer-native.json",
+    "sha256": "4cabb544fd194a9ba61b8852c523fb597b7f359660d6bd77ccb76d6da6a9d245",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-ci-windows/customizer-windows-environment.json",
+    "evidence": "native-ci-windows/customizer-windows-environment.json",
+    "sha256": "d1a1baf77e912fed748c97bfd0e18b8267a418109b466a542ba0491831c686f8",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-desktop-artifact.json",
+    "evidence": "native-desktop-artifact.json",
+    "sha256": "9f63ccb83846e820020b11699f5b3c4185a6bb1f6b802ebc2afde11295c5fe9a",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/automated-guard/ax-initial.json",
+    "evidence": "native-gui-2026-11-10/automated-guard/ax-initial.json",
+    "sha256": "1c14aa64482eea322f36900e138d1d74d6c066da21dd424ef4f2c24de988a80f",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/automated-guard/dynamic-checks.json",
+    "evidence": "native-gui-2026-11-10/automated-guard/dynamic-checks.json",
+    "sha256": "95f1c9ae81c857e1eed9b82bb119e240ef889f09fcac5c9c126633cf4d403a92",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/automated-guard/failed-native-state.json",
+    "evidence": "native-gui-2026-11-10/automated-guard/failed-native-state.json",
+    "sha256": "41d3aecd9c81297bc94d5d7d41d7f664111c3e1a20c2cd4feae5b30fdcfa3fb7",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/automated-guard/manifest.json",
+    "evidence": "native-gui-2026-11-10/automated-guard/manifest.json",
+    "sha256": "4e829329e750ca65305b705687dcf0b09a010356d30b81467db74aeb63fd83d6",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/automated-guard/result.json",
+    "evidence": "native-gui-2026-11-10/automated-guard/result.json",
+    "sha256": "4d49814d9be51299415834ccee5b0705c3ec9cf58e168466a3f7e2b902f36404",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/ax-startup/dynamic-checks.json",
+    "evidence": "native-gui-2026-11-10/ax-startup/dynamic-checks.json",
+    "sha256": "98733f29ee334587449aeac09454258ae31ddf4bdc6117f1d31f523ce43a2cc5",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/ax-startup/result.json",
+    "evidence": "native-gui-2026-11-10/ax-startup/result.json",
+    "sha256": "220c43253aa1d9c5e5cf73f17ee070e50c6820a8273e288b6c5763606d95edfc",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/incorrect-B-expectation/ax-initial.json",
+    "evidence": "native-gui-2026-11-10/incorrect-B-expectation/ax-initial.json",
+    "sha256": "964d066ba8d4baeb21e9dfd8efeca43100a1e5ac516a576f172789d0f95ee7e0",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/incorrect-B-expectation/dynamic-checks.json",
+    "evidence": "native-gui-2026-11-10/incorrect-B-expectation/dynamic-checks.json",
+    "sha256": "ee8ce4d0c192e8c2764adcc6a207925d13ffd047d576457d344f96b0746adea4",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/incorrect-B-expectation/failed-native-state.json",
+    "evidence": "native-gui-2026-11-10/incorrect-B-expectation/failed-native-state.json",
+    "sha256": "a415420a7bb9db0d1f9d65f39713937b5f32ee298bdfce7e427ac19ccc380d7b",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/incorrect-B-expectation/manifest.json",
+    "evidence": "native-gui-2026-11-10/incorrect-B-expectation/manifest.json",
+    "sha256": "839ac13db4fc2f11a6df27c4767192c844f87df58d3812d215b8f244bf96d3a6",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/incorrect-B-expectation/result.json",
+    "evidence": "native-gui-2026-11-10/incorrect-B-expectation/result.json",
+    "sha256": "15f30bf305c9172199783ed4d9f50d03288c344c16dac1eb69afcfb6e0ffff06",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/matrix-guard/dynamic-checks.json",
+    "evidence": "native-gui-2026-11-10/matrix-guard/dynamic-checks.json",
+    "sha256": "7ea957df9d5cfabe464cc616b37eeb613f337064dd99dcfc491c6a58fb5a3843",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/matrix-guard/failed-native-state.json",
+    "evidence": "native-gui-2026-11-10/matrix-guard/failed-native-state.json",
+    "sha256": "b7da0a21ca4bcc657230d08af8586f433bf1c262c50dd7d8e5342f438a3b5be8",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/matrix-guard/result.json",
+    "evidence": "native-gui-2026-11-10/matrix-guard/result.json",
+    "sha256": "96c30ddabf155712237e002e3689d068ea4969f440a0af4ff4ccc366829e6f91",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/matrix-guard/verified-default-display.json",
+    "evidence": "native-gui-2026-11-10/matrix-guard/verified-default-display.json",
+    "sha256": "b7da0a21ca4bcc657230d08af8586f433bf1c262c50dd7d8e5342f438a3b5be8",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/matrix-initial/ax-A-pointer-selected.json",
+    "evidence": "native-gui-2026-11-10/matrix-initial/ax-A-pointer-selected.json",
+    "sha256": "058e51fe2b9675eefc4038b48929b81e649110e11f65ca2eae598282d65a9f4b",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/matrix-initial/ax-popup-geometry.json",
+    "evidence": "native-gui-2026-11-10/matrix-initial/ax-popup-geometry.json",
+    "sha256": "85407be1613a9d80a93b64b1ee1407511c30edc7c260c76452a9692198867603",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/matrix-initial/dynamic-checks.json",
+    "evidence": "native-gui-2026-11-10/matrix-initial/dynamic-checks.json",
+    "sha256": "ad5c733726f192c82b9872230de7c823c9be061fe524d40e6b7c5ef5ceb513b9",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/matrix-initial/result.json",
+    "evidence": "native-gui-2026-11-10/matrix-initial/result.json",
+    "sha256": "ac24424fa9ef5dd24f01eb7d00658afcc24299494411ace34e39cfbc2ca7cfc5",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/popup/ax-showmenu.json",
+    "evidence": "native-gui-2026-11-10/popup/ax-showmenu.json",
+    "sha256": "ad05e6f36e5a72e254343f8bb795fe511f46b1ebcd41c80890b8081aba9a66e4",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/popup/result.json",
+    "evidence": "native-gui-2026-11-10/popup/result.json",
+    "sha256": "4f8177966fd606e7292b018abf8b7bec3d07c0a9e362687d5f2483c8433daa2a",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/runtime/ax-initial.json",
+    "evidence": "native-gui-2026-11-10/runtime/ax-initial.json",
+    "sha256": "036dca0a57d3aad68a8f3a6d039b7f1026ab0b1ff52113898b25fb73fa38dea6",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/runtime/ax-spin-keyboard.json",
+    "evidence": "native-gui-2026-11-10/runtime/ax-spin-keyboard.json",
+    "sha256": "d81f26df548775f58311cb951f66d2eb70cd8cf45d038ffbd605021ceaea27d5",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/runtime/controls.png",
+    "evidence": "native-gui-2026-11-10/runtime/controls.png",
+    "sha256": "97fd29290a17024b3458bd14ad3cc349a3aeaf8d10175df816ad77b3a35f4db5",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/runtime/keyboard-and-presets.json",
+    "evidence": "native-gui-2026-11-10/runtime/keyboard-and-presets.json",
+    "sha256": "fda63568e3d8f6ea1de485493637875b9be7cb21b92256cb0a7b2f3335ccce05",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/runtime/result.json",
+    "evidence": "native-gui-2026-11-10/runtime/result.json",
+    "sha256": "a5cc56b52580df8509db681c63d850db73ae4d0fdedd811a48696557f4eb0899",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/unlocked/ax-after-preview.json",
+    "evidence": "native-gui-2026-11-10/unlocked/ax-after-preview.json",
+    "sha256": "6ff492c997008e0291d5eed8f759386ba2651ab1d028096bc7455617dc7f2675",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/unlocked/controls.png",
+    "evidence": "native-gui-2026-11-10/unlocked/controls.png",
+    "sha256": "b59da1523b68abdfa03918eacdf55231e3fe7162816b8df0ad052116007eab95",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/unlocked/interactions.json",
+    "evidence": "native-gui-2026-11-10/unlocked/interactions.json",
+    "sha256": "f3c7cd3a49e8dfad64733f81b7bb99c89e175d2332efd8670a62965a948b2502",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/unlocked/result.json",
+    "evidence": "native-gui-2026-11-10/unlocked/result.json",
+    "sha256": "325fee4ea4d08d5925d5aa69ef38b0200a3336dfe6723eb87364bd5fea58a21b",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/verified/ax-initial.json",
+    "evidence": "native-gui-2026-11-10/verified/ax-initial.json",
+    "sha256": "1c14aa64482eea322f36900e138d1d74d6c066da21dd424ef4f2c24de988a80f",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/verified/dynamic-checks.json",
+    "evidence": "native-gui-2026-11-10/verified/dynamic-checks.json",
+    "sha256": "566842762a31f0c0ddd5f59deefaefefa4b1b45b30c821a9d6b7d56aba001507",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/verified/manifest.json",
+    "evidence": "native-gui-2026-11-10/verified/manifest.json",
+    "sha256": "279ecac6f9183d79f3d46112291003f5fbb8dc4bc39af6916a1685247eff316c",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/verified/result.json",
+    "evidence": "native-gui-2026-11-10/verified/result.json",
+    "sha256": "6e76631df080bd8b13b1e920586c2e02101127270477f931a29cd7d26211608f",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/verified/verified-checkbox.json",
+    "evidence": "native-gui-2026-11-10/verified/verified-checkbox.json",
+    "sha256": "a17abc3f0dc6dedf78aa3b80cf47fe6046b6212c02a7f092381a90b79e9fc5c1",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/verified/verified-default-display.json",
+    "evidence": "native-gui-2026-11-10/verified/verified-default-display.json",
+    "sha256": "57417fadb4ee2cb6b939b78148fbe56ca0cb8617f256e2bf9f2ed1918dac7d7c",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/verified/verified-enum.json",
+    "evidence": "native-gui-2026-11-10/verified/verified-enum.json",
+    "sha256": "e09bb4f391dec8900b7aba9bedb8a5ed4e03792465d59c2958dc2a5b05218b34",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/verified/verified-offgrid-keyboard.json",
+    "evidence": "native-gui-2026-11-10/verified/verified-offgrid-keyboard.json",
+    "sha256": "45bece44f9e46c50b937007852573e1cbf97be2ac053e0b09d0c96cf9a4c69a7",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/verified/verified-preset-A.json",
+    "evidence": "native-gui-2026-11-10/verified/verified-preset-A.json",
+    "sha256": "085242125438b7a84e65d10b65093b50610f6e838a155a787361cc546451e2be",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/verified/verified-preset-B.json",
+    "evidence": "native-gui-2026-11-10/verified/verified-preset-B.json",
+    "sha256": "70948211352197469341ae0bb8f5bd746bb8fe06a36fc8cfe3202071809b00e2",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/verified/verified-preset-default.json",
+    "evidence": "native-gui-2026-11-10/verified/verified-preset-default.json",
+    "sha256": "4ae0530051037def4ccbca039babd2e2e94c8344c13373ef5f1178eb5ca188f6",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/verified/verified-spin-arrow.json",
+    "evidence": "native-gui-2026-11-10/verified/verified-spin-arrow.json",
+    "sha256": "63c09696ad0a39983bf664e8f7e0c2356390f5c62e1513d33ba3d0a23476d3c4",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/verified/verified-text-ascii.json",
+    "evidence": "native-gui-2026-11-10/verified/verified-text-ascii.json",
+    "sha256": "6e97f468eaaca5362da6664b6b19b33f8a1ce06a93c9a3ca50a0ba6826f94f1d",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/verified/verified-text-utf16.json",
+    "evidence": "native-gui-2026-11-10/verified/verified-text-utf16.json",
+    "sha256": "b2257899426dcb861367071871a56edb58ac1e0d9a7ecc2510accf99714a11a6",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/verified/verified-vector-arrow.json",
+    "evidence": "native-gui-2026-11-10/verified/verified-vector-arrow.json",
+    "sha256": "2f8a76e407dcf44022bfba37daeae7b3e141000ff7e5fa2fe02dea058b251814",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-2026-11-10/verified/verified-width-arrow.json",
+    "evidence": "native-gui-2026-11-10/verified/verified-width-arrow.json",
+    "sha256": "f5a9a01985c882e5a27d6726b4c629552f69cabd210de82be37810a42df8b3fd",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-locked-ax-app.json",
+    "evidence": "native-gui-locked-ax-app.json",
+    "sha256": "13d26f135d303e664e412d84f5d3b05655c8aa5a830e996361570d86e3a201a2",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-locked-ax-app2.json",
+    "evidence": "native-gui-locked-ax-app2.json",
+    "sha256": "a60405c01acd4a9f052df46743894e14317c8a691550286eff0afb000bdbd377",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-locked-result.json",
+    "evidence": "native-gui-locked-result.json",
+    "sha256": "c8dc783d71fb6d62447678625e3fca9cea54efd5d674c7f7d4231ce0731355b9",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "native-gui-preference-recovery.json",
+    "evidence": "native-gui-preference-recovery.json",
+    "sha256": "44381641e2dc207821fdbf2815fd2a0ae7cc25b307f42b44b81f7810a0328452",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "packaged-schema-drift-negative.json",
+    "evidence": "packaged-schema-drift-negative.json",
+    "sha256": "4b4c5e665172d2355f08a49315a20685d334b65ba875fc84f380c49d368763a2",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "pinned-33229d6/archive-hashes.json",
+    "evidence": "pinned-33229d6/archive-hashes.json",
+    "sha256": "2cde9a56f1696489b0b2a7ac35055846414719c8d7d95e15254068f1e1d2400d",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "pinned-33229d6/artifact-verification.json",
+    "evidence": "pinned-33229d6/artifact-verification.json",
+    "sha256": "9dad8ffd151e6902adf6fd2ea7674f2e5d64efce103af22ea350700562f7095d",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "pinned-33229d6/pinned-native-CMakeCache.txt",
+    "evidence": "pinned-33229d6/pinned-native-CMakeCache.txt",
+    "sha256": "99258c22a3d6ae20dbe4793c23b1c727995263f9d49bb72b6647037c88e6cbf5",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "pinned-33229d6/pinned-native-environment.txt",
+    "evidence": "pinned-33229d6/pinned-native-environment.txt",
+    "sha256": "31a82aa29374171701b3279d32a02f7be03717618be6d7530dc3587aec18b084",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "pinned-33229d6/pinned-native-import.json",
+    "evidence": "pinned-33229d6/pinned-native-import.json",
+    "sha256": "c8a2a487d3a97aef691ca9fb7a9d7e4b506d817668f4b4519611a1be02c49fdb",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "pinned-33229d6/pinned-native-submodules.txt",
+    "evidence": "pinned-33229d6/pinned-native-submodules.txt",
+    "sha256": "f4b0a510d9f07a14ab36c4116c72207f3552015a1e7d623716561928fe43d111",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "pinned-33229d6/pinned-native.json",
+    "evidence": "pinned-33229d6/pinned-native.json",
+    "sha256": "5c28449cc63b25e726c5855a3cf2a0a9fc6f6a0b248fcd64ef4b371c80272d6a",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "pinned-33229d6/pinned-runtime__build-info.json",
+    "evidence": "pinned-33229d6/pinned-runtime__build-info.json",
+    "sha256": "d259e08abf971a9497fefc134f612cdfae00d31e14d2d02e90c11ec9d091bc2d",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "pinned-34c64eb/artifact-verification.json",
+    "evidence": "pinned-34c64eb/artifact-verification.json",
+    "sha256": "beb6c57d7866b2f262d448184e7e041c8c93dc41d55781bca1240daf561fa0e8",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "pinned-34c64eb/pinned-native-CMakeCache.txt",
+    "evidence": "pinned-34c64eb/pinned-native-CMakeCache.txt",
+    "sha256": "99258c22a3d6ae20dbe4793c23b1c727995263f9d49bb72b6647037c88e6cbf5",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "pinned-34c64eb/pinned-native-environment.txt",
+    "evidence": "pinned-34c64eb/pinned-native-environment.txt",
+    "sha256": "31a82aa29374171701b3279d32a02f7be03717618be6d7530dc3587aec18b084",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "pinned-34c64eb/pinned-native-import.json",
+    "evidence": "pinned-34c64eb/pinned-native-import.json",
+    "sha256": "1ad3b983e86984448c6603033182e292fc55fa0e56ec1807588003db7e02b82c",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "pinned-34c64eb/pinned-native-submodules.txt",
+    "evidence": "pinned-34c64eb/pinned-native-submodules.txt",
+    "sha256": "f4b0a510d9f07a14ab36c4116c72207f3552015a1e7d623716561928fe43d111",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "pinned-34c64eb/pinned-native.json",
+    "evidence": "pinned-34c64eb/pinned-native.json",
+    "sha256": "5c28449cc63b25e726c5855a3cf2a0a9fc6f6a0b248fcd64ef4b371c80272d6a",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "pinned-34c64eb/pinned-runtime__build-info.json",
+    "evidence": "pinned-34c64eb/pinned-runtime__build-info.json",
+    "sha256": "d259e08abf971a9497fefc134f612cdfae00d31e14d2d02e90c11ec9d091bc2d",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "prose-corpus.txt",
+    "evidence": "prose-corpus.txt",
+    "sha256": "b5f4f89ad83cafcdd714a905a1bfd400f64904266766180ea35a2878c2ba6757",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author/disk.scad",
+    "evidence": "qwen2b-author/disk.scad",
+    "sha256": "91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author/facts.json",
+    "evidence": "qwen2b-author/facts.json",
+    "sha256": "3c8800d4cea34efdc75f9e0081f157316a8123fafe0aadb5b25904686560eb9c",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author/manifest.json",
+    "evidence": "qwen2b-author/manifest.json",
+    "sha256": "060441f32c4b851b6349906d67e66ec81101fad6dcf837d10122fb85cc1926b5",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author/native-assistant-messages.json",
+    "evidence": "qwen2b-author/native-assistant-messages.json",
+    "sha256": "65f795076a3bb5114af5b98d1c0cd31a74aed7173382f5dbbc02a23eabb3db85",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author/ready.json",
+    "evidence": "qwen2b-author/ready.json",
+    "sha256": "1f799d779226e813b81910be555f4fec4746d5a9c01a189359531c120c1a5f2b",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author/request-input.json",
+    "evidence": "qwen2b-author/request-input.json",
+    "sha256": "7dd47e868e52917026c189b51a853991de14b3ddc6c9d05cf831cc7df390b8cc",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author/result.json",
+    "evidence": "qwen2b-author/result.json",
+    "sha256": "3927ac2c0338b22eac767ebe2892f9b581829a3c050e82c6a51cfca43be3aa0a",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author/tool-traces.json",
+    "evidence": "qwen2b-author/tool-traces.json",
+    "sha256": "9ddbadf8d6807dea5057f66b066f14983bf89abcd9fc30b3b4f2b2d7f32dd6ce",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author/workbench.txt",
+    "evidence": "qwen2b-author/workbench.txt",
+    "sha256": "543920b421f7aa29eef0475d008097f67fb5ae47fbe22d3bf3f40de97a02119c",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-clarified-temperature0/disk.scad",
+    "evidence": "qwen2b-author-clarified-temperature0/disk.scad",
+    "sha256": "91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-clarified-temperature0/facts.json",
+    "evidence": "qwen2b-author-clarified-temperature0/facts.json",
+    "sha256": "4370d0b6f409b6b98e176688b136ab98feb5fc31909e278de672066fc055f9a6",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-clarified-temperature0/manifest.json",
+    "evidence": "qwen2b-author-clarified-temperature0/manifest.json",
+    "sha256": "a39c75c4dfd24e0e052b9cac72f2eb1a3889bd526b8f48127df8ea38de0c63b1",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-clarified-temperature0/native-assistant-messages.json",
+    "evidence": "qwen2b-author-clarified-temperature0/native-assistant-messages.json",
+    "sha256": "fcfb25fa1c44e506dc270140cbbfdedcef5c141c708cf341ad1edc7a861e3353",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-clarified-temperature0/ready.json",
+    "evidence": "qwen2b-author-clarified-temperature0/ready.json",
+    "sha256": "49d7c390d48c7cc345b21b1443c98c64c3628cd6e20d469d7575937439d913cb",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-clarified-temperature0/request-input.json",
+    "evidence": "qwen2b-author-clarified-temperature0/request-input.json",
+    "sha256": "f14c54f4bac08c7d49f597ae0b666939b2b6039845b8bb5c9fd5be1bae60d163",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-clarified-temperature0/result.json",
+    "evidence": "qwen2b-author-clarified-temperature0/result.json",
+    "sha256": "f6f361cfefa2f9db94887391ebe5e3eb2e26850c3e40f0cdfc7ba063067dfd81",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-clarified-temperature0/sampling-profile.json",
+    "evidence": "qwen2b-author-clarified-temperature0/sampling-profile.json",
+    "sha256": "8cb3f07dc1c8654704f658a0627f4b67eb303b58f9d0f70ccc8f1996ea41e2e7",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-clarified-temperature0/tool-traces.json",
+    "evidence": "qwen2b-author-clarified-temperature0/tool-traces.json",
+    "sha256": "663a1de1a97d9668bf669222e2f4fd6a30cd7a208d4c0f084cbee823341019fd",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-clarified-temperature0/workbench.txt",
+    "evidence": "qwen2b-author-clarified-temperature0/workbench.txt",
+    "sha256": "e79a7e2e4c0d05d1a3165213493c6736f6bcc4f4a0823737fefc0f1c3f9f4de7",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-confirmation-budget/disk.scad",
+    "evidence": "qwen2b-author-confirmation-budget/disk.scad",
+    "sha256": "91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-confirmation-budget/facts.json",
+    "evidence": "qwen2b-author-confirmation-budget/facts.json",
+    "sha256": "9a37e479070ac05a144df4cf7435856824a417a4c51dd978cdc219f36d2067fd",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-confirmation-budget/manifest.json",
+    "evidence": "qwen2b-author-confirmation-budget/manifest.json",
+    "sha256": "cc32456e7792b377b0e6a6a2cf94de73b7449891aad114e90e75cbbac9a053bf",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-confirmation-budget/native-assistant-messages.json",
+    "evidence": "qwen2b-author-confirmation-budget/native-assistant-messages.json",
+    "sha256": "edafdea260fcafdb560c003b65a8307a8340b6b0ea182d27e190496a6b2514b6",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-confirmation-budget/ready.json",
+    "evidence": "qwen2b-author-confirmation-budget/ready.json",
+    "sha256": "1f799d779226e813b81910be555f4fec4746d5a9c01a189359531c120c1a5f2b",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-confirmation-budget/request-input.json",
+    "evidence": "qwen2b-author-confirmation-budget/request-input.json",
+    "sha256": "7dd47e868e52917026c189b51a853991de14b3ddc6c9d05cf831cc7df390b8cc",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-confirmation-budget/tool-traces.json",
+    "evidence": "qwen2b-author-confirmation-budget/tool-traces.json",
+    "sha256": "c73466f4ad00cc007a52834e5a316ec8e1e54db1421acb1c96eaa384a991a5de",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-confirmation-budget/workbench.txt",
+    "evidence": "qwen2b-author-confirmation-budget/workbench.txt",
+    "sha256": "211305ccfb343c496dfdf0e0651c26fbe0e3b8a4dbd4ee791c5257d40ca32d58",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-initial/disk.scad",
+    "evidence": "qwen2b-author-initial/disk.scad",
+    "sha256": "91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-initial/facts.json",
+    "evidence": "qwen2b-author-initial/facts.json",
+    "sha256": "1e3a3a61117713dde89d4ed5ed29569f4dd65ebb1516a27e97da3c73aedc8465",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-initial/manifest.json",
+    "evidence": "qwen2b-author-initial/manifest.json",
+    "sha256": "5ea472115331b36a02698f12c820d076275c74676b20e562353ea4abb75d02f2",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-initial/native-assistant-messages.json",
+    "evidence": "qwen2b-author-initial/native-assistant-messages.json",
+    "sha256": "f32eef93de02954ec8e3042aca9ceacf2d7231ae0d1ecf495dddff67346c6364",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-initial/request-input.json",
+    "evidence": "qwen2b-author-initial/request-input.json",
+    "sha256": "b2117561491e8989df6087012d502c99ce1534148d5f7e78d9346a17e73b54df",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-initial/result.json",
+    "evidence": "qwen2b-author-initial/result.json",
+    "sha256": "af353809d374bb5b51221859d7aa9e599b3d91be2ce630ea2178a1ead87ad29f",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-initial/tool-traces.json",
+    "evidence": "qwen2b-author-initial/tool-traces.json",
+    "sha256": "20c61952828322f535713ccb17ff329414c5984ce9757557f23f75de14bf5ab4",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-initial/workbench.txt",
+    "evidence": "qwen2b-author-initial/workbench.txt",
+    "sha256": "8a2e3e8f41358703f450b31a065301c9d1037931f52d9fcdd93757515f493b63",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-read-policy/disk.scad",
+    "evidence": "qwen2b-author-read-policy/disk.scad",
+    "sha256": "91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-read-policy/facts.json",
+    "evidence": "qwen2b-author-read-policy/facts.json",
+    "sha256": "2ff21d4abb8805bc450ef5f70ea14eb3bdba3c13e5c462cff3710ea1f09cd848",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-read-policy/manifest.json",
+    "evidence": "qwen2b-author-read-policy/manifest.json",
+    "sha256": "d2e6a34680a7423583e24d3d12703d9965f22cc6d53986cb325c5ab536a36441",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-read-policy/native-assistant-messages.json",
+    "evidence": "qwen2b-author-read-policy/native-assistant-messages.json",
+    "sha256": "95e155064e2f420916c35b481b7fd4287a650dfb1626f341b8ff2069ac16b51f",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-read-policy/ready.json",
+    "evidence": "qwen2b-author-read-policy/ready.json",
+    "sha256": "1f799d779226e813b81910be555f4fec4746d5a9c01a189359531c120c1a5f2b",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-read-policy/request-input.json",
+    "evidence": "qwen2b-author-read-policy/request-input.json",
+    "sha256": "7dd47e868e52917026c189b51a853991de14b3ddc6c9d05cf831cc7df390b8cc",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-read-policy/result.json",
+    "evidence": "qwen2b-author-read-policy/result.json",
+    "sha256": "c91acd660bb2db0af52a4f8c8ce0e6cc8a26aaf201019953818e8c9ea579b74f",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-read-policy/tool-input-review.json",
+    "evidence": "qwen2b-author-read-policy/tool-input-review.json",
+    "sha256": "f4f98c40cd1e5f9cb13ff566358cc47d2c60887924acab28af34046d74dbdc93",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-read-policy/tool-traces.json",
+    "evidence": "qwen2b-author-read-policy/tool-traces.json",
+    "sha256": "fc3ebbec5638302ba5cb7322fc61488da070d5a8b1d08698ea91242a0b767fbf",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-read-policy/workbench.txt",
+    "evidence": "qwen2b-author-read-policy/workbench.txt",
+    "sha256": "e63a4e2fbabf4395de213054db7cd974189e357a43c3601e6747c43235e36582",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-temperature0/disk.scad",
+    "evidence": "qwen2b-author-temperature0/disk.scad",
+    "sha256": "91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-temperature0/facts.json",
+    "evidence": "qwen2b-author-temperature0/facts.json",
+    "sha256": "bd18e9e5c5bc8cd58950047091ef656dc46f4a111106ec7c6a1209ae2ace9205",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-temperature0/manifest.json",
+    "evidence": "qwen2b-author-temperature0/manifest.json",
+    "sha256": "076b9f550e0e0c278eaf5ab9788a5815e287e70fad7e081a2f5b2bf29db315f1",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-temperature0/native-assistant-messages.json",
+    "evidence": "qwen2b-author-temperature0/native-assistant-messages.json",
+    "sha256": "71a55f361a2ca1dde930484e9fbb6ccfb258cc79731351e778959a8ce89ded65",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-temperature0/ready.json",
+    "evidence": "qwen2b-author-temperature0/ready.json",
+    "sha256": "24cf3352fea59537748b7a32b06848ba04a75f66ecb8a4bafe3911b7a2b7d7ce",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-temperature0/request-input.json",
+    "evidence": "qwen2b-author-temperature0/request-input.json",
+    "sha256": "b19fbafb55d95b48d129422beceacb16f74b8666faf08484248eb92cb7aa9eed",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-temperature0/result.json",
+    "evidence": "qwen2b-author-temperature0/result.json",
+    "sha256": "b0b6255da37baa76c3956234e6a1e37233bd9ca1b608e520d60dda97bad6fe57",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-temperature0/sampling-profile.json",
+    "evidence": "qwen2b-author-temperature0/sampling-profile.json",
+    "sha256": "24f4f9d0bb8c25c6f8a65d8fe33560c1a87972b493e876fcb0a489cf3424aa21",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-temperature0/tool-traces.json",
+    "evidence": "qwen2b-author-temperature0/tool-traces.json",
+    "sha256": "963674de5d88d47282e034340e810d574d79c5bc30edaf0244ace479a9008166",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-temperature0/transport-validation.json",
+    "evidence": "qwen2b-author-temperature0/transport-validation.json",
+    "sha256": "091344909fcf7f2249129d93f555ea411d72016d2977986bc19095632af93f63",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-author-temperature0/workbench.txt",
+    "evidence": "qwen2b-author-temperature0/workbench.txt",
+    "sha256": "9c6d8020fd6534d03107a2e7a8b13dbe71f2baa7c5297a8fc9d7aea7da70945e",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-expression/disk.scad",
+    "evidence": "qwen2b-expression/disk.scad",
+    "sha256": "31a6a088cf5428dac05bde0befb708878c001f4c3cff8ce64473cdc4eae43499",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-expression/facts.json",
+    "evidence": "qwen2b-expression/facts.json",
+    "sha256": "731d8253af23b22918a7fb1b55568f90a26146ae312372a179bafd2524cc2507",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-expression/manifest.json",
+    "evidence": "qwen2b-expression/manifest.json",
+    "sha256": "b0def185a8226dacea8c8cd14df8cee60a99bf271e20035e001031ae411df5a3",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-expression/native-assistant-messages.json",
+    "evidence": "qwen2b-expression/native-assistant-messages.json",
+    "sha256": "5afc33932f9954ef2860aa05e03748fdf9f499320ba1ccc4bc036580d38f6cb0",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-expression/request-input.json",
+    "evidence": "qwen2b-expression/request-input.json",
+    "sha256": "4d1f6692addf72f78e2b6a34a6abe31099c59eab35c2e2464151b93f15d07f24",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-expression/result.json",
+    "evidence": "qwen2b-expression/result.json",
+    "sha256": "8dcada88074431b61005663d7c6e79ac6229b1e3c23036bef760b3fa73ef3969",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-expression/tool-traces.json",
+    "evidence": "qwen2b-expression/tool-traces.json",
+    "sha256": "99527dc17634255e73e302c2ea87dc52330533749d1b085b9e1e9033d35021f6",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-expression/workbench.txt",
+    "evidence": "qwen2b-expression/workbench.txt",
+    "sha256": "123e082c8c4c56b91e1d1797403bc4af4ab0585e5008f38ee8dc23e9c5fb7d61",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-expression-initial/disk.scad",
+    "evidence": "qwen2b-expression-initial/disk.scad",
+    "sha256": "31a6a088cf5428dac05bde0befb708878c001f4c3cff8ce64473cdc4eae43499",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-expression-initial/facts.json",
+    "evidence": "qwen2b-expression-initial/facts.json",
+    "sha256": "e1c145f0adcb26438972bbad85fed6da43fae1c338f94e32bab8e11d9a0efc63",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-expression-initial/manifest.json",
+    "evidence": "qwen2b-expression-initial/manifest.json",
+    "sha256": "2ec505a32f4e3a24f72904d315e82414526d8efee44c14637674aa110c5c6dd9",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-expression-initial/native-assistant-messages.json",
+    "evidence": "qwen2b-expression-initial/native-assistant-messages.json",
+    "sha256": "be82110ac4ccc1fcaf28a2c36678c1b8ac85d4b226c534ff24d0eb0c6ce29253",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-expression-initial/request-input.json",
+    "evidence": "qwen2b-expression-initial/request-input.json",
+    "sha256": "74007c36867918638b6735f10a0281edf8d540456edd15782e69e2dd43e45239",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-expression-initial/result.json",
+    "evidence": "qwen2b-expression-initial/result.json",
+    "sha256": "474e5f9a57195386198a458245781a35ff30099b95f522eded2e1ad921e0d4c9",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-expression-initial/tool-traces.json",
+    "evidence": "qwen2b-expression-initial/tool-traces.json",
+    "sha256": "c390033bea8f3c038e69e6fff783c01c49e4722e6e166489b43bb7408319ee5c",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-expression-initial/workbench.txt",
+    "evidence": "qwen2b-expression-initial/workbench.txt",
+    "sha256": "738fd4cd27b16bdfbda2ff9dd90babaff9154f05269372ad296bb7f14dea91fd",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-failure/disk.scad",
+    "evidence": "qwen2b-failure/disk.scad",
+    "sha256": "d100f5011416f1dfdae4ca9dd4a0fb46c627a8ea02f10d167ba3fe36a06bade6",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-failure/facts.json",
+    "evidence": "qwen2b-failure/facts.json",
+    "sha256": "beb96749057cbfecc237705e4c5d178477cf02956061e291f07ce75fb62604cf",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-failure/manifest.json",
+    "evidence": "qwen2b-failure/manifest.json",
+    "sha256": "369278880087b36bd62f196fa6123a020906d8e1f920fe8f3b9a8233a37badae",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-failure/native-assistant-messages.json",
+    "evidence": "qwen2b-failure/native-assistant-messages.json",
+    "sha256": "e486e5dea69396ca07c6c84a51df73b9cd8006b5d339df1043ea169ad96bf162",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-failure/request-input.json",
+    "evidence": "qwen2b-failure/request-input.json",
+    "sha256": "d2d57f08ba154c6dfc51fd72756537091b65078992ad7f559a73aa2f5e86c030",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-failure/result.json",
+    "evidence": "qwen2b-failure/result.json",
+    "sha256": "111b8951f895c86c0c2d0ae5cbf135ff451a9b7b65290e78ba96db50a03d9d42",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-failure/workbench.txt",
+    "evidence": "qwen2b-failure/workbench.txt",
+    "sha256": "275ea37c276ec2630c0d5708aca1fa564355ceb9c5d72ff940d749d8f8257398",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-model.json",
+    "evidence": "qwen2b-model.json",
+    "sha256": "7d5704c7faca54f13959f0537dfe596944e11c8657ac934a828d242457e23807",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-smoke-projected/disk.scad",
+    "evidence": "qwen2b-smoke-projected/disk.scad",
+    "sha256": "c6a68ff487b1f85c2ff2f33904984c460eb609cab20ed57d31219c9639e05b23",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-smoke-projected/facts.json",
+    "evidence": "qwen2b-smoke-projected/facts.json",
+    "sha256": "0c16a15e66562d50ef5841ad244df73891dcfc5cfb5dcfd6e7973e0c44e8b9fc",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-smoke-projected/manifest.json",
+    "evidence": "qwen2b-smoke-projected/manifest.json",
+    "sha256": "79f8192ba755c302355a4ec82950d31658e13a74bcdf8abba30830730e6f9c55",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-smoke-projected/native-assistant-messages.json",
+    "evidence": "qwen2b-smoke-projected/native-assistant-messages.json",
+    "sha256": "ffc48c3947f7c5a67546d416e5df585bb96ef1b6f5e1379f7fac71477c028da3",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-smoke-projected/request-input.json",
+    "evidence": "qwen2b-smoke-projected/request-input.json",
+    "sha256": "0388e78d1b533280a9887f3f406ddec33de14313df9877ca12fea0d80b365ded",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-smoke-projected/result.json",
+    "evidence": "qwen2b-smoke-projected/result.json",
+    "sha256": "9504220ccd3a02459b11f64f21ba50b2409c0c7f83376970e49876a79a71d494",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-smoke-projected/tool-traces.json",
+    "evidence": "qwen2b-smoke-projected/tool-traces.json",
+    "sha256": "ed8ee213537e5628f0321edd4462de0e6d8fd8be96c1b9fd6c4bb4a95830e514",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-smoke-projected/workbench.txt",
+    "evidence": "qwen2b-smoke-projected/workbench.txt",
+    "sha256": "352bba8843d87a823ee27a6d6bbdb9ea3a56a4093e4c66cd7fb187a019dcdc98",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-tail/disk.scad",
+    "evidence": "qwen2b-tail/disk.scad",
+    "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-tail/facts.json",
+    "evidence": "qwen2b-tail/facts.json",
+    "sha256": "818951293261432454d06a01a368bea06c560f53a6506ee203ec17de89f66e2d",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-tail/manifest.json",
+    "evidence": "qwen2b-tail/manifest.json",
+    "sha256": "537f80614e233dc2af54518de0c697438f38b86c82aca4f1044156b1165e19f8",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-tail/native-assistant-messages.json",
+    "evidence": "qwen2b-tail/native-assistant-messages.json",
+    "sha256": "506eb3ea6575940d6a85ccdb456c76c47ae91014a658533cf8bcaf726df229ed",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-tail/request-input.json",
+    "evidence": "qwen2b-tail/request-input.json",
+    "sha256": "81c42c821f97c82d1a60092cde405fd0fe3af6b3b28555ab00132e25d6873f56",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-tail/result.json",
+    "evidence": "qwen2b-tail/result.json",
+    "sha256": "50d7d511d20dbb48cc153fe552de19842f778aec1ea33ac4c7d7dd2496ddf905",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-tail/review.json",
+    "evidence": "qwen2b-tail/review.json",
+    "sha256": "331f01f53dfd674a383cc3dd4ac11202d7ec86c2dab5a5b236f74fa2840d6c0c",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-tail/tool-traces.json",
+    "evidence": "qwen2b-tail/tool-traces.json",
+    "sha256": "ea8709ed71062ff84e383b6cc8e2333c5f332683d524ea7a94ab4ef6e1f277b5",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-tail/workbench.txt",
+    "evidence": "qwen2b-tail/workbench.txt",
+    "sha256": "da0601a2a17e2267253b335acc66cf818b36981747f733eac335985b79b54a0a",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-tail-initial/disk.scad",
+    "evidence": "qwen2b-tail-initial/disk.scad",
+    "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-tail-initial/facts.json",
+    "evidence": "qwen2b-tail-initial/facts.json",
+    "sha256": "988372f794ca2c0c07e85dc3250b01682c568bc7a5be6bf42a899ced6c4673d1",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-tail-initial/manifest.json",
+    "evidence": "qwen2b-tail-initial/manifest.json",
+    "sha256": "76ea666003ebb6bfd52e188b39d902317d2424c913fc1277a9c6a57860009ef4",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-tail-initial/native-assistant-messages.json",
+    "evidence": "qwen2b-tail-initial/native-assistant-messages.json",
+    "sha256": "7df5072d077123132e47c5707726e7bf16bc643b1ca71e3914afa328b4618a61",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-tail-initial/request-input.json",
+    "evidence": "qwen2b-tail-initial/request-input.json",
+    "sha256": "a74c1637f9a7866b0d8e44c0f2cf2471e0b54d69ac068ddc8483c0b5a2bdea3b",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-tail-initial/result.json",
+    "evidence": "qwen2b-tail-initial/result.json",
+    "sha256": "aa5c05d2a284aa675699b8fe95f4afd3ae83cb3b9fbcfcad608bd03134d69f19",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "qwen2b-tail-initial/workbench.txt",
+    "evidence": "qwen2b-tail-initial/workbench.txt",
+    "sha256": "12b93ffb01cdbcfbe71f5719bc0999d5c0d754a222903532be21817907164395",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "real-preset-file-host.txt",
+    "evidence": "real-preset-file-host.txt",
+    "sha256": "232fd0a988904363740f4110d451473071f1d51e21c3888894a553a8da14d868",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "schema-contract.txt",
+    "evidence": "schema-contract.txt",
+    "sha256": "e2a397fd2bd38a22a11ebfe5851f74a0078ec46239ad3861f77fb80ad3b4a673",
+    "provenance": "Preserved existing result or final delivery cleanup; no new model run"
   }
 ]

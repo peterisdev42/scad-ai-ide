@@ -1,3 +1,5 @@
+> 2026-11-10 最终交接：目标已暂停，模型测试已停止；产品基线为 64a64f3，完整 SPEC 未通过。以[最终报告](customizer/final-delivery.md)及其 PASS / FAIL / SKIP / NOT RUN 清单为准。以下保留阶段历史，不代表当前正在运行。
+
 # Customizer 实施与验收进度（2026-11-09）
 
 ## 当前结论

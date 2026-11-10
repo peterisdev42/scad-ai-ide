@@ -1,0 +1,57 @@
+[
+  {
+    "content": "I'll analyze the Customizer annotation for `width` in `model.scad`.",
+    "toolRequests": [
+      {
+        "toolCallId": "call_phzekqd9",
+        "name": "scad_ai_ide_customizer_sourceAnalyze",
+        "arguments": "{\"uri\":\"file://<fixture>/workspace/model.scad\",\"includeCandidates\":true,\"maxDiagnostics\":50}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_oar1atfn",
+        "name": "scad_ai_ide_customizer_sourceValidate",
+        "arguments": "{\"uri\":\"file://<fixture>/workspace/model.scad\",\"expectations\":[{\"group\":\"\",\"name\":\"width\",\"range\":{\"max\":100,\"min\":10,\"step\":1},\"type\":\"number\",\"visible\":true,\"widget\":\"slider\"}],\"includeWarnings\":true}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_vgts1m79",
+        "name": "scad_ai_ide_customizer_sourceValidate",
+        "arguments": "{\"expectations\":[{\"group\":\"\",\"name\":\"width\",\"range\":{\"max\":100,\"min\":10,\"step\":1},\"type\":\"number\",\"visible\":true,\"widget\":\"slider\"}],\"includeWarnings\":true,\"uri\":\"file://<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_dca1vodj",
+        "name": "scad_ai_ide_customizer_sourceValidate",
+        "arguments": "{\"uri\":\"file://<fixture>/workspace/model.scad\",\"expectations\":[{\"description\":\"\",\"group\":\"\",\"name\":\"width\",\"range\":{\"max\":100,\"min\":10,\"step\":1},\"type\":\"number\",\"visible\":true,\"widget\":\"slider\"}],\"includeWarnings\":true}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_ir6en0ym",
+        "name": "scad_ai_ide_customizer_sourceValidate",
+        "arguments": "{\"expectations\":[{\"name\":\"width\",\"range\":{\"max\":100,\"min\":10,\"step\":1},\"type\":\"number\",\"visible\":true,\"widget\":\"slider\"}],\"uri\":\"file://<fixture>/workspace/model.scad\"}",
+        "type": "function"
+      }
+    ]
+  }
+]

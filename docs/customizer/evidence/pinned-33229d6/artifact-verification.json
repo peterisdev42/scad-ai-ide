@@ -1,0 +1,62 @@
+{
+  "run": 42766900749,
+  "job": 129665400258,
+  "artifactId": 13741911144,
+  "zipSha256": "3eeb7cf565261ceb9ec07149506ba1a33e6fb75470521806aac64104df34b822",
+  "zipBytes": 5764181,
+  "digestMatchesAPI": true,
+  "binarySha256": "c2cde5c9f3f43fa4aa2eb9fd46f1fad2e5913c2bf22d538f701760d82626cae8",
+  "binaryMatchesBuildInfo": true,
+  "buildInfo": {
+    "commit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2",
+    "target": "linux-x64",
+    "headless": true,
+    "nullgl": true,
+    "cgal": true,
+    "manifold": true,
+    "experimental": true,
+    "sha256": "c2cde5c9f3f43fa4aa2eb9fd46f1fad2e5913c2bf22d538f701760d82626cae8",
+    "scope": "Exact pinned CLI build; not the pinned Qt GUI or a cross-platform executable"
+  },
+  "schemaMatches": 41,
+  "importPasses": 10,
+  "allImportIdentityLabelsPinned": true,
+  "files": [
+    {
+      "file": "pinned-native-CMakeCache.txt",
+      "bytes": 50327,
+      "sha256": "99258c22a3d6ae20dbe4793c23b1c727995263f9d49bb72b6647037c88e6cbf5"
+    },
+    {
+      "file": "pinned-native-environment.txt",
+      "bytes": 217,
+      "sha256": "31a82aa29374171701b3279d32a02f7be03717618be6d7530dc3587aec18b084"
+    },
+    {
+      "file": "pinned-native-import.json",
+      "bytes": 8004,
+      "sha256": "c8a2a487d3a97aef691ca9fb7a9d7e4b506d817668f4b4519611a1be02c49fdb"
+    },
+    {
+      "file": "pinned-native-submodules.txt",
+      "bytes": 453,
+      "sha256": "f4b0a510d9f07a14ab36c4116c72207f3552015a1e7d623716561928fe43d111"
+    },
+    {
+      "file": "pinned-native.json",
+      "bytes": 84923,
+      "sha256": "5c28449cc63b25e726c5855a3cf2a0a9fc6f6a0b248fcd64ef4b371c80272d6a"
+    },
+    {
+      "file": "pinned-runtime/bin/openscad",
+      "bytes": 16456888,
+      "sha256": "c2cde5c9f3f43fa4aa2eb9fd46f1fad2e5913c2bf22d538f701760d82626cae8"
+    },
+    {
+      "file": "pinned-runtime/build-info.json",
+      "bytes": 353,
+      "sha256": "d259e08abf971a9497fefc134f612cdfae00d31e14d2d02e90c11ec9d091bc2d"
+    }
+  ],
+  "scope": "Exact pinned Linux CLI HEADLESS/NULLGL CGAL+Manifold+experimental; not Qt/all-platform GUI."
+}

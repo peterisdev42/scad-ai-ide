@@ -1,0 +1,10 @@
+{
+  "status": "PASS MODEL-01 on isolated4793 candidate, not64 baseline",
+  "independentlyValidatedMatched": 3,
+  "sourceDiskUnchanged": true,
+  "bufferDirty": true,
+  "geometryPreserved": true,
+  "actualDispatcherOk": "5/5",
+  "finalAnswer": "Reports successful Source edits, unsaved state and GUI/runtime notRequested; terminology revision refers to source identity version.",
+  "scope": "Exact4793d7b4 candidate and default-thinking native run. Does not validate the later nested-kind draft or all model scenarios."
+}

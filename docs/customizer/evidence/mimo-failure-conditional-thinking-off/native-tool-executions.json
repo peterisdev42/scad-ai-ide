@@ -1,0 +1,164 @@
+[
+  {
+    "id": "call_avxp0flg",
+    "name": "read_file",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_sxl2u23n",
+    "name": "read_file",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_86qxucj6",
+    "name": "read_file",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_lkvbu9pw",
+    "name": "read_file",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_0ieszhxx",
+    "name": "scad_ai_ide_customizer_sourceAnalyze",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_nmbrbzlr",
+    "name": "scad_ai_ide_customizer_sourceAnalyze",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_ke4wwj0y",
+    "name": "list_dir",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_u9itjlwy",
+    "name": "scad_ai_ide_customizer_state",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_pwgdlk9m",
+    "name": "scad_ai_ide_customizer_sourceValidate",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_ng5td61o",
+    "name": "run_in_terminal",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_yvr5u5bg",
+    "name": "run_in_terminal",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_xu6ltlss",
+    "name": "scad_ai_ide_customizer_sourceValidate",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_t66yw8in",
+    "name": "scad_ai_ide_customizer_sourceApply",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_i2693hbb",
+    "name": "scad_ai_ide_customizer_sourceApply",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_5v6veh3d",
+    "name": "scad_ai_ide_customizer_sourceApply",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_833ahvvk",
+    "name": "scad_ai_ide_customizer_sourceApply",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_qq61jdm5",
+    "name": "scad_ai_ide_customizer_sourceAnalyze",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_yft2vedk",
+    "name": "scad_ai_ide_customizer_sourceApply",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_jbnqb93z",
+    "name": "scad_ai_ide_customizer_sourceApply",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_vvvht9on",
+    "name": "scad_ai_ide_customizer_sourceAnalyze",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_8mhapt1e",
+    "name": "scad_ai_ide_customizer_sourceApply",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_47jcd15x",
+    "name": "scad_ai_ide_customizer_sourceApply",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_yf6lnfet",
+    "name": "scad_ai_ide_customizer_sourceAnalyze",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_49s2q0a8",
+    "name": "scad_ai_ide_customizer_sourceApply",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_7r8e58fh",
+    "name": "scad_ai_ide_customizer_sourceApply",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_b8kdtoz5",
+    "name": "scad_ai_ide_customizer_sourceAnalyze",
+    "started": true,
+    "success": true
+  },
+  {
+    "id": "call_ncww1mco",
+    "name": "scad_ai_ide_customizer_sourceApply",
+    "started": true,
+    "success": true
+  }
+]

@@ -1,0 +1,24 @@
+[
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_8ay7r8qn",
+        "name": "scad_ai_ide_customizer_sourceAnalyze",
+        "arguments": "{\"uri\":\"file://<fixture>/workspace/model.scad\",\"includeCandidates\":true,\"maxDiagnostics\":50}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_8wd2dlpx",
+        "name": "scad_ai_ide_customizer_sourceValidate",
+        "arguments": "{\"uri\":\"file://<fixture>/workspace/model.scad\",\"expectations\":[{\"name\":\"width\",\"range\":{\"max\":100,\"min\":10,\"step\":1},\"type\":\"number\",\"widget\":\"slider\"}],\"includeWarnings\":true}",
+        "type": "function"
+      }
+    ]
+  }
+]

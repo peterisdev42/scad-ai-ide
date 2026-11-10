@@ -1,0 +1,532 @@
+[
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "uri": "file://<fixture>/workspace/model.scad",
+      "includeCandidates": true,
+      "maxDiagnostics": 50
+    },
+    "started": "2026-11-10T06:44:02.840Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "",
+            "defaultValue": 40,
+            "hint": "[0:100] IDs in Assembly.md; preserve this explanation",
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            },
+            "annotationRange": {
+              "start": {
+                "line": 0,
+                "character": 10
+              },
+              "end": {
+                "line": 0,
+                "character": 66
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "adae6e40-de4e-45d1-a07b-114cbf38db6d",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.state",
+    "input": {},
+    "started": "2026-11-10T06:44:02.853Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.state",
+      "revision": 1,
+      "data": {
+        "target": "file://<fixture>/workspace/model.scad",
+        "revision": 1,
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "",
+            "defaultValue": 40,
+            "hint": "[0:100] IDs in Assembly.md; preserve this explanation",
+            "value": 40
+          }
+        ],
+        "presets": {
+          "readOnly": false,
+          "diagnostics": [],
+          "names": [],
+          "active": "",
+          "modified": false,
+          "filename": "",
+          "exists": false
+        },
+        "analysis": {
+          "complete": true,
+          "incompleteReasons": []
+        },
+        "overridesEditSource": false
+      },
+      "operation": {
+        "id": "482001df-a506-4415-bd47-e15994ab04dc",
+        "capabilityId": "customizer.state",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "edits": [
+        {
+          "kind": "annotateExisting",
+          "name": "width",
+          "range": {
+            "max": 100,
+            "min": 0,
+            "step": 1
+          },
+          "widget": "slider"
+        }
+      ],
+      "identity": {
+        "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480",
+        "version": 1
+      },
+      "mode": "plan",
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T06:45:24.057Z",
+    "output": {
+      "ok": false,
+      "capabilityId": "customizer.sourceApply",
+      "error": {
+        "code": "NEEDS_MANUAL_REVIEW",
+        "message": "Preserve text after the bracketed comment; move the explanation to a separate comment before changing the Widget.",
+        "retryable": false
+      },
+      "operation": {
+        "id": "c8c59762-ef82-40dd-8cad-036049f1ccfb",
+        "capabilityId": "customizer.sourceApply",
+        "status": "failed",
+        "error": {
+          "code": "NEEDS_MANUAL_REVIEW",
+          "message": "Preserve text after the bracketed comment; move the explanation to a separate comment before changing the Widget.",
+          "retryable": false
+        }
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "edits": [
+        {
+          "kind": "annotateExisting",
+          "name": "width",
+          "widget": "slider"
+        }
+      ],
+      "identity": {
+        "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480",
+        "version": 1
+      },
+      "mode": "plan",
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T06:46:22.129Z",
+    "output": {
+      "ok": false,
+      "capabilityId": "customizer.sourceApply",
+      "error": {
+        "code": "NEEDS_MANUAL_REVIEW",
+        "message": "Supply an ordered finite range and positive step.",
+        "retryable": false
+      },
+      "operation": {
+        "id": "c3e3daf7-4735-486b-95c7-bb4c999ea24d",
+        "capabilityId": "customizer.sourceApply",
+        "status": "failed",
+        "error": {
+          "code": "NEEDS_MANUAL_REVIEW",
+          "message": "Supply an ordered finite range and positive step.",
+          "retryable": false
+        }
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "edits": [
+        {
+          "kind": "annotateExisting",
+          "name": "width",
+          "widget": "slider",
+          "range": {
+            "min": 0,
+            "max": 100,
+            "step": 1
+          }
+        }
+      ],
+      "identity": {
+        "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480",
+        "version": 1
+      },
+      "mode": "plan",
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T06:46:38.907Z",
+    "output": {
+      "ok": false,
+      "capabilityId": "customizer.sourceApply",
+      "error": {
+        "code": "NEEDS_MANUAL_REVIEW",
+        "message": "Preserve text after the bracketed comment; move the explanation to a separate comment before changing the Widget.",
+        "retryable": false
+      },
+      "operation": {
+        "id": "6168e809-bfcb-427e-bf89-4d1cb1eb8ca2",
+        "capabilityId": "customizer.sourceApply",
+        "status": "failed",
+        "error": {
+          "code": "NEEDS_MANUAL_REVIEW",
+          "message": "Preserve text after the bracketed comment; move the explanation to a separate comment before changing the Widget.",
+          "retryable": false
+        }
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "includeCandidates": true,
+      "maxDiagnostics": 50,
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T06:46:59.334Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "",
+            "defaultValue": 40,
+            "hint": "[0:100] IDs in Assembly.md; preserve this explanation",
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            },
+            "annotationRange": {
+              "start": {
+                "line": 0,
+                "character": 10
+              },
+              "end": {
+                "line": 0,
+                "character": 66
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "5e23ea88-34db-4cb2-ae79-0e9a88276141",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "includeCandidates": true,
+      "maxDiagnostics": 50,
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T06:47:14.566Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "",
+            "defaultValue": 40,
+            "hint": "[0:100] IDs in Assembly.md; preserve this explanation",
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            },
+            "annotationRange": {
+              "start": {
+                "line": 0,
+                "character": 10
+              },
+              "end": {
+                "line": 0,
+                "character": 66
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "37a13a95-1f31-4ae3-830b-6da4e8b85e97",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "includeCandidates": true,
+      "maxDiagnostics": 50,
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T06:47:25.929Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "",
+            "defaultValue": 40,
+            "hint": "[0:100] IDs in Assembly.md; preserve this explanation",
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            },
+            "annotationRange": {
+              "start": {
+                "line": 0,
+                "character": 10
+              },
+              "end": {
+                "line": 0,
+                "character": 66
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "84c6810c-6605-464b-81a1-680ace50896e",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "includeCandidates": true,
+      "maxDiagnostics": 50,
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T06:47:43.620Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "",
+            "defaultValue": 40,
+            "hint": "[0:100] IDs in Assembly.md; preserve this explanation",
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            },
+            "annotationRange": {
+              "start": {
+                "line": 0,
+                "character": 10
+              },
+              "end": {
+                "line": 0,
+                "character": 66
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "253e8ca6-1080-4318-be2a-6d3a35919f2b",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "edits": [
+        {
+          "kind": "annotateExisting",
+          "name": "width",
+          "range": {
+            "max": 100,
+            "min": 0,
+            "step": 1
+          },
+          "widget": "slider"
+        }
+      ],
+      "identity": {
+        "sha256": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480",
+        "version": 1
+      },
+      "mode": "plan",
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T06:48:03.580Z",
+    "output": {
+      "ok": false,
+      "capabilityId": "customizer.sourceApply",
+      "error": {
+        "code": "NEEDS_MANUAL_REVIEW",
+        "message": "Preserve text after the bracketed comment; move the explanation to a separate comment before changing the Widget.",
+        "retryable": false
+      },
+      "operation": {
+        "id": "4599fb6a-101c-48ee-b612-42791a91ae84",
+        "capabilityId": "customizer.sourceApply",
+        "status": "failed",
+        "error": {
+          "code": "NEEDS_MANUAL_REVIEW",
+          "message": "Preserve text after the bracketed comment; move the explanation to a separate comment before changing the Widget.",
+          "retryable": false
+        }
+      }
+    }
+  }
+]

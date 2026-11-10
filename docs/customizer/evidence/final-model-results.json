@@ -1,0 +1,203 @@
+{
+  "scope": "Observed Customizer dispatcher calls only, not all Native calls. ok=true is not semanticPass=true or task completion. Cancellation242 result invalidated; see review.json. No new model was run for this delivery cleanup.",
+  "runs": [
+    {
+      "evidence": "mimo-author-conditional-default",
+      "artifact": {
+        "file": "scad-ai-ide-customizer-conditional-guidance.vsix",
+        "bytes": 4533531,
+        "sha256": "4793d7b4e4c6cc96bb130f24cdd3b84dca6b29a1f8351ee444f06238408bc4c5"
+      },
+      "requestFinished": true,
+      "terminalReason": "nativeUICompleted",
+      "timedOut": false,
+      "dispatcherOk": 5,
+      "dispatcherTotal": 5,
+      "dispatcherOkRate": 1.0,
+      "semanticPassFalse": 0,
+      "sourceBufferUnchanged": false,
+      "sourceDiskUnchanged": true,
+      "nativeHostSchemaRejections": null
+    },
+    {
+      "evidence": "mimo-author-conditional-thinking-off",
+      "artifact": {
+        "file": "scad-ai-ide-customizer-conditional-guidance.vsix",
+        "bytes": 4533531,
+        "sha256": "4793d7b4e4c6cc96bb130f24cdd3b84dca6b29a1f8351ee444f06238408bc4c5"
+      },
+      "requestFinished": true,
+      "terminalReason": "nativeUICompleted",
+      "timedOut": false,
+      "dispatcherOk": 5,
+      "dispatcherTotal": 5,
+      "dispatcherOkRate": 1.0,
+      "semanticPassFalse": 2,
+      "sourceBufferUnchanged": false,
+      "sourceDiskUnchanged": true,
+      "nativeHostSchemaRejections": null
+    },
+    {
+      "evidence": "mimo-author-continuation-deadline",
+      "artifact": {
+        "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+        "bytes": 4533358,
+        "sha256": "242c5671cf6fa6e1703f3c0690f4fb8006d211ca3014f322cb3ba26573159f03"
+      },
+      "requestFinished": false,
+      "terminalReason": null,
+      "timedOut": true,
+      "dispatcherOk": 2,
+      "dispatcherTotal": 3,
+      "dispatcherOkRate": 0.6666666666666666,
+      "semanticPassFalse": 0,
+      "sourceBufferUnchanged": true,
+      "sourceDiskUnchanged": true,
+      "nativeHostSchemaRejections": null
+    },
+    {
+      "evidence": "mimo-cancel-conditional-thinking-off",
+      "artifact": {
+        "file": "scad-ai-ide-customizer-conditional-guidance.vsix",
+        "bytes": 4533531,
+        "sha256": "4793d7b4e4c6cc96bb130f24cdd3b84dca6b29a1f8351ee444f06238408bc4c5"
+      },
+      "requestFinished": true,
+      "terminalReason": "nativeUICompleted",
+      "timedOut": false,
+      "dispatcherOk": 9,
+      "dispatcherTotal": 9,
+      "dispatcherOkRate": 1.0,
+      "semanticPassFalse": 1,
+      "sourceBufferUnchanged": true,
+      "sourceDiskUnchanged": true,
+      "nativeHostSchemaRejections": null
+    },
+    {
+      "evidence": "mimo-cancel-continuation-default",
+      "artifact": {
+        "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+        "bytes": 4533358,
+        "sha256": "242c5671cf6fa6e1703f3c0690f4fb8006d211ca3014f322cb3ba26573159f03"
+      },
+      "requestFinished": false,
+      "terminalReason": null,
+      "timedOut": true,
+      "dispatcherOk": 3,
+      "dispatcherTotal": 5,
+      "dispatcherOkRate": 0.6,
+      "semanticPassFalse": 1,
+      "sourceBufferUnchanged": true,
+      "sourceDiskUnchanged": true,
+      "nativeHostSchemaRejections": null
+    },
+    {
+      "evidence": "mimo-expression-conditional-thinking-off",
+      "artifact": {
+        "file": "scad-ai-ide-customizer-conditional-guidance.vsix",
+        "bytes": 4533531,
+        "sha256": "4793d7b4e4c6cc96bb130f24cdd3b84dca6b29a1f8351ee444f06238408bc4c5"
+      },
+      "requestFinished": true,
+      "terminalReason": "nativeRequestReturned",
+      "timedOut": false,
+      "dispatcherOk": 2,
+      "dispatcherTotal": 2,
+      "dispatcherOkRate": 1.0,
+      "semanticPassFalse": 1,
+      "sourceBufferUnchanged": true,
+      "sourceDiskUnchanged": true,
+      "nativeHostSchemaRejections": 3
+    },
+    {
+      "evidence": "mimo-expression-continuation-default",
+      "artifact": {
+        "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+        "bytes": 4533358,
+        "sha256": "242c5671cf6fa6e1703f3c0690f4fb8006d211ca3014f322cb3ba26573159f03"
+      },
+      "requestFinished": true,
+      "terminalReason": "nativeRequestReturned",
+      "timedOut": false,
+      "dispatcherOk": 2,
+      "dispatcherTotal": 2,
+      "dispatcherOkRate": 1.0,
+      "semanticPassFalse": 1,
+      "sourceBufferUnchanged": true,
+      "sourceDiskUnchanged": true,
+      "nativeHostSchemaRejections": 0
+    },
+    {
+      "evidence": "mimo-failure-conditional-thinking-off",
+      "artifact": {
+        "file": "scad-ai-ide-customizer-conditional-guidance.vsix",
+        "bytes": 4533531,
+        "sha256": "4793d7b4e4c6cc96bb130f24cdd3b84dca6b29a1f8351ee444f06238408bc4c5"
+      },
+      "requestFinished": false,
+      "terminalReason": "confirmationBudgetExhausted",
+      "timedOut": false,
+      "dispatcherOk": 12,
+      "dispatcherTotal": 14,
+      "dispatcherOkRate": 0.8571428571428571,
+      "semanticPassFalse": 1,
+      "sourceBufferUnchanged": true,
+      "sourceDiskUnchanged": true,
+      "nativeHostSchemaRejections": null
+    },
+    {
+      "evidence": "mimo-failure-continuation-default",
+      "artifact": {
+        "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+        "bytes": 4533358,
+        "sha256": "242c5671cf6fa6e1703f3c0690f4fb8006d211ca3014f322cb3ba26573159f03"
+      },
+      "requestFinished": true,
+      "terminalReason": "nativeRequestReturned",
+      "timedOut": false,
+      "dispatcherOk": 2,
+      "dispatcherTotal": 3,
+      "dispatcherOkRate": 0.6666666666666666,
+      "semanticPassFalse": 1,
+      "sourceBufferUnchanged": true,
+      "sourceDiskUnchanged": true,
+      "nativeHostSchemaRejections": 2
+    },
+    {
+      "evidence": "mimo-tail-conditional-thinking-off",
+      "artifact": {
+        "file": "scad-ai-ide-customizer-conditional-guidance.vsix",
+        "bytes": 4533531,
+        "sha256": "4793d7b4e4c6cc96bb130f24cdd3b84dca6b29a1f8351ee444f06238408bc4c5"
+      },
+      "requestFinished": false,
+      "terminalReason": "observationControllerError",
+      "timedOut": null,
+      "dispatcherOk": 1,
+      "dispatcherTotal": 9,
+      "dispatcherOkRate": 0.1111111111111111,
+      "semanticPassFalse": 0,
+      "sourceBufferUnchanged": null,
+      "sourceDiskUnchanged": true,
+      "nativeHostSchemaRejections": null
+    },
+    {
+      "evidence": "mimo-tail-continuation-default",
+      "artifact": {
+        "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+        "bytes": 4533358,
+        "sha256": "242c5671cf6fa6e1703f3c0690f4fb8006d211ca3014f322cb3ba26573159f03"
+      },
+      "requestFinished": false,
+      "terminalReason": null,
+      "timedOut": true,
+      "dispatcherOk": 6,
+      "dispatcherTotal": 10,
+      "dispatcherOkRate": 0.6,
+      "semanticPassFalse": 0,
+      "sourceBufferUnchanged": true,
+      "sourceDiskUnchanged": true,
+      "nativeHostSchemaRejections": null
+    }
+  ]
+}
