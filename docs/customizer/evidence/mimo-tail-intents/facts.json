@@ -1,0 +1,168 @@
+{
+  "scenario": "tail",
+  "nativeAgent": true,
+  "requestedModel": "mimo-v2.6:latest",
+  "modelIdentity": {
+    "name": "mimo-v2.6:latest",
+    "digest": "0af2fcf0cdba6e967700d7660a35c2ae905be1680d9afb3d377f6e61dbd1dfc0",
+    "size": 8711267221,
+    "modifiedAt": "2026-11-06T10:01:27.986857626+08:00"
+  },
+  "inferenceProfile": "Official provider directly to the local server; no sampling override in this harness",
+  "ollamaEndpoint": "http://127.0.0.1:11434",
+  "model": [
+    {
+      "id": "mimo-v2.6:latest",
+      "name": "mimo-v2.6:latest",
+      "vendor": "ollama-models"
+    },
+    {
+      "id": "mimo-v2.6:latest",
+      "name": "mimo-v2.6:latest",
+      "vendor": "ollama-models"
+    }
+  ],
+  "artifact": {
+    "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+    "bytes": 4532196,
+    "sha256": "fac54ddf29cc9d98f356ad7d18abb0b715d693fad292b104d496819d7df51e1a"
+  },
+  "requestFinished": true,
+  "timedOut": false,
+  "terminalReason": "nativeUICompleted",
+  "interrupted": false,
+  "controllerOutcomeMissing": false,
+  "sourceDiskUnchanged": true,
+  "sourceBufferObserved": true,
+  "sourceBufferUnchanged": true,
+  "actualBusinessToolInvocations": 6,
+  "actualCustomizerToolInvocations": 6,
+  "nativeToolRequestMetadataAvailable": false,
+  "nativeToolRequestSource": "persisted-native-transcript",
+  "nativeToolRequests": [
+    {
+      "name": "read_file",
+      "id": "call_wwvmbve4",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "read_file",
+      "id": "call_c2gkahn7",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "read_file",
+      "id": "call_74bx3hyx",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "read_file",
+      "id": "call_taa6a0rn",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "read_file",
+      "id": "call_mq7w692r",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "read_file",
+      "id": "call_rrxshe2y",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "read_file",
+      "id": "call_jf4ypura",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "read_file",
+      "id": "call_6hzdtlbw",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceAnalyze",
+      "id": "call_um1fe748",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_9p7de45i",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_qy06dtxj",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "read_file",
+      "id": "call_z3vpcuv1",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "replace_string_in_file",
+      "id": "call_nv2cljf4",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceAnalyze",
+      "id": "call_at0d7s7z",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_m2pezckx",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "read_file",
+      "id": "call_x26a318v",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "scad_ai_ide_customizer_sourceApply",
+      "id": "call_xuvmm50v",
+      "hostSchemaRejected": null
+    }
+  ],
+  "nativeHostSchemaRejections": null,
+  "nativeToolMetadataScope": "Observed final-response metadata or persisted native transcript requests; not necessarily the complete conversation. Host rejection count is unknown without result metadata. Generated requests are not dispatcher execution or successful edits.",
+  "calls": [
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "mode": "plan",
+      "ok": false,
+      "errorCode": "NEEDS_MANUAL_REVIEW"
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "mode": "plan",
+      "ok": false,
+      "errorCode": "NEEDS_MANUAL_REVIEW"
+    },
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "mode": "plan",
+      "ok": false,
+      "errorCode": "NEEDS_MANUAL_REVIEW"
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "mode": "plan",
+      "ok": false,
+      "errorCode": "NEEDS_MANUAL_REVIEW"
+    }
+  ],
+  "acceptance": "REQUIRES REVIEW: these are observations, not a model acceptance PASS"
+}

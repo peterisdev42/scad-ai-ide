@@ -1,0 +1,20 @@
+{
+  "scenario": "tail",
+  "model": "mimo-v2.6:latest",
+  "modelIdentity": {
+    "name": "mimo-v2.6:latest",
+    "digest": "0af2fcf0cdba6e967700d7660a35c2ae905be1680d9afb3d377f6e61dbd1dfc0",
+    "size": 8711267221,
+    "modifiedAt": "2026-11-06T10:01:27.986857626+08:00"
+  },
+  "file": "<fixture>/workspace/model.scad",
+  "query": "/openscad-customizer-authoring 目标文件为 file://<fixture>/workspace/model.scad。尝试用受控Source工具将width修复为Slider(0:100)。必须保留完整的IDs in Assembly.md; preserve this explanation说明。若工具无法安全修复，解释人工处理，不能删除说明或假称已完成。不要改用其他文件写工具。 保留几何、源码默认值与Preset，不保存文件。使用项目安装的Skill完成分析、适用时的最小编辑和明确目标验证；如实报告实际结果及未执行的GUI/渲染检查。",
+  "source": "width=40; // [0:100] IDs in Assembly.md; preserve this explanation\ncube(width);\n",
+  "artifact": {
+    "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+    "bytes": 4532196,
+    "sha256": "fac54ddf29cc9d98f356ad7d18abb0b715d693fad292b104d496819d7df51e1a"
+  },
+  "ollamaEndpoint": "http://127.0.0.1:11434",
+  "inferenceProfile": "Official provider directly to the local server; no sampling override in this harness"
+}

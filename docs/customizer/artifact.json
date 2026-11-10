@@ -1,7 +1,7 @@
 {
   "artifact": ".build/scad-ai-ide-customizer-architecture-v2.vsix",
-  "bytes": 4531661,
-  "sha256": "8c5f3cc21b32ffa24e4bcf30e956ab118dc726102ca645c658c5ca5073761164",
+  "bytes": 4532196,
+  "sha256": "fac54ddf29cc9d98f356ad7d18abb0b715d693fad292b104d496819d7df51e1a",
   "verifiedManifest": {
     "tools": 40,
     "instructions": 2,
@@ -9,20 +9,29 @@
   },
   "installedHost": "1.140.0",
   "installedSmoke": "PASS",
-  "installedEvidence": "evidence/installed-adr10-final.txt",
-  "nativeAgent": "Prior qwen3.5:2b-mlx runs failed/partial on their separately recorded artifact; current ADR10 artifact has not been claimed to pass native model acceptance.",
+  "installedEvidence": "evidence/installed-intent-skill-final.txt",
+  "nativeAgent": "User-selected local mimo-v2.6:latest completed all four numbered narrow criteria on this exact artifact; SPEC9.3 protocol remains Partial for excess retries/fallback attempt/inaccurate final explanations. Historical qwen failures retained.",
   "unverified": [
-    "Windows Unicode library include path: actual CI failed",
-    "Remote SSH/WSL/Container",
-    "full pinned binary",
-    "all GUI/Preset service heap lifecycle",
-    "Exact pinned CLI build workflow added but not yet executed; exact pinned Qt/full GUI profile not verified"
+    "Windows Unicode library include: actual CI FAILED",
+    "Remote SSH/WSL/Container: NOT RUN",
+    "Exact pinned Qt/full GUI profile: NOT RUN",
+    "Renderer/GPU/all-provider heap lifecycle remains outside measured service scope"
   ],
   "crossPlatformEvidence": {
     "commit": "721bbf54291bfe160b48471aef3796dc37107872",
     "agentRun": 42635584127,
     "libraryRun": 42635584407,
-    "scope": "Three-platform schema41/import10 and Agent contracts passed; explicit skips retained; Windows real Library Unicode includes FAILED"
+    "scope": "Three-platform schema41/import10 and Agent contracts passed; explicit skips retained; Windows real Library Unicode includes FAILED",
+    "latestContracts": {
+      "commit": "34c64eba072ff8202fd85d77046b789e03374e22",
+      "run": 42748900048,
+      "scope": "All three contracts jobs succeeded including core23; panel32PASS/8bootstrapFAIL retained"
+    },
+    "latestPanel": {
+      "commit": "9dec262",
+      "run": 42749664581,
+      "scope": "All four jobs succeeded; panel Customizer40/Agent1/Library UI6 PASS"
+    }
   },
   "installedPresetSnapshot": {
     "invalidRejectedBeforeWrite": true,
@@ -37,5 +46,33 @@
     "checksPassed": 12,
     "evidence": "evidence/native-gui-2026-11-10/verified/manifest.json",
     "scope": "Actual Qt controls and Preview echo, source buffer/disk and preference SHA unchanged; not all platforms/versions"
+  },
+  "sourceCommit": "9dec262 plus explicit intent-field Skill clarification; exact resource SHA recorded in package",
+  "pinnedCLI": {
+    "commit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2",
+    "target": "linux-x64",
+    "headless": true,
+    "nullgl": true,
+    "cgal": true,
+    "manifold": true,
+    "experimental": true,
+    "sha256": "c2cde5c9f3f43fa4aa2eb9fd46f1fad2e5913c2bf22d538f701760d82626cae8",
+    "scope": "Exact pinned CLI build; not the pinned Qt GUI or a cross-platform executable",
+    "run": 42748900128,
+    "job": 129607539571,
+    "evidence": "evidence/pinned-34c64eb/artifact-verification.json",
+    "zipSha256": "774ea6b921a049f844c580cc9b52f4e754b9130a4cdcc9299adb56358961f342",
+    "schemaMatches": 41,
+    "importPasses": 10
+  },
+  "guiDomainHeap": {
+    "evidence": "evidence/host-gui-lifecycle-memory.json",
+    "measuredRounds": 6,
+    "objects": "SourceDomain, EditorActions, CustomizerService, CustomizerDomainService, CustomizerPresets: 0→1→0 each",
+    "scope": "Actual isolated Host compiled classes, real filesystem watcher; not whole installed minified extension or renderer/GPU"
+  },
+  "packagedResourceHashes": {
+    "skills/openscad-customizer-authoring/SKILL.md": "53d92c19f0b0b8ed8516e82044b1f54fd8ab8e6aa09ea055e65ef86459527110",
+    "skills/openscad-customizer-authoring/references/compatibility.md": "c61e4de5f173725f87aa879718b57675d4d3bf43608e2459184911329db6e82c"
   }
 }

@@ -1,0 +1,119 @@
+{
+  "scenario": "author",
+  "nativeAgent": true,
+  "requestedModel": "qwen3.5:2b-mlx",
+  "modelIdentity": {
+    "name": "qwen3.5:2b-mlx",
+    "digest": "9dd89c688f18f01cb3636d01f9512d8daae2a531b3e726f59d68cf7b91c8358e",
+    "size": 3117475695,
+    "modifiedAt": "2026-11-09T15:26:12.753593464+08:00"
+  },
+  "inferenceProfile": "Real native Agent/official Ollama provider via loopback forwarding; only options.temperature=0 added, full tools/messages preserved",
+  "ollamaEndpoint": "http://127.0.0.1:55357",
+  "model": [
+    {
+      "id": "qwen3.5:2b-mlx",
+      "name": "qwen3.5:2b-mlx",
+      "vendor": "ollama-models"
+    },
+    {
+      "id": "qwen3.5:2b-mlx",
+      "name": "qwen3.5:2b-mlx",
+      "vendor": "ollama-models"
+    }
+  ],
+  "artifact": {
+    "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+    "bytes": 4531824,
+    "sha256": "ded44c0ec55f39a48008cded6323a950cc83d8bf8477bb1c0f62d09bb67ad555"
+  },
+  "requestFinished": false,
+  "timedOut": false,
+  "terminalReason": "confirmationBudgetExhausted",
+  "interrupted": true,
+  "controllerOutcomeMissing": false,
+  "sourceDiskUnchanged": true,
+  "sourceBufferObserved": true,
+  "sourceBufferUnchanged": true,
+  "actualBusinessToolInvocations": 1,
+  "actualCustomizerToolInvocations": 1,
+  "nativeToolRequestMetadataAvailable": false,
+  "nativeToolRequestSource": "persisted-native-transcript",
+  "nativeToolRequests": [
+    {
+      "name": "scad_ai_ide_customizer_sourceAnalyze",
+      "id": "call_z28jvlmy",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "create_and_run_task",
+      "id": "call_va5xt3fv",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "create_and_run_task",
+      "id": "call_cqohpj7o",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "create_and_run_task",
+      "id": "call_ewio5f5l",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "create_directory",
+      "id": "call_1zvicyl0",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "run_in_terminal",
+      "id": "call_n1lecr8z",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "run_in_terminal",
+      "id": "call_fauhsrtr",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "run_in_terminal",
+      "id": "call_rlhuhn18",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "run_in_terminal",
+      "id": "call_3zacmi5c",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "run_in_terminal",
+      "id": "call_yjhd0vkv",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "run_in_terminal",
+      "id": "call_wmqeehqv",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "run_in_terminal",
+      "id": "call_pzvpobt1",
+      "hostSchemaRejected": null
+    },
+    {
+      "name": "run_in_terminal",
+      "id": "call_k5e4gllm",
+      "hostSchemaRejected": null
+    }
+  ],
+  "nativeHostSchemaRejections": null,
+  "nativeToolMetadataScope": "Observed final-response metadata or persisted native transcript requests; not necessarily the complete conversation. Host rejection count is unknown without result metadata. Generated requests are not dispatcher execution or successful edits.",
+  "calls": [
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": true,
+      "complete": true
+    }
+  ],
+  "acceptance": "REQUIRES REVIEW: these are observations, not a model acceptance PASS"
+}

@@ -231,3 +231,32 @@ ADR10进一步修正：存储typed baseline，而非将编码字符串反解，�
 为补精确pinned二进制缺口，增加独立Linux CLI源码构建工作流，固定bcf45a22及其子模块、启用CGAL/Manifold、HEADLESS/NULLGL及experimental，运行现有41+10原生探针并归档身份/hash。当前仅已解析YAML，尚未推送执行；不能以工作流存在代替构建或差分通过。native GUI及模型等独立证据不互相冒充。
 
 最终串行Production包134files/4531661bytes，SHA256 8c5f3cc21b32ffa24e4bcf30e956ab118dc726102ca645c658c5ca5073761164，排除全部.github工作流、测试脚本和审计证据。最低1.140.0实际安装后再次验证Source计划/提交/验证及Preset拒绝前无写入、state不变、有效快照重放，均通过，见installed-adr10-final.txt。此前482fc65f…为较早ADR10包；并行构建造成的5.25MB包不作为交付物。当前artifact.json仅关联这个精确串行包。
+
+
+已推送55b70047832ecdd028524aa5d50da44a28c07b78。真实Agent run42739600151四jobs成功；Libraries run42739600225的Linux/macOS成功、Windows仍在真实Unicode include集成失败，未改为跳过。新Pinned run42739600801/job129577126291已完成精确源与递归子模块checkout，正在安装原生依赖；这只是live wait，构建和41+10差分尚未完成。
+
+另补跨平台CI的Customizer core单测入口，明确执行新增的快照无损性反例（23项本机通过）；原CI仅有compatibility/source/capabilities与GUI门，不能据其成功声称Windows已执行该core文件。该新增step尚未推送，不标三平台已通过。
+
+## 2026-11-10 pinned CLI 与生命周期补验
+
+4bff75e 的精确 pinned run42742920562/job129588120306 已成功：完整 CLI 编译后41 schema差分与10 import探针均通过，profile为Linux HEADLESS/NULLGL、CGAL+Manifold+experimental，不能外推到Qt全平台。前一轮42739600801实际因缺少msgfmt失败、未运行差分；加入gettext后本轮解决。上传步骤默认排除隐藏目录，导致本轮无可下载产物；日志的51项通过有效，但未宣称二进制与原始JSON已归档。现修复include-hidden-files及缺文件报错，待新CI验收归档。
+
+Agent run42742920832的三平台contracts通过；panel在Library搜索299ms边界失败，Customizer38通过。原因是安装fake clock后真实时间仍推进；夹具现于边界断言前暂停，严格保留299/300ms断言，本机Library UI6通过，未修改产品debounce。Library run42742920784的Linux/macOS成功，Windows实际Unicode include仍失败。
+
+实际复现并修复销毁后 Preset/Domain 继续改变共享 Overrides 的生命周期缺陷，见ADR08补充。浏览器40通过，完整最低Host33通过（/tmp/customizer-lifecycle-full-host.log）；之前STALE_STATE失败保留，不弱化事务。生产包重建串行进行。受限沙箱启动安装Host SIGABRT，未执行功能检查，改用已授权原生桌面宿主继续，不标第一次PASS。
+
+## 2026-11-10 当前分支复验（34c64eb / 9dec262）
+
+34c64eb三平台contracts均成功，实际每平台core23、compat41、source45通过；capabilities Linux/macOS31通过，Windows30通过/1明确跳过；默认Library26通过/3跳过。实际日志已摘录归档。该轮panel为32通过/8失败，均是初始页面/资源加载或首次布局5s超时，后续Library UI未运行，不能声称这一轮已验证clock修复。增加仅启动阶段的有界等待和失败请求时序；交互仍5s，不放宽实际断言。本机侧栏37、Preview3分开通过；受限沙箱浏览器启动失败另记，不当作40项功能已执行。
+
+9dec262 run42749664581四jobs均成功，panel真实Customizer40、Agent1、Library UI6通过/0跳过；确认暂停fake clock修复保留严格299/300ms边界后远端通过。不以这轮成功抹掉上轮8个bootstrap失败，也未证明资源加载延迟的唯一根因。Library实CLI Windows Unicode include仍失败。
+
+Production串行最终包134files/4531824bytes，SHA256 ded44c0ec55f39a48008cded6323a950cc83d8bf8477bb1c0f62d09bb67ad555；最低Host实际安装functional smoke通过，含Source事务和ADR10 Preset无写入拒绝/有效重放，已更新artifact.json。此后改动仅测试runner和证据，不重建或混入其他dist版本。
+
+GUI Domain/Preset真实Host内存新增6轮32文档/32缓存/32 Overrides/真实watcher占用与销毁断言；五类服务在三快照均0→1→0，GC每轮释放约7.5–7.8MB，销毁后heap区间185808bytes，source非dirty和Preset bytes未变。原始heap仅留.build，摘要持久归档。不外推renderer/GPU或远程provider。
+
+qwen温度0初测与澄清Skill后复测均因模型计划目录/文件写请求达到8次确认拒绝预算被controller中断，分别3/1次Analyze、0次Apply/Validate，源码未变；不是模型正常完成结果。所有历史默认采样失败、错误完成声明和本轮中断分别保留。用户随后指定mimo-v2.6:latest补测，直接本地Ollama默认采样；该标签实际show元数据为qwen3_5 9.4B nvfp4 mlx，按实际digest记录。任务正在运行，已有真实Analyze/Validate，不据此标完整PASS。
+
+Pinned run42748900128/job129607539571成功并实际上传产物13733825430。下载5,764,163byte ZIP，SHA256 774ea6b921a049f844c580cc9b52f4e754b9130a4cdcc9299adb56358961f342，与API digest一致；内含16,456,888byte executable，SHA256 c2cde5c9f3f43fa4aa2eb9fd46f1fad2e5913c2bf22d538f701760d82626cae8，与build-info一致，commit为精确bcf45a22。独立检查原始JSON41条parity/nativeExpectationMatches全true，10条echo全匹配，全部原始报告、子模块、CMakeCache与环境记录已归档。binary ZIP留.build，不打包VSIX。不是完整pinned Qt或全平台CLI构建。
+
+原import runner成功标签硬编码other-build，即使提供pinned build-info也不识别；保留本轮原始报告，不回写历史标签。runner现增加actual binary SHA及与build-info commit/hash匹配的pinnedBinary标签。本机managed10项实跑通过且仍正确标非pinned；新runner精确pinned标签待下一轮CI，不冒充已执行。

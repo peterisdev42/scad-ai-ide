@@ -39,7 +39,7 @@ jobs:
             - name: Install native build dependencies
               run: |
                   sudo apt-get update
-                  sudo apt-get install -y build-essential cmake ninja-build pkg-config flex bison libboost-program-options-dev libboost-regex-dev libcgal-dev libdouble-conversion-dev libeigen3-dev libfontconfig-dev libfreetype-dev libglib2.0-dev libgmp-dev libharfbuzz-dev libmpfr-dev libtbb-dev libxml2-dev libzip-dev
+                  sudo apt-get install -y build-essential cmake ninja-build pkg-config flex bison gettext libboost-program-options-dev libboost-regex-dev libcgal-dev libdouble-conversion-dev libeigen3-dev libfontconfig-dev libfreetype-dev libglib2.0-dev libgmp-dev libharfbuzz-dev libmpfr-dev libtbb-dev libxml2-dev libzip-dev
                   dpkg-query -W cmake g++ flex bison libcgal-dev libboost-program-options-dev libtbb-dev > .build/pinned-native-environment.txt
             - name: Build exact pinned CLI with geometry kernels
               run: |
@@ -65,7 +65,8 @@ jobs:
               if: always()
               with:
                   name: pinned-customizer-linux
-                  if-no-files-found: warn
+                  if-no-files-found: error
+                  include-hidden-files: true
                   path: |
                       .build/pinned-native*.json
                       .build/pinned-native*.txt

@@ -239,3 +239,27 @@ ADR10实施更新：2026-11-10用户明确批准方案A，并确认Mac已解锁�
 ADR10后续复核修订：baseline不能由官方字符串编码反解，因为部分Preset省略的source default本身可能无法无损编码。host现在独立保存深拷贝的ParameterValue baseline，modified直接比较类型和值，文件格式仍是官方字符串。新增浏览器反例：默认字符串"1"但enum数字1在先，部分集省略mode时不虚报modified；有意改为数字1后可保存并正确重放。最终浏览器38通过。
 
 原生GUI验收补充：官方Desktop12项交互与echo全部执行通过，source buffer/disk及偏好不变；A→B→Default符合defaults+当前集。Qt默认显示量化/裁剪并不等价于runtime默认值改变。详见customizer/native-gui-validation.md。保留无损IDE输入政策，不擅自模仿Qt显示裁剪或UTF16长度限制。没有宣称完整pinned GUI或Windows/Linux桌面已验证。
+
+ADR08 生命周期补充（2026-11-10）：实际复现旧 Preset controller 销毁后 select 仍清空共享 Overrides（9→空）；旧 Domain 销毁后仍接受旧 revision 并将9改为10。销毁现在禁止重绑定、回调重载及后续变更，释放 controller 的文件缓存与 Domain 私有源码引用，保留共享 CustomizerService 的新 owner 状态。过期 Domain 变更返回既有 TARGET_CHANGED，不引入新公开错误或更改活动会话语义。浏览器40项及最低真实 Host33项通过，包含实际 watcher 回调重放、set/reset/preset 拒绝和共享状态不变。这是局部功能与引用释放证据，不能代替整个应用的 heap 生命周期验收。中间 VM 跨 realm 空数组断言及真实文件 watcher 导致 STALE_STATE 的失败保留，不放松 CAS。
+
+ADR09 资源补充（2026-11-10）：实际mimo标签三目标首测中，Validate先把expectations编码成字符串/加入未知hideParameter字段，之后一次实际Validate返回semanticPass=false；四次生成Apply仍出现annotateExisting缺widget、changeWidget带defaultValue。6分钟观察期限结束，0次Apply进入dispatcher，源码不变。这不是安全门失效，也不是正常完成的模型验收失败。Skill入口补齐每种intent的严格字段、defaultValue仅用于insert、widget edit合并描述/分组、expectations为对象数组及visible:false。示例使用非验收fixture的radius，不内嵌实际identity或planId；不改schema接受语言、工具名、安全配额或Source实现。资源重包、40/2/5校验与最低Production实际安装功能smoke通过后，按用户指定的本地mimo-v2.6:latest重跑四场景，每项观察上限15分钟，旧模型与本轮超时证据保留。
+
+## ADR11（2026-11-10用户已批准，实施中）— 成功 Source Plan 的结构化后续调用
+
+事实：mimo四场景均实际结束。三目标场景最终Plan→Commit→Validate成功且磁盘不变，但先有3次实际INVALID_INPUT commit，额外生成的无效调用另记；最终回答错误声称以“只含edits”提交，原始成功请求实际为mode+planId。尾注场景4次重复Plan和被拒的普通文件写请求，违反SPEC9.3两次重试与任务写入边界。MODEL-01/02的窄断言可分别证明，不能据此宣布协议与回答整体通过。MODEL-03/04窄断言通过，旧qwen失败不覆盖。原始证据见evidence/mimo-{author,tail,expression,failure}-intents。
+
+方案A（推荐，待批准）：在现有成功SourceApply plan的data中增加continuation，值为固定tool名称、仅mode/planId的input及requiresReview=true。示意（此id仅为说明，不可调用）：
+
+```json
+{"continuation":{"tool":"scad_ai_ide_customizer_sourceApply","input":{"mode":"commit","planId":"<actual successful data.planId>"},"requiresReview":true}}
+```
+
+只在成功计划返回此字段；失败结果不提供可提交动作。opaque planId由实际计划池产生，没有用户字符串代码或授权标记。该字段是待审阅的候选调用，不自动执行；Native工具确认、Workspace Trust、canonical workspace、TextDocument version/SHA、120秒TTL、single-use、输入schema与限额全部保持。返回结构可减少模型混用plan和commit字段，但不能证明LLM一定遵守重试预算或不再产生错误回答。
+
+方案B：保持返回格式，只继续维护Skill/示例。优点是无公开结果变化；缺点是本轮已明确描述two-field commit，仍有真实混用和错误总结。
+
+方案C：接受携带plan参数的commit或自动剥离无关字段。拒绝：会放松现有严格输入语言并隐藏无效请求；不为模型通过而弱化校验。无需审批，因为不实施。
+
+A为新增公开返回字段，依据用户“改变公开行为先确认”先请求批准，当前未实现。批准后验收：成功plan的continuation.input逐字节包含实际planId且无uri/identity/edits；真实Host以该对象提交并验证3目标/未保存/磁盘不变；用户取消、stale、expired、single-use仍拒绝且无额外编辑；失败plan无continuation；catalog/生产安装与四场景模型回归独立记录。模型次数/回答正确性仍逐项审阅，不把新增字段本身写成模型PASS。
+
+ADR11批准记录：用户明确批准方案A，并要求仅成功Plan返回实际planId/已注册tool；requiresReview不构成授权，严格Commit schema和全部确认/Trust/CAS/TTL/一次性保留。新增直接使用continuation.input的合法提交及expiry/replay/source-change/trust-revoke/cancel测试，并用真实mimo分别报告调用成功率与任务结果。批准前提案保留为决策历史，以下实现与测试继续，不重复索要授权。

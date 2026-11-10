@@ -1,0 +1,35 @@
+{
+  "vscode": "1.145.2",
+  "extensionPath": "<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1",
+  "bundleSha256": "d25a2d769f1f2cbab4e23d9e5509e182ccb31e07a14da617581ba85f0ede82a2",
+  "chatSettings": {
+    "extensionUnification": false,
+    "disableAI": false,
+    "extensionTools": true
+  },
+  "nativeAgent": {
+    "present": true,
+    "active": true
+  },
+  "provider": {
+    "id": "Ollama.ollama",
+    "version": "0.0.14"
+  },
+  "models": [
+    {
+      "id": "qwen3.5:2b-mlx",
+      "name": "qwen3.5:2b-mlx",
+      "vendor": "ollama-models"
+    },
+    {
+      "id": "mimo-v2.6:latest",
+      "name": "mimo-v2.6:latest",
+      "vendor": "ollama-models"
+    },
+    {
+      "id": "mimo-v2.6:latest",
+      "name": "mimo-v2.6:latest",
+      "vendor": "ollama-models"
+    }
+  ]
+}

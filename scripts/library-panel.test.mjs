@@ -49,6 +49,7 @@ test('Library webview: tabs, escaping, exact selection, project selection, clean
     const browser = await chromium.launch({ channel: process.env.SCAD_BROWSER_CHANNEL || undefined })
     try {
         const page = await browser.newPage({ viewport: { width: 1120, height: 860 } })
+        await page.clock.install()
         const errors = []
         page.on('pageerror', (error) => errors.push(error.message))
         await page.setContent(await libraryFixtureHtml())
@@ -101,7 +102,9 @@ test('Library webview: tabs, escaping, exact selection, project selection, clean
         assert.equal(searchLayout.right, true)
 
         assert.equal(await page.locator('.library-current-project').isVisible(), false)
-        await page.clock.install()
+        // Installing the clock still lets real time advance. Pause before exact
+        // 299/300ms assertions so CI scheduling cannot consume the final 1ms.
+        await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000))
         const search = page.getByRole('searchbox', { name: 'Search registry' })
         await search.fill('missing')
         await page.clock.fastForward(299)
@@ -116,6 +119,7 @@ test('Library webview: tabs, escaping, exact selection, project selection, clean
         await page.clock.fastForward(1)
         await page.locator('#library-panel-registry .library-card').waitFor()
         assert.equal(await page.evaluate(() => window.__actions.some((action) => action.action === 'libraries.search')), false, 'Filtering never sends a host/network request')
+        await page.clock.resume()
         await page.evaluate((state) => window.postMessage({ type: 'librariesState', state: { ...state, registryBusy: true, registryStatus: 'Showing locally cached registry.', message: 'Loading libraries…' } }, '*'), state)
         await page.waitForFunction(() => document.querySelector('[aria-label="Search registry"]') === document.activeElement)
         assert.equal(await search.inputValue(), 'FIXTURE')

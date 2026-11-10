@@ -589,5 +589,209 @@
     "evidence": "native-gui-2026-11-10/manifest.json",
     "sha256": "a734c472b4e2088548dda15b472e6f5c13521e684a0e67a9c944e23528c3bf75",
     "scope": "Actual executed acceptance evidence with known failures retained; see file for scope"
+  },
+  {
+    "name": "lifecycle-host-final",
+    "evidence": "lifecycle-host-final.txt",
+    "sha256": "b72d061d5daabf8a30154d635e687134324724e862e0c361fd16692245ae1779",
+    "originalSha256": "6d7e3f87488cb25fa874ca15ebe250766b1ce28409e77e514241f7c859e8d5ef",
+    "scope": "Executed evidence; failures retained, see current acceptance ledger for limits"
+  },
+  {
+    "name": "lifecycle-browser-final",
+    "evidence": "lifecycle-browser-final.txt",
+    "sha256": "17eb937c75459290685d0ddc39b81fa5e6abff973a9f088a83d4a70b05b7ea32",
+    "originalSha256": "17eb937c75459290685d0ddc39b81fa5e6abff973a9f088a83d4a70b05b7ea32",
+    "scope": "Executed evidence; failures retained, see current acceptance ledger for limits"
+  },
+  {
+    "name": "lifecycle-host-targeted",
+    "evidence": "lifecycle-host-targeted.txt",
+    "sha256": "4da97f016e012b0ac3db3bb0eae0d450bbb981495b915814fa073e2fb249e343",
+    "originalSha256": "ecc69f9a64dd48fcbe03d5aaff58a327be339892902f53fad0d51d210eb41a24",
+    "scope": "Executed evidence; failures retained, see current acceptance ledger for limits"
+  },
+  {
+    "name": "lifecycle-host-cas-failure",
+    "evidence": "lifecycle-host-cas-failure.txt",
+    "sha256": "99692c47a6286b196b3b5010f464c1da0e67c721167629fb5c999277b8280775",
+    "originalSha256": "10653c54c3b66204e5be02dd162dae5299f8f8008a0e1d6112f4105093e61391",
+    "scope": "Executed evidence; failures retained, see current acceptance ledger for limits"
+  },
+  {
+    "name": "installed-lifecycle-sandbox-abort",
+    "evidence": "installed-lifecycle-sandbox-abort.txt",
+    "sha256": "8cb042db084ea4f84e959e6e8052360ac5d1735dca610d530103e5e87969eac0",
+    "originalSha256": "7e03ade4f10106e76dbc1e478fe70e2e600524a9b2148a448949e882b0dd8600",
+    "scope": "Executed evidence; failures retained, see current acceptance ledger for limits"
+  },
+  {
+    "name": "installed-lifecycle-final",
+    "evidence": "installed-lifecycle-final.txt",
+    "sha256": "639559f4ef9fb25eecd63017735b963c160ca219da5e90fedd7ee82e55fe305b",
+    "originalSha256": "ae8e538c5eca56299771fe37b903963773e3ac259966873ba639b39ca38de60e",
+    "scope": "Executed evidence; failures retained, see current acceptance ledger for limits"
+  },
+  {
+    "name": "library-ui-clock",
+    "evidence": "library-ui-clock.txt",
+    "sha256": "6bbd759e93ed33d3e6b89170146fe47823a65f5f48c6d02d97d4b5df98168adb",
+    "originalSha256": "6bbd759e93ed33d3e6b89170146fe47823a65f5f48c6d02d97d4b5df98168adb",
+    "scope": "Executed evidence; failures retained, see current acceptance ledger for limits"
+  },
+  {
+    "name": "pinned-4bff-success-log.txt",
+    "evidence": "pinned-4bff-success-log.txt",
+    "sha256": "6c4b3f0c01bb613c2c70b91297dc5e21d68a6e74ab989346eaa6311014cf7a1d",
+    "scope": "Selected actual upstream CI log; binary/report artifact delivery not implied"
+  },
+  {
+    "name": "pinned-55b-msgfmt-failure.txt",
+    "evidence": "pinned-55b-msgfmt-failure.txt",
+    "sha256": "5e5c84492fa88aad19a1cdb1c8d1ab93b307cf2c2700eca1f94273619b220e39",
+    "scope": "Selected actual upstream CI log; binary/report artifact delivery not implied"
+  },
+  {
+    "name": "panel-4bff-debounce-failure.txt",
+    "evidence": "panel-4bff-debounce-failure.txt",
+    "sha256": "1c9deeec197d3030589b7a52dadfe5f1765b5bb63a43a8f494793a981951f316",
+    "scope": "Selected actual upstream CI log; binary/report artifact delivery not implied"
+  },
+  {
+    "name": "installed-intent-skill-final.txt",
+    "evidence": "installed-intent-skill-final.txt",
+    "sha256": "cc80b1096a59970347374e14ae5e2a0be0b238990fd89eb4ee17639ead4d00d8",
+    "originalSha256": "ba199d61acbf14102739939c8a0934f707f8317bafce3a18c09fd56ceb6ecf47",
+    "scope": "Actual executed log or clearly labelled startup failure; no compilation-as-function-acceptance"
+  },
+  {
+    "name": "browser-bootstrap-sidebar37.txt",
+    "evidence": "browser-bootstrap-sidebar37.txt",
+    "sha256": "45f609626d9d6d9e42b13f39086cf3ee59d42e7b24fe63fbd1121f4b83757de0",
+    "originalSha256": "45f609626d9d6d9e42b13f39086cf3ee59d42e7b24fe63fbd1121f4b83757de0",
+    "scope": "Actual executed log or clearly labelled startup failure; no compilation-as-function-acceptance"
+  },
+  {
+    "name": "browser-bootstrap-preview3.txt",
+    "evidence": "browser-bootstrap-preview3.txt",
+    "sha256": "54aae220c89a6c752b63ff5886fa02feaed3ab246a79ddd063521d64a144770f",
+    "originalSha256": "54aae220c89a6c752b63ff5886fa02feaed3ab246a79ddd063521d64a144770f",
+    "scope": "Actual executed log or clearly labelled startup failure; no compilation-as-function-acceptance"
+  },
+  {
+    "name": "browser-bootstrap-sandbox-failure.txt",
+    "evidence": "browser-bootstrap-sandbox-failure.txt",
+    "sha256": "0f58779e06c74595facd82807630a1d4d6ff47041810c53dce3541c1e0e8a9da",
+    "originalSha256": "33c60d61932a3a2599dc07be525b950e1220a020d07cbf626cafa4a9990094e9",
+    "scope": "Actual executed log or clearly labelled startup failure; no compilation-as-function-acceptance"
+  },
+  {
+    "name": "native-sampling-transport-test.txt",
+    "evidence": "native-sampling-transport-test.txt",
+    "sha256": "047e24ce5acb251131fd543fad556d7107672c64a6a70e722dae53531318cffe",
+    "originalSha256": "047e24ce5acb251131fd543fad556d7107672c64a6a70e722dae53531318cffe",
+    "scope": "Actual executed log or clearly labelled startup failure; no compilation-as-function-acceptance"
+  },
+  {
+    "name": "artifact-adr10-8c5.json",
+    "evidence": "artifact-adr10-8c5.json",
+    "sha256": "b0b2b0f9ddbd5b13feb39d7043577fa895f90f4693c46f504cfaebd1f0154733",
+    "scope": "New executed evidence; see current acceptance ledger for scope and retained failures"
+  },
+  {
+    "name": "artifact-lifecycle-ded44c0e.json",
+    "evidence": "artifact-lifecycle-ded44c0e.json",
+    "sha256": "4380aa9c68961d0cff2074fb00276241c38621d4600b52a5e3597b83fef95720",
+    "scope": "New executed evidence; see current acceptance ledger for scope and retained failures"
+  },
+  {
+    "name": "host-gui-lifecycle-memory.json",
+    "evidence": "host-gui-lifecycle-memory.json",
+    "sha256": "046231d3613fefc279e0cb0374191f075b6fa4a9f77ffe667077e4d97e970f8e",
+    "scope": "New executed evidence; see current acceptance ledger for scope and retained failures"
+  },
+  {
+    "name": "mimo-local-tag-metadata.json",
+    "evidence": "mimo-local-tag-metadata.json",
+    "sha256": "8e68ae4a37ca14c70627fd909f8f2e9e553e38e42106c7fd65c072c174617d9d",
+    "scope": "New executed evidence; see current acceptance ledger for scope and retained failures"
+  },
+  {
+    "name": "ci-34c64eb-contracts-linux.txt",
+    "evidence": "ci-34c64eb-contracts-linux.txt",
+    "sha256": "e3f038dcf1ea1f9d10e7dac3a4768e13056461cdbee8a1c8fa0d689891c0ffd5",
+    "scope": "New executed evidence; see current acceptance ledger for scope and retained failures"
+  },
+  {
+    "name": "ci-34c64eb-contracts-windows.txt",
+    "evidence": "ci-34c64eb-contracts-windows.txt",
+    "sha256": "a855e2fd6a3e9e51bc0be2040d0975965be8c7abd8c5ddfcc7db3b3cdf02f3c6",
+    "scope": "New executed evidence; see current acceptance ledger for scope and retained failures"
+  },
+  {
+    "name": "ci-34c64eb-contracts-macos.txt",
+    "evidence": "ci-34c64eb-contracts-macos.txt",
+    "sha256": "b8ce2c6074bb9693cdbfef465c7465c99db84ad18a317fda291f6280410e1033",
+    "scope": "New executed evidence; see current acceptance ledger for scope and retained failures"
+  },
+  {
+    "name": "panel-34c64eb-bootstrap-failure.txt",
+    "evidence": "panel-34c64eb-bootstrap-failure.txt",
+    "sha256": "2535260ce8d31d9b726595ac3a18934a14046b6652eb00dc29f26a354e8c5f3a",
+    "scope": "New executed evidence; see current acceptance ledger for scope and retained failures"
+  },
+  {
+    "name": "panel-9dec262-success.txt",
+    "evidence": "panel-9dec262-success.txt",
+    "sha256": "ee1af809b441081af86038583e89fb1f2eb5f03214d9a724abe67ec12c75e2d1",
+    "scope": "New executed evidence; see current acceptance ledger for scope and retained failures"
+  },
+  {
+    "name": "mimo-author-default",
+    "evidence": "mimo-author-default/archive-hashes.json",
+    "sha256": "3085a9b638fe11ce50be410e9daaeca200a26eae04eb5b821e35731062a5417a",
+    "scope": "Exact scenario archive hashes; no acceptance PASS inferred"
+  },
+  {
+    "name": "qwen2b-author-temperature0",
+    "evidence": "qwen2b-author-temperature0/archive-hashes.json",
+    "sha256": "af9a5ec5a0101312b770f46f3ca5ae326eccb0702881cbb2d0188d8b2987766d",
+    "scope": "Exact scenario archive hashes; no acceptance PASS inferred"
+  },
+  {
+    "name": "qwen2b-author-clarified-temperature0",
+    "evidence": "qwen2b-author-clarified-temperature0/archive-hashes.json",
+    "sha256": "968e26cde79c830456a6a52d5c9bec8342498341615b32161e75ab3b3a8f7160",
+    "scope": "Exact scenario archive hashes; no acceptance PASS inferred"
+  },
+  {
+    "name": "pinned-34c64eb-downloaded",
+    "evidence": "pinned-34c64eb/archive-hashes.json",
+    "sha256": "a4c5276c43172907ffc84e93745ab7293342b55a45978dacb5f2e0be0ec033c2",
+    "scope": "Downloaded exact pinned CLI archive verified against API ZIP digest and executable build-info; original reports retained, 41 schema MATCH plus10 import PASS"
+  },
+  {
+    "name": "mimo-author-intents",
+    "evidence": "mimo-author-intents/archive-hashes.json",
+    "sha256": "d64b33325d76dd70807237f8407870d3956d04591e4c314bdd7823c8797182e8",
+    "scope": "Normal actual NativeChat run; see independent review for passed numbered criteria and retained protocol defects"
+  },
+  {
+    "name": "mimo-tail-intents",
+    "evidence": "mimo-tail-intents/archive-hashes.json",
+    "sha256": "abd964932f6fe4728221620798a7ee4d62bdc923e8c513755a6036c42f77df1e",
+    "scope": "Normal actual NativeChat run; see independent review for passed numbered criteria and retained protocol defects"
+  },
+  {
+    "name": "mimo-expression-intents",
+    "evidence": "mimo-expression-intents/archive-hashes.json",
+    "sha256": "524b29fd712947716ca41cab38c59b1af8dcb5458c51d11222d56f57e01a4624",
+    "scope": "Normal actual NativeChat run; see independent review for passed numbered criteria and retained protocol defects"
+  },
+  {
+    "name": "mimo-failure-intents",
+    "evidence": "mimo-failure-intents/archive-hashes.json",
+    "sha256": "364686b1fd1c657f0c14b6dbfa5d66d66fabf6e92393f14dddef3b2135570f8b",
+    "scope": "Normal actual NativeChat run; see independent review for passed numbered criteria and retained protocol defects"
   }
 ]

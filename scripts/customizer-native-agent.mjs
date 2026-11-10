@@ -17,10 +17,13 @@ const directory = await mkdtemp(path.join(tmpdir(), 'customizer-native-agent-'))
 const workspace = path.join(directory, 'workspace')
 const profile = path.join(directory, 'profile')
 const shared = path.join(directory, 'shared')
+const ollamaEndpoint = process.env.SCAD_AGENT_OLLAMA_URL ?? 'http://127.0.0.1:11434'
+const endpoint = new URL(ollamaEndpoint)
+assert.ok(endpoint.protocol === 'http:' && endpoint.hostname === '127.0.0.1' && !endpoint.username && !endpoint.password, 'Native audit endpoints must remain on loopback without URL credentials')
 await mkdir(workspace)
 await mkdir(path.join(profile, 'User'), { recursive: true })
-await writeFile(path.join(profile, 'User', 'chatLanguageModels.json'), JSON.stringify([{ vendor: 'ollama-models', name: 'Local Customizer audit', url: 'http://127.0.0.1:11434', models: [process.env.SCAD_AGENT_MODEL ?? 'qwen3.5:2b-mlx'] }]))
-await writeFile(path.join(profile, 'User', 'settings.json'), JSON.stringify({ 'telemetry.telemetryLevel': 'off', 'update.mode': 'none', 'scad-ai-ide.languageServer.enabled': false, 'chat.extensionUnification.enabled': false, 'workbench.enableExperiments': false }))
+await writeFile(path.join(profile, 'User', 'chatLanguageModels.json'), JSON.stringify([{ vendor: 'ollama-models', name: 'Local Customizer audit', url: ollamaEndpoint, models: [process.env.SCAD_AGENT_MODEL ?? 'qwen3.5:2b-mlx'] }]))
+await writeFile(path.join(profile, 'User', 'settings.json'), JSON.stringify({ 'telemetry.telemetryLevel': 'off', 'update.mode': 'none', 'scad-ai-ide.languageServer.enabled': false, 'chat.extensionUnification.enabled': false, 'workbench.enableExperiments': false, 'ollama.endpoint': ollamaEndpoint }))
 const file = path.join(workspace, 'model.scad')
 const scenario = process.env.SCAD_AGENT_SCENARIO ?? 'smoke'
 const cases = {
@@ -35,9 +38,17 @@ const source = cases[scenario].source
 const candidatePath = path.join(root, '.build/scad-ai-ide-customizer-architecture-v2.vsix')
 const candidateBytes = await readFile(candidatePath)
 const artifact = { file: path.basename(candidatePath), bytes: candidateBytes.length, sha256: createHash('sha256').update(candidateBytes).digest('hex') }
+let modelIdentity
+try {
+    const response = await fetch(ollamaEndpoint + '/api/tags', { signal: AbortSignal.timeout(5000) })
+    assert.ok(response.ok, 'Model identity request failed')
+    const tags = await response.json()
+    const selected = tags.models?.find(model => (model.name ?? model.model) === (process.env.SCAD_AGENT_MODEL ?? 'qwen3.5:2b-mlx'))
+    modelIdentity = selected ? { name: selected.name ?? selected.model, digest: selected.digest, size: selected.size, modifiedAt: selected.modified_at } : { available: false }
+} catch (error) { modelIdentity = { available: false, error: error.message } }
 await writeFile(file, source)
 const query = `/openscad-customizer-authoring 目标文件为 ${pathToFileURL(file).href}。${cases[scenario].task} 保留几何、源码默认值与Preset，不保存文件。使用项目安装的Skill完成分析、适用时的最小编辑和明确目标验证；如实报告实际结果及未执行的GUI/渲染检查。`
-await writeFile(path.join(directory, 'request-input.json'), JSON.stringify({ scenario, model: process.env.SCAD_AGENT_MODEL ?? 'qwen3.5:2b-mlx', file, query, source, artifact }, null, 2))
+await writeFile(path.join(directory, 'request-input.json'), JSON.stringify({ scenario, model: process.env.SCAD_AGENT_MODEL ?? 'qwen3.5:2b-mlx', modelIdentity, file, query, source, artifact, ollamaEndpoint, inferenceProfile: process.env.SCAD_AGENT_INFERENCE_PROFILE ?? 'Official provider directly to the local server; no sampling override in this harness' }, null, 2))
 const socket = createServer()
 await new Promise(resolve => socket.listen(0, '127.0.0.1', resolve))
 const port = socket.address().port

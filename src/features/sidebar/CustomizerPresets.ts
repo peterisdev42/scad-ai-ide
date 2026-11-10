@@ -50,6 +50,7 @@ export class CustomizerPresets implements vscode.Disposable {
     }
 
     bind(target: string | undefined) {
+        if (this.disposed) return
         if (this.target === target) return
         this.target = target
         this.generation++
@@ -102,8 +103,8 @@ export class CustomizerPresets implements vscode.Disposable {
     }
 
     private async reload(target: string) {
-        const presets = this.files.get(target)!
-        if (!presets.uri) return
+        const presets = this.files.get(target)
+        if (this.disposed || !presets?.uri) return
         const generation = this.generation
         const reload = ++this.reloadGeneration
         try {
@@ -239,5 +240,8 @@ export class CustomizerPresets implements vscode.Disposable {
         this.disposed = true
         this.generation++
         this.watcher?.dispose()
+        this.watcher = undefined
+        this.target = undefined
+        this.files.clear()
     }
 }

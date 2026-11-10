@@ -34,3 +34,11 @@ node scripts/customizer-host-memory.mjs
 ```
 
 入口：[Host controller](../../scripts/customizer-host-memory.mjs)、[真实Host fixture](../../scripts/fixtures/customizer-host-memory.cjs)。结果仅对上述服务与场景有效，整个SPEC目标仍未完成。
+
+## 2026-11-10 GUI Domain/Preset 实际堆回收补验
+
+新增可选 SCAD_HOST_MEMORY_GUI=1，以同一真实1.140.0 Host连接编译后的生产 CustomizerService/CustomizerDomainService/CustomizerPresets。每轮32个真实文档分别导入同一含约119KB额外metadata的合成Preset，再选择A（width45），形成32个文件缓存和32份Overrides；一个真实文件watcher、一份值订阅和一份preview订阅均被占用。1轮预热后测6轮，断言dispose清空controller缓存、watcher和Domain私有source、撤销订阅，同时不清空共享service值；最后验证源文档非dirty和Preset原bytes不变。
+
+三份V8完整快照中，SourceDomain、EditorActions、CustomizerService、CustomizerDomainService、CustomizerPresets五类额外实例分别均为0→1→0。与旧测量的1→2→1不同，本轮Production minify与开发类基线不同，按同轮实际增量判定，不强行沿用历史绝对数。每轮GC释放7,516,756–7,844,792 bytes，销毁后used heap区间185,808 bytes。见[新数据](evidence/host-gui-lifecycle-memory.json)，历史Source/Editor证据未覆盖。
+
+三份原始heap压缩存于.build/customizer-gui-host-memory，压缩前后hash在JSON中。仅JSON摘要入repo，不复制完整heap/profile到VSIX。该结果覆盖上述服务在真实TextDocument/文件watcher场景的回收，不覆盖GUI renderer/GPU、安装minified bundle对象、远程provider或所有竞态；不能宣称整个应用无泄漏。

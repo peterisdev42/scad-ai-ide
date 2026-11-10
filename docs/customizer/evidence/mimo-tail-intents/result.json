@@ -1,0 +1,122 @@
+{
+  "scenario": "tail",
+  "artifact": {
+    "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+    "bytes": 4532196,
+    "sha256": "fac54ddf29cc9d98f356ad7d18abb0b715d693fad292b104d496819d7df51e1a"
+  },
+  "timeoutMs": 900000,
+  "ready": {
+    "vscode": "1.145.2",
+    "extensionPath": "<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1",
+    "bundleSha256": "d25a2d769f1f2cbab4e23d9e5509e182ccb31e07a14da617581ba85f0ede82a2",
+    "chatSettings": {
+      "extensionUnification": false,
+      "disableAI": false,
+      "extensionTools": true
+    },
+    "nativeAgent": {
+      "present": true,
+      "active": true
+    },
+    "provider": {
+      "id": "Ollama.ollama",
+      "version": "0.0.14"
+    },
+    "models": [
+      {
+        "id": "qwen3.5:2b-mlx",
+        "name": "qwen3.5:2b-mlx",
+        "vendor": "ollama-models"
+      },
+      {
+        "id": "mimo-v2.6:latest",
+        "name": "mimo-v2.6:latest",
+        "vendor": "ollama-models"
+      },
+      {
+        "id": "mimo-v2.6:latest",
+        "name": "mimo-v2.6:latest",
+        "vendor": "ollama-models"
+      }
+    ]
+  },
+  "response": {
+    "snapshot": true,
+    "cancelledForSnapshot": false,
+    "buffer": "width=40; // [0:100] IDs in Assembly.md; preserve this explanation\ncube(width);\n",
+    "dirty": false,
+    "operations": {
+      "total": 6,
+      "offset": 0,
+      "hasMore": false,
+      "nextOffset": null,
+      "operations": [
+        {
+          "id": "0add3f17-c48b-45fb-abfe-947c34f83390",
+          "capabilityId": "customizer.sourceApply",
+          "status": "failed",
+          "error": {
+            "code": "NEEDS_MANUAL_REVIEW",
+            "message": "Preserve text after the bracketed comment; move the explanation to a separate comment before changing the Widget.",
+            "retryable": false
+          }
+        },
+        {
+          "id": "fc161c81-7560-4f57-b6d1-6dea1b059873",
+          "capabilityId": "customizer.sourceApply",
+          "status": "failed",
+          "error": {
+            "code": "NEEDS_MANUAL_REVIEW",
+            "message": "Preserve text after the bracketed comment; move the explanation to a separate comment before changing the Widget.",
+            "retryable": false
+          }
+        },
+        {
+          "id": "5c138efa-22e1-4a20-8a90-b93a14c70f97",
+          "capabilityId": "customizer.sourceAnalyze",
+          "status": "succeeded"
+        },
+        {
+          "id": "f523bcc1-c5bc-4256-b5e3-3c4a931427d7",
+          "capabilityId": "customizer.sourceApply",
+          "status": "failed",
+          "error": {
+            "code": "NEEDS_MANUAL_REVIEW",
+            "message": "Preserve text after the bracketed comment; move the explanation to a separate comment before changing the Widget.",
+            "retryable": false
+          }
+        },
+        {
+          "id": "69d7994f-af66-4d9d-9fec-53037a9f96df",
+          "capabilityId": "customizer.sourceApply",
+          "status": "failed",
+          "error": {
+            "code": "NEEDS_MANUAL_REVIEW",
+            "message": "Preserve text after the bracketed comment; move the explanation to a separate comment before changing the Widget.",
+            "retryable": false
+          }
+        },
+        {
+          "id": "f0b18275-7c7b-436e-956f-9d573151c6f3",
+          "capabilityId": "customizer.sourceAnalyze",
+          "status": "succeeded"
+        }
+      ]
+    }
+  },
+  "timedOut": false,
+  "interrupted": false,
+  "requestFinished": true,
+  "terminalReason": "nativeUICompleted",
+  "nativeAgent": true,
+  "confirmationsAutomaticallyApproved": false,
+  "approvals": [
+    {
+      "tool": "copilot_replaceString",
+      "decision": "skip",
+      "scope": "Unrecognized action was not approved",
+      "displayedInput": "d"
+    }
+  ]
+}

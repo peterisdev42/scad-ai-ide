@@ -2,6 +2,8 @@ import { focusTestEditor } from './HostEditorFocus'
 import * as assert from 'node:assert/strict'
 import { mkdtemp, readFile, writeFile, rm } from 'node:fs/promises'
 import { CustomizerPresets } from '../features/sidebar/CustomizerPresets'
+import { CustomizerDomainService } from '../features/sidebar/CustomizerDomainService'
+import { CustomizerService } from '../core/customizer/CustomizerService'
 import * as os from 'node:os'
 import * as path from 'node:path'
 import * as vscode from 'vscode'
@@ -259,6 +261,7 @@ suite('Agent capabilities extension host', () => {
                 // Real storage deletion; the domain's separate confirmation is
                 // not bypassed or automatically approved through an Agent call.
                 const deletion = new CustomizerPresets(api.customizer, () => {})
+                const beforeDisposal = structuredClone(api.customizer.getOverrides(source.toString()))
                 try {
                     deletion.bind(source.toString())
                     await deletion.execute('import', undefined, preset)
@@ -267,6 +270,10 @@ suite('Agent capabilities extension host', () => {
                     assert.deepEqual(saved.metadata, existing.metadata)
                     assert.deepEqual(saved.parameterSets, { A: existing.parameterSets.A })
                 } finally { deletion.dispose() }
+                await assert.rejects(deletion.execute('select'), (error: unknown) => !!error && typeof error === 'object' && 'code' in error && error.code === 'TARGET_CHANGED')
+                deletion.bind(source.toString())
+                assert.deepEqual(deletion.parameterSets(), {})
+                assert.deepEqual(api.customizer.getOverrides(source.toString()), beforeDisposal)
                 await success('customizer.set', { values: { [fixture.name]: fixture.value } })
                 await success('customizer.createPreset', { name: 'Valid' })
                 await success('customizer.applyPreset', { name: '' })
@@ -276,6 +283,21 @@ suite('Agent capabilities extension host', () => {
                 assert.equal(document.isDirty, false)
                 assert.equal(await readFile(source.fsPath, 'utf8'), original)
             }
+            const isolatedService = new CustomizerService()
+            const oldDomain = new CustomizerDomainService(isolatedService)
+            const opened = oldDomain.snapshot()
+            assert.ok(opened.target)
+            oldDomain.setValues(opened.target, opened.revision, { mode: 2 })
+            const oldIdentity = oldDomain.snapshot()
+            oldDomain.dispose()
+            isolatedService.set('mode', '1')
+            const liveValues = structuredClone(isolatedService.getOverrides(opened.target))
+            const inactive = (error: unknown) => !!error && typeof error === 'object' && 'code' in error && error.code === 'TARGET_CHANGED'
+            assert.throws(() => oldDomain.setValues(opened.target!, oldIdentity.revision, { mode: 2 }), inactive)
+            assert.throws(() => oldDomain.reset(opened.target!, oldIdentity.revision), inactive)
+            await assert.rejects(oldDomain.preset(opened.target, oldIdentity.revision, 'select'), inactive)
+            oldDomain.snapshot()
+            assert.deepEqual(isolatedService.getOverrides(opened.target), liveValues)
             assert.equal((await vscode.workspace.fs.readDirectory(vscode.Uri.file(root))).some(([name]) => name.endsWith('.tmp')), false)
         } finally {
             await vscode.commands.executeCommand('workbench.action.closeAllEditors')

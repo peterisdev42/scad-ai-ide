@@ -1,0 +1,448 @@
+Selected actual CI job log lines; full upstream job remains authoritative. This is not a replacement for report artifacts.
+2026-11-10T01:59:35.3631406Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe
+2026-11-10T01:59:35.3632227Z Build Date: 2026-10-28T21:51:42Z
+2026-11-10T01:59:35.3632991Z Worker ID: {75564478-8493-42bb-8632-dc2c79ab3f28}
+2026-11-10T01:59:35.3634169Z Region: westus2
+2026-11-10T01:59:35.3638418Z 24.04.5
+2026-11-10T01:59:35.3638951Z LTS
+2026-11-10T01:59:35.3639470Z ##[endgroup]
+2026-11-10T01:59:35.3640072Z ##[group]Runner Image
+2026-11-10T01:59:35.3640751Z Image: ubuntu-24.04
+2026-11-10T01:59:35.3641356Z Version: 20261101.360.1
+2026-11-10T01:59:35.3642633Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261101.360/images/ubuntu/Ubuntu2404-Readme.md
+2026-11-10T01:59:35.3649823Z ##[endgroup]
+2026-11-10T01:59:35.3651981Z Secret source: Actions
+2026-11-10T01:59:35.3653038Z Cache mode: write
+2026-11-10T01:59:35.3653753Z Prepare workflow directory
+2026-11-10T01:59:36.2414680Z   fetch-depth: 1
+2026-11-10T01:59:36.2415110Z   fetch-tags: false
+2026-11-10T01:59:36.2415552Z   show-progress: true
+2026-11-10T01:59:36.2416022Z   lfs: false
+2026-11-10T01:59:36.2418597Z env:
+2026-11-10T01:59:36.2419158Z   REFERENCE_OPENSCAD_SHA: bcf45a22caa954ca56ca287994cb6dbc368c67b2
+2026-11-10T01:59:36.2419875Z ##[endgroup]
+2026-11-10T01:59:36.5119568Z Syncing repository: peterisdev42/scad-ai-ide
+2026-11-10T01:59:36.5121687Z ##[group]Getting Git version info
+2026-11-10T01:59:36.5122461Z Working directory is '/home/runner/work/scad-ai-ide/scad-ai-ide'
+2026-11-10T01:59:36.5123983Z [command]/usr/bin/git version
+2026-11-10T01:59:36.5231161Z git version 2.56.0
+2026-11-10T01:59:36.5258853Z ##[endgroup]
+2026-11-10T01:59:36.5500003Z Initialized empty Git repository in /home/runner/work/scad-ai-ide/scad-ai-ide/.git/
+2026-11-10T01:59:36.5513869Z [command]/usr/bin/git remote add origin https://github.com/peterisdev42/scad-ai-ide
+2026-11-10T01:59:36.5570677Z ##[endgroup]
+2026-11-10T01:59:36.5572116Z ##[group]Disabling automatic garbage collection
+2026-11-10T01:59:36.6405074Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-10T01:59:36.6651197Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-10T01:59:36.6701175Z ##[endgroup]
+2026-11-10T01:59:36.6701981Z ##[group]Fetching the repository
+2026-11-10T01:59:37.3283235Z env:
+2026-11-10T01:59:37.3284476Z   REFERENCE_OPENSCAD_SHA: bcf45a22caa954ca56ca287994cb6dbc368c67b2
+2026-11-10T01:59:37.3286117Z ##[endgroup]
+2026-11-10T01:59:37.4817375Z (node:2568) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-10T01:59:40.3771420Z env:
+2026-11-10T01:59:40.3771733Z   REFERENCE_OPENSCAD_SHA: bcf45a22caa954ca56ca287994cb6dbc368c67b2
+2026-11-10T01:59:40.3772111Z ##[endgroup]
+2026-11-10T01:59:44.2654261Z npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+2026-11-10T02:00:34.8150667Z npm warn install-scripts 1 package has install scripts not yet covered by allowScripts:
+2026-11-10T02:00:34.8151475Z npm warn install-scripts   esbuild@0.28.2 (postinstall: node install.js)
+2026-11-10T02:00:34.8151971Z npm warn install-scripts
+2026-11-10T02:00:34.8152695Z npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+2026-11-10T02:00:34.9340504Z ##[group]Run npm run compile-tests
+2026-11-10T02:00:34.9363072Z env:
+2026-11-10T02:00:34.9363373Z   REFERENCE_OPENSCAD_SHA: bcf45a22caa954ca56ca287994cb6dbc368c67b2
+2026-11-10T02:00:34.9363752Z ##[endgroup]
+2026-11-10T02:00:35.0364384Z 
+2026-11-10T02:00:39.5896564Z   repository: openscad/openscad
+2026-11-10T02:00:39.5896852Z   ref: bcf45a22caa954ca56ca287994cb6dbc368c67b2
+2026-11-10T02:00:39.5897509Z   path: .build/pinned-openscad-source
+2026-11-10T02:00:39.5897794Z   submodules: recursive
+2026-11-10T02:00:39.5903290Z env:
+2026-11-10T02:00:39.5903595Z   REFERENCE_OPENSCAD_SHA: bcf45a22caa954ca56ca287994cb6dbc368c67b2
+2026-11-10T02:00:39.5903955Z ##[endgroup]
+2026-11-10T02:00:39.6820383Z Syncing repository: openscad/openscad
+2026-11-10T02:00:39.6949666Z ##[endgroup]
+2026-11-10T02:00:39.6963796Z Temporarily overriding HOME='/home/runner/work/_temp/6e35a6a6-f741-4d24-8a28-9e399194b518' before making global git config changes
+2026-11-10T02:00:39.6965390Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-10T02:00:39.6969783Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source
+2026-11-10T02:00:39.7064922Z hint: call:
+2026-11-10T02:00:39.7065137Z hint:
+2026-11-10T02:00:39.7065470Z hint:     git config --global init.defaultBranch <name>
+2026-11-10T02:00:39.7065859Z hint:
+2026-11-10T02:00:39.8199000Z ##[group]Fetching the repository
+2026-11-10T02:00:39.8200701Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin bcf45a22caa954ca56ca287994cb6dbc368c67b2
+2026-11-10T02:00:41.0424828Z From https://github.com/openscad/openscad
+2026-11-10T02:00:41.0425409Z  * branch            bcf45a22caa954ca56ca287994cb6dbc368c67b2 -> FETCH_HEAD
+2026-11-10T02:00:41.0430976Z ##[endgroup]
+2026-11-10T02:00:41.0431409Z ##[group]Determining the checkout info
+2026-11-10T02:00:41.0533192Z ##[group]Checking out the ref
+2026-11-10T02:00:41.0538718Z [command]/usr/bin/git checkout --progress --force bcf45a22caa954ca56ca287994cb6dbc368c67b2
+2026-11-10T02:00:41.3764499Z Note: switching to 'bcf45a22caa954ca56ca287994cb6dbc368c67b2'.
+2026-11-10T02:00:41.3764966Z 
+2026-11-10T02:00:41.3765422Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-11-10T02:00:41.3766312Z changes and commit them, and you can discard any commits you make in this
+2026-11-10T02:00:41.3767513Z state without impacting any branches by switching back to a branch.
+2026-11-10T02:00:41.3767947Z 
+2026-11-10T02:00:41.3768298Z If you want to create a new branch to retain commits you create, you may
+2026-11-10T02:00:41.3771091Z 
+2026-11-10T02:00:41.3771412Z HEAD is now at bcf45a2 Merge pull request #7192 from openscad/svg-use
+2026-11-10T02:00:41.3781781Z ##[endgroup]
+2026-11-10T02:00:41.3782208Z ##[group]Setting up auth for fetching submodules
+2026-11-10T02:00:41.4492863Z Submodule 'sanitizers-cmake' (https://github.com/arsenm/sanitizers-cmake.git) registered for path 'submodules/sanitizers-cmake'
+2026-11-10T02:00:41.4521519Z Cloning into '/home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source/libraries/MCAD'...
+2026-11-10T02:00:41.9491038Z Cloning into '/home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source/submodules/Clipper2'...
+2026-11-10T02:00:42.4950568Z Cloning into '/home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source/submodules/OpenCSG'...
+2026-11-10T02:00:43.0928116Z Cloning into '/home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source/submodules/manifold'...
+2026-11-10T02:00:45.2351658Z Cloning into '/home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source/submodules/mimalloc'...
+2026-11-10T02:00:45.7301138Z Cloning into '/home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source/submodules/sanitizers-cmake'...
+2026-11-10T02:00:47.3165895Z From https://github.com/openscad/MCAD
+2026-11-10T02:00:48.4882182Z Submodule path 'submodules/Clipper2': checked out 'c7f820f6a03fa91f189b866d27bf40dfe47abaa6'
+2026-11-10T02:00:48.5034488Z Submodule path 'submodules/OpenCSG': checked out '9bf122715213dca05e70993dd8672fe3aa36c518'
+2026-11-10T02:00:49.6690913Z From https://github.com/elalish/manifold
+2026-11-10T02:00:49.6691808Z  * branch            ce50d78021d64507f89e8c9fc2c2e51018117857 -> FETCH_HEAD
+2026-11-10T02:00:49.8856425Z Submodule path 'submodules/manifold': checked out 'ce50d78021d64507f89e8c9fc2c2e51018117857'
+2026-11-10T02:00:51.1492327Z From https://github.com/microsoft/mimalloc
+2026-11-10T02:00:51.1493329Z  * branch            30b2d9d89099bee08e9f67a1ffb3e12e7ba45227 -> FETCH_HEAD
+2026-11-10T02:00:51.1948865Z Submodule path 'submodules/mimalloc': checked out '30b2d9d89099bee08e9f67a1ffb3e12e7ba45227'
+2026-11-10T02:00:51.2052798Z Submodule path 'submodules/sanitizers-cmake': checked out 'bcb1fc68616e9645ca5acea2992412606373ab04'
+2026-11-10T02:00:51.2087821Z [command]/usr/bin/git submodule foreach --recursive git config --local gc.auto 0
+2026-11-10T02:00:51.2342669Z Entering 'libraries/MCAD'
+2026-11-10T02:00:51.2393096Z Entering 'submodules/Clipper2'
+2026-11-10T02:00:51.2436749Z Entering 'submodules/OpenCSG'
+2026-11-10T02:00:51.2479378Z Entering 'submodules/manifold'
+2026-11-10T02:00:51.2522053Z Entering 'submodules/mimalloc'
+2026-11-10T02:00:51.2563787Z Entering 'submodules/sanitizers-cmake'
+2026-11-10T02:00:51.2614801Z ##[endgroup]
+2026-11-10T02:00:51.2664597Z [command]/usr/bin/git log -1 --format=%H
+2026-11-10T02:00:51.2698939Z bcf45a22caa954ca56ca287994cb6dbc368c67b2
+2026-11-10T02:00:51.2708722Z ##[group]Removing auth
+2026-11-10T02:00:51.2713347Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-10T02:00:51.2762710Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-10T02:00:51.3001594Z Entering 'libraries/MCAD'
+2026-11-10T02:00:51.3050359Z Entering 'submodules/Clipper2'
+2026-11-10T02:00:51.3095897Z Entering 'submodules/OpenCSG'
+2026-11-10T02:00:51.3142154Z Entering 'submodules/manifold'
+2026-11-10T02:00:51.3188106Z Entering 'submodules/mimalloc'
+2026-11-10T02:00:51.3234872Z Entering 'submodules/sanitizers-cmake'
+2026-11-10T02:00:51.3299001Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-10T02:00:51.3335907Z http.https://github.com/.extraheader
+2026-11-10T02:00:51.3345889Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-10T02:00:51.3392564Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-10T02:00:51.3628626Z Entering 'libraries/MCAD'
+2026-11-10T02:00:51.3675768Z Entering 'submodules/Clipper2'
+2026-11-10T02:00:51.3721877Z Entering 'submodules/OpenCSG'
+2026-11-10T02:00:51.3767681Z Entering 'submodules/manifold'
+2026-11-10T02:00:51.3814084Z Entering 'submodules/mimalloc'
+2026-11-10T02:00:51.3860152Z Entering 'submodules/sanitizers-cmake'
+2026-11-10T02:00:51.3920695Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-10T02:00:51.3965550Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-10T02:00:51.4210582Z Entering 'libraries/MCAD'
+2026-11-10T02:00:51.4233096Z file:/home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source/.git/modules/libraries/MCAD/config    remote.origin.url
+2026-11-10T02:00:51.4252492Z Entering 'submodules/Clipper2'
+2026-11-10T02:00:51.4273049Z file:/home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source/.git/modules/Clipper2/config    remote.origin.url
+2026-11-10T02:00:51.4293395Z Entering 'submodules/OpenCSG'
+2026-11-10T02:00:51.4313875Z file:/home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source/.git/modules/OpenCSG/config    remote.origin.url
+2026-11-10T02:00:51.4334141Z Entering 'submodules/manifold'
+2026-11-10T02:00:51.4354676Z file:/home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source/.git/modules/submodules/manifold/config    remote.origin.url
+2026-11-10T02:00:51.4375093Z Entering 'submodules/mimalloc'
+2026-11-10T02:00:51.4395369Z file:/home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source/.git/modules/mimalloc/config    remote.origin.url
+2026-11-10T02:00:51.4415954Z Entering 'submodules/sanitizers-cmake'
+2026-11-10T02:00:51.4435965Z file:/home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source/.git/modules/sanitizers-cmake/config    remote.origin.url
+2026-11-10T02:00:51.4470669Z [command]/usr/bin/git config --file /home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source/.git/modules/libraries/MCAD/config --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-10T02:00:51.4517617Z [command]/usr/bin/git config --file /home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source/.git/modules/Clipper2/config --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-10T02:00:51.4558743Z [command]/usr/bin/git config --file /home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source/.git/modules/OpenCSG/config --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-10T02:00:51.4602018Z [command]/usr/bin/git config --file /home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source/.git/modules/submodules/manifold/config --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-10T02:00:51.4648838Z [command]/usr/bin/git config --file /home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source/.git/modules/mimalloc/config --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-10T02:00:51.4686687Z [command]/usr/bin/git config --file /home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source/.git/modules/sanitizers-cmake/config --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-10T02:00:51.4723233Z ##[endgroup]
+2026-11-10T02:00:51.4853478Z ##[group]Run sudo apt-get update
+2026-11-10T02:00:51.4853825Z [36;1msudo apt-get update[0m
+2026-11-10T02:00:51.4855063Z [36;1msudo apt-get install -y build-essential cmake ninja-build pkg-config flex bison libboost-program-options-dev libboost-regex-dev libcgal-dev libdouble-conversion-dev libeigen3-dev libfontconfig-dev libfreetype-dev libglib2.0-dev libgmp-dev libharfbuzz-dev libmpfr-dev libtbb-dev libxml2-dev libzip-dev[0m
+2026-11-10T02:00:51.4856654Z [36;1mdpkg-query -W cmake g++ flex bison libcgal-dev libboost-program-options-dev libtbb-dev > .build/pinned-native-environment.txt[0m
+2026-11-10T02:00:51.4877890Z shell: /usr/bin/bash -e {0}
+2026-11-10T02:00:51.4878149Z env:
+2026-11-10T02:00:51.4878442Z   REFERENCE_OPENSCAD_SHA: bcf45a22caa954ca56ca287994cb6dbc368c67b2
+2026-11-10T02:00:51.4878814Z ##[endgroup]
+2026-11-10T02:00:51.5610340Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-11-10T02:00:51.5876282Z Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+2026-11-10T02:00:51.6467734Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [678 kB]
+2026-11-10T02:00:51.6639280Z Get:8 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [748 kB]
+2026-11-10T02:00:55.9358185Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-11-10T02:00:55.9372444Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-11-10T02:00:56.0439462Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1442 kB]
+2026-11-10T02:00:56.0516705Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [314 kB]
+2026-11-10T02:00:56.0542584Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1711 kB]
+2026-11-10T02:00:56.0631678Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [344 kB]
+2026-11-10T02:01:01.0634182Z bison is already the newest version (2:3.8.2+dfsg-1ubuntu0.24.04.1).
+2026-11-10T02:01:01.0635510Z libgmp-dev is already the newest version (2:6.3.0+dfsg-2ubuntu6.1).
+2026-11-10T02:01:01.0636837Z libxml2-dev is already the newest version (2.9.14+dfsg-1.3ubuntu3.10).
+2026-11-10T02:01:01.0638059Z libxml2-dev set to manually installed.
+2026-11-10T02:01:01.0650285Z   libtbbbind-2-5 libtbbmalloc2 libxnvctrl0 ocl-icd-libopencl1 uuid-dev
+2026-11-10T02:01:01.0651602Z Suggested packages:
+2026-11-10T02:01:01.0652287Z   cmake-doc cmake-format elpa-cmake-mode libboost-doc libboost1.83-doc
+2026-11-10T02:01:01.0653147Z   libboost-container1.83-dev libboost-context1.83-dev
+2026-11-10T02:01:01.0662066Z   libgraphite2-utils libhwloc-contrib-plugins libmpfr-doc libtbb-doc
+2026-11-10T02:01:01.0662451Z   opencl-icd
+2026-11-10T02:01:01.1058478Z The following NEW packages will be installed:
+2026-11-10T02:01:01.1059583Z   build-essential bzip2-doc cmake cmake-data gir1.2-freedesktop
+2026-11-10T02:02:01.8139646Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 gir1.2-freedesktop-dev amd64 1.80.1-1 [28.8 kB]
+2026-11-10T02:02:02.0950515Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libharfbuzz-gobject0 amd64 8.3.0-2build2 [34.3 kB]
+2026-11-10T02:02:11.7829016Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 gir1.2-harfbuzz-0.0 amd64 8.3.0-2build2 [44.5 kB]
+2026-11-10T02:02:13.4229390Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libboost1.83-dev amd64 1.83.0-2.1ubuntu3.2 [10.7 MB]
+2026-11-10T02:02:51.1235031Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libboost-atomic1.83.0 amd64 1.83.0-2.1ubuntu3.2 [240 kB]
+2026-11-10T02:02:53.7739570Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libboost-atomic1.83-dev amd64 1.83.0-2.1ubuntu3.2 [235 kB]
+2026-11-10T02:02:54.1336055Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libboost-chrono1.83.0t64 amd64 1.83.0-2.1ubuntu3.2 [245 kB]
+2026-11-10T02:02:54.5097351Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libboost-chrono1.83-dev amd64 1.83.0-2.1ubuntu3.2 [246 kB]
+2026-11-10T02:02:54.8203203Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libboost-date-time1.83.0 amd64 1.83.0-2.1ubuntu3.2 [236 kB]
+2026-11-10T02:02:55.1241468Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libboost-serialization1.83.0 amd64 1.83.0-2.1ubuntu3.2 [341 kB]
+2026-11-10T02:03:31.5827904Z Get:34 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libboost-thread-dev amd64 1.83.0.1ubuntu2 [4088 B]
+2026-11-10T02:03:31.8516458Z Get:35 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libbrotli-dev amd64 1.1.0-2ubuntu0.1 [353 kB]
+2026-11-10T02:03:48.8779129Z Ign:36 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libbz2-dev amd64 1.0.8-5.1ubuntu0.1
+2026-11-10T02:03:51.7093101Z Get:37 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libmpfr-dev amd64 4.2.1-1build1.1 [288 kB]
+2026-11-10T02:03:54.7907635Z Get:38 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libcgal-dev amd64 5.6-1build3 [4970 kB]
+2026-11-10T02:04:59.4368813Z Get:39 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libdouble-conversion3 amd64 3.3.0-1build1 [40.3 kB]
+2026-11-10T02:05:02.7813156Z Get:43 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libfontconfig-dev amd64 2.15.0-1.1ubuntu2 [161 kB]
+2026-11-10T02:05:03.3512200Z Get:44 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgirepository-2.0-0 amd64 2.80.0-6ubuntu3.10 [73.5 kB]
+2026-11-10T02:05:03.8803096Z Get:45 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglib2.0-dev-bin amd64 2.80.0-6ubuntu3.10 [138 kB]
+2026-11-10T02:05:04.4375574Z Get:46 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libblkid-dev amd64 2.39.3-9ubuntu6.6 [205 kB]
+2026-11-10T02:05:06.7908681Z Get:50 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglib2.0-dev amd64 2.80.0-6ubuntu3.10 [1861 kB]
+2026-11-10T02:05:10.4521203Z Get:51 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgraphite2-dev amd64 1.3.14-2ubuntu0.24.04.1 [14.7 kB]
+2026-11-10T02:05:10.8813884Z Get:52 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libharfbuzz-cairo0 amd64 8.3.0-2build2 [26.2 kB]
+2026-11-10T02:05:11.8866179Z Get:53 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libharfbuzz-icu0 amd64 8.3.0-2build2 [13.3 kB]
+2026-11-10T02:05:24.1439391Z Get:60 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libtbb12 amd64 2021.11.0-2ubuntu2 [106 kB]
+2026-11-10T02:05:25.1259021Z Get:61 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libxnvctrl0 amd64 510.47.03-0ubuntu4.24.04.1 [12.7 kB]
+2026-11-10T02:05:25.4182540Z Get:62 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libzip-dev amd64 1.7.3-1.1ubuntu2 [156 kB]
+2026-11-10T02:05:27.2114643Z Get:63 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 ninja-build amd64 1.11.1-2 [129 kB]
+2026-11-10T02:05:47.5929543Z (Reading database ... 65%
+2026-11-10T02:05:47.8232512Z (Reading database ... 70%
+2026-11-10T02:05:47.9908589Z (Reading database ... 75%
+2026-11-10T02:05:48.1790404Z (Reading database ... 80%
+2026-11-10T02:05:48.7489449Z Preparing to unpack .../00-build-essential_12.10ubuntu1_amd64.deb ...
+2026-11-10T02:05:48.7514376Z Unpacking build-essential (12.10ubuntu1) ...
+2026-11-10T02:05:48.7764853Z Selecting previously unselected package bzip2-doc.
+2026-11-10T02:05:48.7904448Z Preparing to unpack .../01-bzip2-doc_1.0.8-5.1ubuntu0.1_all.deb ...
+2026-11-10T02:05:48.8184810Z Selecting previously unselected package libjsoncpp25:amd64.
+2026-11-10T02:05:48.8325518Z Preparing to unpack .../02-libjsoncpp25_1.9.5-6build1_amd64.deb ...
+2026-11-10T02:05:48.8341152Z Unpacking libjsoncpp25:amd64 (1.9.5-6build1) ...
+2026-11-10T02:05:48.8598130Z Selecting previously unselected package librhash0:amd64.
+2026-11-10T02:05:49.7275749Z Unpacking gir1.2-freedesktop-dev:amd64 (1.80.1-1) ...
+2026-11-10T02:05:49.7519494Z Selecting previously unselected package libharfbuzz-gobject0:amd64.
+2026-11-10T02:05:49.7663255Z Preparing to unpack .../09-libharfbuzz-gobject0_8.3.0-2build2_amd64.deb ...
+2026-11-10T02:05:49.7671080Z Unpacking libharfbuzz-gobject0:amd64 (8.3.0-2build2) ...
+2026-11-10T02:05:52.3371794Z Selecting previously unselected package libboost-chrono1.83.0t64:amd64.
+2026-11-10T02:05:52.3529516Z Preparing to unpack .../14-libboost-chrono1.83.0t64_1.83.0-2.1ubuntu3.2_amd64.deb ...
+2026-11-10T02:05:52.3536260Z Unpacking libboost-chrono1.83.0t64:amd64 (1.83.0-2.1ubuntu3.2) ...
+2026-11-10T02:05:52.3834890Z Selecting previously unselected package libboost-chrono1.83-dev:amd64.
+2026-11-10T02:05:52.6853007Z Preparing to unpack .../21-libboost-program-options1.83.0_1.83.0-2.1ubuntu3.2_amd64.deb ...
+2026-11-10T02:05:52.6861151Z Unpacking libboost-program-options1.83.0:amd64 (1.83.0-2.1ubuntu3.2) ...
+2026-11-10T02:05:52.7169418Z Selecting previously unselected package libboost-program-options1.83-dev:amd64.
+2026-11-10T02:05:52.7326006Z Preparing to unpack .../22-libboost-program-options1.83-dev_1.83.0-2.1ubuntu3.2_amd64.deb ...
+2026-11-10T02:05:52.7826566Z Unpacking libboost-program-options-dev:amd64 (1.83.0.1ubuntu2) ...
+2026-11-10T02:05:52.8051005Z Selecting previously unselected package libboost-regex1.83.0:amd64.
+2026-11-10T02:05:52.8206443Z Preparing to unpack .../24-libboost-regex1.83.0_1.83.0-2.1ubuntu3.2_amd64.deb ...
+2026-11-10T02:05:52.8223293Z Unpacking libboost-regex1.83.0:amd64 (1.83.0-2.1ubuntu3.2) ...
+2026-11-10T02:05:53.1904531Z Unpacking libboost-thread-dev:amd64 (1.83.0.1ubuntu2) ...
+2026-11-10T02:05:53.2136751Z Selecting previously unselected package libbrotli-dev:amd64.
+2026-11-10T02:05:53.2292933Z Preparing to unpack .../33-libbrotli-dev_1.1.0-2ubuntu0.1_amd64.deb ...
+2026-11-10T02:05:53.2301422Z Unpacking libbrotli-dev:amd64 (1.1.0-2ubuntu0.1) ...
+2026-11-10T02:05:53.9632105Z Preparing to unpack .../37-libdouble-conversion3_3.3.0-1build1_amd64.deb ...
+2026-11-10T02:05:53.9638517Z Unpacking libdouble-conversion3:amd64 (3.3.0-1build1) ...
+2026-11-10T02:05:53.9873835Z Selecting previously unselected package libpng-dev:amd64.
+2026-11-10T02:05:54.0034563Z Preparing to unpack .../38-libpng-dev_1.6.43-5ubuntu0.7_amd64.deb ...
+2026-11-10T02:05:54.1359039Z Selecting previously unselected package libfontconfig-dev:amd64.
+2026-11-10T02:05:54.1515841Z Preparing to unpack .../41-libfontconfig-dev_2.15.0-1.1ubuntu2_amd64.deb ...
+2026-11-10T02:05:54.1523330Z Unpacking libfontconfig-dev:amd64 (2.15.0-1.1ubuntu2) ...
+2026-11-10T02:05:54.1829004Z Selecting previously unselected package libgirepository-2.0-0:amd64.
+2026-11-10T02:05:54.6726612Z Selecting previously unselected package libharfbuzz-icu0:amd64.
+2026-11-10T02:05:54.6886262Z Preparing to unpack .../51-libharfbuzz-icu0_8.3.0-2build2_amd64.deb ...
+2026-11-10T02:05:54.6893695Z Unpacking libharfbuzz-icu0:amd64 (8.3.0-2build2) ...
+2026-11-10T02:05:54.7137511Z Selecting previously unselected package libharfbuzz-subset0:amd64.
+2026-11-10T02:05:54.7302764Z Preparing to unpack .../52-libharfbuzz-subset0_8.3.0-2build2_amd64.deb ...
+2026-11-10T02:05:54.7311328Z Unpacking libharfbuzz-subset0:amd64 (8.3.0-2build2) ...
+2026-11-10T02:05:55.0219440Z Selecting previously unselected package libxnvctrl0:amd64.
+2026-11-10T02:05:55.0378124Z Preparing to unpack .../59-libxnvctrl0_510.47.03-0ubuntu4.24.04.1_amd64.deb ...
+2026-11-10T02:05:55.0385654Z Unpacking libxnvctrl0:amd64 (510.47.03-0ubuntu4.24.04.1) ...
+2026-11-10T02:05:55.0639856Z Selecting previously unselected package libzip-dev:amd64.
+2026-11-10T02:05:55.0799544Z Preparing to unpack .../60-libzip-dev_1.7.3-1.1ubuntu2_amd64.deb ...
+2026-11-10T02:05:55.4144740Z Preparing to unpack .../65-libhwloc-plugins_2.10.0-1build1_amd64.deb ...
+2026-11-10T02:05:55.4151799Z Unpacking libhwloc-plugins:amd64 (2.10.0-1build1) ...
+2026-11-10T02:05:55.4390507Z Selecting previously unselected package libtbb-dev:amd64.
+2026-11-10T02:05:55.4548698Z Preparing to unpack .../66-libtbb-dev_2021.11.0-2ubuntu2_amd64.deb ...
+2026-11-10T02:05:55.7134508Z Setting up libpng-dev:amd64 (1.6.43-5ubuntu0.7) ...
+2026-11-10T02:05:55.7151907Z Setting up libboost-program-options1.83-dev:amd64 (1.83.0-2.1ubuntu3.2) ...
+2026-11-10T02:05:55.7167088Z Setting up libboost-thread1.83.0:amd64 (1.83.0-2.1ubuntu3.2) ...
+2026-11-10T02:05:55.7188043Z Setting up libharfbuzz-gobject0:amd64 (8.3.0-2build2) ...
+2026-11-10T02:05:55.7805874Z Setting up ninja-build (1.11.1-2) ...
+2026-11-10T02:05:55.7822109Z Setting up libxnvctrl0:amd64 (510.47.03-0ubuntu4.24.04.1) ...
+2026-11-10T02:05:55.7838030Z Setting up libboost-atomic1.83.0:amd64 (1.83.0-2.1ubuntu3.2) ...
+2026-11-10T02:05:55.7854136Z Setting up libboost-serialization1.83.0:amd64 (1.83.0-2.1ubuntu3.2) ...
+2026-11-10T02:05:55.7935660Z Setting up uuid-dev:amd64 (2.39.3-9ubuntu6.6) ...
+2026-11-10T02:05:55.7951894Z Setting up libhwloc15:amd64 (2.10.0-1build1) ...
+2026-11-10T02:05:55.7968957Z Setting up libeigen3-dev (3.4.0-4build0.1) ...
+2026-11-10T02:05:55.7985296Z Setting up libboost-regex1.83-dev:amd64 (1.83.0-2.1ubuntu3.2) ...
+2026-11-10T02:05:55.8339445Z Setting up libboost-chrono1.83-dev:amd64 (1.83.0-2.1ubuntu3.2) ...
+2026-11-10T02:05:55.8355126Z Setting up libselinux1-dev:amd64 (3.5-2ubuntu2.1) ...
+2026-11-10T02:05:55.8375207Z Setting up libboost-system-dev:amd64 (1.83.0.1ubuntu2) ...
+2026-11-10T02:05:55.8391848Z Setting up libboost-serialization1.83-dev:amd64 (1.83.0-2.1ubuntu3.2) ...
+2026-11-10T02:05:55.8501673Z Setting up libmount-dev:amd64 (2.39.3-9ubuntu6.6) ...
+2026-11-10T02:05:55.8518789Z Setting up libboost-thread1.83-dev:amd64 (1.83.0-2.1ubuntu3.2) ...
+2026-11-10T02:05:55.8534527Z Setting up libfontconfig-dev:amd64 (2.15.0-1.1ubuntu2) ...
+2026-11-10T02:05:55.8550462Z Setting up libtbb12:amd64 (2021.11.0-2ubuntu2) ...
+2026-11-10T02:05:58.0729358Z [36;1mgit -C .build/pinned-openscad-source submodule status --recursive > .build/pinned-native-submodules.txt[0m
+2026-11-10T02:05:58.0730943Z [36;1mcmake -S .build/pinned-openscad-source -B .build/pinned-openscad-build -G Ninja -DCMAKE_BUILD_TYPE=Release -DHEADLESS=ON -DNULLGL=ON -DENABLE_CGAL=ON -DENABLE_MANIFOLD=ON -DEXPERIMENTAL=ON -DENABLE_TESTS=OFF -DUSE_MIMALLOC=OFF -DENABLE_CAIRO=OFF -DENABLE_HIDAPI=OFF -DENABLE_SPNAV=OFF -DENABLE_GAMEPAD=OFF -DCMAKE_REQUIRE_FIND_PACKAGE_Lib3MF=OFF[0m
+2026-11-10T02:05:58.0732384Z [36;1mcmake --build .build/pinned-openscad-build --parallel 2[0m
+2026-11-10T02:05:58.0732934Z [36;1minstall -D .build/pinned-openscad-build/openscad .build/pinned-runtime/bin/openscad[0m
+2026-11-10T02:05:58.0754586Z env:
+2026-11-10T02:05:58.0754885Z   REFERENCE_OPENSCAD_SHA: bcf45a22caa954ca56ca287994cb6dbc368c67b2
+2026-11-10T02:05:58.0755265Z ##[endgroup]
+2026-11-10T02:05:58.1932384Z -- No VERSION.txt file found, defaulting VERSION=2026.11.10
+2026-11-10T02:05:58.2314769Z -- No COMMIT.txt file found, using git commit: bcf45a2
+2026-11-10T02:05:58.2321309Z -- OPENSCAD_SHORTVERSION: 2026.11.10
+2026-11-10T02:05:58.2321853Z -- OPENSCAD_YEAR: 2026
+2026-11-10T02:05:58.5048102Z -- The CXX compiler identification is GNU 13.3.0
+2026-11-10T02:05:58.5196725Z -- Detecting C compiler ABI info
+2026-11-10T02:05:58.6028792Z -- Detecting C compiler ABI info - done
+2026-11-10T02:05:58.6204251Z -- Check for working C compiler: /usr/bin/cc - skipped
+2026-11-10T02:05:58.6210003Z -- Detecting C compile features
+2026-11-10T02:05:58.6218113Z -- Detecting C compile features - done
+2026-11-10T02:05:58.6382551Z -- Detecting CXX compiler ABI info
+2026-11-10T02:05:58.7033637Z -- Detecting CXX compiler ABI info - done
+2026-11-10T02:05:58.7213151Z -- Check for working CXX compiler: /usr/bin/c++ - skipped
+2026-11-10T02:05:58.7217453Z -- Detecting CXX compile features
+2026-11-10T02:05:58.7224644Z -- Detecting CXX compile features - done
+2026-11-10T02:05:58.9297429Z -- Found MPFR: /usr/lib/x86_64-linux-gnu/libmpfr.so
+2026-11-10T02:05:58.9331321Z CMake Warning (dev) at /usr/lib/x86_64-linux-gnu/cmake/CGAL/CGAL_SetupBoost.cmake:20 (find_package):
+2026-11-10T02:05:58.9332198Z   Policy CMP0167 is not set: The FindBoost module is removed.  Run "cmake
+2026-11-10T02:05:58.9332808Z   --help-policy CMP0167" for policy details.  Use the cmake_policy command to
+2026-11-10T02:05:58.9333297Z   set the policy and suppress this warning.
+2026-11-10T02:05:58.9333518Z 
+2026-11-10T02:05:58.9333677Z Call Stack (most recent call first):
+2026-11-10T02:05:58.9334190Z   /usr/lib/x86_64-linux-gnu/cmake/CGAL/CGAL_SetupCGALDependencies.cmake:48 (include)
+2026-11-10T02:05:58.9602905Z -- Boost include dirs: /usr/include
+2026-11-10T02:05:58.9603551Z -- Boost libraries:    
+2026-11-10T02:05:59.0113968Z -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+2026-11-10T02:05:59.1186284Z -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+2026-11-10T02:05:59.1198371Z -- Found Threads: TRUE
+2026-11-10T02:05:59.1200751Z -- Using gcc version 4 or later. Adding -frounding-math
+2026-11-10T02:05:59.1204612Z -- CGAL: 5.6.0
+2026-11-10T02:05:59.1205226Z -- CGAL: Using target CGAL::CGAL CGAL::CGAL_Core
+2026-11-10T02:05:59.5087181Z -- Freetype: 2.13.2
+2026-11-10T02:05:59.5295155Z -- Clipper2 submodule
+2026-11-10T02:05:59.5313722Z -- TBB: 2021.11.0
+2026-11-10T02:05:59.5446082Z -- Performing Test HAS_FP_CONTRACT
+2026-11-10T02:05:59.7024762Z -- MANIFOLD_COMPILE_OPTIONS:      -Wall;-Wno-unknown-warning-option;-Wno-unused;-Wno-shorten-64-to-32;-Wno-sign-compare;-Wno-alloc-size-larger-than;-O3;-ffp-contract=off;-fexcess-precision=standard
+2026-11-10T02:05:59.7026451Z -- MANIFOLD_LINK_OPTIONS:         
+2026-11-10T02:05:59.7027371Z -- MANIFOLD_DOWNLOADS:            ON
+2026-11-10T02:05:59.7027984Z -- MANIFOLD_USE_BUILTIN_TBB:      OFF
+2026-11-10T02:05:59.7029668Z -- MANIFOLD_FUZZ:                 OFF
+2026-11-10T02:05:59.7030251Z -- TRACY_ENABLE:                  OFF
+2026-11-10T02:05:59.7030788Z -- TRACY_MEMORY_USAGE:            OFF
+2026-11-10T02:05:59.7031350Z -- ASSIMP_ENABLE:                 OFF
+2026-11-10T02:05:59.7636321Z -- OpenSCAD version: 2026.11.10
+2026-11-10T02:05:59.7636770Z --         git hash: bcf45a2
+2026-11-10T02:05:59.7637411Z --  
+2026-11-10T02:05:59.7637766Z -- Environment: Linux
+2026-11-10T02:05:59.7638173Z -- Python: disabled
+2026-11-10T02:05:59.7638519Z --  
+2026-11-10T02:05:59.7638911Z -- CMAKE_VERSION:         3.31.6
+2026-11-10T02:05:59.7639417Z -- CMAKE_TOOLCHAIN_FILE:  
+2026-11-10T02:05:59.7650547Z --  
+2026-11-10T02:05:59.7651029Z -- GL Offscreen Contexts: nullgl (default: nullgl)
+2026-11-10T02:05:59.7651529Z --  
+2026-11-10T02:05:59.7651855Z -- Input Drivers
+2026-11-10T02:05:59.7652289Z -- - HID API Driver (disabled)
+2026-11-10T02:05:59.7652820Z -- - Space Navigator Library Driver (disabled)
+2026-11-10T02:06:12.9550242Z [6/211] Building CXX object submodules/manifold/src/CMakeFiles/manifold.dir/boolean3.cpp.o
+2026-11-10T02:06:17.7885163Z [7/211] Building CXX object submodules/manifold/src/CMakeFiles/manifold.dir/boolean_result.cpp.o
+2026-11-10T02:06:18.7238119Z [8/211] Building CXX object submodules/manifold/src/CMakeFiles/manifold.dir/constructors.cpp.o
+2026-11-10T02:06:23.7317335Z [9/211] Building CXX object submodules/manifold/src/CMakeFiles/manifold.dir/csg_tree.cpp.o
+2026-11-10T02:08:34.8344447Z                  from /usr/include/c++/13/bits/allocator.h:46,
+2026-11-10T02:08:34.8345121Z                  from /usr/include/c++/13/string:43,
+2026-11-10T02:08:34.8345823Z                  from /usr/include/c++/13/bits/locale_classes.h:40,
+2026-11-10T02:08:34.8346539Z                  from /usr/include/c++/13/bits/ios_base.h:41,
+2026-11-10T02:08:34.8349699Z                  from /usr/include/CGAL/config.h:417:
+2026-11-10T02:08:34.8351149Z In member function ‘_Tp* std::__new_allocator<_Tp>::allocate(size_type, const void*) [with _Tp = long unsigned int]’,
+2026-11-10T02:08:34.8353449Z     inlined from ‘static _Tp* std::allocator_traits<std::allocator<_CharT> >::allocate(allocator_type&, size_type) [with _Tp = long unsigned int]’ at /usr/include/c++/13/bits/alloc_traits.h:482:28,
+2026-11-10T02:08:34.8356572Z     inlined from ‘std::_Vector_base<_Tp, _Alloc>::pointer std::_Vector_base<_Tp, _Alloc>::_M_allocate(std::size_t) [with _Tp = long unsigned int; _Alloc = std::allocator<long unsigned int>]’ at /usr/include/c++/13/bits/stl_vector.h:381:33,
+2026-11-10T02:08:34.8380231Z     inlined from ‘DuplicateOutputIterator CGAL::Polygon_mesh_processing::internal::collect_duplicate_polygons(const PointRange&, const PolygonRange&, DuplicateOutputIterator, const Traits&, bool) [with PointRange = std::vector<CGAL::Point_3<CGAL::Simple_cartesian<double> >, std::allocator<CGAL::Point_3<CGAL::Simple_cartesian<double> > > >; PolygonRange = std::vector<std::vector<long unsigned int> >; DuplicateOutputIterator = std::back_insert_iterator<std::deque<std::vector<long unsigned int>, std::allocator<std::vector<long unsigned int> > > >; Traits = CGAL::Simple_cartesian<double>]’ at /usr/include/CGAL/Polygon_mesh_processing/repair_polygon_soup.h:866:39:
+2026-11-10T02:08:34.8385395Z /usr/include/c++/13/bits/new_allocator.h:151:55: note: destination object of size 8 allocated by ‘operator new’
+2026-11-10T02:08:34.8386656Z   151 |         return static_cast<_Tp*>(_GLIBCXX_OPERATOR_NEW(__n * sizeof(_Tp)));
+2026-11-10T02:08:34.8387791Z       |                                                       ^
+2026-11-10T02:08:40.0029546Z [44/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/geometry/cgal/cgalutils-orient.cc.o
+2026-11-10T02:09:32.9903646Z [47/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/geometry/cgal/cgalutils-tess.cc.o
+2026-11-10T02:09:51.5516028Z [48/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/geometry/cgal/cgalutils-triangulate.cc.o
+2026-11-10T02:10:03.0657575Z [49/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/geometry/cgal/CGALCache.cc.o
+2026-11-10T02:10:08.7912056Z [50/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/geometry/cgal/CGALNefGeometry.cc.o
+2026-11-10T02:10:17.4248638Z [51/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/io/export_nef.cc.o
+2026-11-10T02:10:27.7380718Z [52/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/io/import_nef.cc.o
+2026-11-10T02:10:38.5142515Z [53/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/openscad.cc.o
+2026-11-10T02:10:38.7549497Z [54/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/version.cc.o
+2026-11-10T02:10:41.5358011Z [55/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/Feature.cc.o
+2026-11-10T02:10:45.1892671Z [56/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/FontCache.cc.o
+2026-11-10T02:10:48.5251963Z [57/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/geometry/manifold/manifold-applyops-minkowski.cc.o
+2026-11-10T02:10:55.7377316Z [58/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/LibraryInfo.cc.o
+2026-11-10T02:10:56.4020922Z [59/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/core/AST.cc.o
+2026-11-10T02:11:23.6408406Z [73/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/core/ColorUtil.cc.o
+2026-11-10T02:11:24.8465104Z [74/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/core/CsgOpNode.cc.o
+2026-11-10T02:11:26.4036595Z [75/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/core/DrawingCallback.cc.o
+2026-11-10T02:11:28.3227969Z [76/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/core/CurveDiscretizer.cc.o
+2026-11-10T02:11:38.2414719Z [81/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/core/Expression.cc.o
+2026-11-10T02:11:42.5132154Z [82/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/core/LinearExtrudeNode.cc.o
+2026-11-10T02:11:44.8312265Z [83/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/core/LocalScope.cc.o
+2026-11-10T02:11:48.9354144Z [84/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/core/node_clone.cc.o
+2026-11-10T02:12:10.8312215Z [97/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/core/SourceFile.cc.o
+2026-11-10T02:12:13.5101343Z [98/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/core/SourceFileCache.cc.o
+2026-11-10T02:12:13.9092962Z [99/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/core/StatCache.cc.o
+2026-11-10T02:12:18.1561894Z [100/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/core/Settings.cc.o
+2026-11-10T02:13:19.6470430Z [132/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/geometry/Geometry.cc.o
+2026-11-10T02:13:20.6957516Z [133/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/geometry/ClipperUtils.cc.o
+2026-11-10T02:13:30.7798764Z [134/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/geometry/GeometryCache.cc.o
+2026-11-10T02:13:35.2121336Z [135/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/geometry/GeometryEvaluator.cc.o
+2026-11-10T02:14:09.4627330Z [144/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/geometry/rotate_extrude.cc.o
+2026-11-10T02:14:10.9251862Z [145/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/glview/Camera.cc.o
+2026-11-10T02:14:14.2726380Z [146/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/glview/ColorMap.cc.o
+2026-11-10T02:14:14.8682658Z [147/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/glview/CsgInfo.cc.o
+2026-11-10T02:14:16.5487635Z [149/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/glview/OffscreenContextFactory.cc.o
+2026-11-10T02:14:19.7515216Z [150/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/glview/preview/CSGTreeNormalizer.cc.o
+2026-11-10T02:14:22.5128893Z [151/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/handle_dep.cc.o
+2026-11-10T02:14:25.4775141Z [152/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/io/DxfData.cc.o
+2026-11-10T02:14:27.0209740Z [153/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/io/dxfdim.cc.o
+2026-11-10T02:14:30.3323196Z [154/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/io/export_dxf.cc.o
+2026-11-10T02:14:50.7639825Z [162/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/io/export_wrl.cc.o
+2026-11-10T02:14:51.0555415Z [163/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/io/export_stl.cc.o
+2026-11-10T02:14:51.9666145Z [164/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/io/fileutils.cc.o
+2026-11-10T02:14:56.3234980Z [165/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/io/import_json.cc.o
+2026-11-10T02:15:00.6656074Z [166/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/io/import_obj.cc.o
+2026-11-10T02:15:12.3654624Z [172/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/utils/degree_trig.cc.o
+2026-11-10T02:15:13.1151793Z [173/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/utils/hash.cc.o
+2026-11-10T02:15:14.4533117Z [174/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/utils/printutils.cc.o
+2026-11-10T02:15:15.9335881Z [175/211] Building CXX object CMakeFiles/OpenSCADLibInternal.dir/src/utils/vector_math.cc.o
+2026-11-10T02:16:16.4723686Z [211/211] Linking CXX executable openscad
+2026-11-10T02:16:16.4724293Z FAILED: [code=127] openscad 
+2026-11-10T02:16:16.4733296Z : && /usr/bin/c++ -frounding-math -O3 -DNDEBUG -v -Wl,--dependency-file=CMakeFiles/OpenSCADExe.dir/link.d CMakeFiles/OpenSCADExe.dir/src/main_wrapper.cc.o -o openscad  libopenscadinternal.a  libsvg.a  /usr/lib/x86_64-linux-gnu/libboost_regex.so.1.83.0  /usr/lib/x86_64-linux-gnu/libboost_program_options.so.1.83.0  /usr/lib/x86_64-linux-gnu/libharfbuzz.so  /usr/lib/x86_64-linux-gnu/libfontconfig.so  /usr/lib/x86_64-linux-gnu/libglib-2.0.so  /usr/lib/x86_64-linux-gnu/libdouble-conversion.so  /usr/lib/x86_64-linux-gnu/libgmpxx.so  /usr/lib/x86_64-linux-gnu/libmpfr.so  /usr/lib/x86_64-linux-gnu/libgmp.so  /usr/lib/x86_64-linux-gnu/libzip.so  /usr/lib/x86_64-linux-gnu/libssl.so  /usr/lib/x86_64-linux-gnu/libcrypto.so  /usr/lib/x86_64-linux-gnu/libfreetype.so  submodules/manifold/src/libmanifold.a  /usr/lib/x86_64-linux-gnu/libtbb.so.12.11  /usr/lib/x86_64-linux-gnu/libxml2.so  submodules/Clipper2/CPP/libClipper2.a  -lm && cd /home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-build && /usr/bin/sh /home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source/scripts/translation-make.sh
+2026-11-10T02:16:16.4740719Z Using built-in specs.
+2026-11-10T02:16:16.4743661Z Target: x86_64-linux-gnu
+2026-11-10T02:16:16.4751549Z Configured with: ../src/configure -v --with-pkgversion='Ubuntu 13.3.0-6ubuntu2~24.04.1' --with-bugurl=file:///usr/share/doc/gcc-13/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-13 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/libexec --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-libstdcxx-backtrace --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-13-EldibY/gcc-13-13.3.0/debian/tmp-nvptx/usr,amdgcn-amdhsa=/build/gcc-13-EldibY/gcc-13-13.3.0/debian/tmp-gcn/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2
+2026-11-10T02:16:16.4758638Z Thread model: posix
+2026-11-10T02:16:16.4758994Z Supported LTO compression algorithms: zlib zstd
+2026-11-10T02:16:16.4780967Z Compiling language files (CWD = /home/runner/work/scad-ai-ide/scad-ai-ide/.build/pinned-openscad-source)...
+2026-11-10T02:16:16.4781656Z msgfmt -c -v -o ./locale/cs/LC_MESSAGES/openscad.mo ./locale/cs.po
+2026-11-10T02:16:16.4782206Z ./scripts/translation-update.sh: line 87: msgfmt: command not found
+2026-11-10T02:16:16.4782653Z ninja: build stopped: subcommand failed.
+2026-11-10T02:16:16.4792622Z ##[error]Process completed with exit code 127.
+2026-11-10T02:16:16.4884358Z ##[group]Run actions/upload-artifact@v4
+2026-11-10T02:16:16.4887291Z env:
+2026-11-10T02:16:16.4887583Z   REFERENCE_OPENSCAD_SHA: bcf45a22caa954ca56ca287994cb6dbc368c67b2
+2026-11-10T02:16:16.4887953Z ##[endgroup]
+2026-11-10T02:16:16.6650654Z (node:5811) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-10T02:16:16.6652344Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-10T02:16:16.6742672Z ##[warning]No files were found with the provided path: .build/pinned-native*.json
+.build/pinned-native*.txt
+.build/pinned-runtime/build-info.json
+2026-11-10T02:16:16.9447939Z Entering 'submodules/sanitizers-cmake'
+2026-11-10T02:16:16.9511414Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-10T02:16:16.9555681Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-10T02:16:16.9793625Z Entering 'libraries/MCAD'
+2026-11-10T02:16:17.1544647Z Temporarily overriding HOME='/home/runner/work/_temp/19db29e1-d074-4d6f-a83d-ae9efd5808b6' before making global git config changes
+2026-11-10T02:16:17.1551396Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-10T02:16:17.1552845Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/scad-ai-ide/scad-ai-ide
+2026-11-10T02:16:17.1609546Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand

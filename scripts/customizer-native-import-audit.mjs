@@ -3,6 +3,7 @@ import { mkdtempSync, writeFileSync, readFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve, dirname } from 'node:path'
 import assert from 'node:assert/strict'
+import { createHash } from 'node:crypto'
 
 // Runs explicit native probes. It never downloads a runtime or modifies user models.
 const binary = process.argv[2]
@@ -26,6 +27,8 @@ const version = spawnSync(binary, ['--version'], { encoding: 'utf8', timeout: 15
 assert.equal(version.status, 0, version.error?.message || version.stderr)
 const report = { binary: resolve(binary), version: (version.stdout + version.stderr).trim(), platform: process.platform, node: process.version, build: undefined, referenceOpenSCADCommit: 'bcf45a22caa954ca56ca287994cb6dbc368c67b2', results: [] }
 try { report.build = JSON.parse(readFileSync(resolve(dirname(binary), '../build-info.json'), 'utf8')) } catch { /* Not every runtime has build metadata. */ }
+report.binarySha256 = createHash('sha256').update(readFileSync(binary)).digest('hex')
+report.pinnedBinary = report.build?.commit === report.referenceOpenSCADCommit && report.build?.sha256 === report.binarySha256
 try {
     for (const fixture of cases) {
         const base = join(directory, fixture.id)
@@ -43,7 +46,7 @@ try {
             result.normalizedEcho = result.echo.replace(/\r\n$/, '\n')
             assert.equal(result.normalizedEcho, fixture.expectedEcho, fixture.id)
             if (fixture.expectedMaxLength !== undefined) assert.equal(result.schema.parameters[0].maxLength, fixture.expectedMaxLength, fixture.id)
-            result.status = 'native-verified-other-build'
+            result.status = report.pinnedBinary ? 'native-verified-pinned-build' : 'native-verified-other-build'
         } catch (error) {
             result.error = error.message
             if (error.stderr) result.stderr = String(error.stderr)

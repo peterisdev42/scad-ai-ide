@@ -1,0 +1,100 @@
+[
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_yfw34xo8",
+        "name": "read_file",
+        "arguments": "{\"filePath\":\"<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1/skills/openscad-customizer-authoring/references/syntax.md\"}",
+        "type": "function"
+      },
+      {
+        "toolCallId": "call_uzlek5w4",
+        "name": "read_file",
+        "arguments": "{\"filePath\":\"<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1/skills/openscad-customizer-authoring/references/examples.md\"}",
+        "type": "function"
+      },
+      {
+        "toolCallId": "call_0e2wampg",
+        "name": "read_file",
+        "arguments": "{\"filePath\":\"<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1/skills/openscad-customizer-authoring/references/pitfalls.md\"}",
+        "type": "function"
+      },
+      {
+        "toolCallId": "call_w5y3ld4y",
+        "name": "read_file",
+        "arguments": "{\"filePath\":\"<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1/skills/openscad-customizer-authoring/references/diagnostics.md\"}",
+        "type": "function"
+      },
+      {
+        "toolCallId": "call_hikwn8ad",
+        "name": "read_file",
+        "arguments": "{\"filePath\":\"<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1/skills/openscad-customizer-authoring/references/compatibility.md\"}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_5du0ori9",
+        "name": "read_file",
+        "arguments": "{\"filePath\":\"<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1/skills/openscad-customizer-authoring/references/syntax.md\",\"startLine\":1,\"endLine\":300}",
+        "type": "function"
+      },
+      {
+        "toolCallId": "call_wvu1hm2p",
+        "name": "read_file",
+        "arguments": "{\"filePath\":\"<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1/skills/openscad-customizer-authoring/references/examples.md\",\"startLine\":1,\"endLine\":300}",
+        "type": "function"
+      },
+      {
+        "toolCallId": "call_m1dlrg2p",
+        "name": "read_file",
+        "arguments": "{\"filePath\":\"<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1/skills/openscad-customizer-authoring/references/pitfalls.md\",\"startLine\":1,\"endLine\":300}",
+        "type": "function"
+      },
+      {
+        "toolCallId": "call_achdccc3",
+        "name": "read_file",
+        "arguments": "{\"filePath\":\"<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1/skills/openscad-customizer-authoring/references/diagnostics.md\",\"startLine\":1,\"endLine\":300}",
+        "type": "function"
+      },
+      {
+        "toolCallId": "call_7fdc63g6",
+        "name": "read_file",
+        "arguments": "{\"filePath\":\"<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1/skills/openscad-customizer-authoring/references/compatibility.md\",\"startLine\":1,\"endLine\":300}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_rcefk0h8",
+        "name": "scad_ai_ide_customizer_sourceAnalyze",
+        "arguments": "{\"uri\":\"file://<fixture>/workspace/model.scad\",\"includeCandidates\":true,\"maxDiagnostics\":50}",
+        "type": "function"
+      },
+      {
+        "toolCallId": "call_rtkprm35",
+        "name": "scad_ai_ide_customizer_sourceAnalyze",
+        "arguments": "{\"uri\":\"file://<fixture>/workspace/missing.scad\",\"includeCandidates\":true,\"maxDiagnostics\":50}",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "content": "",
+    "toolRequests": [
+      {
+        "toolCallId": "call_4ypb28ib",
+        "name": "scad_ai_ide_customizer_sourceValidate",
+        "arguments": "{\"uri\":\"file://<fixture>/workspace/model.scad\",\"expectations\":[{\"name\":\"width\",\"range\":{\"max\":100,\"min\":10,\"step\":5},\"type\":\"number\",\"widget\":\"slider\"}],\"includeWarnings\":true}",
+        "type": "function"
+      }
+    ]
+  }
+]

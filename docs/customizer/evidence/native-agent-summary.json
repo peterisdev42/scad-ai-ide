@@ -1,18 +1,17 @@
 {
-  "status": "NATIVE_AGENT_AVAILABLE_ACCEPTANCE_NOT_MET",
+  "status": "NATIVE_MODEL_TASK_CRITERIA_OBSERVED_BUT_FULL_PROTOCOL_NOT_MET",
   "historicalEnvironmentBlock": "native-agent-enablement-before.json",
   "provider": "Ollama.ollama 0.0.14",
   "model": "qwen3.5:2b-mlx",
   "modelMetadata": "qwen2b-model.json",
   "host": "1.145.2",
-  "artifact": "../artifact.json",
   "modelInferenceVerified": true,
   "syntheticModelLoop": false,
   "scenarios": {
     "MODEL-01": {
       "status": "NOT PASSED: native request error",
       "evidence": "qwen2b-author-read-policy",
-      "reason": "Actual Analyze succeeded; native request ended with no response. No Plan/Commit/Validate, buffer and disk unchanged. No confirmation denial or observation timeout in this final run.",
+      "reason": "Analyze actually executed; 4 generated SourceApply requests were rejected by Host schema, with zero Apply dispatcher execution/Validate. Native no response; buffer and disk unchanged. No confirmation denial or observation timeout in this historical run.",
       "historicalEvidence": [
         "qwen2b-author-initial",
         "qwen2b-author-confirmation-budget",
@@ -39,5 +38,50 @@
     "Native Agent readiness and actual Customizer tool invocation are now established; historical zero-call environment block is superseded.",
     "Observations are independent of model success claims; missing tests are not marked passed.",
     "No current evidence establishes that model size, prompt size or schema alone caused the observed failures."
-  ]
+  ],
+  "currentCandidate": "../artifact.json",
+  "artifactProvenance": "Every scenario uses its own facts.json artifact hash; currentCandidate is not retroactive evidence for historical runs.",
+  "supplementalProfiles": [
+    {
+      "model": "qwen3.5:2b-mlx",
+      "evidence": "qwen2b-author-temperature0",
+      "status": "INTERRUPTED: confirmationBudgetExhausted; no successful edits",
+      "facts": "15 real HTTP200 chat requests; 3 Analyze dispatcher executions; 0 Apply/Validate; 8 denied plan file/directory writes; source unchanged."
+    },
+    {
+      "model": "qwen3.5:2b-mlx",
+      "evidence": "qwen2b-author-clarified-temperature0",
+      "status": "INTERRUPTED: confirmationBudgetExhausted; no successful edits",
+      "facts": "Clarified Skill on exact ded44c0e artifact. 13 real HTTP200 chat requests; 1 Analyze execution; 0 Apply/Validate; 8 denied unrelated plan file/directory writes; source unchanged."
+    }
+  ],
+  "additionalUserSelectedModel": {
+    "tag": "mimo-v2.6:latest",
+    "metadata": "mimo-local-tag-metadata.json",
+    "scope": "Actual local tag; show reports qwen3_5 9.4B mlx, not independent MiMo brand provenance",
+    "artifact": "fac54ddf29cc9d98f356ad7d18abb0b715d693fad292b104d496819d7df51e1a",
+    "normallyFinished": 4,
+    "scenarios": {
+      "MODEL-01": {
+        "evidence": "mimo-author-intents",
+        "criterion": "PASS narrow numbered criterion",
+        "protocol": "PARTIAL; excess retries and inaccurate final claims"
+      },
+      "MODEL-02": {
+        "evidence": "mimo-tail-intents",
+        "criterion": "PASS narrow numbered criterion",
+        "protocol": "PARTIAL; excess retries and inaccurate final claims"
+      },
+      "MODEL-03": {
+        "evidence": "mimo-expression-intents",
+        "criterion": "PASS narrow numbered criterion",
+        "protocol": "PASS narrow criterion; limits in review.json"
+      },
+      "MODEL-04": {
+        "evidence": "mimo-failure-intents",
+        "criterion": "PASS narrow numbered criterion",
+        "protocol": "PASS narrow criterion; limits in review.json"
+      }
+    }
+  }
 }

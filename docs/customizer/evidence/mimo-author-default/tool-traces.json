@@ -1,0 +1,321 @@
+[
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "uri": "file://<fixture>/workspace/model.scad",
+      "includeCandidates": true,
+      "maxDiagnostics": 100
+    },
+    "started": "2026-11-10T03:28:15.130Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "",
+            "defaultValue": 40,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            }
+          },
+          {
+            "name": "shape",
+            "group": "",
+            "description": "",
+            "defaultValue": "round",
+            "widget": "textbox",
+            "declarationRange": {
+              "start": {
+                "line": 1,
+                "character": 0
+              },
+              "end": {
+                "line": 1,
+                "character": 14
+              }
+            }
+          },
+          {
+            "name": "internalOffset",
+            "group": "",
+            "description": "",
+            "defaultValue": 0.01,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 2,
+                "character": 0
+              },
+              "end": {
+                "line": 2,
+                "character": 20
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "9fe79f45-0955-4145-ab57-dbdcb58bbebc",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceValidate",
+    "input": {
+      "expectations": [
+        {
+          "description": "Width in millimeters",
+          "group": "Dimensions",
+          "name": "width",
+          "range": {
+            "max": 100,
+            "min": 10,
+            "step": 5
+          },
+          "type": "number",
+          "widget": "slider"
+        },
+        {
+          "choices": [
+            {
+              "label": "Round",
+              "value": "round"
+            },
+            {
+              "label": "Square",
+              "value": "square"
+            }
+          ],
+          "defaultValue": "round",
+          "description": "Select shape",
+          "group": "Appearance",
+          "name": "shape",
+          "type": "string",
+          "widget": "dropdown"
+        }
+      ],
+      "uri": "file://<fixture>/workspace/model.scad"
+    },
+    "started": "2026-11-10T03:29:11.408Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceValidate",
+      "data": {
+        "identity": {
+          "uri": "file://<fixture>/workspace/model.scad",
+          "version": 1,
+          "sha256": "91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad"
+        },
+        "sourceStatus": {
+          "status": "complete",
+          "reasons": []
+        },
+        "contractStatus": "mismatch",
+        "qualityStatus": "clear",
+        "semanticPass": false,
+        "checked": 2,
+        "matched": 0,
+        "expectationResults": [
+          {
+            "parameter": "width",
+            "matched": false,
+            "issues": [
+              "Expected widget \"slider\"; actual \"spinbox\"",
+              "Expected group \"Dimensions\"; actual \"\"",
+              "Expected description \"Width in millimeters\"; actual \"\"",
+              "Range or step differs"
+            ],
+            "details": [
+              {
+                "code": "EXPECTED_WIDGET",
+                "message": "Expected widget \"slider\"; actual \"spinbox\"",
+                "range": {
+                  "start": {
+                    "line": 0,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 0,
+                    "character": 9
+                  }
+                }
+              },
+              {
+                "code": "EXPECTED_GROUP",
+                "message": "Expected group \"Dimensions\"; actual \"\"",
+                "range": {
+                  "start": {
+                    "line": 0,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 0,
+                    "character": 9
+                  }
+                }
+              },
+              {
+                "code": "EXPECTED_DESCRIPTION",
+                "message": "Expected description \"Width in millimeters\"; actual \"\"",
+                "range": {
+                  "start": {
+                    "line": 0,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 0,
+                    "character": 9
+                  }
+                }
+              },
+              {
+                "code": "EXPECTED_RANGE",
+                "message": "Range or step differs",
+                "range": {
+                  "start": {
+                    "line": 0,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 0,
+                    "character": 9
+                  }
+                }
+              }
+            ],
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            }
+          },
+          {
+            "parameter": "shape",
+            "matched": false,
+            "issues": [
+              "Expected widget \"dropdown\"; actual \"textbox\"",
+              "Expected group \"Appearance\"; actual \"\"",
+              "Expected description \"Select shape\"; actual \"\"",
+              "Choice values or labels differ"
+            ],
+            "details": [
+              {
+                "code": "EXPECTED_WIDGET",
+                "message": "Expected widget \"dropdown\"; actual \"textbox\"",
+                "range": {
+                  "start": {
+                    "line": 1,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 1,
+                    "character": 14
+                  }
+                }
+              },
+              {
+                "code": "EXPECTED_GROUP",
+                "message": "Expected group \"Appearance\"; actual \"\"",
+                "range": {
+                  "start": {
+                    "line": 1,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 1,
+                    "character": 14
+                  }
+                }
+              },
+              {
+                "code": "EXPECTED_DESCRIPTION",
+                "message": "Expected description \"Select shape\"; actual \"\"",
+                "range": {
+                  "start": {
+                    "line": 1,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 1,
+                    "character": 14
+                  }
+                }
+              },
+              {
+                "code": "EXPECTED_CHOICES",
+                "message": "Choice values or labels differ",
+                "range": {
+                  "start": {
+                    "line": 1,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 1,
+                    "character": 14
+                  }
+                }
+              }
+            ],
+            "range": {
+              "start": {
+                "line": 1,
+                "character": 0
+              },
+              "end": {
+                "line": 1,
+                "character": 14
+              }
+            }
+          }
+        ],
+        "omittedExpectations": 0,
+        "diagnostics": [],
+        "omittedDiagnostics": 0,
+        "runtimeCheck": {
+          "status": "notRequested"
+        },
+        "guiCheck": {
+          "status": "notRequested"
+        },
+        "complete": true
+      },
+      "operation": {
+        "id": "cdc45be1-ebed-4655-bba5-f4d2b13b265d",
+        "capabilityId": "customizer.sourceValidate",
+        "status": "succeeded"
+      }
+    }
+  }
+]

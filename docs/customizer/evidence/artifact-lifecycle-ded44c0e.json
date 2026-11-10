@@ -1,0 +1,46 @@
+{
+  "artifact": ".build/scad-ai-ide-customizer-architecture-v2.vsix",
+  "bytes": 4531824,
+  "sha256": "ded44c0ec55f39a48008cded6323a950cc83d8bf8477bb1c0f62d09bb67ad555",
+  "verifiedManifest": {
+    "tools": 40,
+    "instructions": 2,
+    "skills": 5
+  },
+  "installedHost": "1.140.0",
+  "installedSmoke": "PASS",
+  "installedEvidence": "evidence/installed-lifecycle-final.txt",
+  "nativeAgent": "Current artifact is undergoing a separately identified native qwen3.5:2b-mlx author retest; no acceptance PASS claimed.",
+  "unverified": [
+    "Windows Unicode library include: actual CI FAILED",
+    "Remote SSH/WSL/Container: NOT RUN",
+    "Exact pinned Qt/full GUI profile: NOT RUN",
+    "Wider GUI/Preset heap lifecycle: not established by local functional disposal tests"
+  ],
+  "crossPlatformEvidence": {
+    "commit": "721bbf54291bfe160b48471aef3796dc37107872",
+    "agentRun": 42635584127,
+    "libraryRun": 42635584407,
+    "scope": "Three-platform schema41/import10 and Agent contracts passed; explicit skips retained; Windows real Library Unicode includes FAILED"
+  },
+  "installedPresetSnapshot": {
+    "invalidRejectedBeforeWrite": true,
+    "rejectedStateUnchanged": true,
+    "validSnapshotReplayed": true,
+    "sourceUnchanged": true
+  },
+  "packagedFiles": 134,
+  "buildProfile": "Production package after Host build finished; workflows/scripts/evidence/private prefs excluded",
+  "nativeDesktop": {
+    "build": "2026.11.06 a81e8630",
+    "checksPassed": 12,
+    "evidence": "evidence/native-gui-2026-11-10/verified/manifest.json",
+    "scope": "Actual Qt controls and Preview echo, source buffer/disk and preference SHA unchanged; not all platforms/versions"
+  },
+  "sourceCommit": "34c64eba072ff8202fd85d77046b789e03374e22",
+  "pinnedCLI": {
+    "commit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2",
+    "run": 42742920562,
+    "scope": "Linux HEADLESS/NULLGL CGAL+Manifold+experimental full CLI build; 41 schema MATCH + 10 import PASS; report/binary upload missing in this historical run"
+  }
+}

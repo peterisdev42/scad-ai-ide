@@ -1,0 +1,102 @@
+{
+  "scenario": "author",
+  "artifact": {
+    "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+    "bytes": 4532196,
+    "sha256": "fac54ddf29cc9d98f356ad7d18abb0b715d693fad292b104d496819d7df51e1a"
+  },
+  "timeoutMs": 900000,
+  "ready": {
+    "vscode": "1.145.2",
+    "extensionPath": "<fixture>/extensions/undefined_publisher.scad-ai-ide-0.0.1",
+    "bundleSha256": "d25a2d769f1f2cbab4e23d9e5509e182ccb31e07a14da617581ba85f0ede82a2",
+    "chatSettings": {
+      "extensionUnification": false,
+      "disableAI": false,
+      "extensionTools": true
+    },
+    "nativeAgent": {
+      "present": true,
+      "active": true
+    },
+    "provider": {
+      "id": "Ollama.ollama",
+      "version": "0.0.14"
+    },
+    "models": [
+      {
+        "id": "qwen3.5:2b-mlx",
+        "name": "qwen3.5:2b-mlx",
+        "vendor": "ollama-models"
+      },
+      {
+        "id": "mimo-v2.6:latest",
+        "name": "mimo-v2.6:latest",
+        "vendor": "ollama-models"
+      },
+      {
+        "id": "mimo-v2.6:latest",
+        "name": "mimo-v2.6:latest",
+        "vendor": "ollama-models"
+      }
+    ]
+  },
+  "response": {
+    "snapshot": true,
+    "cancelledForSnapshot": false,
+    "buffer": "/* [Dimensions] */\n// Width in millimeters\nwidth=40; // [10:5:100]\n/* [Appearance] */\n// Select shape\nshape=\"round\"; // [\"round\":\"Round\", \"square\":\"Square\"]\n/* [Hidden] */\ninternalOffset=0.01;\nmodule model() { cube([width,2,3]); }\nmodel();\n",
+    "dirty": true,
+    "operations": {
+      "total": 6,
+      "offset": 0,
+      "hasMore": false,
+      "nextOffset": null,
+      "operations": [
+        {
+          "id": "dcdd890b-a171-4fc0-a11d-ef0c394c5ece",
+          "capabilityId": "customizer.sourceValidate",
+          "status": "succeeded"
+        },
+        {
+          "id": "e0dcb337-cecb-44c6-927a-d7025ff5c3c0",
+          "capabilityId": "customizer.sourceApply",
+          "status": "succeeded"
+        },
+        {
+          "id": "afb6d458-045a-49a7-976a-ecec73baab75",
+          "capabilityId": "customizer.sourceApply",
+          "status": "succeeded"
+        },
+        {
+          "id": "ae52365e-7a2b-4b0b-b82f-493fc0615a57",
+          "capabilityId": "customizer.sourceValidate",
+          "status": "succeeded"
+        },
+        {
+          "id": "a8392637-d153-4679-aa73-795cbbaa5000",
+          "capabilityId": "customizer.sourceApply",
+          "status": "succeeded"
+        },
+        {
+          "id": "43607f30-8620-474e-acfe-37aa0e25a68b",
+          "capabilityId": "customizer.sourceAnalyze",
+          "status": "succeeded"
+        }
+      ]
+    }
+  },
+  "timedOut": false,
+  "interrupted": false,
+  "requestFinished": true,
+  "terminalReason": "nativeUICompleted",
+  "nativeAgent": true,
+  "confirmationsAutomaticallyApproved": true,
+  "approvals": [
+    {
+      "tool": "scad_ai_ide_customizer_sourceApply",
+      "decision": "allow",
+      "scope": "Controlled Source Apply or exact read-only fixture directory listing",
+      "displayedInput": "Input\n{ \"mode\": \"commit\", \"planId\": \"2dc874a5-bdcf-45c5-9145-13a4246e68b1\", \"identity\": { \"sha256\": \"91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad\", \"version\": 1 }, \"uri\": \"file://<fixture>/workspace/model.scad\" }\nSee more\nAllow in this Session\nSkip\nSet BYOK utility models\nUnlocks full AI features.\nConfigure\nmodel.scad\nAgent\nLocal\nDefault permissions\n14%\n 0 \n 0\nOpenSCAD 2026.10-TEST4\nOpenSCAD\nLF\nUTF-8\nSpaces: 4\nLn 1, Col 1\n1 confirmation pending\nPlan or commit Customizer source edits: file://<fixture>/workspace/model.scad"
+    }
+  ]
+}

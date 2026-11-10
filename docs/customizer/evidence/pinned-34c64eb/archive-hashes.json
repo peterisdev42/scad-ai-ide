@@ -1,0 +1,30 @@
+[
+  {
+    "file": "artifact-verification.json",
+    "sha256": "beb6c57d7866b2f262d448184e7e041c8c93dc41d55781bca1240daf561fa0e8"
+  },
+  {
+    "file": "pinned-native-CMakeCache.txt",
+    "sha256": "99258c22a3d6ae20dbe4793c23b1c727995263f9d49bb72b6647037c88e6cbf5"
+  },
+  {
+    "file": "pinned-native-environment.txt",
+    "sha256": "31a82aa29374171701b3279d32a02f7be03717618be6d7530dc3587aec18b084"
+  },
+  {
+    "file": "pinned-native-import.json",
+    "sha256": "1ad3b983e86984448c6603033182e292fc55fa0e56ec1807588003db7e02b82c"
+  },
+  {
+    "file": "pinned-native-submodules.txt",
+    "sha256": "f4b0a510d9f07a14ab36c4116c72207f3552015a1e7d623716561928fe43d111"
+  },
+  {
+    "file": "pinned-native.json",
+    "sha256": "5c28449cc63b25e726c5855a3cf2a0a9fc6f6a0b248fcd64ef4b371c80272d6a"
+  },
+  {
+    "file": "pinned-runtime__build-info.json",
+    "sha256": "d259e08abf971a9497fefc134f612cdfae00d31e14d2d02e90c11ec9d091bc2d"
+  }
+]

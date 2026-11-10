@@ -35,16 +35,28 @@ for (const name of names.filter(name => name.replaceAll('\\', '/').includes('/Gi
 }
 files.set('native-assistant-messages.json', JSON.stringify(messages, null, 2))
 const metadata = result.response?.result?.metadata
-const nativeToolRequests = (metadata?.toolCallRounds ?? []).flatMap(round => (round.toolCalls ?? []).map(call => {
+const hasRequestMetadata = Array.isArray(metadata?.toolCallRounds)
+let nativeToolRequests = (metadata?.toolCallRounds ?? []).flatMap(round => (round.toolCalls ?? []).map(call => {
     const resultText = (metadata.toolCallResults?.[call.id]?.content ?? []).map(part => part.value ?? '').join('\n')
     return { name: call.name, id: call.id, toolInputRetry: round.toolInputRetry, hostSchemaRejected: resultText.startsWith('ERROR: Your input to the tool was invalid'), hostError: resultText.startsWith('ERROR: Your input to the tool was invalid') ? resultText : undefined }
 }))
+if (!hasRequestMetadata) {
+    const observed = new Map()
+    for (const message of messages) for (const call of message.toolRequests ?? []) {
+        const id = call.toolCallId ?? call.id
+        if (id) observed.set(id, { name: call.name, id, hostSchemaRejected: null })
+    }
+    nativeToolRequests = [...observed.values()]
+}
 const customizerCalls = calls.filter(call => call.capability.startsWith('customizer.'))
 const facts = {
     scenario: input.scenario,
     nativeAgent: result.nativeAgent,
     selectedModel: result.response?.result?.details,
     requestedModel: input.model,
+    modelIdentity: input.modelIdentity,
+    inferenceProfile: input.inferenceProfile,
+    ollamaEndpoint: input.ollamaEndpoint,
     model: result.ready.models?.filter(model => model.id === input.model),
     artifact: result.artifact ?? input.artifact ?? 'Historical run: VSIX hash not captured; bundled extension hash is in result.ready',
     requestFinished: result.requestFinished,
@@ -57,10 +69,11 @@ const facts = {
     sourceBufferUnchanged: typeof buffer === 'string' ? buffer === input.source : null,
     actualBusinessToolInvocations: calls.length,
     actualCustomizerToolInvocations: customizerCalls.length,
-    nativeToolRequestMetadataAvailable: Array.isArray(metadata?.toolCallRounds),
+    nativeToolRequestMetadataAvailable: hasRequestMetadata,
+    nativeToolRequestSource: hasRequestMetadata ? 'final-response-metadata' : 'persisted-native-transcript',
     nativeToolRequests,
-    nativeHostSchemaRejections: nativeToolRequests.filter(call => call.hostSchemaRejected).length,
-    nativeToolMetadataScope: 'Available final response metadata only; generated requests and Host schema rejections are not dispatcher execution or successful edits. Missing metadata does not prove no attempts.',
+    nativeHostSchemaRejections: hasRequestMetadata ? nativeToolRequests.filter(call => call.hostSchemaRejected).length : null,
+    nativeToolMetadataScope: 'Observed final-response metadata or persisted native transcript requests; not necessarily the complete conversation. Host rejection count is unknown without result metadata. Generated requests are not dispatcher execution or successful edits.',
     calls: calls.map(call => ({ capability: call.capability, mode: call.input?.mode, ok: call.output?.ok, errorCode: call.output?.error?.code, semanticPass: call.output?.data?.semanticPass, complete: call.output?.data?.complete })),
     acceptance: 'REQUIRES REVIEW: these are observations, not a model acceptance PASS',
 }

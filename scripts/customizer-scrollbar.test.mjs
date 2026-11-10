@@ -259,9 +259,22 @@ async function fixture(t, extraSource = '') {
         await new Promise((resolve) => server.close(resolve))
         assert.deepEqual(errors, [], 'The bundled native component must run under the webview CSP')
     })
-    await page.goto(`http://127.0.0.1:${server.address().port}`)
-    await page.locator('[data-name="field_0"]').waitFor()
-    await page.locator('.has-vertical-scrollbar').waitFor()
+    // CI bootstrap includes Chromium startup, CSP sheets, font and bundle load.
+    // Keep interaction assertions at 5s; give only initial resource loading a
+    // separate bound and preserve request timings when that bound fails.
+    const requests = []
+    const started = performance.now()
+    page.on('request', (request) => requests.push({ event: 'request', path: new URL(request.url()).pathname, ms: Math.round(performance.now() - started) }))
+    page.on('requestfinished', (request) => requests.push({ event: 'finished', path: new URL(request.url()).pathname, ms: Math.round(performance.now() - started) }))
+    page.on('requestfailed', (request) => requests.push({ event: 'failed', path: new URL(request.url()).pathname, error: request.failure()?.errorText, ms: Math.round(performance.now() - started) }))
+    try {
+        await page.goto(`http://127.0.0.1:${server.address().port}`, { timeout: 30000 })
+        await page.locator('[data-name="field_0"]').waitFor({ timeout: 15000 })
+        await page.locator('.has-vertical-scrollbar').waitFor({ timeout: 15000 })
+    } catch (error) {
+        console.error('Customizer fixture bootstrap failed:', JSON.stringify(requests.slice(-32)))
+        throw error
+    }
     return {
         page,
         domain: provider.domain,
@@ -295,6 +308,9 @@ async function fixture(t, extraSource = '') {
         },
         refreshPresets() {
             watchers.forEach((watcher) => watcher.callbacks[0]?.())
+        },
+        capturePresetChanges() {
+            return watchers.flatMap(watcher => [...watcher.callbacks])
         },
         configure(key, value) {
             configuration.set(key, value)
@@ -946,6 +962,47 @@ test('native effective bounds and off-grid values survive GUI, Agent and keyboar
     await page.waitForFunction(() => document.querySelector('[data-name="offgrid"] input').value === '18')
     assert.equal(service.getOverrides('file:///models/customizer.scad').offgrid, 18)
     assert.ok(service.getArguments().includes('offgrid=18'))
+})
+
+test('disposed customizer domains reject stale value and reset mutations while shared state remains live', async (t) => {
+    const { service, domain } = await fixture(t)
+    service.set('field_0', 9)
+    const old = domain.snapshot()
+    domain.dispose()
+    service.set('field_1', 11)
+    const before = structuredClone(service.getOverrides(old.target))
+    let rejected
+    try { domain.setValues(old.target, old.revision, { field_0: 10 }) } catch (error) { rejected = error }
+    assert.deepEqual(service.getOverrides(old.target), before, 'A disposed domain must not accept an identity from before disposal')
+    assert.equal(rejected?.code, 'TARGET_CHANGED')
+    assert.throws(() => domain.reset(old.target, old.revision), error => error.code === 'TARGET_CHANGED')
+    await assert.rejects(domain.preset(old.target, old.revision, 'select'), error => error.code === 'TARGET_CHANGED')
+    domain.snapshot()
+    assert.deepEqual(service.getOverrides(old.target), before)
+})
+
+test('disposed preset controllers reject late selection and queued callbacks without clearing live values', async (t) => {
+    const { page, service, domain, files, dialogs, capturePresetChanges } = await fixture(t)
+    const file = 'file:///models/disposal.json'
+    files.set(file, JSON.stringify({ fileFormatVersion: '1', parameterSets: { A: { field_0: '7' } } }))
+    await openPresetFile(page, dialogs, file)
+    service.set('field_0', 9)
+    await page.waitForFunction(() => document.querySelector('[data-name="field_0"] input').value === '9')
+    const queued = capturePresetChanges()
+    assert.ok(queued.length > 0)
+    const before = structuredClone(service.getOverrides('file:///models/customizer.scad'))
+    const bytes = files.get(file)
+    domain.presets.dispose()
+    const rejection = await domain.presets.execute('select').then(() => undefined, error => error)
+    assert.deepEqual(service.getOverrides('file:///models/customizer.scad'), before, 'A disposed action must not reset the still-live shared values')
+    assert.equal(rejection?.code, 'TARGET_CHANGED')
+    domain.presets.bind('file:///models/customizer.scad')
+    assert.equal(domain.presets.state().names.length, 0)
+    for (const callback of queued) callback()
+    await new Promise(resolve => setTimeout(resolve, 25))
+    assert.deepEqual(service.getOverrides('file:///models/customizer.scad'), before)
+    assert.equal(files.get(file), bytes)
+    assert.deepEqual(domain.presets.parameterSets(), {})
 })
 
 test('partial preset baselines preserve an omitted unrepresentable source default as its actual type', async (t) => {

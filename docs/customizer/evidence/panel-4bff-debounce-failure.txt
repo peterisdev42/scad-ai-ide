@@ -1,0 +1,153 @@
+Selected actual CI job log lines; full upstream job remains authoritative. This is not a replacement for report artifacts.
+2026-11-10T02:27:48.6813627Z ##[group]Runner Image Provisioner
+2026-11-10T02:27:48.6814517Z Hosted Compute Agent
+2026-11-10T02:27:48.6815114Z Version: 20261028.624
+2026-11-10T02:27:48.6816332Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe
+2026-11-10T02:27:48.6817144Z Build Date: 2026-10-28T21:51:42Z
+2026-11-10T02:27:48.6817911Z Worker ID: {9d571d1a-6117-425f-9428-f7b7ba2942c4}
+2026-11-10T02:27:48.6818663Z Region: westcentralus
+2026-11-10T02:27:48.6824465Z ##[group]Runner Image
+2026-11-10T02:27:48.6825156Z Image: ubuntu-24.04
+2026-11-10T02:27:48.6825973Z Version: 20261101.360.1
+2026-11-10T02:27:48.6827332Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261101.360/images/ubuntu/Ubuntu2404-Readme.md
+2026-11-10T02:27:49.6834674Z Deleting the contents of '/home/runner/work/scad-ai-ide/scad-ai-ide'
+2026-11-10T02:27:49.6845115Z ##[group]Initializing the repository
+2026-11-10T02:27:49.6847357Z [command]/usr/bin/git init /home/runner/work/scad-ai-ide/scad-ai-ide
+2026-11-10T02:27:49.6979964Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-10T02:27:49.8314226Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-10T02:27:49.8368851Z ##[endgroup]
+2026-11-10T02:27:49.8370653Z ##[group]Fetching the repository
+2026-11-10T02:27:49.8384685Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +4bff75e0afe88b17c4487463956ccc7e9d3563a2:refs/remotes/origin/codex/customizer-architecture-v2
+2026-11-10T02:27:50.7145581Z Switched to a new branch 'codex/customizer-architecture-v2'
+2026-11-10T02:27:50.7151089Z branch 'codex/customizer-architecture-v2' set up to track 'origin/codex/customizer-architecture-v2'.
+2026-11-10T02:27:50.7160815Z ##[endgroup]
+2026-11-10T02:27:50.7214702Z [command]/usr/bin/git log -1 --format=%H
+2026-11-10T02:27:50.9273218Z ##[group]Environment details
+2026-11-10T02:27:51.4087183Z node: v24.22.2
+2026-11-10T02:27:51.4087758Z npm: 11.19.1
+2026-11-10T02:27:51.4088167Z yarn: 1.22.22
+2026-11-10T02:27:51.4089139Z ##[endgroup]
+2026-11-10T02:27:51.4109426Z [command]/opt/hostedtoolcache/node/24.22.2/x64/bin/npm config get cache
+2026-11-10T02:27:51.5341907Z /home/runner/.npm
+2026-11-10T02:27:51.7589615Z Cache hit for: node-cache-Linux-x64-npm-06417f1899778ea85d59ed839be9249b3b5d4782262b2af3c01d8c6ead62817b
+2026-11-10T02:27:51.7703114Z (node:2392) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-11-10T02:27:52.9435139Z Received 54525952 of 83636090 (65.2%), 52.0 MBs/sec
+2026-11-10T02:27:53.9428912Z Received 79441786 of 83636090 (95.0%), 37.9 MBs/sec
+2026-11-10T02:27:54.9434830Z Received 79441786 of 83636090 (95.0%), 25.3 MBs/sec
+2026-11-10T02:27:55.1435991Z Cache Size: ~80 MB (83636090 B)
+2026-11-10T02:27:55.1566482Z [command]/usr/bin/tar -xf /home/runner/work/_temp/2c969ada-e9d7-4ce2-b6b7-0a951b809fc3/cache.tzst -P -C /home/runner/work/scad-ai-ide/scad-ai-ide --use-compress-program unzstd
+2026-11-10T02:27:55.4726220Z Cache restored successfully
+2026-11-10T02:27:55.4765799Z Cache restored from key: node-cache-Linux-x64-npm-06417f1899778ea85d59ed839be9249b3b5d4782262b2af3c01d8c6ead62817b
+2026-11-10T02:27:55.5021093Z [36;1mnpm ci[0m
+2026-11-10T02:27:55.5051245Z shell: /usr/bin/bash -e {0}
+2026-11-10T02:27:55.5051540Z ##[endgroup]
+2026-11-10T02:27:59.4082255Z npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+2026-11-10T02:28:49.0630349Z 
+2026-11-10T02:28:50.5056955Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1879 kB]
+2026-11-10T02:28:50.5194491Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [429 kB]
+2026-11-10T02:28:50.5196816Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [50.7 kB]
+2026-11-10T02:28:50.5207030Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse Translation-en [14.3 kB]
+2026-11-10T02:28:50.6063350Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1158 kB]
+2026-11-10T02:28:55.7450750Z libatk1.0-0t64 set to manually installed.
+2026-11-10T02:28:55.7451737Z libatspi2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-11-10T02:28:55.7452242Z libatspi2.0-0t64 set to manually installed.
+2026-11-10T02:28:55.7452699Z libcairo2 is already the newest version (1.18.0-3build1).
+2026-11-10T02:28:55.7467896Z libxfixes3 set to manually installed.
+2026-11-10T02:28:55.7468451Z libxkbcommon0 is already the newest version (1.6.0-1build1).
+2026-11-10T02:28:55.7468881Z libxkbcommon0 set to manually installed.
+2026-11-10T02:28:55.7469317Z libxrandr2 is already the newest version (2:1.5.2-2build1).
+2026-11-10T02:28:55.7909958Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-11-10T02:28:55.8553698Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-ipafont-gothic all 00303-21ubuntu1 [3513 kB]
+2026-11-10T02:28:55.9796428Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 fonts-freefont-ttf all 20211204+svn4273-2 [5641 kB]
+2026-11-10T02:28:56.1663279Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-tlwg-loma-otf all 1:0.7.3-1 [107 kB]
+2026-11-10T02:28:57.2344202Z (Reading database ... 60%
+2026-11-10T02:28:57.3762518Z (Reading database ... 65%
+2026-11-10T02:28:57.5879131Z (Reading database ... 70%
+2026-11-10T02:28:57.7497328Z (Reading database ... 75%
+2026-11-10T02:28:58.7942047Z Preparing to unpack .../2-fonts-tlwg-loma-otf_1%3a0.7.3-1_all.deb ...
+2026-11-10T02:28:58.7951975Z Unpacking fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-11-10T02:28:58.8212795Z Selecting previously unselected package fonts-unifont.
+2026-11-10T02:28:58.8357127Z Preparing to unpack .../3-fonts-unifont_1%3a15.1.01-1build1_all.deb ...
+2026-11-10T02:28:58.8365594Z Unpacking fonts-unifont (1:15.1.01-1build1) ...
+2026-11-10T02:28:58.9514163Z Selecting previously unselected package fonts-wqy-zenhei.
+2026-11-10T02:28:58.9660410Z Preparing to unpack .../4-fonts-wqy-zenhei_0.9.45-8_all.deb ...
+2026-11-10T02:28:58.9780001Z Unpacking fonts-wqy-zenhei (0.9.45-8) ...
+2026-11-10T02:28:59.4721103Z Selecting previously unselected package xfonts-encodings.
+2026-11-10T02:28:59.4864510Z Preparing to unpack .../5-xfonts-encodings_1%3a1.0.5-0ubuntu2_all.deb ...
+2026-11-10T02:28:59.4874402Z Unpacking xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-11-10T02:28:59.5231529Z Selecting previously unselected package xfonts-utils.
+2026-11-10T02:28:59.7437112Z Setting up xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-11-10T02:28:59.7761251Z Setting up xfonts-scalable (1:1.0.3-1.3) ...
+2026-11-10T02:28:59.8067646Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-11-10T02:28:59.8091309Z Not building database; man-db/auto-update is not 'true'.
+2026-11-10T02:29:07.9047268Z |■■■■■■■■■■■■■■■■                                                                |  20% of 2.3 MiB
+2026-11-10T02:29:07.9551098Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 2.3 MiB
+2026-11-10T02:29:07.9730715Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 2.3 MiB
+2026-11-10T02:29:07.9944607Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 2.3 MiB
+2026-11-10T02:29:09.1902846Z |                                                                                |   0% of 114.2 MiB
+2026-11-10T02:29:09.3445126Z |■■■■■■■■                                                                        |  10% of 114.2 MiB
+2026-11-10T02:29:09.3991378Z |■■■■■■■■■■■■■■■■                                                                |  20% of 114.2 MiB
+2026-11-10T02:29:09.4557680Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 114.2 MiB
+2026-11-10T02:29:12.8079176Z > scad-ai-ide@0.0.1 test:customizer
+2026-11-10T02:29:12.8100924Z > npm run compile-tests && node esbuild.js && node --test scripts/customizer-scrollbar.test.mjs scripts/customizer-preview-fields.test.mjs
+2026-11-10T02:29:12.8101885Z 
+2026-11-10T02:29:12.9069658Z 
+2026-11-10T02:29:18.2577650Z [watch] build finished
+2026-11-10T02:29:18.5146497Z [watch] build finished
+2026-11-10T02:29:18.6876370Z [watch] build finished
+2026-11-10T02:29:18.7996333Z [watch] build finished
+2026-11-10T02:29:32.2198350Z ✔ New preset automatically creates a matching JSON even when model values are unchanged (265.811747ms)
+2026-11-10T02:29:32.4516196Z ✔ Automatic matching JSON creation does not overwrite invalid existing content (232.039404ms)
+2026-11-10T02:29:32.7104601Z ✔ Agent saves current values into an explicit different preset even when the selected preset is unmodified (258.532205ms)
+2026-11-10T02:29:32.9677568Z ✔ native effective bounds and off-grid values survive GUI, Agent and keyboard updates (257.200062ms)
+2026-11-10T02:29:33.3044831Z ✔ partial preset baselines preserve an omitted unrepresentable source default as its actual type (336.021378ms)
+2026-11-10T02:29:33.5985210Z ✔ GUI marks a same-encoding enum type change as modified and refuses a lossy save (293.54872ms)
+2026-11-10T02:29:34.0063198Z ✔ GUI rejects an unreplayable current preset and succeeds after the user corrects its value (408.428928ms)
+2026-11-10T02:29:34.2046657Z ✔ GUI rejects oversize UTF-8 input without truncation and makes incomplete analysis visible (198.667732ms)
+2026-11-10T02:29:34.5138517Z ✔ partial presets switch A to B to defaults across GUI, domain and Preview without writing the file (309.375396ms)
+2026-11-10T02:29:34.7562668Z ✔ unknown-version preset import is readonly and programmatic apply/save/export cannot bypass it (242.297425ms)
+2026-11-10T02:29:34.9537516Z ✔ multiline strings round trip without HTML input newline sanitization (197.162009ms)
+2026-11-10T02:29:35.2984831Z ✔ Preview actions and Agent share preset state, readonly policy, overrides and atomic persistence (344.888815ms)
+2026-11-10T02:29:35.5263529Z ✔ pointer slider interaction uses minimum-anchored steps without rounding stored Agent values (227.717459ms)
+2026-11-10T02:29:35.7749863Z ✔ spinbox and vector off-grid inputs remain valid and keyboard uses interaction increments (248.460824ms)
+2026-11-10T02:29:35.8394991Z ℹ tests 38
+2026-11-10T02:29:35.8395487Z ℹ suites 0
+2026-11-10T02:29:35.8395970Z ℹ pass 38
+2026-11-10T02:29:35.8401942Z ℹ fail 0
+2026-11-10T02:29:35.8402421Z ℹ cancelled 0
+2026-11-10T02:29:35.8402900Z ℹ skipped 0
+2026-11-10T02:29:36.9629787Z ✔ AI Panel categorizes every catalog tool and awareness resource, buffers early state, escapes content and reflects permissions (599.259792ms)
+2026-11-10T02:29:36.9902011Z ℹ tests 1
+2026-11-10T02:29:36.9902561Z ℹ suites 0
+2026-11-10T02:29:36.9903037Z ℹ pass 1
+2026-11-10T02:29:36.9903496Z ℹ fail 0
+2026-11-10T02:29:36.9903936Z ℹ cancelled 0
+2026-11-10T02:29:36.9904406Z ℹ skipped 0
+2026-11-10T02:29:44.9135829Z ✔ Runtime preserves identical version rows and cached counts while refreshing catalogs (274.848504ms)
+2026-11-10T02:29:44.9413536Z ℹ tests 6
+2026-11-10T02:29:44.9414057Z ℹ suites 0
+2026-11-10T02:29:44.9414503Z ℹ pass 5
+2026-11-10T02:29:44.9414936Z ℹ fail 1
+2026-11-10T02:29:44.9415346Z ℹ cancelled 0
+2026-11-10T02:29:44.9416422Z ℹ skipped 0
+2026-11-10T02:29:44.9426344Z ✖ Library webview: tabs, escaping, exact selection, project selection, cleanup protection and busy/trust states (450.565039ms)
+2026-11-10T02:29:44.9427746Z   AssertionError [ERR_ASSERTION]: Typing restarts the debounce
+2026-11-10T02:29:44.9428425Z   
+2026-11-10T02:29:44.9428767Z   1 !== 0
+2026-11-10T02:29:44.9434087Z     code: 'ERR_ASSERTION',
+2026-11-10T02:29:44.9434590Z     actual: 1,
+2026-11-10T02:29:44.9434992Z     expected: 0,
+2026-11-10T02:29:44.9435727Z     operator: 'strictEqual',
+2026-11-10T02:29:44.9436220Z     diff: 'simple'
+2026-11-10T02:29:45.0637631Z [command]/usr/bin/git version
+2026-11-10T02:29:45.0703551Z git version 2.56.0
+2026-11-10T02:29:45.0744928Z Temporarily overriding HOME='/home/runner/work/_temp/02d9dcca-9157-4929-812b-6893634dd690' before making global git config changes
+2026-11-10T02:29:45.0746647Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-10T02:29:45.1114463Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-10T02:29:45.1151079Z http.https://github.com/.extraheader
+2026-11-10T02:29:45.1163237Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-10T02:29:45.1206375Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-10T02:29:45.1523625Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-10T02:29:45.1580951Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-10T02:29:45.2042044Z Cleaning up orphan processes
+2026-11-10T02:29:45.2529809Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

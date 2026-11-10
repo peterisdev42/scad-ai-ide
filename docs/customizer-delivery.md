@@ -1,5 +1,8 @@
 # Customizer 架构交付检查（实施中）
 
+2026-11-10当前状态：可审阅的实现与候选包已交付到任务分支，main未合并。Phase4尚未满足全部验收，不能作为全目标完成声明。当前权威产物为[artifact](customizer/artifact.json)，历史包与失败记录保留。
+
+
 基准 main/HEAD 为 `4463d61046d962a3f5afa5ace49b21f37e6cc4a6`，与SPEC示例一致；上游 `bcf45a22caa954ca56ca287994cb6dbc368c67b2`。工作分支 `codex/customizer-architecture-v2`，没有合并 main。Phase0的Before事实保留在[完整审计](customizer-audit.md)，方案比较/逐模块决定/用户批准修订见[ADR](customizer-architecture-adr.md)。本页是当前交付审查，尚不能据此标全目标完成。
 
 ## 架构和变更
@@ -41,29 +44,35 @@ Preset codec/只读诊断与Host事务分离。侧栏、Agent和Preview的选择
 
 ## 验证与限制
 
-命令、精确数量、失败历史见[进度](customizer-progress.md)与[验收编号台账](customizer-acceptance.md)。最新全量 `npm test` 为core212 PASS、Preview99 PASS、Library26 PASS/3 SKIP；随后提供真实CLI/Exporter并启用online补跑Library29 PASS/0SKIP。Host1.140.0最新32 PASS/0FAIL；首次新增32项运行31 PASS/1 FAIL（原生输入多fu），定向与整套重跑通过，未证明偶发根因，原失败日志保留（更早3项焦点问题已用限定测试PID的激活helper解决）；浏览器最新35 PASS，没有把跳过或编译计作通过。
+命令、精确数量、失败历史见[进度](customizer-progress.md)与[验收编号台账](customizer-acceptance.md)。最新全量 `npm test` 为core215 PASS、Preview99 PASS、Library26 PASS/3 SKIP；随后提供真实CLI/Exporter并启用online补跑Library29 PASS/0SKIP。Host1.140.0最新33 PASS/0FAIL；首次新增32项运行31 PASS/1 FAIL（原生输入多fu），定向与整套重跑通过，未证明偶发根因，原失败日志保留（更早3项焦点问题已用限定测试PID的激活helper解决）；浏览器完整40 PASS（37侧栏+3 Preview），没有把跳过或编译计作通过。
 
 普通无Hint、表达式、Hidden、有效重复赋值、off-step、缺省下拉默认值、闭括号尾随prose的固定反例均保持默认Problems静默。CLI/静态fixture和实际Host/浏览器是不同证据，不能相互替代。
 
 存储事务保持未保存源码、Preset其他sets/未知成员/版本，Agent编辑沿用确认与单次计划；Editor不被Agent工作区边界回退。扩展内文件写入串行并复核原bytes，但provider rename不构成跨进程CAS。未知版本不应用/覆写。不可信源注释/JSON不被视为授权。
 
-架构检查：core7→14文件、非空行812→1150；增加规则/词法/独立事务的职责边界，无core runtime循环或host依赖。该检查不证明全项目无循环，也不替代维护性审查。100KiB本机p95约1.22ms，1MiB单样本5.22ms；非跨平台指标。
+架构检查：core7→14文件、非空行812→1164；增加规则/词法/独立事务的职责边界，无core runtime循环或host依赖。该检查不证明全项目无循环，也不替代维护性审查。100KiB本机p95约1.22ms，1MiB单样本5.22ms；非跨平台指标。
 
-指定 qwen3.5:2b-mlx 的原生工作流已进入实际工具执行，但完整模型验收尚未通过；最终VSIX、证据归档、清理后35项浏览器和32项最低Host验收已执行。三平台CI和指定服务的真实Host heap已补证据；Windows Unicode include失败，Remote、pinned全程序、native Desktop控件及更广GUI/GPU内存仍缺证据；本地可执行范围继续推进，不能先标完成。
+指定 qwen3.5:2b-mlx 的原生工作流已进入实际工具执行，但完整模型验收尚未通过；最终VSIX、证据归档、清理后35项浏览器和32项最低Host验收已执行。三平台CI和指定服务的真实Host heap已补证据；Windows Unicode include失败，Remote、完整pinned Qt及更广GUI/GPU内存仍缺证据；本地可执行范围继续推进，不能先标完成。
 
 
 当前产物：[artifact](customizer/artifact.json)，[持久证据索引](customizer/evidence/manifest.json)，[模型验收事实](customizer/evidence/native-agent-summary.json)。当前目标保持active；没有将缺失的模型/平台证据判作完成。
 
 指定模型的逐项结果、真实调用、失败回答与观察脚本限制见 [qwen3.5:2b-mlx 验收](customizer/model-acceptance.md)。没有把模型的“任务完成”声明当作后置验证。
 
-真实最低Host Source/Editor内存验证已有三快照的1→2→1实例对照；范围与整体heap背景增长见 [生命周期验证](customizer/lifecycle-validation.md)。官方Desktop CLI另有41例匹配，GUI动态验收仍待锁屏解除，不能由CLI替代。
+真实最低Host Source/Editor内存验证已有三快照的1→2→1实例对照；范围与整体heap背景增长见 [生命周期验证](customizer/lifecycle-validation.md)。官方Desktop CLI另有41例匹配，官方Desktop12项Qt+echo已通过，完整pinned Qt未验，不能由CLI替代。
 
 
 当前分支提交a874f3f的真实CI：Agent三平台contracts及panel全部成功，native各41+6通过；Linux/macOS Library成功，Windows因Unicode路径失败。证据见customizer/evidence/ci-a874f3f-summary.json。三平台结果没有替代SSH/WSL/Container或桌面交互。
 
 新增未通过项：超限源码默认值能写出不可重新apply的Preset，真实Host已复现；ADR10待用户决定保存策略。此为历史发现；2026-11-10用户批准ADR10方案A后已修复，并通过核心/浏览器/真实Host及安装包路径验证。最新10例本机native导入边界另存，不回写历史CI证据。
 
-最新已结束CI对应721bbf5：三平台native各41 schema + 10 import通过；Agent四jobs成功（跳过范围同前述矩阵），Linux/macOS真实Library成功，Windows Unicode Library失败。新增边界与归档digest见customizer/evidence/ci-721bbf5/native-artifacts.json。当前生产Preset roundtrip缺陷仍待ADR10决定；GUI仍待解锁，整体目标未完成。
+最新已结束CI对应721bbf5：三平台native各41 schema + 10 import通过；Agent四jobs成功（跳过范围同前述矩阵），Linux/macOS真实Library成功，Windows Unicode Library失败。新增边界与归档digest见customizer/evidence/ci-721bbf5/native-artifacts.json。此处为历史CI，Preset缺陷已按ADR10修复并验收，GUI已解锁并实际通过12项，整体目标仍未完成。
 
 
-2026-11-10最终增量：ADR10当前快照拒绝有损保存、强类型baseline、现有集导出/删除不被当前无效值阻塞；官方Desktop12项真实GUI+echo通过，用户偏好SHA不变。当前核心215/Preview99/浏览器38通过，最低Host最终33通过；中间32+1输入多p失败保留且根因未明。此前的包并行输出竞争已发现，交付包须以串行重建并重新安装后的artifact.json为准。pinned CLI新增CI入口尚未执行，不能写作已验证。
+2026-11-10最终增量：ADR10当前快照拒绝有损保存、强类型baseline、现有集导出/删除不被当前无效值阻塞；官方Desktop12项真实GUI+echo通过，用户偏好SHA不变。当前核心215/Preview99/浏览器38通过，最低Host最终33通过；中间32+1输入多p失败保留且根因未明。此前的包并行输出竞争已发现，交付包须以串行重建并重新安装后的artifact.json为准。精确pinned Linux CLI已在42742920562完整构建并通过41+10探针；该轮产物上传缺失，修复归档的后续run42748900128进行中，完整pinned Qt不在此通过范围。
+
+
+生命周期增量：销毁后的Preset/Domain不再能改共享值，真实Host33与浏览器40通过；真实Host五类服务V8快照0→1→0、6轮缓存/watcher/订阅释放已验。最近单独的加载边界复测为侧栏37与Preview3分别通过，不冒充此前同一条全量命令。qwen温度0两次controller中断独立留存；按用户追加指定标签mimo-v2.6:latest补测进行中。Windows Unicode include仍FAIL，不用skip隐藏。
+
+
+当前精确pinned Linux CLI完整构建与41+10探针及下载归档hash均已验，见customizer/evidence/pinned-34c64eb；Qt全程序/全平台仍未覆盖。最终候选fac54ddf…51e1a仅增加Skill intent字段说明，已串行打包并实际最低Host安装验证。mimo四项MODEL窄断言已通过，Author真正完成三目标/未保存，但Author/Tail重试预算和错误回答仍使SPEC9.3协议Partial；逐项事实见模型台账。新增公开continuation字段的ADR11等待确认，不以模型成功为由弱化现有安全门。

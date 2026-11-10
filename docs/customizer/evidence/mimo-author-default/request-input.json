@@ -1,0 +1,20 @@
+{
+  "scenario": "author",
+  "model": "mimo-v2.6:latest",
+  "modelIdentity": {
+    "name": "mimo-v2.6:latest",
+    "digest": "0af2fcf0cdba6e967700d7660a35c2ae905be1680d9afb3d377f6e61dbd1dfc0",
+    "size": 8711267221,
+    "modifiedAt": "2026-11-06T10:01:27.986857626+08:00"
+  },
+  "file": "<fixture>/workspace/model.scad",
+  "query": "/openscad-customizer-authoring 目标文件为 file://<fixture>/workspace/model.scad。按受控Source工作流：width成为Dimensions分组的Slider(10:5:100)，描述Width in millimeters；shape成为Appearance分组的Dropdown(round:Round,square:Square)；internalOffset隐藏。将相互影响的group修改放在同一批计划中；最后验证这三个明确目标。 保留几何、源码默认值与Preset，不保存文件。使用项目安装的Skill完成分析、适用时的最小编辑和明确目标验证；如实报告实际结果及未执行的GUI/渲染检查。",
+  "source": "width=40;\nshape=\"round\";\ninternalOffset=0.01;\nmodule model() { cube([width,2,3]); }\nmodel();\n",
+  "artifact": {
+    "file": "scad-ai-ide-customizer-architecture-v2.vsix",
+    "bytes": 4531824,
+    "sha256": "ded44c0ec55f39a48008cded6323a950cc83d8bf8477bb1c0f62d09bb67ad555"
+  },
+  "ollamaEndpoint": "http://127.0.0.1:11434",
+  "inferenceProfile": "Official provider directly to the local server; no sampling override in this harness"
+}

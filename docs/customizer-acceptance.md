@@ -1,5 +1,10 @@
 # Customizer SPEC 验收台账
 
+当前状态（2026-11-10）：Phase0/0.5审计与批准已完成，Phase1–3主要实现完成，Phase4继续验收，整个SPEC未完成。ADR10方案A已实施。当前core215、Preview99、最低Host33通过；浏览器完整40通过，最新加载诊断复测侧栏37/Preview3分别通过。实际官方Desktop Qt12项通过；精确pinned Linux HEADLESS CLI完整构建及41 schema+10 import通过，首次产物归档缺失正在另轮修复。新GUI Domain/Preset真实Host堆回收五类额外实例均0→1→0。mimo四个MODEL窄断言已通过，但MODEL-01/02存在SPEC9.3重试/回答协议缺陷，qwen完整任务未达标；Windows真实Unicode include失败，Remote及完整pinned Qt/全平台GUI未执行。不以API、编译、工具注册或模型自述代替验收。
+
+下方早期快照按原执行时点保留；当前状态以本段及末尾日期更新为准，旧锁屏/ADR待确认/未构建描述不代表当前阻断。
+
+
 2026-11-09；当前为阶段性台账，目标尚未完成。`PASS` 只覆盖已执行断言，`Partial` 仍有未满足项，`FAIL` 保留真实失败，`NOT RUN` 不计通过。基准见 [audit](customizer-audit.md)，运行记录见 [progress](customizer-progress.md)。
 
 ## 上游与已批准语义
@@ -30,13 +35,13 @@ StringParameter maximumSize 参数遮蔽成员；长度保留声明值。native 
 | UT-16 | Partial | Agent/Editor分别校验、CAS/hash/关闭/expiry/一次性/只读；最低Host原生Undo/Redo通过；已测50edits/32plans/16cache/32KiB/1MiB/501项边界，未宣称所有provider/heap可验证 |
 | UT-17 | PASS 核心/浏览器 已测范围 | 官方字符串编码、额外成员、A→B→Default、未知版本只读；跨平台provider未验 |
 | UT-18 | Partial | 损坏JSON/非法值保持原数据、原子stage/rename与并发单测；绑定Problems真实Host通过，跨进程最终read/rename竞态仍存在 |
-| UT-19 | Partial | 1MiB/incomplete/global64KiB metadata已测；501项、16cache、50edits、32plans、32KiB正反边界已测；100/200 diagnostics与global64KiB共同预算先到者截断；heap未测 |
+| UT-19 | Partial | 1MiB/incomplete/global64KiB metadata已测；501项、16cache、50edits、32plans、32KiB正反边界已测；100/200 diagnostics与global64KiB共同预算先到者截断；Source/Editor及GUI Domain/Preset指定服务真实Host heap已测，renderer/GPU未测 |
 | UT-20 | PASS 固定语料范围 | 1,200例固定种子普通长尾注，含引号/括号/反斜线/Unicode/超长说明，均无默认警告；不宣称覆盖所有任意输入 |
 | HOST-01 | PASS 已执行生命周期 | source diagnostics配置/保存/关闭，绑定Preset Problems和未保存JSON实际Host通过 |
 | HOST-02 | PASS 最低Host | context→safe fix→command及stale拒绝通过；最低Host原生键盘/Undo已通过 |
 | HOST-03 | PASS 最低Host | Analyze→Plan→Commit→Validate、未保存/disk不变API通过；最新最低Host native Undo/Redo均通过（早期窗口焦点失败保留） |
 | HOST-04 | PASS | 并发编辑→STALE_SOURCE，不覆盖新文本 |
-| HOST-05 | Partial | GUI domain/schema与source一致；native Desktop未执行 |
+| HOST-05 | PASS 已测范围 | GUI domain/schema与source一致；官方Desktop实际Qt12项通过，完整pinned/全平台GUI未验 |
 | HOST-06 | Partial | 强类型batch/revision、浏览器Preset/Preview通过；统一路径浏览器/Host API通过；远程provider验收未执行 |
 | MODEL-01 | 未通过：原生请求错误 | 最终三目标复测Analyze成功后native no response；0次Plan/Commit/Validate，buffer/disk原样。本轮0次确认拒绝，无观察超时。旧Plan错误/确认预算中断保留，详见模型单独台账 |
 | MODEL-02 | FAIL | qwen3.5:2b-mlx 3次Analyze，0次Apply/Validate；buffer/disk及prose未变，schema仍spinbox；模型却声称编辑并保存，且未解释人工处理。观察脚本旧超时另记，不作为模型失败原因 |
@@ -91,4 +96,9 @@ ADR10方案A已批准并实现：当前值保存前共享校验及无损编码�
 
 官方Desktop Qt矩阵12项通过且每步核对echo、buffer/disk及原偏好SHA。NATIVE-UI-01..08的精确范围见customizer/native-gui-validation.md，不代表完整pinned Qt或全平台GUI。旧锁屏和controller失败保留。原生指定模型失败、Windows Unicode真实Library失败、Remote未执行仍未改为通过。
 
-精确pinned上游CLI仍缺完整构建证据；新增独立Linux CI构建入口（HEADLESS/NULLGL、CGAL+Manifold、experimental），将运行同一41+10差分，目前只完成YAML解析，不标构建或运行PASS。
+精确pinned上游CLI已在4bff75e run42742920562实际完成Linux源码构建及41+10差分，通过范围为HEADLESS/NULLGL、CGAL+Manifold、experimental；该轮隐藏目录产物未上传，另轮修复归档正在运行。完整pinned Qt及全平台GUI仍未验证。
+
+
+## 当前模型收齐与协议缺口
+
+mimo指定本地标签四场景正常结束；MODEL-01实际3/3目标matched、commit成功/未保存/几何默认值不变，MODEL-02保留尾注并解释人工处理，MODEL-03不报表达式语法错或自动折叠，MODEL-04如实报告实际失败，四项窄断言通过。SPEC9.3并未整体通过：Author在成功前多次非法commit且最终解释错误；Tail四次重复plan并尝试被禁止的普通writer，被controller拒绝后仍错误声称未用其他writer。整体模型协议维持Partial，详见customizer/model-acceptance.md及逐项review.json。原生模型真正成功的业务结果与其错误总结分开记录。ADR11新增结构化continuation待确认，不先实施。

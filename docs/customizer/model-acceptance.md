@@ -1,4 +1,4 @@
-# qwen3.5:2b-mlx 原生 Agent 验收
+# 原生 Agent 模型验收：qwen 与用户追加的本地 mimo 标签
 
 2026-11-09。当前不是全目标通过报告。用户指定模型后，已建立真实原生 Agent 推理与 Customizer 工具执行，历史“默认 Agent 未就绪、零调用”结论已被新证据替代。
 
@@ -43,7 +43,7 @@ node scripts/customizer-native-agent.mjs
 
 `SCAD_AGENT_SCENARIO`支持author、tail、expression、failure；返回的原始目录可以用 `node scripts/customizer-native-evidence.mjs <run-directory> <evidence-directory>` 归档脱敏证据。脚本exit0仅说明观察完成，必须逐项核对实际任务与最终源码，不能直接标模型PASS。
 
-本次模型四场景没有完整PASS。整个SPEC目标仍active。三平台CI和指定Source/Editor服务的真实Host三份heap快照已有后续证据；Windows真实Library Unicode include失败，Remote、完整pinned Qt、完整pinned binary及更广GUI/GPU内存仍未完成；官方2026.11.06 Desktop已有后续12项Qt+echo通过证据。模型结果没有被这些独立证据替代。
+本次模型四场景没有完整PASS。整个SPEC目标仍active。三平台CI和指定Source/Editor服务的真实Host三份heap快照已有后续证据；Windows真实Library Unicode include失败，Remote、完整pinned Qt及更广renderer/GPU内存仍未完成；精确pinned Linux HEADLESS CLI另已完整构建并运行41+10探针；官方2026.11.06 Desktop已有后续12项Qt+echo通过证据。模型结果没有被这些独立证据替代。
 
 
 ## MODEL-01 原生输入拒绝层复核
@@ -51,3 +51,34 @@ node scripts/customizer-native-agent.mjs
 从原始result.metadata.toolCallRounds/toolCallResults逐条核对，实际有6个生成请求：1次Analyze进入dispatcher并成功，4次SourceApply在Host schema门禁被拒绝，最后1次get_errors因filePaths不是array被拒绝；5条拒绝的具体错误均留存于[输入层复核](evidence/qwen2b-author-read-policy/tool-input-review.json)。retry计数0–4是原生元数据，不是观察器伪造重试。无成功Plan/Commit/Validate与“模型没尝试调用Apply”是不同陈述；这里证明前者，否定后者。最终no response不是controller超时，但也不能单凭它断言Ollama网络/推理服务没有返回或唯一终止原因已查明。
 
 证据提取器新增生成请求/Host拒绝/dispatcher计数的独立字段，并明确final-response metadata可能不覆盖整个会话。使用该真实旧运行重新提取到独立.build目录，断言4次Apply请求、5次Host拒绝、1次Customizer实际调用与原始结果匹配；没有重写既有运行结果或新标模型通过。
+
+## 2026-11-10 补充采样与 Skill 澄清
+
+测试专用 loopback 转发器仅在真实官方 provider 请求中添加 options.temperature=0，messages/tools及流式响应保持原样，不自建Agent、不制造工具结果、不改全局设置。受控本地stub已验证请求保留、流字节、503及非法写端点拒绝，不能据此声称服务内部采样器已被独立验证。发现 provider 会请求实验推荐端点（被转发器拒绝），因此这也是显式测试profile差异，不冒充默认provider结果。
+
+[首次补测](evidence/qwen2b-author-temperature0/facts.json)：15次真实HTTP200 chat，3次Analyze实际执行、0次Apply/Validate；模型要求mkdir/创建plan.md，8次非受控写入被拒后，controller中断并保存快照。源码buffer/disk未变。生成请求来自持久原生transcript；没有最终metadata时Host schema拒绝计数为unknown，不能写0。
+
+Skill随后明确“Plan是内存事务，不创建plan.md/目录；edit name使用width等声明名，不使用Dimensions组名”，catalog校验及最低Host/Production安装通过。[澄清后补测](evidence/qwen2b-author-clarified-temperature0/facts.json)精确使用ded44c0e…ad555包：13次HTTP200 chat，1次Analyze实际执行、0次Apply/Validate，模型仍请求计划目录和echo写文件，8次拒绝后controller中断。输入保留完整三目标任务和工具集，没有缩窄成单一工具练习。两次均是明确的INTERRUPTED/验收未达成，不能当作模型正常完成后的断言失败，也不能唯一归因于温度、schema或模型容量；旧MODEL-01原生错误、MODEL-02错误完成声明仍分别保留。
+
+用户随后指定mimo-v2.6:latest补测。本地/api/show实际报告qwen3_5、9.4B、nvfp4、mlx，标签不等于已独立核验的MiMo官方模型身份。使用该指定标签直接连接本地Ollama，恢复默认采样profile；具体digest和任务结果独立留存，不覆盖qwen记录。
+
+
+## mimo 首轮有界观察
+
+[默认采样首轮](evidence/mimo-author-default/facts.json)在6分钟观察期限结束，不能当作模型已完成。实际1次Analyze及1次Validate（ok=true、semanticPass=false），0次Apply进入dispatcher；buffer/disk不变。原生transcript还记录4次生成Apply及无效Validate重试，缺最终metadata时拒绝总数unknown。补齐Skill intent字段说明后，以新候选包fac54ddf…51e1a顺序补测author/tail/expression/failure，每项上限15分钟；这是不同resource/观察profile，旧记录保留，不将延长时间本身当作功能修复。
+
+
+## mimo 四场景实测与独立审阅（当前）
+
+精确候选包fac54ddf29cc9d98f356ad7d18abb0b715d693fad292b104d496819d7df51e1a，四项均正常结束，默认采样、本地标签mimo-v2.6:latest，未超时/未controller中断。以下窄断言通过不等于SPEC9.3协议整体通过；qwen失败/部分通过和旧mimo超时全部保留。
+
+| ID | 窄断言 | 协议/回答问题与证据 |
+|---|---|---|
+| MODEL-01 | PASS：实际三目标Plan→Commit→Validate，3/3 matched、semanticPass=true；buffer dirty，disk原样，默认值及module几何文本不变 | [review](evidence/mimo-author-intents/review.json)：此前3次实际INVALID_INPUT commit，未遵守重试预算；最终错称以edits-only提交，实际成功请求仅mode+planId。因此整体Partial，未执行的GUI/runtime明确披露。 |
+| MODEL-02 | PASS：尾注完整保留，最终说明未完成和人工处理，buffer/disk原样 | [review](evidence/mimo-tail-intents/review.json)：4次拒绝Plan，尝试了任务禁止的copilot_replaceString，测试控制器拒绝；最终却称未使用其他writer。还给出错误的两段range解释及重用旧identity建议。整体Partial，不能把安全控制器拒绝当成模型自主遵守边界。 |
+| MODEL-03 | PASS：不谎称表达式语法错误、不自动常量折叠，报告目标mismatch/semanticPass=false | [review](evidence/mimo-expression-intents/review.json)：实际2次拒绝Plan、Validate与state；措辞将static complete扩展为无语法问题，没有编译语法检查，不把该措辞作为compiler PASS。 |
+| MODEL-04 | PASS：真实ok=false和semanticPass=false均明确报告，未声称验证成功 | [review](evidence/mimo-failure-intents/review.json)：缺失文件实际返回OUTSIDE_WORKSPACE/ENOENT，最终如实报告；之前5次Host schema拒绝保留，不宣称首次调用全正确。 |
+
+Author独立对最终buffer重新分析，核对width Slider/group/description/default40、shape Dropdown/group/defaultround、internalOffset不可见且原literal仍存在；逐字节比较module以后几何文本，最终Validate实际checked=matched=3，成功commit的键恰为mode/planId。结果不是仅依赖模型完成声明。其他三项均逐字节核对buffer与输入相同。
+
+ADR11已提出新增成功计划continuation的准确下一调用对象，因公开返回字段变化等待用户确认；当前尚未实现。它不会自动消除LLM重试/回答问题，也不会放宽schema、授权、TTL或CAS。

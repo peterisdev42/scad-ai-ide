@@ -27,6 +27,7 @@ jobs:
             - run: npm run lint
             - run: npm run check:customizer:architecture
             - run: npm run test:customizer:compatibility
+            - run: node --test out/test/customizer.test.js
             - run: npm run test:customizer:source
             - run: npm run test:capabilities
             - run: npm run test:libraries

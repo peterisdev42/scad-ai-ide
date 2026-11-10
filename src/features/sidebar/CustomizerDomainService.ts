@@ -17,6 +17,7 @@ export class CustomizerDomainService implements vscode.Disposable {
     readonly onDidChange = this.changed.event
     private readonly subscriptions: vscode.Disposable[]
     private busy = false
+    private disposed = false
     isBusy() { return this.busy }
     constructor(readonly service: CustomizerService) {
         this.presets = new CustomizerPresets(service, () => { this.revision++; this.publish() })
@@ -31,12 +32,13 @@ export class CustomizerDomainService implements vscode.Disposable {
         ]
         this.loadTarget()
     }
-    private publish() { this.presets.bind(this.service.target); this.changed.fire() }
+    private publish() { if (!this.disposed) { this.presets.bind(this.service.target); this.changed.fire() } }
     snapshot() {
         this.loadTarget()
         return { target: this.service.target, revision: this.revision, parameters: this.service.parameters.map((p) => ({ ...p, value: this.service.value(p) })), presets: this.presets.state(), analysis: this.service.analysisStatus, overridesEditSource: false }
     }
     assertTarget(target: string, revision: number) {
+        if (this.disposed) throw new CapabilityError('TARGET_CHANGED', 'This Customizer domain is no longer active. Read the current target again.', true)
         this.loadTarget()
         if (!target || target !== this.service.target) throw new CapabilityError('TARGET_CHANGED', 'Read the active Customizer target again.', true)
         if (revision !== this.revision) throw new CapabilityError('STALE_STATE', 'Customizer changed. Read parameters again.', true)
@@ -78,6 +80,7 @@ export class CustomizerDomainService implements vscode.Disposable {
         } finally { this.busy = false }
     }
     loadTarget(): void {
+        if (this.disposed) return
         const input = vscode.window.tabGroups.activeTabGroup.activeTab?.input
         const uri = input instanceof vscode.TabInputCustom && input.viewType === 'scad-ai-ide.preview.editor' ? input.uri : undefined
         const document = uri ? vscode.workspace.textDocuments.find((document) => document.uri.toString() === uri.toString() && !document.isClosed) : vscode.window.activeTextEditor?.document
@@ -102,5 +105,11 @@ export class CustomizerDomainService implements vscode.Disposable {
         this.publish()
     }
 
-    dispose() { this.subscriptions.forEach((s) => s.dispose()) }
+    dispose() {
+        if (this.disposed) return
+        this.disposed = true
+        this.loadedTarget = undefined
+        this.loadedSource = undefined
+        this.subscriptions.forEach((s) => s.dispose())
+    }
 }
