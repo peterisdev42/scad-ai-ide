@@ -1,0 +1,571 @@
+{
+  "file": "/Users/q/Documents/Code/scalable_field_camera/rpi.scad",
+  "sourceSha256": "0923614219b0de3f53b44baa968006d4668b4cdcb49aa94ab462e1653e87b6e6",
+  "parameters": 0,
+  "complete": true,
+  "diagnostics": [
+    {
+      "ruleId": "CUST-VIS-01",
+      "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+      "severity": "warning",
+      "parameter": "vBoard_l",
+      "message": "The later assignment to \"vBoard_l\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+      "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+      "range": {
+        "start": {
+          "line": 41,
+          "character": 0
+        },
+        "end": {
+          "line": 41,
+          "character": 14
+        }
+      },
+      "relatedInformation": [
+        {
+          "range": {
+            "start": {
+              "line": 4,
+              "character": 0
+            },
+            "end": {
+              "line": 4,
+              "character": 14
+            }
+          },
+          "message": "Earlier customizable parameter declaration overridden here."
+        }
+      ],
+      "evidence": {
+        "kind": "superseded-parameter",
+        "category": "visibility",
+        "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+      },
+      "fix": {
+        "id": "CUST-VIS-01",
+        "safety": "review",
+        "title": "Review the assignment outside the Customizer region"
+      }
+    },
+    {
+      "ruleId": "CUST-VIS-01",
+      "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+      "severity": "warning",
+      "parameter": "vBoard_w",
+      "message": "The later assignment to \"vBoard_w\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+      "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+      "range": {
+        "start": {
+          "line": 43,
+          "character": 0
+        },
+        "end": {
+          "line": 43,
+          "character": 14
+        }
+      },
+      "relatedInformation": [
+        {
+          "range": {
+            "start": {
+              "line": 6,
+              "character": 0
+            },
+            "end": {
+              "line": 6,
+              "character": 14
+            }
+          },
+          "message": "Earlier customizable parameter declaration overridden here."
+        }
+      ],
+      "evidence": {
+        "kind": "superseded-parameter",
+        "category": "visibility",
+        "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+      },
+      "fix": {
+        "id": "CUST-VIS-01",
+        "safety": "review",
+        "title": "Review the assignment outside the Customizer region"
+      }
+    },
+    {
+      "ruleId": "CUST-VIS-01",
+      "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+      "severity": "warning",
+      "parameter": "vBoard_h",
+      "message": "The later assignment to \"vBoard_h\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+      "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+      "range": {
+        "start": {
+          "line": 45,
+          "character": 0
+        },
+        "end": {
+          "line": 45,
+          "character": 15
+        }
+      },
+      "relatedInformation": [
+        {
+          "range": {
+            "start": {
+              "line": 8,
+              "character": 0
+            },
+            "end": {
+              "line": 8,
+              "character": 15
+            }
+          },
+          "message": "Earlier customizable parameter declaration overridden here."
+        }
+      ],
+      "evidence": {
+        "kind": "superseded-parameter",
+        "category": "visibility",
+        "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+      },
+      "fix": {
+        "id": "CUST-VIS-01",
+        "safety": "review",
+        "title": "Review the assignment outside the Customizer region"
+      }
+    },
+    {
+      "ruleId": "CUST-VIS-01",
+      "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+      "severity": "warning",
+      "parameter": "vCase_l",
+      "message": "The later assignment to \"vCase_l\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+      "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+      "range": {
+        "start": {
+          "line": 47,
+          "character": 0
+        },
+        "end": {
+          "line": 47,
+          "character": 13
+        }
+      },
+      "relatedInformation": [
+        {
+          "range": {
+            "start": {
+              "line": 10,
+              "character": 0
+            },
+            "end": {
+              "line": 10,
+              "character": 13
+            }
+          },
+          "message": "Earlier customizable parameter declaration overridden here."
+        }
+      ],
+      "evidence": {
+        "kind": "superseded-parameter",
+        "category": "visibility",
+        "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+      },
+      "fix": {
+        "id": "CUST-VIS-01",
+        "safety": "review",
+        "title": "Review the assignment outside the Customizer region"
+      }
+    },
+    {
+      "ruleId": "CUST-VIS-01",
+      "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+      "severity": "warning",
+      "parameter": "vCase_w",
+      "message": "The later assignment to \"vCase_w\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+      "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+      "range": {
+        "start": {
+          "line": 49,
+          "character": 0
+        },
+        "end": {
+          "line": 49,
+          "character": 13
+        }
+      },
+      "relatedInformation": [
+        {
+          "range": {
+            "start": {
+              "line": 12,
+              "character": 0
+            },
+            "end": {
+              "line": 12,
+              "character": 13
+            }
+          },
+          "message": "Earlier customizable parameter declaration overridden here."
+        }
+      ],
+      "evidence": {
+        "kind": "superseded-parameter",
+        "category": "visibility",
+        "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+      },
+      "fix": {
+        "id": "CUST-VIS-01",
+        "safety": "review",
+        "title": "Review the assignment outside the Customizer region"
+      }
+    },
+    {
+      "ruleId": "CUST-VIS-01",
+      "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+      "severity": "warning",
+      "parameter": "vCase_h",
+      "message": "The later assignment to \"vCase_h\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+      "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+      "range": {
+        "start": {
+          "line": 51,
+          "character": 0
+        },
+        "end": {
+          "line": 51,
+          "character": 13
+        }
+      },
+      "relatedInformation": [
+        {
+          "range": {
+            "start": {
+              "line": 14,
+              "character": 0
+            },
+            "end": {
+              "line": 14,
+              "character": 13
+            }
+          },
+          "message": "Earlier customizable parameter declaration overridden here."
+        }
+      ],
+      "evidence": {
+        "kind": "superseded-parameter",
+        "category": "visibility",
+        "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+      },
+      "fix": {
+        "id": "CUST-VIS-01",
+        "safety": "review",
+        "title": "Review the assignment outside the Customizer region"
+      }
+    },
+    {
+      "ruleId": "CUST-VIS-01",
+      "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+      "severity": "warning",
+      "parameter": "vWall",
+      "message": "The later assignment to \"vWall\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+      "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+      "range": {
+        "start": {
+          "line": 53,
+          "character": 0
+        },
+        "end": {
+          "line": 53,
+          "character": 12
+        }
+      },
+      "relatedInformation": [
+        {
+          "range": {
+            "start": {
+              "line": 16,
+              "character": 0
+            },
+            "end": {
+              "line": 16,
+              "character": 12
+            }
+          },
+          "message": "Earlier customizable parameter declaration overridden here."
+        }
+      ],
+      "evidence": {
+        "kind": "superseded-parameter",
+        "category": "visibility",
+        "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+      },
+      "fix": {
+        "id": "CUST-VIS-01",
+        "safety": "review",
+        "title": "Review the assignment outside the Customizer region"
+      }
+    },
+    {
+      "ruleId": "CUST-VIS-01",
+      "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+      "severity": "warning",
+      "parameter": "vUSB_c_l",
+      "message": "The later assignment to \"vUSB_c_l\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+      "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+      "range": {
+        "start": {
+          "line": 57,
+          "character": 0
+        },
+        "end": {
+          "line": 57,
+          "character": 16
+        }
+      },
+      "relatedInformation": [
+        {
+          "range": {
+            "start": {
+              "line": 20,
+              "character": 0
+            },
+            "end": {
+              "line": 20,
+              "character": 16
+            }
+          },
+          "message": "Earlier customizable parameter declaration overridden here."
+        }
+      ],
+      "evidence": {
+        "kind": "superseded-parameter",
+        "category": "visibility",
+        "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+      },
+      "fix": {
+        "id": "CUST-VIS-01",
+        "safety": "review",
+        "title": "Review the assignment outside the Customizer region"
+      }
+    },
+    {
+      "ruleId": "CUST-VIS-01",
+      "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+      "severity": "warning",
+      "parameter": "vUSB_c_w",
+      "message": "The later assignment to \"vUSB_c_w\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+      "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+      "range": {
+        "start": {
+          "line": 59,
+          "character": 0
+        },
+        "end": {
+          "line": 59,
+          "character": 16
+        }
+      },
+      "relatedInformation": [
+        {
+          "range": {
+            "start": {
+              "line": 22,
+              "character": 0
+            },
+            "end": {
+              "line": 22,
+              "character": 16
+            }
+          },
+          "message": "Earlier customizable parameter declaration overridden here."
+        }
+      ],
+      "evidence": {
+        "kind": "superseded-parameter",
+        "category": "visibility",
+        "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+      },
+      "fix": {
+        "id": "CUST-VIS-01",
+        "safety": "review",
+        "title": "Review the assignment outside the Customizer region"
+      }
+    },
+    {
+      "ruleId": "CUST-VIS-01",
+      "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+      "severity": "warning",
+      "parameter": "vSD_l",
+      "message": "The later assignment to \"vSD_l\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+      "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+      "range": {
+        "start": {
+          "line": 61,
+          "character": 0
+        },
+        "end": {
+          "line": 61,
+          "character": 13
+        }
+      },
+      "relatedInformation": [
+        {
+          "range": {
+            "start": {
+              "line": 24,
+              "character": 0
+            },
+            "end": {
+              "line": 24,
+              "character": 13
+            }
+          },
+          "message": "Earlier customizable parameter declaration overridden here."
+        }
+      ],
+      "evidence": {
+        "kind": "superseded-parameter",
+        "category": "visibility",
+        "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+      },
+      "fix": {
+        "id": "CUST-VIS-01",
+        "safety": "review",
+        "title": "Review the assignment outside the Customizer region"
+      }
+    },
+    {
+      "ruleId": "CUST-VIS-01",
+      "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+      "severity": "warning",
+      "parameter": "vSD_w",
+      "message": "The later assignment to \"vSD_w\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+      "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+      "range": {
+        "start": {
+          "line": 63,
+          "character": 0
+        },
+        "end": {
+          "line": 63,
+          "character": 12
+        }
+      },
+      "relatedInformation": [
+        {
+          "range": {
+            "start": {
+              "line": 26,
+              "character": 0
+            },
+            "end": {
+              "line": 26,
+              "character": 12
+            }
+          },
+          "message": "Earlier customizable parameter declaration overridden here."
+        }
+      ],
+      "evidence": {
+        "kind": "superseded-parameter",
+        "category": "visibility",
+        "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+      },
+      "fix": {
+        "id": "CUST-VIS-01",
+        "safety": "review",
+        "title": "Review the assignment outside the Customizer region"
+      }
+    },
+    {
+      "ruleId": "CUST-VIS-01",
+      "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+      "severity": "warning",
+      "parameter": "vMount_d",
+      "message": "The later assignment to \"vMount_d\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+      "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+      "range": {
+        "start": {
+          "line": 65,
+          "character": 0
+        },
+        "end": {
+          "line": 65,
+          "character": 15
+        }
+      },
+      "relatedInformation": [
+        {
+          "range": {
+            "start": {
+              "line": 28,
+              "character": 0
+            },
+            "end": {
+              "line": 28,
+              "character": 15
+            }
+          },
+          "message": "Earlier customizable parameter declaration overridden here."
+        }
+      ],
+      "evidence": {
+        "kind": "superseded-parameter",
+        "category": "visibility",
+        "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+      },
+      "fix": {
+        "id": "CUST-VIS-01",
+        "safety": "review",
+        "title": "Review the assignment outside the Customizer region"
+      }
+    },
+    {
+      "ruleId": "CUST-VIS-01",
+      "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+      "severity": "warning",
+      "parameter": "vMount_inset",
+      "message": "The later assignment to \"vMount_inset\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+      "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+      "range": {
+        "start": {
+          "line": 67,
+          "character": 0
+        },
+        "end": {
+          "line": 67,
+          "character": 17
+        }
+      },
+      "relatedInformation": [
+        {
+          "range": {
+            "start": {
+              "line": 30,
+              "character": 0
+            },
+            "end": {
+              "line": 30,
+              "character": 17
+            }
+          },
+          "message": "Earlier customizable parameter declaration overridden here."
+        }
+      ],
+      "evidence": {
+        "kind": "superseded-parameter",
+        "category": "visibility",
+        "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+      },
+      "fix": {
+        "id": "CUST-VIS-01",
+        "safety": "review",
+        "title": "Review the assignment outside the Customizer region"
+      }
+    }
+  ],
+  "contractStatus": "mismatch",
+  "qualityStatus": "warnings",
+  "semanticPass": false,
+  "sourceModified": false
+}

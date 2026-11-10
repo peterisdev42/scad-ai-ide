@@ -79,3 +79,14 @@ test('source completeness, explicit goals and quality are independent without ch
     assert.equal(incomplete.contractStatus, 'unverified')
     assert.equal(incomplete.expectationResults[0].details[0].code, 'UNVERIFIED_INCOMPLETE')
 })
+
+test('overridden controls fail explicit visibility contracts and remain warnings without expectations', () => {
+    const source = 'width=10;\nmodule model() {}\nwidth=20;'
+    const result = validateCustomizerSource(source, [{ name: 'width', visible: true }])
+    assert.equal(result.contractStatus, 'mismatch')
+    assert.equal(result.qualityStatus, 'warnings')
+    assert.equal(result.semanticPass, false)
+    assert.equal(result.expectationResults[0].details[0].code, 'EXPECTED_VISIBLE')
+    assert.equal(validateCustomizerSource(source).semanticPass, false)
+    assert.equal(validateCustomizerSource(source, [], false).qualityStatus, 'warnings')
+})

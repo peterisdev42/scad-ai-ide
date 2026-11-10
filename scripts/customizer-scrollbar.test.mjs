@@ -30,6 +30,7 @@ async function fixture(t, extraSource = '') {
     }
     const files = new Map()
     const dialogs = { names: [], open: [], save: [] }
+    const revealed = []
     const watchers = []
     class FileSystemError extends Error {
         code = 'FileNotFound'
@@ -44,6 +45,7 @@ async function fixture(t, extraSource = '') {
             },
         },
         window: {
+            showTextDocument: async (uri, options) => { revealed.push({ uri: uri.toString(), selection: options.selection }) },
             tabGroups: { activeTabGroup: {}, onDidChangeTabs: noop },
             onDidChangeActiveTextEditor: noop,
             showInputBox: async () => dialogs.names.shift(),
@@ -118,6 +120,7 @@ async function fixture(t, extraSource = '') {
         },
         Uri: { file: (path) => uri(`file://${path}`), joinPath: (base, ...parts) => uri((base.scheme === 'file' ? 'file://' : '') + join(base.path, ...parts)), parse: uri },
         FileSystemError,
+        Range: class { constructor(...coordinates) { this.coordinates = coordinates } },
         RelativePattern: class {},
         TabInputCustom: class {},
     }
@@ -277,6 +280,9 @@ async function fixture(t, extraSource = '') {
     }
     return {
         page,
+        revealed,
+        receive: (message) => receive(message),
+        refresh: () => provider.refresh(),
         domain: provider.domain,
         view,
         contexts,
@@ -1228,4 +1234,27 @@ test('spinbox and vector off-grid inputs remain valid and keyboard uses interact
     await vector.press('ArrowUp')
     assert.deepEqual(service.getOverrides(service.target).vector, [4.5,3.5])
     assert.equal(await vector.evaluate(el => el.validity.valid), true)
+})
+
+
+test('lost controls explain the empty Sidebar and navigate only with current target and revision', async (t) => {
+    const { page, service, refresh, revealed, messages, receive } = await fixture(t)
+    service.load('file:///models/customizer.scad', 'width=10;\nmodule model() {}\nwidth=20;')
+    refresh()
+    await page.getByText('Parameter declarations were found, but all available controls were removed', { exact: false }).waitFor()
+    await page.getByRole('button', { name: 'Go to overriding assignment' }).click()
+    await page.waitForTimeout(50)
+    assert.equal(revealed.length, 1)
+    assert.equal(revealed[0].uri, service.target)
+    assert.deepEqual(Array.from(revealed[0].selection.coordinates), [2, 0, 2, 9])
+    const navigation = messages.findLast(m => m.type === 'revealOverride')
+    receive({ ...navigation, revision: -1 })
+    receive({ ...navigation, target: 'file:///other.scad' })
+    assert.equal(revealed.length, 1)
+    service.load(service.target, 'width=10;\nmodule model() {}')
+    refresh()
+    await page.waitForFunction(() => document.getElementById('overridden-location').hidden)
+    service.load(service.target, 'module model() {}')
+    refresh()
+    await page.getByText('No customizable parameters. Define literal values before the first code block.', { exact: true }).waitFor()
 })

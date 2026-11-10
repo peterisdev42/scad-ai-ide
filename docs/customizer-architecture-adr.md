@@ -267,3 +267,8 @@ ADR11批准记录：用户明确批准方案A，并要求仅成功Plan返回实�
 ADR11实施与当前验证：成功plan返回continuation，tool由同一catalog解析，input只有mode=commit与实际planId，requiresReview只存在输出。未改Commit schema/安全额度/确认适配。失败Plan及Commit结果无continuation。Node capability32通过，直接使用continuation.input提交合法，requiresReview/approved/skipConfirmation额外字段拒绝；expiry、repeat、version/hash变化、close、trust撤销与cancel按既有精确错误拒绝，buffer不变；真实AgentToolAdapter仍产生confirmation并将取消映射CANCELLED。新增真实最低Host三目标通过strict dispatcher直接提交/取消/额外字段拒绝/一次性/源码CAS，完整34项最终通过。新测试首次VM错误类跨realm导致31/1，修正夹具构造器一致性后32通过，未放宽产品错误处理。
 
 同轮Preset实际Host在create时出现STALE_STATE，另加确定性controller+Chromium复现：相同文件watcher事件令revision5→6。现在仅对实际file/existence/error状态改变发布更新，文件写事务仍比较原始bytes；真实文件更改仍使旧revision失效。浏览器41通过，真实Host原I/O场景通过。首次全Host30/4，其中3项因测试profile误关闭LSP；修正profile后33/1，Editor原生Undo多空行；添加仅合成文档phase/event trace后34通过，但未证明偶发输入根因，保留原失败。原生mimo复测及UI取消探针接续进行，不能把上述自动测试写成模型问题已解决。
+
+
+## ADR12：参数被区域外覆盖的可见性诊断（2026-11-10，用户批准）
+
+用户报告 rpi.scad 的两套参数分别位于首个代码块之前和之后，导致 Sidebar 为空且没有诊断。选择对丢失控件给出 Warning，关联前后声明；全部控件丢失时明确空状态原因并允许跳转。合法 SCAD 赋值不判为语法错误，不改变现有参数发现规则，不自动删除源码；显式参数可见性要求仍作为独立契约校验。增加有界的 visibility 诊断和领域状态投影，GUI 与 Agent 使用同一分析；跳转属于只读展示动作，沿用 target/revision 校验。详细边界、真实 Host/浏览器证据及尚未执行范围见[修复验收](customizer/parameter-override-fix.md)。原始全量目标继续暂停。

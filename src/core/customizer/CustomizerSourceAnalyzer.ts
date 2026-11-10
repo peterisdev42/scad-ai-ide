@@ -37,6 +37,24 @@ export function analyzeCustomizerSource(source: string, options: { maxDiagnostic
         const d = byParameter.get(p)!
         return { ...p, widget: widgetFor(p), declarationRange: coordinates(d), annotationRange: d.annotation && coordinates(d.annotation), descriptionRange: d.description && coordinates(d.description) }
     })
+    // A later top-level assignment can remove an otherwise supported control.
+    // Report the observable loss, not legal duplicate assignments in general.
+    const firstControls = new Map<string, ScannedDeclaration>()
+    for (const d of scan.declarations) if (d.parameter && !firstControls.has(d.name)) firstControls.set(d.name, d)
+    for (const [name, original] of firstControls) {
+        const effective = lastDeclarations.get(name)!
+        if (effective.beforeFirstBrace || effective.group === 'Hidden') continue
+        const rule = customizerRules['CUST-VIS-01']
+        diagnostics.push({
+            ruleId: 'CUST-VIS-01', code: rule.code, severity: rule.severity, parameter: name,
+            message: `The later assignment to "${name}" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.`,
+            suggestedFix: 'Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.',
+            range: coordinates(effective),
+            relatedInformation: [{ range: coordinates(original), message: 'Earlier customizable parameter declaration overridden here.' }],
+            evidence: { kind: 'superseded-parameter', category: rule.category, referenceOpenSCADCommit: CUSTOMIZER_REFERENCE },
+            fix: { id: 'CUST-VIS-01', safety: 'review', title: rule.title },
+        })
+    }
     for (const d of scan.declarations) {
         // Only explicit annotations on an effective, supported control are linted.
         // Ordinary SCAD, missing hints and unsupported forms are not errors.

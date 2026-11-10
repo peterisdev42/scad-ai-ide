@@ -3120,5 +3120,59 @@
     "evidence": "schema-contract.txt",
     "sha256": "e2a397fd2bd38a22a11ebfe5851f74a0078ec46239ad3861f77fb80ad3b4a673",
     "provenance": "Preserved existing result or final delivery cleanup; no new model run"
+  },
+  {
+    "name": "parameter-override/browser-sandbox-failure.txt",
+    "evidence": "parameter-override/browser-sandbox-failure.txt",
+    "sha256": "e8bb7a50abada7de5484420b7b822d534d423b15a763c92de01eb63628fdfdf8",
+    "provenance": "2026-11-10 user-authorized lost-control diagnostic fix; no model test"
+  },
+  {
+    "name": "parameter-override/browser42.txt",
+    "evidence": "parameter-override/browser42.txt",
+    "sha256": "5c3ceec11437a81b24441edebd8f669c278ea17be967c22be23b216e61af66b1",
+    "provenance": "2026-11-10 user-authorized lost-control diagnostic fix; no model test"
+  },
+  {
+    "name": "parameter-override/compile.txt",
+    "evidence": "parameter-override/compile.txt",
+    "sha256": "0da5d7dc53d876f3f1e242d2ff06f007cdaf1d3322280df33ab3e4f292bf9f8f",
+    "provenance": "2026-11-10 user-authorized lost-control diagnostic fix; no model test"
+  },
+  {
+    "name": "parameter-override/host-test-harness-failure.txt",
+    "evidence": "parameter-override/host-test-harness-failure.txt",
+    "sha256": "f09a945e81ca59c479edf5caaf9fddefe2c2ef4cc85a88fba537c58082642cca",
+    "provenance": "2026-11-10 user-authorized lost-control diagnostic fix; no model test"
+  },
+  {
+    "name": "parameter-override/host1.txt",
+    "evidence": "parameter-override/host1.txt",
+    "sha256": "6035d6b692b141a13d6670b1ba3339ac7fe92bdb286a173f44baaf0acf7ca163",
+    "provenance": "2026-11-10 user-authorized lost-control diagnostic fix; no model test"
+  },
+  {
+    "name": "parameter-override/initial-check-failure.txt",
+    "evidence": "parameter-override/initial-check-failure.txt",
+    "sha256": "0da5d7dc53d876f3f1e242d2ff06f007cdaf1d3322280df33ab3e4f292bf9f8f",
+    "provenance": "2026-11-10 user-authorized lost-control diagnostic fix; no model test"
+  },
+  {
+    "name": "parameter-override/initial-test-compile-failure.txt",
+    "evidence": "parameter-override/initial-test-compile-failure.txt",
+    "sha256": "89164c3e3e6fcbdce6f54a1e84460d1ac47e09470f978bb03aed10554ffaa2ab",
+    "provenance": "2026-11-10 user-authorized lost-control diagnostic fix; no model test"
+  },
+  {
+    "name": "parameter-override/regression.txt",
+    "evidence": "parameter-override/regression.txt",
+    "sha256": "ae9719509ee9e2d6e4efb3ff0f97c02654c992907b138e1d73fe2553270b8a97",
+    "provenance": "2026-11-10 user-authorized lost-control diagnostic fix; no model test"
+  },
+  {
+    "name": "parameter-override/rpi-analysis.json",
+    "evidence": "parameter-override/rpi-analysis.json",
+    "sha256": "f008c62c1a2c3f7473579c1bc238bd8330a260f22033bc3cb0197fd9999e6be5",
+    "provenance": "Read-only analysis of user-provided disk file; source unchanged"
   }
 ]

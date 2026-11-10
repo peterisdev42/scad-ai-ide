@@ -59,6 +59,7 @@ export class CustomizerViewProvider implements vscode.WebviewViewProvider, vscod
 <p id="panel-error" class="error" role="alert" hidden></p>
 </div>
 <p id="empty" class="message">Open an OpenSCAD file to customize its parameters.</p>
+<button id="overridden-location" class="empty-action" type="button" hidden>Go to overriding assignment</button>
 <p id="analysis-warning" class="message" role="status" hidden></p>
 <div id="tree" role="tree" aria-label="Model parameters"></div>
 <div id="status" class="sr-only" role="status" aria-live="polite"></div>
@@ -97,6 +98,16 @@ export class CustomizerViewProvider implements vscode.WebviewViewProvider, vscod
         // A hidden/recreated view must never edit the previously active file.
         if (data.target !== this.service.target || data.revision !== this.revision || !this.service.target) {
             this.refresh()
+            return
+        }
+        if (data.type === 'revealOverride') {
+            const first = this.service.analysisStatus.overriddenParameters[0]
+            if (first) {
+                const r = first.range
+                void vscode.window.showTextDocument(vscode.Uri.parse(this.service.target), { selection: new vscode.Range(r.start.line, r.start.character, r.end.line, r.end.character) }).then(undefined, (error: unknown) => {
+                    void this.view?.webview.postMessage({ type: 'panelError', target: data.target, revision: this.revision, message: error instanceof Error ? error.message : String(error) })
+                })
+            }
             return
         }
         if (data.type === 'groups' && data.value && typeof data.value === 'object') {

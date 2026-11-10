@@ -605,6 +605,9 @@
             }
           }
         ]
+      },
+      "revealOverride": {
+        "uiOnly": "Navigate to the overriding source assignment; no source mutation"
       }
     }
   },

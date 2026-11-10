@@ -1,10 +1,11 @@
 import { parseCustomizerAnnotation, splitOutsideStrings } from './CustomizerAnnotation'
 
 export const CUSTOMIZER_REFERENCE = 'bcf45a22caa954ca56ca287994cb6dbc368c67b2'
-const rule = (code: string, title: string, category: 'annotation' | 'constraint') => ({ code: `CUSTOMIZER_${code}`, title, category, severity: 'warning' as const })
+const rule = (code: string, title: string, category: 'annotation' | 'constraint' | 'visibility') => ({ code: `CUSTOMIZER_${code}`, title, category, severity: 'warning' as const })
 
 /** Stable rule identity and fix policy. Legacy Diagnostic.code remains unchanged. */
 export const customizerRules = {
+    'CUST-VIS-01': rule('PARAMETER_OVERRIDDEN', 'Review the assignment outside the Customizer region', 'visibility'),
     'CUST-ANN-01': rule('MALFORMED_HINT', 'Close the incomplete Customizer hint', 'annotation'),
     'CUST-ANN-02': rule('MALFORMED_HINT', 'Remove the invalid numeric step', 'constraint'),
     'CUST-RANGE-01': rule('INVALID_RANGE', 'Review the reversed range bounds', 'constraint'),

@@ -29,6 +29,7 @@ export function registerCustomizerDiagnostics(context: vscode.ExtensionContext) 
             const diagnostic = new vscode.Diagnostic(new vscode.Range(d.range.start.line, d.range.start.character, d.range.end.line, d.range.end.character), d.suggestedFix ? `${d.message}\n${d.suggestedFix}` : d.message, severity[d.severity])
             diagnostic.code = d.code
             diagnostic.source = 'OpenSCAD Customizer'
+            diagnostic.relatedInformation = d.relatedInformation?.map((related) => new vscode.DiagnosticRelatedInformation(new vscode.Location(document.uri, new vscode.Range(related.range.start.line, related.range.start.character, related.range.end.line, related.range.end.character)), related.message))
             return diagnostic
         }))
     }

@@ -1,3 +1,4 @@
+import type { SourceRange } from './CustomizerSourceTypes'
 import type { Parameter, ParameterValue } from './CustomizerModel'
 import { analyzeCustomizerSource } from './CustomizerSourceAnalyzer'
 
@@ -13,7 +14,7 @@ export type CustomizerChangeReason = 'values' | 'preset' | 'input' | 'commit'
 export class CustomizerService {
     target?: string
     parameters: Parameter[] = []
-    analysisStatus = { complete: true, incompleteReasons: [] as string[] }
+    analysisStatus = { complete: true, incompleteReasons: [] as string[], overriddenParameters: [] as Array<{ name: string; range: SourceRange }> }
     private readonly overrides = new Map<string, Map<string, ParameterValue>>()
 
     private readonly continuousTargets = new Set<string>()
@@ -62,7 +63,7 @@ export class CustomizerService {
     load(target: string, source: string): void {
         this.target = target
         const analysis = analyzeCustomizerSource(source, { includeCandidates: false, maxDiagnostics: 200 })
-        this.analysisStatus = { complete: analysis.complete, incompleteReasons: analysis.incompleteReasons }
+        this.analysisStatus = { complete: analysis.complete, incompleteReasons: analysis.incompleteReasons, overriddenParameters: analysis.diagnostics.filter(d => d.ruleId === 'CUST-VIS-01').map(d => ({ name: d.parameter!, range: d.range })) }
         this.parameters = analysis.parameters.map(({ widget: _widget, declarationRange: _declaration, annotationRange: _annotation, descriptionRange: _description, ...parameter }) => parameter)
         // Temporary incomplete buffers must not erase stored per-file overrides.
         if (!analysis.complete) return
@@ -78,7 +79,7 @@ export class CustomizerService {
     clear(): void {
         this.target = undefined
         this.parameters = []
-        this.analysisStatus = { complete: true, incompleteReasons: [] }
+        this.analysisStatus = { complete: true, incompleteReasons: [], overriddenParameters: [] }
     }
 
     value(parameter: Parameter): ParameterValue {

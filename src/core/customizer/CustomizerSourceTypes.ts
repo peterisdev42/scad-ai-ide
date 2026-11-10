@@ -6,13 +6,14 @@ export interface SourceRange { start: { line: number; character: number }; end: 
 export interface SourceDocumentIdentity { uri: string; version: number; sha256: string }
 export interface CustomizerDiagnostic {
     ruleId: CustomizerRuleId
-    evidence: { kind: 'explicit-effective-hint'; category: 'annotation' | 'constraint'; referenceOpenSCADCommit: string }
+    evidence: { kind: 'explicit-effective-hint' | 'superseded-parameter'; category: 'annotation' | 'constraint' | 'visibility'; referenceOpenSCADCommit: string }
     fix: { id: CustomizerRuleId; safety: 'safe' | 'review'; title: string }
     code: string
     severity: 'error' | 'warning' | 'information' | 'hint'
     message: string
     range: SourceRange
     parameter?: string
+    relatedInformation?: Array<{ range: SourceRange; message: string }>
     suggestedFix?: string
 }
 export interface CustomizerSourceParameter extends Parameter {

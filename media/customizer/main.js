@@ -390,7 +390,9 @@ import { attachCustomizerScrollbar } from './scrollbar.js'
         document.getElementById('preset-new').disabled = !!presets.readOnly
         document.getElementById('preset-export').disabled = !!presets.readOnly
         document.getElementById('empty').hidden = !!state.parameters.length
-        document.getElementById('empty').textContent = state.target ? 'No customizable parameters. Define literal values before the first code block.' : 'Open an OpenSCAD file to customize its parameters.'
+        const overridden = state.analysis?.overriddenParameters ?? []
+        document.getElementById('overridden-location').hidden = !state.target || !!state.parameters.length || !overridden.length
+        document.getElementById('empty').textContent = state.target && overridden.length ? 'Parameter declarations were found, but all available controls were removed by later assignments outside the Customizer region. Review the overriding assignments in Problems.' : state.target ? 'No customizable parameters. Define literal values before the first code block.' : 'Open an OpenSCAD file to customize its parameters.'
         if (signature === nextSignature) {
             next.parameters.forEach((p) => {
                 const record = rows.get(p.name)
@@ -549,5 +551,6 @@ import { attachCustomizerScrollbar } from './scrollbar.js'
         if (data?.type === 'scrollSettings') scrollbar.updateSettings(data.settings)
         if (data?.type === 'error' && data.target === state.target && data.revision === state.revision && rows.has(data.name)) setError(rows.get(data.name), data.message)
     })
+    document.getElementById('overridden-location').addEventListener('click', () => vscode.postMessage({ type: 'revealOverride', target: state.target, revision: state.revision }))
     vscode.postMessage({ type: 'ready' })
 })()

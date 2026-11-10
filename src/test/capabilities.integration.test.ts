@@ -42,6 +42,43 @@ suite('Agent capabilities extension host', () => {
         const state = await api.capabilities.invoke('development.status', {}, { actor: 'agent' })
         assert.equal(state.ok, true)
     })
+    test('Customizer lost-control Problems link both declarations and clear after an unsaved repair', async () => {
+        const waitFor = async (check: () => boolean) => {
+            const deadline = Date.now() + 10000
+            while (!check()) {
+                assert.ok(Date.now() < deadline, 'Expected Customizer diagnostics to update')
+                await new Promise(resolve => setTimeout(resolve, 50))
+            }
+        }
+        const extension = vscode.extensions.all.find(item => item.packageJSON.name === 'scad-ai-ide')!
+        await extension.activate()
+        const root = await mkdtemp(path.join(os.tmpdir(), 'scad-overridden-host-'))
+        const uri = vscode.Uri.file(path.join(root, 'model.scad'))
+        const source = 'width=10; // [1:100]\nmodule model() {}\nwidth=20;'
+        await writeFile(uri.fsPath, source)
+        try {
+            const document = await vscode.workspace.openTextDocument(uri)
+            await vscode.window.showTextDocument(document)
+            await waitFor(() => vscode.languages.getDiagnostics(uri).some(d => d.code === 'CUSTOMIZER_PARAMETER_OVERRIDDEN'))
+            const diagnostic = vscode.languages.getDiagnostics(uri).find(d => d.code === 'CUSTOMIZER_PARAMETER_OVERRIDDEN')!
+            assert.equal(diagnostic.severity, vscode.DiagnosticSeverity.Warning)
+            assert.equal(diagnostic.range.start.line, 2)
+            assert.equal(diagnostic.relatedInformation?.[0].location.uri.toString(), uri.toString())
+            assert.equal(diagnostic.relatedInformation?.[0].location.range.start.line, 0)
+            const actions = await vscode.commands.executeCommand<vscode.CodeAction[]>('vscode.executeCodeActionProvider', uri, diagnostic.range)
+            assert.ok(!actions?.some(a => a.kind?.contains(vscode.CodeActionKind.QuickFix) && a.diagnostics?.some(d => d.code === diagnostic.code)), 'No automatic duplicate deletion')
+            // Replace the entire buffer to keep the repair independent of newline offsets.
+            const repair = new vscode.WorkspaceEdit()
+            repair.replace(uri, new vscode.Range(document.positionAt(0), document.positionAt(document.getText().length)), 'width=10; // [1:100]\nmodule model() {}')
+            assert.equal(await vscode.workspace.applyEdit(repair), true)
+            await waitFor(() => !vscode.languages.getDiagnostics(uri).some(d => d.code === 'CUSTOMIZER_PARAMETER_OVERRIDDEN'))
+            assert.equal(document.isDirty, true)
+            assert.equal(await readFile(uri.fsPath, 'utf8'), source)
+        } finally {
+            await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor')
+            await rm(root, { recursive: true, force: true })
+        }
+    })
     test('AI Panel metadata covers every registered tool and all awareness resources without running a capability', async () => {
         const extension = vscode.extensions.all.find((item) => item.packageJSON.name === 'scad-ai-ide')!
         const api = await extension.activate() as Awaited<ReturnType<typeof activate>>

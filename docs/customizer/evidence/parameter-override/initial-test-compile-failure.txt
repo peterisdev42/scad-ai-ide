@@ -1,0 +1,6 @@
+npm notice run scad-ai-ide@0.0.1 test
+npm notice run npm run compile-tests && node --test out/test/capabilities.test.js out/test/capabilityServices.test.js out/test/notifications.test.js out/test/runtime.test.js out/test/github.test.js out/test/installation.test.js out/test/customizer.test.js out/test/customizerSource*.test.js out/test/language.test.js out/test/markdown.test.js && npm run test:libraries && npm run test:preview
+npm notice run scad-ai-ide@0.0.1 compile-tests
+npm notice run tsc -p . --outDir out
+src/test/capabilities.integration.test.ts(55,19): error TS2304: Cannot find name 'waitFor'.
+src/test/capabilities.integration.test.ts(67,19): error TS2304: Cannot find name 'waitFor'.

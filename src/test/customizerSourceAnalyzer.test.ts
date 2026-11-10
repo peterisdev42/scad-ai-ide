@@ -79,7 +79,7 @@ test('legal range hints and effective literal reassignments do not produce dupli
     assert.deepEqual(analysis.parameters.map((p) => [p.name, p.defaultValue, p.widget]), [['width', 30, 'slider'], ['height', 40, 'slider']])
     assert.deepEqual(codes('width=10; // [1:1:200]\nmodule model() { width=20; height=30; }'), [])
     assert.deepEqual(codes('width=10; // [1:1:200]\n/* [Hidden] */\nwidth=20;'), [])
-    assert.deepEqual(codes('width=10; // [1:1:200]\nmodule model() {}\nwidth=20;'), [])
+    assert.deepEqual(codes('width=10; // [1:1:200]\nmodule model() {}\nwidth=20;'), ['CUSTOMIZER_PARAMETER_OVERRIDDEN'])
 })
 
 test('superseded invalid hints/defaults stop reporting once the effective declaration is corrected', () => {
@@ -202,4 +202,22 @@ test('seeded long-tail prose corpus never creates a missing-bracket diagnostic',
         const source = `width=1; // ${hint}${suffix}\nmodule model() { cube(width); }\n`
         assert.deepEqual(analyzeCustomizerSource(source).diagnostics, [], `ordinary tail corpus case ${index}`)
     }
+})
+
+
+test('post-block overrides diagnose lost controls at the effective assignment with the original location', () => {
+    const source = 'width=10; // [1:100]\nheight=20;\nmodule model() {}\nwidth=30;\nwidth=40;\nheight=50;'
+    const result = analyzeCustomizerSource(source)
+    assert.deepEqual(result.parameters, [])
+    assert.equal(result.diagnostics.length, 2)
+    const warning = result.diagnostics[0]
+    assert.equal(warning.ruleId, 'CUST-VIS-01')
+    assert.equal(warning.severity, 'warning')
+    assert.equal(warning.range.start.line, 4)
+    assert.equal(warning.relatedInformation?.[0].range.start.line, 0)
+    assert.equal(warning.fix.safety, 'review')
+    assert.equal(analyzeCustomizerSource(source, { includeCandidates: false }).diagnostics.length, 2)
+    const partial = analyzeCustomizerSource('kept=1;\n' + source)
+    assert.deepEqual(partial.parameters.map(p => p.name), ['kept'])
+    assert.equal(partial.diagnostics.length, 2)
 })

@@ -390,3 +390,16 @@ test('preset decoding follows native mixed-menu order, bool encoding and NFC wit
     const review = analyzePresetFile('{"fileFormatVersion":"1","parameterSets":{"A":{"missing":"1","n":"not-an-option"}}}', [numericFirst], true)
     assert.deepEqual(review.diagnostics.map(issue => issue.ruleId), ['PRESET-005','PRESET-006'])
 })
+
+
+test('service exposes lost-control locations and clears them when repaired or closed', () => {
+    const service = new CustomizerService()
+    service.load('file:///model.scad', 'width=10;\nmodule model() {}\nwidth=20;')
+    assert.equal(service.parameters.length, 0)
+    assert.equal(service.analysisStatus.overriddenParameters[0].name, 'width')
+    assert.equal(service.analysisStatus.overriddenParameters[0].range.start.line, 2)
+    service.load('file:///model.scad', 'width=10;\nmodule model() {}')
+    assert.deepEqual(service.analysisStatus.overriddenParameters, [])
+    service.clear()
+    assert.deepEqual(service.analysisStatus.overriddenParameters, [])
+})

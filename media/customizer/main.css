@@ -83,6 +83,30 @@ select {
     padding: 4px 12px 4px 20px;
     line-height: 22px;
 }
+/* Secondary action in the empty view; colors follow the active VS Code theme. */
+.empty-action {
+    appearance: none;
+    display: block;
+    width: calc(100% - 32px);
+    min-height: 26px;
+    margin: 4px 12px 8px 20px;
+    padding: 4px 8px;
+    border: 1px solid var(--vscode-button-border, var(--vscode-contrastBorder, transparent));
+    border-radius: var(--vscode-cornerRadius-small, 3px);
+    color: var(--vscode-button-secondaryForeground);
+    background: var(--vscode-button-secondaryBackground);
+    line-height: 1.4;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+.empty-action:enabled:hover,
+.empty-action:enabled:active {
+    background: var(--vscode-button-secondaryHoverBackground);
+}
+.empty-action:focus-visible {
+    outline: 1px solid var(--vscode-focusBorder);
+    outline-offset: 2px;
+}
 .tree-row {
     min-height: var(--row-height);
     line-height: var(--row-height);
