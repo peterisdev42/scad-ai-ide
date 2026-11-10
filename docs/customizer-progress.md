@@ -260,3 +260,11 @@ qwen温度0初测与澄清Skill后复测均因模型计划目录/文件写请求
 Pinned run42748900128/job129607539571成功并实际上传产物13733825430。下载5,764,163byte ZIP，SHA256 774ea6b921a049f844c580cc9b52f4e754b9130a4cdcc9299adb56358961f342，与API digest一致；内含16,456,888byte executable，SHA256 c2cde5c9f3f43fa4aa2eb9fd46f1fad2e5913c2bf22d538f701760d82626cae8，与build-info一致，commit为精确bcf45a22。独立检查原始JSON41条parity/nativeExpectationMatches全true，10条echo全匹配，全部原始报告、子模块、CMakeCache与环境记录已归档。binary ZIP留.build，不打包VSIX。不是完整pinned Qt或全平台CLI构建。
 
 原import runner成功标签硬编码other-build，即使提供pinned build-info也不识别；保留本轮原始报告，不回写历史标签。runner现增加actual binary SHA及与build-info commit/hash匹配的pinnedBinary标签。本机managed10项实跑通过且仍正确标非pinned；新runner精确pinned标签待下一轮CI，不冒充已执行。
+
+## ADR11 用户批准后实施
+
+成功SourceApply Plan新增continuation，实际工具名来自catalog，input恰为mode+真实planId，requiresReview只作提示。严格schema/授权/Trust/CAS/120s/一次性均保持。Node32通过，首次新增夹具31/1因VM错误类身份不同，修正夹具后32通过；真实Host新增三目标、取消、输入拒绝、重复及源码变化断言通过。工具描述/Skill同步说明准确调用和非重试错误停止规则，不允许任务禁止的writer回退。
+
+同轮定位并修复重复Preset watcher误增revision，修复前定向用例实际5→6失败，修复后41项浏览器通过，真实内容修改仍STALE_STATE且write比较原始bytes。第一轮全Host30/4，3项为新测试profile错误关闭LSP、1项为重复watcher；修正后33/1，Editor Undo实际多空行。加入仅合成文档phase/edit trace后全Host34通过，未证明偶发原生输入根因；失败原样保留。
+
+串行Production新包4533358bytes，SHA256 242c5671cf6fa6e1703f3c0690f4fb8006d211ca3014f322cb3ba26573159f03，40tools/2Instructions/5Skills和实际最低Host安装通过；installed smoke直接使用continuation.input提交且重复拒绝。此包的真实mimo四场景+UI取消探针正在顺序执行，未标模型通过；调用ok比例、预期拒绝、实际任务完成和最终回答将分别记录，旧fac54ddf结果不冒充新包。

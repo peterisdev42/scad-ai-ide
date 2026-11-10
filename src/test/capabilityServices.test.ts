@@ -390,12 +390,12 @@ async function sourceFixture() {
             return true
         },
     } }
-    const module = load<typeof import('../features/sidebar/CustomizerSourceDomainService')>('../features/sidebar/CustomizerSourceDomainService.js', api)
+    const module = load<typeof import('../features/sidebar/CustomizerSourceDomainService')>('../features/sidebar/CustomizerSourceDomainService.js', api, { '/CapabilityTypes': { CapabilityError } })
     const domain = new module.CustomizerSourceDomainService(() => now)
     const uri = document.uri.toString()
     const plan = async () => {
         const { identity } = await domain.analyze(uri)
-        return domain.apply({ mode: 'plan', uri, identity: { version: identity.version, sha256: identity.sha256 }, edits: [{ kind: 'annotateExisting', name: 'width', widget: 'slider', range: { min: 10, max: 100, step: 5 } }] }) as Promise<{ planId: string }>
+        return domain.apply({ mode: 'plan', uri, identity: { version: identity.version, sha256: identity.sha256 }, edits: [{ kind: 'annotateExisting', name: 'width', widget: 'slider', range: { min: 10, max: 100, step: 5 } }] }) as Promise<{ planId: string; continuation: { tool: string; input: { mode: 'commit'; planId: string }; requiresReview: true } }>
     }
     return { root, file, uri, domain, document, api, plan, get text() { return text }, get applied() { return applied }, change(value: string, version = true) { text = value; if (version) document.version++ }, expire() { now += 120001 }, reject() { reject = true }, interfere() { interfere = true }, close() { document.isClosed = true; close.fire(document) }, async dispose() { domain.dispose(); await rm(root, { recursive: true, force: true }) } }
 }
@@ -408,13 +408,24 @@ test('source plan/commit reads unsaved buffers, never writes disk and consumes p
         assert.equal(analysis.parameters[0].description, 'Unsaved')
         const plan = await f.plan()
         assert.equal(f.applied, 0)
-        const committed = await f.domain.apply({ mode: 'commit', planId: plan.planId }) as { semanticPass: boolean; savedToDisk: boolean }
+        assert.equal(plan.continuation.tool, capabilityCatalog.find(definition => definition.id === 'customizer.sourceApply')!.toolName)
+        assert.equal(plan.continuation.requiresReview, true)
+        assert.deepEqual(JSON.parse(JSON.stringify(plan.continuation.input)), { mode: 'commit', planId: plan.planId })
+        const registry = new CapabilityRegistry()
+        registry.bind('customizer.sourceApply', { available: () => ({ enabled: true }), invoke: (input, context) => f.domain.apply(input, context) })
+        const handler = registry.resolve('customizer.sourceApply', plan.continuation.input, { actor: 'agent' })
+        for (const extra of [{ requiresReview: false }, { approved: true }, { skipConfirmation: true }]) {
+            assert.throws(() => registry.resolve('customizer.sourceApply', { ...plan.continuation.input, ...extra }, { actor: 'agent' }), (error: unknown) => (error as CapabilityError).code === 'INVALID_INPUT')
+        }
+        assert.equal(f.applied, 0, 'Review metadata neither authorizes nor automatically commits')
+        const committed = await handler.invoke(plan.continuation.input, { actor: 'agent' }) as { semanticPass: boolean; savedToDisk: boolean }
         assert.equal(committed.semanticPass, true)
         assert.equal(committed.savedToDisk, false)
+        assert.equal('continuation' in committed, false, 'Commit results cannot offer another continuation')
         assert.equal(readFileSync(f.file, 'utf8'), 'width=40;\n')
         assert.match(f.text, /\[10:5:100\]/)
         assert.equal((await f.domain.validate(f.uri, [{ name: 'width', widget: 'slider' }])).semanticPass, true)
-        await assert.rejects(f.domain.apply({ mode: 'commit', planId: plan.planId }), (e: unknown) => (e as CapabilityError).code === 'PLAN_EXPIRED')
+        await assert.rejects(f.domain.apply(plan.continuation.input), (e: unknown) => (e as CapabilityError).code === 'PLAN_EXPIRED')
     } finally { await f.dispose() }
 })
 test('source CAS rejects version, hash-only changes, closed targets, expiry, trust loss and cancellation', async () => {
@@ -429,10 +440,38 @@ test('source CAS rejects version, hash-only changes, closed targets, expiry, tru
             if (scenario === 'trust') f.api.workspace.isTrusted = false
             const abort = new AbortController()
             if (scenario === 'cancel') abort.abort()
-            await assert.rejects(f.domain.apply({ mode: 'commit', planId: plan.planId }, { actor: 'agent', signal: abort.signal }), scenario)
+            const expected = { version: 'STALE_SOURCE', hash: 'STALE_SOURCE', close: 'PLAN_EXPIRED', expiry: 'PLAN_EXPIRED', trust: 'UNTRUSTED_WORKSPACE', cancel: 'CANCELLED' }[scenario]
+            await assert.rejects(f.domain.apply(plan.continuation.input, { actor: 'agent', signal: abort.signal }), (error: unknown) => (error as CapabilityError).code === expected, scenario)
             assert.equal(f.applied, 0, scenario)
         } finally { await f.dispose() }
     }
+})
+test('source continuation retains native review and cancellation, and failed plans expose no continuation', async () => {
+    const f = await sourceFixture()
+    try {
+        const registry = new CapabilityRegistry()
+        registry.bind('customizer.sourceApply', { available: () => ({ enabled: true }), invoke: (input, context) => f.domain.apply(input, context) })
+        const dispatcher = new CapabilityDispatcher(registry)
+        const { AgentToolAdapter } = load<typeof import('../features/agents/AgentToolAdapter')>('../features/agents/AgentToolAdapter.js', {
+            LanguageModelToolResult: class { constructor(readonly content: unknown[]) {} },
+            LanguageModelTextPart: class { constructor(readonly value: string) {} },
+        })
+        const adapter = new AgentToolAdapter(capabilityCatalog.find(definition => definition.id === 'customizer.sourceApply')!, dispatcher)
+        const plan = await f.plan()
+        assert.ok(adapter.prepareInvocation({ input: plan.continuation.input }).confirmationMessages, 'requiresReview is advisory; the actual adapter still requires user confirmation')
+        const cancelled = await adapter.invoke({ input: plan.continuation.input, toolInvocationToken: undefined } as vscode.LanguageModelToolInvocationOptions<Record<string, unknown>>, { isCancellationRequested: true, onCancellationRequested: () => disposable } as unknown as vscode.CancellationToken)
+        const cancellation = JSON.parse((cancelled.content[0] as vscode.LanguageModelTextPart).value)
+        assert.equal(cancellation.error.code, 'CANCELLED')
+        assert.equal(f.applied, 0)
+        assert.equal(f.text, 'width=40;\n')
+        f.change('width=base/2;\n')
+        const { identity } = await f.domain.analyze(f.uri)
+        const failed = await dispatcher.invoke('customizer.sourceApply', { mode: 'plan', uri: f.uri, identity: { version: identity.version, sha256: identity.sha256 }, edits: [{ kind: 'annotateExisting', name: 'width', widget: 'slider', range: { min: 1, max: 50 } }] }, { actor: 'agent' })
+        assert.equal(failed.ok, false)
+        if (!failed.ok) assert.equal(failed.error.code, 'NEEDS_MANUAL_REVIEW')
+        assert.equal('data' in failed, false, 'A failed plan must not offer a continuation')
+        assert.equal(f.applied, 0)
+    } finally { await f.dispose() }
 })
 test('source tools independently reject outside paths and symlink escapes, with read-only analysis in untrusted workspaces', async () => {
     const f = await sourceFixture()

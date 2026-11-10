@@ -964,6 +964,31 @@ test('native effective bounds and off-grid values survive GUI, Agent and keyboar
     assert.ok(service.getArguments().includes('offgrid=18'))
 })
 
+test('unchanged preset watcher events preserve revision while real file changes invalidate stale actions', async (t) => {
+    const { page, service, domain, files, dialogs, capturePresetChanges, refreshPresets } = await fixture(t)
+    const file = 'file:///models/stable-watch.json'
+    const data = { fileFormatVersion: '1', parameterSets: { A: { field_0: '7' } } }
+    files.set(file, JSON.stringify(data))
+    await openPresetFile(page, dialogs, file)
+    let state = domain.snapshot()
+    await domain.preset(state.target, state.revision, 'select', 'A')
+    state = domain.snapshot()
+    const callbacks = capturePresetChanges()
+    assert.ok(callbacks.length > 0)
+    callbacks.forEach(callback => callback())
+    await new Promise(resolve => setTimeout(resolve, 25))
+    assert.equal(domain.snapshot().revision, state.revision, 'Reading identical file state cannot invalidate an already-read target revision')
+    await domain.preset(state.target, state.revision, 'select', 'A')
+    state = domain.snapshot()
+    data.parameterSets.A.field_0 = '8'
+    files.set(file, JSON.stringify(data))
+    refreshPresets()
+    await page.waitForFunction(() => document.querySelector('[data-name="field_0"] input').value === '8')
+    assert.equal(service.getOverrides(state.target).field_0, 8)
+    assert.ok(domain.snapshot().revision > state.revision)
+    await assert.rejects(domain.preset(state.target, state.revision, 'select', 'A'), error => error.code === 'STALE_STATE')
+})
+
 test('disposed customizer domains reject stale value and reset mutations while shared state remains live', async (t) => {
     const { service, domain } = await fixture(t)
     service.set('field_0', 9)

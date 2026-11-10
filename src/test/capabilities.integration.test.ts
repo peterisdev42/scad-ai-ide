@@ -305,6 +305,70 @@ suite('Agent capabilities extension host', () => {
             await rm(root, { recursive: true, force: true })
         }
     })
+    test('source plan continuation commits three targets through the strict dispatcher and preserves cancellation, one-shot and source CAS', async function () {
+        const folder = vscode.workspace.workspaceFolders?.[0]
+        if (!folder || !vscode.workspace.isTrusted) { this.skip(); return }
+        const extension = vscode.extensions.all.find(item => item.packageJSON.name === 'scad-ai-ide')!
+        const api = await extension.activate() as Awaited<ReturnType<typeof activate>>
+        const uri = vscode.Uri.joinPath(folder.uri, `customizer-continuation-${Date.now()}.scad`)
+        const original = 'width=40;\nshape="round";\ninternalOffset=0.01;\nmodule model() { cube([width,2,3]); }\nmodel();\n'
+        await vscode.workspace.fs.writeFile(uri, Buffer.from(original))
+        const document = await vscode.workspace.openTextDocument(uri)
+        await vscode.window.showTextDocument(document)
+        try {
+            const analyzed = await api.customizerSource.analyze(uri.toString())
+            const planResult = await api.capabilities.invoke('customizer.sourceApply', { mode: 'plan', uri: uri.toString(), identity: { version: analyzed.identity.version, sha256: analyzed.identity.sha256 }, edits: [
+                { kind: 'annotateExisting', name: 'width', widget: 'slider', range: { min: 10, max: 100, step: 5 }, group: 'Dimensions', description: 'Width in millimeters' },
+                { kind: 'changeWidget', name: 'shape', widget: 'dropdown', choices: [{ value: 'round', label: 'Round' }, { value: 'square', label: 'Square' }], group: 'Appearance' },
+                { kind: 'hideParameter', name: 'internalOffset' },
+            ] }, { actor: 'agent' })
+            assert.equal(planResult.ok, true)
+            if (!planResult.ok) return
+            const plan = planResult.data as { planId: string; continuation: { tool: string; input: { mode: 'commit'; planId: string }; requiresReview: boolean } }
+            assert.equal(plan.continuation.tool, capabilityCatalog.find(definition => definition.id === 'customizer.sourceApply')!.toolName)
+            assert.ok(vscode.lm.tools.some(tool => tool.name === plan.continuation.tool))
+            assert.deepEqual(plan.continuation.input, { mode: 'commit', planId: plan.planId })
+            assert.equal(plan.continuation.requiresReview, true)
+            assert.equal(document.getText(), original, 'Returning continuation cannot execute it')
+            const cancel = new AbortController(); cancel.abort()
+            const cancelled = await api.capabilities.invoke('customizer.sourceApply', plan.continuation.input, { actor: 'agent', signal: cancel.signal })
+            assert.equal(cancelled.ok, false)
+            if (!cancelled.ok) assert.equal(cancelled.error.code, 'CANCELLED')
+            const forged = await api.capabilities.invoke('customizer.sourceApply', { ...plan.continuation.input, requiresReview: false }, { actor: 'agent' })
+            assert.equal(forged.ok, false)
+            if (!forged.ok) assert.equal(forged.error.code, 'INVALID_INPUT')
+            assert.equal(document.getText(), original)
+            const committed = await api.capabilities.invoke('customizer.sourceApply', plan.continuation.input, { actor: 'agent' })
+            assert.equal(committed.ok, true)
+            if (committed.ok) assert.equal((committed.data as { semanticPass: boolean }).semanticPass, true)
+            const validation = await api.customizerSource.validate(uri.toString(), [
+                { name: 'width', widget: 'slider', range: { min: 10, max: 100, step: 5 }, group: 'Dimensions', description: 'Width in millimeters' },
+                { name: 'shape', widget: 'dropdown', group: 'Appearance', choices: [{ value: 'round', label: 'Round' }, { value: 'square', label: 'Square' }] },
+                { name: 'internalOffset', visible: false },
+            ])
+            assert.equal(validation.semanticPass, true)
+            assert.equal(validation.matched, 3)
+            assert.equal(document.isDirty, true)
+            assert.equal(Buffer.from(await vscode.workspace.fs.readFile(uri)).toString(), original)
+            assert.equal(document.getText().slice(document.getText().indexOf('module model()')), original.slice(original.indexOf('module model()')))
+            const replay = await api.capabilities.invoke('customizer.sourceApply', plan.continuation.input, { actor: 'agent' })
+            assert.equal(replay.ok, false)
+            if (!replay.ok) assert.equal(replay.error.code, 'PLAN_EXPIRED')
+            const fresh = await api.customizerSource.analyze(uri.toString())
+            const another = await api.customizerSource.apply({ mode: 'plan', uri: uri.toString(), identity: { version: fresh.identity.version, sha256: fresh.identity.sha256 }, edits: [{ kind: 'changeWidget', name: 'width', widget: 'slider', range: { min: 10, max: 200, step: 5 } }] }) as { continuation: { input: { mode: 'commit'; planId: string } } }
+            const concurrent = new vscode.WorkspaceEdit(); concurrent.insert(uri, new vscode.Position(0, 0), '// Concurrent continuation edit\n')
+            assert.equal(await vscode.workspace.applyEdit(concurrent), true)
+            const changedBuffer = document.getText()
+            const stale = await api.capabilities.invoke('customizer.sourceApply', another.continuation.input, { actor: 'agent' })
+            assert.equal(stale.ok, false)
+            if (!stale.ok) assert.equal(stale.error.code, 'STALE_SOURCE')
+            assert.equal(document.getText(), changedBuffer)
+            assert.equal(Buffer.from(await vscode.workspace.fs.readFile(uri)).toString(), original)
+        } finally {
+            await vscode.commands.executeCommand('workbench.action.closeAllEditors')
+            await vscode.workspace.fs.delete(uri)
+        }
+    })
     test('source tools edit unsaved buffers with CAS and refresh GUI schema, diagnostics and Quick Fixes', async function () {
         const folder = vscode.workspace.workspaceFolders?.[0]
         if (!folder || !vscode.workspace.isTrusted) { this.skip(); return }
@@ -550,9 +614,14 @@ suite('Agent capabilities extension host', () => {
             const original = actor === 'agent' ? 'width=40;\n' : 'width=40; // [10:0:100]\n'
             await vscode.workspace.fs.writeFile(uri, Buffer.from(original))
             const document = await vscode.workspace.openTextDocument(uri)
+            let phase = 'initial'
+            const inputTrace: unknown[] = []
+            const trace = vscode.workspace.onDidChangeTextDocument(event => {
+                if (event.document === document) inputTrace.push({ phase, version: document.version, reason: event.reason, changes: event.contentChanges.map(change => ({ offset: change.rangeOffset, length: change.rangeLength, text: change.text })), buffer: document.getText() })
+            })
             const waitFor = async (check: () => boolean) => {
                 const deadline = Date.now() + 5000
-                while (!check()) { assert.ok(Date.now() < deadline, `Undo/Redo did not establish its exact buffer: ${document.getText()}`); await new Promise(resolve => setTimeout(resolve, 25)) }
+                while (!check()) { assert.ok(Date.now() < deadline, `Undo/Redo did not establish its exact buffer: ${JSON.stringify({ phase, buffer: document.getText(), inputTrace })}`); await new Promise(resolve => setTimeout(resolve, 25)) }
             }
             try {
                 await vscode.window.showTextDocument(document)
@@ -560,6 +629,7 @@ suite('Agent capabilities extension host', () => {
                 earlier.insert(uri, new vscode.Position(0, 0), '// Earlier unsaved user change\n')
                 assert.equal(await vscode.workspace.applyEdit(earlier), true)
                 const before = document.getText()
+                phase = 'applying source transaction'
                 if (actor === 'agent') {
                     const { identity } = await api.customizerSource.analyze(uri.toString())
                     const plan = await api.customizerSource.apply({ mode: 'plan', uri: uri.toString(), identity, edits: [{ kind: 'changeWidget', name: 'width', widget: 'slider', range: { min: 10, max: 100 } }] }) as { planId: string }
@@ -574,17 +644,21 @@ suite('Agent capabilities extension host', () => {
                     assert.equal(applied?.verified, true)
                 }
                 const after = document.getText()
+                phase = 'before native focus'
                 assert.notEqual(after, before)
                 assert.equal(Buffer.from(await vscode.workspace.fs.readFile(uri)).toString(), original)
                 // Do not mark UI Undo as passed from WorkspaceEdit alone. Fail the
                 // environment prerequisite explicitly if the native window is unfocusable.
                 await focusTestEditor(document)
+                phase = 'native undo'
                 await vscode.commands.executeCommand('undo')
                 await waitFor(() => document.getText() === before)
                 assert.equal(document.isDirty, true)
+                phase = 'native redo'
                 await vscode.commands.executeCommand('redo')
                 await waitFor(() => document.getText() === after)
             } finally {
+                trace.dispose()
                 if (!document.isClosed) {
                     await vscode.window.showTextDocument(document)
                     await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor')

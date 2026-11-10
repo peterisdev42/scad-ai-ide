@@ -1075,7 +1075,7 @@
     "id": "customizer.sourceApply",
     "toolName": "scad_ai_ide_customizer_sourceApply",
     "title": "Plan or commit Customizer source edits",
-    "description": "Author Customizer SOURCE, not runtime Overrides: plan bounded literal/annotation/group edits with sourceAnalyze version/hash, inspect preview, then commit the single-use planId within 120 seconds. Requires Workspace Trust and commit confirmation; never accepts model approval. Writes only the buffer, never saves. On STALE_SOURCE reanalyze and replan; on NEEDS_MANUAL_REVIEW use ordinary editor changes and sourceValidate. Check applied AND semanticPass/postValidation; never claim success after failure.",
+    "description": "Author Customizer SOURCE, not runtime Overrides: plan bounded literal/annotation/group edits with sourceAnalyze version/hash, inspect preview, then commit the single-use planId within 120 seconds. Successful plans return data.continuation: review the diff and invoke its registered tool with its input unchanged (mode and planId only). requiresReview is guidance, never authorization or a Commit input field. Requires Workspace Trust and commit confirmation; never accepts model approval. Writes only the buffer, never saves. On STALE_SOURCE reanalyze and replan; on NEEDS_MANUAL_REVIEW stop unchanged-source retries, use ordinary editor changes only if the user task permits them, otherwise explain manual handling. Check applied AND semanticPass/postValidation; never claim success after failure.",
     "risk": "change",
     "inputSchema": {
       "type": "object",

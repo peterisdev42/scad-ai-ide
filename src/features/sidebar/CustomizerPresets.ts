@@ -110,6 +110,10 @@ export class CustomizerPresets implements vscode.Disposable {
         try {
             const { file, exists } = await this.read(presets.uri)
             if (this.disposed || this.target !== target || generation !== this.generation || reload !== this.reloadGeneration) return
+            // Providers may deliver delayed or duplicate events after import/write.
+            // Keep revision CAS meaningful: only an observable file/error change
+            // invalidates readers; the write transaction still compares raw bytes.
+            if (presets.exists === exists && presets.error === undefined && JSON.stringify(presets.file) === JSON.stringify(file)) return
             const active = presets.active
             const reapply = active && !this.modified(presets) && JSON.stringify(presets.file.parameterSets[active]) !== JSON.stringify(file.parameterSets[active])
             presets.file = file

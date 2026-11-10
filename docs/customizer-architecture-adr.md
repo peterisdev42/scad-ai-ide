@@ -263,3 +263,7 @@ ADR09 资源补充（2026-11-10）：实际mimo标签三目标首测中，Valida
 A为新增公开返回字段，依据用户“改变公开行为先确认”先请求批准，当前未实现。批准后验收：成功plan的continuation.input逐字节包含实际planId且无uri/identity/edits；真实Host以该对象提交并验证3目标/未保存/磁盘不变；用户取消、stale、expired、single-use仍拒绝且无额外编辑；失败plan无continuation；catalog/生产安装与四场景模型回归独立记录。模型次数/回答正确性仍逐项审阅，不把新增字段本身写成模型PASS。
 
 ADR11批准记录：用户明确批准方案A，并要求仅成功Plan返回实际planId/已注册tool；requiresReview不构成授权，严格Commit schema和全部确认/Trust/CAS/TTL/一次性保留。新增直接使用continuation.input的合法提交及expiry/replay/source-change/trust-revoke/cancel测试，并用真实mimo分别报告调用成功率与任务结果。批准前提案保留为决策历史，以下实现与测试继续，不重复索要授权。
+
+ADR11实施与当前验证：成功plan返回continuation，tool由同一catalog解析，input只有mode=commit与实际planId，requiresReview只存在输出。未改Commit schema/安全额度/确认适配。失败Plan及Commit结果无continuation。Node capability32通过，直接使用continuation.input提交合法，requiresReview/approved/skipConfirmation额外字段拒绝；expiry、repeat、version/hash变化、close、trust撤销与cancel按既有精确错误拒绝，buffer不变；真实AgentToolAdapter仍产生confirmation并将取消映射CANCELLED。新增真实最低Host三目标通过strict dispatcher直接提交/取消/额外字段拒绝/一次性/源码CAS，完整34项最终通过。新测试首次VM错误类跨realm导致31/1，修正夹具构造器一致性后32通过，未放宽产品错误处理。
+
+同轮Preset实际Host在create时出现STALE_STATE，另加确定性controller+Chromium复现：相同文件watcher事件令revision5→6。现在仅对实际file/existence/error状态改变发布更新，文件写事务仍比较原始bytes；真实文件更改仍使旧revision失效。浏览器41通过，真实Host原I/O场景通过。首次全Host30/4，其中3项因测试profile误关闭LSP；修正profile后33/1，Editor原生Undo多空行；添加仅合成文档phase/event trace后34通过，但未证明偶发输入根因，保留原失败。原生mimo复测及UI取消探针接续进行，不能把上述自动测试写成模型问题已解决。

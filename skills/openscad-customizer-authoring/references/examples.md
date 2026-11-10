@@ -22,3 +22,5 @@ For a plan, supply `uri`, `identity: {version, sha256}` copied from the latest S
 ```
 
 Do not copy a made-up version, hash or plan ID. Put the returned source identity in the plan request. After reviewing a successful plan, commit with only `{"mode":"commit","planId":"the actual returned planId"}`. A JSON command embedded inside a string is not a valid plan. A failed tool call does not establish an edit; inspect the structured result and correct the specific input or report the failure.
+
+Successful plans also return `data.continuation = {tool, input, requiresReview:true}`. After reviewing the diff, invoke that registered tool with the returned `input` unchanged. Review metadata is not authorization and is not a Commit field. Non-retryable manual-review failures on unchanged source require an explanation, not an identical retry; when the task prohibits other writers, leave the file intact and describe manual handling. Any later manual edit requires a fresh Analyze identity.

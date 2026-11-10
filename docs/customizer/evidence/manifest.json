@@ -793,5 +793,61 @@
     "evidence": "mimo-failure-intents/archive-hashes.json",
     "sha256": "364686b1fd1c657f0c14b6dbfa5d66d66fabf6e92393f14dddef3b2135570f8b",
     "scope": "Normal actual NativeChat run; see independent review for passed numbered criteria and retained protocol defects"
+  },
+  {
+    "name": "adr11-capabilities-vm-fixture-failure.txt",
+    "evidence": "adr11-capabilities-vm-fixture-failure.txt",
+    "sha256": "8190bc0a31f8be95e2c3b7f19891c868b736d2c48174032bed599885184a2800",
+    "originalSha256": "9ac52591a9ba2082749aa8d9fc5172b03f230e5f722682024b06da043e634b21",
+    "scope": "Executed ADR11 or watcher acceptance; failed runs retained and classified in current ledger"
+  },
+  {
+    "name": "adr11-capabilities32.txt",
+    "evidence": "adr11-capabilities32.txt",
+    "sha256": "df3a9ffa40a418d7c316e07786424d477966f355142182759edb1a6d3ec782f1",
+    "originalSha256": "df3a9ffa40a418d7c316e07786424d477966f355142182759edb1a6d3ec782f1",
+    "scope": "Executed ADR11 or watcher acceptance; failed runs retained and classified in current ledger"
+  },
+  {
+    "name": "preset-identical-watcher-before-failure.txt",
+    "evidence": "preset-identical-watcher-before-failure.txt",
+    "sha256": "0276b98c50f8b7297e9cf5873f3dd975e0b8cf011ae2713a0fdc3b0fe897648c",
+    "originalSha256": "20ccd315d3704911f4d1cf56968b34a258736c5b1255ad98841d7d0219508c83",
+    "scope": "Executed ADR11 or watcher acceptance; failed runs retained and classified in current ledger"
+  },
+  {
+    "name": "adr11-browser41.txt",
+    "evidence": "adr11-browser41.txt",
+    "sha256": "35a87f79ed9d66b7f84354e997e00d138aca654d57ec3aef97061a8e48c5bccf",
+    "originalSha256": "35a87f79ed9d66b7f84354e997e00d138aca654d57ec3aef97061a8e48c5bccf",
+    "scope": "Executed ADR11 or watcher acceptance; failed runs retained and classified in current ledger"
+  },
+  {
+    "name": "adr11-host-profile-failure.txt",
+    "evidence": "adr11-host-profile-failure.txt",
+    "sha256": "bbe7d39f3ab937dcf9e64c38579ad3b97845c2c89ce9c82c0974b5ceaf459307",
+    "originalSha256": "8f444ea1f5e088aa9385917a516fb33c3097fbd4e630f3694d8974ebeca0c679",
+    "scope": "Executed ADR11 or watcher acceptance; failed runs retained and classified in current ledger"
+  },
+  {
+    "name": "adr11-host-undo-input-failure.txt",
+    "evidence": "adr11-host-undo-input-failure.txt",
+    "sha256": "e532af65617b2c056a07aeca05c20826185d9a45031cf38d9d3f2d36396c0261",
+    "originalSha256": "0a1748134b0a1361abe4037f1359be4915d1ae9bcec53d22a5afb4e9ff4f20f4",
+    "scope": "Executed ADR11 or watcher acceptance; failed runs retained and classified in current ledger"
+  },
+  {
+    "name": "adr11-host34.txt",
+    "evidence": "adr11-host34.txt",
+    "sha256": "0f0dd472ddf3d01638072e50ed9ebfdedea4cc0b59eeb8c5da25cb065672e5fe",
+    "originalSha256": "fc76c559a06454f7d5f11c78cccb835fb2caa3852a23bd469ccec0a8cc0cf9c9",
+    "scope": "Executed ADR11 or watcher acceptance; failed runs retained and classified in current ledger"
+  },
+  {
+    "name": "installed-adr11-continuation.txt",
+    "evidence": "installed-adr11-continuation.txt",
+    "sha256": "755f5a61873414db39e332ce4ad01d371b519fd62480555399daea31019d20e8",
+    "originalSha256": "e731466623435cc28e6be4f8030445b1ef58563f7a44e4a0716993af5ff9936b",
+    "scope": "Executed ADR11 or watcher acceptance; failed runs retained and classified in current ledger"
   }
 ]
