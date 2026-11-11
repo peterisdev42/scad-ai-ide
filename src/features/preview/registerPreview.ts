@@ -1,3 +1,4 @@
+import { PreviewSourceProblems } from './extension/services/PreviewSourceProblems'
 import type { CustomizerDomainService } from '../sidebar/CustomizerDomainService'
 import { libraryEnvironment } from '../../platform/libraries/LibraryEnvironment'
 import * as vscode from 'vscode'
@@ -16,6 +17,8 @@ import { registerPreviewExporter } from './extension/services/PreviewExporter'
 export function registerPreview(context: vscode.ExtensionContext, runtime: ReturnType<typeof registerRuntime>, customizer: CustomizerService, domain?: CustomizerDomainService) {
     registerPreviewExporter(context)
     configureMeshTopologyWorker(vscode.Uri.joinPath(context.extensionUri, 'dist', 'mesh-topology-worker.mjs').fsPath)
+    const sourceProblems = new PreviewSourceProblems()
+    context.subscriptions.push(sourceProblems, sourceProblems.registerNavigation())
     const sessions = new ScadSessionManager(customizer, domain)
     const runtimeIdentity = () => {
         const active = runtime.getActiveRuntime()
@@ -37,11 +40,11 @@ export function registerPreview(context: vscode.ExtensionContext, runtime: Retur
         sessions,
         libraryEnvironment.onDidChange(() => sessions.refresh()),
         registerShowPanelCommand(),
-        vscode.window.registerCustomEditorProvider(previewEditorViewType, new ScadPreviewEditorProvider(context, sessions), {
+        vscode.window.registerCustomEditorProvider(previewEditorViewType, new ScadPreviewEditorProvider(context, sessions, sourceProblems), {
             webviewOptions: { enableFindWidget: true },
             supportsMultipleEditorsPerDocument: false,
         }),
-        vscode.window.registerCustomEditorProvider(meshPreviewEditorViewType, new MeshPreviewEditorProvider(context), {
+        vscode.window.registerCustomEditorProvider(meshPreviewEditorViewType, new MeshPreviewEditorProvider(context, sourceProblems), {
             webviewOptions: { enableFindWidget: true },
             supportsMultipleEditorsPerDocument: false,
         }),

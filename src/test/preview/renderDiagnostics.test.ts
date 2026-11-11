@@ -46,7 +46,7 @@ function panelFixture(render: (...args: unknown[]) => Promise<Buffer> = async ()
             if (id.endsWith('/formats/meshTopology')) return { queryMeshTopology: async () => ({ version: 1, meshes: [] }) }
             if (id.endsWith('/platform/notifications')) return { notifications: { previewError: (error: Error) => notices.push(error) } }
             if (id.endsWith('/renderError')) return { showRenderError: (error: Error) => notices.push(error) }
-            if (id.endsWith('/PreviewProblems')) return { PreviewProblems: class { report(error: unknown, stage: string) { problems.set(stage, error) } clear(stage: string) { problems.delete(stage) } dispose() { disposedProblems = true; problems.clear() } } }
+            if (id.endsWith('/PreviewProblems')) return { PreviewProblems: class { get hasSourceProblem() { return problems.has('render') } beginRender() {} openSource() {} report(error: unknown, stage: string) { problems.set(stage, error) } clear(stage: string) { problems.delete(stage) } dispose() { disposedProblems = true; problems.clear() } } }
             if (id.endsWith('/renderDiagnostics')) return { syntaxErrorMessage }
             if (id.endsWith('/previewEligibility')) return { EmptyModelError }
             if (id.endsWith('/ScadClient')) return { ScadClient: { render } }
@@ -84,7 +84,7 @@ function panelFixture(render: (...args: unknown[]) => Promise<Buffer> = async ()
         onParametersChanged: () => disposable,
         onLog: () => disposable,
     }
-    const view = new module.exports.ScadWebviewPanel(panel as never, '/extension' as never, session as never, { get: () => null } as never)
+    const view = new module.exports.ScadWebviewPanel(panel as never, '/extension' as never, session as never, { get: () => null } as never, {} as never)
     return { view, problems, disposedProblems: () => disposedProblems, messages, notices, timings, frames, receive: (message: unknown) => ready(message as never), ready: () => ready({ type: 'ready' }), start: () => start(), complete: () => complete({ buffer: Buffer.from('model'), format: ModelFormat.STL }), fail: (error: Error) => fail(error) }
 }
 
@@ -229,6 +229,8 @@ test('preview Problems cover render and webview errors, reject stale models and 
     mock.fail(parserError)
     assert.equal(mock.problems.get('render'), parserError)
     mock.start()
+    assert.equal(mock.problems.get('render'), parserError)
+    mock.complete()
     assert.equal(mock.problems.size, 0)
     mock.complete()
     const version = (mock.messages.findLast(m => m.type === 'update') as { modelVersion: number }).modelVersion

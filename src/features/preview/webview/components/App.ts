@@ -408,13 +408,14 @@ export class App extends LitElement {
                         frameReady: (graphics, elapsedMs) => this.bridge.frameReady(message.modelVersion ?? 0, graphics, elapsedMs),
                         isLoading: false,
                         previewError: undefined,
+                        openProblemSource: undefined,
                     }
                 } else {
                     this.bridge.reportError('No content in update message')
                 }
                 break
             case 'previewIssue':
-                this.modelContext = { ...this.modelContext, isLoading: false, previewError: message.message }
+                this.modelContext = { ...this.modelContext, isLoading: false, previewError: message.message, openProblemSource: message.canOpenSource ? () => this.bridge.openProblemSource() : undefined }
                 break
             case 'updateParameters':
                 if (message.parameters) {
@@ -438,7 +439,7 @@ export class App extends LitElement {
                 this.logController.processLoadingState(false)
                 // A real rendering error belongs to the same status dock as
                 // viewer errors, not the non-error empty-model placeholder.
-                this.modelContext = { ...this.modelContext, base64Data: null, format: null, isLoading: false, previewError: message.message }
+                this.modelContext = { ...this.modelContext, base64Data: null, format: null, isLoading: false, previewError: message.message, openProblemSource: message.canOpenSource ? () => this.bridge.openProblemSource() : undefined }
                 break
             case 'loadingState':
                 this.logController.processLoadingState(message.loading)

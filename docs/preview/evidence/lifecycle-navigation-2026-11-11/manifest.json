@@ -1,0 +1,37 @@
+[
+  {
+    "file": "browser19.txt",
+    "bytes": 2048,
+    "sha256": "6ff9df47d53add4baf50174fbb98bcf7bb31b83c865e8046465285e53ab90da6"
+  },
+  {
+    "file": "compile.txt",
+    "bytes": 817,
+    "sha256": "0da5d7dc53d876f3f1e242d2ff06f007cdaf1d3322280df33ab3e4f292bf9f8f"
+  },
+  {
+    "file": "host140-4.txt",
+    "bytes": 17943,
+    "sha256": "3593ddb71050a4cc7dae4a83067096102c9ac0222cc891fd7fda8aff48ec8eea"
+  },
+  {
+    "file": "host145-2.txt",
+    "bytes": 17118,
+    "sha256": "1439f590ab4c048ce28945bb9d3a3daf1910379d1fbc274395270fa6747939f8"
+  },
+  {
+    "file": "initial-host-configuration-snapshot-failure.txt",
+    "bytes": 15224,
+    "sha256": "641b0bbe4cd60eb1a12ba9cc3253f46f0823f7e94523b81dfac3808ea7c45757"
+  },
+  {
+    "file": "initial-typecheck-failure.txt",
+    "bytes": 730,
+    "sha256": "669c44a3393ad488a64593aaf07e7518fc447e26b9f5b51f95078cdbc7735282"
+  },
+  {
+    "file": "regression.txt",
+    "bytes": 40611,
+    "sha256": "2c136e5074f82b09423e32a3ee0379c3f32fa6fb348341ebf7295199a573c89e"
+  }
+]

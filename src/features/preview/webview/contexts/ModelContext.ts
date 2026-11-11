@@ -12,6 +12,7 @@ export interface ModelContext {
     csgPartsAvailable?: boolean
     csgPartHints?: CsgPartHint[]
     previewError?: string
+    openProblemSource?: () => void
     queryTopology?: (planes?: ClipPlane[]) => Promise<GeometryData>
     reportPerformance?: (timings: PreviewTimings) => void
     frameReady?: (graphics: 'webgpu' | 'webgl2', elapsedMs: number) => void

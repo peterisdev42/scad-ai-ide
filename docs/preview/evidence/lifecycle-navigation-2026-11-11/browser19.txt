@@ -1,0 +1,27 @@
+✔ ordinary preview exposes only basic controls and keeps the camera across model updates (564.143667ms)
+✔ native mesh previews keep their interactive viewer without SCAD mode controls (230.33575ms)
+✔ Preview combines backend, loading, tool notices and errors in one bottom-left status surface (305.167958ms)
+✔ CSG publishes a complete pixel frame and recovers a lost device without another host render (497.146375ms)
+✔ render keeps light transforms and environments on the shared canvas (379.42475ms)
+✔ image-based preview navigation keeps native resolution and sends no geometry requests (476.70475ms)
+✔ ordinary preview ignores saved clipping and XRay after their controls are removed (232.07425ms)
+✔ prepared highlights and backgrounds use the same image-space Product renderer (370.528ms)
+✔ parameters, exports and face picking remain live without final-mesh evaluation (254.552375ms)
+✔ loading retains geometry; replacement and closing release active and cached meshes (287.699083ms)
+✔ rapid tessellation changes publish the latest mesh and dispose the replaced geometry (303.829584ms)
+✔ standard renderer errors remain actionable and are sent to host Problems (244.692125ms)
+✔ quick mode offers surface measurement and full mode keeps exact vertex and edge tools (364.667458ms)
+✔ preview mode switches and performance panel stay hidden in both modes (463.7155ms)
+✔ part color toggle distinguishes disconnected STL shells and restores manual colors without a host render (331.768ms)
+✔ part colors also toggle on prepared Boolean previews without changing geometry (320.372083ms)
+✔ CSG color assistance is requested lazily and applied without replacing the model or rendering again (576.220292ms)
+✔ invalid mesh decoding reaches host Problems with the failing model version (228.665417ms)
+✔ Preview error source action sends a navigation request without altering the model (254.149292ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6872.936375

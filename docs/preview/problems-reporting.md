@@ -1,3 +1,5 @@
+> 2026-11-11 更新：源码诊断已改为独立文档服务，视图关闭不再清除源码错误，并新增强制 Text 定位操作。当前行为及验收以[生命周期与导航修复](problems-lifecycle-navigation.md)为准；下文保留初版历史。
+
 # Preview failures in Problems
 
 2026-11-10. User-authorized follow-up; no model test was started and the cleared architecture goal was not resumed.

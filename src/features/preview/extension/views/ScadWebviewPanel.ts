@@ -5,6 +5,7 @@ import { randomBytes } from 'node:crypto'
 import { ScadClient } from '../services/ScadClient'
 import { EmptyModelError } from '../services/previewEligibility'
 import { showRenderError } from '../services/renderError'
+import type { PreviewSourceProblems } from '../services/PreviewSourceProblems'
 import { PreviewProblems } from '../services/PreviewProblems'
 import { syntaxErrorMessage } from '../services/renderDiagnostics'
 import { Disposable, Memento, ProgressLocation, Uri, Webview, WebviewPanel, env, window, workspace } from 'vscode'
@@ -42,9 +43,10 @@ export class ScadWebviewPanel {
         private readonly extensionUri: Uri,
         private readonly session: PreviewSession,
         private readonly workspaceState: Memento,
+        sourceProblems: PreviewSourceProblems,
     ) {
         this.panel = panel
-        this.problems = new PreviewProblems(session.documentUri)
+        this.problems = new PreviewProblems(session.documentUri, sourceProblems)
         this.disposables.push(this.problems)
         this.disposables.push(memoryCaches.register(`Preview part metadata: ${session.documentUri.toString()}`, () => ({ hints: this.partHintsCache?.hints ?? [] }), () => {
             this.partHintsController?.abort()
@@ -69,6 +71,9 @@ export class ScadWebviewPanel {
                         case 'ready':
                             this.isWebviewReady = true
                             this.pushInitialState()
+                            return
+                        case 'openProblemSource':
+                            await this.problems.openSource()
                             return
                         case 'setPartColors': {
                             if (!message.enabled) {
@@ -187,7 +192,7 @@ export class ScadWebviewPanel {
         // Subscribe to session events
         this.session.onRenderStarted(
             () => {
-                this.problems.clear('render')
+                this.problems.beginRender()
                 this.awaitingRender = true
                 this.partHintsController?.abort()
                 this.partHintsCache = undefined
@@ -243,13 +248,13 @@ export class ScadWebviewPanel {
                 if (!(err instanceof EmptyModelError) && this.session.previewMode === 'preview') {
                     this.previewMessage = { type: 'previewIssue', message: syntaxMessage ?? err.message }
                     this.postMessage({ type: 'loadingState', loading: false })
-                    this.postMessage(this.previewMessage)
+                    this.postMessage({ ...this.previewMessage, canOpenSource: this.problems.hasSourceProblem })
                     return
                 }
                 if (err instanceof EmptyModelError || syntaxMessage) {
                     this.lastRender = undefined
                     this.previewMessage = { type: syntaxMessage ? 'renderError' : 'emptyModel', message: syntaxMessage ?? err.message }
-                    this.postMessage(this.previewMessage)
+                    this.postMessage({ ...this.previewMessage, canOpenSource: this.problems.hasSourceProblem })
                     return
                 }
                 // Clear the loading spinner so the webview doesn't hang indefinitely.
@@ -259,6 +264,8 @@ export class ScadWebviewPanel {
                 })
 
                 const msg = err.message
+                this.previewMessage = { type: 'previewIssue', message: msg }
+                this.postMessage({ ...this.previewMessage, canOpenSource: this.problems.hasSourceProblem })
                 if (this.session.sourceFormat) void notifications.previewError(err, this.session.documentUri.toString())
                 else void showRenderError(err, () => ScadClient.outputChannel.show(), this.session.documentUri.toString())
 
@@ -382,7 +389,7 @@ export class ScadWebviewPanel {
         // both when the tab first loads (race condition where the render may have
         // completed before the webview was ready) and on tab re-focus (where
         // VSCode destroys and recreates the webview content).
-        if (this.previewMessage && this.previewMessage.type !== 'previewIssue') this.postMessage(this.previewMessage)
+        if (this.previewMessage && this.previewMessage.type !== 'previewIssue') this.postMessage({ ...this.previewMessage, canOpenSource: this.problems.hasSourceProblem })
         if (this.lastRender) {
             this.postMessage({
                 type: 'update',
@@ -392,7 +399,7 @@ export class ScadWebviewPanel {
                 csgPartsAvailable: !this.session.sourceFormat,
             })
         }
-        if (this.previewMessage?.type === 'previewIssue') this.postMessage(this.previewMessage)
+        if (this.previewMessage?.type === 'previewIssue') this.postMessage({ ...this.previewMessage, canOpenSource: this.problems.hasSourceProblem })
     }
 
     private pushPreviewMode() {

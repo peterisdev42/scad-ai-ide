@@ -1,3 +1,4 @@
+import type { PreviewSourceProblems } from '../services/PreviewSourceProblems'
 import { CancellationToken, CustomTextEditorProvider, ExtensionContext, TextDocument, WebviewPanel } from 'vscode'
 import { ScadSessionManager } from '../core/ScadSessionManager'
 import { ScadWebviewPanel } from './ScadWebviewPanel'
@@ -7,12 +8,13 @@ export class ScadPreviewEditorProvider implements CustomTextEditorProvider {
     constructor(
         private readonly context: ExtensionContext,
         private readonly sessionManager: ScadSessionManager,
+        private readonly sourceProblems: PreviewSourceProblems,
     ) {}
 
     resolveCustomTextEditor(document: TextDocument, panel: WebviewPanel, token: CancellationToken): void {
         if (token.isCancellationRequested) return
         const session = this.sessionManager.getOrCreateSession(document)
-        new ScadWebviewPanel(panel, this.context.extensionUri, session, this.context.workspaceState)
+        new ScadWebviewPanel(panel, this.context.extensionUri, session, this.context.workspaceState, this.sourceProblems)
         panel.onDidDispose(() => this.sessionManager.removeSession(document.uri))
     }
 }

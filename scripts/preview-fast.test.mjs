@@ -518,3 +518,18 @@ test('invalid mesh decoding reaches host Problems with the failing model version
     const error = await page.evaluate(() => window.hostMessages.find(m => m.type === 'error' && m.modelVersion === 702))
     assert.ok(error.message.length > 0)
 })
+
+
+test('Preview error source action sends a navigation request without altering the model', async t => {
+    const page = await fixture(t, 'preview')
+    await ready(page)
+    await page.evaluate(() => window.dispatchEvent(new MessageEvent('message', { data: { type: 'previewIssue', message: 'Source syntax error', canOpenSource: true } })))
+    const action = page.getByRole('button', { name: 'Open source at error', exact: true })
+    await action.waitFor()
+    await action.focus()
+    await action.press('Enter')
+    await page.waitForFunction(() => window.hostMessages.some(m => m.type === 'openProblemSource'))
+    assert.equal(await page.evaluate(() => window.hostMessages.filter(m => m.type === 'openProblemSource').length), 1)
+    await page.evaluate(() => window.dispatchEvent(new MessageEvent('message', { data: { type: 'previewIssue', message: 'View-only failure', canOpenSource: false } })))
+    await action.waitFor({ state: 'detached' })
+})
