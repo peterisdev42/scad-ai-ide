@@ -35,7 +35,7 @@ exports.run = async () => {
         extensionMode: own.extensionMode,
         extensionPath: own.extensionPath,
         bundleSha256: require('node:crypto').createHash('sha256').update(await fs.readFile(path.join(own.extensionPath, own.packageJSON.main))).digest('hex'),
-        chatSettings: { extensionUnification: vscode.workspace.getConfiguration('chat').get('extensionUnification.enabled'), disableAI: vscode.workspace.getConfiguration('chat').get('disableAIFeatures'), extensionTools: vscode.workspace.getConfiguration('chat').get('extensionTools.enabled') },
+        chatSettings: { saveBeforeSend: vscode.workspace.getConfiguration('chat').get('saveBeforeSend'), autoSave: vscode.workspace.getConfiguration('files').get('autoSave'), extensionUnification: vscode.workspace.getConfiguration('chat').get('extensionUnification.enabled'), disableAI: vscode.workspace.getConfiguration('chat').get('disableAIFeatures'), extensionTools: vscode.workspace.getConfiguration('chat').get('extensionTools.enabled') },
         nativeAgent: { present: !!nativeAgent, active: nativeAgent?.isActive, error: nativeAgentError },
         provider: { id: provider.id, version: provider.packageJSON.version },
         models: models.map(model => ({ id: model.id, name: model.name, vendor: model.vendor, toolCalling: model.capabilities?.toolCalling, maxInputTokens: model.maxInputTokens })),

@@ -34,7 +34,7 @@ assert.ok(endpoint.protocol === 'http:' && endpoint.hostname === '127.0.0.1' && 
 await mkdir(workspace)
 await mkdir(path.join(profile, 'User'), { recursive: true })
 if (backend === 'ollama') await writeFile(path.join(profile, 'User', 'chatLanguageModels.json'), JSON.stringify([{ vendor, name: 'Local Customizer audit', url: ollamaEndpoint, models: [model] }]))
-await writeFile(path.join(profile, 'User', 'settings.json'), JSON.stringify({ 'telemetry.telemetryLevel': 'off', 'update.mode': 'none', 'scad-ai-ide.languageServer.enabled': false, 'chat.extensionUnification.enabled': false, 'workbench.enableExperiments': false, 'ollama.endpoint': ollamaEndpoint, 'omlx.baseUrl': ollamaEndpoint, 'omlx.maxToolCount': Number(process.env.SCAD_AGENT_MAX_TOOLS ?? 16) }))
+await writeFile(path.join(profile, 'User', 'settings.json'), JSON.stringify({ 'telemetry.telemetryLevel': 'off', 'update.mode': 'none', 'files.autoSave': 'off', 'chat.saveBeforeSend': false, 'scad-ai-ide.languageServer.enabled': false, 'chat.extensionUnification.enabled': false, 'workbench.enableExperiments': false, 'ollama.endpoint': ollamaEndpoint, 'omlx.baseUrl': ollamaEndpoint, 'omlx.maxToolCount': Number(process.env.SCAD_AGENT_MAX_TOOLS ?? 16) }))
 const file = path.join(workspace, 'model.scad')
 const scenario = process.env.SCAD_AGENT_SCENARIO ?? 'smoke'
 const cases = {
