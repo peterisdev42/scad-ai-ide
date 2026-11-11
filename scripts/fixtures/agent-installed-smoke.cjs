@@ -6,6 +6,13 @@ exports.run = async () => {
     assert.ok(extension)
     assert.ok(extension.extensionPath.startsWith(process.env.SCAD_SMOKE_EXTENSIONS_DIR))
     const api = await extension.activate()
+    const waitFor = async condition => {
+        const deadline = Date.now() + 5000
+        while (!(await condition())) {
+            assert.ok(Date.now() < deadline, 'Installed Host observation timed out')
+            await new Promise(resolve => setTimeout(resolve, 25))
+        }
+    }
     const names = extension.packageJSON.contributes.languageModelTools.map((tool) => tool.name)
     for (const name of names) assert.ok(vscode.lm.tools.some((tool) => tool.name === name), name)
     const availableChatModels = (await vscode.lm.selectChatModels()).length
@@ -50,6 +57,19 @@ exports.run = async () => {
     const validated = JSON.parse(validation.content[0].value)
     assert.equal(validated.ok, true)
     assert.equal(validated.data.semanticPass, true)
+    const appliedText = sourceDocument.getText()
+    const diskText = Buffer.from(await vscode.workspace.fs.readFile(sourceUri)).toString()
+    await vscode.window.showTextDocument(sourceDocument, { preserveFocus: false })
+    const commands = await vscode.commands.getCommands(true)
+    if (commands.includes('workbench.action.focusWindow')) await vscode.commands.executeCommand('workbench.action.focusWindow')
+    else if (commands.includes('workbench.action.focusMainWindow')) await vscode.commands.executeCommand('workbench.action.focusMainWindow')
+    await waitFor(() => vscode.window.state.focused)
+    await vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup')
+    await waitFor(() => vscode.window.activeTextEditor?.document === sourceDocument)
+    await vscode.commands.executeCommand('undo')
+    await waitFor(() => sourceDocument.getText() === diskText)
+    await vscode.commands.executeCommand('redo')
+    await waitFor(() => sourceDocument.getText() === appliedText)
     const reused = await api.capabilities.invoke('customizer.sourceApply', planned.data.continuation.input, { actor: 'agent' })
     assert.equal(reused.ok, false)
     assert.equal(reused.error.code, 'PLAN_EXPIRED')
@@ -57,6 +77,29 @@ exports.run = async () => {
     const sourceAuthoring = { analyzed, unmet, planned, committed, validated, singleUseRejected: true, unsavedSource: sourceDocument.getText(), diskUnchanged: true }
     await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor')
     await vscode.workspace.fs.delete(sourceUri)
+    const overrideUri = vscode.Uri.joinPath(folder.uri, 'override.scad')
+    const overrideSource = 'width=40;\nmodule m(){}\nwidth=50;\n'
+    await vscode.workspace.fs.writeFile(overrideUri, Buffer.from(overrideSource))
+    const overrideDocument = await vscode.workspace.openTextDocument(overrideUri)
+    await vscode.window.showTextDocument(overrideDocument)
+    const warnings = () => vscode.languages.getDiagnostics(overrideUri).filter(d => d.code === 'CUSTOMIZER_PARAMETER_OVERRIDDEN')
+    await waitFor(() => warnings().length === 1)
+    const warning = warnings()[0]
+    assert.equal(warning.severity, vscode.DiagnosticSeverity.Warning)
+    assert.equal(warning.range.start.line, 2)
+    assert.equal(warning.relatedInformation[0].location.range.start.line, 0)
+    const overrideAnalysis = await api.capabilities.invoke('customizer.sourceAnalyze', { uri: overrideUri.toString() }, { actor: 'agent' })
+    assert.ok(overrideAnalysis.ok)
+    assert.deepEqual(overrideAnalysis.data.parameters, [])
+    const removal = new vscode.WorkspaceEdit()
+    removal.delete(overrideUri, new vscode.Range(2, 0, 3, 0))
+    assert.ok(await vscode.workspace.applyEdit(removal))
+    await waitFor(() => warnings().length === 0)
+    assert.equal(overrideDocument.isDirty, true)
+    assert.equal(Buffer.from(await vscode.workspace.fs.readFile(overrideUri)).toString(), overrideSource)
+    const adr12 = { warning: true, primaryLine: 2, relatedLine: 0, controlsLost: true, unsavedRepairClearsWarning: true, diskUnchanged: true }
+    await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor')
+    await vscode.workspace.fs.delete(overrideUri)
     const snapshotUri = vscode.Uri.joinPath(folder.uri, 'snapshot.scad')
     const snapshotFile = vscode.Uri.joinPath(folder.uri, 'snapshot.json')
     const snapshotSource = 'label="abcdef"; // 3\ncube(1);\n'
@@ -97,5 +140,5 @@ exports.run = async () => {
     api.customizer.clear()
     await vscode.workspace.fs.delete(snapshotUri)
     await vscode.workspace.fs.delete(snapshotFile)
-    await fs.writeFile(process.env.SCAD_SMOKE_RESULT, JSON.stringify({ vscode: vscode.version, extension: extension.id, toolCount: names.length, availableChatModels, productionDevDenied: true, sourceAuthoring, presetSnapshot, panelsRequired: false, instructions: extension.packageJSON.contributes.chatInstructions, skills: extension.packageJSON.contributes.chatSkills }, null, 2))
+    await fs.writeFile(process.env.SCAD_SMOKE_RESULT, JSON.stringify({ vscode: vscode.version, extension: extension.id, toolCount: names.length, availableChatModels, productionDevDenied: true, sourceAuthoring, undoRedo: true, adr12, presetSnapshot, panelsRequired: false, instructions: extension.packageJSON.contributes.chatInstructions, skills: extension.packageJSON.contributes.chatSkills }, null, 2))
 }

@@ -1,0 +1,43 @@
+{
+  "scenario": "tail",
+  "scope": "Independent assertions against actual tool traces/buffer/disk; final prose is reviewed separately",
+  "artifact": {
+    "file": "scad-ai-ide-closeout-d1a5fde.vsix",
+    "bytes": 4604838,
+    "sha256": "5d1c3523ac43b8cf93c04f344b13b086486bc7b026599adfef1689685bd28c2a"
+  },
+  "requestFinished": true,
+  "terminalReason": "nativeRequestReturned",
+  "observerValidity": "recorded",
+  "hostSchemaRejectCount": null,
+  "dispatcherOk": 1,
+  "dispatcherTotal": 2,
+  "calls": [
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": true
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "ok": false,
+      "error": "NEEDS_MANUAL_REVIEW"
+    }
+  ],
+  "actualPlanCommitValidate": {
+    "plan": false,
+    "commit": false,
+    "validate": false
+  },
+  "bufferShaBefore": "eb9c2d4cd40382e88f1d295dde4f0e1d22ba04533487149bece52ef09a0f29a1",
+  "bufferShaAfter": "eb9c2d4cd40382e88f1d295dde4f0e1d22ba04533487149bece52ef09a0f29a1",
+  "diskShaBefore": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480",
+  "diskShaAfter": "b52b909967f1b91f279dd61ba1f50f845b1f08b2d90ddc900feec4cc66a0d480",
+  "dirty": true,
+  "diskUnchanged": true,
+  "bufferUnchanged": true,
+  "analysisReadUnsavedBuffer": true,
+  "readonlyNoWrites": null,
+  "confirmationDecisions": [],
+  "finalAnswerTruthfulness": "PASS: explicitly reports NEEDS_MANUAL_REVIEW, no planId/commit/save, preserves explanation and does not claim repair.",
+  "status": "PASS"
+}

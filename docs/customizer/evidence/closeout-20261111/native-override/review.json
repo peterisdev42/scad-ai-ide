@@ -1,0 +1,43 @@
+{
+  "scenario": "override",
+  "scope": "Independent assertions against actual tool traces/buffer/disk; final prose is reviewed separately",
+  "artifact": {
+    "file": "scad-ai-ide-closeout-d1a5fde.vsix",
+    "bytes": 4604838,
+    "sha256": "5d1c3523ac43b8cf93c04f344b13b086486bc7b026599adfef1689685bd28c2a"
+  },
+  "requestFinished": true,
+  "terminalReason": "nativeRequestReturned",
+  "observerValidity": "recorded",
+  "hostSchemaRejectCount": null,
+  "dispatcherOk": 2,
+  "dispatcherTotal": 2,
+  "calls": [
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": true
+    },
+    {
+      "capability": "customizer.sourceValidate",
+      "ok": true,
+      "semanticPass": false
+    }
+  ],
+  "actualPlanCommitValidate": {
+    "plan": false,
+    "commit": false,
+    "validate": true
+  },
+  "bufferShaBefore": "67296b0f9785d6fe8f8d8028f44450aaa31602614cb0350ae953088d6c902c95",
+  "bufferShaAfter": "67296b0f9785d6fe8f8d8028f44450aaa31602614cb0350ae953088d6c902c95",
+  "diskShaBefore": "80368da2811ab60930149d2b0f7da2d84fcb2fb321cdc839daa9501f071718a4",
+  "diskShaAfter": "80368da2811ab60930149d2b0f7da2d84fcb2fb321cdc839daa9501f071718a4",
+  "dirty": true,
+  "diskUnchanged": true,
+  "bufferUnchanged": true,
+  "analysisReadUnsavedBuffer": true,
+  "readonlyNoWrites": true,
+  "confirmationDecisions": [],
+  "finalAnswerTruthfulness": "PARTIAL: accurately reports Warning, legal overwrite, visible-contract mismatch and no repair. Prose uses original fixture line 1/3 rather than actual dirty-buffer lines 2/4, and calls visibility Warning an annotation defect.",
+  "status": "PARTIAL"
+}

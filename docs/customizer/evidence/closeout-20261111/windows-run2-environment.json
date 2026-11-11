@@ -1,0 +1,542 @@
+{
+  "scope": "Actual Windows diagnostic; individual PASS does not imply Windows release gate PASS. Quoted-path is a probe, not a supported env contract.",
+  "binary": "D:\\a\\_temp\\customizer-native-runtime\\openscad-cli-windows-x86_64\\bin\\openscad.exe",
+  "binarySha256": "d1c8cc1b86a8b08794429892d1247221831e19f00911560496abed5b5d010a01",
+  "version": {
+    "exitCode": 0,
+    "signal": null,
+    "stdout": "",
+    "stderr": "OpenSCAD version 2026.11-RC0\r\n"
+  },
+  "platform": "win32",
+  "release": "10.0.26100",
+  "arch": "x64",
+  "node": "v24.22.2",
+  "image": {
+    "name": "win25-vs2026",
+    "version": "20261103.298.1"
+  },
+  "runUrl": "https://github.com/peterisdev42/scad-ai-ide/actions/runs/43002292201",
+  "sourceCommit": "f81ed00ac63854cdfa69d7d5d90175601abc2be1",
+  "processEnvironment": "Node spawnSync Unicode environment; no shell command concatenation",
+  "outcomes": [
+    {
+      "id": "binary-ascii",
+      "kind": "no-include",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\cube.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755c61736369695c637562652e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\binary-ascii.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii",
+      "searchEnvironment": {},
+      "mount": null,
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "",
+      "stderr": "Geometries in cache: 1\r\nGeometry cache size in bytes: 856\r\nCGAL Polyhedrons in cache: 0\r\nCGAL cache size in bytes: 0\r\nTotal rendering time: 0:00:00.001\r\nTop level object is a 3D object (PolySet):\r\n   Convex:       yes\r\n   Facets:         6\r\n",
+      "bytes": 1583,
+      "sha256": "19fc4dbdf448478f684e4eae36c4c70d63231dd33e8cd776b684ac8f862e71ae",
+      "geometryWidth": 10,
+      "expectedWidth": 10,
+      "status": "PASS"
+    },
+    {
+      "id": "cube-unicode-source",
+      "kind": "no-include",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\项目 A\\cube.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755ce9a1b9e79bae20415c637562652e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\cube-unicode-source.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii",
+      "searchEnvironment": {},
+      "mount": null,
+      "exitCode": 3221226505,
+      "signal": null,
+      "stdout": "",
+      "stderr": "",
+      "bytes": 0,
+      "sha256": null,
+      "geometryWidth": null,
+      "expectedWidth": 10,
+      "status": "FAIL"
+    },
+    {
+      "id": "cube-unicode-output",
+      "kind": "no-include",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\cube.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755c61736369695c637562652e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\项目 A\\cube-unicode-output.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii",
+      "searchEnvironment": {},
+      "mount": null,
+      "exitCode": 1,
+      "signal": null,
+      "stdout": "",
+      "stderr": "\r\n'C:/Users/RUNNER~1/AppData/Local/Temp/scad-env-probe-gyDcwu/项目 A' is not a directory for output file C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\项目 A\\cube-unicode-output.stl - Skipping\r\n\r\n",
+      "bytes": 0,
+      "sha256": null,
+      "geometryWidth": null,
+      "expectedWidth": 10,
+      "status": "FAIL"
+    },
+    {
+      "id": "cube-unicode-cwd",
+      "kind": "no-include",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\cube.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755c61736369695c637562652e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\cube-unicode-cwd.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\项目 A",
+      "searchEnvironment": {},
+      "mount": null,
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "",
+      "stderr": "Geometries in cache: 1\r\nGeometry cache size in bytes: 856\r\nCGAL Polyhedrons in cache: 0\r\nCGAL cache size in bytes: 0\r\nTotal rendering time: 0:00:00.001\r\nTop level object is a 3D object (PolySet):\r\n   Convex:       yes\r\n   Facets:         6\r\n",
+      "bytes": 1583,
+      "sha256": "19fc4dbdf448478f684e4eae36c4c70d63231dd33e8cd776b684ac8f862e71ae",
+      "geometryWidth": 10,
+      "expectedWidth": 10,
+      "status": "PASS"
+    },
+    {
+      "id": "ascii-direct",
+      "kind": "direct",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\ascii-direct.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755c61736369695c61736369692d6469726563742e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\ascii-direct.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii",
+      "searchEnvironment": {
+        "OPENSCADPATH": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii-lib"
+      },
+      "mount": {
+        "exists": true,
+        "symbolicLink": false,
+        "directory": true,
+        "realpath": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii-lib\\fixture-library"
+      },
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "",
+      "stderr": "Geometries in cache: 2\r\nGeometry cache size in bytes: 1712\r\nCGAL Polyhedrons in cache: 0\r\nCGAL cache size in bytes: 0\r\nTotal rendering time: 0:00:00.000\r\nTop level object is a 3D object (PolySet):\r\n   Convex:       yes\r\n   Facets:         6\r\n",
+      "bytes": 1583,
+      "sha256": "19fc4dbdf448478f684e4eae36c4c70d63231dd33e8cd776b684ac8f862e71ae",
+      "geometryWidth": 10,
+      "expectedWidth": 10,
+      "status": "PASS"
+    },
+    {
+      "id": "mixed-case",
+      "kind": "direct",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\ascii-direct.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755c61736369695c61736369692d6469726563742e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\mixed-case.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii",
+      "searchEnvironment": {
+        "OpenSCADPath": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii-lib"
+      },
+      "mount": {
+        "exists": true,
+        "symbolicLink": false,
+        "directory": true,
+        "realpath": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii-lib\\fixture-library"
+      },
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "",
+      "stderr": "Geometries in cache: 2\r\nGeometry cache size in bytes: 1712\r\nCGAL Polyhedrons in cache: 0\r\nCGAL cache size in bytes: 0\r\nTotal rendering time: 0:00:00.000\r\nTop level object is a 3D object (PolySet):\r\n   Convex:       yes\r\n   Facets:         6\r\n",
+      "bytes": 1583,
+      "sha256": "19fc4dbdf448478f684e4eae36c4c70d63231dd33e8cd776b684ac8f862e71ae",
+      "geometryWidth": 10,
+      "expectedWidth": 10,
+      "status": "PASS"
+    },
+    {
+      "id": "multi-directory",
+      "kind": "direct",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\ascii-direct.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755c61736369695c61736369692d6469726563742e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\multi-directory.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii",
+      "searchEnvironment": {
+        "OPENSCADPATH": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\empty;C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii-lib"
+      },
+      "mount": {
+        "exists": true,
+        "symbolicLink": false,
+        "directory": true,
+        "realpath": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii-lib\\fixture-library"
+      },
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "",
+      "stderr": "Geometries in cache: 2\r\nGeometry cache size in bytes: 1712\r\nCGAL Polyhedrons in cache: 0\r\nCGAL cache size in bytes: 0\r\nTotal rendering time: 0:00:00.000\r\nTop level object is a 3D object (PolySet):\r\n   Convex:       yes\r\n   Facets:         6\r\n",
+      "bytes": 1583,
+      "sha256": "19fc4dbdf448478f684e4eae36c4c70d63231dd33e8cd776b684ac8f862e71ae",
+      "geometryWidth": 10,
+      "expectedWidth": 10,
+      "status": "PASS"
+    },
+    {
+      "id": "quoted-path",
+      "kind": "direct",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\ascii-direct.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755c61736369695c61736369692d6469726563742e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\quoted-path.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii",
+      "searchEnvironment": {
+        "OPENSCADPATH": "\"C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii-lib\""
+      },
+      "mount": {
+        "exists": true,
+        "symbolicLink": false,
+        "directory": true,
+        "realpath": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii-lib\\fixture-library"
+      },
+      "exitCode": 1,
+      "signal": null,
+      "stdout": "",
+      "stderr": "WARNING: Can't find include file 'fixture-library/smoke.scad'. in file ascii-direct.scad, line 1\r\nWARNING: Ignoring unknown module 'test_shape' in file ascii-direct.scad, line 1\r\nCurrent top level object is empty.\r\n",
+      "bytes": 0,
+      "sha256": null,
+      "geometryWidth": null,
+      "expectedWidth": 10,
+      "status": "FAIL"
+    },
+    {
+      "id": "library-environment",
+      "kind": "direct",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\ascii-direct.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755c61736369695c61736369692d6469726563742e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\library-environment.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii",
+      "searchEnvironment": {
+        "OpenSCADPath": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii-lib;C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\empty"
+      },
+      "mount": {
+        "exists": true,
+        "symbolicLink": false,
+        "directory": true,
+        "realpath": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii-lib\\fixture-library"
+      },
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "",
+      "stderr": "Geometries in cache: 2\r\nGeometry cache size in bytes: 1712\r\nCGAL Polyhedrons in cache: 0\r\nCGAL cache size in bytes: 0\r\nTotal rendering time: 0:00:00.000\r\nTop level object is a 3D object (PolySet):\r\n   Convex:       yes\r\n   Facets:         6\r\n",
+      "bytes": 1583,
+      "sha256": "19fc4dbdf448478f684e4eae36c4c70d63231dd33e8cd776b684ac8f862e71ae",
+      "geometryWidth": 10,
+      "expectedWidth": 10,
+      "status": "PASS"
+    },
+    {
+      "id": "unicode-direct",
+      "kind": "direct",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\unicode-direct.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755c61736369695c756e69636f64652d6469726563742e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\unicode-direct.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii",
+      "searchEnvironment": {
+        "OPENSCADPATH": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\库 目录"
+      },
+      "mount": {
+        "exists": true,
+        "symbolicLink": false,
+        "directory": true,
+        "realpath": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\库 目录\\fixture-library"
+      },
+      "exitCode": 1,
+      "signal": null,
+      "stdout": "",
+      "stderr": "WARNING: Can't find include file 'fixture-library/smoke.scad'. in file unicode-direct.scad, line 1\r\nWARNING: Ignoring unknown module 'test_shape' in file unicode-direct.scad, line 1\r\nCurrent top level object is empty.\r\n",
+      "bytes": 0,
+      "sha256": null,
+      "geometryWidth": null,
+      "expectedWidth": 10,
+      "status": "FAIL"
+    },
+    {
+      "id": "nonbmp-direct",
+      "kind": "direct",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\nonbmp-direct.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755c61736369695c6e6f6e626d702d6469726563742e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\nonbmp-direct.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii",
+      "searchEnvironment": {
+        "OPENSCADPATH": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\library 😀"
+      },
+      "mount": {
+        "exists": true,
+        "symbolicLink": false,
+        "directory": true,
+        "realpath": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\library 😀\\fixture-library"
+      },
+      "exitCode": 1,
+      "signal": null,
+      "stdout": "",
+      "stderr": "WARNING: Can't find include file 'fixture-library/smoke.scad'. in file nonbmp-direct.scad, line 1\r\nWARNING: Ignoring unknown module 'test_shape' in file nonbmp-direct.scad, line 1\r\nCurrent top level object is empty.\r\n",
+      "bytes": 0,
+      "sha256": null,
+      "geometryWidth": null,
+      "expectedWidth": 10,
+      "status": "FAIL"
+    },
+    {
+      "id": "ascii-junction",
+      "kind": "junction",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\ascii-junction.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755c61736369695c61736369692d6a756e6374696f6e2e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\ascii-junction.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii",
+      "searchEnvironment": {
+        "OPENSCADPATH": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\junction-lib"
+      },
+      "mount": {
+        "exists": true,
+        "symbolicLink": true,
+        "directory": true,
+        "realpath": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\store"
+      },
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "",
+      "stderr": "Geometries in cache: 2\r\nGeometry cache size in bytes: 1712\r\nCGAL Polyhedrons in cache: 0\r\nCGAL cache size in bytes: 0\r\nTotal rendering time: 0:00:00.000\r\nTop level object is a 3D object (PolySet):\r\n   Convex:       yes\r\n   Facets:         6\r\n",
+      "bytes": 1583,
+      "sha256": "19fc4dbdf448478f684e4eae36c4c70d63231dd33e8cd776b684ac8f862e71ae",
+      "geometryWidth": 10,
+      "expectedWidth": 10,
+      "status": "PASS"
+    },
+    {
+      "id": "unicode-junction",
+      "kind": "junction",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\unicode-junction.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755c61736369695c756e69636f64652d6a756e6374696f6e2e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\unicode-junction.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii",
+      "searchEnvironment": {
+        "OPENSCADPATH": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\链接 库"
+      },
+      "mount": {
+        "exists": true,
+        "symbolicLink": true,
+        "directory": true,
+        "realpath": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\store"
+      },
+      "exitCode": 1,
+      "signal": null,
+      "stdout": "",
+      "stderr": "WARNING: Can't find include file 'fixture-library/smoke.scad'. in file unicode-junction.scad, line 1\r\nWARNING: Ignoring unknown module 'test_shape' in file unicode-junction.scad, line 1\r\nCurrent top level object is empty.\r\n",
+      "bytes": 0,
+      "sha256": null,
+      "geometryWidth": null,
+      "expectedWidth": 10,
+      "status": "FAIL"
+    },
+    {
+      "id": "ascii-copy",
+      "kind": "copy",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\ascii-copy.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755c61736369695c61736369692d636f70792e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\ascii-copy.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii",
+      "searchEnvironment": {
+        "OPENSCADPATH": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\copy-lib"
+      },
+      "mount": {
+        "exists": true,
+        "symbolicLink": false,
+        "directory": true,
+        "realpath": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\copy-lib\\fixture-library"
+      },
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "",
+      "stderr": "Geometries in cache: 2\r\nGeometry cache size in bytes: 1712\r\nCGAL Polyhedrons in cache: 0\r\nCGAL cache size in bytes: 0\r\nTotal rendering time: 0:00:00.001\r\nTop level object is a 3D object (PolySet):\r\n   Convex:       yes\r\n   Facets:         6\r\n",
+      "bytes": 1583,
+      "sha256": "19fc4dbdf448478f684e4eae36c4c70d63231dd33e8cd776b684ac8f862e71ae",
+      "geometryWidth": 10,
+      "expectedWidth": 10,
+      "status": "PASS"
+    },
+    {
+      "id": "ascii-symlink",
+      "kind": "symlink",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\ascii-symlink.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755c61736369695c61736369692d73796d6c696e6b2e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\ascii-symlink.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii",
+      "searchEnvironment": {
+        "OPENSCADPATH": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\symlink-lib"
+      },
+      "mount": {
+        "exists": true,
+        "symbolicLink": true,
+        "directory": true,
+        "realpath": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\store"
+      },
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "",
+      "stderr": "Geometries in cache: 2\r\nGeometry cache size in bytes: 1712\r\nCGAL Polyhedrons in cache: 0\r\nCGAL cache size in bytes: 0\r\nTotal rendering time: 0:00:00.000\r\nTop level object is a 3D object (PolySet):\r\n   Convex:       yes\r\n   Facets:         6\r\n",
+      "bytes": 1583,
+      "sha256": "19fc4dbdf448478f684e4eae36c4c70d63231dd33e8cd776b684ac8f862e71ae",
+      "geometryWidth": 10,
+      "expectedWidth": 10,
+      "status": "PASS"
+    },
+    {
+      "id": "historical-ascii-absolute",
+      "kind": "direct",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\main.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755c61736369695c6d61696e2e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\historical-ascii-absolute.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii",
+      "searchEnvironment": {
+        "OPENSCADPATH": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\.scad\\lib"
+      },
+      "mount": {
+        "exists": true,
+        "symbolicLink": false,
+        "directory": true,
+        "realpath": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\.scad\\lib\\fixture-library"
+      },
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "",
+      "stderr": "Geometries in cache: 2\r\nGeometry cache size in bytes: 1712\r\nCGAL Polyhedrons in cache: 0\r\nCGAL cache size in bytes: 0\r\nTotal rendering time: 0:00:00.000\r\nTop level object is a 3D object (PolySet):\r\n   Convex:       yes\r\n   Facets:         6\r\n",
+      "bytes": 1583,
+      "sha256": "19fc4dbdf448478f684e4eae36c4c70d63231dd33e8cd776b684ac8f862e71ae",
+      "geometryWidth": 10,
+      "expectedWidth": 10,
+      "status": "PASS"
+    },
+    {
+      "id": "historical-ascii-relative",
+      "kind": "direct",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\main.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755c61736369695c6d61696e2e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\historical-ascii-relative.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii",
+      "searchEnvironment": {
+        "OPENSCADPATH": ".scad\\lib"
+      },
+      "mount": {
+        "exists": true,
+        "symbolicLink": false,
+        "directory": true,
+        "realpath": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\.scad\\lib\\fixture-library"
+      },
+      "exitCode": 0,
+      "signal": null,
+      "stdout": "",
+      "stderr": "Geometries in cache: 2\r\nGeometry cache size in bytes: 1712\r\nCGAL Polyhedrons in cache: 0\r\nCGAL cache size in bytes: 0\r\nTotal rendering time: 0:00:00.000\r\nTop level object is a 3D object (PolySet):\r\n   Convex:       yes\r\n   Facets:         6\r\n",
+      "bytes": 1583,
+      "sha256": "19fc4dbdf448478f684e4eae36c4c70d63231dd33e8cd776b684ac8f862e71ae",
+      "geometryWidth": 10,
+      "expectedWidth": 10,
+      "status": "PASS"
+    },
+    {
+      "id": "historical-unicode-absolute",
+      "kind": "direct",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\项目 A\\main.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755ce9a1b9e79bae20415c6d61696e2e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\historical-unicode-absolute.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\项目 A",
+      "searchEnvironment": {
+        "OPENSCADPATH": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\项目 A\\.scad\\lib"
+      },
+      "mount": {
+        "exists": true,
+        "symbolicLink": false,
+        "directory": true,
+        "realpath": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\项目 A\\.scad\\lib\\fixture-library"
+      },
+      "exitCode": 3221226505,
+      "signal": null,
+      "stdout": "",
+      "stderr": "WARNING: Can't find include file 'fixture-library/smoke.scad'. in file ../项目 A/main.scad, line 1\r\n",
+      "bytes": 0,
+      "sha256": null,
+      "geometryWidth": null,
+      "expectedWidth": 10,
+      "status": "FAIL"
+    },
+    {
+      "id": "historical-unicode-relative",
+      "kind": "direct",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\项目 A\\main.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755ce9a1b9e79bae20415c6d61696e2e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\historical-unicode-relative.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\项目 A",
+      "searchEnvironment": {
+        "OPENSCADPATH": ".scad\\lib"
+      },
+      "mount": {
+        "exists": true,
+        "symbolicLink": false,
+        "directory": true,
+        "realpath": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\项目 A\\.scad\\lib\\fixture-library"
+      },
+      "exitCode": 3221226505,
+      "signal": null,
+      "stdout": "",
+      "stderr": "",
+      "bytes": 0,
+      "sha256": null,
+      "geometryWidth": null,
+      "expectedWidth": 10,
+      "status": "FAIL"
+    },
+    {
+      "id": "historical-unicode-junction-absolute",
+      "kind": "junction",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\项目 B\\main.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755ce9a1b9e79bae20425c6d61696e2e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\historical-unicode-junction-absolute.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\项目 B",
+      "searchEnvironment": {
+        "OPENSCADPATH": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\项目 B\\.scad\\lib"
+      },
+      "mount": {
+        "exists": true,
+        "symbolicLink": true,
+        "directory": true,
+        "realpath": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\store"
+      },
+      "exitCode": 3221226505,
+      "signal": null,
+      "stdout": "",
+      "stderr": "WARNING: Can't find include file 'fixture-library/smoke.scad'. in file ../项目 B/main.scad, line 1\r\n",
+      "bytes": 0,
+      "sha256": null,
+      "geometryWidth": null,
+      "expectedWidth": 10,
+      "status": "FAIL"
+    },
+    {
+      "id": "historical-unicode-junction-relative",
+      "kind": "junction",
+      "source": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\项目 B\\main.scad",
+      "sourceUtf8Hex": "433a5c55736572735c52554e4e45527e315c417070446174615c4c6f63616c5c54656d705c736361642d656e762d70726f62652d6779446377755ce9a1b9e79bae20425c6d61696e2e73636164",
+      "output": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\ascii\\historical-unicode-junction-relative.stl",
+      "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\项目 B",
+      "searchEnvironment": {
+        "OPENSCADPATH": ".scad\\lib"
+      },
+      "mount": {
+        "exists": true,
+        "symbolicLink": true,
+        "directory": true,
+        "realpath": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-env-probe-gyDcwu\\store"
+      },
+      "exitCode": 3221226505,
+      "signal": null,
+      "stdout": "",
+      "stderr": "",
+      "bytes": 0,
+      "sha256": null,
+      "geometryWidth": null,
+      "expectedWidth": 10,
+      "status": "FAIL"
+    }
+  ]
+}

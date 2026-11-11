@@ -1,0 +1,118 @@
+[
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "uri": "file:///tmp/customizer-native-agent-690pi2/workspace/model.scad",
+      "includeCandidates": true,
+      "maxDiagnostics": 10
+    },
+    "started": "2026-11-11T10:10:33.061Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file:///tmp/customizer-native-agent-690pi2/workspace/model.scad",
+          "version": 2,
+          "sha256": "eb9c2d4cd40382e88f1d295dde4f0e1d22ba04533487149bece52ef09a0f29a1"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "Unsaved Native Agent acceptance buffer",
+            "defaultValue": 40,
+            "hint": "[0:100] IDs in Assembly.md; preserve this explanation",
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 1,
+                "character": 0
+              },
+              "end": {
+                "line": 1,
+                "character": 9
+              }
+            },
+            "annotationRange": {
+              "start": {
+                "line": 1,
+                "character": 10
+              },
+              "end": {
+                "line": 1,
+                "character": 66
+              }
+            },
+            "descriptionRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 41
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "a4acb58e-55da-4798-a077-17a3ed86ad4c",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "mode": "plan",
+      "uri": "file:///tmp/customizer-native-agent-690pi2/workspace/model.scad",
+      "identity": {
+        "version": 2,
+        "sha256": "eb9c2d4cd40382e88f1d295dde4f0e1d22ba04533487149bece52ef09a0f29a1"
+      },
+      "edits": [
+        {
+          "kind": "changeWidget",
+          "name": "width",
+          "widget": "slider",
+          "range": {
+            "min": 0,
+            "max": 100
+          }
+        }
+      ]
+    },
+    "started": "2026-11-11T10:10:43.261Z",
+    "output": {
+      "ok": false,
+      "capabilityId": "customizer.sourceApply",
+      "error": {
+        "code": "NEEDS_MANUAL_REVIEW",
+        "message": "Preserve text after the bracketed comment; move the explanation to a separate comment before changing the Widget.",
+        "retryable": false
+      },
+      "operation": {
+        "id": "3490a359-2075-4880-a3c7-e7f6aa1add06",
+        "capabilityId": "customizer.sourceApply",
+        "status": "failed",
+        "error": {
+          "code": "NEEDS_MANUAL_REVIEW",
+          "message": "Preserve text after the bracketed comment; move the explanation to a separate comment before changing the Widget.",
+          "retryable": false
+        }
+      }
+    }
+  }
+]

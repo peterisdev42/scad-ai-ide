@@ -1,0 +1,20 @@
+{
+  "snapshot": true,
+  "cancelledForSnapshot": true,
+  "stopReason": "observationDeadline",
+  "buffer": "// Unsaved Native Agent acceptance buffer\nbase=80;\nwidth=base/2; // [10:100]\ncube(width);\n",
+  "dirty": true,
+  "operations": {
+    "total": 1,
+    "offset": 0,
+    "hasMore": false,
+    "nextOffset": null,
+    "operations": [
+      {
+        "id": "4288a416-5691-43cb-ae5f-b00da3dfb46a",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    ]
+  }
+}

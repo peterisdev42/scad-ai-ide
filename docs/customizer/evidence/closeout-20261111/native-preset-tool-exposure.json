@@ -1,0 +1,129 @@
+{
+  "scope": "Transparent HTTP transport observation; no payload changes",
+  "requests": [
+    {
+      "at": "2026-11-11T10:27:33.321Z",
+      "method": "GET",
+      "path": "/v1/models",
+      "bytes": 0,
+      "status": 200
+    },
+    {
+      "at": "2026-11-11T10:27:35.710Z",
+      "method": "GET",
+      "path": "/v1/models",
+      "bytes": 0,
+      "status": 200
+    },
+    {
+      "at": "2026-11-11T10:27:35.710Z",
+      "method": "GET",
+      "path": "/v1/models",
+      "bytes": 0,
+      "status": 200
+    },
+    {
+      "at": "2026-11-11T10:27:35.773Z",
+      "method": "GET",
+      "path": "/v1/models",
+      "bytes": 0,
+      "status": 200
+    },
+    {
+      "at": "2026-11-11T10:27:35.792Z",
+      "method": "GET",
+      "path": "/v1/models",
+      "bytes": 0,
+      "status": 200
+    },
+    {
+      "at": "2026-11-11T10:27:35.805Z",
+      "method": "GET",
+      "path": "/v1/models",
+      "bytes": 0,
+      "status": 200
+    },
+    {
+      "at": "2026-11-11T10:27:35.814Z",
+      "method": "GET",
+      "path": "/v1/models",
+      "bytes": 0,
+      "status": 200
+    },
+    {
+      "at": "2026-11-11T10:27:35.960Z",
+      "method": "GET",
+      "path": "/v1/models",
+      "bytes": 0,
+      "status": 200
+    },
+    {
+      "at": "2026-11-11T10:27:36.264Z",
+      "method": "POST",
+      "path": "/v1/chat/completions",
+      "bytes": 31465,
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "toolChoice": "auto",
+      "tools": [
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "scad_ai_ide_customizer_sourceAnalyze",
+          "schemaSha256": "06b709ecfb453601ff71081de8a998fe7a7ccecfcf03bef451bf0c460838d1a6"
+        },
+        {
+          "name": "scad_ai_ide_customizer_sourceApply",
+          "schemaSha256": "1e7ffd4971eb7a05745d6d55ff09b5115eef0249c8313c91a9563ea84ef930e6"
+        },
+        {
+          "name": "scad_ai_ide_customizer_sourceValidate",
+          "schemaSha256": "adcd660dbc5932a3e630dccba25420bbed3cb4013d884098fa8c5a345db897c7"
+        },
+        {
+          "name": "scad_ai_ide_customizer_state",
+          "schemaSha256": "7b1a95d4626922e791a7e0d09fe6f478a123b3f291176945d4dbf64646fd1cfd"
+        }
+      ],
+      "messageCount": 3,
+      "status": 200
+    },
+    {
+      "at": "2026-11-11T10:27:49.846Z",
+      "method": "POST",
+      "path": "/v1/chat/completions",
+      "bytes": 37249,
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "toolChoice": "auto",
+      "tools": [
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_customizer_sourceAnalyze",
+          "schemaSha256": "06b709ecfb453601ff71081de8a998fe7a7ccecfcf03bef451bf0c460838d1a6"
+        },
+        {
+          "name": "scad_ai_ide_customizer_sourceApply",
+          "schemaSha256": "1e7ffd4971eb7a05745d6d55ff09b5115eef0249c8313c91a9563ea84ef930e6"
+        },
+        {
+          "name": "scad_ai_ide_customizer_sourceValidate",
+          "schemaSha256": "adcd660dbc5932a3e630dccba25420bbed3cb4013d884098fa8c5a345db897c7"
+        },
+        {
+          "name": "scad_ai_ide_customizer_state",
+          "schemaSha256": "7b1a95d4626922e791a7e0d09fe6f478a123b3f291176945d4dbf64646fd1cfd"
+        }
+      ],
+      "messageCount": 6,
+      "status": 200
+    }
+  ]
+}

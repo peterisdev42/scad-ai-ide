@@ -1,0 +1,53 @@
+Customizer analyzer 107124 bytes p95=1.21ms; darwin/arm64 Node v24.16.0
+Customizer analyzer 1048576 bytes single sample=5.79ms; not a cross-platform benchmark
+✔ source analyzer retains existing GUI fixtures and all supported widgets (4.037875ms)
+✖ shared scanner tracks exact UTF-16 declaration/comment spans, Unicode, strings and CRLF (0.896541ms)
+✔ groups, Hidden, post-brace variables and duplicates retain legacy visibility (0.138208ms)
+✔ ordinary variables, prose and expressions without intent produce no warnings (0.147875ms)
+✔ deterministic invalid ranges, steps, defaults, choices and malformed hints (1.387291ms)
+✔ incomplete and bounded analyses never claim completeness (0.102208ms)
+✔ 100 KiB source analysis benchmark reports p95 and remains below 100 ms locally (19.279916ms)
+✔ oversized metadata is omitted rather than fabricated or leaked as an unbounded result (0.50825ms)
+✔ legal range hints and effective literal reassignments do not produce duplicate warnings (0.209666ms)
+✔ superseded invalid hints/defaults stop reporting once the effective declaration is corrected (0.176792ms)
+✔ ordinary SCAD and optional or unsupported Customizer usage never generate diagnostics (0.582ms)
+✔ every warning is tied to written syntax, has a concrete fix and clears after that repair (0.366667ms)
+✔ closed bracket comments followed by prose are not falsely diagnosed as missing a bracket (0.139042ms)
+✔ annotation semantics use native comment tokens rather than source hexadecimal literals (0.084208ms)
+✔ the 64 KiB metadata budget covers parameters, diagnostics and candidates together (4.545209ms)
+✔ source byte boundary includes exactly 1 MiB and rejects multibyte overflow (8.251209ms)
+✔ 501 parameter and candidate inputs obey both count and aggregate metadata bounds (1.646458ms)
+✔ seeded long-tail prose corpus never creates a missing-bracket diagnostic (21.616667ms)
+✔ post-block overrides diagnose lost controls at the effective assignment with the original location (0.172042ms)
+✔ native string brace cutoff removes controls without inventing a SCAD scope or override warning (0.142833ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 19
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 102.114
+
+✖ failing tests:
+
+test at out/test/customizerSourceAnalyzer.test.js:50:22
+✖ shared scanner tracks exact UTF-16 declaration/comment spans, Unicode, strings and CRLF (0.896541ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 3
+  
+      at TestContext.<anonymous> (/Users/q/Documents/Code/scad-ai-ide/out/test/customizerSourceAnalyzer.test.js:54:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1306:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:897:18)
+      at Test.postRun (node:internal/test_runner/test:1447:19)
+      at Test.run (node:internal/test_runner/test:1372:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 3,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

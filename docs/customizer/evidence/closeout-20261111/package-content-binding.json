@@ -1,0 +1,230 @@
+{
+  "vsixSha256": "5d1c3523ac43b8cf93c04f344b13b086486bc7b026599adfef1689685bd28c2a",
+  "toolSchemasExact": true,
+  "tools": 40,
+  "instructions": 2,
+  "skills": 5,
+  "actualRuntimeFilesMatchSource": true,
+  "files": [
+    {
+      "path": "dist/bundled-packages.json",
+      "sha256": "4ca8bd5fe3b086b774d19f268d70ec92ca5b50aea4bc893d5668f8809cfb5bef",
+      "bytes": 1721
+    },
+    {
+      "path": "dist/customizer.css",
+      "sha256": "6e2b3177dcc5b4a6ae1f5b571019b319b975834c99c4a361f872dde0c83c151e",
+      "bytes": 1446
+    },
+    {
+      "path": "dist/customizer.js",
+      "sha256": "5026cf28bd5e0f25a3d03847f07c05949a8339416cf7c9dfce37ec2770e5ab8f",
+      "bytes": 253499
+    },
+    {
+      "path": "dist/extension.js",
+      "sha256": "0c972fcbafc031ae10cac7882b01cf8c3dabd50fc7d34514c298e0079ebf0fdc",
+      "bytes": 1553634
+    },
+    {
+      "path": "dist/manifold.wasm",
+      "sha256": "73e3b419ad31294f6b1cc478173944e50efc4a34bfdeeff0107bdfc12975f11c",
+      "bytes": 541470
+    },
+    {
+      "path": "dist/markdown-owned.js",
+      "sha256": "88b75493e65fec5f40e7eadbc70b121f69c6968df39c9526c559b6b4e30db863",
+      "bytes": 1701955
+    },
+    {
+      "path": "dist/markdown-preview.js",
+      "sha256": "3e85e1cde2c39f160bdf83802bb942c49e2f8f33a07927f8a57d463fc9af6e3b",
+      "bytes": 1715499
+    },
+    {
+      "path": "dist/mesh-topology-worker.mjs",
+      "sha256": "0c72ca6341d0b22c62c0a594c21cc0e264b399f982d84194716136ce1fa91c4d",
+      "bytes": 662614
+    },
+    {
+      "path": "dist/onig.wasm",
+      "sha256": "76ebc1f0d87b2e7449a45ff3cd1a1546a9f05f54bdac44ee03e8a2b8348897be",
+      "bytes": 473151
+    },
+    {
+      "path": "dist/panel-scrollbar.css",
+      "sha256": "6e2b3177dcc5b4a6ae1f5b571019b319b975834c99c4a361f872dde0c83c151e",
+      "bytes": 1446
+    },
+    {
+      "path": "dist/panel-scrollbar.js",
+      "sha256": "cbf7e42f41d7b4c3d323ab079c798ee10278357f674b8af9949df3f0e3f3060f",
+      "bytes": 236471
+    },
+    {
+      "path": "dist/preview.js",
+      "sha256": "3db4cc467e380d8da33591a8e930cc57c5a4c845f6aab8f37a15dc75c738d56f",
+      "bytes": 1695663
+    },
+    {
+      "path": "instructions/openscad-customizer.instructions.md",
+      "sha256": "f4b5106933eab3cf06eb890104f26d699a308beda46942e01636bea3a5995f09",
+      "bytes": 4040
+    },
+    {
+      "path": "instructions/openscad.instructions.md",
+      "sha256": "0da129683c24de54a25d76159855168fddd34a945371d11f42fc45b02d6d2f76",
+      "bytes": 2435
+    },
+    {
+      "path": "resources/openscad.svg",
+      "sha256": "75a13719473b8820de0d3e39762e8cae60f711ea997b63499945159381b32d3a",
+      "bytes": 32546
+    },
+    {
+      "path": "resources/scad.svg",
+      "sha256": "c3f1485a7bfc650557fc8ac169b484ad53b7d7a80aebf913cc82d88803552b3f",
+      "bytes": 224
+    },
+    {
+      "path": "dist/codicons/codicon.css",
+      "sha256": "04fca10892d8f2be5104c920b640d9a58ddcf87f4902ea300fcf08de6634f3f6",
+      "bytes": 33699
+    },
+    {
+      "path": "dist/codicons/codicon.ttf",
+      "sha256": "2bb558cb693451e73c28c33fe64aa89bc19b1a4b70f95948322c243f93476920",
+      "bytes": 125828
+    },
+    {
+      "path": "media/markdown/preview.css",
+      "sha256": "2011de25ed7832e3c4d973cb9bdd79c52a91d752e98c3b6860c808733214e716",
+      "bytes": 2482
+    },
+    {
+      "path": "media/markdown/preview.js",
+      "sha256": "b8675fb6f0003b161240af2f52025ae944393fd30593fab6e4fb83ceee2ae0e6",
+      "bytes": 7320
+    },
+    {
+      "path": "media/customizer/main.css",
+      "sha256": "fb5318c59f5ab5769b36b5f502bdcd4a7848ada2deff8f9bff821dd7d5be2928",
+      "bytes": 12605
+    },
+    {
+      "path": "media/customizer/main.js",
+      "sha256": "70c199daafee961232695d7e537028e5b09fdeacd1c76226170fc5f4e6dfa106",
+      "bytes": 29999
+    },
+    {
+      "path": "media/customizer/scrollbar.js",
+      "sha256": "6edba05a467ab7f1d27fa099aba4aa11c16d1f8037c1ee5d106226c280ff2167",
+      "bytes": 3577
+    },
+    {
+      "path": "media/panels/ai.js",
+      "sha256": "9fe94dd35160a378cd540db32835602acd2469a7fb64353f60f2db396a3a9a4c",
+      "bytes": 4439
+    },
+    {
+      "path": "media/panels/index.html",
+      "sha256": "5fa448274a4f1b2c0755788d82389a14c173aac9e491a94091d7e1672a799e9c",
+      "bytes": 12681
+    },
+    {
+      "path": "media/panels/libraries.js",
+      "sha256": "7fc18f5980cef97a1774e5fc81e6216529c9295028d6e35f8f1a0b73d82ac2a1",
+      "bytes": 26598
+    },
+    {
+      "path": "media/panels/main.css",
+      "sha256": "f216622ea9739ec1fa1f0bb29fbef57827e7e38000667452802b6cec24f655b6",
+      "bytes": 25129
+    },
+    {
+      "path": "media/panels/main.js",
+      "sha256": "6e48e6f6d91170962394c4d7d6a2e25ea0b8d25d8fa2176d28b96853343059be",
+      "bytes": 29713
+    },
+    {
+      "path": "media/panels/scrollbar.js",
+      "sha256": "929f512162d14ca035e57d58a5aacf0d5f4b82206624211e3232971a953fdee8",
+      "bytes": 95
+    },
+    {
+      "path": "resources/libraries/dependencies.lock.schema.json",
+      "sha256": "6e609cab5abb27b2b86cd90856d079b42c0c36c786d4ea58c5666a9b9770228b",
+      "bytes": 2227
+    },
+    {
+      "path": "resources/libraries/dependencies.schema.json",
+      "sha256": "ba13be51add10c0699fec04e799e3957dea1e8327ef6088c68e35f12af5891fa",
+      "bytes": 830
+    },
+    {
+      "path": "resources/libraries/layouts.json",
+      "sha256": "0ae55ee535741c368d7ab44b1d895e091f12dbdcb7735ce0eec000db6537e23d",
+      "bytes": 11889
+    },
+    {
+      "path": "skills/openscad-customizer/SKILL.md",
+      "sha256": "b9964734fe8fc24132e276638184ce50681fb03592149dfb588bcaf2da461869",
+      "bytes": 3086
+    },
+    {
+      "path": "skills/openscad-customizer-authoring/SKILL.md",
+      "sha256": "118de547e188e460a2c365ad5bffb80c13db989d48f6f7ef58677a10a34c2df8",
+      "bytes": 6392
+    },
+    {
+      "path": "skills/openscad-runtime/SKILL.md",
+      "sha256": "c4fffba616d9a16c76986c44fa8e706a0c8d68ec68219a65e63907ff466ab8d0",
+      "bytes": 3293
+    },
+    {
+      "path": "skills/openscad-libraries/SKILL.md",
+      "sha256": "4375443259b56f2cdf2bff5d656ed1276d761943db04de8752aa05be0af958d2",
+      "bytes": 2465
+    },
+    {
+      "path": "skills/scad-ai-ide-diagnostics/SKILL.md",
+      "sha256": "53c30da8ec32bfdcbf48f61c9e8d7e4e830eefc0228f1e1c00a80a6c6a0b246a",
+      "bytes": 1472
+    },
+    {
+      "path": "skills/openscad-customizer-authoring/references/compatibility.md",
+      "sha256": "c61e4de5f173725f87aa879718b57675d4d3bf43608e2459184911329db6e82c",
+      "bytes": 3749
+    },
+    {
+      "path": "skills/openscad-customizer-authoring/references/diagnostics.md",
+      "sha256": "70422dc6b2fcb2a0c4329c07c8769ad0e4238ed1f466770b5ab6d834e564742f",
+      "bytes": 2266
+    },
+    {
+      "path": "skills/openscad-customizer-authoring/references/examples.md",
+      "sha256": "88bd6fcbde5a49e709e0e17ca1682a14fefe43ecdbf31775c1270603b639d146",
+      "bytes": 2559
+    },
+    {
+      "path": "skills/openscad-customizer-authoring/references/pitfalls.md",
+      "sha256": "bbd155d4f1b0202d4055683d50484105c183348850976cd1f57f273e36a747b1",
+      "bytes": 1773
+    },
+    {
+      "path": "skills/openscad-customizer-authoring/references/syntax.md",
+      "sha256": "3cedea671119ac4f83c12a4d2029250ec29a89827aba916f60036be5e9bda426",
+      "bytes": 1806
+    },
+    {
+      "path": "server/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+      "bytes": 9723
+    },
+    {
+      "path": "server/darwin-arm64/openscad-lsp",
+      "sha256": "433520a85d39d6dbc09f731227b25385d61a7b3924c34a9c79436d81120462ed",
+      "bytes": 5230416
+    }
+  ]
+}

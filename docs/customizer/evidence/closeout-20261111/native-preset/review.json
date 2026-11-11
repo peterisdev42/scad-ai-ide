@@ -1,0 +1,45 @@
+{
+  "scenario": "preset",
+  "scope": "Independent assertions against actual tool traces/buffer/disk; final prose is reviewed separately",
+  "artifact": {
+    "file": "scad-ai-ide-closeout-d1a5fde.vsix",
+    "bytes": 4604838,
+    "sha256": "5d1c3523ac43b8cf93c04f344b13b086486bc7b026599adfef1689685bd28c2a"
+  },
+  "requestFinished": true,
+  "terminalReason": "nativeRequestReturned",
+  "observerValidity": "recorded",
+  "hostSchemaRejectCount": null,
+  "dispatcherOk": 2,
+  "dispatcherTotal": 2,
+  "calls": [
+    {
+      "capability": "customizer.state",
+      "ok": true
+    },
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": true
+    }
+  ],
+  "actualPlanCommitValidate": {
+    "plan": false,
+    "commit": false,
+    "validate": false
+  },
+  "bufferShaBefore": "03c7cce18ef3e441492cae4c11812b5b958b4c72e427ef1a6371723a9c5cce87",
+  "bufferShaAfter": "03c7cce18ef3e441492cae4c11812b5b958b4c72e427ef1a6371723a9c5cce87",
+  "diskShaBefore": "3b0ccb93aaa7a9aa9a09899c89a0ecb01138d603628c81f00e00f5ad2f0fa19d",
+  "diskShaAfter": "3b0ccb93aaa7a9aa9a09899c89a0ecb01138d603628c81f00e00f5ad2f0fa19d",
+  "dirty": true,
+  "diskUnchanged": true,
+  "bufferUnchanged": true,
+  "analysisReadUnsavedBuffer": true,
+  "readonlyNoWrites": null,
+  "confirmationDecisions": [],
+  "finalAnswerTruthfulness": "PARTIAL: actual unknown-version readonly status and 6-byte default/3-byte limit correctly reported; no write. But says snapshot might truncate (IDE deterministically refuses) and claims CLI/Preview unavailable without invoking runtime discovery. Also quotes source line without counting synthetic dirty-buffer header.",
+  "status": "PARTIAL",
+  "presetShaBefore": "9383dc6a9e5957a505cd9b4f61ac204222802fd2b1d594337779088862f5fe8d",
+  "presetShaAfter": "9383dc6a9e5957a505cd9b4f61ac204222802fd2b1d594337779088862f5fe8d",
+  "presetBytesUnchanged": true
+}

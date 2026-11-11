@@ -1,0 +1,24 @@
+{
+  "snapshot": true,
+  "cancelledForSnapshot": false,
+  "buffer": "// Unsaved Native Agent acceptance buffer\nwidth=40;\ncube(width);\n",
+  "dirty": true,
+  "operations": {
+    "total": 2,
+    "offset": 0,
+    "hasMore": false,
+    "nextOffset": null,
+    "operations": [
+      {
+        "id": "ea017903-909e-44fd-be9d-99d0efb0a6b0",
+        "capabilityId": "customizer.sourceApply",
+        "status": "succeeded"
+      },
+      {
+        "id": "4cbb6539-fa73-4351-8e4f-03b47eaa2978",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    ]
+  }
+}

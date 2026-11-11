@@ -1,0 +1,11 @@
+{
+  "commit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2",
+  "target": "linux-x64",
+  "headless": true,
+  "nullgl": true,
+  "cgal": true,
+  "manifold": true,
+  "experimental": true,
+  "sha256": "29bc3b4779b0471388a11536b47b7d4533f26b94f0fc52e1beec49564199717f",
+  "scope": "Exact pinned CLI build; not the pinned Qt GUI or a cross-platform executable"
+}

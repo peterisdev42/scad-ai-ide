@@ -77,9 +77,13 @@ export function scanCustomizer(source: string) {
             statement += char
             while (++index < source.length) {
                 statement += source[index]
+                // Pinned CommentParser::getLineToStop also sees braces inside
+                // strings. This changes the Customizer boundary, not SCAD scope.
+                if (source[index] === '{') stopCustomizerAtLine(index)
                 if (source[index] === '\n') lineSemicolons = 0
                 if (source[index] === '\\') {
                     statement += source[++index] ?? ''
+                    if (source[index] === '{') stopCustomizerAtLine(index)
                 } else if (source[index] === '"') {
                     break
                 }

@@ -1,0 +1,23 @@
+{
+  "endpoint": "http://127.0.0.1:8000/v1",
+  "status": 200,
+  "body": {
+    "object": "list",
+    "data": [
+      {
+        "id": "Hy-MT2-1.8B-8bit",
+        "object": "model",
+        "created": 1794390827,
+        "owned_by": "omlx",
+        "max_model_len": 262144
+      },
+      {
+        "id": "Qwen3.6-35B-A3B-OptiQ-4bit",
+        "object": "model",
+        "created": 1794390827,
+        "owned_by": "omlx",
+        "max_model_len": 262144
+      }
+    ]
+  }
+}

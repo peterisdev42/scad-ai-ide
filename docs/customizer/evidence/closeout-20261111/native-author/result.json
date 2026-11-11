@@ -1,0 +1,77 @@
+{
+  "scenario": "author",
+  "artifact": {
+    "file": "scad-ai-ide-closeout-d1a5fde.vsix",
+    "bytes": 4604838,
+    "sha256": "5d1c3523ac43b8cf93c04f344b13b086486bc7b026599adfef1689685bd28c2a"
+  },
+  "timeoutMs": 240000,
+  "ready": {
+    "vscode": "1.140.0",
+    "extensionPath": "/tmp/customizer-native-agent-y1r53g/extensions/undefined_publisher.scad-ai-ide-0.0.1",
+    "bundleSha256": "0c972fcbafc031ae10cac7882b01cf8c3dabd50fc7d34514c298e0079ebf0fdc",
+    "chatSettings": {
+      "saveBeforeSend": false,
+      "autoSave": "off",
+      "extensionUnification": false,
+      "disableAI": false,
+      "extensionTools": true
+    },
+    "nativeAgent": {
+      "present": true,
+      "active": true
+    },
+    "provider": {
+      "id": "techopolis.omlx-copilot-chat",
+      "version": "0.1.2"
+    },
+    "models": [
+      {
+        "id": "Hy-MT2-1.8B-8bit",
+        "name": "Hy-MT2-1.8B-8bit",
+        "vendor": "omlx",
+        "maxInputTokens": 262144
+      },
+      {
+        "id": "Qwen3.6-35B-A3B-OptiQ-4bit",
+        "name": "Qwen3.6-35B-A3B-OptiQ-4bit",
+        "vendor": "omlx",
+        "maxInputTokens": 262144
+      }
+    ]
+  },
+  "response": {
+    "result": {
+      "type": "confirmation",
+      "kind": "toolInvocation",
+      "toolId": "scad_ai_ide_customizer_sourceApply"
+    },
+    "buffer": "// Unsaved Native Agent acceptance buffer\nwidth=40;\nshape=\"round\";\ninternalOffset=0.01;\nmodule model() { cube([width,2,3]); }\nmodel();\n",
+    "dirty": true,
+    "operations": {
+      "total": 2,
+      "offset": 0,
+      "hasMore": false,
+      "nextOffset": null,
+      "operations": [
+        {
+          "id": "d15fd518-1eb6-48d3-a435-3bdf13e6a1e1",
+          "capabilityId": "customizer.sourceApply",
+          "status": "succeeded"
+        },
+        {
+          "id": "231a0c7b-4fc5-4c34-8dfe-5b50c0aa9050",
+          "capabilityId": "customizer.sourceAnalyze",
+          "status": "succeeded"
+        }
+      ]
+    }
+  },
+  "timedOut": false,
+  "interrupted": true,
+  "requestFinished": false,
+  "terminalReason": "manualConfirmationRequired",
+  "nativeAgent": true,
+  "confirmationsAutomaticallyApproved": false,
+  "approvals": []
+}

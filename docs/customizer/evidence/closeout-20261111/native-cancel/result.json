@@ -1,0 +1,74 @@
+{
+  "scenario": "cancel",
+  "artifact": {
+    "file": "scad-ai-ide-closeout-d1a5fde.vsix",
+    "bytes": 4604838,
+    "sha256": "5d1c3523ac43b8cf93c04f344b13b086486bc7b026599adfef1689685bd28c2a"
+  },
+  "timeoutMs": 180000,
+  "ready": {
+    "vscode": "1.140.0",
+    "extensionPath": "/tmp/customizer-native-agent-mHAk13/extensions/undefined_publisher.scad-ai-ide-0.0.1",
+    "bundleSha256": "0c972fcbafc031ae10cac7882b01cf8c3dabd50fc7d34514c298e0079ebf0fdc",
+    "chatSettings": {
+      "saveBeforeSend": false,
+      "autoSave": "off",
+      "extensionUnification": false,
+      "disableAI": false,
+      "extensionTools": true
+    },
+    "nativeAgent": {
+      "present": true,
+      "active": true
+    },
+    "provider": {
+      "id": "techopolis.omlx-copilot-chat",
+      "version": "0.1.2"
+    },
+    "models": [
+      {
+        "id": "Hy-MT2-1.8B-8bit",
+        "name": "Hy-MT2-1.8B-8bit",
+        "vendor": "omlx",
+        "maxInputTokens": 262144
+      },
+      {
+        "id": "Qwen3.6-35B-A3B-OptiQ-4bit",
+        "name": "Qwen3.6-35B-A3B-OptiQ-4bit",
+        "vendor": "omlx",
+        "maxInputTokens": 262144
+      }
+    ]
+  },
+  "response": {
+    "snapshot": true,
+    "cancelledForSnapshot": false,
+    "buffer": "// Unsaved Native Agent acceptance buffer\nwidth=40;\ncube(width);\n",
+    "dirty": true,
+    "operations": {
+      "total": 2,
+      "offset": 0,
+      "hasMore": false,
+      "nextOffset": null,
+      "operations": [
+        {
+          "id": "ea017903-909e-44fd-be9d-99d0efb0a6b0",
+          "capabilityId": "customizer.sourceApply",
+          "status": "succeeded"
+        },
+        {
+          "id": "4cbb6539-fa73-4351-8e4f-03b47eaa2978",
+          "capabilityId": "customizer.sourceAnalyze",
+          "status": "succeeded"
+        }
+      ]
+    }
+  },
+  "timedOut": false,
+  "interrupted": false,
+  "requestFinished": true,
+  "terminalReason": "nativeUICompleted",
+  "nativeAgent": true,
+  "confirmationsAutomaticallyApproved": false,
+  "approvals": []
+}

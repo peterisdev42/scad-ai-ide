@@ -1,0 +1,196 @@
+[
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "includeCandidates": true,
+      "maxDiagnostics": 10,
+      "uri": "file:///tmp/customizer-native-agent-RNbKU3/workspace/model.scad"
+    },
+    "started": "2026-11-11T10:08:30.628Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file:///tmp/customizer-native-agent-RNbKU3/workspace/model.scad",
+          "version": 2,
+          "sha256": "18ed0c6cca85e97de7437c5e104c0ceff841c7dce24259529572125e38f66ff0"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "Unsaved Native Agent acceptance buffer",
+            "defaultValue": 40,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 1,
+                "character": 0
+              },
+              "end": {
+                "line": 1,
+                "character": 9
+              }
+            },
+            "descriptionRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 41
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "488c4af9-495d-4730-a260-452a333c35c3",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceValidate",
+    "input": {
+      "expectations": [
+        {
+          "name": "width",
+          "widget": "slider",
+          "range": {
+            "min": 10,
+            "max": 100,
+            "step": 5
+          }
+        }
+      ],
+      "uri": "file:///tmp/customizer-native-agent-RNbKU3/workspace/model.scad"
+    },
+    "started": "2026-11-11T10:08:30.646Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceValidate",
+      "data": {
+        "identity": {
+          "uri": "file:///tmp/customizer-native-agent-RNbKU3/workspace/model.scad",
+          "version": 2,
+          "sha256": "18ed0c6cca85e97de7437c5e104c0ceff841c7dce24259529572125e38f66ff0"
+        },
+        "sourceStatus": {
+          "status": "complete",
+          "reasons": []
+        },
+        "contractStatus": "mismatch",
+        "qualityStatus": "clear",
+        "semanticPass": false,
+        "checked": 1,
+        "matched": 0,
+        "expectationResults": [
+          {
+            "parameter": "width",
+            "matched": false,
+            "issues": [
+              "Expected widget \"slider\"; actual \"spinbox\"",
+              "Range or step differs"
+            ],
+            "details": [
+              {
+                "code": "EXPECTED_WIDGET",
+                "message": "Expected widget \"slider\"; actual \"spinbox\"",
+                "range": {
+                  "start": {
+                    "line": 1,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 1,
+                    "character": 9
+                  }
+                }
+              },
+              {
+                "code": "EXPECTED_RANGE",
+                "message": "Range or step differs",
+                "range": {
+                  "start": {
+                    "line": 1,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 1,
+                    "character": 9
+                  }
+                }
+              }
+            ],
+            "range": {
+              "start": {
+                "line": 1,
+                "character": 0
+              },
+              "end": {
+                "line": 1,
+                "character": 9
+              }
+            }
+          }
+        ],
+        "omittedExpectations": 0,
+        "diagnostics": [],
+        "omittedDiagnostics": 0,
+        "runtimeCheck": {
+          "status": "notRequested"
+        },
+        "guiCheck": {
+          "status": "notRequested"
+        },
+        "complete": true
+      },
+      "operation": {
+        "id": "54f88110-3a7c-4b1d-b038-1a173f829c55",
+        "capabilityId": "customizer.sourceValidate",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "includeCandidates": true,
+      "maxDiagnostics": 10,
+      "uri": "file:///tmp/customizer-native-agent-RNbKU3/workspace/missing.scad"
+    },
+    "started": "2026-11-11T10:08:30.652Z",
+    "output": {
+      "ok": false,
+      "capabilityId": "customizer.sourceAnalyze",
+      "error": {
+        "code": "OUTSIDE_WORKSPACE",
+        "message": "Source target is unavailable or outside the canonical workspace: ENOENT: no such file or directory, lstat '/tmp/customizer-native-agent-RNbKU3/workspace/missing.scad'",
+        "retryable": false
+      },
+      "operation": {
+        "id": "dce499b6-6ad9-409a-a633-eb40c0f9acbd",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "failed",
+        "error": {
+          "code": "OUTSIDE_WORKSPACE",
+          "message": "Source target is unavailable or outside the canonical workspace: ENOENT: no such file or directory, lstat '/tmp/customizer-native-agent-RNbKU3/workspace/missing.scad'",
+          "retryable": false
+        }
+      }
+    }
+  }
+]

@@ -1,0 +1,4 @@
+npm notice run scad-ai-ide@0.0.1 check:agents
+npm notice run node scripts/agent-manifest.mjs
+Validated 40 tools, 2 instruction and 5 skills.
+Verified 11 GUI groups and 41 business action contracts.

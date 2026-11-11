@@ -1,0 +1,13 @@
+[
+  {
+    "at": "2026-11-11T10:19:09.904Z",
+    "userAuthorization": "Explicit user approval of two author fixtures and a separate Skip cancellation scenario in this chat, 2026-11-11",
+    "tool": "scad_ai_ide_customizer_sourceApply",
+    "planId": "68fd9eaf-58f8-47d7-8a13-f4d932ad9c4e",
+    "decision": "allow",
+    "nativeLabel": "Allow in this Session",
+    "reviewedBefore": "// Unsaved Native Agent acceptance buffer\nwidth=40;\nshape=\"round\";\ninternalOffset=0.01;\nmodule model() { cube([width,2,3]); }\nmodel();\n",
+    "reviewedAfter": "/* [Dimensions] */\n// Width in millimeters\nwidth=40; // [10:5:100]\n/* [Appearance] */\n// Select shape\nshape=\"round\"; // [\"round\":\"Round\", \"square\":\"Square\"]\n/* [Hidden] */\ninternalOffset=0.01;\nmodule model() { cube([width,2,3]); }\nmodel();\n",
+    "geometryBytesUnchanged": true
+  }
+]

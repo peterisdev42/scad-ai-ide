@@ -1,0 +1,58 @@
+{
+  "scope": "Fixture setup before model dispatch; not a model tool call",
+  "before": "{\"fileFormatVersion\":\"99\",\"metadata\":{\"sentinel\":\"preserve exactly\"},\"parameterSets\":{\"External\":{\"label\":\"abc\"}}}",
+  "imported": {
+    "ok": true,
+    "capabilityId": "customizer.importPresets",
+    "revision": 3,
+    "data": {
+      "target": "file:///tmp/customizer-native-agent-N1bc7k/workspace/model.scad",
+      "revision": 3,
+      "parameters": [
+        {
+          "name": "label",
+          "group": "",
+          "description": "",
+          "defaultValue": "abcdef",
+          "hint": "3",
+          "maxLength": 3,
+          "value": "abcdef"
+        }
+      ],
+      "presets": {
+        "readOnly": true,
+        "diagnostics": [
+          {
+            "ruleId": "PRESET-007",
+            "code": "VERSION_COMPAT",
+            "severity": "information",
+            "message": "Unverified fileFormatVersion \"99\". Read-only analysis is available; applying and writing are disabled.",
+            "path": [
+              "fileFormatVersion"
+            ],
+            "suggestedFix": "Verify compatibility for this version before applying or overwriting it. Do not rewrite its version marker to bypass this check."
+          }
+        ],
+        "names": [
+          "External"
+        ],
+        "active": "",
+        "modified": false,
+        "filename": "model.json",
+        "path": "file:///tmp/customizer-native-agent-N1bc7k/workspace/model.json",
+        "exists": true
+      },
+      "analysis": {
+        "complete": true,
+        "incompleteReasons": [],
+        "overriddenParameters": []
+      },
+      "overridesEditSource": false
+    },
+    "operation": {
+      "id": "9e3a850f-3a75-41d0-8c0a-00f3a660fdbd",
+      "capabilityId": "customizer.importPresets",
+      "status": "succeeded"
+    }
+  }
+}

@@ -17,11 +17,13 @@ test('shared scanner tracks exact UTF-16 declaration/comment spans, Unicode, str
     const source = '// 😀 description\r\n宽度 = 0x10; // [0:8:32]\r\ntext="{;//";\r\nvector=[1,\r\n2,3,];\r\n'
     const analysis = analyzeCustomizerSource(source)
     assert.equal(analysis.complete, true)
-    assert.equal(analysis.parameters.length, 3)
+    assert.equal(analysis.parameters.length, 1, 'Pinned native Customizer stops at the string brace line')
     assert.deepEqual(analysis.parameters[0].declarationRange, { start: { line: 1, character: 0 }, end: { line: 1, character: 10 } })
     assert.deepEqual(analysis.parameters[0].descriptionRange, { start: { line: 0, character: 0 }, end: { line: 0, character: 17 } })
-    assert.equal(analysis.parameters[1].defaultValue, '{;//')
-    for (const d of scanCustomizer(source).declarations) assert.match(source.slice(d.start, d.end), new RegExp('^' + d.name + '\\s*='))
+    const declarations = scanCustomizer(source).declarations
+    assert.equal(declarations.length, 3, 'All source declarations still have accurate spans')
+    assert.equal(declarations[1].value, '{;//')
+    for (const d of declarations) assert.match(source.slice(d.start, d.end), new RegExp('^' + d.name + '\\s*='))
 })
 test('groups, Hidden, post-brace variables and duplicates retain legacy visibility', () => {
     const source = '/* [Global] */\na=1;\n/* [Hidden] */\nb=2;\n/* [Dimensions] */\nc=3; // [0:10]\nc=4;\nmodule x() {}\nd=5; // [0:10]'
@@ -220,4 +222,16 @@ test('post-block overrides diagnose lost controls at the effective assignment wi
     const partial = analyzeCustomizerSource('kept=1;\n' + source)
     assert.deepEqual(partial.parameters.map(p => p.name), ['kept'])
     assert.equal(partial.diagnostics.length, 2)
+})
+
+test('native string brace cutoff removes controls without inventing a SCAD scope or override warning', () => {
+    for (const source of ['label="{";\nwidth=40;\n', 'label="\\\\{";\nwidth=40;\n']) {
+        const analysis = analyzeCustomizerSource(source)
+        assert.deepEqual(analysis.parameters, [])
+        assert.deepEqual(analysis.diagnostics, [])
+        assert.equal(analysis.complete, true)
+    }
+    const kept = analyzeCustomizerSource('kept=10;\nlabel="{";\nwidth=40;\n')
+    assert.deepEqual(kept.parameters.map(p => p.name), ['kept'])
+    assert.deepEqual(analyzeCustomizerSource('// {\nwidth=40;\n').parameters.map(p => p.name), ['width'])
 })

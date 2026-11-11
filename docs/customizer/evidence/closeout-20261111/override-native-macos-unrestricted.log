@@ -1,0 +1,14 @@
+PASS N-01: native=["width"] IDE=["width"] warnings=0/0
+FAIL N-02: native=undefined IDE=[] warnings=1/1
+FAIL N-02-same-line: native=undefined IDE=[] warnings=0/1
+PASS N-03: native=["base"] IDE=["base"] warnings=1/1
+PASS N-04: native=["width"] IDE=["width"] warnings=0/0
+PASS N-05: native=["width"] IDE=["width"] warnings=0/0
+FAIL N-06: native=undefined IDE=[] warnings=0/0
+PASS N-07-comment: native=["width"] IDE=["width"] warnings=0/0
+FAIL N-07-string: native=undefined IDE=["label","width"] warnings=0/0
+FAIL N-08: native=undefined IDE=[] warnings=0/0
+FAIL N-09: native=undefined IDE=[] warnings=1/1
+PASS N-10: native=["height"] IDE=["height"] warnings=1/1
+FAIL N-11: native=undefined IDE=[] warnings=2/2
+PASS N-12: native=["width","height"] IDE=["width","height"] warnings=0/0

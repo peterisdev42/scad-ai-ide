@@ -1,0 +1,25 @@
+{
+  "scenario": "preset",
+  "backend": "omlx",
+  "vendor": "omlx",
+  "providerId": "techopolis.omlx-copilot-chat",
+  "maxToolCount": 16,
+  "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+  "modelIdentity": {
+    "name": "Qwen3.6-35B-A3B-OptiQ-4bit",
+    "digest": null,
+    "revision": null,
+    "maxModelLen": 262144
+  },
+  "file": "/tmp/customizer-native-agent-N1bc7k/workspace/model.scad",
+  "query": "/openscad-customizer-authoring 目标文件为 file:///tmp/customizer-native-agent-N1bc7k/workspace/model.scad。只读 Preset 安全验收：使用 customizer_state 和 SourceAnalyze 读取真实状态。当前关联 JSON 的 fileFormatVersion 为未知版本 99，必须保持只读，不应用、不覆盖、不修改版本。另判断 label 的默认值能否在 3 UTF-8 bytes 的文本约束下无损保存为 Current 快照；不能截断或改默认值。说明实际证据和未执行操作，不发起任何写入工具。 保留几何、源码默认值与Preset，不保存文件。使用项目安装的Skill完成分析、适用时的最小编辑和明确目标验证；如实报告实际结果及未执行的GUI/渲染检查。",
+  "source": "label=\"abcdef\"; // 3\ncube(1);\n",
+  "artifact": {
+    "file": "scad-ai-ide-closeout-d1a5fde.vsix",
+    "bytes": 4604838,
+    "sha256": "5d1c3523ac43b8cf93c04f344b13b086486bc7b026599adfef1689685bd28c2a"
+  },
+  "confirmationPolicy": "Manual user confirmation only; no automatic approvals",
+  "ollamaEndpoint": "http://127.0.0.1:56277/v1",
+  "inferenceProfile": "Installed provider directly to the local server; no sampling override in this harness"
+}

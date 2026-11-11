@@ -272,3 +272,13 @@ ADR11实施与当前验证：成功plan返回continuation，tool由同一catalog
 ## ADR12：参数被区域外覆盖的可见性诊断（2026-11-10，用户批准）
 
 用户报告 rpi.scad 的两套参数分别位于首个代码块之前和之后，导致 Sidebar 为空且没有诊断。选择对丢失控件给出 Warning，关联前后声明；全部控件丢失时明确空状态原因并允许跳转。合法 SCAD 赋值不判为语法错误，不改变现有参数发现规则，不自动删除源码；显式参数可见性要求仍作为独立契约校验。增加有界的 visibility 诊断和领域状态投影，GUI 与 Agent 使用同一分析；跳转属于只读展示动作，沿用 target/revision 校验。详细边界、真实 Host/浏览器证据及尚未执行范围见[修复验收](customizer/parameter-override-fix.md)。原始全量目标继续暂停。
+
+## ADR13（2026-11-11）— 固定上游字符串 brace 截止语义
+
+Closeout N-07-string 首次原生差分发现 `label="{";\nwidth=40;` 的原生 `.param` 不含 parameters，IDE 却显示两个控件。固定上游 `bcf45a22...` 的 `CommentParser::getLineToStop` 第 76 行检查 `{` 时没有 `!inString` 条件；字符串引号只保护注释识别，不保护此截止检查。本机 Qt 2026.11.06 实测相同，精确 pinned Linux 差分由 workflow 再验。
+
+最小修正：在单一扫描器扫描字符串时调用已有按行截止函数；不将字符串 brace 计入语言作用域，不求值、不改源文、不新增语法诊断或自动修复。首个 brace 行本身及其后声明不产生控件；前面的控件保留；注释 brace 仍忽略。N-02 同一行案例没有“先前可控声明”，所以没有丢失控件 Warning。ADR12 的跨行覆盖 Warning 保持。
+
+差分测试读取原生空参数 schema 时，将省略 parameters 的合法 `{title:...}` 视为零参数；解析失败和进程失败仍 FAIL。保留首次测试脚本误判日志。行为改变来自实际上游证据，回归覆盖字符串、注释、前置控件和完整性；不是放宽 Agent schema 或数据安全策略。
+
+Closeout 验收前置条件补充：本机 VS Code 1.140.0 的 `chat.saveBeforeSend` 默认 true；本机 workbench 源码 `tIn()` 会在请求前调用 `saveAll`。首次 Native smoke/expression/failure 的合成未保存注释因此被宿主保存，不能用这些运行证明 disk unchanged；保留 INVALID TEST。隔离验收 profile 显式设置 `chat.saveBeforeSend=false`、`files.autoSave=off` 后重新运行，记录实际设置、buffer/disk hash。没有更改用户 profile 或产品 SourceApply 行为。oMLX acceptance 不启用历史自动批准控制器；遇到需要审阅的 Commit 就记录 manualConfirmationRequired，不能将其视作完成。

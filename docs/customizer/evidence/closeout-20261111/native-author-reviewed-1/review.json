@@ -1,0 +1,70 @@
+{
+  "scenario": "author-reviewed-1",
+  "scope": "Independent assertions against actual tool traces/buffer/disk; final prose is reviewed separately",
+  "artifact": {
+    "file": "scad-ai-ide-closeout-d1a5fde.vsix",
+    "bytes": 4604838,
+    "sha256": "5d1c3523ac43b8cf93c04f344b13b086486bc7b026599adfef1689685bd28c2a"
+  },
+  "requestFinished": true,
+  "terminalReason": "nativeUICompleted",
+  "observerValidity": "recorded",
+  "hostSchemaRejectCount": null,
+  "dispatcherOk": 4,
+  "dispatcherTotal": 4,
+  "calls": [
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": true
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "ok": true
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "ok": true,
+      "semanticPass": true
+    },
+    {
+      "capability": "customizer.sourceValidate",
+      "ok": true,
+      "semanticPass": true
+    }
+  ],
+  "actualPlanCommitValidate": {
+    "plan": true,
+    "commit": true,
+    "validate": true
+  },
+  "bufferShaBefore": "8da2fa1046284c3cd3c54efbbee55da103e1c163d0fb30ffb913305411ae9ed3",
+  "bufferShaAfter": "cc11f2aa5cc2576e92e130712e1279c09e3baab78c648ca9ee2e1150e0924142",
+  "diskShaBefore": "91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad",
+  "diskShaAfter": "91a02ba507685158dbaa5e2035695f0977bed36b3a7eb50a2ff53a6a03d72bad",
+  "dirty": true,
+  "diskUnchanged": true,
+  "bufferUnchanged": false,
+  "analysisReadUnsavedBuffer": true,
+  "readonlyNoWrites": null,
+  "confirmationDecisions": [
+    {
+      "at": "2026-11-11T10:17:25.400Z",
+      "userAuthorization": "Explicit user approval of two author fixtures and a separate Skip cancellation scenario in this chat, 2026-11-11",
+      "tool": "scad_ai_ide_customizer_sourceApply",
+      "planId": "1f3d9043-c0c4-4c02-b19f-d25e1a03b699",
+      "decision": "allow",
+      "nativeLabel": "Allow in this Session",
+      "reviewedBefore": "// Unsaved Native Agent acceptance buffer\nwidth=40;\nshape=\"round\";\ninternalOffset=0.01;\nmodule model() { cube([width,2,3]); }\nmodel();\n",
+      "reviewedAfter": "/* [Dimensions] */\n// Width in millimeters\nwidth=40; // [10:5:100]\n/* [Appearance] */\nshape=\"round\"; // [\"round\":\"Round\", \"square\":\"Square\"]\n/* [Hidden] */\ninternalOffset=0.01;\nmodule model() { cube([width,2,3]); }\nmodel();\n",
+      "geometryBytesUnchanged": true
+    }
+  ],
+  "finalAnswerTruthfulness": "PASS for outcomes, defaults, geometry preservation and explicit runtime/GUI notRequested. Final displayed source is formatted illustratively rather than byte-exact; actual buffer is separately recorded.",
+  "status": "PASS",
+  "independentActualBufferAssertions": {
+    "threeTargets": true,
+    "defaultsUnchanged": true,
+    "geometryBytesUnchanged": true,
+    "hiddenDeclarationPreserved": true
+  }
+}

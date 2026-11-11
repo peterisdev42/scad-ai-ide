@@ -1,0 +1,27 @@
+[
+  {
+    "scenario": "expression",
+    "exitCode": 0,
+    "evidence": "docs/customizer/evidence/closeout-20261111/native-expression.log"
+  },
+  {
+    "scenario": "failure",
+    "exitCode": 0,
+    "evidence": "docs/customizer/evidence/closeout-20261111/native-failure.log"
+  },
+  {
+    "scenario": "override",
+    "exitCode": 0,
+    "evidence": "docs/customizer/evidence/closeout-20261111/native-override.log"
+  },
+  {
+    "scenario": "author",
+    "exitCode": 1,
+    "evidence": "docs/customizer/evidence/closeout-20261111/native-author.log"
+  },
+  {
+    "scenario": "tail",
+    "exitCode": 0,
+    "evidence": "docs/customizer/evidence/closeout-20261111/native-tail.log"
+  }
+]

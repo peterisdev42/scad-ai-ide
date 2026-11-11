@@ -15,7 +15,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                os: [macos-latest, ubuntu-latest, windows-latest]
+                os: [macos-latest, ubuntu-latest, windows-2025]
         runs-on: ${{ matrix.os }}
         env:
             QT_QPA_PLATFORM: offscreen
@@ -71,16 +71,20 @@ jobs:
               if: runner.os == 'Windows'
               shell: bash
               run: node scripts/customizer-windows-environment-probe.mjs "$SCAD_OPENSCAD_EXECUTABLE" .build/customizer-windows-environment.json
-            - run: npm run test:libraries
+            - name: Run required native library gate
+              shell: bash
+              run: npm run test:libraries 2>&1 | tee .build/library-tests.log
             - name: Preserve native comparison
               if: always()
               uses: actions/upload-artifact@v4
               with:
                   name: native-customizer-${{ runner.os }}
+                  include-hidden-files: true
                   path: |
                       .build/customizer-native.json
                       .build/customizer-native-import.json
                       .build/customizer-windows-environment.json
+                      .build/library-tests.log
                   if-no-files-found: warn
             - name: Save test report context
               if: always()

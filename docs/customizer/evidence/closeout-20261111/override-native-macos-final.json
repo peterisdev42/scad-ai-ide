@@ -1,0 +1,770 @@
+{
+  "sourceCommit": "39a90a364c24baa36b6fb30fc3d8cc18a2d70384",
+  "referenceCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2",
+  "binary": "/Users/q/Documents/Code/scad-ai-ide/.build/customizer-native-gui/mount/OpenSCAD.app/Contents/MacOS/OpenSCAD",
+  "binarySha256": "a8f1a71dfc970bc94c13f11032c702d01b36d0a7ba87361b4358a7e19c1146c8",
+  "pinnedBinary": false,
+  "platform": "darwin",
+  "node": "v24.16.0",
+  "version": {
+    "exitCode": 0,
+    "signal": null,
+    "stdout": "",
+    "stderr": "OpenSCAD version 2026.11.06\n"
+  },
+  "scope": "Native CLI .param; not Qt GUI. N-12 is the edited snapshot, not live UI cleanup.",
+  "results": [
+    {
+      "id": "N-01",
+      "source": "width=40;\n",
+      "warnings": 0,
+      "native": {
+        "exitCode": 0,
+        "signal": null,
+        "stdout": "",
+        "stderr": "WARNING: Ignoring request to enable unknown feature 'unicode-identifiers'.\n"
+      },
+      "rawParam": "{\"parameters\":[{\"group\":\"Parameters\",\"initial\":40.0,\"name\":\"width\",\"step\":1.0,\"type\":\"number\"}],\"title\":\"main\"}",
+      "parseError": null,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 40,
+          "name": "width",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "width",
+          "group": "",
+          "description": "",
+          "defaultValue": 40,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 9
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "parity": true,
+      "warningMatches": true,
+      "status": "PASS"
+    },
+    {
+      "id": "N-02",
+      "source": "width=40;\nmodule m(){}\nwidth=50;\n",
+      "warnings": 1,
+      "native": {
+        "exitCode": 0,
+        "signal": null,
+        "stdout": "",
+        "stderr": "WARNING: Ignoring request to enable unknown feature 'unicode-identifiers'.\nWARNING: \"width\" was assigned on line 1 but was overwritten in file main.scad, line 3\n"
+      },
+      "rawParam": "{\"title\":\"main\"}",
+      "parseError": null,
+      "actualNative": [],
+      "actualIDE": [],
+      "diagnostics": [
+        {
+          "ruleId": "CUST-VIS-01",
+          "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+          "severity": "warning",
+          "parameter": "width",
+          "message": "The later assignment to \"width\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+          "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+          "range": {
+            "start": {
+              "line": 2,
+              "character": 0
+            },
+            "end": {
+              "line": 2,
+              "character": 9
+            }
+          },
+          "relatedInformation": [
+            {
+              "range": {
+                "start": {
+                  "line": 0,
+                  "character": 0
+                },
+                "end": {
+                  "line": 0,
+                  "character": 9
+                }
+              },
+              "message": "Earlier customizable parameter declaration overridden here."
+            }
+          ],
+          "evidence": {
+            "kind": "superseded-parameter",
+            "category": "visibility",
+            "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+          },
+          "fix": {
+            "id": "CUST-VIS-01",
+            "safety": "review",
+            "title": "Review the assignment outside the Customizer region"
+          }
+        }
+      ],
+      "parity": true,
+      "warningMatches": true,
+      "status": "PASS"
+    },
+    {
+      "id": "N-02-same-line",
+      "source": "width=40; module m(){} width=50;\n",
+      "warnings": 0,
+      "native": {
+        "exitCode": 0,
+        "signal": null,
+        "stdout": "",
+        "stderr": "WARNING: Ignoring request to enable unknown feature 'unicode-identifiers'.\nWARNING: \"width\" was assigned on line 1 but was overwritten in file main.scad, line 1\n"
+      },
+      "rawParam": "{\"title\":\"main\"}",
+      "parseError": null,
+      "actualNative": [],
+      "actualIDE": [],
+      "diagnostics": [],
+      "parity": true,
+      "warningMatches": true,
+      "status": "PASS"
+    },
+    {
+      "id": "N-03",
+      "source": "base=80;\nwidth=40;\nmodule m(){}\nwidth=base/2;\n",
+      "warnings": 1,
+      "native": {
+        "exitCode": 0,
+        "signal": null,
+        "stdout": "",
+        "stderr": "WARNING: Ignoring request to enable unknown feature 'unicode-identifiers'.\nWARNING: \"width\" was assigned on line 2 but was overwritten in file main.scad, line 4\n"
+      },
+      "rawParam": "{\"parameters\":[{\"group\":\"Parameters\",\"initial\":80.0,\"name\":\"base\",\"step\":1.0,\"type\":\"number\"}],\"title\":\"main\"}",
+      "parseError": null,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 80,
+          "name": "base",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "base",
+          "group": "",
+          "description": "",
+          "defaultValue": 80,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 8
+            }
+          }
+        }
+      ],
+      "diagnostics": [
+        {
+          "ruleId": "CUST-VIS-01",
+          "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+          "severity": "warning",
+          "parameter": "width",
+          "message": "The later assignment to \"width\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+          "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+          "range": {
+            "start": {
+              "line": 3,
+              "character": 0
+            },
+            "end": {
+              "line": 3,
+              "character": 13
+            }
+          },
+          "relatedInformation": [
+            {
+              "range": {
+                "start": {
+                  "line": 1,
+                  "character": 0
+                },
+                "end": {
+                  "line": 1,
+                  "character": 9
+                }
+              },
+              "message": "Earlier customizable parameter declaration overridden here."
+            }
+          ],
+          "evidence": {
+            "kind": "superseded-parameter",
+            "category": "visibility",
+            "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+          },
+          "fix": {
+            "id": "CUST-VIS-01",
+            "safety": "review",
+            "title": "Review the assignment outside the Customizer region"
+          }
+        }
+      ],
+      "parity": true,
+      "warningMatches": true,
+      "status": "PASS"
+    },
+    {
+      "id": "N-04",
+      "source": "width=40;\nwidth=50;\nmodule m(){}\n",
+      "warnings": 0,
+      "native": {
+        "exitCode": 0,
+        "signal": null,
+        "stdout": "",
+        "stderr": "WARNING: Ignoring request to enable unknown feature 'unicode-identifiers'.\nWARNING: \"width\" was assigned on line 1 but was overwritten in file main.scad, line 2\n"
+      },
+      "rawParam": "{\"parameters\":[{\"group\":\"Parameters\",\"initial\":50.0,\"name\":\"width\",\"step\":1.0,\"type\":\"number\"}],\"title\":\"main\"}",
+      "parseError": null,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 50,
+          "name": "width",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "width",
+          "group": "",
+          "description": "",
+          "defaultValue": 50,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 1,
+              "character": 0
+            },
+            "end": {
+              "line": 1,
+              "character": 9
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "parity": true,
+      "warningMatches": true,
+      "status": "PASS"
+    },
+    {
+      "id": "N-05",
+      "source": "width=40;\nmodule m(){width=50;}\n",
+      "warnings": 0,
+      "native": {
+        "exitCode": 0,
+        "signal": null,
+        "stdout": "",
+        "stderr": "WARNING: Ignoring request to enable unknown feature 'unicode-identifiers'.\n"
+      },
+      "rawParam": "{\"parameters\":[{\"group\":\"Parameters\",\"initial\":40.0,\"name\":\"width\",\"step\":1.0,\"type\":\"number\"}],\"title\":\"main\"}",
+      "parseError": null,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 40,
+          "name": "width",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "width",
+          "group": "",
+          "description": "",
+          "defaultValue": 40,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 9
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "parity": true,
+      "warningMatches": true,
+      "status": "PASS"
+    },
+    {
+      "id": "N-06",
+      "source": "/* [Hidden] */\nwidth=40;\nmodule m(){}\nwidth=50;\n",
+      "warnings": 0,
+      "native": {
+        "exitCode": 0,
+        "signal": null,
+        "stdout": "",
+        "stderr": "WARNING: Ignoring request to enable unknown feature 'unicode-identifiers'.\nWARNING: \"width\" was assigned on line 2 but was overwritten in file main.scad, line 4\n"
+      },
+      "rawParam": "{\"title\":\"main\"}",
+      "parseError": null,
+      "actualNative": [],
+      "actualIDE": [],
+      "diagnostics": [],
+      "parity": true,
+      "warningMatches": true,
+      "status": "PASS"
+    },
+    {
+      "id": "N-07-comment",
+      "source": "// { not a code block\nwidth=40;\n",
+      "warnings": 0,
+      "native": {
+        "exitCode": 0,
+        "signal": null,
+        "stdout": "",
+        "stderr": "WARNING: Ignoring request to enable unknown feature 'unicode-identifiers'.\n"
+      },
+      "rawParam": "{\"parameters\":[{\"caption\":\"{ not a code block\",\"group\":\"Parameters\",\"initial\":40.0,\"name\":\"width\",\"step\":1.0,\"type\":\"number\"}],\"title\":\"main\"}",
+      "parseError": null,
+      "actualNative": [
+        {
+          "caption": "{ not a code block",
+          "group": "Parameters",
+          "initial": 40,
+          "name": "width",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "width",
+          "group": "",
+          "description": "{ not a code block",
+          "defaultValue": 40,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 1,
+              "character": 0
+            },
+            "end": {
+              "line": 1,
+              "character": 9
+            }
+          },
+          "descriptionRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 21
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "parity": true,
+      "warningMatches": true,
+      "status": "PASS"
+    },
+    {
+      "id": "N-07-string",
+      "source": "label=\"{\";\nwidth=40;\n",
+      "warnings": 0,
+      "native": {
+        "exitCode": 0,
+        "signal": null,
+        "stdout": "",
+        "stderr": "WARNING: Ignoring request to enable unknown feature 'unicode-identifiers'.\n"
+      },
+      "rawParam": "{\"title\":\"main\"}",
+      "parseError": null,
+      "actualNative": [],
+      "actualIDE": [],
+      "diagnostics": [],
+      "parity": true,
+      "warningMatches": true,
+      "status": "PASS"
+    },
+    {
+      "id": "N-08",
+      "source": "include <brace{fixture.scad>\nwidth=40;\n",
+      "files": {
+        "brace{fixture.scad": "// empty dependency\n"
+      },
+      "warnings": 0,
+      "native": {
+        "exitCode": 0,
+        "signal": null,
+        "stdout": "",
+        "stderr": "WARNING: Ignoring request to enable unknown feature 'unicode-identifiers'.\n"
+      },
+      "rawParam": "{\"title\":\"main\"}",
+      "parseError": null,
+      "actualNative": [],
+      "actualIDE": [],
+      "diagnostics": [],
+      "parity": true,
+      "warningMatches": true,
+      "status": "PASS"
+    },
+    {
+      "id": "N-09",
+      "source": "﻿épaisseur=40;\r\nmodule m(){}\r\népaisseur=50;\r\n",
+      "warnings": 1,
+      "native": {
+        "exitCode": 0,
+        "signal": null,
+        "stdout": "",
+        "stderr": "WARNING: Ignoring request to enable unknown feature 'unicode-identifiers'.\nWARNING: \"épaisseur\" was assigned on line 1 but was overwritten in file main.scad, line 3\n"
+      },
+      "rawParam": "{\"title\":\"main\"}",
+      "parseError": null,
+      "actualNative": [],
+      "actualIDE": [],
+      "diagnostics": [
+        {
+          "ruleId": "CUST-VIS-01",
+          "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+          "severity": "warning",
+          "parameter": "épaisseur",
+          "message": "The later assignment to \"épaisseur\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+          "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+          "range": {
+            "start": {
+              "line": 2,
+              "character": 0
+            },
+            "end": {
+              "line": 2,
+              "character": 13
+            }
+          },
+          "relatedInformation": [
+            {
+              "range": {
+                "start": {
+                  "line": 0,
+                  "character": 1
+                },
+                "end": {
+                  "line": 0,
+                  "character": 14
+                }
+              },
+              "message": "Earlier customizable parameter declaration overridden here."
+            }
+          ],
+          "evidence": {
+            "kind": "superseded-parameter",
+            "category": "visibility",
+            "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+          },
+          "fix": {
+            "id": "CUST-VIS-01",
+            "safety": "review",
+            "title": "Review the assignment outside the Customizer region"
+          }
+        }
+      ],
+      "parity": true,
+      "warningMatches": true,
+      "status": "PASS"
+    },
+    {
+      "id": "N-10",
+      "source": "width=40;\nheight=20;\nmodule m(){}\nwidth=50;\n",
+      "warnings": 1,
+      "native": {
+        "exitCode": 0,
+        "signal": null,
+        "stdout": "",
+        "stderr": "WARNING: Ignoring request to enable unknown feature 'unicode-identifiers'.\nWARNING: \"width\" was assigned on line 1 but was overwritten in file main.scad, line 4\n"
+      },
+      "rawParam": "{\"parameters\":[{\"group\":\"Parameters\",\"initial\":20.0,\"name\":\"height\",\"step\":1.0,\"type\":\"number\"}],\"title\":\"main\"}",
+      "parseError": null,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 20,
+          "name": "height",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "height",
+          "group": "",
+          "description": "",
+          "defaultValue": 20,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 1,
+              "character": 0
+            },
+            "end": {
+              "line": 1,
+              "character": 10
+            }
+          }
+        }
+      ],
+      "diagnostics": [
+        {
+          "ruleId": "CUST-VIS-01",
+          "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+          "severity": "warning",
+          "parameter": "width",
+          "message": "The later assignment to \"width\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+          "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+          "range": {
+            "start": {
+              "line": 3,
+              "character": 0
+            },
+            "end": {
+              "line": 3,
+              "character": 9
+            }
+          },
+          "relatedInformation": [
+            {
+              "range": {
+                "start": {
+                  "line": 0,
+                  "character": 0
+                },
+                "end": {
+                  "line": 0,
+                  "character": 9
+                }
+              },
+              "message": "Earlier customizable parameter declaration overridden here."
+            }
+          ],
+          "evidence": {
+            "kind": "superseded-parameter",
+            "category": "visibility",
+            "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+          },
+          "fix": {
+            "id": "CUST-VIS-01",
+            "safety": "review",
+            "title": "Review the assignment outside the Customizer region"
+          }
+        }
+      ],
+      "parity": true,
+      "warningMatches": true,
+      "status": "PASS"
+    },
+    {
+      "id": "N-11",
+      "source": "width=40;\nheight=20;\nmodule m(){}\nwidth=50;\nheight=60;\n",
+      "warnings": 2,
+      "native": {
+        "exitCode": 0,
+        "signal": null,
+        "stdout": "",
+        "stderr": "WARNING: Ignoring request to enable unknown feature 'unicode-identifiers'.\nWARNING: \"width\" was assigned on line 1 but was overwritten in file main.scad, line 4\nWARNING: \"height\" was assigned on line 2 but was overwritten in file main.scad, line 5\n"
+      },
+      "rawParam": "{\"title\":\"main\"}",
+      "parseError": null,
+      "actualNative": [],
+      "actualIDE": [],
+      "diagnostics": [
+        {
+          "ruleId": "CUST-VIS-01",
+          "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+          "severity": "warning",
+          "parameter": "width",
+          "message": "The later assignment to \"width\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+          "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+          "range": {
+            "start": {
+              "line": 3,
+              "character": 0
+            },
+            "end": {
+              "line": 3,
+              "character": 9
+            }
+          },
+          "relatedInformation": [
+            {
+              "range": {
+                "start": {
+                  "line": 0,
+                  "character": 0
+                },
+                "end": {
+                  "line": 0,
+                  "character": 9
+                }
+              },
+              "message": "Earlier customizable parameter declaration overridden here."
+            }
+          ],
+          "evidence": {
+            "kind": "superseded-parameter",
+            "category": "visibility",
+            "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+          },
+          "fix": {
+            "id": "CUST-VIS-01",
+            "safety": "review",
+            "title": "Review the assignment outside the Customizer region"
+          }
+        },
+        {
+          "ruleId": "CUST-VIS-01",
+          "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+          "severity": "warning",
+          "parameter": "height",
+          "message": "The later assignment to \"height\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+          "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+          "range": {
+            "start": {
+              "line": 4,
+              "character": 0
+            },
+            "end": {
+              "line": 4,
+              "character": 10
+            }
+          },
+          "relatedInformation": [
+            {
+              "range": {
+                "start": {
+                  "line": 1,
+                  "character": 0
+                },
+                "end": {
+                  "line": 1,
+                  "character": 10
+                }
+              },
+              "message": "Earlier customizable parameter declaration overridden here."
+            }
+          ],
+          "evidence": {
+            "kind": "superseded-parameter",
+            "category": "visibility",
+            "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+          },
+          "fix": {
+            "id": "CUST-VIS-01",
+            "safety": "review",
+            "title": "Review the assignment outside the Customizer region"
+          }
+        }
+      ],
+      "parity": true,
+      "warningMatches": true,
+      "status": "PASS"
+    },
+    {
+      "id": "N-12",
+      "source": "width=40;\nheight=20;\nmodule m(){}\n",
+      "warnings": 0,
+      "native": {
+        "exitCode": 0,
+        "signal": null,
+        "stdout": "",
+        "stderr": "WARNING: Ignoring request to enable unknown feature 'unicode-identifiers'.\n"
+      },
+      "rawParam": "{\"parameters\":[{\"group\":\"Parameters\",\"initial\":40.0,\"name\":\"width\",\"step\":1.0,\"type\":\"number\"},{\"group\":\"Parameters\",\"initial\":20.0,\"name\":\"height\",\"step\":1.0,\"type\":\"number\"}],\"title\":\"main\"}",
+      "parseError": null,
+      "actualNative": [
+        {
+          "group": "Parameters",
+          "initial": 40,
+          "name": "width",
+          "step": 1,
+          "type": "number"
+        },
+        {
+          "group": "Parameters",
+          "initial": 20,
+          "name": "height",
+          "step": 1,
+          "type": "number"
+        }
+      ],
+      "actualIDE": [
+        {
+          "name": "width",
+          "group": "",
+          "description": "",
+          "defaultValue": 40,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 0,
+              "character": 0
+            },
+            "end": {
+              "line": 0,
+              "character": 9
+            }
+          }
+        },
+        {
+          "name": "height",
+          "group": "",
+          "description": "",
+          "defaultValue": 20,
+          "widget": "spinbox",
+          "declarationRange": {
+            "start": {
+              "line": 1,
+              "character": 0
+            },
+            "end": {
+              "line": 1,
+              "character": 10
+            }
+          }
+        }
+      ],
+      "diagnostics": [],
+      "parity": true,
+      "warningMatches": true,
+      "status": "PASS"
+    }
+  ],
+  "nativeOptions": [
+    "--enable=unicode-identifiers"
+  ]
+}

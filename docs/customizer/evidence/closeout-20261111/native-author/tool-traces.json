@@ -1,0 +1,316 @@
+[
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "uri": "file:///tmp/customizer-native-agent-y1r53g/workspace/model.scad",
+      "includeCandidates": true,
+      "maxDiagnostics": 10
+    },
+    "started": "2026-11-11T10:09:54.398Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file:///tmp/customizer-native-agent-y1r53g/workspace/model.scad",
+          "version": 2,
+          "sha256": "8da2fa1046284c3cd3c54efbbee55da103e1c163d0fb30ffb913305411ae9ed3"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "Unsaved Native Agent acceptance buffer",
+            "defaultValue": 40,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 1,
+                "character": 0
+              },
+              "end": {
+                "line": 1,
+                "character": 9
+              }
+            },
+            "descriptionRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 41
+              }
+            }
+          },
+          {
+            "name": "shape",
+            "group": "",
+            "description": "",
+            "defaultValue": "round",
+            "widget": "textbox",
+            "declarationRange": {
+              "start": {
+                "line": 2,
+                "character": 0
+              },
+              "end": {
+                "line": 2,
+                "character": 14
+              }
+            }
+          },
+          {
+            "name": "internalOffset",
+            "group": "",
+            "description": "",
+            "defaultValue": 0.01,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 3,
+                "character": 0
+              },
+              "end": {
+                "line": 3,
+                "character": 20
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "231a0c7b-4fc5-4c34-8dfe-5b50c0aa9050",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "mode": "plan",
+      "uri": "file:///tmp/customizer-native-agent-y1r53g/workspace/model.scad",
+      "identity": {
+        "version": 2,
+        "sha256": "8da2fa1046284c3cd3c54efbbee55da103e1c163d0fb30ffb913305411ae9ed3"
+      },
+      "edits": [
+        {
+          "kind": "annotateExisting",
+          "name": "width",
+          "widget": "slider",
+          "range": {
+            "min": 10,
+            "max": 100,
+            "step": 5
+          },
+          "group": "Dimensions",
+          "description": "Width in millimeters"
+        },
+        {
+          "kind": "annotateExisting",
+          "name": "shape",
+          "widget": "dropdown",
+          "choices": [
+            {
+              "label": "Round",
+              "value": "round"
+            },
+            {
+              "label": "Square",
+              "value": "square"
+            }
+          ],
+          "group": "Appearance"
+        },
+        {
+          "kind": "hideParameter",
+          "name": "internalOffset"
+        }
+      ]
+    },
+    "started": "2026-11-11T10:10:12.431Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceApply",
+      "data": {
+        "planId": "4dc3262d-ab9e-49f9-b8d4-86386951e379",
+        "identity": {
+          "uri": "file:///tmp/customizer-native-agent-y1r53g/workspace/model.scad",
+          "version": 2,
+          "sha256": "8da2fa1046284c3cd3c54efbbee55da103e1c163d0fb30ffb913305411ae9ed3"
+        },
+        "summary": "Update Customizer source: width, shape, internalOffset",
+        "preview": [
+          {
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 41
+              }
+            },
+            "before": "// Unsaved Native Agent acceptance buffer",
+            "after": "/* [Dimensions] */\n// Width in millimeters"
+          },
+          {
+            "range": {
+              "start": {
+                "line": 1,
+                "character": 9
+              },
+              "end": {
+                "line": 1,
+                "character": 9
+              }
+            },
+            "before": "",
+            "after": " // [10:5:100]"
+          },
+          {
+            "range": {
+              "start": {
+                "line": 2,
+                "character": 0
+              },
+              "end": {
+                "line": 2,
+                "character": 0
+              }
+            },
+            "before": "",
+            "after": "/* [Appearance] */\n"
+          },
+          {
+            "range": {
+              "start": {
+                "line": 2,
+                "character": 14
+              },
+              "end": {
+                "line": 2,
+                "character": 14
+              }
+            },
+            "before": "",
+            "after": " // [\"round\":\"Round\", \"square\":\"Square\"]"
+          },
+          {
+            "range": {
+              "start": {
+                "line": 3,
+                "character": 0
+              },
+              "end": {
+                "line": 3,
+                "character": 0
+              }
+            },
+            "before": "",
+            "after": "/* [Hidden] */\n"
+          }
+        ],
+        "validation": {
+          "sourceStatus": {
+            "status": "complete",
+            "reasons": []
+          },
+          "contractStatus": "matched",
+          "qualityStatus": "clear",
+          "semanticPass": true,
+          "checked": 3,
+          "matched": 3,
+          "expectationResults": [
+            {
+              "parameter": "internalOffset",
+              "matched": true,
+              "issues": [],
+              "details": [],
+              "range": {
+                "start": {
+                  "line": 6,
+                  "character": 0
+                },
+                "end": {
+                  "line": 6,
+                  "character": 20
+                }
+              }
+            },
+            {
+              "parameter": "shape",
+              "matched": true,
+              "issues": [],
+              "details": [],
+              "range": {
+                "start": {
+                  "line": 4,
+                  "character": 0
+                },
+                "end": {
+                  "line": 4,
+                  "character": 14
+                }
+              }
+            },
+            {
+              "parameter": "width",
+              "matched": true,
+              "issues": [],
+              "details": [],
+              "range": {
+                "start": {
+                  "line": 2,
+                  "character": 0
+                },
+                "end": {
+                  "line": 2,
+                  "character": 9
+                }
+              }
+            }
+          ],
+          "omittedExpectations": 0,
+          "diagnostics": [],
+          "omittedDiagnostics": 0,
+          "runtimeCheck": {
+            "status": "notRequested"
+          },
+          "guiCheck": {
+            "status": "notRequested"
+          },
+          "complete": true,
+          "pass": true
+        },
+        "expiresInSeconds": 120,
+        "continuation": {
+          "tool": "scad_ai_ide_customizer_sourceApply",
+          "input": {
+            "mode": "commit",
+            "planId": "4dc3262d-ab9e-49f9-b8d4-86386951e379"
+          },
+          "requiresReview": true
+        }
+      },
+      "operation": {
+        "id": "d15fd518-1eb6-48d3-a435-3bdf13e6a1e1",
+        "capabilityId": "customizer.sourceApply",
+        "status": "succeeded"
+      }
+    }
+  }
+]

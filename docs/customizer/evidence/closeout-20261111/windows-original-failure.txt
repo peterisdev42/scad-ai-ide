@@ -1,0 +1,475 @@
+libraries (windows-latest)	UNKNOWN STEP	﻿2026-11-11T07:03:58.0108873Z Current runner version: '2.338.2'
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0141507Z ##[group]Runner Image Provisioner
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0142688Z Hosted Compute Agent
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0143643Z Version: 20261103.629
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0144612Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0145801Z Build Date: 2026-11-03T17:26:59Z
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0147057Z Worker ID: {7eb6d148-6339-4faf-83f4-93e25687f110}
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0148160Z Region: eastus
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0149062Z Cloud: Azure
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0149886Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0152464Z ##[group]Operating System
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0153532Z Microsoft Windows Server 2025
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0154534Z 10.0.26100
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0155405Z Datacenter
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0156236Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0157114Z ##[group]Runner Image
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0158146Z Image: windows-2025-vs2026
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0159093Z Version: 20261103.298.1
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0161693Z Included Software: https://github.com/actions/runner-images/blob/win25-vs2026/20261103.298/images/windows/Windows2025-VS2026-Readme.md
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0164626Z Image Release: https://github.com/actions/runner-images/releases/tag/win25-vs2026%2F20261103.298
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0166644Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0168679Z ##[group]GITHUB_TOKEN Permissions
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0172429Z Contents: read
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0173331Z Metadata: read
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0174157Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0177054Z Secret source: Actions
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0178410Z Cache mode: write
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0179480Z Prepare workflow directory
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0808739Z Prepare all required actions
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.0878546Z Getting action download info
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.2490905Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.3774999Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.5425428Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:58.8762820Z Complete job name: libraries (windows-latest)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0315407Z ##[group]Run actions/checkout@v4
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0316446Z with:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0316878Z   repository: peterisdev42/scad-ai-ide
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0321266Z   token: ***
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0321686Z   ssh-strict: true
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0322095Z   ssh-user: git
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0322512Z   persist-credentials: true
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0322976Z   clean: true
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0323394Z   sparse-checkout-cone-mode: true
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0323882Z   fetch-depth: 1
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0324281Z   fetch-tags: false
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0324690Z   show-progress: true
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0325105Z   lfs: false
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0325488Z   submodules: false
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0325905Z   set-safe-directory: true
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0326380Z   allow-unsafe-pr-checkout: false
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0327154Z env:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0327544Z   QT_QPA_PLATFORM: offscreen
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0328016Z   SCAD_REQUIRE_CLI: 1
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0328485Z   SCAD_LIBRARIES_ONLINE: 0
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.0328916Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.1894594Z Syncing repository: peterisdev42/scad-ai-ide
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.1896887Z ##[group]Getting Git version info
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.1897554Z Working directory is 'D:\a\scad-ai-ide\scad-ai-ide'
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.2809796Z [command]"C:\Program Files\Git\bin\git.exe" version
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.6308118Z git version 2.56.0.windows.4
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.6363705Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.6383584Z Temporarily overriding HOME='D:\a\_temp\ab702bc1-5b86-4d40-9fd6-c811171ead71' before making global git config changes
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.6385549Z Adding repository directory to the temporary git global config as a safe directory
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.6394849Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\scad-ai-ide\scad-ai-ide
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.7312336Z Deleting the contents of 'D:\a\scad-ai-ide\scad-ai-ide'
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.7320722Z ##[group]Initializing the repository
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.7329387Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\scad-ai-ide\scad-ai-ide
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.8155501Z Initialized empty Git repository in D:/a/scad-ai-ide/scad-ai-ide/.git/
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.8206956Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/peterisdev42/scad-ai-ide
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.8917077Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.8918581Z ##[group]Disabling automatic garbage collection
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.8925938Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.9310013Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.9312033Z ##[group]Setting up auth
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.9322189Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:03:59.9727899Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:01.4553506Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:01.4948187Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:02.0722963Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:02.1114486Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:02.6730525Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:02.7184839Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:02.7186716Z ##[group]Fetching the repository
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:02.7208378Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +53ec2e41a565a19ef795b8dbc7ba8b42d9b9cf70:refs/remotes/origin/main
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:03.7521888Z From https://github.com/peterisdev42/scad-ai-ide
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:03.7522755Z  * [new ref]         53ec2e41a565a19ef795b8dbc7ba8b42d9b9cf70 -> origin/main
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:03.7572712Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:03.7573360Z ##[group]Determining the checkout info
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:03.7575930Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:03.7587406Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:03.8241253Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:03.8752965Z ##[group]Checking out the ref
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:03.8768178Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force -B main refs/remotes/origin/main
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.2547745Z Switched to a new branch 'main'
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.2649756Z branch 'main' set up to track 'origin/main'.
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.2701096Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.3201751Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.3546700Z 53ec2e41a565a19ef795b8dbc7ba8b42d9b9cf70
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.4003927Z ##[group]Run actions/setup-node@v4
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.4004289Z with:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.4004491Z   node-version: 24
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.4004703Z   cache: npm
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.4004913Z   always-auth: false
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.4005131Z   check-latest: false
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.4008090Z   token: ***
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.4008286Z env:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.4008469Z   QT_QPA_PLATFORM: offscreen
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.4008779Z   SCAD_REQUIRE_CLI: 1
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.4009004Z   SCAD_LIBRARIES_ONLINE: 0
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.4009987Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.5787013Z Found in cache @ C:\hostedtoolcache\windows\node\24.22.2\x64
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.5793858Z (node:5464) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.5794565Z (Use `node --trace-deprecation ...` to show where the warning was created)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:04.5797120Z ##[group]Environment details
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:09.7570801Z node: v24.22.2
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:09.7571450Z npm: 11.19.1
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:09.7571747Z yarn: 1.22.22
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:09.7573077Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:09.8401399Z [command]C:\Windows\system32\cmd.exe /D /S /C "C:\hostedtoolcache\windows\node\24.22.2\x64\npm.cmd config get cache"
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:10.3593552Z C:\npm\cache
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:10.6121555Z npm cache is not found
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:10.6437532Z ##[group]Run npm ci
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:10.6437833Z ^[[36;1mnpm ci^[[0m
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:10.7112503Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:10.7112894Z env:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:10.7113089Z   QT_QPA_PLATFORM: offscreen
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:10.7113325Z   SCAD_REQUIRE_CLI: 1
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:10.7113530Z   SCAD_LIBRARIES_ONLINE: 0
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:10.7113750Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:04:24.4952172Z npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:23.9171031Z 
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:23.9171764Z added 490 packages, and audited 491 packages in 1m
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:23.9172230Z 
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:23.9172641Z 181 packages are looking for funding
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:23.9174731Z   run `npm fund` for details
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:24.1164369Z 
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:24.1165222Z 18 vulnerabilities (3 low, 14 moderate, 1 critical)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:24.1165700Z 
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:24.1166595Z To address issues that do not require attention, run:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:24.1167098Z   npm audit fix
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:24.1167230Z 
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:24.1167511Z To address all issues possible (including breaking changes), run:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:24.1167940Z   npm audit fix --force
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:24.1168128Z 
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:24.1168324Z Some issues need review, and may require choosing
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:24.1168684Z a different dependency.
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:24.1168841Z 
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:24.1168962Z Run `npm audit` for details.
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:24.1180117Z npm warn install-scripts 1 package has install scripts not yet covered by allowScripts:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:24.1181157Z npm warn install-scripts   esbuild@0.28.2 (postinstall: node install.js)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:24.1181633Z npm warn install-scripts
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:24.1182322Z npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:25.7009275Z ##[group]Run $archive = Join-Path $env:RUNNER_TEMP 'openscad-cli-windows-x86_64.zip'
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:25.7010448Z ^[[36;1m$archive = Join-Path $env:RUNNER_TEMP 'openscad-cli-windows-x86_64.zip'^[[0m
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:25.7011078Z ^[[36;1m$runtime = Join-Path $env:RUNNER_TEMP 'customizer-native-runtime'^[[0m
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:25.7012198Z ^[[36;1mInvoke-WebRequest 'https://github.com/peterisdev42/openscad-cli-builder/releases/download/openscad-2026.11-RC0/openscad-cli-windows-x86_64.zip' -OutFile $archive^[[0m
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:25.7013186Z ^[[36;1m$digest = (Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant()^[[0m
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:25.7013975Z ^[[36;1mif ($digest -ne '8e17ce1f39a6b32ad6c710076f86037a74fda27c4110c70f613c649945c7c436') { throw 'OpenSCAD archive checksum mismatch' }^[[0m
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:25.7014688Z ^[[36;1mExpand-Archive $archive -DestinationPath $runtime^[[0m
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:25.7015252Z ^[[36;1m$executable = Join-Path $runtime 'openscad-cli-windows-x86_64/bin/openscad.exe'^[[0m
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:25.7015773Z ^[[36;1m"SCAD_OPENSCAD_EXECUTABLE=$executable" >> $env:GITHUB_ENV^[[0m
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:25.7016446Z ^[[36;1m& $executable --version^[[0m
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:25.7093612Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:25.7093963Z env:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:25.7094159Z   QT_QPA_PLATFORM: offscreen
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:25.7094381Z   SCAD_REQUIRE_CLI: 1
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:25.7094592Z   SCAD_LIBRARIES_ONLINE: 0
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:25.7094800Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:28.4794833Z OpenSCAD version 2026.11-RC0
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:28.6043415Z ##[group]Run npm run check-types
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:28.6043754Z ^[[36;1mnpm run check-types^[[0m
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:28.6115460Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:28.6115816Z env:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:28.6116033Z   QT_QPA_PLATFORM: offscreen
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:28.6116271Z   SCAD_REQUIRE_CLI: 1
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:28.6116477Z   SCAD_LIBRARIES_ONLINE: 0
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:28.6116941Z   SCAD_OPENSCAD_EXECUTABLE: D:\a\_temp\customizer-native-runtime\openscad-cli-windows-x86_64\bin\openscad.exe
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:28.6117443Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:29.3798933Z 
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:29.3799581Z > scad-ai-ide@0.0.1 check-types
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:29.3799995Z > tsc --noEmit && tsc -p tsconfig.webview.json
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:29.3800237Z 
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:36.4831330Z ##[group]Run npm run lint
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:36.4831666Z ^[[36;1mnpm run lint^[[0m
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:36.4901974Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:36.4902331Z env:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:36.4902528Z   QT_QPA_PLATFORM: offscreen
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:36.4902749Z   SCAD_REQUIRE_CLI: 1
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:36.4902951Z   SCAD_LIBRARIES_ONLINE: 0
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:36.4903412Z   SCAD_OPENSCAD_EXECUTABLE: D:\a\_temp\customizer-native-runtime\openscad-cli-windows-x86_64\bin\openscad.exe
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:36.4903911Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:37.1946817Z 
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:37.1947344Z > scad-ai-ide@0.0.1 lint
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:37.1947643Z > eslint src
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:37.1947817Z 
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:43.9821008Z ##[group]Run npm run compile-tests
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:43.9821670Z ^[[36;1mnpm run compile-tests^[[0m
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:43.9894481Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:43.9894836Z env:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:43.9895033Z   QT_QPA_PLATFORM: offscreen
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:43.9895252Z   SCAD_REQUIRE_CLI: 1
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:43.9895454Z   SCAD_LIBRARIES_ONLINE: 0
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:43.9895911Z   SCAD_OPENSCAD_EXECUTABLE: D:\a\_temp\customizer-native-runtime\openscad-cli-windows-x86_64\bin\openscad.exe
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:43.9896400Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:44.7245792Z 
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:44.7246540Z > scad-ai-ide@0.0.1 compile-tests
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:44.7247168Z > tsc -p . --outDir out
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:44.7247433Z 
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:49.9641559Z ##[group]Run mkdir -p .build
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:49.9642005Z ^[[36;1mmkdir -p .build^[[0m
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:49.9642744Z ^[[36;1mnode scripts/customizer-native-audit.mjs "$SCAD_OPENSCAD_EXECUTABLE" .build/customizer-native.json --strict^[[0m
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:49.9643977Z ^[[36;1mnode scripts/customizer-native-import-audit.mjs "$SCAD_OPENSCAD_EXECUTABLE" .build/customizer-native-import.json^[[0m
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:49.9661484Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:49.9661871Z env:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:49.9662054Z   QT_QPA_PLATFORM: offscreen
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:49.9662267Z   SCAD_REQUIRE_CLI: 1
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:49.9662460Z   SCAD_LIBRARIES_ONLINE: 0
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:49.9662928Z   SCAD_OPENSCAD_EXECUTABLE: D:\a\_temp\customizer-native-runtime\openscad-cli-windows-x86_64\bin\openscad.exe
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:49.9663441Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4153418Z OpenSCAD version 2026.11-RC0 (9ba0cee7c94785fac0ca8dfe040b965a12a25ed1); pinned=false
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4156142Z MATCH scalar
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4156538Z MATCH max-only
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4156898Z MATCH range
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4157199Z MATCH stepped
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4157941Z MATCH spin-step
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4158332Z MATCH checkbox
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4158947Z MATCH vector
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4159519Z MATCH unlisted-default
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4160145Z MATCH mixed-enum
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4160712Z MATCH quoted-delimiters
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4161279Z MATCH description
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4161654Z MATCH description-gap
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4162092Z MATCH description-indent
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4162519Z MATCH description-block
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4162908Z MATCH expanded-range
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4163268Z MATCH expanded-vector
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4163622Z MATCH off-grid
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4163953Z MATCH text-length
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4164288Z MATCH hidden-global
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4164624Z MATCH compound-group
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4164991Z MATCH superseded
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4165610Z MATCH expression
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4165997Z MATCH long-vector
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4166370Z MATCH brace-comment
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4166714Z MATCH trailing-prose
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4167059Z MATCH same-line-brace
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4167455Z MATCH same-line-assignments
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4167845Z MATCH nfc
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4168137Z MATCH hint-hex
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4168479Z MATCH string-single-number
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4168884Z MATCH phase1-firstLineHint
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4169932Z MATCH phase1-groupReset
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4170447Z MATCH phase1-noNewline
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4170817Z MATCH phase1-multiline
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4171173Z MATCH phase1-textImport
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4171529Z MATCH phase1-utf8Import
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4171913Z MATCH phase1-unknownVersion
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4172292Z MATCH phase1-maxNegative
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4172598Z MATCH phase1-hex
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4172906Z MATCH phase1-stringEscape
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4173278Z MATCH include-brace-cutoff
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:54.4174071Z 41/41 matching projections; this audit is not an assertion that all native behavior is compatible.
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:55.8707969Z PASS 10 native schema/import probes; unknown version 99 was read, not evidence that arbitrary future versions can be overwritten.
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:55.9027813Z ##[group]Run node scripts/customizer-windows-environment-probe.mjs "$SCAD_OPENSCAD_EXECUTABLE" .build/customizer-windows-environment.json
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:55.9028893Z ^[[36;1mnode scripts/customizer-windows-environment-probe.mjs "$SCAD_OPENSCAD_EXECUTABLE" .build/customizer-windows-environment.json^[[0m
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:55.9045497Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:55.9045895Z env:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:55.9046081Z   QT_QPA_PLATFORM: offscreen
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:55.9046314Z   SCAD_REQUIRE_CLI: 1
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:55.9046513Z   SCAD_LIBRARIES_ONLINE: 0
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:55.9046973Z   SCAD_OPENSCAD_EXECUTABLE: D:\a\_temp\customizer-native-runtime\openscad-cli-windows-x86_64\bin\openscad.exe
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:55.9047465Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8351465Z {
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8352172Z   "scope": "Actual Windows diagnostic; no test acceptance inferred",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8352966Z   "binary": "D:\\a\\_temp\\customizer-native-runtime\\openscad-cli-windows-x86_64\\bin\\openscad.exe",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8353447Z   "outcomes": [
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8353631Z     {
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8353808Z       "label": "ascii",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8354200Z       "representation": "absolute",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8354660Z       "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-kS2XuY\\ascii",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8355306Z       "searchPath": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-kS2XuY\\ascii\\.scad\\lib",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8355756Z       "status": 0,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8355950Z       "signal": null,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8356976Z       "stderr": "Geometries in cache: 2\r\nGeometry cache size in bytes: 1712\r\nCGAL Polyhedrons in cache: 0\r\nCGAL cache size in bytes: 0\r\nTotal rendering time: 0:00:00.001\r\nTop level object is a 3D object (PolySet):\r\n   Convex:       yes\r\n   Facets:         6\r\n",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8358942Z       "geometryWidth": 10,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8359245Z       "expectedWidth": 10
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8359464Z     },
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8359625Z     {
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8359802Z       "label": "ascii",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8360063Z       "representation": "relative",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8360476Z       "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-kS2XuY\\ascii",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8360889Z       "searchPath": ".scad\\lib",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8361118Z       "status": 0,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8361310Z       "signal": null,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8362547Z       "stderr": "Geometries in cache: 2\r\nGeometry cache size in bytes: 1712\r\nCGAL Polyhedrons in cache: 0\r\nCGAL cache size in bytes: 0\r\nTotal rendering time: 0:00:00.002\r\nTop level object is a 3D object (PolySet):\r\n   Convex:       yes\r\n   Facets:         6\r\n",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8363528Z       "geometryWidth": 10,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8363750Z       "expectedWidth": 10
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8364097Z     },
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8364259Z     {
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8364466Z       "label": "unicode-direct",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8364808Z       "representation": "absolute",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8365509Z       "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-kS2XuY\\项目 A",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8366228Z       "searchPath": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-kS2XuY\\项目 A\\.scad\\lib",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8366690Z       "status": 3221226505,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8366899Z       "signal": null,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8367487Z       "stderr": "WARNING: Can't find include file 'fixture-library/smoke.scad'. in file ../项目 A/main.scad, line 1\r\n",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8368027Z       "geometryWidth": null,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8368252Z       "expectedWidth": 10
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8368450Z     },
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8368609Z     {
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8368812Z       "label": "unicode-direct",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8369071Z       "representation": "relative",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8371871Z       "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-kS2XuY\\项目 A",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8372506Z       "searchPath": ".scad\\lib",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8372763Z       "status": 3221226505,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8372991Z       "signal": null,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8373185Z       "stderr": "",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8373382Z       "geometryWidth": null,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8373604Z       "expectedWidth": 10
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8373800Z     },
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8374093Z     {
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8374291Z       "label": "unicode-junction",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8374564Z       "representation": "absolute",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8375115Z       "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-kS2XuY\\项目 B",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8375800Z       "searchPath": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-kS2XuY\\项目 B\\.scad\\lib",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8376232Z       "status": 3221226505,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8376437Z       "signal": null,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8377037Z       "stderr": "WARNING: Can't find include file 'fixture-library/smoke.scad'. in file ../项目 B/main.scad, line 1\r\n",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8377535Z       "geometryWidth": null,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8377752Z       "expectedWidth": 10
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8377944Z     },
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8378100Z     {
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8378293Z       "label": "unicode-junction",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8378562Z       "representation": "relative",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8379017Z       "cwd": "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\scad-env-probe-kS2XuY\\项目 B",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8379410Z       "searchPath": ".scad\\lib",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8379633Z       "status": 3221226505,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8379861Z       "signal": null,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8380057Z       "stderr": "",
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8380245Z       "geometryWidth": null,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8380459Z       "expectedWidth": 10
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8380649Z     }
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8380810Z   ]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8381172Z }
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8690158Z ##[group]Run npm run test:libraries
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8690677Z ^[[36;1mnpm run test:libraries^[[0m
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8771302Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8771648Z env:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8772060Z   QT_QPA_PLATFORM: offscreen
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8772281Z   SCAD_REQUIRE_CLI: 1
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8772478Z   SCAD_LIBRARIES_ONLINE: 0
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8772941Z   SCAD_OPENSCAD_EXECUTABLE: D:\a\_temp\customizer-native-runtime\openscad-cli-windows-x86_64\bin\openscad.exe
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:56.8773428Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:57.6107937Z 
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:57.6108478Z > scad-ai-ide@0.0.1 test:libraries
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:57.6109128Z > node --import tsx --test src/test/libraries/*.test.ts
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:57.6109405Z 
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:58.8471340Z ✔ Independent Node extension hosts serialize changes to the same Store (547.5061ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:58.8612958Z ✔ Abandoned heartbeat leases can be recovered before replaying a project transaction (15.6487ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:59.2022141Z ✔ Environment isolates workspaces, preserves base env and fingerprints version/link changes (556.074ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:59.2025090Z ✖ Real OpenSCAD resolves a linked library, changes geometry after version switch and retains Store on removal (362.9096ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:59.2028643Z ✔ Windows uses semicolons and retains inherited case-insensitive OPENSCADPATH; POSIX uses colons (3.4631ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:59.2033300Z ﹣ Real Fast Preview and Markdown use the same project library environment (0.2833ms) # SKIP
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:59.5091214Z ✔ Cleanup refuses known references, requires explicit confirmation and rechecks after confirmation (637.0962ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:59.5093691Z ✔ Unreadable known projects block cleanup; forged deletion IDs are rejected (139.0988ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:59.5095274Z ✔ A known project without any dependencies does not masquerade as an unreadable reference (51.6807ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:59.5096997Z ✔ Unreferenced cleanup removes all unused versions across repositories and preserves project-used versions (412.6106ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:59.7777268Z ✔ Bulk cleanup rechecks project references after confirmation and never deletes newly added versions (268.1473ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:05:59.9758590Z ✔ Delete-all mode removes referenced sources without changing project manifests or lockfiles (197.3503ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.0213335Z ✔ Immutable store deduplicates concurrent installs, separates commits/repositories and detects corruption (241.1711ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.0217978Z ✔ Failed/cancelled downloads and unsafe redirects never publish an entity (28.8709ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.0224853Z ✔ ZIP rejects traversal, Windows names, Unicode/case collisions and symlinks (35.0079ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.0232544Z ✔ ZIP checksum corruption is rejected; orphaned metadata is visible rather than reused (74.6732ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.0235356Z ﹣ Online BOSL2: Registry → commit archive → global Store → project link → real CLI → offline Restore (1.5664ms) # SKIP
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.5208676Z ✔ Two projects isolate versions; lockfile-only restore works offline and removal preserves global content (379.9752ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.6404821Z ✔ Mount failures roll back project version and never overwrite unmanaged directories (120.046ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.7457948Z ✔ Interrupted publication restores old links and files before another operation (105.1479ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.8380978Z ✔ Copy fallback requires confirmation, detects edited copies and can be declined (92.4015ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.8961266Z ✔ Project symlink roots and foreign mount links are not followed during mutation (58.1475ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9134999Z ✔ Registry v1/v2 validates exact repository-pinned versions and preserves null latest (18.6646ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9136497Z ✔ Snapshot and sync errors remain explicit; unreviewed layouts never guessed (2.6201ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9141213Z ✔ Manifests and locks reject unsafe paths, ranges and cross-platform collisions (1.5369ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9142949Z ✔ Registry supports ETag/304, validated disk cache and offline cold restart (82.5445ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9144864Z ✔ Registry globalState list is immediately available while refresh is pending, shared by callers and preserved on failure (15.9615ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9146715Z ✔ Registry imports its old disk list, prefers valid globalState and ignores corrupt or foreign cache data (29.5332ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9148489Z ✔ A bad Registry response cannot overwrite cached results; failed persistence does not discard a fresh list (10.7905ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9149525Z ℹ tests 29
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9149845Z ℹ suites 0
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9150168Z ℹ pass 26
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9150469Z ℹ fail 1
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9150775Z ℹ cancelled 0
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9151105Z ℹ skipped 2
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9151427Z ℹ todo 0
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9151791Z ℹ duration_ms 3238.3647
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9160648Z 
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9161317Z ✖ failing tests:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9161813Z 
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9162183Z test at src\test\libraries\environment.test.ts:2:2546
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9163608Z ✖ Real OpenSCAD resolves a linked library, changes geometry after version switch and retains Store on removal (362.9096ms)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9166648Z   Error: Command failed: D:\a\_temp\customizer-native-runtime\openscad-cli-windows-x86_64\bin\openscad.exe --export-format asciistl -o C:\Users\runneradmin\AppData\Local\Temp\scad-library-7WnJvC\model.stl C:\Users\runneradmin\AppData\Local\Temp\scad-library-7WnJvC\项目 A\main.scad
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9169106Z   WARNING: Can't find include file 'fixture-library/smoke.scad'. in file , line 1
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9169770Z   
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9170193Z       at genericNodeError (node:internal/errors:986:15)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9170822Z       at wrappedFn (node:internal/errors:540:14)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9171764Z       at ChildProcess.exithandler (node:child_process:417:12)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9172467Z       at ChildProcess.emit (node:events:514:28)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9173111Z       at maybeClose (node:internal/child_process:1172:16)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9173883Z       at ChildProcess._handle.onexit (node:internal/child_process:335:5) {
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9174547Z     code: 3221226505,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9174887Z     killed: false,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9175209Z     signal: null,
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9177617Z     cmd: 'D:\\a\\_temp\\customizer-native-runtime\\openscad-cli-windows-x86_64\\bin\\openscad.exe --export-format asciistl -o C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-library-7WnJvC\\model.stl C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-library-7WnJvC\\项目 A\\main.scad',
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9181080Z     stdout: '',
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9182154Z     stderr: "WARNING: Can't find include file 'fixture-library/smoke.scad'. in file , line 1\r\n"
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9182915Z   }
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:00.9975198Z ##[error]Process completed with exit code 1.
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.0209798Z ##[group]Run actions/upload-artifact@v4
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.0210141Z with:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.0210346Z   name: native-customizer-Windows
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.0210927Z   path: .build/customizer-native.json
+libraries (windows-latest)	UNKNOWN STEP	.build/customizer-native-import.json
+libraries (windows-latest)	UNKNOWN STEP	.build/customizer-windows-environment.json
+libraries (windows-latest)	UNKNOWN STEP	
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.0211670Z   if-no-files-found: warn
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.0211883Z   compression-level: 6
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.0212077Z   overwrite: false
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.0212270Z   include-hidden-files: false
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.0212492Z env:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.0212787Z   QT_QPA_PLATFORM: offscreen
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.0213063Z   SCAD_REQUIRE_CLI: 1
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.0213262Z   SCAD_LIBRARIES_ONLINE: 0
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.0213711Z   SCAD_OPENSCAD_EXECUTABLE: D:\a\_temp\customizer-native-runtime\openscad-cli-windows-x86_64\bin\openscad.exe
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.0214189Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.2247058Z (node:9080) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.2248272Z (Use `node --trace-deprecation ...` to show where the warning was created)
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.2318757Z Multiple search paths detected. Calculating the least common ancestor of all paths
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.2323834Z The least common ancestor is D:\a\scad-ai-ide\scad-ai-ide\.build. This will be the root directory of the artifact
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.2324970Z With the provided path, there will be 3 files uploaded
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.2329813Z Artifact name is valid!
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.2331871Z Root directory input is valid!
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.4283697Z Beginning upload of artifact content to blob storage
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.4593510Z (node:9080) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.5122245Z Uploaded bytes 7204
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.5309872Z Finished uploading artifact content to blob storage!
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.5311290Z SHA256 digest of uploaded artifact zip is 7fa20796396bb5ad0d82265b3f25505d8e40ade29fa6312030b870867bd1986f
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.5313595Z Finalizing artifact upload
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.9674107Z Artifact native-customizer-Windows.zip successfully finalized. Artifact ID 13835084540
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.9675338Z Artifact native-customizer-Windows has been successfully uploaded! Final size is 7204 bytes. Artifact ID is 13835084540
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.9686195Z Artifact download URL: https://github.com/peterisdev42/scad-ai-ide/actions/runs/42976767802/artifacts/13835084540
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.9995779Z ##[group]Run node -p 'JSON.stringify({platform:process.platform,arch:process.arch,node:process.version})'
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:01.9996609Z ^[[36;1mnode -p 'JSON.stringify({platform:process.platform,arch:process.arch,node:process.version})'^[[0m
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:02.0013548Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:02.0013944Z env:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:02.0014249Z   QT_QPA_PLATFORM: offscreen
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:02.0014546Z   SCAD_REQUIRE_CLI: 1
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:02.0014745Z   SCAD_LIBRARIES_ONLINE: 0
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:02.0015207Z   SCAD_OPENSCAD_EXECUTABLE: D:\a\_temp\customizer-native-runtime\openscad-cli-windows-x86_64\bin\openscad.exe
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:02.0015840Z ##[endgroup]
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:02.1004880Z {"platform":"win32","arch":"x64","node":"v24.22.2"}
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:02.1359284Z Post job cleanup.
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:02.3432057Z [command]"C:\Program Files\Git\bin\git.exe" version
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:02.3855426Z git version 2.56.0.windows.4
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:02.3942392Z Temporarily overriding HOME='D:\a\_temp\8b9fc233-445e-469e-a8fe-20d12eff8b28' before making global git config changes
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:02.3943540Z Adding repository directory to the temporary git global config as a safe directory
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:02.3954530Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\scad-ai-ide\scad-ai-ide
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:02.4383396Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:02.4803077Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:03.0631527Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:03.0986341Z http.https://github.com/.extraheader
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:03.1042886Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:03.1449694Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:03.7018203Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:03.7463226Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:04.3614544Z Cleaning up orphan processes
+libraries (windows-latest)	UNKNOWN STEP	2026-11-11T07:06:04.4352476Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

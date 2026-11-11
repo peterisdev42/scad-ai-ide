@@ -1,0 +1,5 @@
+npm notice run scad-ai-ide@0.0.1 test:customizer:source
+npm notice run npm run compile-tests && node --test out/test/customizerSource*.test.js
+npm notice run scad-ai-ide@0.0.1 compile-tests
+npm notice run tsc -p . --outDir out
+sh: tsc: command not found

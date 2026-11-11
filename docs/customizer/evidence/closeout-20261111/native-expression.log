@@ -1,0 +1,36 @@
+Native Agent evidence directory: /tmp/customizer-native-agent-J5iuUi
+Installing extensions...
+Extension 'scad-ai-ide-closeout-d1a5fde.vsix' was successfully installed.
+
+DevTools listening on ws://127.0.0.1:55299/devtools/browser/edaa6fc3-d19e-4211-a9ad-c66bb94b6300
+Warning: 'remote-debugging-port' is not in the list of known options, but still passed to Electron/Chromium.
+[90m[main 2026-11-11T10:15:13.406Z][0m [node-compile-cache] main: packaged cache inactive (status: disabled, configured: /Users/q/Documents/Code/scad-ai-ide/.vscode-test/vscode-darwin-arm64-1.140.0/Visual Studio Code.app/Contents/Resources/app/node-compile-cache/main, active: none)
+[90m[main 2026-11-11T10:15:13.425Z][0m StorageMainService: creating application shared storage
+[90m[main 2026-11-11T10:15:13.518Z][0m [shared storage] Creating shared storage database at '/tmp/customizer-native-agent-J5iuUi/shared/sharedStorage/state.vscdb' (wasCreated: true)
+[90m[main 2026-11-11T10:15:13.518Z][0m [shared storage] Initializing fallback application storage (path: /tmp/customizer-native-agent-J5iuUi/profile/User/globalStorage/state.vscdb)
+[90m[main 2026-11-11T10:15:13.518Z][0m [shared storage] Fallback application storage initialized with 4 items
+[90m[main 2026-11-11T10:15:13.518Z][0m update#setState disabled
+[90m[main 2026-11-11T10:15:13.519Z][0m update#ctor - updates are disabled by the environment
+[90m[main 2026-11-11T10:15:13.943Z][0m AgentHostProcessManager: agent host started
+[91m[main 2026-11-11T10:15:14.144Z][0m [AgentHost:stderr] (node:94818) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `Code Helper --trace-deprecation ...` to show where the warning was created)
+
+Unknown channel: agentHostClientByokLm
+Unknown channel: agentHostClientProxy
+Unknown channel: agentHostClientProxy
+{"vscode":"1.140.0","extensionPath":"/tmp/customizer-native-agent-J5iuUi/extensions/undefined_publisher.scad-ai-ide-0.0.1","bundleSha256":"0c972fcbafc031ae10cac7882b01cf8c3dabd50fc7d34514c298e0079ebf0fdc","chatSettings":{"saveBeforeSend":false,"autoSave":"off","extensionUnification":false,"disableAI":false,"extensionTools":true},"nativeAgent":{"present":true,"active":true},"provider":{"id":"techopolis.omlx-copilot-chat","version":"0.1.2"},"models":[{"id":"Hy-MT2-1.8B-8bit","name":"Hy-MT2-1.8B-8bit","vendor":"omlx","maxInputTokens":262144},{"id":"Qwen3.6-35B-A3B-OptiQ-4bit","name":"Qwen3.6-35B-A3B-OptiQ-4bit","vendor":"omlx","maxInputTokens":262144}]}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Native Agent did not return before the observation deadline
+    at file:///Users/q/Documents/Code/scad-ai-ide/scripts/customizer-native-agent.mjs:286:12 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.16.0

@@ -1,0 +1,12 @@
+npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm error code EPERM
+npm error syscall open
+npm error path /Users/q/.npm/_cacache/tmp/***
+npm error errno -1
+npm error
+npm error Your cache folder contains root-owned files, due to a bug in previous versions of npm which has since been addressed.
+npm error
+npm error To permanently fix this problem, please run:
+npm error   sudo chown -R 501:20 "/Users/q/.npm"
+npm error Log files were not written due to an error writing to the directory: /Users/q/.npm/_logs
+npm error You can rerun the command with `--loglevel=verbose` to see the logs in your terminal

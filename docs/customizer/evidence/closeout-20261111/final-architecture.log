@@ -1,0 +1,10 @@
+{
+  "baseline": "4463d61046d962a3f5afa5ace49b21f37e6cc4a6",
+  "coreFilesBefore": 7,
+  "coreFilesAfter": 14,
+  "nonemptyLinesBefore": 812,
+  "nonemptyLinesAfter": 1189,
+  "coreRuntimeImportCycles": 0,
+  "coreHostDependencies": 0,
+  "reachableModulesChecked": 15
+}

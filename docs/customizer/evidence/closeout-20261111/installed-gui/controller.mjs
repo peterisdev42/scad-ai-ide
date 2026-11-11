@@ -1,0 +1,35 @@
+import {runTests} from '@vscode/test-electron';
+import {execFileSync} from 'node:child_process';
+import {mkdtemp,mkdir,writeFile,readFile,copyFile} from 'node:fs/promises';
+import {createServer} from 'node:net';
+import {chromium} from 'playwright';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+const root=process.cwd(),executable=process.env.SCAD_VSCODE_EXECUTABLE;
+const directory=await mkdtemp('/tmp/scad-installed-gui-'),workspace=path.join(directory,'workspace'),profile=path.join(directory,'profile'),extensions=path.join(directory,'extensions');
+await mkdir(workspace);await mkdir(profile+'/User',{recursive:true});
+await writeFile(profile+'/User/settings.json',JSON.stringify({'files.autoSave':'off','telemetry.telemetryLevel':'off','update.mode':'none','scad-ai-ide.languageServer.enabled':false}));
+const appRoot=path.resolve(path.dirname(executable),'../Resources/app');
+execFileSync(executable,[path.join(appRoot,'out/cli.js'),'--user-data-dir',profile,'--extensions-dir',extensions,'--install-extension',path.join(root,'.build/scad-ai-ide-closeout-d1a5fde.vsix'),'--force'],{env:{...process.env,ELECTRON_RUN_AS_NODE:'1'},stdio:'inherit'});
+await writeFile(directory+'/package.json',JSON.stringify({name:'installed-gui-audit',publisher:'local-test',version:'0.0.1',engines:{vscode:'^1.140.0'},main:'index.cjs'}));
+await writeFile(directory+'/index.cjs','exports.activate=()=>({})');
+const fixture=String.raw`const vscode=require('vscode'),fs=require('node:fs/promises'),path=require('node:path'),assert=require('node:assert/strict');
+exports.run=async()=>{const dir=process.env.SCAD_INSTALLED_GUI_DIR;const own=vscode.extensions.all.find(e=>e.packageJSON.name==='scad-ai-ide');assert.ok(own.extensionPath.startsWith(path.join(dir,'extensions')));const api=await own.activate();const uri=vscode.Uri.file(path.join(dir,'workspace/model.scad'));const source='width=40;\nmodule m(){}\nwidth=50;\n';await fs.writeFile(uri.fsPath,source);const doc=await vscode.workspace.openTextDocument(uri);await vscode.window.showTextDocument(doc);await vscode.commands.executeCommand('scad-ai.customizer.focus');await fs.writeFile(path.join(dir,'ready.json'),JSON.stringify({vscode:vscode.version,extension:own.extensionPath}));while(true){try{await fs.access(path.join(dir,'finish'));break}catch{}let request;try{request=JSON.parse(await fs.readFile(path.join(dir,'request.json'),'utf8'));await fs.rm(path.join(dir,'request.json'))}catch{}if(request){if(request.mode==='repair'){const edit=new vscode.WorkspaceEdit();edit.delete(uri,new vscode.Range(2,0,3,0));assert.ok(await vscode.workspace.applyEdit(edit));}if(request.mode==='partial'){const edit=new vscode.WorkspaceEdit();edit.replace(uri,new vscode.Range(0,0,doc.lineCount,0),'width=40;\nheight=20;\nmodule m(){}\nwidth=50;\n');assert.ok(await vscode.workspace.applyEdit(edit));}await fs.writeFile(path.join(dir,'response.json'),JSON.stringify({mode:request.mode,active:vscode.window.activeTextEditor?.document.uri.toString(),selection:vscode.window.activeTextEditor?.selection,buffer:doc.getText(),disk:await fs.readFile(uri.fsPath,'utf8'),dirty:doc.isDirty,diagnostics:vscode.languages.getDiagnostics(uri).map(d=>({code:d.code,line:d.range.start.line}))}));}await new Promise(r=>setTimeout(r,50));}}`;
+await writeFile(directory+'/test.cjs',fixture);
+const socket=createServer();await new Promise(r=>socket.listen(0,'127.0.0.1',r));const port=socket.address().port;await new Promise(r=>socket.close(r));
+let hostError;const running=runTests({vscodeExecutablePath:executable,extensionDevelopmentPath:directory,extensionTestsPath:directory+'/test.cjs',extensionTestsEnv:{SCAD_INSTALLED_GUI_DIR:directory},launchArgs:[workspace,'--user-data-dir',profile,'--extensions-dir',extensions,'--remote-debugging-port='+port,'--disable-workspace-trust','--skip-welcome','--skip-release-notes']}).catch(e=>hostError=e);
+const wait=async check=>{const deadline=Date.now()+30000;while(Date.now()<deadline){try{const v=await check();if(v)return v}catch{}await new Promise(r=>setTimeout(r,100))}throw new Error('Installed GUI observation timeout')};
+const evidence=root+'/docs/customizer/evidence/closeout-20261111/installed-gui';await mkdir(evidence,{recursive:true});
+try{
+ await wait(()=>readFile(directory+'/ready.json'));
+ const browser=await wait(()=>chromium.connectOverCDP('http://127.0.0.1:'+port));
+ const frame=await wait(async()=>{for(const context of browser.contexts())for(const page of context.pages())for(const f of page.frames())if(await f.locator('#overridden-location').count())return f;});
+ const button=frame.getByRole('button',{name:'Go to overriding assignment'});await button.waitFor({state:'visible'});assert.match(await frame.locator('#empty').innerText(),/all available controls were removed/);
+ const page=frame.page();await page.screenshot({path:evidence+'/empty.png'});await button.click();
+ const request=async mode=>{await writeFile(directory+'/request.json',JSON.stringify({mode}));const result=await wait(async()=>{const r=JSON.parse(await readFile(directory+'/response.json'));return r.mode===mode?r:null});await writeFile(evidence+'/'+mode+'.json',JSON.stringify(result,null,2)+'\n');return result;};
+ const navigation=await wait(async()=>{const r=await request('navigation');return r.selection?.start.line===2?r:null;});assert.equal(navigation.selection.start.line,2);
+ const repaired=await request('repair');await button.waitFor({state:'hidden'});await frame.locator('[data-name="width"]').waitFor({state:'visible'});assert.equal(repaired.disk,'width=40;\nmodule m(){}\nwidth=50;\n');assert.equal(repaired.dirty,true);
+ await request('partial');await frame.locator('[data-name="height"]').waitFor({state:'visible'});assert.equal(await frame.locator('[data-name="width"]').count(),0);await button.waitFor({state:'hidden'});await page.screenshot({path:evidence+'/partial.png'});
+ await writeFile(evidence+'/result.json',JSON.stringify({status:'PASS',vscode:'1.140.0',vsix:'.build/scad-ai-ide-closeout-d1a5fde.vsix',scope:'Installed Production Sidebar: empty lost-control explanation, real click to overriding declaration, repair cleanup and partial controls; disk unchanged',directory},null,2)+'\n');
+ console.log('Installed Production Sidebar PASS: '+directory);
+}finally{await writeFile(directory+'/finish','finish');await running;if(hostError)throw hostError;}
