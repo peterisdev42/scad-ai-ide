@@ -14,16 +14,16 @@
             "preLaunchTask": "${defaultBuildTask}"
         },
         {
-            "name": "Run Extension + Ollama",
+            "name": "Run Extension + oMLX",
             "type": "extensionHost",
             "request": "launch",
             "args": [
                 "--extensionDevelopmentPath=${workspaceFolder}",
-                "--extensionDevelopmentPath=${workspaceFolder}/.build/ollama-dev/extensions/ollama.ollama",
+                "--extensionDevelopmentPath=${workspaceFolder}/.build/omlx-dev/extensions/techopolis.omlx-copilot-chat",
                 "--disable-extensions"
             ],
             "outFiles": ["${workspaceFolder}/dist/**/*.js"],
-            "preLaunchTask": "watch + Ollama"
+            "preLaunchTask": "watch + oMLX"
         }
     ]
 }

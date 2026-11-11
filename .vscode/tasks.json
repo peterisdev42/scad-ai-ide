@@ -89,15 +89,15 @@
             "problemMatcher": []
         },
         {
-            "label": "ollama: prepare",
+            "label": "omlx: prepare",
             "type": "process",
             "command": "node",
-            "args": ["${workspaceFolder}/scripts/prepare-ollama-dev.mjs"],
+            "args": ["${workspaceFolder}/scripts/prepare-omlx-dev.mjs"],
             "problemMatcher": []
         },
         {
-            "label": "watch + Ollama",
-            "dependsOn": ["ollama: prepare", "watch"],
+            "label": "watch + oMLX",
+            "dependsOn": ["omlx: prepare", "watch"],
             "dependsOrder": "sequence",
             "problemMatcher": []
         }
