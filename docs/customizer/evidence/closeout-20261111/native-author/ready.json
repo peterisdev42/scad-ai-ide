@@ -1,0 +1,34 @@
+{
+  "vscode": "1.140.0",
+  "extensionPath": "/tmp/customizer-native-agent-y1r53g/extensions/undefined_publisher.scad-ai-ide-0.0.1",
+  "bundleSha256": "0c972fcbafc031ae10cac7882b01cf8c3dabd50fc7d34514c298e0079ebf0fdc",
+  "chatSettings": {
+    "saveBeforeSend": false,
+    "autoSave": "off",
+    "extensionUnification": false,
+    "disableAI": false,
+    "extensionTools": true
+  },
+  "nativeAgent": {
+    "present": true,
+    "active": true
+  },
+  "provider": {
+    "id": "techopolis.omlx-copilot-chat",
+    "version": "0.1.2"
+  },
+  "models": [
+    {
+      "id": "Hy-MT2-1.8B-8bit",
+      "name": "Hy-MT2-1.8B-8bit",
+      "vendor": "omlx",
+      "maxInputTokens": 262144
+    },
+    {
+      "id": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "name": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "vendor": "omlx",
+      "maxInputTokens": 262144
+    }
+  ]
+}

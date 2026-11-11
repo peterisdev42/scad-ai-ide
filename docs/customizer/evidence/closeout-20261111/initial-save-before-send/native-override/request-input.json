@@ -1,0 +1,25 @@
+{
+  "scenario": "override",
+  "backend": "omlx",
+  "vendor": "omlx",
+  "providerId": "techopolis.omlx-copilot-chat",
+  "maxToolCount": 16,
+  "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+  "modelIdentity": {
+    "name": "Qwen3.6-35B-A3B-OptiQ-4bit",
+    "digest": null,
+    "revision": null,
+    "maxModelLen": 262144
+  },
+  "file": "/tmp/customizer-native-agent-ov07lj/workspace/model.scad",
+  "query": "/openscad-customizer-authoring 目标文件为 file:///tmp/customizer-native-agent-ov07lj/workspace/model.scad。只读分析 width 控件消失原因，使用 SourceAnalyze 和 SourceValidate 检查 width visible=true 的要求。如实解释 Warning 和合法的覆盖赋值、两处位置及未达到的可见性契约，不删除赋值、不修改或声称已经修复。 保留几何、源码默认值与Preset，不保存文件。使用项目安装的Skill完成分析、适用时的最小编辑和明确目标验证；如实报告实际结果及未执行的GUI/渲染检查。",
+  "source": "width=40;\nmodule m(){}\nwidth=50;\n",
+  "artifact": {
+    "file": "scad-ai-ide-closeout-d1a5fde.vsix",
+    "bytes": 4604838,
+    "sha256": "5d1c3523ac43b8cf93c04f344b13b086486bc7b026599adfef1689685bd28c2a"
+  },
+  "confirmationPolicy": "Manual user confirmation only; no automatic approvals",
+  "ollamaEndpoint": "http://127.0.0.1:54496/v1",
+  "inferenceProfile": "Installed provider directly to the local server; no sampling override in this harness"
+}

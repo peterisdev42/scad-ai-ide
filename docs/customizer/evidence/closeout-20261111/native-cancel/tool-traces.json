@@ -1,0 +1,172 @@
+[
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "uri": "file:///tmp/customizer-native-agent-mHAk13/workspace/model.scad",
+      "includeCandidates": true,
+      "maxDiagnostics": 10
+    },
+    "started": "2026-11-11T10:20:13.668Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file:///tmp/customizer-native-agent-mHAk13/workspace/model.scad",
+          "version": 2,
+          "sha256": "18ed0c6cca85e97de7437c5e104c0ceff841c7dce24259529572125e38f66ff0"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "Unsaved Native Agent acceptance buffer",
+            "defaultValue": 40,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 1,
+                "character": 0
+              },
+              "end": {
+                "line": 1,
+                "character": 9
+              }
+            },
+            "descriptionRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 41
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "4cbb6539-fa73-4351-8e4f-03b47eaa2978",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceApply",
+    "input": {
+      "mode": "plan",
+      "uri": "file:///tmp/customizer-native-agent-mHAk13/workspace/model.scad",
+      "identity": {
+        "version": 2,
+        "sha256": "18ed0c6cca85e97de7437c5e104c0ceff841c7dce24259529572125e38f66ff0"
+      },
+      "edits": [
+        {
+          "kind": "annotateExisting",
+          "name": "width",
+          "widget": "slider",
+          "range": {
+            "min": 10,
+            "max": 100,
+            "step": 5
+          }
+        }
+      ]
+    },
+    "started": "2026-11-11T10:20:30.616Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceApply",
+      "data": {
+        "planId": "65355eec-aaec-438c-84aa-ce468db5cd9f",
+        "identity": {
+          "uri": "file:///tmp/customizer-native-agent-mHAk13/workspace/model.scad",
+          "version": 2,
+          "sha256": "18ed0c6cca85e97de7437c5e104c0ceff841c7dce24259529572125e38f66ff0"
+        },
+        "summary": "Update Customizer source: width",
+        "preview": [
+          {
+            "range": {
+              "start": {
+                "line": 1,
+                "character": 9
+              },
+              "end": {
+                "line": 1,
+                "character": 9
+              }
+            },
+            "before": "",
+            "after": " // [10:5:100]"
+          }
+        ],
+        "validation": {
+          "sourceStatus": {
+            "status": "complete",
+            "reasons": []
+          },
+          "contractStatus": "matched",
+          "qualityStatus": "clear",
+          "semanticPass": true,
+          "checked": 1,
+          "matched": 1,
+          "expectationResults": [
+            {
+              "parameter": "width",
+              "matched": true,
+              "issues": [],
+              "details": [],
+              "range": {
+                "start": {
+                  "line": 1,
+                  "character": 0
+                },
+                "end": {
+                  "line": 1,
+                  "character": 9
+                }
+              }
+            }
+          ],
+          "omittedExpectations": 0,
+          "diagnostics": [],
+          "omittedDiagnostics": 0,
+          "runtimeCheck": {
+            "status": "notRequested"
+          },
+          "guiCheck": {
+            "status": "notRequested"
+          },
+          "complete": true,
+          "pass": true
+        },
+        "expiresInSeconds": 120,
+        "continuation": {
+          "tool": "scad_ai_ide_customizer_sourceApply",
+          "input": {
+            "mode": "commit",
+            "planId": "65355eec-aaec-438c-84aa-ce468db5cd9f"
+          },
+          "requiresReview": true
+        }
+      },
+      "operation": {
+        "id": "ea017903-909e-44fd-be9d-99d0efb0a6b0",
+        "capabilityId": "customizer.sourceApply",
+        "status": "succeeded"
+      }
+    }
+  }
+]

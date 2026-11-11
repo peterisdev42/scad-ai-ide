@@ -1,0 +1,238 @@
+{
+  "includeGuiDomain": false,
+  "scope": "Real isolated VS Code Extension Host V8 heap; production source/editor classes and optional value/domain/preset classes, real TextDocuments, filesystem watchers and subscriptions. Does not profile renderer, GPU, every feature or every provider.",
+  "vscode": "1.140.0",
+  "node": "v24.21.0",
+  "platform": "darwin",
+  "architecture": "arm64",
+  "sourceMode": "Compiled production classes loaded in development Host; not a measurement of the installed minified bundle",
+  "documentCount": 32,
+  "sourceBytes": 117044,
+  "warmup": {
+    "round": 0,
+    "capacities": {
+      "cache": 16,
+      "sourcePlans": 32,
+      "editorPlans": 32
+    },
+    "before": {
+      "usedSize": 40507824,
+      "totalSize": 42336256,
+      "embedderHeapUsedSize": 104,
+      "backingStorageSize": 7430768
+    },
+    "occupied": {
+      "usedSize": 44860728,
+      "totalSize": 47054848,
+      "embedderHeapUsedSize": 104,
+      "backingStorageSize": 7526819
+    },
+    "afterDispose": {
+      "usedSize": 41071052,
+      "totalSize": 42860544,
+      "embedderHeapUsedSize": 104,
+      "backingStorageSize": 7526750
+    },
+    "releasedBytes": 3789676
+  },
+  "samples": [
+    {
+      "round": 1,
+      "capacities": {
+        "cache": 16,
+        "sourcePlans": 32,
+        "editorPlans": 32
+      },
+      "before": {
+        "usedSize": 49113512,
+        "totalSize": 50069504,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531203
+      },
+      "occupied": {
+        "usedSize": 52913112,
+        "totalSize": 54788096,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "afterDispose": {
+        "usedSize": 49124708,
+        "totalSize": 50331648,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "releasedBytes": 3788404
+    },
+    {
+      "round": 2,
+      "capacities": {
+        "cache": 16,
+        "sourcePlans": 32,
+        "editorPlans": 32
+      },
+      "before": {
+        "usedSize": 49125360,
+        "totalSize": 50331648,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "occupied": {
+        "usedSize": 52949376,
+        "totalSize": 54525952,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "afterDispose": {
+        "usedSize": 49153216,
+        "totalSize": 50331648,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "releasedBytes": 3796160
+    },
+    {
+      "round": 3,
+      "capacities": {
+        "cache": 16,
+        "sourcePlans": 32,
+        "editorPlans": 32
+      },
+      "before": {
+        "usedSize": 49153724,
+        "totalSize": 50331648,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "occupied": {
+        "usedSize": 52963216,
+        "totalSize": 54525952,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "afterDispose": {
+        "usedSize": 49167076,
+        "totalSize": 50331648,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "releasedBytes": 3796140
+    },
+    {
+      "round": 4,
+      "capacities": {
+        "cache": 16,
+        "sourcePlans": 32,
+        "editorPlans": 32
+      },
+      "before": {
+        "usedSize": 49167604,
+        "totalSize": 50331648,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "occupied": {
+        "usedSize": 52972936,
+        "totalSize": 54525952,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "afterDispose": {
+        "usedSize": 49176800,
+        "totalSize": 50331648,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "releasedBytes": 3796136
+    },
+    {
+      "round": 5,
+      "capacities": {
+        "cache": 16,
+        "sourcePlans": 32,
+        "editorPlans": 32
+      },
+      "before": {
+        "usedSize": 49177328,
+        "totalSize": 50331648,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "occupied": {
+        "usedSize": 52993856,
+        "totalSize": 54525952,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "afterDispose": {
+        "usedSize": 49197696,
+        "totalSize": 50331648,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "releasedBytes": 3796160
+    },
+    {
+      "round": 6,
+      "capacities": {
+        "cache": 16,
+        "sourcePlans": 32,
+        "editorPlans": 32
+      },
+      "before": {
+        "usedSize": 49198148,
+        "totalSize": 50331648,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "occupied": {
+        "usedSize": 52995452,
+        "totalSize": 54525952,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "afterDispose": {
+        "usedSize": 49199368,
+        "totalSize": 50331648,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531134
+      },
+      "releasedBytes": 3796084
+    }
+  ],
+  "snapshots": {
+    "baseline": {
+      "file": "/tmp/cmem-f0ONpb/baseline.heapsnapshot",
+      "bytes": 78526062,
+      "sha256": "582eac09470b0b96130b22c3ba1387219bdbaaad5b000e600c287f894bbeaec6",
+      "instances": {
+        "CustomizerSourceDomainService": 0,
+        "CustomizerEditorActions": 0
+      }
+    },
+    "occupied": {
+      "file": "/tmp/cmem-f0ONpb/occupied-round-one.heapsnapshot",
+      "bytes": 79413032,
+      "sha256": "7dcee63fb0cf8453b644d2b0669e640f9ef93109f394ff0745bf99fb064c5eb4",
+      "instances": {
+        "CustomizerSourceDomainService": 1,
+        "CustomizerEditorActions": 1
+      }
+    },
+    "final": {
+      "file": "/tmp/cmem-f0ONpb/after-six-rounds.heapsnapshot",
+      "bytes": 79237594,
+      "sha256": "c1924e4395baf91dcb4f5ed424bc0fc2d6f2a61b9ed17b76e2b0d39e3bbff6dc",
+      "instances": {
+        "CustomizerSourceDomainService": 0,
+        "CustomizerEditorActions": 0
+      }
+    }
+  },
+  "savedOrCommitted": false,
+  "postDisposeHeapRangeBytes": 74660,
+  "retainedInstanceDelta": {
+    "CustomizerSourceDomainService": 0,
+    "CustomizerEditorActions": 0
+  },
+  "verdict": "PASS only for tested classes and scenarios; no renderer/GPU or global leak-free claim"
+}

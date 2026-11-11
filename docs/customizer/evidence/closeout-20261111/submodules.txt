@@ -1,0 +1,3 @@
+ bcf45a22caa954ca56ca287994cb6dbc368c67b2 sources/openscad (openscad-2026.10-TEST4-46-gbcf45a22c)
+ 0955859bcbbbb77eca0f9f4f1e6ef09dc0e3410a sources/openscad-LSP (v2.0.2-7-g0955859)
+ 5429e7ef2e499e77a2fb8613e781e859326abf90 sources/vscode-openscad-preview (v0.6.0-7-g5429e7e)

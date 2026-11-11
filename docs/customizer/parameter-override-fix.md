@@ -19,3 +19,7 @@ Sidebar 全部控件因此消失时显示具体原因及“Go to overriding assi
 - NOT RUN：新 VSIX 打包/安装、完整 Host 全套、此案例上游原生差分、真实模型。旧交付报告中的 FAIL / SKIP / NOT RUN 没有因本项修复变为通过。
 
 [原始验证证据](evidence/parameter-override/)。
+
+## 2026-11-11 Closeout 补充（独立于上述历史结果）
+
+已在本轮精确 pinned Linux CLI 完成14个 ADR12 差分，当前生产候选 VSIX 的最低 Host/真实 Sidebar导航、空/部分状态及修复清理通过。新增字符串 brace 截止修正见 ADR13；完整版本、原始失败、模型解释局限与验收范围见 [Closeout 报告](closeout-report.md)。上述旧 NOT RUN 是当时状态，不再当作当前证据，也没有被改写成历史 PASS。

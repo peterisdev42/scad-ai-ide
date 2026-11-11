@@ -1,0 +1,31 @@
+{
+  "mode": "navigation",
+  "active": "file:///tmp/scad-installed-gui-H5TQjY/workspace/model.scad",
+  "selection": {
+    "start": {
+      "line": 2,
+      "character": 0
+    },
+    "end": {
+      "line": 2,
+      "character": 9
+    },
+    "active": {
+      "line": 2,
+      "character": 9
+    },
+    "anchor": {
+      "line": 2,
+      "character": 0
+    }
+  },
+  "buffer": "width=40;\nmodule m(){}\nwidth=50;\n",
+  "disk": "width=40;\nmodule m(){}\nwidth=50;\n",
+  "dirty": false,
+  "diagnostics": [
+    {
+      "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+      "line": 2
+    }
+  ]
+}

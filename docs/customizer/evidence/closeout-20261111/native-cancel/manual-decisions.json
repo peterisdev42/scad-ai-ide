@@ -1,0 +1,13 @@
+[
+  {
+    "at": "2026-11-11T10:20:41.401Z",
+    "userAuthorization": "Explicit user approval of two author fixtures and a separate Skip cancellation scenario in this chat, 2026-11-11",
+    "tool": "scad_ai_ide_customizer_sourceApply",
+    "planId": "65355eec-aaec-438c-84aa-ce468db5cd9f",
+    "decision": "skip",
+    "nativeLabel": "Skip",
+    "reviewedBefore": "// Unsaved Native Agent acceptance buffer\nwidth=40;\ncube(width);\n",
+    "reviewedAfter": "// Unsaved Native Agent acceptance buffer\nwidth=40; // [10:5:100]\ncube(width);\n",
+    "geometryBytesUnchanged": true
+  }
+]

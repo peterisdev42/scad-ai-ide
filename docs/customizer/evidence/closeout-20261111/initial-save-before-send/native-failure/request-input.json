@@ -1,0 +1,25 @@
+{
+  "scenario": "failure",
+  "backend": "omlx",
+  "vendor": "omlx",
+  "providerId": "techopolis.omlx-copilot-chat",
+  "maxToolCount": 16,
+  "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+  "modelIdentity": {
+    "name": "Qwen3.6-35B-A3B-OptiQ-4bit",
+    "digest": null,
+    "revision": null,
+    "maxModelLen": 262144
+  },
+  "file": "/tmp/customizer-native-agent-RNbKU3/workspace/model.scad",
+  "query": "/openscad-customizer-authoring 目标文件为 file:///tmp/customizer-native-agent-RNbKU3/workspace/model.scad。只读验收，不修改文件：用SourceValidate检查width是否已经是Slider(10:5:100)，并用SourceAnalyze检查同目录不存在的missing.scad。对实际ok=false及semanticPass=false如实报告；不要修复或宣称验证成功。 保留几何、源码默认值与Preset，不保存文件。使用项目安装的Skill完成分析、适用时的最小编辑和明确目标验证；如实报告实际结果及未执行的GUI/渲染检查。",
+  "source": "width=40;\ncube(width);\n",
+  "artifact": {
+    "file": "scad-ai-ide-closeout-d1a5fde.vsix",
+    "bytes": 4604838,
+    "sha256": "5d1c3523ac43b8cf93c04f344b13b086486bc7b026599adfef1689685bd28c2a"
+  },
+  "confirmationPolicy": "Manual user confirmation only; no automatic approvals",
+  "ollamaEndpoint": "http://127.0.0.1:54419/v1",
+  "inferenceProfile": "Installed provider directly to the local server; no sampling override in this harness"
+}

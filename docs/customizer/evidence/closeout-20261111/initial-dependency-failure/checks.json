@@ -1,0 +1,112 @@
+[
+  {
+    "id": "ci",
+    "command": "npm ci",
+    "start": "2026-11-11T09:53:01.799Z",
+    "end": "2026-11-11T09:53:06.897Z",
+    "platform": "darwin",
+    "node": "v24.16.0",
+    "evidence": "docs/customizer/evidence/closeout-20261111/ci.log",
+    "exitCode": 255,
+    "signal": null
+  },
+  {
+    "id": "check:agents",
+    "command": "npm run check:agents",
+    "start": "2026-11-11T09:53:06.898Z",
+    "end": "2026-11-11T09:53:07.004Z",
+    "platform": "darwin",
+    "node": "v24.16.0",
+    "evidence": "docs/customizer/evidence/closeout-20261111/check-agents.log",
+    "exitCode": 1,
+    "signal": null
+  },
+  {
+    "id": "check-types",
+    "command": "npm run check-types",
+    "start": "2026-11-11T09:53:07.004Z",
+    "end": "2026-11-11T09:53:07.083Z",
+    "platform": "darwin",
+    "node": "v24.16.0",
+    "evidence": "docs/customizer/evidence/closeout-20261111/check-types.log",
+    "exitCode": 127,
+    "signal": null
+  },
+  {
+    "id": "lint",
+    "command": "npm run lint",
+    "start": "2026-11-11T09:53:07.084Z",
+    "end": "2026-11-11T09:53:07.159Z",
+    "platform": "darwin",
+    "node": "v24.16.0",
+    "evidence": "docs/customizer/evidence/closeout-20261111/lint.log",
+    "exitCode": 127,
+    "signal": null
+  },
+  {
+    "id": "check:customizer:architecture",
+    "command": "npm run check:customizer:architecture",
+    "start": "2026-11-11T09:53:07.159Z",
+    "end": "2026-11-11T09:53:07.260Z",
+    "platform": "darwin",
+    "node": "v24.16.0",
+    "evidence": "docs/customizer/evidence/closeout-20261111/check-customizer-architecture.log",
+    "exitCode": 1,
+    "signal": null
+  },
+  {
+    "id": "test:customizer:compatibility",
+    "command": "npm run test:customizer:compatibility",
+    "start": "2026-11-11T09:53:07.261Z",
+    "end": "2026-11-11T09:53:07.413Z",
+    "platform": "darwin",
+    "node": "v24.16.0",
+    "evidence": "docs/customizer/evidence/closeout-20261111/test-customizer-compatibility.log",
+    "exitCode": 127,
+    "signal": null
+  },
+  {
+    "id": "test:customizer:source",
+    "command": "npm run test:customizer:source",
+    "start": "2026-11-11T09:53:07.413Z",
+    "end": "2026-11-11T09:53:07.564Z",
+    "platform": "darwin",
+    "node": "v24.16.0",
+    "evidence": "docs/customizer/evidence/closeout-20261111/test-customizer-source.log",
+    "exitCode": 127,
+    "signal": null
+  },
+  {
+    "id": "test:capabilities",
+    "command": "npm run test:capabilities",
+    "start": "2026-11-11T09:53:07.565Z",
+    "end": "2026-11-11T09:53:07.723Z",
+    "platform": "darwin",
+    "node": "v24.16.0",
+    "evidence": "docs/customizer/evidence/closeout-20261111/test-capabilities.log",
+    "exitCode": 127,
+    "signal": null
+  },
+  {
+    "id": "test",
+    "command": "npm run test",
+    "start": "2026-11-11T09:53:07.723Z",
+    "end": "2026-11-11T09:53:07.878Z",
+    "platform": "darwin",
+    "node": "v24.16.0",
+    "evidence": "docs/customizer/evidence/closeout-20261111/test.log",
+    "exitCode": 127,
+    "signal": null
+  },
+  {
+    "id": "test:customizer",
+    "command": "npm run test:customizer",
+    "start": "2026-11-11T09:53:07.878Z",
+    "end": "2026-11-11T09:53:08.032Z",
+    "platform": "darwin",
+    "node": "v24.16.0",
+    "evidence": "docs/customizer/evidence/closeout-20261111/test-customizer.log",
+    "exitCode": 127,
+    "signal": null
+  }
+]

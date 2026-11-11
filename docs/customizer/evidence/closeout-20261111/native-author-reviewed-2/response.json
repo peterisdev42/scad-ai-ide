@@ -1,0 +1,34 @@
+{
+  "snapshot": true,
+  "cancelledForSnapshot": false,
+  "buffer": "/* [Dimensions] */\n// Width in millimeters\nwidth=40; // [10:5:100]\n/* [Appearance] */\n// Select shape\nshape=\"round\"; // [\"round\":\"Round\", \"square\":\"Square\"]\n/* [Hidden] */\ninternalOffset=0.01;\nmodule model() { cube([width,2,3]); }\nmodel();\n",
+  "dirty": true,
+  "operations": {
+    "total": 4,
+    "offset": 0,
+    "hasMore": false,
+    "nextOffset": null,
+    "operations": [
+      {
+        "id": "55327b0c-0f81-4651-b7f0-f4d63ada5045",
+        "capabilityId": "customizer.sourceValidate",
+        "status": "succeeded"
+      },
+      {
+        "id": "d32478fc-d306-4819-bc8f-a8a9ba421154",
+        "capabilityId": "customizer.sourceApply",
+        "status": "succeeded"
+      },
+      {
+        "id": "13e06d41-9f87-4d66-a8eb-1bd6dd1e1ab1",
+        "capabilityId": "customizer.sourceApply",
+        "status": "succeeded"
+      },
+      {
+        "id": "1663c718-fd57-4c30-a31c-1b3710fa86b9",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    ]
+  }
+}

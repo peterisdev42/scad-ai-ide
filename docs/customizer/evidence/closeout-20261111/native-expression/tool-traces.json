@@ -1,0 +1,81 @@
+[
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "includeCandidates": true,
+      "maxDiagnostics": 20,
+      "uri": "file:///tmp/customizer-native-agent-J5iuUi/workspace/model.scad"
+    },
+    "started": "2026-11-11T10:15:22.727Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file:///tmp/customizer-native-agent-J5iuUi/workspace/model.scad",
+          "version": 2,
+          "sha256": "e5ee17b1976404535558797037fda44567f8064f052d79846172f6c30df265fb"
+        },
+        "parameters": [
+          {
+            "name": "base",
+            "group": "",
+            "description": "Unsaved Native Agent acceptance buffer",
+            "defaultValue": 80,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 1,
+                "character": 0
+              },
+              "end": {
+                "line": 1,
+                "character": 8
+              }
+            },
+            "descriptionRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 41
+              }
+            }
+          }
+        ],
+        "candidates": [
+          {
+            "name": "width",
+            "range": {
+              "start": {
+                "line": 2,
+                "character": 0
+              },
+              "end": {
+                "line": 2,
+                "character": 13
+              }
+            },
+            "reason": "unsupportedDefault",
+            "confidence": "certain"
+          }
+        ],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "4288a416-5691-43cb-ae5f-b00da3dfb46a",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  }
+]
