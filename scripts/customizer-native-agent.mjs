@@ -12,7 +12,7 @@ import { createHash } from 'node:crypto'
 // The historical cancellation probe approved a later confirmation path.
 // Keep it disabled in the delivery baseline; draft repairs and raw evidence
 // are quarantined until a separate end-to-end acceptance is completed.
-assert.ok(process.env.SCAD_AGENT_SCENARIO !== 'cancel' && process.env.SCAD_AGENT_CANCEL_SOURCE_COMMIT !== '1', 'Native cancellation probe is disabled: its historical controller result is invalid. See docs/customizer/final-delivery.md.')
+assert.ok(process.env.SCAD_AGENT_BACKEND === 'omlx' || (process.env.SCAD_AGENT_SCENARIO !== 'cancel' && process.env.SCAD_AGENT_CANCEL_SOURCE_COMMIT !== '1'), 'Historical automatic cancellation probe is disabled: its controller result is invalid. See docs/customizer/final-delivery.md.')
 
 const root = fileURLToPath(new URL('../', import.meta.url))
 const executable = process.env.SCAD_VSCODE_EXECUTABLE
@@ -66,6 +66,7 @@ const socket = createServer()
 await new Promise(resolve => socket.listen(0, '127.0.0.1', resolve))
 const port = socket.address().port
 await new Promise(resolve => socket.close(resolve))
+await writeFile(path.join(directory, 'controller.json'), JSON.stringify({ debugUrl: `http://127.0.0.1:${port}`, scope: 'Isolated test window only' }))
 let ended = false, hostError
 console.log(`Native Agent evidence directory: ${directory}`)
 // A normal Production host preserves the built-in native Chat Agent. Test
@@ -171,8 +172,14 @@ try {
         if (response) {
             const observed = JSON.parse(response)
             if (backend === 'omlx' && observed.result?.type === 'confirmation') {
-                terminalReason = 'manualConfirmationRequired'
-                break
+                if (process.env.SCAD_AGENT_MANUAL_REVIEW !== '1') {
+                    terminalReason = 'manualConfirmationRequired'
+                    break
+                }
+                await writeFile(path.join(directory, 'pending-confirmation.json'), JSON.stringify(observed.result, null, 2))
+                await rm(path.join(directory, 'response.json'))
+                continuedAfterConfirmation = true
+                continue
             }
             if (observed.result?.type === 'confirmation' && process.env.SCAD_AGENT_APPROVE_FIXTURE_WRITES === '1') {
                 if (approvals.length >= 8) { terminalReason = 'confirmationBudgetExhausted'; break }
@@ -200,7 +207,7 @@ try {
         // Native Chat can surface a second, non-tool permission prompt after
         // blockOnResponse has already returned its first confirmation. Never
         // authorize a fallback file writer; record and decline this exact UI.
-        if (!response && body.includes('Allow edits to sensitive files?')) {
+        if (backend !== 'omlx' && !response && body.includes('Allow edits to sensitive files?')) {
             if (approvals.length >= 8) { terminalReason = 'confirmationBudgetExhausted'; break }
             const action = page.getByText('Skip', { exact: true }).filter({ visible: true })
             await action.first().waitFor({ state: 'visible', timeout: 5000 })
@@ -208,7 +215,7 @@ try {
             approvals.push({ tool: 'nativeSensitiveFileEdit', decision: 'skip', scope: 'Fallback file writers are outside this controlled Source workflow', displayedInput: body.slice(body.indexOf('Allow edits to sensitive files?')) })
             await action.click()
             continuedAfterConfirmation = true
-        } else if (!response && continuedAfterConfirmation) {
+        } else if (backend !== 'omlx' && !response && continuedAfterConfirmation) {
             const action = page.getByText('Skip', { exact: true }).filter({ visible: true })
             if (await action.count() === 1) {
                 if (approvals.length >= 8) { terminalReason = 'confirmationBudgetExhausted'; break }
