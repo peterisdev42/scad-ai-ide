@@ -1,10 +1,11 @@
+import type { PreviewSourceProblems } from '../services/PreviewSourceProblems'
 import { CancellationToken, CustomDocumentOpenContext, CustomReadonlyEditorProvider, ExtensionContext, Uri, WebviewPanel } from 'vscode'
 import { MeshPreviewDocument } from '../core/MeshPreviewDocument'
 import { meshFormat } from '../services/previewFile'
 import { ScadWebviewPanel } from './ScadWebviewPanel'
 
 export class MeshPreviewEditorProvider implements CustomReadonlyEditorProvider<MeshPreviewDocument> {
-    constructor(private readonly context: ExtensionContext) {}
+    constructor(private readonly context: ExtensionContext, private readonly sourceProblems: PreviewSourceProblems) {}
 
     openCustomDocument(uri: Uri, _context: CustomDocumentOpenContext, token: CancellationToken): MeshPreviewDocument {
         const format = meshFormat(uri.path)
@@ -14,7 +15,7 @@ export class MeshPreviewEditorProvider implements CustomReadonlyEditorProvider<M
 
     resolveCustomEditor(document: MeshPreviewDocument, panel: WebviewPanel, token: CancellationToken): void {
         if (token.isCancellationRequested) return
-        new ScadWebviewPanel(panel, this.context.extensionUri, document, this.context.workspaceState)
+        new ScadWebviewPanel(panel, this.context.extensionUri, document, this.context.workspaceState, this.sourceProblems)
         void document.refreshRender()
     }
 }

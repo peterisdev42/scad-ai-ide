@@ -1,0 +1,11 @@
+npm notice run scad-ai-ide@0.0.1 compile
+npm notice run npm run check:agents && npm run check-types && npm run lint && node esbuild.js
+npm notice run scad-ai-ide@0.0.1 check:agents
+npm notice run node scripts/agent-manifest.mjs
+Validated 40 tools, 2 instruction and 5 skills.
+Verified 11 GUI groups and 41 business action contracts.
+npm notice run scad-ai-ide@0.0.1 check-types
+npm notice run tsc --noEmit && tsc -p tsconfig.webview.json
+src/test/capabilities.integration.test.ts(90,26): error TS2554: Expected 2 arguments, but got 1.
+src/test/capabilities.integration.test.ts(91,23): error TS2554: Expected 2 arguments, but got 1.
+src/test/capabilities.integration.test.ts(137,22): error TS2554: Expected 5 arguments, but got 4.

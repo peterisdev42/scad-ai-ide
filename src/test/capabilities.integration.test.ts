@@ -1,6 +1,7 @@
 import { ScadSession } from '../features/preview/extension/core/ScadSession'
 import { ScadClient } from '../features/preview/extension/services/ScadClient'
 import { ScadWebviewPanel } from '../features/preview/extension/views/ScadWebviewPanel'
+import { PreviewSourceProblems } from '../features/preview/extension/services/PreviewSourceProblems'
 import { PreviewProblems } from '../features/preview/extension/services/PreviewProblems'
 import { EmptyModelError } from '../features/preview/extension/services/previewEligibility'
 import { focusTestEditor } from './HostEditorFocus'
@@ -87,8 +88,10 @@ suite('Agent capabilities extension host', () => {
     test('Preview Problems are readable by the host diagnostics API, scoped and cleared on recovery or disposal', async () => {
         const uri = vscode.Uri.file(path.join(os.tmpdir(), 'preview-problems-test', 'model.scad'))
         const include = vscode.Uri.file(path.join(os.tmpdir(), 'preview-problems-test', 'lib.scad'))
-        const reporter = new PreviewProblems(uri)
-        const other = new PreviewProblems(uri)
+        const sources = new PreviewSourceProblems()
+        const otherSources = new PreviewSourceProblems()
+        const reporter = new PreviewProblems(uri, sources)
+        const other = new PreviewProblems(uri, otherSources)
         const read = (target = uri) => vscode.languages.getDiagnostics(target).filter(d => d.source === 'OpenSCAD Preview')
         try {
             reporter.report(new Error('ERROR: Parser error: syntax error in file model.scad, line 3'), 'render')
@@ -114,12 +117,14 @@ suite('Agent capabilities extension host', () => {
             reporter.report(new EmptyModelError(), 'render')
             assert.equal(read().find(d => d.code === 'PREVIEW_EMPTY_MODEL')?.severity, vscode.DiagnosticSeverity.Information)
             reporter.dispose()
+            sources.dispose()
             assert.equal(read().length, 1)
             other.dispose()
+            otherSources.dispose()
             assert.equal(read().length, 0)
             reporter.report(new Error('Late completion'), 'render')
             assert.equal(read().length, 0)
-        } finally { reporter.dispose(); other.dispose() }
+        } finally { reporter.dispose(); other.dispose(); sources.dispose(); otherSources.dispose() }
     })
     test('native Preview failure reaches Problems through the actual session and clears after unsaved repair', async function () {
         this.timeout(30000)
@@ -134,7 +139,8 @@ suite('Agent capabilities extension host', () => {
         ScadClient.configure(async () => ({ executable, argsPrefix: [] }))
         const session = new ScadSession(document, customizer)
         const panel = vscode.window.createWebviewPanel('scad.preview.problems.test', 'Preview Problems test', { viewColumn: vscode.ViewColumn.Active, preserveFocus: true }, {})
-        const view = new ScadWebviewPanel(panel, vscode.Uri.file(path.resolve('.')), session, { get: (_key: string, fallback: unknown) => fallback, update: async () => {}, keys: () => [] } as unknown as vscode.Memento)
+        const sourceProblems = new PreviewSourceProblems()
+        const view = new ScadWebviewPanel(panel, vscode.Uri.file(path.resolve('.')), session, { get: (_key: string, fallback: unknown) => fallback, update: async () => {}, keys: () => [] } as unknown as vscode.Memento, sourceProblems)
         const waitFor = async (check: () => boolean) => {
             const deadline = Date.now() + 15000
             while (!check()) { assert.ok(Date.now() < deadline, 'Native Preview result did not arrive'); await new Promise(resolve => setTimeout(resolve, 50)) }
@@ -155,11 +161,129 @@ suite('Agent capabilities extension host', () => {
             assert.equal(document.isDirty, true)
             assert.equal(await readFile(uri.fsPath, 'utf8'), source)
         } finally {
-            completion.dispose(); view.dispose(); session.dispose(); ScadClient.dispose()
+            completion.dispose(); view.dispose(); session.dispose(); sourceProblems.dispose(); ScadClient.dispose()
             await vscode.window.showTextDocument(document)
             await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor')
             await rm(root, { recursive: true, force: true })
         }
+    })
+    test('Preview-to-Text preserves production Problems and source actions force Text without changing associations', async function () {
+        this.timeout(45000)
+        const executable = process.env.SCAD_TEST_OPENSCAD
+        if (!executable) { this.skip(); return }
+        const directory = await mkdtemp(path.join(os.tmpdir(), 'preview-problems-navigation-'))
+        const uri = vscode.Uri.file(path.join(directory, 'model.scad'))
+        const config = vscode.workspace.getConfiguration('scad-ai-ide')
+        const workbench = vscode.workspace.getConfiguration('workbench')
+        const oldCommand = config.inspect('runtimeCommand')?.globalValue
+        const oldMode = config.inspect('preview.renderMode')?.globalValue
+        const oldAssociations = workbench.inspect('editorAssociations')?.globalValue
+        const viewType = 'scad-ai-ide.preview.editor'
+        const source = 'width=10;\ncube([1,2,3];'
+        const waitFor = async (check: () => boolean) => {
+            const deadline = Date.now() + 15000
+            while (!check()) { assert.ok(Date.now() < deadline, 'Preview navigation result did not arrive'); await new Promise(resolve => setTimeout(resolve, 50)) }
+        }
+        const problems = () => vscode.languages.getDiagnostics(uri).filter(d => d.code === 'PREVIEW_RENDER_FAILED')
+        const isCustom = () => vscode.window.tabGroups.activeTabGroup.activeTab?.input instanceof vscode.TabInputCustom
+        try {
+            await writeFile(uri.fsPath, source)
+            await config.update('runtimeCommand', { executable, argsPrefix: [] }, vscode.ConfigurationTarget.Global)
+            await config.update('preview.renderMode', 'render', vscode.ConfigurationTarget.Global)
+            const associations = { ...(oldAssociations as object ?? {}), '*.scad': viewType }
+            await workbench.update('editorAssociations', associations, vscode.ConfigurationTarget.Global)
+            const extension = vscode.extensions.all.find(item => item.packageJSON.name === 'scad-ai-ide')!
+            const api = await extension.activate() as Awaited<ReturnType<typeof activate>>
+            await api.refresh()
+            await vscode.commands.executeCommand('vscode.openWith', uri, viewType)
+            await waitFor(() => isCustom() && problems().length > 0)
+            const diagnostic = problems()[0]
+            await vscode.commands.executeCommand('vscode.open', uri, { selection: diagnostic.range })
+            console.log('Problems-style resource open selected:', isCustom() ? 'Preview (editor association retained)' : 'Text')
+            await vscode.commands.executeCommand('scad-ai-ide.showSource')
+            await waitFor(() => vscode.window.activeTextEditor?.document.uri.toString() === uri.toString())
+            await new Promise(resolve => setTimeout(resolve, 300))
+            assert.ok(problems().length, 'Changing editor type must not clear the source failure')
+            await vscode.commands.executeCommand('vscode.openWith', uri, viewType)
+            await waitFor(isCustom)
+            const actions = await vscode.commands.executeCommand<vscode.CodeAction[]>('vscode.executeCodeActionProvider', uri, diagnostic.range)
+            const navigation = actions?.find(action => action.title === 'Preview: open source at this error')
+            assert.ok(navigation?.command, 'Problems must expose the explicit source action')
+            await vscode.commands.executeCommand(navigation.command.command, ...navigation.command.arguments!)
+            await waitFor(() => vscode.window.activeTextEditor?.document.uri.toString() === uri.toString())
+            assert.equal(vscode.window.activeTextEditor!.selection.start.line, diagnostic.range.start.line)
+            assert.equal(isCustom(), false)
+            assert.ok(problems().length)
+            assert.deepEqual(vscode.workspace.getConfiguration('workbench').get('editorAssociations'), associations)
+            const document = vscode.window.activeTextEditor!.document
+            const repair = new vscode.WorkspaceEdit()
+            repair.replace(uri, new vscode.Range(document.positionAt(0), document.positionAt(document.getText().length)), 'cube(2);')
+            assert.equal(await vscode.workspace.applyEdit(repair), true)
+            await waitFor(() => problems().length === 0)
+            assert.equal(await vscode.commands.executeCommand(navigation.command.command, ...navigation.command.arguments!), false, 'A stale source action must not jump to an obsolete diagnostic')
+            assert.equal(document.isDirty, true)
+            assert.equal(await readFile(uri.fsPath, 'utf8'), source)
+            let completed = false
+            const session = api.preview.getOrCreateSession(document)
+            const completion = session.onRenderCompleted(() => { completed = true })
+            try {
+                await vscode.commands.executeCommand('vscode.openWith', uri, viewType)
+                await waitFor(() => completed)
+                assert.equal(problems().length, 0)
+            } finally { completion.dispose() }
+            await vscode.window.showTextDocument(document)
+            await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor')
+        } finally {
+            await vscode.commands.executeCommand('workbench.action.closeAllEditors')
+            await config.update('runtimeCommand', oldCommand, vscode.ConfigurationTarget.Global)
+            await config.update('preview.renderMode', oldMode, vscode.ConfigurationTarget.Global)
+            await workbench.update('editorAssociations', oldAssociations, vscode.ConfigurationTarget.Global)
+            await rm(directory, { recursive: true, force: true })
+        }
+    })
+    test('Preview source store invalidates changed buffers and includes, rejects stale reports and bounds retained files', async () => {
+        const root = await mkdtemp(path.join(os.tmpdir(), 'preview-source-store-'))
+        const uri = vscode.Uri.file(path.join(root, 'model.scad'))
+        const include = vscode.Uri.file(path.join(root, 'lib.scad'))
+        const sources = new PreviewSourceProblems()
+        try {
+            await writeFile(uri.fsPath, 'cube(1);')
+            await writeFile(include.fsPath, 'cube(2);')
+            const document = await vscode.workspace.openTextDocument(uri)
+            const dependency = await vscode.workspace.openTextDocument(include)
+            const reporter = new PreviewProblems(uri, sources)
+            reporter.report(new Error('ERROR: assertion failed in file lib.scad, line 1'), 'render')
+            reporter.dispose()
+            assert.ok(sources.first(uri), 'Disposing a view must retain its source result')
+            const mesh = vscode.Uri.file(path.join(root, 'mesh.stl'))
+            const meshView = new PreviewProblems(mesh, sources)
+            meshView.report(new Error('Invalid STL'), 'render')
+            assert.equal(sources.first(mesh), undefined, 'Binary-view failures must not enter source validation history')
+            assert.ok(vscode.languages.getDiagnostics(mesh).length)
+            meshView.dispose()
+            assert.equal(vscode.languages.getDiagnostics(mesh).length, 0)
+            const change = new vscode.WorkspaceEdit()
+            change.insert(include, new vscode.Position(0, 0), '// changed\n')
+            await vscode.workspace.applyEdit(change)
+            assert.equal(sources.first(uri), undefined)
+            const late = new PreviewProblems(uri, sources)
+            late.beginRender()
+            const edit = new vscode.WorkspaceEdit()
+            edit.insert(uri, new vscode.Position(0, 0), '// changed\n')
+            await vscode.workspace.applyEdit(edit)
+            late.report(new Error('Old compile failed'), 'render')
+            assert.equal(sources.first(uri), undefined, 'A completed old request must not republish stale diagnostics')
+            late.dispose()
+            for (let i = 0; i < 130; i++) {
+                const file = vscode.Uri.joinPath(uri, '..', `file${i}.scad`)
+                const view = new PreviewProblems(file, sources)
+                view.report(new Error('failed'), 'render')
+                view.dispose()
+            }
+            assert.equal(sources.first(vscode.Uri.joinPath(uri, '..', 'file0.scad')), undefined)
+            assert.ok(sources.first(vscode.Uri.joinPath(uri, '..', 'file129.scad')))
+            for (const doc of [document, dependency]) { await vscode.window.showTextDocument(doc); await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor') }
+        } finally { sources.dispose(); await rm(root, { recursive: true, force: true }) }
     })
     test('AI Panel metadata covers every registered tool and all awareness resources without running a capability', async () => {
         const extension = vscode.extensions.all.find((item) => item.packageJSON.name === 'scad-ai-ide')!

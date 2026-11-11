@@ -89,6 +89,17 @@ export class Preview extends LitElement {
             text-align: center;
             pointer-events: none;
         }
+        .source-action {
+            font: inherit;
+            padding: 3px 8px;
+            border: 1px solid var(--vscode-button-border, var(--vscode-contrastBorder, transparent));
+            border-radius: var(--vscode-cornerRadius-small, 3px);
+            color: var(--vscode-button-secondaryForeground);
+            background: var(--vscode-button-secondaryBackground);
+            cursor: pointer;
+        }
+        .source-action:hover { background: var(--vscode-button-secondaryHoverBackground); }
+        .source-action:focus-visible { outline: 1px solid var(--vscode-focusBorder); outline-offset: 2px; }
         .spinner {
             border: 2px solid var(--vscode-editorGhostText-border, rgba(255, 255, 255, 0.1));
             border-top: 2px solid var(--vscode-button-background);
@@ -322,6 +333,7 @@ export class Preview extends LitElement {
                                             <div id=${error ? 'tool-status' : 'preview-message'} class="primary ${error ? 'error' : ''}">
                                                 ${loading && !error ? html`<div class="spinner" aria-hidden="true"></div>` : nothing}
                                                 <span>${primary}</span>
+                                                ${error && this.modelContext?.openProblemSource ? html`<button class="source-action" type="button" @click=${() => this.modelContext.openProblemSource?.()}>Open source at error</button>` : nothing}
                                             </div>
                                         `
                                       : nothing

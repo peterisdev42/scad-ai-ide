@@ -1,15 +1,21 @@
+import { PreviewSourceProblems } from './PreviewSourceProblems'
 import * as vscode from 'vscode'
 import { basename, dirname, isAbsolute, resolve } from 'node:path'
 import { previewErrorDetails } from './renderDiagnostics'
 import { EmptyModelError } from './previewEligibility'
 
-/** One view owns its diagnostics, including errors attributed to included files. */
+/** View failures belong to this view; compiler results belong to the document store. */
 export class PreviewProblems implements vscode.Disposable {
     private readonly collection = vscode.languages.createDiagnosticCollection()
-    private readonly issues = new Map<'render' | 'view', Array<{ uri: vscode.Uri; diagnostic: vscode.Diagnostic }>>()
+    private readonly issues = new Map<'view', Array<{ uri: vscode.Uri; diagnostic: vscode.Diagnostic }>>()
     private disposed = false
 
-    constructor(private readonly document: vscode.Uri) {}
+    private renderStamp?: string
+    constructor(private readonly document: vscode.Uri, private readonly sources: PreviewSourceProblems) { this.beginRender() }
+
+    beginRender() { this.renderStamp = this.sources.stamp(this.document) }
+    openSource() { return this.sources.open(this.document) }
+    get hasSourceProblem() { return !!this.sources.first(this.document) }
 
     report(error: unknown, stage: 'render' | 'view') {
         if (this.disposed) return
@@ -27,13 +33,15 @@ export class PreviewProblems implements vscode.Disposable {
             if (uri.toString() !== this.document.toString()) diagnostic.relatedInformation = [new vscode.DiagnosticRelatedInformation(new vscode.Location(this.document, new vscode.Range(0, 0, 0, 0)), 'Reported while previewing this document.')]
             return { uri, diagnostic }
         })
-        this.issues.set(stage, issues)
+        if (stage === 'render' && /\.(scad|csg)$/i.test(this.document.path)) { this.sources.report(this.document, issues, this.renderStamp); return }
+        this.issues.set('view', issues)
         this.publish()
     }
 
     clear(stage: 'render' | 'view') {
         if (this.disposed) return
-        this.issues.delete(stage)
+        if (stage === 'render' && /\.(scad|csg)$/i.test(this.document.path)) { this.sources.clear(this.document); return }
+        this.issues.delete('view')
         this.publish()
     }
 

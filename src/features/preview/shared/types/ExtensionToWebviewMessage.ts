@@ -11,9 +11,9 @@ export type ExtensionToWebviewMessage =
     | { type: 'previewMode'; mode: PreviewMode; links?: Record<PreviewMode, string> }
     | { type: 'previewBackend'; backend: PreviewBackend }
     | { type: 'topology'; modelVersion: number; geometry?: GeometryData; error?: string }
-    | { type: 'emptyModel'; message: string }
-    | { type: 'renderError'; message: string }
-    | { type: 'previewIssue'; message: string }
+    | { type: 'emptyModel'; message: string; canOpenSource?: boolean }
+    | { type: 'renderError'; message: string; canOpenSource?: boolean }
+    | { type: 'previewIssue'; message: string; canOpenSource?: boolean }
     | { type: 'loadingState'; loading: boolean; message?: string }
     | {
           type: 'update'

@@ -25,6 +25,7 @@ function mockPreview(initialRuntime?: Runtime) {
                     workspace: { onDidChangeConfiguration: () => disposable },
                 }
             if (id.endsWith('/formats/meshTopology')) return { configureMeshTopologyWorker() {} }
+            if (id.endsWith('/PreviewSourceProblems')) return { PreviewSourceProblems: class { registerNavigation() { return { dispose() {} } } dispose() {} } }
             if (id.endsWith('/PreviewExporter')) return { registerPreviewExporter() {}, resolvePreviewExporter() {} }
             if (id.endsWith('/runtime/errors')) return { RuntimeUnavailableError }
             if (id.endsWith('/ScadSessionManager'))
