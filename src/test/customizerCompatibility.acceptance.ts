@@ -13,7 +13,7 @@ const corpus = JSON.parse(readFileSync('src/test/fixtures/customizer-compatibili
 for (const fixture of corpus.cases) {
     test(`native compatibility: ${fixture.id}`, () => {
         assert.equal(corpus.referenceOpenSCADCommit, 'bcf45a22caa954ca56ca287994cb6dbc368c67b2')
-        assert.equal(fixture.nativeBuildCommit, '9ba0cee7c94785fac0ca8dfe040b965a12a25ed1')
+        assert.ok(['9ba0cee7c94785fac0ca8dfe040b965a12a25ed1', 'a81e863051c42ee04168683e945aca58d32d04a2'].includes(fixture.nativeBuildCommit), 'Fixture must identify a recorded native build')
         assert.deepEqual(fixture.expectedIDEParameters, fixture.expectedNativeProjection, 'Target projections must agree; baseline IDE output is not the expected behavior')
         const analysis = analyzeCustomizerSource(fixture.source)
         assert.equal(analysis.complete, true)

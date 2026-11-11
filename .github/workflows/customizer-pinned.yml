@@ -5,12 +5,18 @@ on:
             - '.github/workflows/customizer-pinned.yml'
             - 'scripts/customizer-native-audit.mjs'
             - 'scripts/customizer-native-import-audit.mjs'
+            - 'scripts/customizer-override-audit.mjs'
+            - 'src/core/customizer/**'
+            - 'src/test/fixtures/CustomizerCompatibilityProjection.ts'
             - 'src/test/fixtures/customizer-compatibility.json'
     pull_request:
         paths:
             - '.github/workflows/customizer-pinned.yml'
             - 'scripts/customizer-native-audit.mjs'
             - 'scripts/customizer-native-import-audit.mjs'
+            - 'scripts/customizer-override-audit.mjs'
+            - 'src/core/customizer/**'
+            - 'src/test/fixtures/CustomizerCompatibilityProjection.ts'
             - 'src/test/fixtures/customizer-compatibility.json'
 permissions:
     contents: read
@@ -61,6 +67,8 @@ jobs:
               run: node scripts/customizer-native-audit.mjs .build/pinned-runtime/bin/openscad .build/pinned-native.json --strict
             - name: Execute pinned import probes
               run: node scripts/customizer-native-import-audit.mjs .build/pinned-runtime/bin/openscad .build/pinned-native-import.json
+            - name: Execute pinned ADR12 differential
+              run: node scripts/customizer-override-audit.mjs .build/pinned-runtime/bin/openscad .build/pinned-native-override.json
             - uses: actions/upload-artifact@v4
               if: always()
               with:

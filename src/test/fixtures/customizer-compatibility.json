@@ -1599,6 +1599,15 @@
       "expectedNativeProjection": [],
       "verificationStatus": "native-other-build-source-equivalent-customizer",
       "nativeBuildCommit": "9ba0cee7c94785fac0ca8dfe040b965a12a25ed1"
+    },
+    {
+      "id": "string-brace-cutoff",
+      "source": "label=\"{\";\nwidth=40;\n",
+      "expectedNativeParameters": [],
+      "expectedIDEParameters": [],
+      "expectedNativeProjection": [],
+      "verificationStatus": "native-other-build-source-equivalent-customizer",
+      "nativeBuildCommit": "a81e863051c42ee04168683e945aca58d32d04a2"
     }
   ],
   "projectionVersion": 2,

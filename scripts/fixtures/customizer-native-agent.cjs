@@ -8,9 +8,15 @@ exports.run = async () => {
     const directory = process.env.SCAD_NATIVE_AGENT_DIRECTORY
     const traces = []
     const own = vscode.extensions.all.find(extension => extension.packageJSON.name === 'scad-ai-ide')
-    const provider = vscode.extensions.getExtension('Ollama.ollama')
-    if (!own || !provider) throw new Error('The isolated native Agent host requires this extension and the installed official Ollama provider')
+    const providerId = process.env.SCAD_NATIVE_AGENT_PROVIDER ?? 'Ollama.ollama'
+    const vendor = process.env.SCAD_NATIVE_AGENT_VENDOR ?? 'ollama-models'
+    const provider = vscode.extensions.getExtension(providerId)
+    if (!own || !provider) throw new Error('The isolated native Agent host requires this extension and the selected installed provider')
     await provider.activate()
+    if (process.env.SCAD_NATIVE_AGENT_SETUP_TOKEN === '1') {
+        await fs.writeFile(path.join(directory, 'token-ui-requested'), 'Configure via provider password input, never an evidence file')
+        await vscode.commands.executeCommand('omlx.setApiToken')
+    }
     let nativeAgent = vscode.extensions.getExtension('GitHub.copilot-chat')
     let nativeAgentError
     try { await nativeAgent?.activate() } catch (error) { nativeAgentError = String(error) }
@@ -23,7 +29,7 @@ exports.run = async () => {
         catch (error) { trace.error = String(error); throw error }
         finally { await fs.writeFile(path.join(directory, 'tool-traces.json'), JSON.stringify(traces, null, 2)) }
     }
-    const models = await vscode.lm.selectChatModels({ vendor: 'ollama-models' })
+    const models = await vscode.lm.selectChatModels({ vendor })
     await fs.writeFile(path.join(directory, 'ready.json'), JSON.stringify({
         vscode: vscode.version,
         extensionMode: own.extensionMode,
@@ -32,7 +38,7 @@ exports.run = async () => {
         chatSettings: { extensionUnification: vscode.workspace.getConfiguration('chat').get('extensionUnification.enabled'), disableAI: vscode.workspace.getConfiguration('chat').get('disableAIFeatures'), extensionTools: vscode.workspace.getConfiguration('chat').get('extensionTools.enabled') },
         nativeAgent: { present: !!nativeAgent, active: nativeAgent?.isActive, error: nativeAgentError },
         provider: { id: provider.id, version: provider.packageJSON.version },
-        models: models.map(model => ({ id: model.id, name: model.name, vendor: model.vendor, toolCalling: model.capabilities?.toolCalling })),
+        models: models.map(model => ({ id: model.id, name: model.name, vendor: model.vendor, toolCalling: model.capabilities?.toolCalling, maxInputTokens: model.maxInputTokens })),
     }, null, 2))
     let pending
     const read = async name => { try { return await fs.readFile(path.join(directory, name), 'utf8') } catch { return undefined } }
@@ -60,10 +66,14 @@ exports.run = async () => {
                     const uri = vscode.Uri.file(request.file)
                     const document = await vscode.workspace.openTextDocument(uri)
                     await vscode.window.showTextDocument(document)
+                    const edit = new vscode.WorkspaceEdit()
+                    edit.insert(uri, new vscode.Position(0, 0), '// Unsaved Native Agent acceptance buffer\n')
+                    await vscode.workspace.applyEdit(edit)
+                    await fs.writeFile(path.join(directory, 'buffer-before.scad'), document.getText())
                     await vscode.commands.executeCommand('workbench.action.chat.newChat')
                     const result = await vscode.commands.executeCommand('workbench.action.chat.open', {
-                        query: request.query, mode: 'agent', modelSelector: { vendor: 'ollama-models', id: request.model },
-                        attachFiles: [uri], blockOnResponse: true,
+                        query: request.query, mode: 'agent', modelSelector: { vendor, id: request.model },
+                        attachFiles: [uri], toolsInclude: request.toolsInclude, blockOnResponse: true,
                     })
                     await fs.writeFile(path.join(directory, 'response.json'), JSON.stringify({ result, buffer: document.getText(), dirty: document.isDirty, operations: api.capabilities.operations.status(undefined, 0, 100) }, null, 2))
                 } catch (error) {
