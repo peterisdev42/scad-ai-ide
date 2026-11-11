@@ -1,0 +1,54 @@
+npm notice run scad-ai-ide@0.0.1 test:customizer:compatibility
+npm notice run npm run compile-tests && node --test out/test/customizerCompatibility.acceptance.js
+npm notice run scad-ai-ide@0.0.1 compile-tests
+npm notice run tsc -p . --outDir out
+✔ native compatibility: scalar (2.2595ms)
+✔ native compatibility: max-only (0.655375ms)
+✔ native compatibility: range (0.519166ms)
+✔ native compatibility: stepped (0.12575ms)
+✔ native compatibility: spin-step (0.109834ms)
+✔ native compatibility: checkbox (0.07875ms)
+✔ native compatibility: vector (0.164875ms)
+✔ native compatibility: unlisted-default (0.16475ms)
+✔ native compatibility: mixed-enum (0.104542ms)
+✔ native compatibility: quoted-delimiters (0.114084ms)
+✔ native compatibility: description (0.070916ms)
+✔ native compatibility: description-gap (0.058125ms)
+✔ native compatibility: description-indent (0.04125ms)
+✔ native compatibility: description-block (0.068833ms)
+✔ native compatibility: expanded-range (0.45275ms)
+✔ native compatibility: expanded-vector (0.065625ms)
+✔ native compatibility: off-grid (0.037416ms)
+✔ native compatibility: text-length (0.051959ms)
+✔ native compatibility: hidden-global (0.078167ms)
+✔ native compatibility: compound-group (0.069125ms)
+✔ native compatibility: superseded (0.046ms)
+✔ native compatibility: expression (0.030666ms)
+✔ native compatibility: long-vector (0.023042ms)
+✔ native compatibility: brace-comment (0.052417ms)
+✔ native compatibility: trailing-prose (0.038333ms)
+✔ native compatibility: same-line-brace (0.023083ms)
+✔ native compatibility: same-line-assignments (0.0275ms)
+✔ native compatibility: nfc (0.387916ms)
+✔ native compatibility: hint-hex (0.051709ms)
+✔ native compatibility: string-single-number (0.037542ms)
+✔ native compatibility: phase1-firstLineHint (0.068667ms)
+✔ native compatibility: phase1-groupReset (0.034459ms)
+✔ native compatibility: phase1-noNewline (0.038167ms)
+✔ native compatibility: phase1-multiline (0.037834ms)
+✔ native compatibility: phase1-textImport (0.042583ms)
+✔ native compatibility: phase1-utf8Import (0.138792ms)
+✔ native compatibility: phase1-unknownVersion (0.054458ms)
+✔ native compatibility: phase1-maxNegative (0.062291ms)
+✔ native compatibility: phase1-hex (0.279542ms)
+✔ native compatibility: phase1-stringEscape (0.063125ms)
+✔ native compatibility: include-brace-cutoff (0.039625ms)
+✔ native compatibility: string-brace-cutoff (0.024458ms)
+ℹ tests 42
+ℹ suites 0
+ℹ pass 42
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 49.199625

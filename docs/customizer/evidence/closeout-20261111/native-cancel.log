@@ -1,0 +1,24 @@
+Native Agent evidence directory: /tmp/customizer-native-agent-mHAk13
+Installing extensions...
+Extension 'scad-ai-ide-closeout-d1a5fde.vsix' was successfully installed.
+
+DevTools listening on ws://127.0.0.1:55731/devtools/browser/64aebc5e-03c0-48af-badb-fe1d1fc4ca87
+Warning: 'remote-debugging-port' is not in the list of known options, but still passed to Electron/Chromium.
+[90m[main 2026-11-11T10:19:57.516Z][0m [node-compile-cache] main: packaged cache inactive (status: disabled, configured: /Users/q/Documents/Code/scad-ai-ide/.vscode-test/vscode-darwin-arm64-1.140.0/Visual Studio Code.app/Contents/Resources/app/node-compile-cache/main, active: none)
+[90m[main 2026-11-11T10:19:57.534Z][0m StorageMainService: creating application shared storage
+[90m[main 2026-11-11T10:19:57.644Z][0m [shared storage] Creating shared storage database at '/tmp/customizer-native-agent-mHAk13/shared/sharedStorage/state.vscdb' (wasCreated: true)
+[90m[main 2026-11-11T10:19:57.644Z][0m [shared storage] Initializing fallback application storage (path: /tmp/customizer-native-agent-mHAk13/profile/User/globalStorage/state.vscdb)
+[90m[main 2026-11-11T10:19:57.645Z][0m [shared storage] Fallback application storage initialized with 4 items
+[90m[main 2026-11-11T10:19:57.645Z][0m update#setState disabled
+[90m[main 2026-11-11T10:19:57.645Z][0m update#ctor - updates are disabled by the environment
+[90m[main 2026-11-11T10:19:58.142Z][0m AgentHostProcessManager: agent host started
+[91m[main 2026-11-11T10:19:58.362Z][0m [AgentHost:stderr] (node:96547) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `Code Helper --trace-deprecation ...` to show where the warning was created)
+
+Unknown channel: agentHostClientByokLm
+Unknown channel: agentHostClientProxy
+Unknown channel: agentHostClientProxy
+{"vscode":"1.140.0","extensionPath":"/tmp/customizer-native-agent-mHAk13/extensions/undefined_publisher.scad-ai-ide-0.0.1","bundleSha256":"0c972fcbafc031ae10cac7882b01cf8c3dabd50fc7d34514c298e0079ebf0fdc","chatSettings":{"saveBeforeSend":false,"autoSave":"off","extensionUnification":false,"disableAI":false,"extensionTools":true},"nativeAgent":{"present":true,"active":true},"provider":{"id":"techopolis.omlx-copilot-chat","version":"0.1.2"},"models":[{"id":"Hy-MT2-1.8B-8bit","name":"Hy-MT2-1.8B-8bit","vendor":"omlx","maxInputTokens":262144},{"id":"Qwen3.6-35B-A3B-OptiQ-4bit","name":"Qwen3.6-35B-A3B-OptiQ-4bit","vendor":"omlx","maxInputTokens":262144}]}
+[90m[main 2026-11-11T10:20:59.516Z][0m Extension host with pid 96550 exited with code: 0, signal: unknown.
+Native Agent observation recorded (not acceptance): /tmp/customizer-native-agent-mHAk13
+User-reviewed decision count=1; observation exit=0

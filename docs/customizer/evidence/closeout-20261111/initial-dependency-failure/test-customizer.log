@@ -1,0 +1,5 @@
+npm notice run scad-ai-ide@0.0.1 test:customizer
+npm notice run npm run compile-tests && node esbuild.js && node --test scripts/customizer-scrollbar.test.mjs scripts/customizer-preview-fields.test.mjs
+npm notice run scad-ai-ide@0.0.1 compile-tests
+npm notice run tsc -p . --outDir out
+sh: tsc: command not found

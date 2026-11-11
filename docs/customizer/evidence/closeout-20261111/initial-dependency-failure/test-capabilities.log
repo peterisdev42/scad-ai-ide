@@ -1,0 +1,5 @@
+npm notice run scad-ai-ide@0.0.1 test:capabilities
+npm notice run npm run compile-tests && node --test out/test/capabilities.test.js out/test/capabilityServices.test.js
+npm notice run scad-ai-ide@0.0.1 compile-tests
+npm notice run tsc -p . --outDir out
+sh: tsc: command not found
