@@ -1,0 +1,168 @@
+[
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "includeCandidates": true,
+      "maxDiagnostics": 20,
+      "uri": "file:///tmp/customizer-native-agent-rzvrGz/workspace/model.scad"
+    },
+    "started": "2026-11-11T10:05:54.347Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file:///tmp/customizer-native-agent-rzvrGz/workspace/model.scad",
+          "version": 2,
+          "sha256": "aa3367c675e182182f97370118fa77f8e0fa716508f70047f1707fdccd0bf8cd"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "Unsaved Native Agent acceptance buffer",
+            "defaultValue": 40,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 1,
+                "character": 0
+              },
+              "end": {
+                "line": 1,
+                "character": 9
+              }
+            },
+            "descriptionRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 41
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "b7653e96-04c3-433d-bd8f-56a0ddcdc538",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceValidate",
+    "input": {
+      "expectations": [
+        {
+          "name": "width",
+          "widget": "slider",
+          "range": {
+            "min": 10,
+            "max": 100,
+            "step": 5
+          }
+        }
+      ],
+      "uri": "file:///tmp/customizer-native-agent-rzvrGz/workspace/model.scad"
+    },
+    "started": "2026-11-11T10:06:07.487Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceValidate",
+      "data": {
+        "identity": {
+          "uri": "file:///tmp/customizer-native-agent-rzvrGz/workspace/model.scad",
+          "version": 2,
+          "sha256": "aa3367c675e182182f97370118fa77f8e0fa716508f70047f1707fdccd0bf8cd"
+        },
+        "sourceStatus": {
+          "status": "complete",
+          "reasons": []
+        },
+        "contractStatus": "mismatch",
+        "qualityStatus": "clear",
+        "semanticPass": false,
+        "checked": 1,
+        "matched": 0,
+        "expectationResults": [
+          {
+            "parameter": "width",
+            "matched": false,
+            "issues": [
+              "Expected widget \"slider\"; actual \"spinbox\"",
+              "Range or step differs"
+            ],
+            "details": [
+              {
+                "code": "EXPECTED_WIDGET",
+                "message": "Expected widget \"slider\"; actual \"spinbox\"",
+                "range": {
+                  "start": {
+                    "line": 1,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 1,
+                    "character": 9
+                  }
+                }
+              },
+              {
+                "code": "EXPECTED_RANGE",
+                "message": "Range or step differs",
+                "range": {
+                  "start": {
+                    "line": 1,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 1,
+                    "character": 9
+                  }
+                }
+              }
+            ],
+            "range": {
+              "start": {
+                "line": 1,
+                "character": 0
+              },
+              "end": {
+                "line": 1,
+                "character": 9
+              }
+            }
+          }
+        ],
+        "omittedExpectations": 0,
+        "diagnostics": [],
+        "omittedDiagnostics": 0,
+        "runtimeCheck": {
+          "status": "notRequested"
+        },
+        "guiCheck": {
+          "status": "notRequested"
+        },
+        "complete": true
+      },
+      "operation": {
+        "id": "e5c0f327-6c78-4ff2-81a4-097023ca0b23",
+        "capabilityId": "customizer.sourceValidate",
+        "status": "succeeded"
+      }
+    }
+  }
+]

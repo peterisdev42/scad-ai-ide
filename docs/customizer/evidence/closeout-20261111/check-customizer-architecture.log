@@ -1,0 +1,12 @@
+npm notice run scad-ai-ide@0.0.1 check:customizer:architecture
+npm notice run node scripts/customizer-architecture-check.mjs
+{
+  "baseline": "4463d61046d962a3f5afa5ace49b21f37e6cc4a6",
+  "coreFilesBefore": 7,
+  "coreFilesAfter": 14,
+  "nonemptyLinesBefore": 812,
+  "nonemptyLinesAfter": 1185,
+  "coreRuntimeImportCycles": 0,
+  "coreHostDependencies": 0,
+  "reachableModulesChecked": 15
+}

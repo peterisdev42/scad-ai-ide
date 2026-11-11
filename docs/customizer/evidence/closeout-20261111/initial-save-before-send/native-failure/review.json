@@ -1,0 +1,49 @@
+{
+  "scenario": "failure",
+  "scope": "Independent assertions against actual tool traces/buffer/disk; final prose is reviewed separately",
+  "artifact": {
+    "file": "scad-ai-ide-closeout-d1a5fde.vsix",
+    "bytes": 4604838,
+    "sha256": "5d1c3523ac43b8cf93c04f344b13b086486bc7b026599adfef1689685bd28c2a"
+  },
+  "requestFinished": true,
+  "terminalReason": "nativeRequestReturned",
+  "observerValidity": "INVALID TEST",
+  "hostSchemaRejectCount": null,
+  "dispatcherOk": 2,
+  "dispatcherTotal": 3,
+  "calls": [
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": true
+    },
+    {
+      "capability": "customizer.sourceValidate",
+      "ok": true,
+      "semanticPass": false
+    },
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": false,
+      "error": "OUTSIDE_WORKSPACE"
+    }
+  ],
+  "actualPlanCommitValidate": {
+    "plan": false,
+    "commit": false,
+    "validate": true
+  },
+  "bufferShaBefore": "18ed0c6cca85e97de7437c5e104c0ceff841c7dce24259529572125e38f66ff0",
+  "bufferShaAfter": "18ed0c6cca85e97de7437c5e104c0ceff841c7dce24259529572125e38f66ff0",
+  "diskShaBefore": "d100f5011416f1dfdae4ca9dd4a0fb46c627a8ea02f10d167ba3fe36a06bade6",
+  "diskShaAfter": "18ed0c6cca85e97de7437c5e104c0ceff841c7dce24259529572125e38f66ff0",
+  "dirty": false,
+  "diskUnchanged": false,
+  "bufferUnchanged": true,
+  "analysisReadUnsavedBuffer": true,
+  "readonlyNoWrites": true,
+  "confirmationDecisions": [],
+  "finalAnswerTruthfulness": "PENDING human-readable review; no automatic PASS from request completion",
+  "status": "INVALID TEST",
+  "reason": "VS Code default chat.saveBeforeSend saved the dirty synthetic fixture before sending. Not evidence of product writer bypass; does not prove disk unchanged."
+}

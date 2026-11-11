@@ -1,0 +1,10 @@
+{
+  "artifact": ".build/scad-ai-ide-closeout-d1a5fde.vsix",
+  "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+  "bytes": 4604838,
+  "sha256": "5d1c3523ac43b8cf93c04f344b13b086486bc7b026599adfef1689685bd28c2a",
+  "vsce": "4.1.0",
+  "node": "v24.16.0",
+  "packageLockSha256": "5accb9d8e10bb283db378d740ba804dd70826b3ad570edfb0b2741303b09ca6d",
+  "scope": "Production prepublish build; macOS arm64 LSP only, not a tested Windows package"
+}

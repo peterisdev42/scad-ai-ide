@@ -1,0 +1,2507 @@
+{
+  "spec": "customizer-closeout-2026-11-11",
+  "date": "2026-11-11",
+  "source": {
+    "repository": "peterisdev42/scad-ai-ide",
+    "branch": "codex/customizer-closeout-20261111",
+    "baselineMainSha": "53ec2e41a565a19ef795b8dbc7ba8b42d9b9cf70",
+    "initialSha": "39a90a364c24baa36b6fb30fc3d8cc18a2d70384",
+    "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+    "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+    "ciCommit": "f81ed00ac63854cdfa69d7d5d90175601abc2be1",
+    "productFilesChangedAfterPackaging": false,
+    "explanation": "Source/package production inputs unchanged after d1a5fde; later commits alter only acceptance drivers/docs. CI and harness SHAs are explicit, not claimed to be the VSIX build SHA."
+  },
+  "artifacts": [
+    {
+      "artifact": ".build/scad-ai-ide-closeout-d1a5fde.vsix",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "bytes": 4604838,
+      "sha256": "5d1c3523ac43b8cf93c04f344b13b086486bc7b026599adfef1689685bd28c2a",
+      "vsce": "4.1.0",
+      "node": "v24.16.0",
+      "packageLockSha256": "5accb9d8e10bb283db378d740ba804dd70826b3ad570edfb0b2741303b09ca6d",
+      "scope": "Production prepublish build; macOS arm64 LSP only, not a tested Windows package"
+    }
+  ],
+  "environment": {
+    "macOS": {
+      "version": "27.0",
+      "chip": "Apple M4 Pro",
+      "ramGiB": 48,
+      "arch": "arm64"
+    },
+    "node": "v24.16.0",
+    "host": {
+      "vscode": "1.140.0",
+      "node": "v24.21.0",
+      "workspaceTrustMode": "Isolated trusted fixtures with --disable-workspace-trust; Trust UI not accepted from these runs"
+    },
+    "omlx": {
+      "version": "0.7.3",
+      "providerExtensionVersion": "0.1.2",
+      "auth": "User-supplied credential entered through official provider password UI; no credentials exported"
+    },
+    "model": {
+      "requestedName": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "actualId": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "revision": null,
+      "weightDigest": null
+    },
+    "context": {
+      "serverAdvertisedMax": 262144,
+      "providerAdvertisedMax": 262144,
+      "maxToolCount": 16,
+      "actualSourceScopeTools": [
+        4,
+        5
+      ],
+      "sampling": "Server/provider defaults; exact sampler/KV configuration unknown"
+    },
+    "profile": {
+      "chatSaveBeforeSend": false,
+      "filesAutoSave": "off",
+      "providerTransport": "Installed provider; transparent loopback observer forwards unmodified payloads and records only model/tool metadata"
+    }
+  },
+  "runs": [
+    {
+      "id": "A-001",
+      "status": "PASS",
+      "reason": "Remote main checked at start/end, clean initial tree; candidate source and later harness-only commits are distinguished.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/artifact.json",
+        "docs/customizer/evidence/closeout-20261111/package-content-binding.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "See commands[] and cited log",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "A-002",
+      "status": "PASS",
+      "reason": "Single scanner retained; minimal native cutoff fix, architecture gate passes.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/final-architecture.log",
+        "docs/customizer/evidence/closeout-20261111/final-compile.log"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "See commands[] and cited log",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "A-003",
+      "status": "PASS",
+      "reason": "Exact pinned Linux CLI: original 41 plus new string-brace fixture 42/42, imports 10/10.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/pinned-current/artifact-verification.json",
+        "docs/customizer/evidence/closeout-20261111/pinned-current/pinned-native.json",
+        "docs/customizer/evidence/closeout-20261111/pinned-current/pinned-native-import.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "See commands[] and cited log",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "A-004",
+      "status": "PASS",
+      "reason": "Low-noise diagnostics and contract mismatch remain separate; unit and real minimum Host negatives pass.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/final-regression-corrected.log",
+        "docs/customizer/evidence/closeout-20261111/host-integration-configured.log",
+        "docs/customizer/evidence/closeout-20261111/installed-production-focused.log"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "See commands[] and cited log",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "A-005",
+      "status": "PASS",
+      "reason": "Deterministic source fixes, stale CAS and raw source preservation pass; real Host native Undo/Redo passes.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/host-integration-configured.log",
+        "docs/customizer/evidence/closeout-20261111/installed-production-focused.log"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "See commands[] and cited log",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "A-006",
+      "status": "PASS",
+      "reason": "Real preset I/O and unknown-version bytes preservation; production invalid snapshot refusal.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/host-integration-configured.log",
+        "docs/customizer/evidence/closeout-20261111/installed-production-focused.log",
+        "docs/customizer/evidence/closeout-20261111/native-preset/review.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "See commands[] and cited log",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "A-007",
+      "status": "PASS",
+      "reason": "A→B→Default, watcher state, dispose and concurrency assertions pass; all five measured classes release instances.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/host-integration-configured.log",
+        "docs/customizer/evidence/closeout-20261111/final-browser.log",
+        "docs/customizer/evidence/closeout-20261111/host-memory-gui-domain.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "See commands[] and cited log",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "A-008",
+      "status": "PASS",
+      "reason": "Continuation exact tool/input, rejection of extras and one-shot plans; production and actual model commits observed.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/final-source.log",
+        "docs/customizer/evidence/closeout-20261111/test-capabilities.log",
+        "docs/customizer/evidence/closeout-20261111/installed-production-focused.log",
+        "docs/customizer/evidence/closeout-20261111/native-author-reviewed-1/review.json",
+        "docs/customizer/evidence/closeout-20261111/native-author-reviewed-2/review.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "See commands[] and cited log",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "A-009",
+      "status": "PARTIAL",
+      "reason": "Deterministic TTL/replay/CAS/trust policy negatives and actual Native Skip pass. Real trust-revocation UI transition is NOT RUN; model fixtures explicitly disable workspace-trust prompting, not evidence of Trust UI.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/test-capabilities.log",
+        "docs/customizer/evidence/closeout-20261111/host-integration-configured.log",
+        "docs/customizer/evidence/closeout-20261111/native-cancel/review.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "See commands[] and cited log",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "A-010",
+      "status": "PARTIAL",
+      "reason": "Chromium 42 tests, minimum Host focus/Undo and installed lost-control Sidebar pass. Not every theme/narrow-layout/widget combination has a new installed-GUI observation.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/final-browser.log",
+        "docs/customizer/evidence/closeout-20261111/installed-gui/result.json",
+        "docs/customizer/evidence/closeout-20261111/installed-production-focused.log"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "See commands[] and cited log",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "A-011",
+      "status": "PASS",
+      "reason": "Real Exporter shared-library path, Preview session tests and native source navigation pass.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/final-regression-corrected.log",
+        "docs/customizer/evidence/closeout-20261111/host-preview-native.log"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "See commands[] and cited log",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "A-012",
+      "status": "PASS",
+      "reason": "Existing source/metadata/edit/plan/cache limits pass; 100KiB 30-sample Node benchmark recorded with local scope.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/final-source.log",
+        "docs/customizer/evidence/closeout-20261111/test-capabilities.log",
+        "docs/customizer/evidence/closeout-20261111/performance.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "See commands[] and cited log",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "W-001",
+      "status": "PASS",
+      "reason": "Both real Windows runs pass ASCII no-include and direct-include geometry probes.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/windows-run1-environment.json",
+        "docs/customizer/evidence/closeout-20261111/windows-run2-environment.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "GitHub Actions actual OS",
+      "command": "See actual Windows JSON subprocess commands / Library workflow",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "W-002",
+      "status": "FAIL",
+      "reason": "Unicode source alone crashes without any include; Unicode library root also fails. Same results twice. Further speculative fixes deferred.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/windows-run1-environment.json",
+        "docs/customizer/evidence/closeout-20261111/windows-run2-environment.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "GitHub Actions actual OS",
+      "command": "See actual Windows JSON subprocess commands / Library workflow",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "W-003",
+      "status": "PARTIAL",
+      "reason": "ASCII Junction/copy/symlink pass; Unicode direct/Junction fail; fallback does not fix native source/output failure.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/windows-run1-environment.json",
+        "docs/customizer/evidence/closeout-20261111/windows-run2-environment.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "GitHub Actions actual OS",
+      "command": "See actual Windows JSON subprocess commands / Library workflow",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "W-004",
+      "status": "PARTIAL",
+      "reason": "ASCII real LibraryEnvironment injection, mixed case and inherited multi-path pass. Unicode native path use fails.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/windows-run1-environment.json",
+        "docs/customizer/evidence/closeout-20261111/windows-run2-environment.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "GitHub Actions actual OS",
+      "command": "See actual Windows JSON subprocess commands / Library workflow",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "W-005",
+      "status": "FAIL",
+      "reason": "Unmodified real Library test fails on Unicode input before successful v1→v2 geometry switching on Windows.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/windows-run1-failure.log",
+        "docs/customizer/evidence/closeout-20261111/windows-run2-failure.log"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "GitHub Actions actual OS",
+      "command": "See actual Windows JSON subprocess commands / Library workflow",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "W-006",
+      "status": "FAIL",
+      "reason": "Two independent windows-2025 complete Library runs both FAIL, never W-PASS.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/libraries-run1.json",
+        "docs/customizer/evidence/closeout-20261111/libraries-run2.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "GitHub Actions actual OS",
+      "command": "See actual Windows JSON subprocess commands / Library workflow",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "W-007",
+      "status": "PASS",
+      "reason": "Three-platform unit/contracts and Linux panel CI all pass; native Windows failure is separately retained.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/parity-run.json",
+        "docs/customizer/evidence/closeout-20261111/libraries-run1.json",
+        "docs/customizer/evidence/closeout-20261111/libraries-run2.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "GitHub Actions actual OS",
+      "command": "See actual Windows JSON subprocess commands / Library workflow",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "D-001",
+      "status": "PASS",
+      "reason": "N-01..12 and split same-line/comment/string cases: 14 exact pinned native full-projection and Warning assertions pass. N-12 live cleanup separately observed.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/pinned-current/pinned-native-override.json",
+        "docs/customizer/evidence/closeout-20261111/pinned-current/artifact-verification.json",
+        "docs/customizer/evidence/closeout-20261111/installed-gui/repair.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "See commands[] and cited log",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "D-002",
+      "status": "PARTIAL",
+      "reason": "Real Host Warning/related locations and installed click navigation pass. Stale/wrong-target rejection is exercised in Chromium provider tests; separate installed Host stale-navigation-message injection was NOT RUN.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/host-integration-configured.log",
+        "docs/customizer/evidence/closeout-20261111/installed-production-focused.log",
+        "docs/customizer/evidence/closeout-20261111/installed-gui/navigation.json",
+        "docs/customizer/evidence/closeout-20261111/final-browser.log"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "See commands[] and cited log",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "D-003",
+      "status": "PASS",
+      "reason": "Real installed Sidebar all-lost/partial-lost states, navigation and unsaved repair cleanup pass.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/installed-gui/result.json",
+        "docs/customizer/evidence/closeout-20261111/installed-gui/navigation.json",
+        "docs/customizer/evidence/closeout-20261111/installed-gui/repair.json",
+        "docs/customizer/evidence/closeout-20261111/installed-gui/partial.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "See commands[] and cited log",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "D-004",
+      "status": "PASS",
+      "reason": "Same fixed Production VSIX installed on 1.140.0; Source/Undo/Preset/ADR12 Host and real Sidebar checks pass.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/artifact.json",
+        "docs/customizer/evidence/closeout-20261111/package-content-binding.json",
+        "docs/customizer/evidence/closeout-20261111/installed-production-focused.log",
+        "docs/customizer/evidence/closeout-20261111/installed-gui/result.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "See commands[] and cited log",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "M-001",
+      "status": "PARTIAL",
+      "reason": "oMLX 0.7.3 / provider 0.1.2 / requested real model / Native 1.140 observed. API does not expose weight digest/revision or full sampler/KV settings; those remain unknown.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/omlx-models.json",
+        "docs/customizer/evidence/closeout-20261111/omlx-tool-preflight.json",
+        "docs/customizer/evidence/closeout-20261111/native-smoke/ready.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "Native Agent / independently named deterministic Host path",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "M-002",
+      "status": "PASS",
+      "reason": "Transparent HTTP observer confirms all three Source tool schemas in actual Native requests; scoped tool picker 4–5 tools with provider limit16. Not a claim of all40 simultaneously exposed.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/native-smoke-tool-exposure.json",
+        "docs/customizer/evidence/closeout-20261111/native-author-reviewed-1-tool-exposure.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "Native Agent / independently named deterministic Host path",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "M-003",
+      "status": "PASS",
+      "reason": "Model-driven Analyze reads actual dirty-buffer hash, distinct from disk; not manual invokeTool.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/native-smoke/review.json",
+        "docs/customizer/evidence/closeout-20261111/native-smoke/tool-traces.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "Native Agent / independently named deterministic Host path",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "M-004",
+      "status": "PASS",
+      "reason": "Two independent authorized Native Analyze→Plan→Commit→Validate runs; actual buffer 3/3 targets, defaults/geometry preserved, disk unchanged.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/native-author-reviewed-1/review.json",
+        "docs/customizer/evidence/closeout-20261111/native-author-reviewed-2/review.json",
+        "docs/customizer/evidence/closeout-20261111/native-author-reviewed-1/manual-decisions.json",
+        "docs/customizer/evidence/closeout-20261111/native-author-reviewed-2/manual-decisions.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "Native Agent / independently named deterministic Host path",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "M-005",
+      "status": "PASS",
+      "reason": "Tail plan rejected NEEDS_MANUAL_REVIEW once; complete explanation preserved, no fallback writer or false repair claim.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/native-tail/review.json",
+        "docs/customizer/evidence/closeout-20261111/native-tail/tool-traces.json",
+        "docs/customizer/evidence/closeout-20261111/native-tail/workbench.txt"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "Native Agent / independently named deterministic Host path",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "M-006",
+      "status": "FAIL",
+      "reason": "Expression scene completed Analyze only, no normal final response by explicit240s deadline. Buffer/disk unchanged. Further tuning SKIP per user after invalid initial environment and bounded rerun.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/native-expression/review.json",
+        "docs/customizer/evidence/closeout-20261111/native-expression/result.json",
+        "docs/customizer/evidence/closeout-20261111/native-expression/workbench.txt"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "Native Agent / independently named deterministic Host path",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "M-007",
+      "status": "PASS",
+      "reason": "Actual semanticPass=false plus missing-file ok=false truthfully reported, no edits or fake success.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/native-failure/review.json",
+        "docs/customizer/evidence/closeout-20261111/native-failure/workbench.txt"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "Native Agent / independently named deterministic Host path",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "M-008",
+      "status": "PASS",
+      "reason": "Actual reviewed Native Skip once; no Commit dispatch/replan/alternative writer, model stops and buffer/disk hashes unchanged.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/native-cancel/review.json",
+        "docs/customizer/evidence/closeout-20261111/native-cancel/manual-decisions.json",
+        "docs/customizer/evidence/closeout-20261111/native-cancel/workbench.txt"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "Native Agent / independently named deterministic Host path",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "M-009",
+      "status": "PARTIAL",
+      "reason": "MODEL06 deterministic production replay/stale safety passes. MODEL07 real readonly state and JSON bytes preserved, but prose suggests possible truncation and unverified runtime unavailability. MODEL08 explains legal overwrite but reports fixture instead of actual dirty-buffer line numbers. MODEL09 is not globally accurate.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/installed-production-focused.log",
+        "docs/customizer/evidence/closeout-20261111/host-integration-configured.log",
+        "docs/customizer/evidence/closeout-20261111/native-preset/review.json",
+        "docs/customizer/evidence/closeout-20261111/native-override/review.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "Native Agent / independently named deterministic Host path",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "P-001",
+      "status": "PASS",
+      "reason": "Fixed production candidate SHA/bytes, exact 40 tool schemas, 2 Instructions/5 Skills and 42 packaged runtime file hashes verified.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/artifact.json",
+        "docs/customizer/evidence/closeout-20261111/package-verify.log",
+        "docs/customizer/evidence/closeout-20261111/package-content-binding.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "See commands[] and cited log",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "P-002",
+      "status": "PASS",
+      "reason": "Clean isolated installed Production minimum VS Code1.140 Host and Sidebar pass after explicit native focus prerequisite; first failure retained.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/installed-production.log",
+        "docs/customizer/evidence/closeout-20261111/installed-production-focused.log",
+        "docs/customizer/evidence/closeout-20261111/installed-gui/result.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "See commands[] and cited log",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "P-003",
+      "status": "PASS",
+      "reason": "All current Native runs report exactly the candidate VSIX SHA and installed bundle digest; no later product-source/skill/catalog changes.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/artifact.json",
+        "docs/customizer/evidence/closeout-20261111/package-content-binding.json",
+        "docs/customizer/evidence/closeout-20261111/native-author-reviewed-1/result.json",
+        "docs/customizer/evidence/closeout-20261111/native-author-reviewed-2/result.json"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "See commands[] and cited log",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    },
+    {
+      "id": "P-004",
+      "status": "PASS",
+      "reason": "Historical artifact/report retained; current audit differentiates invalid tests, local/pinned/native/CI and both completion conclusions.",
+      "evidence": [
+        "docs/customizer/evidence/closeout-20261111/artifact.json",
+        "docs/customizer/evidence/closeout-20261111/initial-save-before-send/native-smoke/review.json",
+        "docs/customizer/evidence/closeout-20261111/windows-original-failure.txt"
+      ],
+      "executionType": "acceptance",
+      "sourceCommit": "d1a5fdedc7f9c4b61a6cf65b0899ed748d1642df",
+      "acceptanceHarnessCommit": "06e77bbb596f8cb7a2e613c5a736eddf4e2da7b2",
+      "platform": "macOS / explicitly cited CI",
+      "command": "See commands[] and cited log",
+      "exitCode": null,
+      "exitCodeScope": "Actual per-command/subprocess exits are recorded in commands[] and linked JSON/logs; no aggregate native exit is invented from acceptance status."
+    }
+  ],
+  "gates": {
+    "G-CORE": "PASS",
+    "G-WIN-NATIVE": "FAIL",
+    "G-ADR12": "PARTIAL",
+    "G-AGENT": "FAIL",
+    "G-PACKAGE": "PASS",
+    "G-REMOTE": "NOT RUN"
+  },
+  "overall": {
+    "customizer": "PARTIAL",
+    "ideCrossPlatform": "FAIL"
+  },
+  "deferred": [
+    {
+      "id": "WIN-UNICODE",
+      "status": "SKIP",
+      "underlyingResult": "FAIL",
+      "reason": "Two identical native failures; CLI boundary established, independent Windows build attribution unavailable. No speculative environment/copy patch."
+    },
+    {
+      "id": "MODEL-03",
+      "status": "SKIP",
+      "underlyingResult": "FAIL",
+      "reason": "Bounded240s Native rerun incomplete; keep core safeguards, defer model tuning."
+    },
+    {
+      "id": "MODEL-07/08/09-PROSE",
+      "status": "SKIP",
+      "underlyingResult": "PARTIAL",
+      "reason": "Keep actual unsafe-data refusal and evidence; do not rewrite production skills and invalidate all successful model results in this acceptance pass."
+    },
+    {
+      "id": "REMOTE-TRUST-GUI",
+      "status": "NOT RUN",
+      "reason": "No actual WSL/Remote/Container/Windows desktop session; real trust revocation UI not exercised."
+    }
+  ],
+  "manifest": "docs/customizer/evidence/closeout-20261111/manifest.json",
+  "commands": [
+    {
+      "command": "npm ci",
+      "exitCode": 0,
+      "evidence": "docs/customizer/evidence/closeout-20261111/ci.log",
+      "environment": "npm_config_cache=/tmp/scad-closeout-npm-cache"
+    },
+    {
+      "command": "npm run compile",
+      "exitCode": 0,
+      "evidence": "docs/customizer/evidence/closeout-20261111/final-compile.log",
+      "includes": [
+        "check:agents",
+        "check-types",
+        "lint"
+      ]
+    },
+    {
+      "command": "npm run check:customizer:architecture",
+      "exitCode": 0,
+      "evidence": "docs/customizer/evidence/closeout-20261111/final-architecture.log"
+    },
+    {
+      "command": "npm run test:customizer:compatibility",
+      "exitCode": 0,
+      "pass": 42,
+      "fail": 0,
+      "skip": 0,
+      "evidence": "docs/customizer/evidence/closeout-20261111/final-compatibility.log"
+    },
+    {
+      "command": "npm run test:customizer:source",
+      "exitCode": 0,
+      "pass": 48,
+      "fail": 0,
+      "skip": 0,
+      "evidence": "docs/customizer/evidence/closeout-20261111/final-source.log"
+    },
+    {
+      "command": "npm run test:capabilities",
+      "exitCode": 0,
+      "pass": 32,
+      "fail": 0,
+      "skip": 0,
+      "evidence": "docs/customizer/evidence/closeout-20261111/test-capabilities.log"
+    },
+    {
+      "command": "npm test",
+      "exitCode": 0,
+      "phases": [
+        {
+          "name": "core",
+          "pass": 221,
+          "fail": 0,
+          "skip": 0
+        },
+        {
+          "name": "libraries",
+          "pass": 28,
+          "fail": 0,
+          "skip": 1
+        },
+        {
+          "name": "preview",
+          "pass": 107,
+          "fail": 0,
+          "skip": 0
+        }
+      ],
+      "evidence": "docs/customizer/evidence/closeout-20261111/final-regression-corrected.log"
+    },
+    {
+      "command": "npm run test:customizer",
+      "exitCode": 0,
+      "pass": 42,
+      "fail": 0,
+      "skip": 0,
+      "evidence": "docs/customizer/evidence/closeout-20261111/final-browser.log"
+    },
+    {
+      "command": "npm run test:integration",
+      "exitCode": 0,
+      "pass": 37,
+      "fail": 0,
+      "skip": 2,
+      "evidence": "docs/customizer/evidence/closeout-20261111/host-integration-configured.log"
+    },
+    {
+      "command": "vscode-test --grep 'native Preview failure|Preview-to-Text'",
+      "exitCode": 0,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "evidence": "docs/customizer/evidence/closeout-20261111/host-preview-native.log"
+    },
+    {
+      "command": "vsce4.1.0 package --no-dependencies -o .build/scad-ai-ide-closeout-d1a5fde.vsix",
+      "exitCode": 0,
+      "evidence": "docs/customizer/evidence/closeout-20261111/package.log",
+      "prepublish": true
+    },
+    {
+      "command": "node scripts/verify-agent-vsix.mjs .build/scad-ai-ide-closeout-d1a5fde.vsix",
+      "exitCode": 0,
+      "evidence": "docs/customizer/evidence/closeout-20261111/package-verify.log"
+    },
+    {
+      "command": "node scripts/test-agent-installed.mjs .build/scad-ai-ide-closeout-d1a5fde.vsix",
+      "exitCode": 0,
+      "evidence": "docs/customizer/evidence/closeout-20261111/installed-production-focused.log"
+    },
+    {
+      "command": "node .build/closeout-installed-gui.mjs",
+      "exitCode": 0,
+      "evidence": "docs/customizer/evidence/closeout-20261111/installed-gui.log"
+    },
+    {
+      "command": "SCAD_HOST_MEMORY_GUI=1 node scripts/customizer-host-memory.mjs",
+      "exitCode": 0,
+      "evidence": "docs/customizer/evidence/closeout-20261111/host-memory-gui-domain.log"
+    },
+    {
+      "command": "Native model expression via installed VSIX,240s observation deadline",
+      "exitCode": 1,
+      "evidence": "docs/customizer/evidence/closeout-20261111/native-expression.log",
+      "reason": "observation deadline, not model finalized"
+    }
+  ],
+  "ciRuns": [
+    {
+      "conclusion": "success",
+      "headSha": "f81ed00ac63854cdfa69d7d5d90175601abc2be1",
+      "jobs": [
+        {
+          "completedAt": "2026-11-11T10:14:30Z",
+          "conclusion": "success",
+          "databaseId": 130458842118,
+          "name": "panel",
+          "startedAt": "2026-11-11T10:12:14Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-11-11T10:12:16Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-11-11T10:12:15Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:12:17Z",
+              "conclusion": "success",
+              "name": "Run actions/checkout@v4",
+              "number": 2,
+              "startedAt": "2026-11-11T10:12:16Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:12:20Z",
+              "conclusion": "success",
+              "name": "Run actions/setup-node@v4",
+              "number": 3,
+              "startedAt": "2026-11-11T10:12:17Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:16Z",
+              "conclusion": "success",
+              "name": "Run npm ci",
+              "number": 4,
+              "startedAt": "2026-11-11T10:12:20Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:53Z",
+              "conclusion": "success",
+              "name": "Run npx playwright install --with-deps chromium",
+              "number": 5,
+              "startedAt": "2026-11-11T10:13:16Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:54Z",
+              "conclusion": "success",
+              "name": "Run npm run check:agents",
+              "number": 6,
+              "startedAt": "2026-11-11T10:13:53Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:18Z",
+              "conclusion": "success",
+              "name": "Run npm run test:customizer",
+              "number": 7,
+              "startedAt": "2026-11-11T10:13:54Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:19Z",
+              "conclusion": "success",
+              "name": "Run npm run test:agents:ui",
+              "number": 8,
+              "startedAt": "2026-11-11T10:14:18Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:27Z",
+              "conclusion": "success",
+              "name": "Run npm run test:libraries:ui",
+              "number": 9,
+              "startedAt": "2026-11-11T10:14:19Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:27Z",
+              "conclusion": "success",
+              "name": "Post Run actions/setup-node@v4",
+              "number": 17,
+              "startedAt": "2026-11-11T10:14:27Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:28Z",
+              "conclusion": "success",
+              "name": "Post Run actions/checkout@v4",
+              "number": 18,
+              "startedAt": "2026-11-11T10:14:27Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:28Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 19,
+              "startedAt": "2026-11-11T10:14:28Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/peterisdev42/scad-ai-ide/actions/runs/43001611742/job/130458842118"
+        },
+        {
+          "completedAt": "2026-11-11T10:14:05Z",
+          "conclusion": "success",
+          "databaseId": 130458842609,
+          "name": "contracts (macos-latest)",
+          "startedAt": "2026-11-11T10:12:15Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-11-11T10:12:16Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-11-11T10:12:15Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:12:19Z",
+              "conclusion": "success",
+              "name": "Run actions/checkout@v4",
+              "number": 2,
+              "startedAt": "2026-11-11T10:12:16Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:12:24Z",
+              "conclusion": "success",
+              "name": "Run actions/setup-node@v4",
+              "number": 3,
+              "startedAt": "2026-11-11T10:12:19Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:26Z",
+              "conclusion": "success",
+              "name": "Run npm ci",
+              "number": 4,
+              "startedAt": "2026-11-11T10:12:24Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:27Z",
+              "conclusion": "success",
+              "name": "Run npm run test:agents:manifest",
+              "number": 5,
+              "startedAt": "2026-11-11T10:13:26Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:28Z",
+              "conclusion": "success",
+              "name": "Run npm run check:agents",
+              "number": 6,
+              "startedAt": "2026-11-11T10:13:27Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:35Z",
+              "conclusion": "success",
+              "name": "Run npm run check-types",
+              "number": 7,
+              "startedAt": "2026-11-11T10:13:28Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:38Z",
+              "conclusion": "success",
+              "name": "Run npm run lint",
+              "number": 8,
+              "startedAt": "2026-11-11T10:13:35Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:40Z",
+              "conclusion": "success",
+              "name": "Run npm run check:customizer:architecture",
+              "number": 9,
+              "startedAt": "2026-11-11T10:13:38Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:44Z",
+              "conclusion": "success",
+              "name": "Run npm run test:customizer:compatibility",
+              "number": 10,
+              "startedAt": "2026-11-11T10:13:40Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:44Z",
+              "conclusion": "success",
+              "name": "Run node --test out/test/customizer.test.js",
+              "number": 11,
+              "startedAt": "2026-11-11T10:13:44Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:50Z",
+              "conclusion": "success",
+              "name": "Run npm run test:customizer:source",
+              "number": 12,
+              "startedAt": "2026-11-11T10:13:44Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:56Z",
+              "conclusion": "success",
+              "name": "Run npm run test:capabilities",
+              "number": 13,
+              "startedAt": "2026-11-11T10:13:50Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:59Z",
+              "conclusion": "success",
+              "name": "Run npm run test:libraries",
+              "number": 14,
+              "startedAt": "2026-11-11T10:13:56Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:59Z",
+              "conclusion": "success",
+              "name": "Post Run actions/setup-node@v4",
+              "number": 27,
+              "startedAt": "2026-11-11T10:13:59Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:00Z",
+              "conclusion": "success",
+              "name": "Post Run actions/checkout@v4",
+              "number": 28,
+              "startedAt": "2026-11-11T10:13:59Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:01Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 29,
+              "startedAt": "2026-11-11T10:14:00Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/peterisdev42/scad-ai-ide/actions/runs/43001611742/job/130458842609"
+        },
+        {
+          "completedAt": "2026-11-11T10:13:15Z",
+          "conclusion": "success",
+          "databaseId": 130458842619,
+          "name": "contracts (ubuntu-latest)",
+          "startedAt": "2026-11-11T10:12:14Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-11-11T10:12:15Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-11-11T10:12:15Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:12:17Z",
+              "conclusion": "success",
+              "name": "Run actions/checkout@v4",
+              "number": 2,
+              "startedAt": "2026-11-11T10:12:15Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:12:19Z",
+              "conclusion": "success",
+              "name": "Run actions/setup-node@v4",
+              "number": 3,
+              "startedAt": "2026-11-11T10:12:17Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:12:53Z",
+              "conclusion": "success",
+              "name": "Run npm ci",
+              "number": 4,
+              "startedAt": "2026-11-11T10:12:19Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:12:54Z",
+              "conclusion": "success",
+              "name": "Run npm run test:agents:manifest",
+              "number": 5,
+              "startedAt": "2026-11-11T10:12:53Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:12:54Z",
+              "conclusion": "success",
+              "name": "Run npm run check:agents",
+              "number": 6,
+              "startedAt": "2026-11-11T10:12:54Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:12:58Z",
+              "conclusion": "success",
+              "name": "Run npm run check-types",
+              "number": 7,
+              "startedAt": "2026-11-11T10:12:54Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:00Z",
+              "conclusion": "success",
+              "name": "Run npm run lint",
+              "number": 8,
+              "startedAt": "2026-11-11T10:12:58Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:00Z",
+              "conclusion": "success",
+              "name": "Run npm run check:customizer:architecture",
+              "number": 9,
+              "startedAt": "2026-11-11T10:13:00Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:03Z",
+              "conclusion": "success",
+              "name": "Run npm run test:customizer:compatibility",
+              "number": 10,
+              "startedAt": "2026-11-11T10:13:00Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:04Z",
+              "conclusion": "success",
+              "name": "Run node --test out/test/customizer.test.js",
+              "number": 11,
+              "startedAt": "2026-11-11T10:13:03Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:07Z",
+              "conclusion": "success",
+              "name": "Run npm run test:customizer:source",
+              "number": 12,
+              "startedAt": "2026-11-11T10:13:04Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:11Z",
+              "conclusion": "success",
+              "name": "Run npm run test:capabilities",
+              "number": 13,
+              "startedAt": "2026-11-11T10:13:07Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:12Z",
+              "conclusion": "success",
+              "name": "Run npm run test:libraries",
+              "number": 14,
+              "startedAt": "2026-11-11T10:13:11Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:13Z",
+              "conclusion": "success",
+              "name": "Post Run actions/setup-node@v4",
+              "number": 27,
+              "startedAt": "2026-11-11T10:13:12Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:13Z",
+              "conclusion": "success",
+              "name": "Post Run actions/checkout@v4",
+              "number": 28,
+              "startedAt": "2026-11-11T10:13:13Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:13Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 29,
+              "startedAt": "2026-11-11T10:13:13Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/peterisdev42/scad-ai-ide/actions/runs/43001611742/job/130458842619"
+        },
+        {
+          "completedAt": "2026-11-11T10:14:30Z",
+          "conclusion": "success",
+          "databaseId": 130458842636,
+          "name": "contracts (windows-latest)",
+          "startedAt": "2026-11-11T10:12:14Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-11-11T10:12:16Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-11-11T10:12:15Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:12:23Z",
+              "conclusion": "success",
+              "name": "Run actions/checkout@v4",
+              "number": 2,
+              "startedAt": "2026-11-11T10:12:16Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:12:33Z",
+              "conclusion": "success",
+              "name": "Run actions/setup-node@v4",
+              "number": 3,
+              "startedAt": "2026-11-11T10:12:23Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:41Z",
+              "conclusion": "success",
+              "name": "Run npm ci",
+              "number": 4,
+              "startedAt": "2026-11-11T10:12:33Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:43Z",
+              "conclusion": "success",
+              "name": "Run npm run test:agents:manifest",
+              "number": 5,
+              "startedAt": "2026-11-11T10:13:41Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:44Z",
+              "conclusion": "success",
+              "name": "Run npm run check:agents",
+              "number": 6,
+              "startedAt": "2026-11-11T10:13:43Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:52Z",
+              "conclusion": "success",
+              "name": "Run npm run check-types",
+              "number": 7,
+              "startedAt": "2026-11-11T10:13:44Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:58Z",
+              "conclusion": "success",
+              "name": "Run npm run lint",
+              "number": 8,
+              "startedAt": "2026-11-11T10:13:52Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:00Z",
+              "conclusion": "success",
+              "name": "Run npm run check:customizer:architecture",
+              "number": 9,
+              "startedAt": "2026-11-11T10:13:58Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:07Z",
+              "conclusion": "success",
+              "name": "Run npm run test:customizer:compatibility",
+              "number": 10,
+              "startedAt": "2026-11-11T10:14:00Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:07Z",
+              "conclusion": "success",
+              "name": "Run node --test out/test/customizer.test.js",
+              "number": 11,
+              "startedAt": "2026-11-11T10:14:07Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:14Z",
+              "conclusion": "success",
+              "name": "Run npm run test:customizer:source",
+              "number": 12,
+              "startedAt": "2026-11-11T10:14:07Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:22Z",
+              "conclusion": "success",
+              "name": "Run npm run test:capabilities",
+              "number": 13,
+              "startedAt": "2026-11-11T10:14:14Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:26Z",
+              "conclusion": "success",
+              "name": "Run npm run test:libraries",
+              "number": 14,
+              "startedAt": "2026-11-11T10:14:22Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:26Z",
+              "conclusion": "success",
+              "name": "Post Run actions/setup-node@v4",
+              "number": 27,
+              "startedAt": "2026-11-11T10:14:26Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:28Z",
+              "conclusion": "success",
+              "name": "Post Run actions/checkout@v4",
+              "number": 28,
+              "startedAt": "2026-11-11T10:14:26Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:28Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 29,
+              "startedAt": "2026-11-11T10:14:28Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/peterisdev42/scad-ai-ide/actions/runs/43001611742/job/130458842636"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/peterisdev42/scad-ai-ide/actions/runs/43001611742"
+    },
+    {
+      "conclusion": "success",
+      "headSha": "f81ed00ac63854cdfa69d7d5d90175601abc2be1",
+      "jobs": [
+        {
+          "completedAt": "2026-11-11T10:22:36Z",
+          "conclusion": "success",
+          "databaseId": 130458841871,
+          "name": "pinned-linux",
+          "startedAt": "2026-11-11T10:12:14Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-11-11T10:12:16Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-11-11T10:12:15Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:12:17Z",
+              "conclusion": "success",
+              "name": "Run actions/checkout@v4",
+              "number": 2,
+              "startedAt": "2026-11-11T10:12:16Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:12:20Z",
+              "conclusion": "success",
+              "name": "Run actions/setup-node@v4",
+              "number": 3,
+              "startedAt": "2026-11-11T10:12:17Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:05Z",
+              "conclusion": "success",
+              "name": "Run npm ci",
+              "number": 4,
+              "startedAt": "2026-11-11T10:12:20Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:08Z",
+              "conclusion": "success",
+              "name": "Run npm run compile-tests",
+              "number": 5,
+              "startedAt": "2026-11-11T10:13:05Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:19Z",
+              "conclusion": "success",
+              "name": "Checkout exact upstream source and submodules",
+              "number": 6,
+              "startedAt": "2026-11-11T10:13:08Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:50Z",
+              "conclusion": "success",
+              "name": "Install native build dependencies",
+              "number": 7,
+              "startedAt": "2026-11-11T10:13:19Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:22:30Z",
+              "conclusion": "success",
+              "name": "Build exact pinned CLI with geometry kernels",
+              "number": 8,
+              "startedAt": "2026-11-11T10:13:50Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:22:30Z",
+              "conclusion": "success",
+              "name": "Record build identity and executable hash",
+              "number": 9,
+              "startedAt": "2026-11-11T10:22:30Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:22:30Z",
+              "conclusion": "success",
+              "name": "Execute pinned schema differential",
+              "number": 10,
+              "startedAt": "2026-11-11T10:22:30Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:22:30Z",
+              "conclusion": "success",
+              "name": "Execute pinned import probes",
+              "number": 11,
+              "startedAt": "2026-11-11T10:22:30Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:22:30Z",
+              "conclusion": "success",
+              "name": "Execute pinned ADR12 differential",
+              "number": 12,
+              "startedAt": "2026-11-11T10:22:30Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:22:33Z",
+              "conclusion": "success",
+              "name": "Run actions/upload-artifact@v4",
+              "number": 13,
+              "startedAt": "2026-11-11T10:22:30Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:22:33Z",
+              "conclusion": "success",
+              "name": "Post Checkout exact upstream source and submodules",
+              "number": 24,
+              "startedAt": "2026-11-11T10:22:33Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:22:33Z",
+              "conclusion": "success",
+              "name": "Post Run actions/setup-node@v4",
+              "number": 25,
+              "startedAt": "2026-11-11T10:22:33Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:22:33Z",
+              "conclusion": "success",
+              "name": "Post Run actions/checkout@v4",
+              "number": 26,
+              "startedAt": "2026-11-11T10:22:33Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:22:33Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 27,
+              "startedAt": "2026-11-11T10:22:33Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/peterisdev42/scad-ai-ide/actions/runs/43001611738/job/130458841871"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/peterisdev42/scad-ai-ide/actions/runs/43001611738"
+    },
+    {
+      "conclusion": "failure",
+      "headSha": "f81ed00ac63854cdfa69d7d5d90175601abc2be1",
+      "jobs": [
+        {
+          "completedAt": "2026-11-11T10:13:35Z",
+          "conclusion": "success",
+          "databaseId": 130458841849,
+          "name": "libraries (ubuntu-latest)",
+          "startedAt": "2026-11-11T10:12:14Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-11-11T10:12:15Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-11-11T10:12:14Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:12:16Z",
+              "conclusion": "success",
+              "name": "Run actions/checkout@v4",
+              "number": 2,
+              "startedAt": "2026-11-11T10:12:15Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:12:17Z",
+              "conclusion": "success",
+              "name": "Run actions/setup-node@v4",
+              "number": 3,
+              "startedAt": "2026-11-11T10:12:16Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:02Z",
+              "conclusion": "success",
+              "name": "Run npm ci",
+              "number": 4,
+              "startedAt": "2026-11-11T10:12:17Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:13Z",
+              "conclusion": "success",
+              "name": "Install verified managed OpenSCAD CLI (Linux)",
+              "number": 5,
+              "startedAt": "2026-11-11T10:13:02Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:13Z",
+              "conclusion": "skipped",
+              "name": "Install OpenSCAD (macOS)",
+              "number": 6,
+              "startedAt": "2026-11-11T10:13:13Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:13Z",
+              "conclusion": "skipped",
+              "name": "Install verified managed OpenSCAD CLI (Windows)",
+              "number": 7,
+              "startedAt": "2026-11-11T10:13:13Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:18Z",
+              "conclusion": "success",
+              "name": "Run npm run check-types",
+              "number": 8,
+              "startedAt": "2026-11-11T10:13:13Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:20Z",
+              "conclusion": "success",
+              "name": "Run npm run lint",
+              "number": 9,
+              "startedAt": "2026-11-11T10:13:18Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:24Z",
+              "conclusion": "success",
+              "name": "Run npm run compile-tests",
+              "number": 10,
+              "startedAt": "2026-11-11T10:13:20Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:30Z",
+              "conclusion": "success",
+              "name": "Check native Customizer parity",
+              "number": 11,
+              "startedAt": "2026-11-11T10:13:24Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:30Z",
+              "conclusion": "skipped",
+              "name": "Diagnose Windows Unicode library environment",
+              "number": 12,
+              "startedAt": "2026-11-11T10:13:30Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:32Z",
+              "conclusion": "success",
+              "name": "Run required native library gate",
+              "number": 13,
+              "startedAt": "2026-11-11T10:13:30Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:33Z",
+              "conclusion": "success",
+              "name": "Preserve native comparison",
+              "number": 14,
+              "startedAt": "2026-11-11T10:13:32Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:33Z",
+              "conclusion": "success",
+              "name": "Save test report context",
+              "number": 15,
+              "startedAt": "2026-11-11T10:13:33Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:33Z",
+              "conclusion": "success",
+              "name": "Post Run actions/setup-node@v4",
+              "number": 29,
+              "startedAt": "2026-11-11T10:13:33Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:33Z",
+              "conclusion": "success",
+              "name": "Post Run actions/checkout@v4",
+              "number": 30,
+              "startedAt": "2026-11-11T10:13:33Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:33Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 31,
+              "startedAt": "2026-11-11T10:13:33Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/peterisdev42/scad-ai-ide/actions/runs/43001611736/job/130458841849"
+        },
+        {
+          "completedAt": "2026-11-11T10:14:11Z",
+          "conclusion": "success",
+          "databaseId": 130458842224,
+          "name": "libraries (macos-latest)",
+          "startedAt": "2026-11-11T10:12:14Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-11-11T10:12:15Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-11-11T10:12:14Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:12:17Z",
+              "conclusion": "success",
+              "name": "Run actions/checkout@v4",
+              "number": 2,
+              "startedAt": "2026-11-11T10:12:15Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:12:20Z",
+              "conclusion": "success",
+              "name": "Run actions/setup-node@v4",
+              "number": 3,
+              "startedAt": "2026-11-11T10:12:17Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:16Z",
+              "conclusion": "success",
+              "name": "Run npm ci",
+              "number": 4,
+              "startedAt": "2026-11-11T10:12:20Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:16Z",
+              "conclusion": "skipped",
+              "name": "Install verified managed OpenSCAD CLI (Linux)",
+              "number": 5,
+              "startedAt": "2026-11-11T10:13:16Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:44Z",
+              "conclusion": "success",
+              "name": "Install OpenSCAD (macOS)",
+              "number": 6,
+              "startedAt": "2026-11-11T10:13:16Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:44Z",
+              "conclusion": "skipped",
+              "name": "Install verified managed OpenSCAD CLI (Windows)",
+              "number": 7,
+              "startedAt": "2026-11-11T10:13:44Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:50Z",
+              "conclusion": "success",
+              "name": "Run npm run check-types",
+              "number": 8,
+              "startedAt": "2026-11-11T10:13:44Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:53Z",
+              "conclusion": "success",
+              "name": "Run npm run lint",
+              "number": 9,
+              "startedAt": "2026-11-11T10:13:50Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:58Z",
+              "conclusion": "success",
+              "name": "Run npm run compile-tests",
+              "number": 10,
+              "startedAt": "2026-11-11T10:13:53Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:03Z",
+              "conclusion": "success",
+              "name": "Check native Customizer parity",
+              "number": 11,
+              "startedAt": "2026-11-11T10:13:58Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:03Z",
+              "conclusion": "skipped",
+              "name": "Diagnose Windows Unicode library environment",
+              "number": 12,
+              "startedAt": "2026-11-11T10:14:03Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:06Z",
+              "conclusion": "success",
+              "name": "Run required native library gate",
+              "number": 13,
+              "startedAt": "2026-11-11T10:14:03Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:07Z",
+              "conclusion": "success",
+              "name": "Preserve native comparison",
+              "number": 14,
+              "startedAt": "2026-11-11T10:14:06Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:07Z",
+              "conclusion": "success",
+              "name": "Save test report context",
+              "number": 15,
+              "startedAt": "2026-11-11T10:14:07Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:07Z",
+              "conclusion": "success",
+              "name": "Post Run actions/setup-node@v4",
+              "number": 29,
+              "startedAt": "2026-11-11T10:14:07Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:08Z",
+              "conclusion": "success",
+              "name": "Post Run actions/checkout@v4",
+              "number": 30,
+              "startedAt": "2026-11-11T10:14:07Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:09Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 31,
+              "startedAt": "2026-11-11T10:14:08Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/peterisdev42/scad-ai-ide/actions/runs/43001611736/job/130458842224"
+        },
+        {
+          "completedAt": "2026-11-11T10:14:25Z",
+          "conclusion": "failure",
+          "databaseId": 130458842285,
+          "name": "libraries (windows-2025)",
+          "startedAt": "2026-11-11T10:12:14Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-11-11T10:12:17Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-11-11T10:12:16Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:12:24Z",
+              "conclusion": "success",
+              "name": "Run actions/checkout@v4",
+              "number": 2,
+              "startedAt": "2026-11-11T10:12:17Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:12:38Z",
+              "conclusion": "success",
+              "name": "Run actions/setup-node@v4",
+              "number": 3,
+              "startedAt": "2026-11-11T10:12:24Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:46Z",
+              "conclusion": "success",
+              "name": "Run npm ci",
+              "number": 4,
+              "startedAt": "2026-11-11T10:12:38Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:46Z",
+              "conclusion": "skipped",
+              "name": "Install verified managed OpenSCAD CLI (Linux)",
+              "number": 5,
+              "startedAt": "2026-11-11T10:13:46Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:46Z",
+              "conclusion": "skipped",
+              "name": "Install OpenSCAD (macOS)",
+              "number": 6,
+              "startedAt": "2026-11-11T10:13:46Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:49Z",
+              "conclusion": "success",
+              "name": "Install verified managed OpenSCAD CLI (Windows)",
+              "number": 7,
+              "startedAt": "2026-11-11T10:13:46Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:13:57Z",
+              "conclusion": "success",
+              "name": "Run npm run check-types",
+              "number": 8,
+              "startedAt": "2026-11-11T10:13:49Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:04Z",
+              "conclusion": "success",
+              "name": "Run npm run lint",
+              "number": 9,
+              "startedAt": "2026-11-11T10:13:57Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:09Z",
+              "conclusion": "success",
+              "name": "Run npm run compile-tests",
+              "number": 10,
+              "startedAt": "2026-11-11T10:14:04Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:14Z",
+              "conclusion": "success",
+              "name": "Check native Customizer parity",
+              "number": 11,
+              "startedAt": "2026-11-11T10:14:09Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:16Z",
+              "conclusion": "success",
+              "name": "Diagnose Windows Unicode library environment",
+              "number": 12,
+              "startedAt": "2026-11-11T10:14:14Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:20Z",
+              "conclusion": "failure",
+              "name": "Run required native library gate",
+              "number": 13,
+              "startedAt": "2026-11-11T10:14:16Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:21Z",
+              "conclusion": "success",
+              "name": "Preserve native comparison",
+              "number": 14,
+              "startedAt": "2026-11-11T10:14:20Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:21Z",
+              "conclusion": "success",
+              "name": "Save test report context",
+              "number": 15,
+              "startedAt": "2026-11-11T10:14:21Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:21Z",
+              "conclusion": "skipped",
+              "name": "Post Run actions/setup-node@v4",
+              "number": 29,
+              "startedAt": "2026-11-11T10:14:21Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:23Z",
+              "conclusion": "success",
+              "name": "Post Run actions/checkout@v4",
+              "number": 30,
+              "startedAt": "2026-11-11T10:14:21Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:14:23Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 31,
+              "startedAt": "2026-11-11T10:14:23Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/peterisdev42/scad-ai-ide/actions/runs/43001611736/job/130458842285"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/peterisdev42/scad-ai-ide/actions/runs/43001611736"
+    },
+    {
+      "conclusion": "failure",
+      "headSha": "f81ed00ac63854cdfa69d7d5d90175601abc2be1",
+      "jobs": [
+        {
+          "completedAt": "2026-11-11T10:18:38Z",
+          "conclusion": "success",
+          "databaseId": 130461123129,
+          "name": "libraries (ubuntu-latest)",
+          "startedAt": "2026-11-11T10:17:00Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-11-11T10:17:02Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-11-11T10:17:01Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:17:03Z",
+              "conclusion": "success",
+              "name": "Run actions/checkout@v4",
+              "number": 2,
+              "startedAt": "2026-11-11T10:17:02Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:17:06Z",
+              "conclusion": "success",
+              "name": "Run actions/setup-node@v4",
+              "number": 3,
+              "startedAt": "2026-11-11T10:17:03Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:00Z",
+              "conclusion": "success",
+              "name": "Run npm ci",
+              "number": 4,
+              "startedAt": "2026-11-11T10:17:06Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:12Z",
+              "conclusion": "success",
+              "name": "Install verified managed OpenSCAD CLI (Linux)",
+              "number": 5,
+              "startedAt": "2026-11-11T10:18:00Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:12Z",
+              "conclusion": "skipped",
+              "name": "Install OpenSCAD (macOS)",
+              "number": 6,
+              "startedAt": "2026-11-11T10:18:12Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:12Z",
+              "conclusion": "skipped",
+              "name": "Install verified managed OpenSCAD CLI (Windows)",
+              "number": 7,
+              "startedAt": "2026-11-11T10:18:12Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:19Z",
+              "conclusion": "success",
+              "name": "Run npm run check-types",
+              "number": 8,
+              "startedAt": "2026-11-11T10:18:12Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:22Z",
+              "conclusion": "success",
+              "name": "Run npm run lint",
+              "number": 9,
+              "startedAt": "2026-11-11T10:18:19Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:26Z",
+              "conclusion": "success",
+              "name": "Run npm run compile-tests",
+              "number": 10,
+              "startedAt": "2026-11-11T10:18:22Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:32Z",
+              "conclusion": "success",
+              "name": "Check native Customizer parity",
+              "number": 11,
+              "startedAt": "2026-11-11T10:18:26Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:32Z",
+              "conclusion": "skipped",
+              "name": "Diagnose Windows Unicode library environment",
+              "number": 12,
+              "startedAt": "2026-11-11T10:18:32Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:34Z",
+              "conclusion": "success",
+              "name": "Run required native library gate",
+              "number": 13,
+              "startedAt": "2026-11-11T10:18:32Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:35Z",
+              "conclusion": "success",
+              "name": "Preserve native comparison",
+              "number": 14,
+              "startedAt": "2026-11-11T10:18:34Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:35Z",
+              "conclusion": "success",
+              "name": "Save test report context",
+              "number": 15,
+              "startedAt": "2026-11-11T10:18:35Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:35Z",
+              "conclusion": "success",
+              "name": "Post Run actions/setup-node@v4",
+              "number": 29,
+              "startedAt": "2026-11-11T10:18:35Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:36Z",
+              "conclusion": "success",
+              "name": "Post Run actions/checkout@v4",
+              "number": 30,
+              "startedAt": "2026-11-11T10:18:35Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:36Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 31,
+              "startedAt": "2026-11-11T10:18:36Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/peterisdev42/scad-ai-ide/actions/runs/43002292201/job/130461123129"
+        },
+        {
+          "completedAt": "2026-11-11T10:18:47Z",
+          "conclusion": "failure",
+          "databaseId": 130461123332,
+          "name": "libraries (windows-2025)",
+          "startedAt": "2026-11-11T10:17:00Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-11-11T10:17:02Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-11-11T10:17:01Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:17:07Z",
+              "conclusion": "success",
+              "name": "Run actions/checkout@v4",
+              "number": 2,
+              "startedAt": "2026-11-11T10:17:02Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:17:18Z",
+              "conclusion": "success",
+              "name": "Run actions/setup-node@v4",
+              "number": 3,
+              "startedAt": "2026-11-11T10:17:07Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:14Z",
+              "conclusion": "success",
+              "name": "Run npm ci",
+              "number": 4,
+              "startedAt": "2026-11-11T10:17:18Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:14Z",
+              "conclusion": "skipped",
+              "name": "Install verified managed OpenSCAD CLI (Linux)",
+              "number": 5,
+              "startedAt": "2026-11-11T10:18:14Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:14Z",
+              "conclusion": "skipped",
+              "name": "Install OpenSCAD (macOS)",
+              "number": 6,
+              "startedAt": "2026-11-11T10:18:14Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:16Z",
+              "conclusion": "success",
+              "name": "Install verified managed OpenSCAD CLI (Windows)",
+              "number": 7,
+              "startedAt": "2026-11-11T10:18:14Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:23Z",
+              "conclusion": "success",
+              "name": "Run npm run check-types",
+              "number": 8,
+              "startedAt": "2026-11-11T10:18:16Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:29Z",
+              "conclusion": "success",
+              "name": "Run npm run lint",
+              "number": 9,
+              "startedAt": "2026-11-11T10:18:23Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:33Z",
+              "conclusion": "success",
+              "name": "Run npm run compile-tests",
+              "number": 10,
+              "startedAt": "2026-11-11T10:18:29Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:38Z",
+              "conclusion": "success",
+              "name": "Check native Customizer parity",
+              "number": 11,
+              "startedAt": "2026-11-11T10:18:33Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:39Z",
+              "conclusion": "success",
+              "name": "Diagnose Windows Unicode library environment",
+              "number": 12,
+              "startedAt": "2026-11-11T10:18:38Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:42Z",
+              "conclusion": "failure",
+              "name": "Run required native library gate",
+              "number": 13,
+              "startedAt": "2026-11-11T10:18:39Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:43Z",
+              "conclusion": "success",
+              "name": "Preserve native comparison",
+              "number": 14,
+              "startedAt": "2026-11-11T10:18:42Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:43Z",
+              "conclusion": "success",
+              "name": "Save test report context",
+              "number": 15,
+              "startedAt": "2026-11-11T10:18:43Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:43Z",
+              "conclusion": "skipped",
+              "name": "Post Run actions/setup-node@v4",
+              "number": 29,
+              "startedAt": "2026-11-11T10:18:43Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:45Z",
+              "conclusion": "success",
+              "name": "Post Run actions/checkout@v4",
+              "number": 30,
+              "startedAt": "2026-11-11T10:18:43Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:45Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 31,
+              "startedAt": "2026-11-11T10:18:45Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/peterisdev42/scad-ai-ide/actions/runs/43002292201/job/130461123332"
+        },
+        {
+          "completedAt": "2026-11-11T10:18:25Z",
+          "conclusion": "success",
+          "databaseId": 130461123402,
+          "name": "libraries (macos-latest)",
+          "startedAt": "2026-11-11T10:17:00Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-11-11T10:17:00Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-11-11T10:16:59Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:17:02Z",
+              "conclusion": "success",
+              "name": "Run actions/checkout@v4",
+              "number": 2,
+              "startedAt": "2026-11-11T10:17:00Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:17:04Z",
+              "conclusion": "success",
+              "name": "Run actions/setup-node@v4",
+              "number": 3,
+              "startedAt": "2026-11-11T10:17:02Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:17:45Z",
+              "conclusion": "success",
+              "name": "Run npm ci",
+              "number": 4,
+              "startedAt": "2026-11-11T10:17:04Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:17:45Z",
+              "conclusion": "skipped",
+              "name": "Install verified managed OpenSCAD CLI (Linux)",
+              "number": 5,
+              "startedAt": "2026-11-11T10:17:45Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:08Z",
+              "conclusion": "success",
+              "name": "Install OpenSCAD (macOS)",
+              "number": 6,
+              "startedAt": "2026-11-11T10:17:45Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:08Z",
+              "conclusion": "skipped",
+              "name": "Install verified managed OpenSCAD CLI (Windows)",
+              "number": 7,
+              "startedAt": "2026-11-11T10:18:08Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:11Z",
+              "conclusion": "success",
+              "name": "Run npm run check-types",
+              "number": 8,
+              "startedAt": "2026-11-11T10:18:08Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:13Z",
+              "conclusion": "success",
+              "name": "Run npm run lint",
+              "number": 9,
+              "startedAt": "2026-11-11T10:18:11Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:15Z",
+              "conclusion": "success",
+              "name": "Run npm run compile-tests",
+              "number": 10,
+              "startedAt": "2026-11-11T10:18:13Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:19Z",
+              "conclusion": "success",
+              "name": "Check native Customizer parity",
+              "number": 11,
+              "startedAt": "2026-11-11T10:18:15Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:19Z",
+              "conclusion": "skipped",
+              "name": "Diagnose Windows Unicode library environment",
+              "number": 12,
+              "startedAt": "2026-11-11T10:18:19Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:20Z",
+              "conclusion": "success",
+              "name": "Run required native library gate",
+              "number": 13,
+              "startedAt": "2026-11-11T10:18:19Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:21Z",
+              "conclusion": "success",
+              "name": "Preserve native comparison",
+              "number": 14,
+              "startedAt": "2026-11-11T10:18:20Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:21Z",
+              "conclusion": "success",
+              "name": "Save test report context",
+              "number": 15,
+              "startedAt": "2026-11-11T10:18:21Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:21Z",
+              "conclusion": "success",
+              "name": "Post Run actions/setup-node@v4",
+              "number": 29,
+              "startedAt": "2026-11-11T10:18:21Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:22Z",
+              "conclusion": "success",
+              "name": "Post Run actions/checkout@v4",
+              "number": 30,
+              "startedAt": "2026-11-11T10:18:21Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-11-11T10:18:22Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 31,
+              "startedAt": "2026-11-11T10:18:22Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/peterisdev42/scad-ai-ide/actions/runs/43002292201/job/130461123402"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/peterisdev42/scad-ai-ide/actions/runs/43002292201"
+    }
+  ],
+  "confirmationObservation": {
+    "userReviewedAuthorAllows": 2,
+    "userReviewedCancelSkips": 1,
+    "transport": "External CDP click after explicit user authorization and per-plan native target/diff checks",
+    "rawHarnessFlagScope": "Raw result confirmationsAutomaticallyApproved and approvals[] cover only the historical in-process controller. External user-reviewed decisions are separately preserved in manual-decisions.json and independent reviews."
+  }
+}

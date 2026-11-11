@@ -1,0 +1,43 @@
+{
+  "scenario": "smoke",
+  "scope": "Independent assertions against actual tool traces/buffer/disk; final prose is reviewed separately",
+  "artifact": {
+    "file": "scad-ai-ide-closeout-d1a5fde.vsix",
+    "bytes": 4604838,
+    "sha256": "5d1c3523ac43b8cf93c04f344b13b086486bc7b026599adfef1689685bd28c2a"
+  },
+  "requestFinished": true,
+  "terminalReason": "nativeRequestReturned",
+  "observerValidity": "recorded",
+  "hostSchemaRejectCount": null,
+  "dispatcherOk": 2,
+  "dispatcherTotal": 2,
+  "calls": [
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": true
+    },
+    {
+      "capability": "customizer.sourceValidate",
+      "ok": true,
+      "semanticPass": false
+    }
+  ],
+  "actualPlanCommitValidate": {
+    "plan": false,
+    "commit": false,
+    "validate": true
+  },
+  "bufferShaBefore": "aa3367c675e182182f97370118fa77f8e0fa716508f70047f1707fdccd0bf8cd",
+  "bufferShaAfter": "aa3367c675e182182f97370118fa77f8e0fa716508f70047f1707fdccd0bf8cd",
+  "diskShaBefore": "c6a68ff487b1f85c2ff2f33904984c460eb609cab20ed57d31219c9639e05b23",
+  "diskShaAfter": "c6a68ff487b1f85c2ff2f33904984c460eb609cab20ed57d31219c9639e05b23",
+  "dirty": true,
+  "diskUnchanged": true,
+  "bufferUnchanged": true,
+  "analysisReadUnsavedBuffer": true,
+  "readonlyNoWrites": true,
+  "confirmationDecisions": [],
+  "finalAnswerTruthfulness": "PASS: distinguishes source completeness from contract mismatch and reports runtime/GUI notRequested; no edit/save claimed.",
+  "status": "PASS"
+}

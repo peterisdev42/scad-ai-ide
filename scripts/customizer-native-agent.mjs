@@ -12,53 +12,62 @@ import { createHash } from 'node:crypto'
 // The historical cancellation probe approved a later confirmation path.
 // Keep it disabled in the delivery baseline; draft repairs and raw evidence
 // are quarantined until a separate end-to-end acceptance is completed.
-assert.ok(process.env.SCAD_AGENT_SCENARIO !== 'cancel' && process.env.SCAD_AGENT_CANCEL_SOURCE_COMMIT !== '1', 'Native cancellation probe is disabled: its historical controller result is invalid. See docs/customizer/final-delivery.md.')
+assert.ok(process.env.SCAD_AGENT_BACKEND === 'omlx' || (process.env.SCAD_AGENT_SCENARIO !== 'cancel' && process.env.SCAD_AGENT_CANCEL_SOURCE_COMMIT !== '1'), 'Historical automatic cancellation probe is disabled: its controller result is invalid. See docs/customizer/final-delivery.md.')
 
 const root = fileURLToPath(new URL('../', import.meta.url))
 const executable = process.env.SCAD_VSCODE_EXECUTABLE
 assert.ok(executable, 'Set SCAD_VSCODE_EXECUTABLE to a cached or installed VS Code executable')
-const host = JSON.parse(await readFile(path.join(root, '.build/ollama-dev/host.json'), 'utf8'))
-const directory = await mkdtemp(path.join(tmpdir(), 'customizer-native-agent-'))
+const backend = process.env.SCAD_AGENT_BACKEND ?? 'ollama'
+assert.ok(['ollama', 'omlx'].includes(backend), 'Unknown Native Agent backend')
+assert.ok(backend !== 'omlx' || process.env.SCAD_AGENT_APPROVE_FIXTURE_WRITES !== '1', 'oMLX acceptance requires actual user confirmation; automatic approval is disabled')
+const providerId = backend === 'omlx' ? 'techopolis.omlx-copilot-chat' : 'Ollama.ollama'
+const vendor = backend === 'omlx' ? 'omlx' : 'ollama-models'
+const model = process.env.SCAD_AGENT_MODEL ?? (backend === 'omlx' ? 'Qwen3.6-35B-A3B-OptiQ-4bit' : 'qwen3.5:2b-mlx')
+const host = JSON.parse(await readFile(path.join(root, `.build/${backend}-dev/host.json`), 'utf8'))
+const directory = await mkdtemp(path.join(process.platform === 'darwin' ? '/tmp' : tmpdir(), 'customizer-native-agent-'))
 const workspace = path.join(directory, 'workspace')
 const profile = path.join(directory, 'profile')
 const shared = path.join(directory, 'shared')
-const ollamaEndpoint = process.env.SCAD_AGENT_OLLAMA_URL ?? 'http://127.0.0.1:11434'
+const ollamaEndpoint = backend === 'omlx' ? (process.env.SCAD_AGENT_OMLX_URL ?? 'http://127.0.0.1:8000/v1') : (process.env.SCAD_AGENT_OLLAMA_URL ?? 'http://127.0.0.1:11434')
 const endpoint = new URL(ollamaEndpoint)
 assert.ok(endpoint.protocol === 'http:' && endpoint.hostname === '127.0.0.1' && !endpoint.username && !endpoint.password, 'Native audit endpoints must remain on loopback without URL credentials')
 await mkdir(workspace)
 await mkdir(path.join(profile, 'User'), { recursive: true })
-await writeFile(path.join(profile, 'User', 'chatLanguageModels.json'), JSON.stringify([{ vendor: 'ollama-models', name: 'Local Customizer audit', url: ollamaEndpoint, models: [process.env.SCAD_AGENT_MODEL ?? 'qwen3.5:2b-mlx'] }]))
-await writeFile(path.join(profile, 'User', 'settings.json'), JSON.stringify({ 'telemetry.telemetryLevel': 'off', 'update.mode': 'none', 'scad-ai-ide.languageServer.enabled': false, 'chat.extensionUnification.enabled': false, 'workbench.enableExperiments': false, 'ollama.endpoint': ollamaEndpoint }))
+if (backend === 'ollama') await writeFile(path.join(profile, 'User', 'chatLanguageModels.json'), JSON.stringify([{ vendor, name: 'Local Customizer audit', url: ollamaEndpoint, models: [model] }]))
+await writeFile(path.join(profile, 'User', 'settings.json'), JSON.stringify({ 'telemetry.telemetryLevel': 'off', 'update.mode': 'none', 'files.autoSave': 'off', 'chat.saveBeforeSend': false, 'scad-ai-ide.languageServer.enabled': false, 'chat.extensionUnification.enabled': false, 'workbench.enableExperiments': false, 'ollama.endpoint': ollamaEndpoint, 'omlx.baseUrl': ollamaEndpoint, 'omlx.maxToolCount': Number(process.env.SCAD_AGENT_MAX_TOOLS ?? 16) }))
 const file = path.join(workspace, 'model.scad')
 const scenario = process.env.SCAD_AGENT_SCENARIO ?? 'smoke'
 const cases = {
     cancel: { source: 'width=40;\ncube(width);\n', task: '用受控Source工作流将width变为Slider(10:5:100)。本次专门测试我拒绝Commit确认的情况：如提交确认被拒绝，保持buffer/disk原样并如实报告用户取消，停止任务，不重新计划或改用其他写入工具。' },
-    smoke: { source: 'width=40;\nmodule model() { cube([width,2,3]); }\nmodel();\n', task: '为现有 width 添加 Slider，范围10至100、步长5，放入Dimensions分组，描述为 Width in millimeters。' },
+    smoke: { source: 'width=40;\nmodule model() { cube([width,2,3]); }\nmodel();\n', task: '只读验收：调用 SourceAnalyze 分析当前未保存buffer，再调用 SourceValidate 检查 width 是否已经为 Slider(10:5:100)。不要编辑、计划或提交，不要使用其他工具。如实区分语法合法与契约不满足。' },
     author: { source: 'width=40;\nshape="round";\ninternalOffset=0.01;\nmodule model() { cube([width,2,3]); }\nmodel();\n', task: '按受控Source工作流：width成为Dimensions分组的Slider(10:5:100)，描述Width in millimeters；shape成为Appearance分组的Dropdown(round:Round,square:Square)；internalOffset隐藏。将相互影响的group修改放在同一批计划中；最后验证这三个明确目标。' },
     tail: { source: 'width=40; // [0:100] IDs in Assembly.md; preserve this explanation\ncube(width);\n', task: '尝试用受控Source工具将width修复为Slider(0:100)。必须保留完整的IDs in Assembly.md; preserve this explanation说明。若工具无法安全修复，解释人工处理，不能删除说明或假称已完成。不要改用其他文件写工具。' },
     expression: { source: 'base=80;\nwidth=base/2; // [10:100]\ncube(width);\n', task: '分析width能否成为Slider(10:100)。它是表达式；不要常量折叠、不要改变源码，也不要把这种合法SCAD说成语法错误。如受控编辑不支持，明确说明原因。' },
     failure: { source: 'width=40;\ncube(width);\n', task: '只读验收，不修改文件：用SourceValidate检查width是否已经是Slider(10:5:100)，并用SourceAnalyze检查同目录不存在的missing.scad。对实际ok=false及semanticPass=false如实报告；不要修复或宣称验证成功。' },
+    override: { source: 'width=40;\nmodule m(){}\nwidth=50;\n', task: '只读分析 width 控件消失原因，使用 SourceAnalyze 和 SourceValidate 检查 width visible=true 的要求。如实解释 Warning 和合法的覆盖赋值、两处位置及未达到的可见性契约，不删除赋值、不修改或声称已经修复。' },
+    preset: { source: 'label="abcdef"; // 3\ncube(1);\n', task: '只读 Preset 安全验收：使用 customizer_state 和 SourceAnalyze 读取真实状态。当前关联 JSON 的 fileFormatVersion 为未知版本 99，必须保持只读，不应用、不覆盖、不修改版本。另判断 label 的默认值能否在 3 UTF-8 bytes 的文本约束下无损保存为 Current 快照；不能截断或改默认值。说明实际证据和未执行操作，不发起任何写入工具。' },
 }
 assert.ok(cases[scenario], `Unknown native Agent scenario: ${scenario}`)
 const source = cases[scenario].source
-const candidatePath = path.join(root, '.build/scad-ai-ide-customizer-architecture-v2.vsix')
+const candidatePath = path.resolve(process.env.SCAD_AGENT_VSIX ?? path.join(root, '.build/scad-ai-ide-customizer-architecture-v2.vsix'))
 const candidateBytes = await readFile(candidatePath)
 const artifact = { file: path.basename(candidatePath), bytes: candidateBytes.length, sha256: createHash('sha256').update(candidateBytes).digest('hex') }
 let modelIdentity
 try {
-    const response = await fetch(ollamaEndpoint + '/api/tags', { signal: AbortSignal.timeout(5000) })
+    const response = await fetch(ollamaEndpoint + (backend === 'omlx' ? '/models' : '/api/tags'), { headers: backend === 'omlx' && process.env.SCAD_OMLX_API_KEY ? { Authorization: `Bearer ${process.env.SCAD_OMLX_API_KEY}` } : {}, signal: AbortSignal.timeout(5000) })
     assert.ok(response.ok, 'Model identity request failed')
     const tags = await response.json()
-    const selected = tags.models?.find(model => (model.name ?? model.model) === (process.env.SCAD_AGENT_MODEL ?? 'qwen3.5:2b-mlx'))
-    modelIdentity = selected ? { name: selected.name ?? selected.model, digest: selected.digest, size: selected.size, modifiedAt: selected.modified_at } : { available: false }
+    const selected = (backend === 'omlx' ? tags.data : tags.models)?.find(item => (item.id ?? item.name ?? item.model) === model)
+    modelIdentity = selected ? { name: selected.id ?? selected.name ?? selected.model, digest: selected.digest ?? null, revision: null, size: selected.size, maxModelLen: selected.max_model_len, modifiedAt: selected.modified_at } : { available: false }
 } catch (error) { modelIdentity = { available: false, error: error.message } }
 await writeFile(file, source)
 const query = `/openscad-customizer-authoring 目标文件为 ${pathToFileURL(file).href}。${cases[scenario].task} 保留几何、源码默认值与Preset，不保存文件。使用项目安装的Skill完成分析、适用时的最小编辑和明确目标验证；如实报告实际结果及未执行的GUI/渲染检查。`
-await writeFile(path.join(directory, 'request-input.json'), JSON.stringify({ scenario, model: process.env.SCAD_AGENT_MODEL ?? 'qwen3.5:2b-mlx', modelIdentity, file, query, source, artifact, confirmationPolicy: process.env.SCAD_AGENT_CANCEL_SOURCE_COMMIT === '1' ? 'Explicitly decline native Source Commit confirmations' : 'Controlled Source writes only, other writers denied', ollamaEndpoint, inferenceProfile: process.env.SCAD_AGENT_INFERENCE_PROFILE ?? 'Official provider directly to the local server; no sampling override in this harness' }, null, 2))
+await writeFile(path.join(directory, 'request-input.json'), JSON.stringify({ scenario, backend, vendor, providerId, maxToolCount: Number(process.env.SCAD_AGENT_MAX_TOOLS ?? 16), model, modelIdentity, file, query, source, artifact, confirmationPolicy: backend === 'omlx' ? 'Manual user confirmation only; no automatic approvals' : 'Historical controlled fixture approval policy', ollamaEndpoint, inferenceProfile: process.env.SCAD_AGENT_INFERENCE_PROFILE ?? 'Installed provider directly to the local server; no sampling override in this harness' }, null, 2))
 const socket = createServer()
 await new Promise(resolve => socket.listen(0, '127.0.0.1', resolve))
 const port = socket.address().port
 await new Promise(resolve => socket.close(resolve))
+await writeFile(path.join(directory, 'controller.json'), JSON.stringify({ debugUrl: `http://127.0.0.1:${port}`, scope: 'Isolated test window only' }))
 let ended = false, hostError
 console.log(`Native Agent evidence directory: ${directory}`)
 // A normal Production host preserves the built-in native Chat Agent. Test
@@ -66,9 +75,9 @@ console.log(`Native Agent evidence directory: ${directory}`)
 const extensions = path.join(directory, 'extensions')
 await mkdir(extensions)
 const appRoot = process.platform === 'darwin' ? path.resolve(path.dirname(executable), '../Resources/app') : path.resolve(path.dirname(executable), 'resources/app')
-execFileSync(executable, [path.join(appRoot, 'out/cli.js'), '--user-data-dir', profile, '--shared-data-dir', shared, '--extensions-dir', extensions, '--install-extension', path.join(root, '.build/scad-ai-ide-customizer-architecture-v2.vsix'), '--force'], { env: { ...process.env, ELECTRON_RUN_AS_NODE: '1' }, stdio: 'inherit' })
-const ollamaDirectory = path.join(extensions, `Ollama.ollama-${host.version}`)
-await cp(host.ollamaExtension, ollamaDirectory, { recursive: true })
+execFileSync(executable, [path.join(appRoot, 'out/cli.js'), '--user-data-dir', profile, '--shared-data-dir', shared, '--extensions-dir', extensions, '--install-extension', candidatePath, '--force'], { env: { ...process.env, ELECTRON_RUN_AS_NODE: '1' }, stdio: 'inherit' })
+const ollamaDirectory = path.join(extensions, `${providerId}-${host.version}`)
+await cp(backend === 'omlx' ? host.omlxExtension : host.ollamaExtension, ollamaDirectory, { recursive: true })
 const driver = path.join(extensions, 'local-audit.customizer-audit-observer-0.0.1')
 await mkdir(driver)
 await writeFile(path.join(driver, 'package.json'), JSON.stringify({ name: 'customizer-audit-observer', publisher: 'local-audit', version: '0.0.1', engines: { vscode: '^1.140.0' }, activationEvents: ['onStartupFinished'], main: 'index.cjs' }))
@@ -98,7 +107,7 @@ try {
 
 
 const child = spawn(executable, [workspace, `--user-data-dir=${profile}`, `--shared-data-dir=${shared}`, `--extensions-dir=${extensions}`, `--remote-debugging-port=${port}`, '--disable-updates', '--disable-workspace-trust', '--skip-welcome', '--skip-release-notes'], {
-    env: { ...process.env, SCAD_NATIVE_AGENT_DIRECTORY: directory }, stdio: ['ignore', 'pipe', 'pipe'],
+    env: { ...Object.fromEntries(Object.entries(process.env).filter(([key]) => key !== 'SCAD_OMLX_API_KEY')), SCAD_NATIVE_AGENT_DIRECTORY: directory, SCAD_NATIVE_AGENT_PROVIDER: providerId, SCAD_NATIVE_AGENT_VENDOR: vendor, SCAD_NATIVE_AGENT_SETUP_TOKEN: backend === 'omlx' && process.env.SCAD_OMLX_API_KEY ? '1' : '0' }, stdio: ['ignore', 'pipe', 'pipe'],
 })
 child.stdout.pipe(process.stdout)
 child.stderr.pipe(process.stderr)
@@ -133,6 +142,17 @@ let requestFinished = false
 let terminalReason
 try {
     const deadline = Date.now() + timeoutMs
+    if (backend === 'omlx' && process.env.SCAD_OMLX_API_KEY) {
+        while (!(await read('token-ui-requested')) && !ended && Date.now() < deadline) await new Promise(resolve => setTimeout(resolve, 200))
+        browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`)
+        const setupPage = browser.contexts().flatMap(context => context.pages()).find(page => /workbench/.test(page.url()))
+        assert.ok(setupPage, 'No workbench for provider credential setup')
+        const input = setupPage.locator('.quick-input-widget input[type="password"]')
+        await input.waitFor({ state: 'visible', timeout: 15000 })
+        try { await input.fill(process.env.SCAD_OMLX_API_KEY) }
+        catch { throw new Error('Provider password input failed; credential details omitted') }
+        await input.press('Enter')
+    }
     while (!(await read('ready.json')) && !ended && Date.now() < deadline) {
         const observerError = await read('observer-error.json')
         if (observerError) throw new Error(observerError)
@@ -141,16 +161,27 @@ try {
     const ready = JSON.parse(await read('ready.json') ?? '{}')
     console.log(JSON.stringify(ready))
     assert.ok(ready.models?.length, 'Native provider exposed no models; inference was not executed')
-    browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`)
+    assert.ok(ready.models.some(item => item.id === model), 'Requested model was not exposed by the selected provider')
+    browser ??= await chromium.connectOverCDP(`http://127.0.0.1:${port}`)
     const page = browser.contexts().flatMap(context => context.pages()).find(page => /workbench/.test(page.url()))
     assert.ok(page, 'No native workbench page')
-    await writeFile(path.join(directory, 'request.json'), JSON.stringify({ inspect: process.env.SCAD_AGENT_INSPECT_NATIVE === '1', file, query, model: process.env.SCAD_AGENT_MODEL ?? 'qwen3.5:2b-mlx' }))
+    await writeFile(path.join(directory, 'request.json'), JSON.stringify({ inspect: process.env.SCAD_AGENT_INSPECT_NATIVE === '1', file, query, model, toolsInclude: backend === 'omlx' ? ['scad_ai_ide_customizer_sourceAnalyze', 'scad_ai_ide_customizer_sourceApply', 'scad_ai_ide_customizer_sourceValidate', ...(scenario === 'preset' ? ['scad_ai_ide_customizer_state'] : [])] : undefined }))
     while (!ended && Date.now() < deadline) {
         const body = await page.locator('body').innerText()
         await writeFile(path.join(directory, 'workbench.txt'), body)
         const response = await read('response.json')
         if (response) {
             const observed = JSON.parse(response)
+            if (backend === 'omlx' && observed.result?.type === 'confirmation') {
+                if (process.env.SCAD_AGENT_MANUAL_REVIEW !== '1') {
+                    terminalReason = 'manualConfirmationRequired'
+                    break
+                }
+                await writeFile(path.join(directory, 'pending-confirmation.json'), JSON.stringify(observed.result, null, 2))
+                await rm(path.join(directory, 'response.json'))
+                continuedAfterConfirmation = true
+                continue
+            }
             if (observed.result?.type === 'confirmation' && process.env.SCAD_AGENT_APPROVE_FIXTURE_WRITES === '1') {
                 if (approvals.length >= 8) { terminalReason = 'confirmationBudgetExhausted'; break }
                 const toolId = observed.result.toolId
@@ -177,7 +208,7 @@ try {
         // Native Chat can surface a second, non-tool permission prompt after
         // blockOnResponse has already returned its first confirmation. Never
         // authorize a fallback file writer; record and decline this exact UI.
-        if (!response && body.includes('Allow edits to sensitive files?')) {
+        if (backend !== 'omlx' && !response && body.includes('Allow edits to sensitive files?')) {
             if (approvals.length >= 8) { terminalReason = 'confirmationBudgetExhausted'; break }
             const action = page.getByText('Skip', { exact: true }).filter({ visible: true })
             await action.first().waitFor({ state: 'visible', timeout: 5000 })
@@ -185,7 +216,7 @@ try {
             approvals.push({ tool: 'nativeSensitiveFileEdit', decision: 'skip', scope: 'Fallback file writers are outside this controlled Source workflow', displayedInput: body.slice(body.indexOf('Allow edits to sensitive files?')) })
             await action.click()
             continuedAfterConfirmation = true
-        } else if (!response && continuedAfterConfirmation) {
+        } else if (backend !== 'omlx' && !response && continuedAfterConfirmation) {
             const action = page.getByText('Skip', { exact: true }).filter({ visible: true })
             if (await action.count() === 1) {
                 if (approvals.length >= 8) { terminalReason = 'confirmationBudgetExhausted'; break }

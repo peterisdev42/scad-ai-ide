@@ -96,3 +96,7 @@ Phase 4 已取得真实 Host、Chromium、原生 CLI、部分 Qt、安装包和�
 产品 `src/`、`package.json`、`skills/` 相对 64a64f3 无差异。唯一保留的测试脚本变更是启动前禁用已知无效 cancellation 探针，不改变产品安装包。其余新增改动为报告、证据和索引。隔离清单及哈希见 [索引](evidence/delivery-isolation-index.json)。恢复须先审阅 patch，并在独立分支验证；本报告不授权自动恢复或继续模型测试。
 
 剩余工作：修复 Windows Unicode include；修复并重新验收取消观察器；决定候选 Schema 是否采纳并补完整 Host/浏览器/模型验收；补齐上述 NOT RUN。原始目标继续暂停，不能标记完成。
+
+## 2026-11-11 后续验收索引
+
+用户已重新授权继续验收。本页保留2026-11-10历史状态；当前独立候选、固定上游差分、两次新模型Author、取消及仍未通过的 Windows/模型项，见 [Closeout报告](closeout-report.md) 和 [新产物记录](artifact-2026-11-11.json)。未合并或发布，旧包哈希没有被挪用。

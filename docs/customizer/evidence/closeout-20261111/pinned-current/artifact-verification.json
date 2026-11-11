@@ -1,0 +1,11 @@
+{
+  "runUrl": "https://github.com/peterisdev42/scad-ai-ide/actions/runs/43001611738",
+  "ciCommit": "f81ed00ac63854cdfa69d7d5d90175601abc2be1",
+  "upstreamCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2",
+  "binarySha256": "29bc3b4779b0471388a11536b47b7d4533f26b94f0fc52e1beec49564199717f",
+  "bytes": 16456888,
+  "schemaMatches": 42,
+  "importPasses": 10,
+  "overridePasses": 14,
+  "scope": "Exact pinned Linux CLI; not Qt GUI"
+}

@@ -1,0 +1,6 @@
+ 1ea402208c3127ffb443931e9bb1681c191dacca libraries/MCAD (1ea4022)
+ c7f820f6a03fa91f189b866d27bf40dfe47abaa6 submodules/Clipper2 (c7f820f)
+ 9bf122715213dca05e70993dd8672fe3aa36c518 submodules/OpenCSG (opencsg-1-8-2-release)
+ ce50d78021d64507f89e8c9fc2c2e51018117857 submodules/manifold (ce50d78)
+ 30b2d9d89099bee08e9f67a1ffb3e12e7ba45227 submodules/mimalloc (30b2d9d)
+ bcb1fc68616e9645ca5acea2992412606373ab04 submodules/sanitizers-cmake (heads/master)

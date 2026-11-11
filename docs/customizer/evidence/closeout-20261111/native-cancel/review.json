@@ -1,0 +1,54 @@
+{
+  "scenario": "cancel",
+  "scope": "Independent assertions against actual tool traces/buffer/disk; final prose is reviewed separately",
+  "artifact": {
+    "file": "scad-ai-ide-closeout-d1a5fde.vsix",
+    "bytes": 4604838,
+    "sha256": "5d1c3523ac43b8cf93c04f344b13b086486bc7b026599adfef1689685bd28c2a"
+  },
+  "requestFinished": true,
+  "terminalReason": "nativeUICompleted",
+  "observerValidity": "recorded",
+  "hostSchemaRejectCount": null,
+  "dispatcherOk": 2,
+  "dispatcherTotal": 2,
+  "calls": [
+    {
+      "capability": "customizer.sourceAnalyze",
+      "ok": true
+    },
+    {
+      "capability": "customizer.sourceApply",
+      "ok": true
+    }
+  ],
+  "actualPlanCommitValidate": {
+    "plan": true,
+    "commit": false,
+    "validate": false
+  },
+  "bufferShaBefore": "18ed0c6cca85e97de7437c5e104c0ceff841c7dce24259529572125e38f66ff0",
+  "bufferShaAfter": "18ed0c6cca85e97de7437c5e104c0ceff841c7dce24259529572125e38f66ff0",
+  "diskShaBefore": "d100f5011416f1dfdae4ca9dd4a0fb46c627a8ea02f10d167ba3fe36a06bade6",
+  "diskShaAfter": "d100f5011416f1dfdae4ca9dd4a0fb46c627a8ea02f10d167ba3fe36a06bade6",
+  "dirty": true,
+  "diskUnchanged": true,
+  "bufferUnchanged": true,
+  "analysisReadUnsavedBuffer": true,
+  "readonlyNoWrites": null,
+  "confirmationDecisions": [
+    {
+      "at": "2026-11-11T10:20:41.401Z",
+      "userAuthorization": "Explicit user approval of two author fixtures and a separate Skip cancellation scenario in this chat, 2026-11-11",
+      "tool": "scad_ai_ide_customizer_sourceApply",
+      "planId": "65355eec-aaec-438c-84aa-ce468db5cd9f",
+      "decision": "skip",
+      "nativeLabel": "Skip",
+      "reviewedBefore": "// Unsaved Native Agent acceptance buffer\nwidth=40;\ncube(width);\n",
+      "reviewedAfter": "// Unsaved Native Agent acceptance buffer\nwidth=40; // [10:5:100]\ncube(width);\n",
+      "geometryBytesUnchanged": true
+    }
+  ],
+  "finalAnswerTruthfulness": "PASS: reports user Skip, no commit, no replan or fallback writer, unchanged buffer/disk and unrun GUI/render.",
+  "status": "PASS"
+}

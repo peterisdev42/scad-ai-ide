@@ -1,0 +1,165 @@
+[
+  {
+    "capability": "customizer.state",
+    "input": {},
+    "started": "2026-11-11T10:27:49.821Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.state",
+      "revision": 4,
+      "data": {
+        "target": "file:///tmp/customizer-native-agent-N1bc7k/workspace/model.scad",
+        "revision": 4,
+        "parameters": [
+          {
+            "name": "label",
+            "group": "",
+            "description": "Unsaved Native Agent acceptance buffer",
+            "defaultValue": "abcdef",
+            "hint": "3",
+            "maxLength": 3,
+            "value": "abcdef"
+          }
+        ],
+        "presets": {
+          "readOnly": true,
+          "diagnostics": [
+            {
+              "ruleId": "PRESET-007",
+              "code": "VERSION_COMPAT",
+              "severity": "information",
+              "message": "Unverified fileFormatVersion \"99\". Read-only analysis is available; applying and writing are disabled.",
+              "path": [
+                "fileFormatVersion"
+              ],
+              "suggestedFix": "Verify compatibility for this version before applying or overwriting it. Do not rewrite its version marker to bypass this check."
+            }
+          ],
+          "names": [
+            "External"
+          ],
+          "active": "",
+          "modified": false,
+          "filename": "model.json",
+          "path": "file:///tmp/customizer-native-agent-N1bc7k/workspace/model.json",
+          "exists": true
+        },
+        "analysis": {
+          "complete": true,
+          "incompleteReasons": [],
+          "overriddenParameters": []
+        },
+        "overridesEditSource": false
+      },
+      "operation": {
+        "id": "816aef0d-285d-497a-ad32-38b281b72789",
+        "capabilityId": "customizer.state",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "uri": "file:///tmp/customizer-native-agent-N1bc7k/workspace/model.scad",
+      "includeCandidates": true,
+      "maxDiagnostics": 10
+    },
+    "started": "2026-11-11T10:27:49.833Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file:///tmp/customizer-native-agent-N1bc7k/workspace/model.scad",
+          "version": 2,
+          "sha256": "03c7cce18ef3e441492cae4c11812b5b958b4c72e427ef1a6371723a9c5cce87"
+        },
+        "parameters": [
+          {
+            "name": "label",
+            "group": "",
+            "description": "Unsaved Native Agent acceptance buffer",
+            "defaultValue": "abcdef",
+            "hint": "3",
+            "maxLength": 3,
+            "widget": "textbox",
+            "declarationRange": {
+              "start": {
+                "line": 1,
+                "character": 0
+              },
+              "end": {
+                "line": 1,
+                "character": 15
+              }
+            },
+            "annotationRange": {
+              "start": {
+                "line": 1,
+                "character": 16
+              },
+              "end": {
+                "line": 1,
+                "character": 20
+              }
+            },
+            "descriptionRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 41
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [
+          {
+            "code": "CUSTOMIZER_DEFAULT_OUT_OF_RANGE",
+            "ruleId": "CUST-TEXT-02",
+            "severity": "warning",
+            "parameter": "label",
+            "message": "The default text has 6 UTF-8 bytes but the written limit is 3.",
+            "suggestedFix": "Increase this length annotation to fit the default text, or shorten the default text.",
+            "range": {
+              "start": {
+                "line": 1,
+                "character": 16
+              },
+              "end": {
+                "line": 1,
+                "character": 20
+              }
+            },
+            "evidence": {
+              "kind": "explicit-effective-hint",
+              "category": "constraint",
+              "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+            },
+            "fix": {
+              "id": "CUST-TEXT-02",
+              "safety": "review",
+              "title": "Review the default text and byte limit"
+            }
+          }
+        ],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "5ecc8ebf-5f67-411a-a329-9c4a09d82e66",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  }
+]

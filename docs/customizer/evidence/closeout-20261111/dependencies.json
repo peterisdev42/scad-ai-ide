@@ -1,0 +1,206 @@
+{
+  "version": "0.0.1",
+  "name": "scad-ai-ide",
+  "dependencies": {
+    "@lit/context": {
+      "version": "1.1.6",
+      "resolved": "https://registry.npmjs.org/@lit/context/-/context-1.1.6.tgz",
+      "overridden": false
+    },
+    "@types/markdown-it": {
+      "version": "14.2.0",
+      "resolved": "https://registry.npmjs.org/@types/markdown-it/-/markdown-it-14.2.0.tgz",
+      "overridden": false
+    },
+    "@types/mocha": {
+      "version": "10.0.10",
+      "resolved": "https://registry.npmjs.org/@types/mocha/-/mocha-10.0.10.tgz",
+      "overridden": false
+    },
+    "@types/node": {
+      "version": "24.19.2",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-24.19.2.tgz",
+      "overridden": false
+    },
+    "@types/pngjs": {
+      "version": "6.0.5",
+      "resolved": "https://registry.npmjs.org/@types/pngjs/-/pngjs-6.0.5.tgz",
+      "overridden": false
+    },
+    "@types/proper-lockfile": {
+      "version": "4.1.4",
+      "resolved": "https://registry.npmjs.org/@types/proper-lockfile/-/proper-lockfile-4.1.4.tgz",
+      "overridden": false
+    },
+    "@types/three": {
+      "version": "0.186.0",
+      "resolved": "https://registry.npmjs.org/@types/three/-/three-0.186.0.tgz",
+      "overridden": false
+    },
+    "@types/vscode-webview": {
+      "version": "1.57.5",
+      "resolved": "https://registry.npmjs.org/@types/vscode-webview/-/vscode-webview-1.57.5.tgz",
+      "overridden": false
+    },
+    "@types/vscode": {
+      "version": "1.140.0",
+      "resolved": "https://registry.npmjs.org/@types/vscode/-/vscode-1.140.0.tgz",
+      "overridden": false
+    },
+    "@types/yauzl": {
+      "version": "3.4.0",
+      "resolved": "https://registry.npmjs.org/@types/yauzl/-/yauzl-3.4.0.tgz",
+      "overridden": false
+    },
+    "@vscode-elements/elements": {
+      "version": "2.5.1",
+      "resolved": "https://registry.npmjs.org/@vscode-elements/elements/-/elements-2.5.1.tgz",
+      "overridden": false
+    },
+    "@vscode/codicons": {
+      "version": "0.0.45",
+      "resolved": "https://registry.npmjs.org/@vscode/codicons/-/codicons-0.0.45.tgz",
+      "overridden": false
+    },
+    "@vscode/test-cli": {
+      "version": "0.0.15",
+      "resolved": "https://registry.npmjs.org/@vscode/test-cli/-/test-cli-0.0.15.tgz",
+      "overridden": false
+    },
+    "@vscode/test-electron": {
+      "version": "3.1.0",
+      "resolved": "https://registry.npmjs.org/@vscode/test-electron/-/test-electron-3.1.0.tgz",
+      "overridden": false
+    },
+    "ajv": {
+      "version": "8.18.0",
+      "resolved": "https://registry.npmjs.org/ajv/-/ajv-8.18.0.tgz",
+      "overridden": false
+    },
+    "esbuild": {
+      "version": "0.28.2",
+      "resolved": "https://registry.npmjs.org/esbuild/-/esbuild-0.28.2.tgz",
+      "overridden": false
+    },
+    "eslint-config-prettier": {
+      "version": "10.1.8",
+      "resolved": "https://registry.npmjs.org/eslint-config-prettier/-/eslint-config-prettier-10.1.8.tgz",
+      "overridden": false
+    },
+    "eslint": {
+      "version": "10.13.0",
+      "resolved": "https://registry.npmjs.org/eslint/-/eslint-10.13.0.tgz",
+      "overridden": false
+    },
+    "fflate": {
+      "version": "0.8.3",
+      "resolved": "https://registry.npmjs.org/fflate/-/fflate-0.8.3.tgz",
+      "overridden": false
+    },
+    "jsonc-parser": {
+      "version": "3.3.1",
+      "resolved": "https://registry.npmjs.org/jsonc-parser/-/jsonc-parser-3.3.1.tgz",
+      "overridden": false
+    },
+    "linkedom": {
+      "version": "0.18.12",
+      "resolved": "https://registry.npmjs.org/linkedom/-/linkedom-0.18.12.tgz",
+      "overridden": false
+    },
+    "lit": {
+      "version": "3.3.3",
+      "resolved": "https://registry.npmjs.org/lit/-/lit-3.3.3.tgz",
+      "overridden": false
+    },
+    "manifold-3d": {
+      "version": "3.5.4",
+      "resolved": "https://registry.npmjs.org/manifold-3d/-/manifold-3d-3.5.4.tgz",
+      "overridden": false
+    },
+    "markdown-it": {
+      "version": "14.3.3",
+      "resolved": "https://registry.npmjs.org/markdown-it/-/markdown-it-14.3.3.tgz",
+      "overridden": false
+    },
+    "monaco-editor": {
+      "version": "0.57.0",
+      "resolved": "https://registry.npmjs.org/monaco-editor/-/monaco-editor-0.57.0.tgz",
+      "overridden": false
+    },
+    "npm-run-all": {
+      "version": "4.1.5",
+      "resolved": "https://registry.npmjs.org/npm-run-all/-/npm-run-all-4.1.5.tgz",
+      "overridden": false
+    },
+    "playwright": {
+      "version": "1.61.1",
+      "resolved": "https://registry.npmjs.org/playwright/-/playwright-1.61.1.tgz",
+      "overridden": false
+    },
+    "pngjs": {
+      "version": "7.0.0",
+      "resolved": "https://registry.npmjs.org/pngjs/-/pngjs-7.0.0.tgz",
+      "overridden": false
+    },
+    "prettier": {
+      "version": "3.9.10",
+      "resolved": "https://registry.npmjs.org/prettier/-/prettier-3.9.10.tgz",
+      "overridden": false
+    },
+    "proper-lockfile": {
+      "version": "4.1.2",
+      "resolved": "https://registry.npmjs.org/proper-lockfile/-/proper-lockfile-4.1.2.tgz",
+      "overridden": false
+    },
+    "tar": {
+      "version": "7.5.22",
+      "resolved": "https://registry.npmjs.org/tar/-/tar-7.5.22.tgz",
+      "overridden": false
+    },
+    "three": {
+      "version": "0.187.0",
+      "resolved": "https://registry.npmjs.org/three/-/three-0.187.0.tgz",
+      "overridden": false
+    },
+    "tsx": {
+      "version": "4.23.15",
+      "resolved": "https://registry.npmjs.org/tsx/-/tsx-4.23.15.tgz",
+      "overridden": false
+    },
+    "typescript-eslint": {
+      "version": "8.72.0",
+      "resolved": "https://registry.npmjs.org/typescript-eslint/-/typescript-eslint-8.72.0.tgz",
+      "overridden": false
+    },
+    "typescript": {
+      "version": "6.0.3",
+      "resolved": "https://registry.npmjs.org/typescript/-/typescript-6.0.3.tgz",
+      "overridden": false
+    },
+    "vscode-languageclient": {
+      "version": "9.0.1",
+      "resolved": "https://registry.npmjs.org/vscode-languageclient/-/vscode-languageclient-9.0.1.tgz",
+      "overridden": false
+    },
+    "vscode-oniguruma": {
+      "version": "2.0.1",
+      "resolved": "https://registry.npmjs.org/vscode-oniguruma/-/vscode-oniguruma-2.0.1.tgz",
+      "overridden": false
+    },
+    "vscode-textmate": {
+      "version": "9.3.2",
+      "resolved": "https://registry.npmjs.org/vscode-textmate/-/vscode-textmate-9.3.2.tgz",
+      "overridden": false
+    },
+    "yaml": {
+      "version": "2.9.1",
+      "resolved": "https://registry.npmjs.org/yaml/-/yaml-2.9.1.tgz",
+      "overridden": false
+    },
+    "yauzl": {
+      "version": "3.4.0",
+      "resolved": "https://registry.npmjs.org/yauzl/-/yauzl-3.4.0.tgz",
+      "overridden": false
+    }
+  }
+}

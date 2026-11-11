@@ -1,0 +1,84 @@
+{
+  "scenario": "author",
+  "artifact": {
+    "file": "scad-ai-ide-closeout-d1a5fde.vsix",
+    "bytes": 4604838,
+    "sha256": "5d1c3523ac43b8cf93c04f344b13b086486bc7b026599adfef1689685bd28c2a"
+  },
+  "timeoutMs": 240000,
+  "ready": {
+    "vscode": "1.140.0",
+    "extensionPath": "/tmp/customizer-native-agent-HQ8okQ/extensions/undefined_publisher.scad-ai-ide-0.0.1",
+    "bundleSha256": "0c972fcbafc031ae10cac7882b01cf8c3dabd50fc7d34514c298e0079ebf0fdc",
+    "chatSettings": {
+      "saveBeforeSend": false,
+      "autoSave": "off",
+      "extensionUnification": false,
+      "disableAI": false,
+      "extensionTools": true
+    },
+    "nativeAgent": {
+      "present": true,
+      "active": true
+    },
+    "provider": {
+      "id": "techopolis.omlx-copilot-chat",
+      "version": "0.1.2"
+    },
+    "models": [
+      {
+        "id": "Hy-MT2-1.8B-8bit",
+        "name": "Hy-MT2-1.8B-8bit",
+        "vendor": "omlx",
+        "maxInputTokens": 262144
+      },
+      {
+        "id": "Qwen3.6-35B-A3B-OptiQ-4bit",
+        "name": "Qwen3.6-35B-A3B-OptiQ-4bit",
+        "vendor": "omlx",
+        "maxInputTokens": 262144
+      }
+    ]
+  },
+  "response": {
+    "snapshot": true,
+    "cancelledForSnapshot": false,
+    "buffer": "/* [Dimensions] */\n// Width in millimeters\nwidth=40; // [10:5:100]\n/* [Appearance] */\nshape=\"round\"; // [\"round\":\"Round\", \"square\":\"Square\"]\n/* [Hidden] */\ninternalOffset=0.01;\nmodule model() { cube([width,2,3]); }\nmodel();\n",
+    "dirty": true,
+    "operations": {
+      "total": 4,
+      "offset": 0,
+      "hasMore": false,
+      "nextOffset": null,
+      "operations": [
+        {
+          "id": "88f8fa05-c083-4409-8bf9-f266eca6e071",
+          "capabilityId": "customizer.sourceValidate",
+          "status": "succeeded"
+        },
+        {
+          "id": "1b3fdda0-3be4-4b8f-95b4-f9f1561545e9",
+          "capabilityId": "customizer.sourceApply",
+          "status": "succeeded"
+        },
+        {
+          "id": "5b65c4d1-74cd-429c-b4a7-743b1d54a409",
+          "capabilityId": "customizer.sourceApply",
+          "status": "succeeded"
+        },
+        {
+          "id": "d86a0bef-7e8d-4bdc-ad36-14313b298c3f",
+          "capabilityId": "customizer.sourceAnalyze",
+          "status": "succeeded"
+        }
+      ]
+    }
+  },
+  "timedOut": false,
+  "interrupted": false,
+  "requestFinished": true,
+  "terminalReason": "nativeUICompleted",
+  "nativeAgent": true,
+  "confirmationsAutomaticallyApproved": false,
+  "approvals": []
+}

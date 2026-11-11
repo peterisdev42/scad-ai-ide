@@ -1,0 +1,52 @@
+{
+  "scope": "Direct API PRECHECK ONLY; not Native Agent acceptance",
+  "started": "2026-11-11T10:04:53.801Z",
+  "finished": "2026-11-11T10:05:11.292Z",
+  "httpStatus": 200,
+  "body": {
+    "id": "chatcmpl-7b222dd3",
+    "object": "chat.completion",
+    "created": 1794391511,
+    "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "reasoning_content": "The user wants me to call the `acceptance_probe` function with the argument `value` set to `7`.\nThe user also specified \"Do not return prose\", meaning I should just output the result of the function call or the tool call itself without extra text.\n\n1.  **Identify the function**: `acceptance_probe`.\n2.  **Identify the parameters**: `value` = 7.\n3.  **Construct the tool call**: `acceptance_probe(value=7)`.\n4.  **Format the output**: Since the instruction is \"Do not return prose\", I will provide the tool call directly.\n\nLet's verify the function signature:\n`acceptance_probe(value: integer)` - matches.\n\nI will generate the tool call.",
+          "tool_calls": [
+            {
+              "id": "call_323c67bc",
+              "type": "function",
+              "function": {
+                "name": "acceptance_probe",
+                "arguments": "{\"value\": 7}"
+              }
+            }
+          ]
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 292,
+      "completion_tokens": 190,
+      "total_tokens": 482,
+      "input_tokens": 292,
+      "output_tokens": 190,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 161
+      },
+      "model_load_duration": 14.44,
+      "time_to_first_token": 0.48,
+      "total_time": 3.02,
+      "prompt_eval_duration": 0.48,
+      "generation_duration": 2.54,
+      "prompt_tokens_per_second": 611.04,
+      "generation_tokens_per_second": 74.69
+    }
+  }
+}

@@ -1,0 +1,72 @@
+libraries (windows-2025)	Run required native library gate	﻿2026-11-11T10:18:39.7834528Z ##[group]Run npm run test:libraries 2>&1 | tee .build/library-tests.log
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:39.7834993Z ^[[36;1mnpm run test:libraries 2>&1 | tee .build/library-tests.log^[[0m
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:39.7845893Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:39.7846198Z env:
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:39.7846358Z   QT_QPA_PLATFORM: offscreen
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:39.7846537Z   SCAD_REQUIRE_CLI: 1
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:39.7846856Z   SCAD_LIBRARIES_ONLINE: 0
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:39.7847223Z   SCAD_OPENSCAD_EXECUTABLE: D:\a\_temp\customizer-native-runtime\openscad-cli-windows-x86_64\bin\openscad.exe
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:39.7847597Z ##[endgroup]
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:40.2533526Z 
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:40.2534451Z > scad-ai-ide@0.0.1 test:libraries
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:40.2535061Z > node --import tsx --test src/test/libraries/*.test.ts
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:40.2535377Z 
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:41.5846176Z ✔ Independent Node extension hosts serialize changes to the same Store (780.39ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:41.5963489Z ✔ Abandoned heartbeat leases can be recovered before replaying a project transaction (11.9098ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:41.6119318Z ✔ Environment isolates workspaces, preserves base env and fingerprints version/link changes (454.7347ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:41.6120704Z ✖ Real OpenSCAD resolves a linked library, changes geometry after version switch and retains Store on removal (233.808ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:41.6123208Z ✔ Windows uses semicolons and retains inherited case-insensitive OPENSCADPATH; POSIX uses colons (2.0247ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:41.6124421Z ﹣ Real Fast Preview and Markdown use the same project library environment (0.1989ms) # SKIP
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:41.6914632Z ✔ Cleanup refuses known references, requires explicit confirmation and rechecks after confirmation (522.3164ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:41.6916922Z ✔ Unreadable known projects block cleanup; forged deletion IDs are rejected (99.9989ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:41.6919717Z ✔ A known project without any dependencies does not masquerade as an unreadable reference (31.1525ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:41.6922755Z ✔ Unreferenced cleanup removes all unused versions across repositories and preserves project-used versions (224.8178ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:41.9913824Z ✔ Bulk cleanup rechecks project references after confirmation and never deletes newly added versions (300.0525ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.1353334Z ✔ Delete-all mode removes referenced sources without changing project manifests or lockfiles (154.5796ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.1660563Z ✔ Immutable store deduplicates concurrent installs, separates commits/repositories and detects corruption (225.3313ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.1818352Z ✔ Failed/cancelled downloads and unsafe redirects never publish an entity (18.2877ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.3078676Z ✔ ZIP rejects traversal, Windows names, Unicode/case collisions and symlinks (120.1422ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.3708159Z ✔ ZIP checksum corruption is rejected; orphaned metadata is visible rather than reused (64.9234ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.3911689Z ﹣ Online BOSL2: Registry → commit archive → global Store → project link → real CLI → offline Restore (1.0286ms) # SKIP
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.6409199Z ✔ Two projects isolate versions; lockfile-only restore works offline and removal preserves global content (315.8411ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.7042474Z ✔ Mount failures roll back project version and never overwrite unmanaged directories (67.736ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.8467396Z ✔ Interrupted publication restores old links and files before another operation (138.8799ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.8942494Z ✔ Copy fallback requires confirmation, detects edited copies and can be declined (52.35ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9280000Z ✔ Project symlink roots and foreign mount links are not followed during mutation (43.2764ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9575669Z ✔ Registry v1/v2 validates exact repository-pinned versions and preserves null latest (2.4387ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9576764Z ✔ Snapshot and sync errors remain explicit; unreviewed layouts never guessed (0.991ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9577705Z ✔ Manifests and locks reject unsafe paths, ranges and cross-platform collisions (0.5317ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9580856Z ✔ Registry supports ETag/304, validated disk cache and offline cold restart (43.2725ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9581929Z ✔ Registry globalState list is immediately available while refresh is pending, shared by callers and preserved on failure (7.7327ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9583061Z ✔ Registry imports its old disk list, prefers valid globalState and ignores corrupt or foreign cache data (9.9889ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9584958Z ✔ A bad Registry response cannot overwrite cached results; failed persistence does not discard a fresh list (3.8925ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9585583Z ℹ tests 29
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9585795Z ℹ suites 0
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9585997Z ℹ pass 26
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9586211Z ℹ fail 1
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9586418Z ℹ cancelled 0
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9586642Z ℹ skipped 2
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9586849Z ℹ todo 0
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9587110Z ℹ duration_ms 2631.2533
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9587266Z 
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9587401Z ✖ failing tests:
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9587535Z 
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9587770Z test at src\test\libraries\environment.test.ts:2:2546
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9588668Z ✖ Real OpenSCAD resolves a linked library, changes geometry after version switch and retains Store on removal (233.808ms)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9590601Z   Error: Command failed: D:\a\_temp\customizer-native-runtime\openscad-cli-windows-x86_64\bin\openscad.exe --export-format asciistl -o C:\Users\runneradmin\AppData\Local\Temp\scad-library-ATSdWA\model.stl C:\Users\runneradmin\AppData\Local\Temp\scad-library-ATSdWA\项目 A\main.scad
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9592088Z   WARNING: Can't find include file 'fixture-library/smoke.scad'. in file , line 1
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9592526Z   
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9592832Z       at genericNodeError (node:internal/errors:986:15)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9593246Z       at wrappedFn (node:internal/errors:540:14)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9593691Z       at ChildProcess.exithandler (node:child_process:417:12)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9594115Z       at ChildProcess.emit (node:events:514:28)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9594498Z       at maybeClose (node:internal/child_process:1172:16)
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9595234Z       at ChildProcess._handle.onexit (node:internal/child_process:335:5) {
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9595840Z     code: 3221226505,
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9596213Z     killed: false,
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9596641Z     signal: null,
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9599051Z     cmd: 'D:\\a\\_temp\\customizer-native-runtime\\openscad-cli-windows-x86_64\\bin\\openscad.exe --export-format asciistl -o C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-library-ATSdWA\\model.stl C:\\Users\\runneradmin\\AppData\\Local\\Temp\\scad-library-ATSdWA\\项目 A\\main.scad',
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9600142Z     stdout: '',
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9600565Z     stderr: "WARNING: Can't find include file 'fixture-library/smoke.scad'. in file , line 1\r\n"
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9600964Z   }
+libraries (windows-2025)	Run required native library gate	2026-11-11T10:18:42.9706466Z ##[error]Process completed with exit code 1.

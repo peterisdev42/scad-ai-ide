@@ -1,0 +1,55 @@
+✔ parses scalar parameters, groups, descriptions, ranges and enum labels without evaluating code (2.542375ms)
+✔ the original URL-brace fixture follows the native cutoff while retaining prior controls (0.3665ms)
+✔ comments and quoted delimiters do not create parameters or corrupt annotations (0.119ms)
+✔ validates finite numbers, types, ranges, steps and enum values (0.189542ms)
+✔ overrides are per file, use CLI argument arrays, reset to defaults and preserve source (2.233042ms)
+✔ runtime manager selects a valid result and respects invalid explicit overrides (0.111959ms)
+✔ official widget hints cover max-only sliders, steps, text lengths and all vector sizes (0.205625ms)
+✔ scanner supports multiline literals, multiple statements and library directives without evaluating code (0.160125ms)
+✔ groups, Hidden, Global, block descriptions and malformed hints stay isolated (0.110083ms)
+✔ vectors and text constraints validate at the host boundary and reset without changing source (0.272958ms)
+✔ OpenSCAD string escapes, hex numbers and trailing vector commas preserve literal values (0.092958ms)
+✔ decimal controls infer precision and preserve explicit steps (0.117792ms)
+✔ later assignments invalidate obsolete controls, including Hidden and assignments after geometry (0.062083ms)
+✔ compound headings, Unicode identifiers, mixed enums and unlisted defaults remain editable (0.525542ms)
+✔ OpenSCAD preset files round-trip every widget, mixed enums and hidden metadata (0.430584ms)
+✔ preset changes notify their target even when selecting the same values again (0.109375ms)
+✔ declared constraints remain observable while runtime validation uses native effective limits without quantizing (0.066917ms)
+✔ text input validates native UTF-8 byte limits and never truncates source defaults or preset data (0.249042ms)
+✔ current preset snapshots reject invalid defaults without altering them (0.17875ms)
+✔ current preset snapshots replay valid widget values with their original types (0.111208ms)
+✔ current preset snapshots reject enum values shadowed by an earlier native interpretation (0.083292ms)
+✔ incomplete source is explicit and does not erase existing overrides (0.103459ms)
+✔ unknown preset versions can be analyzed without being authorized for apply or overwrite (0.263792ms)
+✔ preset decoding follows native mixed-menu order, bool encoding and NFC without altering raw keys (0.126417ms)
+✔ service exposes lost-control locations and clears them when repaired or closed (0.107417ms)
+Customizer analyzer 107124 bytes p95=1.23ms; darwin/arm64 Node v24.16.0
+Customizer analyzer 1048576 bytes single sample=6.27ms; not a cross-platform benchmark
+✔ source analyzer retains existing GUI fixtures and all supported widgets (4.1805ms)
+✔ shared scanner tracks exact UTF-16 declaration/comment spans, Unicode, strings and CRLF (0.745833ms)
+✔ groups, Hidden, post-brace variables and duplicates retain legacy visibility (0.185292ms)
+✔ ordinary variables, prose and expressions without intent produce no warnings (0.158917ms)
+✔ deterministic invalid ranges, steps, defaults, choices and malformed hints (1.537625ms)
+✔ incomplete and bounded analyses never claim completeness (0.117958ms)
+✔ 100 KiB source analysis benchmark reports p95 and remains below 100 ms locally (18.148167ms)
+✔ oversized metadata is omitted rather than fabricated or leaked as an unbounded result (0.435291ms)
+✔ legal range hints and effective literal reassignments do not produce duplicate warnings (0.188041ms)
+✔ superseded invalid hints/defaults stop reporting once the effective declaration is corrected (0.16275ms)
+✔ ordinary SCAD and optional or unsupported Customizer usage never generate diagnostics (0.527125ms)
+✔ every warning is tied to written syntax, has a concrete fix and clears after that repair (0.353458ms)
+✔ closed bracket comments followed by prose are not falsely diagnosed as missing a bracket (0.12625ms)
+✔ annotation semantics use native comment tokens rather than source hexadecimal literals (0.067375ms)
+✔ the 64 KiB metadata budget covers parameters, diagnostics and candidates together (4.136291ms)
+✔ source byte boundary includes exactly 1 MiB and rejects multibyte overflow (8.76525ms)
+✔ 501 parameter and candidate inputs obey both count and aggregate metadata bounds (1.685375ms)
+✔ seeded long-tail prose corpus never creates a missing-bracket diagnostic (20.899167ms)
+✔ post-block overrides diagnose lost controls at the effective assignment with the original location (0.247083ms)
+✔ native string brace cutoff removes controls without inventing a SCAD scope or override warning (0.175708ms)
+ℹ tests 45
+ℹ suites 0
+ℹ pass 45
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 100.523166

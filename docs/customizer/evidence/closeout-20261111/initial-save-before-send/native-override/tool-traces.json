@@ -1,0 +1,328 @@
+[
+  {
+    "capability": "customizer.sourceAnalyze",
+    "input": {
+      "uri": "file:///tmp/customizer-native-agent-ov07lj/workspace/model.scad",
+      "maxDiagnostics": 10,
+      "includeCandidates": true
+    },
+    "started": "2026-11-11T10:09:04.110Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file:///tmp/customizer-native-agent-ov07lj/workspace/model.scad",
+          "version": 2,
+          "sha256": "67296b0f9785d6fe8f8d8028f44450aaa31602614cb0350ae953088d6c902c95"
+        },
+        "parameters": [],
+        "candidates": [
+          {
+            "name": "width",
+            "range": {
+              "start": {
+                "line": 1,
+                "character": 0
+              },
+              "end": {
+                "line": 1,
+                "character": 9
+              }
+            },
+            "reason": "superseded",
+            "confidence": "certain"
+          },
+          {
+            "name": "width",
+            "range": {
+              "start": {
+                "line": 3,
+                "character": 0
+              },
+              "end": {
+                "line": 3,
+                "character": 9
+              }
+            },
+            "reason": "afterFirstBrace",
+            "confidence": "certain"
+          }
+        ],
+        "diagnostics": [
+          {
+            "ruleId": "CUST-VIS-01",
+            "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+            "severity": "warning",
+            "parameter": "width",
+            "message": "The later assignment to \"width\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+            "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+            "range": {
+              "start": {
+                "line": 3,
+                "character": 0
+              },
+              "end": {
+                "line": 3,
+                "character": 9
+              }
+            },
+            "relatedInformation": [
+              {
+                "range": {
+                  "start": {
+                    "line": 1,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 1,
+                    "character": 9
+                  }
+                },
+                "message": "Earlier customizable parameter declaration overridden here."
+              }
+            ],
+            "evidence": {
+              "kind": "superseded-parameter",
+              "category": "visibility",
+              "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+            },
+            "fix": {
+              "id": "CUST-VIS-01",
+              "safety": "review",
+              "title": "Review the assignment outside the Customizer region"
+            }
+          }
+        ],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "9cdfd86f-62bd-4dbd-b6ec-d0e74661f25d",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceValidate",
+    "input": {
+      "uri": "file:///tmp/customizer-native-agent-ov07lj/workspace/model.scad",
+      "includeWarnings": true
+    },
+    "started": "2026-11-11T10:09:16.777Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceValidate",
+      "data": {
+        "identity": {
+          "uri": "file:///tmp/customizer-native-agent-ov07lj/workspace/model.scad",
+          "version": 2,
+          "sha256": "67296b0f9785d6fe8f8d8028f44450aaa31602614cb0350ae953088d6c902c95"
+        },
+        "sourceStatus": {
+          "status": "complete",
+          "reasons": []
+        },
+        "contractStatus": "notRequested",
+        "qualityStatus": "warnings",
+        "semanticPass": false,
+        "checked": 0,
+        "matched": 0,
+        "expectationResults": [],
+        "omittedExpectations": 0,
+        "diagnostics": [
+          {
+            "ruleId": "CUST-VIS-01",
+            "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+            "severity": "warning",
+            "parameter": "width",
+            "message": "The later assignment to \"width\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+            "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+            "range": {
+              "start": {
+                "line": 3,
+                "character": 0
+              },
+              "end": {
+                "line": 3,
+                "character": 9
+              }
+            },
+            "relatedInformation": [
+              {
+                "range": {
+                  "start": {
+                    "line": 1,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 1,
+                    "character": 9
+                  }
+                },
+                "message": "Earlier customizable parameter declaration overridden here."
+              }
+            ],
+            "evidence": {
+              "kind": "superseded-parameter",
+              "category": "visibility",
+              "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+            },
+            "fix": {
+              "id": "CUST-VIS-01",
+              "safety": "review",
+              "title": "Review the assignment outside the Customizer region"
+            }
+          }
+        ],
+        "omittedDiagnostics": 0,
+        "runtimeCheck": {
+          "status": "notRequested"
+        },
+        "guiCheck": {
+          "status": "notRequested"
+        },
+        "complete": true
+      },
+      "operation": {
+        "id": "8d8ade1a-5f0a-4354-87d7-8b761b923a06",
+        "capabilityId": "customizer.sourceValidate",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "customizer.sourceValidate",
+    "input": {
+      "uri": "file:///tmp/customizer-native-agent-ov07lj/workspace/model.scad",
+      "includeWarnings": true,
+      "expectations": [
+        {
+          "name": "width",
+          "visible": true
+        }
+      ]
+    },
+    "started": "2026-11-11T10:09:19.659Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "customizer.sourceValidate",
+      "data": {
+        "identity": {
+          "uri": "file:///tmp/customizer-native-agent-ov07lj/workspace/model.scad",
+          "version": 2,
+          "sha256": "67296b0f9785d6fe8f8d8028f44450aaa31602614cb0350ae953088d6c902c95"
+        },
+        "sourceStatus": {
+          "status": "complete",
+          "reasons": []
+        },
+        "contractStatus": "mismatch",
+        "qualityStatus": "warnings",
+        "semanticPass": false,
+        "checked": 1,
+        "matched": 0,
+        "expectationResults": [
+          {
+            "parameter": "width",
+            "matched": false,
+            "issues": [
+              "Parameter is missing or not visible"
+            ],
+            "details": [
+              {
+                "code": "EXPECTED_VISIBLE",
+                "message": "Parameter is missing or not visible",
+                "range": {
+                  "start": {
+                    "line": 3,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 3,
+                    "character": 9
+                  }
+                }
+              }
+            ],
+            "range": {
+              "start": {
+                "line": 3,
+                "character": 0
+              },
+              "end": {
+                "line": 3,
+                "character": 9
+              }
+            }
+          }
+        ],
+        "omittedExpectations": 0,
+        "diagnostics": [
+          {
+            "ruleId": "CUST-VIS-01",
+            "code": "CUSTOMIZER_PARAMETER_OVERRIDDEN",
+            "severity": "warning",
+            "parameter": "width",
+            "message": "The later assignment to \"width\" is outside the Customizer region and overrides its earlier parameter declaration; no control is available for this parameter.",
+            "suggestedFix": "Keep one effective literal declaration before the first code block. Review both assignments before removing or moving either one.",
+            "range": {
+              "start": {
+                "line": 3,
+                "character": 0
+              },
+              "end": {
+                "line": 3,
+                "character": 9
+              }
+            },
+            "relatedInformation": [
+              {
+                "range": {
+                  "start": {
+                    "line": 1,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 1,
+                    "character": 9
+                  }
+                },
+                "message": "Earlier customizable parameter declaration overridden here."
+              }
+            ],
+            "evidence": {
+              "kind": "superseded-parameter",
+              "category": "visibility",
+              "referenceOpenSCADCommit": "bcf45a22caa954ca56ca287994cb6dbc368c67b2"
+            },
+            "fix": {
+              "id": "CUST-VIS-01",
+              "safety": "review",
+              "title": "Review the assignment outside the Customizer region"
+            }
+          }
+        ],
+        "omittedDiagnostics": 0,
+        "runtimeCheck": {
+          "status": "notRequested"
+        },
+        "guiCheck": {
+          "status": "notRequested"
+        },
+        "complete": true
+      },
+      "operation": {
+        "id": "34a0bb83-c000-42a6-a7f9-c87119408ade",
+        "capabilityId": "customizer.sourceValidate",
+        "status": "succeeded"
+      }
+    }
+  }
+]

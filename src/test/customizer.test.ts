@@ -13,7 +13,7 @@ wall = 2.5;
 /* [Options] */
 hollow = true;
 shape = "round"; // [round:Round, square:Square]
-label = "https://example.com/{hello}";
+label = "https://example.com/hello";
 /* [Hidden] */
 secret = 12;
 /* [More] */
@@ -37,11 +37,17 @@ test('parses scalar parameters, groups, descriptions, ranges and enum labels wit
         { label: 'Round', value: 'round' },
         { label: 'Square', value: 'square' },
     ])
-    assert.equal(parameters[5].defaultValue, 'https://example.com/{hello}')
+    assert.equal(parameters[5].defaultValue, 'https://example.com/hello')
     assert.deepEqual(parameters[6].choices, [
         { label: 'Small', value: 1 },
         { label: 'Large', value: 2 },
     ])
+})
+
+test('the original URL-brace fixture follows the native cutoff while retaining prior controls', () => {
+    const original = source.replace('https://example.com/hello', 'https://example.com/{hello}')
+    assert.deepEqual(parseCustomizer(original).map(p => p.name), ['width', 'height', 'wall', 'hollow', 'shape'])
+    assert.deepEqual(parseCustomizer('a=1; b="// not a comment { ;";\n'), [])
 })
 
 test('comments and quoted delimiters do not create parameters or corrupt annotations', () => {
@@ -137,9 +143,9 @@ size = [
   20,
   30
 ]; // [0:5:100]
-a = 1; b = "// not a comment { ;";
+a = 1; b = "// not a comment ;";
 function helper(x) = x * 2;
-module helper2() echo("{}");
+module helper2() echo("()");
 after_definition = true;
 if (true) local = 9;
 cube(1);

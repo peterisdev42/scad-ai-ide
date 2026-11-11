@@ -1,0 +1,547 @@
+Isolated Host memory evidence: /tmp/cmem-t7zlbS
+[90m[main 2026-11-11T10:11:00.317Z][0m [node-compile-cache] main: packaged cache inactive (status: disabled, configured: /Users/q/Documents/Code/scad-ai-ide/.vscode-test/vscode-darwin-arm64-1.140.0/Visual Studio Code.app/Contents/Resources/app/node-compile-cache/main, active: none)
+[90m[main 2026-11-11T10:11:00.336Z][0m StorageMainService: creating application shared storage
+[90m[main 2026-11-11T10:11:00.405Z][0m [shared storage] Creating shared storage database at ':memory:' (wasCreated: true)
+[90m[main 2026-11-11T10:11:00.405Z][0m [shared storage] Initializing fallback application storage (path: in-memory)
+[90m[main 2026-11-11T10:11:00.451Z][0m [shared storage] Fallback application storage initialized with 3 items
+[90m[main 2026-11-11T10:11:00.451Z][0m update#setState disabled
+[90m[main 2026-11-11T10:11:00.452Z][0m update#ctor - updates are disabled by the environment
+[RemoteAgentHost] Reconciling: desired=[], current=[]
+[AgentHost:renderer] Acquiring MessagePort to agent host...
+[90m[main 2026-11-11T10:11:00.832Z][0m AgentHostProcessManager: agent host started
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey=undefined conversationKey=undefined modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[AgentHost:renderer] MessagePort acquired, creating client...
+Started local extension host with pid 93004.
+Started initializing default profile extensions in extensions installation folder. file:///tmp/cmem-t7zlbS/extensions
+[91m[main 2026-11-11T10:11:01.042Z][0m [AgentHost:stderr] (node:93001) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `Code Helper --trace-deprecation ...` to show where the warning was created)
+
+[AgentHost:renderer] Protocol connection established; clientId=5c0c367e-f5d1-485a-ac71-5a91bf29eaa4
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/ZDQ1YjYxYmItMTBkYi00MGU0LWE3NzgtOTU5Yjg2YzcyOWQ0" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+Completed initializing default profile extensions in extensions installation folder. file:///tmp/cmem-t7zlbS/extensions
+Loading development extension at /Users/q/Documents/Code/scad-ai-ide/
+Extension 'github.copilot-chat' appears in product.json but enables LESS API proposals than the extension wants.
+package.json (LOSES): agentSessionsWorkspace
+agentsWindowConfiguration
+chatDebug
+chatHooks
+envIsConnectionMetered
+extensionsAny
+newSymbolNamesProvider
+interactive
+codeActionAI
+activeComment
+commentReveal
+contribCommentThreadAdditionalMenu
+contribCommentsViewThreadMenus
+contribChatEditorInlineGutterMenu
+documentFiltersExclusive
+embeddings
+findTextInFiles
+findTextInFiles2
+languageModelToolSupportsModel
+findFiles2
+textSearchProvider
+terminalDataWriteEvent
+terminalExecuteCommandEvent
+terminalSelection
+terminalQuickFixProvider
+mappedEditsProvider
+aiRelatedInformation
+aiSettingsSearch
+chatParticipantAdditions
+defaultChatParticipant
+contribSourceControlInputBoxMenu
+authLearnMore
+authIssuers
+testObserver
+aiTextSearchProvider
+chatParticipantPrivate
+chatProvider
+contribDebugCreateConfiguration
+chatReferenceDiagnostic
+textSearchProvider2
+chatReferenceBinaryData
+languageModelSystem
+languageModelCapabilities
+languageModelPricing
+inlineCompletionsAdditions
+chatStatusItem
+chatInputNotification
+taskProblemMatcherStatus
+contribLanguageModelToolSets
+textDocumentChangeReason
+resolvers
+taskExecutionTerminal
+dataChannels
+languageModelThinkingPart
+chatSessionsProvider
+devDeviceId
+contribEditorContentMenu
+chatPromptFiles
+mcpServerDefinitions
+tabInputMultiDiff
+workspaceTrust
+environmentPower
+terminalTitle
+toolInvocationApproveCombination
+chatSessionCustomizationProvider
+product.json (WINS): agentSessionsWorkspace
+agentsWindowConfiguration
+interactive
+terminalDataWriteEvent
+terminalExecuteCommandEvent
+terminalSelection
+terminalQuickFixProvider
+chatParticipantAdditions
+defaultChatParticipant
+embeddings
+chatProvider
+mappedEditsProvider
+aiRelatedInformation
+aiSettingsSearch
+codeActionAI
+findTextInFiles
+findTextInFiles2
+textSearchProvider
+textSearchProvider2
+activeComment
+commentReveal
+contribSourceControlInputBoxMenu
+contribCommentEditorActionsMenu
+contribCommentThreadAdditionalMenu
+contribCommentsViewThreadMenus
+contribChatEditorInlineGutterMenu
+extensionAffinity
+newSymbolNamesProvider
+findFiles2
+chatReferenceDiagnostic
+extensionsAny
+authLearnMore
+testObserver
+aiTextSearchProvider
+documentFiltersExclusive
+chatParticipantPrivate
+contribDebugCreateConfiguration
+inlineCompletionsAdditions
+chatReferenceBinaryData
+languageModelSystem
+languageModelCapabilities
+languageModelThinkingPart
+languageModelToolSupportsModel
+chatStatusItem
+taskProblemMatcherStatus
+contribLanguageModelToolSets
+textDocumentChangeReason
+resolvers
+taskExecutionTerminal
+dataChannels
+chatSessionsProvider
+chatSessionCustomizationProvider
+devDeviceId
+contribEditorContentMenu
+tokenInformation
+toolInvocationApproveCombination
+chatPromptFiles
+mcpServerDefinitions
+tabInputMultiDiff
+workspaceTrust
+chatHooks
+chatDebug
+envIsConnectionMetered
+environmentPower
+terminalTitle
+languageModelPricing
+chatInputNotification
+DELTA: authIssuers
+Proceeding with EXTRA proposals (authIssuers) because extension is in development mode. Still, this EXTENSION WILL BE BROKEN unless product.json is updated.
+[AccountPolicyGate] apply: state=inactive, reason=undefined, isRestricted=false
+[RemoteAgentHost] Reconciling: desired=[], current=[]
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/ZDQ1YjYxYmItMTBkYi00MGU0LWE3NzgtOTU5Yjg2YzcyOWQ0" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/ZDQ1YjYxYmItMTBkYi00MGU0LWE3NzgtOTU5Yjg2YzcyOWQ0" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+Settings Sync: Account status changed from uninitialized to unavailable
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/ZDQ1YjYxYmItMTBkYi00MGU0LWE3NzgtOTU5Yjg2YzcyOWQ0" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+Unknown channel: agentHostClientByokLm
+Unknown channel: agentHostClientProxy
+Unknown channel: agentHostClientProxy
+[90m[main 2026-11-11T10:11:06.339Z][0m Extension host with pid 93004 exited with code: 0, signal: unknown.
+Exit code:   0
+{
+  "includeGuiDomain": true,
+  "scope": "Real isolated VS Code Extension Host V8 heap; production source/editor classes and optional value/domain/preset classes, real TextDocuments, filesystem watchers and subscriptions. Does not profile renderer, GPU, every feature or every provider.",
+  "vscode": "1.140.0",
+  "node": "v24.21.0",
+  "platform": "darwin",
+  "architecture": "arm64",
+  "sourceMode": "Compiled production classes loaded in development Host; not a measurement of the installed minified bundle",
+  "documentCount": 32,
+  "sourceBytes": 117044,
+  "warmup": {
+    "round": 0,
+    "capacities": {
+      "cache": 16,
+      "sourcePlans": 32,
+      "editorPlans": 32
+    },
+    "guiCapacities": {
+      "files": 32,
+      "overrides": 32,
+      "valueListeners": 1,
+      "previewListeners": 1,
+      "watcher": true
+    },
+    "before": {
+      "usedSize": 40535420,
+      "totalSize": 42336256,
+      "embedderHeapUsedSize": 104,
+      "backingStorageSize": 7430761
+    },
+    "occupied": {
+      "usedSize": 49147140,
+      "totalSize": 51249152,
+      "embedderHeapUsedSize": 104,
+      "backingStorageSize": 7531406
+    },
+    "afterDispose": {
+      "usedSize": 41314656,
+      "totalSize": 42860544,
+      "embedderHeapUsedSize": 104,
+      "backingStorageSize": 7531413
+    },
+    "releasedBytes": 7832484
+  },
+  "samples": [
+    {
+      "round": 1,
+      "capacities": {
+        "cache": 16,
+        "sourcePlans": 32,
+        "editorPlans": 32
+      },
+      "guiCapacities": {
+        "files": 32,
+        "overrides": 32,
+        "valueListeners": 1,
+        "previewListeners": 1,
+        "watcher": true
+      },
+      "before": {
+        "usedSize": 41401580,
+        "totalSize": 42860544,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7531406
+      },
+      "occupied": {
+        "usedSize": 56904616,
+        "totalSize": 58195968,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7535783
+      },
+      "afterDispose": {
+        "usedSize": 49377768,
+        "totalSize": 50855936,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7535790
+      },
+      "releasedBytes": 7526848
+    },
+    {
+      "round": 2,
+      "capacities": {
+        "cache": 16,
+        "sourcePlans": 32,
+        "editorPlans": 32
+      },
+      "guiCapacities": {
+        "files": 32,
+        "overrides": 32,
+        "valueListeners": 1,
+        "previewListeners": 1,
+        "watcher": true
+      },
+      "before": {
+        "usedSize": 49372964,
+        "totalSize": 50855936,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7535859
+      },
+      "occupied": {
+        "usedSize": 57252576,
+        "totalSize": 58982400,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7535790
+      },
+      "afterDispose": {
+        "usedSize": 49409392,
+        "totalSize": 50593792,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7535790
+      },
+      "releasedBytes": 7843184
+    },
+    {
+      "round": 3,
+      "capacities": {
+        "cache": 16,
+        "sourcePlans": 32,
+        "editorPlans": 32
+      },
+      "guiCapacities": {
+        "files": 32,
+        "overrides": 32,
+        "valueListeners": 1,
+        "previewListeners": 1,
+        "watcher": true
+      },
+      "before": {
+        "usedSize": 49413200,
+        "totalSize": 50855936,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7535790
+      },
+      "occupied": {
+        "usedSize": 57293632,
+        "totalSize": 58982400,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7535790
+      },
+      "afterDispose": {
+        "usedSize": 49449696,
+        "totalSize": 50593792,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7535790
+      },
+      "releasedBytes": 7843936
+    },
+    {
+      "round": 4,
+      "capacities": {
+        "cache": 16,
+        "sourcePlans": 32,
+        "editorPlans": 32
+      },
+      "guiCapacities": {
+        "files": 32,
+        "overrides": 32,
+        "valueListeners": 1,
+        "previewListeners": 1,
+        "watcher": true
+      },
+      "before": {
+        "usedSize": 49453384,
+        "totalSize": 50593792,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7535790
+      },
+      "occupied": {
+        "usedSize": 57338100,
+        "totalSize": 58982400,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7535790
+      },
+      "afterDispose": {
+        "usedSize": 49494140,
+        "totalSize": 50593792,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7535790
+      },
+      "releasedBytes": 7843960
+    },
+    {
+      "round": 5,
+      "capacities": {
+        "cache": 16,
+        "sourcePlans": 32,
+        "editorPlans": 32
+      },
+      "guiCapacities": {
+        "files": 32,
+        "overrides": 32,
+        "valueListeners": 1,
+        "previewListeners": 1,
+        "watcher": true
+      },
+      "before": {
+        "usedSize": 49497664,
+        "totalSize": 50593792,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7535790
+      },
+      "occupied": {
+        "usedSize": 57364384,
+        "totalSize": 58720256,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7535790
+      },
+      "afterDispose": {
+        "usedSize": 49520352,
+        "totalSize": 50593792,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7535790
+      },
+      "releasedBytes": 7844032
+    },
+    {
+      "round": 6,
+      "capacities": {
+        "cache": 16,
+        "sourcePlans": 32,
+        "editorPlans": 32
+      },
+      "guiCapacities": {
+        "files": 32,
+        "overrides": 32,
+        "valueListeners": 1,
+        "previewListeners": 1,
+        "watcher": true
+      },
+      "before": {
+        "usedSize": 49523804,
+        "totalSize": 50593792,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7535790
+      },
+      "occupied": {
+        "usedSize": 57401572,
+        "totalSize": 58982400,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7535790
+      },
+      "afterDispose": {
+        "usedSize": 49556752,
+        "totalSize": 50593792,
+        "embedderHeapUsedSize": 104,
+        "backingStorageSize": 7535790
+      },
+      "releasedBytes": 7844820
+    }
+  ],
+  "snapshots": {
+    "baseline": {
+      "file": "/tmp/cmem-t7zlbS/baseline.heapsnapshot",
+      "bytes": 67480394,
+      "sha256": "90b3ddbb9df912ab5bd056bd68ef0b6d05886f56f19cd99ea0df15b1c2b6fd83",
+      "instances": {
+        "CustomizerSourceDomainService": 0,
+        "CustomizerEditorActions": 0,
+        "CustomizerService": 0,
+        "CustomizerDomainService": 0,
+        "CustomizerPresets": 0
+      }
+    },
+    "occupied": {
+      "file": "/tmp/cmem-t7zlbS/occupied-round-one.heapsnapshot",
+      "bytes": 79147985,
+      "sha256": "c71d8728163168eaa0a6bf9a63506a1157bc45bdcf23d2871d8ea468cf3301db",
+      "instances": {
+        "CustomizerSourceDomainService": 1,
+        "CustomizerEditorActions": 1,
+        "CustomizerService": 1,
+        "CustomizerDomainService": 1,
+        "CustomizerPresets": 1
+      }
+    },
+    "final": {
+      "file": "/tmp/cmem-t7zlbS/after-six-rounds.heapsnapshot",
+      "bytes": 79586924,
+      "sha256": "cd81fa8bc4be6215966567f24bf0de68b42ad86f7beff1a383bcec16336bb7f0",
+      "instances": {
+        "CustomizerSourceDomainService": 0,
+        "CustomizerEditorActions": 0,
+        "CustomizerService": 0,
+        "CustomizerDomainService": 0,
+        "CustomizerPresets": 0
+      }
+    }
+  },
+  "savedOrCommitted": false,
+  "postDisposeHeapRangeBytes": 178984,
+  "retainedInstanceDelta": {
+    "CustomizerSourceDomainService": 0,
+    "CustomizerEditorActions": 0,
+    "CustomizerService": 0,
+    "CustomizerDomainService": 0,
+    "CustomizerPresets": 0
+  },
+  "verdict": "PASS only for tested classes and scenarios; no renderer/GPU or global leak-free claim"
+}
