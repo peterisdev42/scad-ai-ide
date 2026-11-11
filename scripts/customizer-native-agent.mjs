@@ -24,7 +24,7 @@ const providerId = backend === 'omlx' ? 'techopolis.omlx-copilot-chat' : 'Ollama
 const vendor = backend === 'omlx' ? 'omlx' : 'ollama-models'
 const model = process.env.SCAD_AGENT_MODEL ?? (backend === 'omlx' ? 'Qwen3.6-35B-A3B-OptiQ-4bit' : 'qwen3.5:2b-mlx')
 const host = JSON.parse(await readFile(path.join(root, `.build/${backend}-dev/host.json`), 'utf8'))
-const directory = await mkdtemp(path.join(tmpdir(), 'customizer-native-agent-'))
+const directory = await mkdtemp(path.join(process.platform === 'darwin' ? '/tmp' : tmpdir(), 'customizer-native-agent-'))
 const workspace = path.join(directory, 'workspace')
 const profile = path.join(directory, 'profile')
 const shared = path.join(directory, 'shared')
@@ -170,6 +170,10 @@ try {
         const response = await read('response.json')
         if (response) {
             const observed = JSON.parse(response)
+            if (backend === 'omlx' && observed.result?.type === 'confirmation') {
+                terminalReason = 'manualConfirmationRequired'
+                break
+            }
             if (observed.result?.type === 'confirmation' && process.env.SCAD_AGENT_APPROVE_FIXTURE_WRITES === '1') {
                 if (approvals.length >= 8) { terminalReason = 'confirmationBudgetExhausted'; break }
                 const toolId = observed.result.toolId
