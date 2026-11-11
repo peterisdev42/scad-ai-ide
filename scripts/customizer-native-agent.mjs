@@ -45,6 +45,7 @@ const cases = {
     expression: { source: 'base=80;\nwidth=base/2; // [10:100]\ncube(width);\n', task: '分析width能否成为Slider(10:100)。它是表达式；不要常量折叠、不要改变源码，也不要把这种合法SCAD说成语法错误。如受控编辑不支持，明确说明原因。' },
     failure: { source: 'width=40;\ncube(width);\n', task: '只读验收，不修改文件：用SourceValidate检查width是否已经是Slider(10:5:100)，并用SourceAnalyze检查同目录不存在的missing.scad。对实际ok=false及semanticPass=false如实报告；不要修复或宣称验证成功。' },
     override: { source: 'width=40;\nmodule m(){}\nwidth=50;\n', task: '只读分析 width 控件消失原因，使用 SourceAnalyze 和 SourceValidate 检查 width visible=true 的要求。如实解释 Warning 和合法的覆盖赋值、两处位置及未达到的可见性契约，不删除赋值、不修改或声称已经修复。' },
+    preset: { source: 'label="abcdef"; // 3\ncube(1);\n', task: '只读 Preset 安全验收：使用 customizer_state 和 SourceAnalyze 读取真实状态。当前关联 JSON 的 fileFormatVersion 为未知版本 99，必须保持只读，不应用、不覆盖、不修改版本。另判断 label 的默认值能否在 3 UTF-8 bytes 的文本约束下无损保存为 Current 快照；不能截断或改默认值。说明实际证据和未执行操作，不发起任何写入工具。' },
 }
 assert.ok(cases[scenario], `Unknown native Agent scenario: ${scenario}`)
 const source = cases[scenario].source
@@ -164,7 +165,7 @@ try {
     browser ??= await chromium.connectOverCDP(`http://127.0.0.1:${port}`)
     const page = browser.contexts().flatMap(context => context.pages()).find(page => /workbench/.test(page.url()))
     assert.ok(page, 'No native workbench page')
-    await writeFile(path.join(directory, 'request.json'), JSON.stringify({ inspect: process.env.SCAD_AGENT_INSPECT_NATIVE === '1', file, query, model, toolsInclude: backend === 'omlx' ? ['scad_ai_ide_customizer_sourceAnalyze', 'scad_ai_ide_customizer_sourceApply', 'scad_ai_ide_customizer_sourceValidate'] : undefined }))
+    await writeFile(path.join(directory, 'request.json'), JSON.stringify({ inspect: process.env.SCAD_AGENT_INSPECT_NATIVE === '1', file, query, model, toolsInclude: backend === 'omlx' ? ['scad_ai_ide_customizer_sourceAnalyze', 'scad_ai_ide_customizer_sourceApply', 'scad_ai_ide_customizer_sourceValidate', ...(scenario === 'preset' ? ['scad_ai_ide_customizer_state'] : [])] : undefined }))
     while (!ended && Date.now() < deadline) {
         const body = await page.locator('body').innerText()
         await writeFile(path.join(directory, 'workbench.txt'), body)

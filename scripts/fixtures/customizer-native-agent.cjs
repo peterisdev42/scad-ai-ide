@@ -21,6 +21,19 @@ exports.run = async () => {
     let nativeAgentError
     try { await nativeAgent?.activate() } catch (error) { nativeAgentError = String(error) }
     const api = await own.activate()
+    if (process.env.SCAD_AGENT_SCENARIO === 'preset') {
+        const uri = vscode.Uri.file(path.join(directory, 'workspace/model.scad'))
+        const preset = vscode.Uri.file(path.join(directory, 'workspace/model.json'))
+        const bytes = JSON.stringify({ fileFormatVersion: '99', metadata: { sentinel: 'preserve exactly' }, parameterSets: { External: { label: 'abc' } } })
+        await fs.writeFile(preset.fsPath, bytes)
+        const document = await vscode.workspace.openTextDocument(uri)
+        await vscode.window.showTextDocument(document)
+        const state = await api.capabilities.invoke('customizer.state', {}, { actor: 'gui' })
+        if (!state.ok) throw new Error('Preset setup state failed')
+        const imported = await api.capabilities.invoke('customizer.importPresets', { target: state.data.target, revision: state.data.revision, uri: preset.toString() }, { actor: 'gui' })
+        if (!imported.ok) throw new Error('Preset setup import failed')
+        await fs.writeFile(path.join(directory, 'preset-setup.json'), JSON.stringify({ scope: 'Fixture setup before model dispatch; not a model tool call', before: bytes, imported }, null, 2))
+    }
     const original = api.capabilities.invoke.bind(api.capabilities)
     api.capabilities.invoke = async (...args) => {
         const trace = { capability: args[0], input: args[1], started: new Date().toISOString() }
