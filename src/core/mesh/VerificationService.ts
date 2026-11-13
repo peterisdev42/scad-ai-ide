@@ -199,7 +199,7 @@ export class MeshVerificationService {
                                 facts.sourceUnit = snapshot.units === 'mm' ? 'user-declared-mm' : 'undeclared'
                             }
                             const empty = facts.rawTriangles === 0
-                            const ids = facts.findings.map((f) => addIssue(f.code, f.status, f.message, { instanceId: f.instanceId, triangles: f.triangles, point: f.point }))
+                            const ids = facts.findings.map((f) => addIssue(f.code, f.status, f.message, { instanceId: f.instanceId, triangles: f.triangles, point: f.point, triangleSamples: f.triangleSamples }))
                             const status = facts.findings.some((f) => f.status === 'FAIL') || facts.objects.some((o) => o.status === 'FAIL') ? 'FAIL' : !facts.complete ? 'UNRESOLVED' : empty ? 'SKIPPED' : 'PASS'
                             const topologyCodes = /MESH_(?:DEGENERATE|DUPLICATE|BOUNDARY|NON_MANIFOLD|INCONSISTENT|NEAR_DEGENERATE)/
                             const stages = [

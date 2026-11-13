@@ -405,6 +405,37 @@
                 "items": {
                   "type": "number"
                 }
+              },
+              "triangleSamples": {
+                "type": "array",
+                "maxItems": 2,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "triangle": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "vertices": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "array",
+                        "minItems": 3,
+                        "maxItems": 3,
+                        "items": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "triangle",
+                    "vertices"
+                  ]
+                }
               }
             },
             "required": [
@@ -929,6 +960,37 @@
                     "maxItems": 3,
                     "items": {
                       "type": "number"
+                    }
+                  },
+                  "triangleSamples": {
+                    "type": "array",
+                    "maxItems": 2,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "triangle": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "vertices": {
+                          "type": "array",
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "items": {
+                            "type": "array",
+                            "minItems": 3,
+                            "maxItems": 3,
+                            "items": {
+                              "type": "number"
+                            }
+                          }
+                        }
+                      },
+                      "required": [
+                        "triangle",
+                        "vertices"
+                      ]
                     }
                   }
                 },

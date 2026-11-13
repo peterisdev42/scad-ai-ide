@@ -20,6 +20,10 @@ export interface DecodedMesh {
     rawVertices: number
     rawTriangles: number
 }
+export interface MeshTriangleSample {
+    triangle: number
+    vertices: [Vec3, Vec3, Vec3]
+}
 export interface MeshFinding {
     code: string
     status: 'FAIL' | 'UNRESOLVED'
@@ -27,6 +31,7 @@ export interface MeshFinding {
     instanceId?: string
     triangles: number[]
     point?: Vec3
+    triangleSamples?: MeshTriangleSample[]
 }
 export interface Quantity {
     status: CheckStatus
@@ -93,7 +98,7 @@ export interface MeshCheck {
 }
 export interface MeshIssue extends Omit<CadIssue, 'source'> {
     source: 'cli' | 'mesh'
-    spatial?: { instanceId?: string; triangles: number[]; point?: Vec3 }
+    spatial?: { instanceId?: string; triangles: number[]; point?: Vec3; triangleSamples?: MeshTriangleSample[] }
 }
 export interface MeshSnapshot {
     schemaVersion: 2

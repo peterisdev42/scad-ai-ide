@@ -115,6 +115,8 @@ suite('Raw mesh verification Extension Host', () => {
         assert.equal(detail.current, true)
         assert.equal(detail.issue.location.confidence, 'fallback')
         assert.ok(detail.geometryEvidence)
+        assert.equal(detail.geometryEvidence.triangleSamples.length, 1)
+        assert.equal(detail.geometryEvidence.triangleSamples[0].vertices.length, 3)
         const diagnostics = vscode.languages.getDiagnostics(brokenUri).filter((d) => d.source === 'CAD Mesh')
         assert.ok(diagnostics.length > 0)
         await vscode.workspace.openTextDocument(brokenUri)

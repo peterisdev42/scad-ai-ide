@@ -46,6 +46,10 @@ test('open, non-manifold, degenerate, duplicate and self-intersecting meshes pre
             `${code}: ${JSON.stringify(f.findings)}`,
         )
         assert.equal(f.physicalVolume.value, null)
+        assert.ok(
+            f.findings.some((f) => f.triangleSamples?.length),
+            JSON.stringify(f.findings),
+        )
     }
 })
 test('proper cavity and disjoint components have material-aware volume', async () => {
@@ -128,6 +132,23 @@ test('predicates lock signs and classify shared simplices beyond simply skipping
         [2, 0, 0],
         [0, 2, 0],
     ]
+    assert.equal(
+        triangleIntersection(
+            p,
+            a,
+            [
+                [0, 0, 0],
+                [2, 0, 0],
+                [1, 1, 0],
+            ],
+            [
+                [0, 0, 0],
+                [2, 0, 0],
+            ],
+            1e-9,
+        ),
+        'cross',
+    )
     assert.equal(
         triangleIntersection(
             p,

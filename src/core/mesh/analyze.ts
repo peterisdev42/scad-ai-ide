@@ -62,6 +62,8 @@ export async function analyzeMesh(decoded: DecodedMesh, options: { maxPairs?: nu
         if ((pairTests & 1023) === 0) check()
     }
     const finding = (f: MeshFinding) => {
+        const source = findings.length < 100 || (f.status === 'FAIL' && !findings.some((f) => f.status === 'FAIL')) ? works.find((w) => w.raw.instanceId === f.instanceId) : undefined
+        if (source && f.triangles.length) f.triangleSamples = [...new Set(f.triangles)].slice(0, 2).map((triangle) => ({ triangle, vertices: source.triangle(triangle) as [Vec3, Vec3, Vec3] }))
         findingCount++
         const status = statuses.get(f.instanceId ?? '') ?? { fail: false, unresolved: false }
         status.fail ||= f.status === 'FAIL'
