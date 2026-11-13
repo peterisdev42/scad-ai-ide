@@ -1,7 +1,7 @@
 import { normalizeCliDiagnostics } from '../../../../core/cad/diagnostics'
 import * as vscode from 'vscode'
 import { createHash } from 'node:crypto'
-import type { VerificationReport } from '../../../../core/cad/types'
+import type { CadIssue, CadSnapshot, VerificationReport } from '../../../../core/cad/types'
 
 export interface PreviewProblemEntry {
     uri: vscode.Uri
@@ -25,7 +25,7 @@ export class PreviewSourceProblems implements vscode.Disposable {
     private readonly subscriptions: vscode.Disposable[]
     private disposed = false
     private sequence = 0
-    private readonly pending = new Map<string, number>()
+    private readonly pending = new Map<string, { ticket: number; source: vscode.Uri; dependencies: string[] }>()
 
     constructor() {
         this.subscriptions = [
@@ -34,10 +34,11 @@ export class PreviewSourceProblems implements vscode.Disposable {
             }),
             vscode.workspace.onDidOpenTextDocument((document) => {
                 for (const result of this.results.values())
-                    if (result.source.toString() === document.uri.toString() && result.stamp !== this.stamp(document.uri)) {
+                    if (result.source.toString() === document.uri.toString() && !result.valid && result.stamp !== this.stamp(document.uri)) {
                         this.invalidate(document.uri)
                         break
                     }
+                void this.revalidate()
             }),
             vscode.workspace.onDidDeleteFiles((event) => event.files.forEach((uri) => this.invalidate(uri))),
             vscode.workspace.onDidRenameFiles((event) => event.files.forEach((file) => this.invalidate(file.oldUri))),
@@ -63,12 +64,15 @@ export class PreviewSourceProblems implements vscode.Disposable {
         while (this.results.size > 128) this.results.delete(this.results.keys().next().value!)
         this.publish()
     }
-    async reportVerification(report: VerificationReport, valid: () => Promise<boolean>, owner = 'agent') {
+    async reportVerification(report: Pick<VerificationReport, 'reportId'> & { snapshot: Pick<CadSnapshot, 'id' | 'document' | 'dependencies'>; issues: Array<Pick<CadIssue, 'id' | 'location' | 'title' | 'severity' | 'code'> & { source?: 'cli' | 'mesh' }> }, valid: () => Promise<boolean>, owner = 'agent') {
         const source = vscode.Uri.parse(report.snapshot.document.uri)
         const key = this.key(source, owner),
             ticket = ++this.sequence
-        this.pending.set(key, ticket)
-        if (this.disposed || !(await valid()) || this.pending.get(key) !== ticket) return false
+        this.pending.set(key, { ticket, source, dependencies: report.snapshot.dependencies.map((d) => d.uri) })
+        if (this.disposed || !(await valid()) || this.pending.get(key)?.ticket !== ticket) {
+            if (this.pending.get(key)?.ticket === ticket) this.pending.delete(key)
+            return false
+        }
         const entries = report.issues.map((issue) => {
             const location = issue.location
             const uri = location ? vscode.Uri.parse(location.uri) : source
@@ -77,7 +81,7 @@ export class PreviewSourceProblems implements vscode.Disposable {
             const message = `${exact ? '' : 'Model-level issue; location unavailable. '}${issue.title}`
             const severity = issue.severity === 'error' ? vscode.DiagnosticSeverity.Error : issue.severity === 'warning' ? vscode.DiagnosticSeverity.Warning : vscode.DiagnosticSeverity.Information
             const diagnostic = new vscode.Diagnostic(new vscode.Range(line, 0, line, 0), message.slice(0, 8192), severity)
-            diagnostic.source = 'OpenSCAD CLI'
+            diagnostic.source = issue.source === 'mesh' ? 'CAD Mesh' : 'OpenSCAD CLI'
             diagnostic.code = issue.code
             diagnostic.relatedInformation = uri.toString() === source.toString() ? undefined : [new vscode.DiagnosticRelatedInformation(new vscode.Location(source, new vscode.Range(0, 0, 0, 0)), `Report ${report.reportId}; snapshot ${report.snapshot.id}`)]
             return { uri, diagnostic, issueId: issue.id }
@@ -95,8 +99,13 @@ export class PreviewSourceProblems implements vscode.Disposable {
     }
     invalidate(uri: vscode.Uri) {
         const key = uri.toString()
-        this.pending.clear()
+        for (const [owner, pending] of this.pending) if (pending.source.toString() === key || pending.dependencies.includes(key)) this.pending.delete(owner)
         for (const [owner, result] of this.results) if (result.source.toString() === key || result.dependencies.includes(key) || result.entries.some((e) => e.uri.toString() === key)) this.results.delete(owner)
+        this.publish()
+    }
+    invalidateScad() {
+        for (const [key, value] of this.results) if (/\.(scad|csg)$/i.test(value.source.path)) this.results.delete(key)
+        for (const [key, value] of this.pending) if (/\.(scad|csg)$/i.test(value.source.path)) this.pending.delete(key)
         this.publish()
     }
     invalidateAll() {
@@ -126,6 +135,10 @@ export class PreviewSourceProblems implements vscode.Disposable {
             this.publish()
             return false
         }
+        if (/\.(stl|3mf)$/i.test(result.source.path) && result.reportId) {
+            await vscode.commands.executeCommand('scad-ai-ide.model.openReport', result.reportId)
+            return true
+        }
         await vscode.workspace.openTextDocument(result.source)
         if (this.results.get(key) !== result || result.stamp !== this.stamp(result.source)) return false
         if (result.valid && !(await result.valid())) return false
@@ -147,13 +160,13 @@ export class PreviewSourceProblems implements vscode.Disposable {
                 return this.results.has(key) ? this.openOwned(key, revision, index as number) : this.openLegacy(key, revision, index as number)
             }),
             vscode.languages.registerCodeActionsProvider(
-                [{ pattern: '**/*.[sS][cC][aA][dD]' }, { pattern: '**/*.[cC][sS][gG]' }],
+                [{ pattern: '**/*.[sS][cC][aA][dD]' }, { pattern: '**/*.[cC][sS][gG]' }, { pattern: '**/*.[sS][tT][lL]' }, { pattern: '**/*.3[mM][fF]' }],
                 {
                     provideCodeActions: (document, range, context) =>
                         [...this.results].flatMap(([key, result]) =>
                             result.entries.flatMap((entry, index) => {
                                 if (entry.uri.toString() !== document.uri.toString() || !entry.diagnostic.range.intersection(range) || !context.diagnostics.some((d) => d.source === entry.diagnostic.source && d.message === entry.diagnostic.message && d.range.isEqual(entry.diagnostic.range))) return []
-                                const action = new vscode.CodeAction('Preview: open source at this error', vscode.CodeActionKind.QuickFix)
+                                const action = new vscode.CodeAction(/\.(stl|3mf)$/i.test(document.uri.path) ? 'CAD: open verification report' : 'Preview: open source at this error', vscode.CodeActionKind.QuickFix)
                                 action.diagnostics = [entry.diagnostic]
                                 action.command = { command: OPEN_PREVIEW_PROBLEM_SOURCE, title: action.title, arguments: [key, result.reportId ?? result.stamp ?? '', index] }
                                 return [action]
@@ -174,7 +187,8 @@ export class PreviewSourceProblems implements vscode.Disposable {
                 const key = entry.uri.toString(),
                     d = entry.diagnostic
                 const group = grouped.get(key) ?? { uri: entry.uri, diagnostics: [], seen: new Set<string>() }
-                let semanticCode = d.code, semanticMessage = d.message
+                let semanticCode = d.code,
+                    semanticMessage = d.message
                 if (d.source === 'OpenSCAD Preview' && d.code === 'PREVIEW_RENDER_FAILED') {
                     const normalized = normalizeCliDiagnostics(d.message, 0)
                     if (normalized.length === 1 && normalized[0].line === d.range.start.line && normalized[0].code !== 'SCAD_CLI_ERROR') {

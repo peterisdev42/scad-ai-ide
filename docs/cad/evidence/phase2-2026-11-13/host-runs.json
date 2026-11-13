@@ -1,0 +1,51 @@
+[
+  {
+    "label": "stable",
+    "productCommit": "d43e3285d58d85fba764846f02f4a79c5dcadd24",
+    "command": "node node_modules/@vscode/test-cli/out/bin.mjs",
+    "exitCode": 0,
+    "signal": null,
+    "elapsedMs": 34577,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-delivery-stable.log",
+    "passing": 51,
+    "failing": 0,
+    "environment": {
+      "SCAD_TEST_TRUSTED_FIXTURE": "1",
+      "SCAD_TEST_WORKSPACE": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-delivery-stable/workspace",
+      "SCAD_TEST_USER_DATA": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-delivery-stable/profile",
+      "SCAD_MESH_EVIDENCE": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-delivery-stable/evidence",
+      "SCAD_OPENSCAD_EXECUTABLE": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+      "SCAD_TEST_OPENSCAD": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+      "SCAD_PREVIEW_EXPORTER": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/preview-exporter/openscad-2026.11-RC0/bin/openscad-preview-exporter",
+      "SCAD_TEST_FOCUS_HELPER": "/Users/q/Documents/Code/scad-ai-ide/.build/customizer-focus",
+      "SCAD_TEST_FOCUS_APP": "/Applications/Visual Studio Code.app",
+      "SCAD_VSCODE_EXECUTABLE": "/Applications/Visual Studio Code.app/Contents/MacOS/Code"
+    },
+    "rawLogSha256": "626dcdc147f9bc447ee5a0351fe166f70179e7950aece794e873b5640f85711e",
+    "evidenceLog": "host-stable.txt"
+  },
+  {
+    "label": "minimum",
+    "productCommit": "d43e3285d58d85fba764846f02f4a79c5dcadd24",
+    "command": "node node_modules/@vscode/test-cli/out/bin.mjs",
+    "exitCode": 0,
+    "signal": null,
+    "elapsedMs": 25184,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-delivery-minimum.log",
+    "passing": 51,
+    "failing": 0,
+    "environment": {
+      "SCAD_TEST_TRUSTED_FIXTURE": "1",
+      "SCAD_TEST_WORKSPACE": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-delivery-minimum/workspace",
+      "SCAD_TEST_USER_DATA": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-delivery-minimum/profile",
+      "SCAD_MESH_EVIDENCE": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-delivery-minimum/evidence",
+      "SCAD_OPENSCAD_EXECUTABLE": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+      "SCAD_TEST_OPENSCAD": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+      "SCAD_PREVIEW_EXPORTER": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/preview-exporter/openscad-2026.11-RC0/bin/openscad-preview-exporter",
+      "SCAD_TEST_FOCUS_HELPER": "/Users/q/Documents/Code/scad-ai-ide/.build/customizer-focus",
+      "SCAD_TEST_FOCUS_APP": "/Users/q/Documents/Code/scad-ai-ide/.vscode-test/vscode-darwin-arm64-1.140.0/Visual Studio Code.app"
+    },
+    "rawLogSha256": "7745f5cb3d86da27126eb14538ce48e5c54f603e0f207691dc554405fb701875",
+    "evidenceLog": "host-minimum.txt"
+  }
+]

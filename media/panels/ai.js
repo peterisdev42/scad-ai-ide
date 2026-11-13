@@ -1,7 +1,7 @@
 // All content is metadata from the shared capability catalog; no tool is executed here.
 if (page === 'ai') {
     const groups = [
-        { label: 'CAD diagnostics', prefixes: ['cad.'] },
+        { label: 'CAD verification', prefixes: ['cad.'] },
         { label: 'Runtime', prefixes: ['runtime.'] },
         { label: 'Customizer', prefixes: ['customizer.'] },
         { label: 'Libraries', prefixes: ['libraries.'] },
@@ -64,6 +64,7 @@ if (page === 'ai') {
                 const policy = element('td', riskLabels[capability.risk] ?? capability.risk)
                 const availability = element('td')
                 availability.append(element('span', capability.availability.enabled ? 'Available' : 'Restricted', capability.availability.enabled ? 'badge success' : 'badge'))
+                if (capability.availability.detail) availability.append(element('p', capability.availability.detail, 'small muted'))
                 if (!capability.availability.enabled) availability.append(element('p', reasonLabels[capability.availability.reasonCode] ?? capability.availability.reasonCode ?? 'Unavailable', 'small muted'))
                 row.append(title, description, tool, policy, availability)
                 body.append(row)

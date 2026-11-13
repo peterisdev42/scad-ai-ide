@@ -19,7 +19,7 @@ export interface CapabilityDefinition {
     service: string
     gui: string
 }
-export interface Availability { enabled: boolean; reasonCode?: string }
+export interface Availability { enabled: boolean; reasonCode?: string; detail?: string }
 export interface CapabilityHandler {
     available(context: CapabilityContext): Availability
     invoke(input: Record<string, unknown>, context: CapabilityContext): Promise<unknown> | unknown

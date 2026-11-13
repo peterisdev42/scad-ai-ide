@@ -46,5 +46,11 @@
     "kind": "Skill",
     "name": "openscad-model-debugging",
     "description": "Diagnose and repair OpenSCAD compiler, assert, missing-library and unknown-symbol problems using current Problems and snapshot-bound official CLI evidence. Does not prove mesh validity, assembly clearance or printability."
+  },
+  {
+    "path": "./skills/openscad-geometry-verification/SKILL.md",
+    "kind": "Skill",
+    "name": "openscad-geometry-verification",
+    "description": "Verify and measure raw SCAD/CSG/STL/3MF geometry, inspect mesh issues and request snapshot-bound multi-view PNG evidence without opening Preview."
   }
 ]

@@ -1,0 +1,74 @@
+[
+  {
+    "command": "npm run check-types",
+    "exitCode": 0,
+    "signal": null,
+    "elapsedMs": 2650,
+    "pass": 0,
+    "fail": 0,
+    "skipped": 0,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-delivery-node/check-types.log",
+    "sha256": "b126c241cbba8b206f08d3660705be6345679e3d0212fdd14f6f14abf938adad",
+    "evidenceLog": "node-check-types.txt"
+  },
+  {
+    "command": "npm run lint",
+    "exitCode": 0,
+    "signal": null,
+    "elapsedMs": 1306,
+    "pass": 0,
+    "fail": 0,
+    "skipped": 0,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-delivery-node/lint.log",
+    "sha256": "9733fca2b567c3403d4db443ce064674568f419c45f267369b70fb01d416b24c",
+    "evidenceLog": "node-lint.txt"
+  },
+  {
+    "command": "npm run check:agents",
+    "exitCode": 0,
+    "signal": null,
+    "elapsedMs": 236,
+    "pass": 0,
+    "fail": 0,
+    "skipped": 0,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-delivery-node/check-agents.log",
+    "sha256": "1fce318a4d17fe49c9c1c44287edc9a0ea9e31fc9e4711d77b61a3388a7547d9",
+    "evidenceLog": "node-check-agents.txt"
+  },
+  {
+    "command": "npm run test",
+    "exitCode": 0,
+    "signal": null,
+    "elapsedMs": 6830,
+    "pass": 396,
+    "fail": 0,
+    "skipped": 3,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-delivery-node/test.log",
+    "sha256": "17e1c6e7f7083b1ea96964d9b4ac7bea423c4e575f5c74e773bd1789b242197d",
+    "evidenceLog": "node-test.txt"
+  },
+  {
+    "command": "npm run test:agents:manifest",
+    "exitCode": 0,
+    "signal": null,
+    "elapsedMs": 557,
+    "pass": 2,
+    "fail": 0,
+    "skipped": 0,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-delivery-node/test-agents-manifest.log",
+    "sha256": "3f514f6fa1399bd4c698f6c6ec3fb0302087c436eb81761445fe82078cf877e0",
+    "evidenceLog": "node-test-agents-manifest.txt"
+  },
+  {
+    "command": "npm run test:customizer:compatibility",
+    "exitCode": 0,
+    "signal": null,
+    "elapsedMs": 1900,
+    "pass": 42,
+    "fail": 0,
+    "skipped": 0,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-delivery-node/test-customizer-compatibility.log",
+    "sha256": "31b90a51cb83572735d35b7cc8046998593ea305a1bf769b814c250c1f2ebd8b",
+    "evidenceLog": "node-test-customizer-compatibility.txt"
+  }
+]

@@ -16,6 +16,7 @@ export function createNotifications(center: NotificationCenter, executeCommand: 
     const renderFailed = (error: Error, showOutput: () => void, scope?: string) => (error instanceof RuntimeUnavailableError ? runtimeUnavailable() : center.notify({ id: 'preview.renderFailed', scope, severity: 'error', fingerprint: error.message, message: `OpenSCAD render failed: ${error.message.split('\n')[0]}`, actions: [{ label: 'Show Output', run: showOutput }] }))
 
     return {
+        geometryImagesUnavailable: (reason: string, scope: string) => center.notify({ id: 'cad.imagesUnavailable', scope, severity: 'info', message: `CAD images unavailable: ${reason}` }),
         reset: () => center.reset(),
         dispose: () => center.dispose(),
         runtimeUnavailable,

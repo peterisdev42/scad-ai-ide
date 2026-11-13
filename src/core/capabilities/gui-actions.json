@@ -723,7 +723,7 @@
     }
   },
   {
-    "group": "CAD diagnostic commands",
+    "group": "CAD commands",
     "source": "src/features/cad-verification/registerCadVerification.ts",
     "pattern": "registerCommand\\('([^']+)'",
     "actions": {
@@ -743,6 +743,46 @@
       },
       "scad-ai-ide.model.openReport": {
         "uiOnly": "Reveal a stored read-only report; computation and issue facts are already exposed through CAD capabilities."
+      },
+      "scad-ai-ide.model.verify": {
+        "capabilities": [
+          "cad.modelAnalyze"
+        ],
+        "examples": [
+          {
+            "capability": "cad.modelAnalyze",
+            "input": {
+              "uri": "file:///workspace/model.stl",
+              "mode": "verify"
+            }
+          }
+        ]
+      },
+      "scad-ai-ide.model.measure": {
+        "capabilities": [
+          "cad.modelMeasure"
+        ],
+        "examples": [
+          {
+            "capability": "cad.modelMeasure",
+            "input": {
+              "uri": "file:///workspace/model.stl"
+            }
+          }
+        ]
+      },
+      "scad-ai-ide.model.renderViews": {
+        "capabilities": [
+          "cad.modelRenderViews"
+        ],
+        "examples": [
+          {
+            "capability": "cad.modelRenderViews",
+            "input": {
+              "uri": "file:///workspace/model.stl"
+            }
+          }
+        ]
       }
     }
   }

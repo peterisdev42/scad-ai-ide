@@ -1,0 +1,8 @@
+{
+  "query": "使用附带的 openscad-geometry-verification Skill。仅检查 file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/mesh-native-f5-1H1YwH/workspace/model.stl，不要修改或保存文件，不要使用终端或管理工具。依次完成：1 调用 scad_ai_ide_model_analyze，uri用上述文件，mode=verify；2 用该reportId调用 scad_ai_ide_model_measure，读取signedVolume和physicalVolume；3 用同一reportId及分析返回的问题ID调用 scad_ai_ide_model_getIssue，includeEvidence=true；4 用该reportId调用 scad_ai_ide_model_renderViews，cameras=[\"iso\"],delivery=\"metadata\"。最后用不超过150字总结负signed volume与可信physical volume的区别、units、未决项和图片状态，列出reportId和snapshotId后立即结束。禁止自动修复。",
+  "file": "/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/mesh-native-f5-1H1YwH/workspace/model.stl",
+  "sourceSha256": "296420886dcf42bfaa1dfe7b0a9194ac6b671ddf4d02cfe38c56eaa1356d8c5f",
+  "scope": "One real Native Agent attempt; 240 seconds total; no edits",
+  "saveBeforeSend": false,
+  "autoSave": "off"
+}

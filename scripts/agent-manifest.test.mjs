@@ -12,7 +12,7 @@ const files = [
     'src/core/capabilities/catalog.json', 'src/core/capabilities/gui-actions.json', 'src/core/capabilities/resources.json',
     'docs/gui-agent-parity.md', 'docs/agent-capability-catalog.md',
     ...['openscad', 'openscad-customizer'].map(name => `instructions/${name}.instructions.md`),
-    ...['openscad-runtime', 'openscad-libraries', 'openscad-customizer', 'openscad-customizer-authoring', 'scad-ai-ide-diagnostics', 'openscad-model-debugging'].map(name => `skills/${name}/SKILL.md`),
+    ...['openscad-runtime', 'openscad-libraries', 'openscad-customizer', 'openscad-customizer-authoring', 'scad-ai-ide-diagnostics', 'openscad-model-debugging', 'openscad-geometry-verification'].map(name => `skills/${name}/SKILL.md`),
     ...['AgentToolAdapter.ts', 'registerAgentTools.ts', 'registerCapabilities.ts'].map(name => `src/features/agents/${name}`),
     ...groups.map(group => group.source),
 ]
@@ -32,7 +32,7 @@ for (const [label, newline] of [['LF', '\n'], ['CRLF', '\r\n']]) {
             const check = () => spawnSync(process.execPath, [path.join(fixture, 'scripts/agent-manifest.mjs')], { encoding: 'utf8' })
             let result = check()
             assert.equal(result.status, 0, result.stderr)
-            assert.match(result.stdout, /Validated 42 tools, 2 instruction and 6 skills/)
+            assert.match(result.stdout, /Validated 44 tools, 2 instruction and 7 skills/)
             const resource = path.join(fixture, 'src/core/capabilities/resources.json')
             const data = JSON.parse(await readFile(resource, 'utf8'))
             data[0].description += ' stale description'

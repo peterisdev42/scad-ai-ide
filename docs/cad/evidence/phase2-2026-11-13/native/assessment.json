@@ -1,0 +1,38 @@
+{
+  "gate": "FAIL",
+  "originalHarnessPass": false,
+  "scenarioAttempts": 1,
+  "sourceProductCommit": "f823678",
+  "notFinalProductBundle": true,
+  "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+  "elapsedMs": 134251,
+  "expectedCameras": [
+    "iso"
+  ],
+  "actualCameras": [
+    "iso",
+    "front",
+    "top"
+  ],
+  "originalFailure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n3 !== 1\n",
+  "independentPosthocFacts": {
+    "fourToolsExecuted": true,
+    "snapshotConsistent": true,
+    "signedVolume": {
+      "status": "PASS",
+      "value": -1,
+      "errorEstimate": 9.325873406851315e-15,
+      "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+    },
+    "physicalVolume": {
+      "status": "UNRESOLVED",
+      "value": null,
+      "reason": "SOLID_OR_DOCUMENT_UNION_NOT_PROVEN"
+    },
+    "units": "modelUnits",
+    "noWrites": true,
+    "sourceMeshHashMatches": true,
+    "allFourSchemasReachedProvider": true
+  },
+  "note": "Independent fact checks do not override the failed original oracle. No second Agent attempt was run."
+}

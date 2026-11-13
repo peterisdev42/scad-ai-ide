@@ -1,0 +1,90 @@
+{
+  "date": "2026-11-13T08:14:10.602Z",
+  "baseline": "3e3628a12eeb64699815224a6a96221e1aa49c62",
+  "productHead": "d43e3285d58d85fba764846f02f4a79c5dcadd24",
+  "branch": "codex/cad-mesh-measurements",
+  "mainUnmodified": "8a3ff1fe394b11aeb7fb323e7319bd365d29abaa",
+  "dependsOn": "https://github.com/peterisdev42/scad-ai-ide/pull/2",
+  "pullRequest": "https://github.com/peterisdev42/scad-ai-ide/pull/3",
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v24.16.0",
+    "osRelease": "27.0.0",
+    "officialCli": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+    "officialVersion": "OpenSCAD version 2026.11-RC0",
+    "stableDiscovery": "1.146.0"
+  },
+  "gates": {
+    "functionalChecks": "PASS (Node + CLI + full Host in both versions)",
+    "installedFull": "FAIL (native window focus); geometry slice PASS",
+    "realAgent": "FAIL (single earlier-candidate attempt: requested iso, omitted camera and got three defaults)",
+    "finalCandidateRealAgent": "NOT_RUN (no second scenario attempt)",
+    "crossPlatform": "NOT_RUN; Windows Unicode KNOWN_PLATFORM_GAP retained",
+    "overallP2": "NOT_FULLY_CLOSED"
+  },
+  "results": {
+    "default": {
+      "pass": 396,
+      "skip": 3,
+      "exitCode": 0
+    },
+    "mesh": {
+      "pass": 23,
+      "exitCode": 0
+    },
+    "host": {
+      "minimum": {
+        "version": "1.140.0",
+        "pass": 51,
+        "exitCode": 0
+      },
+      "stable": {
+        "version": "1.146.0",
+        "pass": 51,
+        "exitCode": 0
+      }
+    },
+    "manifest": {
+      "pass": 2,
+      "exitCode": 0
+    },
+    "customizerCompatibility": {
+      "pass": 42,
+      "exitCode": 0
+    },
+    "officialCli": {
+      "pass": 1,
+      "exitCode": 0
+    },
+    "installedFull": {
+      "exitCode": 1
+    },
+    "native": {
+      "attempts": 1,
+      "elapsedMs": 134251,
+      "exitCode": 1,
+      "pass": false,
+      "productCommit": "f823678"
+    }
+  },
+  "archive": {
+    "path": "/Users/q/Documents/Code/scad-ai-ide/.build/scad-ai-ide-phase2.vsix",
+    "sha256": "06807da7b608a06d9277474b48a8c93a831e723c8061eadfc24a5454a12d7fe8",
+    "bytes": 4712523,
+    "tools": 44,
+    "skills": 7,
+    "extensionBundleSha256": "bc9826a076495fe9d35a56620447f461b23a5c6c014cb18363d54dcdb26a2207",
+    "workerSha256": "c8d9fdcfadec694f71b82a4cf038eef84f706603578d49908addc919d80856fb",
+    "contractCheckExitCode": 0
+  },
+  "notRun": [
+    "Linux/Windows/remote native Host and installed acceptance",
+    "full 128/256/512 MiB and million-vertex endurance/RSS profiling",
+    "actual untrusted Host window (service/dispatcher denial tests passed)",
+    "Provider consumption of inline images (Host native DataPart/fallback tested)",
+    "final-candidate real Agent replay; no second attempt authorized by plan"
+  ],
+  "p1Tracking": "docs/cad-gate-p1-followup.md unchanged",
+  "deliveryHeadBeforeLinkCommit": "0b496596e1c2294f1a351eed743816af4d0d571d"
+}

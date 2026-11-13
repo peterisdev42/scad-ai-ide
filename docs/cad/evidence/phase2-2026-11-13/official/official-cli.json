@@ -1,0 +1,70 @@
+{
+  "scope": "Real official CLI and raw Worker; not Host/Agent/cross-platform",
+  "platform": "darwin",
+  "executable": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+  "records": [
+    {
+      "name": "box",
+      "sha256": "e369f5baf047c8eec12d84899e36d2f0b05672b993f505eed85ba9a65abd30bf",
+      "triangles": 12,
+      "physicalVolume": {
+        "status": "PASS",
+        "value": 24,
+        "errorEstimate": 2.2382096176443156e-13,
+        "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+      }
+    },
+    {
+      "name": "frozen-png",
+      "sourceMeshSha256": "e369f5baf047c8eec12d84899e36d2f0b05672b993f505eed85ba9a65abd30bf",
+      "pngSha256": "56e2874d7fd1e344178f29888e85df7a1e655d5616ac6bb387b476f8b47c062b",
+      "width": 512,
+      "height": 512
+    },
+    {
+      "name": "cavity",
+      "sha256": "fb2f4b4d0d17a439afcaabb2dd508f79f0215dafea8947eadb2a1ecd5314f9c6",
+      "triangles": 24,
+      "physicalVolume": {
+        "status": "PASS",
+        "value": 26,
+        "errorEstimate": 2.424727085781342e-13,
+        "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+      }
+    },
+    {
+      "name": "csg-input",
+      "sourceSha256": "215d02680d29c84c459c12521aff1c433c4688dd95acf1b65ad3ff6f461eff39",
+      "meshSha256": "e369f5baf047c8eec12d84899e36d2f0b05672b993f505eed85ba9a65abd30bf",
+      "physicalVolume": 24
+    },
+    {
+      "name": "cylinder",
+      "fn": 12,
+      "meshSha256": "525a4b588eaa3a266af0b495aff98f7f0e64a63ac2520b0fbc30b3d11dcd96b9",
+      "triangles": 44,
+      "volume": {
+        "status": "PASS",
+        "value": 5.999999892310612,
+        "errorEstimate": 5.595523943681029e-14,
+        "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+      }
+    },
+    {
+      "name": "cylinder",
+      "fn": 48,
+      "meshSha256": "c383a8bd9aa1d96e87711f8c052ac5699c8fc72c3ac8ec81f6e263ca8ee3661f",
+      "triangles": 188,
+      "volume": {
+        "status": "PASS",
+        "value": 6.265257107290168,
+        "errorEstimate": 5.842899464396357e-14,
+        "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+      }
+    }
+  ],
+  "empty": {
+    "status": "FAILED",
+    "empty": true
+  }
+}

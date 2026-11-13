@@ -1,0 +1,103 @@
+{
+  "scope": "Preserved failed development runs, not replaced by final success",
+  "runs": [
+    {
+      "log": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-host-full-min.log",
+      "sha256": "afebd547a3d7cf56f8643943c5362aae42a6f0f92770ede187ddd042c5344924",
+      "passing": 48,
+      "failing": 3,
+      "observedFailures": [
+        "    1) agent source transaction preserves the earlier unsaved buffer through native Undo and Redo",
+        "    2) editor source transaction preserves the earlier unsaved buffer through native Undo and Redo",
+        "    3) native Enter indents unbraced bodies once, nested vectors and block comments",
+        "  1) Agent capabilities extension host",
+        "      AssertionError [ERR_ASSERTION]: Undo/Redo did not establish its exact buffer: {\"phase\":\"native undo\",\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:100]\\n\",\"inputTrace\":[{\"phase\":\"initial\",\"version\":2,\"changes\":[{\"offset\":0,\"length\":0,\"text\":\"// Earlier unsaved user change\\n\"}],\"buffer\":\"// Earlier unsaved user change\\nwidth=40;\\n\"},{\"phase\":\"initial\",\"version\":2,\"changes\":[],\"buffer\":\"// Earlier unsaved user change\\nwidth=40;\\n\"},{\"phase\":\"applying source transaction\",\"version\":3,\"changes\":[{\"offset\":40,\"length\":0,\"text\":\" // [10:100]\"}],\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:100]\\n\"}]}",
+        "  2) Agent capabilities extension host",
+        "      AssertionError [ERR_ASSERTION]: Undo/Redo did not establish its exact buffer: {\"phase\":\"native undo\",\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:100]\\n\",\"inputTrace\":[{\"phase\":\"initial\",\"version\":2,\"changes\":[{\"offset\":0,\"length\":0,\"text\":\"// Earlier unsaved user change\\n\"}],\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:0:100]\\n\"},{\"phase\":\"initial\",\"version\":2,\"changes\":[],\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:0:100]\\n\"},{\"phase\":\"applying source transaction\",\"version\":3,\"changes\":[{\"offset\":48,\"length\":2,\"text\":\"\"}],\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:100]\\n\"}]}",
+        "  3) OpenSCAD language integration",
+        "      AssertionError [ERR_ASSERTION]: Timed out waiting for VS Code editor state"
+      ]
+    },
+    {
+      "log": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-host-full-stable.log",
+      "sha256": "e38c671c27e804bd6c11d21c38946f019b91748e4c01179c63e4213b78440932",
+      "passing": 50,
+      "failing": 1,
+      "observedFailures": [
+        "    1) unreadable constraints cannot revive a cached PASS and unresolved report stays readable",
+        "  1) CAD verification Extension Host",
+        "      AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:"
+      ]
+    },
+    {
+      "log": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-host-final-min.log",
+      "sha256": "394d6bb22d6321d113bab757e4b5ebe21ed48cf99f34e8b5da80eb2a39e4de03",
+      "passing": 47,
+      "failing": 4,
+      "observedFailures": [
+        "    1) official Full Render evaluates dirty root and dependencies, freezes images, supports inline and empty semantics",
+        "    2) agent source transaction preserves the earlier unsaved buffer through native Undo and Redo",
+        "    3) editor source transaction preserves the earlier unsaved buffer through native Undo and Redo",
+        "    4) native Enter indents unbraced bodies once, nested vectors and block comments",
+        "  1) Raw mesh verification Extension Host",
+        "      AssertionError [ERR_ASSERTION]: {\"ok\":false,\"capabilityId\":\"cad.modelAnalyze\",\"error\":{\"code\":\"SNAPSHOT_CHANGED\",\"message\":\"Input generation changed during verification.\",\"retryable\":true},\"operation\":{\"id\":\"673b0f81-30ed-4af3-81f2-eeacdff1afe1\",\"capabilityId\":\"cad.modelAnalyze\",\"status\":\"failed\",\"message\":\"Verifying the frozen raw mesh; no mesh repair is applied.\",\"error\":{\"code\":\"SNAPSHOT_CHANGED\",\"message\":\"Input generation changed during verification.\",\"retryable\":true}}}",
+        "  2) Agent capabilities extension host",
+        "      AssertionError [ERR_ASSERTION]: Undo/Redo did not establish its exact buffer: {\"phase\":\"native undo\",\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:100]\\n\",\"inputTrace\":[{\"phase\":\"initial\",\"version\":2,\"changes\":[{\"offset\":0,\"length\":0,\"text\":\"// Earlier unsaved user change\\n\"}],\"buffer\":\"// Earlier unsaved user change\\nwidth=40;\\n\"},{\"phase\":\"initial\",\"version\":2,\"changes\":[],\"buffer\":\"// Earlier unsaved user change\\nwidth=40;\\n\"},{\"phase\":\"applying source transaction\",\"version\":3,\"changes\":[{\"offset\":40,\"length\":0,\"text\":\" // [10:100]\"}],\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:100]\\n\"}]}",
+        "  3) Agent capabilities extension host",
+        "      AssertionError [ERR_ASSERTION]: Undo/Redo did not establish its exact buffer: {\"phase\":\"native undo\",\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:100]\\n\",\"inputTrace\":[{\"phase\":\"initial\",\"version\":2,\"changes\":[{\"offset\":0,\"length\":0,\"text\":\"// Earlier unsaved user change\\n\"}],\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:0:100]\\n\"},{\"phase\":\"initial\",\"version\":2,\"changes\":[],\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:0:100]\\n\"},{\"phase\":\"applying source transaction\",\"version\":3,\"changes\":[{\"offset\":48,\"length\":2,\"text\":\"\"}],\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:100]\\n\"}]}",
+        "  4) OpenSCAD language integration",
+        "      AssertionError [ERR_ASSERTION]: Timed out waiting for VS Code editor state"
+      ]
+    },
+    {
+      "log": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-host-candidate-min.log",
+      "sha256": "e53f37f80ef89c930600a42c406e3947b447b3c7daaaa4fedefe9568513099b2",
+      "passing": 50,
+      "failing": 1,
+      "observedFailures": [
+        "    1) dirty mesh buffers are explicitly unresolved and binary defects navigate by report",
+        "  1) Raw mesh verification Extension Host",
+        "      AssertionError [ERR_ASSERTION]: {\"ok\":false,\"capabilityId\":\"cad.modelAnalyze\",\"error\":{\"code\":\"CANCELLED\",\"message\":\"Geometry analysis cancelled\",\"retryable\":true},\"operation\":{\"id\":\"b975e14e-dbc4-4588-b8df-6f0e8c6d4d20\",\"capabilityId\":\"cad.modelAnalyze\",\"status\":\"cancelled\",\"message\":\"Verifying the frozen raw mesh; no mesh repair is applied.\",\"error\":{\"code\":\"CANCELLED\",\"message\":\"Geometry analysis cancelled\",\"retryable\":true}}}"
+      ]
+    },
+    {
+      "log": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-host-release-stable.log",
+      "sha256": "7761d44c23d4d1a19c85dd82750d3be64a08f0065064a201ee4095bd475ab295",
+      "passing": 50,
+      "failing": 1,
+      "observedFailures": [
+        "    1) unreadable constraints cannot revive a cached PASS and unresolved report stays readable",
+        "  1) CAD verification Extension Host",
+        "     Error: Analysis is historical because inputs changed. Re-run analysis."
+      ]
+    },
+    {
+      "log": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-final-stable.log",
+      "sha256": "cced428cfbcf357b193eb6300fcb62660e469a9149b24d0fae706b7158947348",
+      "passing": 48,
+      "failing": 3,
+      "observedFailures": [
+        "    1) agent source transaction preserves the earlier unsaved buffer through native Undo and Redo",
+        "    2) editor source transaction preserves the earlier unsaved buffer through native Undo and Redo",
+        "    3) native Enter indents unbraced bodies once, nested vectors and block comments",
+        "  1) Agent capabilities extension host",
+        "      AssertionError [ERR_ASSERTION]: Undo/Redo did not establish its exact buffer: {\"phase\":\"native undo\",\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:100]\\n\",\"inputTrace\":[{\"phase\":\"initial\",\"version\":2,\"changes\":[{\"offset\":0,\"length\":0,\"text\":\"// Earlier unsaved user change\\n\"}],\"buffer\":\"// Earlier unsaved user change\\nwidth=40;\\n\"},{\"phase\":\"initial\",\"version\":2,\"changes\":[],\"buffer\":\"// Earlier unsaved user change\\nwidth=40;\\n\"},{\"phase\":\"applying source transaction\",\"version\":3,\"changes\":[{\"offset\":40,\"length\":0,\"text\":\" // [10:100]\"}],\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:100]\\n\"}]}",
+        "  2) Agent capabilities extension host",
+        "      AssertionError [ERR_ASSERTION]: Undo/Redo did not establish its exact buffer: {\"phase\":\"native undo\",\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:100]\\n\",\"inputTrace\":[{\"phase\":\"initial\",\"version\":2,\"changes\":[{\"offset\":0,\"length\":0,\"text\":\"// Earlier unsaved user change\\n\"}],\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:0:100]\\n\"},{\"phase\":\"initial\",\"version\":2,\"changes\":[],\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:0:100]\\n\"},{\"phase\":\"applying source transaction\",\"version\":3,\"changes\":[{\"offset\":48,\"length\":2,\"text\":\"\"}],\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:100]\\n\"}]}",
+        "  3) OpenSCAD language integration",
+        "      AssertionError [ERR_ASSERTION]: Timed out waiting for VS Code editor state"
+      ]
+    },
+    {
+      "log": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-closeout-minimum.log",
+      "sha256": "8a5352e9282fb69a0014516add2b463a74cf167c5d51a867ced8cf2368c04e7d",
+      "passing": 50,
+      "failing": 1,
+      "observedFailures": [
+        "    1) dirty mesh buffers are explicitly unresolved and binary defects navigate by report",
+        "  1) Raw mesh verification Extension Host",
+        "      AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:"
+      ]
+    }
+  ]
+}

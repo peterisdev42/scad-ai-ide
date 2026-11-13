@@ -9,6 +9,6 @@ export function registerAgentTools(context: vscode.ExtensionContext, services: C
     const capabilities = registerCapabilities(services)
     capabilities.dispatcher.onCompleted = (id, operationId, status) => output.appendLine(`${id} ${operationId ?? '-'} ${status}`)
     context.subscriptions.push(capabilities, services.development)
-    for (const definition of capabilityCatalog) context.subscriptions.push(vscode.lm.registerTool(definition.toolName, new AgentToolAdapter(definition, capabilities.dispatcher)))
+    for (const definition of capabilityCatalog) context.subscriptions.push(vscode.lm.registerTool(definition.toolName, new AgentToolAdapter(definition, capabilities.dispatcher, services.cad?.geometry ? (result) => services.cad!.geometry!.imagePayloads(result) : undefined)))
     return capabilities.dispatcher
 }

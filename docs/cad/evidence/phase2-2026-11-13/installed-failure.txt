@@ -1,0 +1,5 @@
+AssertionError [ERR_ASSERTION]: Installed Host observation timed out
+	at waitFor (/private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-ZHrTJh/test.cjs:12:20)
+	at async exports.run (/private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-ZHrTJh/test.cjs:120:5)
+                reject(new TestRunFailedError(code ?? undefined, signal ?? undefined));
+TestRunFailedError: Test run failed with code 1

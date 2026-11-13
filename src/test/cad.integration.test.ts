@@ -221,10 +221,10 @@ suite('CAD verification Extension Host', () => {
             external.dispose()
         }
     })
-    test('analysis rejects out-of-workspace targets and malformed geometry mode rather than expanding permissions', async () => {
+    test('analysis rejects out-of-workspace targets and unsupported analysis mode rather than expanding permissions', async () => {
         const outside = vscode.Uri.file(join(root, '..', '..', 'outside.scad'))
         await assert.rejects(api.cad.analyze({ uri: outside.toString() }))
-        const reply = await vscode.lm.invokeTool('scad_ai_ide_model_analyze', { input: { uri: vscode.Uri.file(join(root, 'owners.scad')).toString(), mode: 'verify' }, toolInvocationToken: undefined })
+        const reply = await vscode.lm.invokeTool('scad_ai_ide_model_analyze', { input: { uri: vscode.Uri.file(join(root, 'owners.scad')).toString(), mode: 'assembly' }, toolInvocationToken: undefined })
         const result = JSON.parse((reply.content[0] as vscode.LanguageModelTextPart).value)
         assert.equal(result.ok, false)
         assert.equal(result.error.code, 'INVALID_INPUT')
