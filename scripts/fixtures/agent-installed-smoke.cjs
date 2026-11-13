@@ -76,7 +76,7 @@ exports.run = async () => {
         await vscode.workspace.fs.writeFile(assemblySource,Buffer.from(assemblyText));await vscode.workspace.fs.writeFile(manifestUri,Buffer.from(manifestText))
         const declarations=await invoke('scad_ai_ide_model_listParts',{uri:manifestUri.toString()})
         const badAssembly=await invoke('scad_ai_ide_model_checkAssembly',{uri:manifestUri.toString(),expectedManifestDigest:declarations.manifestDigest});assert.equal(badAssembly.overallStatus,'FAIL')
-        await vscode.workspace.fs.writeFile(assemblySource,Buffer.from(assemblyText.replace('gap=0.18;','gap=0.30;')))
+        const assemblyDoc=await vscode.workspace.openTextDocument(assemblySource),assemblyEdit=new vscode.WorkspaceEdit();assemblyEdit.replace(assemblySource,new vscode.Range(assemblyDoc.positionAt(0),assemblyDoc.positionAt(assemblyDoc.getText().length)),assemblyText.replace('gap=0.18;','gap=0.30;'));assert.ok(await vscode.workspace.applyEdit(assemblyEdit));assert.ok(await assemblyDoc.save())
         const goodAssembly=await invoke('scad_ai_ide_model_checkAssembly',{uri:manifestUri.toString(),expectedManifestDigest:declarations.manifestDigest});assert.equal(goodAssembly.overallStatus,'PASS');assert.notEqual(goodAssembly.snapshotId,badAssembly.snapshotId)
         const assemblyMeasure=await invoke('scad_ai_ide_model_measure',{reportId:goodAssembly.reportId,partIds:['a']});assert.equal(assemblyMeasure.parts[0].physicalVolumeBound.lower,1)
         const assemblyImages=await invoke('scad_ai_ide_model_renderViews',{reportId:goodAssembly.reportId,cameras:['iso']});assert.equal(assemblyImages.renderStatus,'AVAILABLE');assert.equal(assemblyImages.snapshotId,goodAssembly.snapshotId)
