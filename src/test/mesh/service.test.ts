@@ -147,3 +147,53 @@ test('an oversized evidence report is rejected rather than returning an immediat
         await store.dispose()
     }
 })
+
+test('last caller cancellation during final capture cannot populate a cached PASS', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'cad-v2-final-cancel-')),
+        store = new ArtifactStore(dir),
+        queue = new OperationQueue()
+    let captures = 0,
+        executions = 0,
+        release!: () => void,
+        ready!: () => void
+    const blocked = new Promise<void>((resolve) => {
+            release = resolve
+        }),
+        reached = new Promise<void>((resolve) => {
+            ready = resolve
+        })
+    const service = new MeshVerificationService(
+        {
+            capture: async () => {
+                if (++captures === 2) {
+                    ready()
+                    await blocked
+                }
+                return capture(false)
+            },
+            materialize: async (source) => {
+                executions++
+                return { source, bytes: stl(), empty: false, executionStatus: 'SUCCEEDED', checks: [], issues: [], incomplete: [] }
+            },
+            analyze: async (bytes) => ({ executionStatus: 'SUCCEEDED', facts: await analyzeMesh(decodeMesh(bytes, 'stl')) }),
+            schedule: (task, signal) => queue.run(task, signal),
+        },
+        store,
+    )
+    try {
+        const abort = new AbortController(),
+            pending = service.verify({ uri: 'file:///workspace/model.stl' }, abort.signal)
+        await reached
+        abort.abort()
+        await assert.rejects(pending, /abort|cancel/i)
+        release()
+        await queue.run(async () => undefined)
+        assert.equal((await service.verify({ uri: 'file:///workspace/model.stl' })).overallStatus, 'PASS')
+        assert.equal(executions, 2)
+    } finally {
+        release()
+        service.dispose()
+        queue.dispose()
+        await store.dispose()
+    }
+})

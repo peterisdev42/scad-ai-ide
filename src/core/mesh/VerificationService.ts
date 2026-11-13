@@ -231,6 +231,7 @@ export class MeshVerificationService {
                         if (!facts && !checks.some((c) => c.status === 'FAIL' || c.status === 'UNRESOLVED')) checks.push({ id: 'mesh-analysis', category: 'mesh', required: true, status: 'UNRESOLVED', issueIds: [], reason: 'No complete mesh evidence was produced.' })
                         active.throwIfAborted()
                         const latest = await this.host.capture(input)
+                        active.throwIfAborted()
                         ensureGeneration()
                         if (latest.snapshot.sourceStateId !== source.snapshot.sourceStateId || latest.snapshot.inputEvidenceHash !== source.snapshot.inputEvidenceHash || digest(latest.stamps) !== digest(source.stamps)) throw new CapabilityError('SNAPSHOT_CHANGED', 'Inputs changed during geometry verification; no current result was published.', true)
                         for (const issue of issues) issue.evidenceIds = refs.map((r) => r.id)
