@@ -113,6 +113,12 @@ export function triangleIntersection(p: Predicates, a: Vec3[], b: Vec3[], shared
     if (sideB.every((v) => v === 0) && sideA.every((v) => v === 0)) {
         const axes = projection(na)
         if (shared.length === 3) return 'cross'
+        if (shared.length === 2) {
+            const aa = a.find((v) => !shared.some((q) => equal(v, q)))!,
+                bb = b.find((v) => !shared.some((q) => equal(v, q)))!
+            const side = (v: Vec3) => p.orient2d(shared[0][axes[0]], shared[0][axes[1]], shared[1][axes[0]], shared[1][axes[1]], v[axes[0]], v[axes[1]])
+            if (Math.sign(side(aa)) * Math.sign(side(bb)) > 0) return 'cross'
+        }
         for (const v of a) if (pointTriangle(p, v, b, axes) === 'inside') return 'cross'
         for (const v of b) if (pointTriangle(p, v, a, axes) === 'inside') return 'cross'
         let contact = false

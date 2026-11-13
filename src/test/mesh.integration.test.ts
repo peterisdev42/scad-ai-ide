@@ -161,10 +161,25 @@ suite('Raw mesh verification Extension Host', () => {
         assert.equal(stale.data.frames[0].sourceMeshSha256, report.snapshot.meshSha256)
         const next = (await invoke('measure', { uri: uri.toString(), units: 'mm' })).data
         assert.equal(next.values.physicalVolume.value, 8)
+        const dependencyUri = vscode.Uri.file(dependency),
+            dependencyDocument = await vscode.workspace.openTextDocument(dependencyUri),
+            draft = new vscode.WorkspaceEdit()
+        draft.insert(dependencyUri, new vscode.Position(0, 0), '// unsaved include buffer\n')
+        assert.equal(await vscode.workspace.applyEdit(draft), true)
+        assert.ok(dependencyDocument.isDirty)
+        const incomplete = (await invoke('analyze', { uri: uri.toString(), mode: 'verify', units: 'mm' })).data
+        assert.equal(incomplete.overallStatus, 'UNRESOLVED')
+        assert.ok(incomplete.incomplete.some((s: string) => s.startsWith('DIRTY_DEPENDENCY_NOT_EVALUATED')))
         const empty = join(root, 'empty.scad')
         await writeFile(empty, 'difference(){cube(1);cube(1);}')
         assert.equal((await invoke('analyze', { uri: vscode.Uri.file(empty).toString(), mode: 'verify' })).data.overallStatus, 'SKIPPED')
         assert.equal((await invoke('analyze', { uri: vscode.Uri.file(empty).toString(), mode: 'verify', requireNonEmpty: true })).data.overallStatus, 'FAIL')
+        const assertion = join(root, 'assertion.scad')
+        await writeFile(assertion, 'assert(false,"mesh export assertion");cube(1);')
+        const failedExport = (await invoke('analyze', { uri: vscode.Uri.file(assertion).toString(), mode: 'verify' })).data
+        assert.equal(failedExport.overallStatus, 'FAIL')
+        assert.ok(failedExport.notExamined.includes('raw-topology'))
+        assert.ok(!failedExport.examined.includes('raw-format'))
         const bad = await vscode.lm.invokeTool('scad_ai_ide_model_measure', { input: { reportId: 'missing' }, toolInvocationToken: undefined })
         assert.equal(JSON.parse((bad.content[0] as vscode.LanguageModelTextPart).value).error.code, 'REPORT_NOT_FOUND')
         const destination = process.env.SCAD_MESH_EVIDENCE
