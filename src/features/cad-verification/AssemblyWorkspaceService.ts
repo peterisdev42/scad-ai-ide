@@ -2,7 +2,7 @@ import { readWorldArtifact } from '../../core/assembly/worldMesh'
 import { displayMesh } from '../../core/mesh/displayMesh'
 import * as vscode from 'vscode'
 import { realpath, stat } from 'node:fs/promises'
-import { dirname, resolve, isAbsolute } from 'node:path'
+import { dirname, resolve, isAbsolute, relative, sep } from 'node:path'
 import { digest } from '../../core/cad/snapshot'
 import { CapabilityError } from '../../core/capabilities/CapabilityTypes'
 import { parseManifest, pairId } from '../../core/assembly/PartRegistry'
@@ -11,7 +11,7 @@ import type { AssemblyInput, AssemblyReport } from '../../core/assembly/types'
 import type { MeshReport, MeshReference, RenderViewsInput, Vec3 } from '../../core/mesh/types'
 import { assemblyInWorker, configureAssemblyWorker } from '../../platform/cad/AssemblyWorker'
 import { OperationQueue } from '../../platform/cad/OperationQueue'
-import { assertWorkspacePath } from '../../platform/WorkspacePaths'
+import { assertWorkspacePath, workspaceFolderForUri } from '../../platform/WorkspacePaths'
 import type { CadWorkspaceService } from './CadWorkspaceService'
 import type { MeshWorkspaceService } from './MeshWorkspaceService'
 export class AssemblyWorkspaceService implements vscode.Disposable {
@@ -64,7 +64,7 @@ export class AssemblyWorkspaceService implements vscode.Disposable {
         } catch (error) {
             if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
         }
-        const folder = vscode.workspace.getWorkspaceFolder(uri)
+        const folder = await workspaceFolderForUri(uri)
         if (!folder) throw new CapabilityError('INVALID_PROJECT', 'Manifest must belong to an open workspace.')
         return /\/\.scad\/verification\.json$/i.test(uri.path) ? uri : vscode.Uri.joinPath(folder.uri, '.scad', 'verification.json')
     }
@@ -104,7 +104,9 @@ export class AssemblyWorkspaceService implements vscode.Disposable {
                   issues: [{ code: 'NO_STABLE_PARTS', message: 'Optional .scad/verification.json is absent; no stable parts declared.', pointer: '', offset: 0, length: 1 }],
               }
             : parseManifest(text)
-        return { uri: uri.toString(), text, dirty, rootUri: vscode.Uri.file(dirname(dirname(uri.fsPath))).toString(), registry }
+        const folder = await workspaceFolderForUri(uri),
+            displayUri = folder ? vscode.Uri.joinPath(folder.uri, ...relative(await realpath(folder.uri.fsPath), uri.fsPath).split(sep)).toString() : uri.toString()
+        return { uri: uri.toString(), displayUri, text, dirty, rootUri: vscode.Uri.file(dirname(dirname(uri.fsPath))).toString(), registry }
     }
     async freeze(input: string): Promise<FrozenAssembly> {
         const frozen = await this.registry(input),

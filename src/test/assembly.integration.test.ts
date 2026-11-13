@@ -62,7 +62,7 @@ suite('Static assembly Extension Host', () => {
         const declarations = await invoke('listParts', { uri: manifestUri.toString() })
         assert.equal(declarations.items.length, 2)
         assert.equal(api.cad.assembly!.core.has('not-a-report'), false)
-        const bad = await invoke('checkAssembly', { uri: manifestUri.toString(), expectedManifestDigest: declarations.manifestDigest })
+        const bad = await invoke('checkAssembly', { uri: declarations.manifestUri, expectedManifestDigest: declarations.manifestDigest })
         assert.equal(bad.overallStatus, 'FAIL', JSON.stringify(bad))
         assert.ok(bad.checks.some((c: { id: string; status: string }) => c.id === 'gap' && c.status === 'FAIL'))
         assert.ok(vscode.languages.getDiagnostics(manifestUri).some((d) => d.source === 'CAD Assembly'))

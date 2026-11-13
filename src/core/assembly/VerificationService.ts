@@ -16,6 +16,7 @@ export interface FrozenPart {
 }
 export interface FrozenAssembly {
     uri: string
+    displayUri?: string
     text: string
     dirty: boolean
     rootUri: string
@@ -274,7 +275,7 @@ export class AssemblyVerificationService {
                             const locate = (offset: number) => {
                                 const prefix = initial.text.slice(0, offset),
                                     lines = prefix.split('\n')
-                                return { uri: initial.uri, line: lines.length - 1, character: lines.at(-1)!.length, confidence: 'exact' as const }
+                                return { uri: initial.displayUri ?? initial.uri, line: lines.length - 1, character: lines.at(-1)!.length, confidence: 'exact' as const }
                             }
                             const issue = (code: string, title: string, status: 'FAIL' | 'UNRESOLVED', offset = 0, extras: Partial<AssemblyIssue> = {}) => {
                                 const i: AssemblyIssue = {

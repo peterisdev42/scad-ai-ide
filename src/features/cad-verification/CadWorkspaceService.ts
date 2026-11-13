@@ -14,7 +14,7 @@ import type { CustomizerService } from '../../core/customizer/CustomizerService'
 import { analyzeCustomizerSource } from '../../core/customizer/CustomizerSourceAnalyzer'
 import { validateValue } from '../../core/customizer/CustomizerConstraints'
 import { CapabilityError } from '../../core/capabilities/CapabilityTypes'
-import { assertWorkspacePath } from '../../platform/WorkspacePaths'
+import { assertWorkspacePath, workspaceFolderForUri } from '../../platform/WorkspacePaths'
 import { libraryEnvironment } from '../../platform/libraries/LibraryEnvironment'
 import { cadExecution, type ExecutionRequest } from '../../platform/openscad/CadExecutionService'
 import type { registerRuntime } from '../runtime/registerRuntime'
@@ -94,6 +94,7 @@ export class CadWorkspaceService implements vscode.Disposable {
                             if (canonical.toString() !== uri.toString()) {
                                 this.stale(canonical.toString())
                                 this.verification.invalidate(canonical.toString())
+                                this.geometry?.invalidate(canonical)
                                 this.problems.invalidate(canonical)
                             }
                         })
@@ -222,7 +223,7 @@ export class CadWorkspaceService implements vscode.Disposable {
         let uri = vscode.Uri.parse(raw, true)
         if (!/\.(scad|csg)$/i.test(uri.path)) throw new CapabilityError('INVALID_PATH', 'Choose a .scad or .csg document.')
         await assertWorkspacePath(uri)
-        const root = await libraryEnvironment.resolveProjectRoot(uri.fsPath)
+        const root = (await libraryEnvironment.resolveProjectRoot(uri.fsPath)) ?? (await workspaceFolderForUri(uri))?.uri.fsPath
         if (!root) throw new CapabilityError('INVALID_PROJECT', 'Open the model inside a workspace project.')
         const rootUri = vscode.Uri.file(await realpath(root)).toString()
         try {

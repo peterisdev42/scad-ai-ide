@@ -14,7 +14,7 @@ import { digest } from '../../core/cad/snapshot'
 import { CadVerificationService } from '../../core/cad/CadVerificationService'
 import type { CadInputs, CadExecutionResult } from '../../core/cad/types'
 import { CapabilityError } from '../../core/capabilities/CapabilityTypes'
-import { assertWorkspacePath } from '../../platform/WorkspacePaths'
+import { assertWorkspacePath, workspaceFolderForUri } from '../../platform/WorkspacePaths'
 import { cadExecution } from '../../platform/openscad/CadExecutionService'
 import type { CadWorkspaceService } from './CadWorkspaceService'
 import type { registerRuntime } from '../runtime/registerRuntime'
@@ -55,6 +55,7 @@ export class MeshWorkspaceService implements vscode.Disposable {
     private readonly published = new Map<string, string>()
     private readonly expiry = new Set<ReturnType<typeof setTimeout>>()
     private readonly inputKinds = new Map<string, string>()
+    private readonly inputAliases = new Map<string,string>()
     private disposed = false
     private readonly heartbeat: ReturnType<typeof setInterval>
     constructor(
@@ -123,7 +124,7 @@ export class MeshWorkspaceService implements vscode.Disposable {
         if (!uri) this.core.invalidate()
         else {
             this.core.invalidate(uri.toString())
-            for (const [root, deps] of this.dependencies) if (deps.some((p) => vscode.Uri.file(p).toString() === uri.toString())) this.core.invalidate(root.split("\n")[0])
+            for (const [root, deps] of this.dependencies) if (deps.some((p) => vscode.Uri.file(p).toString() === uri.toString())) {const canonical=root.split("\n")[0];this.core.invalidate(canonical);for(const [alias,target]of this.inputAliases)if(target===canonical)this.core.invalidate(alias)}
         }
         this.cad.notifyGeometryReports()
     }
@@ -142,7 +143,7 @@ export class MeshWorkspaceService implements vscode.Disposable {
         const t = input.tessellation
         if (t && (Object.keys(t).some((k) => !['fn', 'fa', 'fs'].includes(k)) || Object.values(t).some((v) => typeof v !== 'number' || !Number.isFinite(v)) || (t.fn !== undefined && (!Number.isInteger(t.fn) || t.fn < 0 || t.fn > 10000)) || (t.fa !== undefined && (t.fa <= 0 || t.fa > 360)) || (t.fs !== undefined && t.fs <= 0))) throw new CapabilityError('INVALID_INPUT', 'Invalid explicit tessellation settings.')
     }
-    private dependencyKey(input: VerifyMeshInput) { return input.uri + "\n" + digest(input.exportSelection ?? null) }
+    private async dependencyKey(input: VerifyMeshInput) { return vscode.Uri.file(await realpath(vscode.Uri.parse(input.uri,true).fsPath)).toString() + "\n" + digest(input.exportSelection ?? null) }
     async capturePart(input: VerifyMeshInput, dependencies?:string[]) { return this.capture(input,dependencies) }
     async verifyPart(input: VerifyMeshInput, signal?: AbortSignal) { this.assertAvailable(); return this.partExports.verify(input, signal) }
     private async scadCapture(input: VerifyMeshInput, deps: string[]) {
@@ -162,6 +163,8 @@ export class MeshWorkspaceService implements vscode.Disposable {
         if (uri.scheme !== 'file' || !/\.(scad|csg|stl|3mf)$/i.test(uri.path)) throw new CapabilityError('INVALID_PATH', 'Choose a workspace SCAD/CSG/STL/3MF file URI.')
         await assertWorkspacePath(uri)
         const kind = /\.(scad|csg)$/i.test(uri.path) ? 'scad' : /\.3mf$/i.test(uri.path) ? '3mf' : 'stl'
+        this.inputAliases.set(input.uri,vscode.Uri.file(await realpath(uri.fsPath)).toString())
+        while(this.inputAliases.size>128)this.inputAliases.delete(this.inputAliases.keys().next().value!)
         this.inputKinds.delete(input.uri)
         this.inputKinds.set(input.uri, kind)
         while (this.inputKinds.size > 128) this.inputKinds.delete(this.inputKinds.keys().next().value!)
@@ -171,7 +174,7 @@ export class MeshWorkspaceService implements vscode.Disposable {
         const policyHash = digest({ ...policy, units: kind === '3mf' ? undefined : input.units, requireNonEmpty: !!input.requireNonEmpty, exportSelection: input.exportSelection, tessellation: input.tessellation ?? {} })
         if (kind === 'scad') {
             await this.runtime.whenReady()
-            scad = await this.scadCapture(input, dependencies ?? this.dependencies.get(this.dependencyKey(input)) ?? (input.exportSelection ? [] : this.cad.verification.knownDependencies(input.uri)))
+            scad = await this.scadCapture(input, dependencies ?? this.dependencies.get(await this.dependencyKey(input)) ?? (input.exportSelection ? [] : this.cad.verification.knownDependencies(input.uri)))
             const s = scad.snapshot
             this.cad.trackGeometryInputs(s)
             snapshot = { schemaVersion: 2, kernelVersion: kernel, inputEvidenceHash: s.inputEvidenceHash, document: { ...s.document }, project: { rootUri: s.project.rootUri }, dependencies: s.dependencies, inputKind: kind, runtime: { used: true, identityHash: s.runtime.identityHash, version: s.runtime.version, executable: s.runtime.executable, backend: 'runtime-command/default', commandHash: digest(scad.command) }, quality: { profile: 'verification', requestedGlobalTessellation, exportSelection: input.exportSelection, effectiveOverrides: structuredClone(scad.parameters), localSettings: 'source-controlled' }, units: input.units ?? 'modelUnits', sourceUnit: input.units === 'mm' ? 'user-declared-mm' : 'undeclared', complete: s.complete, unresolvedInputs: s.unresolvedInputs, policyHash, sourceSnapshotId: s.id }
@@ -179,7 +182,7 @@ export class MeshWorkspaceService implements vscode.Disposable {
         } else {
             const canonical = await realpath(uri.fsPath),
                 identity = await binaryIdentity(canonical),
-                folder = vscode.workspace.getWorkspaceFolder(uri)
+                folder = await workspaceFolderForUri(uri)
             if (!folder) throw new CapabilityError('INVALID_PROJECT', 'Mesh must belong to an open workspace.')
             const project = (await libraryEnvironment.resolveProjectRoot(canonical)) ?? folder.uri.fsPath
             if (input.projectRoot && (await realpath(vscode.Uri.parse(input.projectRoot, true).fsPath)) !== (await realpath(project))) throw new CapabilityError('INVALID_PROJECT', 'projectRoot does not match the mesh workspace.')
@@ -233,8 +236,8 @@ export class MeshWorkspaceService implements vscode.Disposable {
         try {
             const compilation = await service.analyze({ uri: pre.snapshot.document.uri, projectRoot: pre.snapshot.project.rootUri }, signal)
             const deps = service.knownDependencies(pre.snapshot.document.uri)
-            this.dependencies.delete(this.dependencyKey(input))
-            this.dependencies.set(this.dependencyKey(input), deps)
+            this.dependencies.delete(await this.dependencyKey(input))
+            this.dependencies.set(await this.dependencyKey(input), deps)
             while (this.dependencies.size > 128) this.dependencies.delete(this.dependencies.keys().next().value!)
             const final = await this.capture(input)
             if (final.snapshot.sourceSnapshotId !== lastInputs!.snapshot.id) throw new CapabilityError('SNAPSHOT_CHANGED', 'SCAD export is no longer current.', true)
@@ -339,5 +342,6 @@ export class MeshWorkspaceService implements vscode.Disposable {
         this.expiry.clear()
         void this.artifacts.dispose()
         this.dependencies.clear()
+        this.inputAliases.clear()
     }
 }
