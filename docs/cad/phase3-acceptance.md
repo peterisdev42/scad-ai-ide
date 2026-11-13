@@ -4,7 +4,7 @@
 
 ## 基线与交付范围
 
-基线 `2385de712f4ea97ee0463b9316a097315b281512`；产品提交 `03891aa6af10aa72ad8299af262e9528cd83a75a`；分支 `codex/cad-parts-assembly`。依赖尚未合并的 PR #3／#2。main 保持 `8a3ff1fe394b11aeb7fb323e7319bd365d29abaa`，没有直接修改、提交、合并或发布 main。后续证据提交只更新本文及归档。
+基线 `2385de712f4ea97ee0463b9316a097315b281512`；产品提交 `03891aa6af10aa72ad8299af262e9528cd83a75a`；分支 `codex/cad-parts-assembly`。依赖尚未合并的 PR #3／#2。main 保持 `8a3ff1fe394b11aeb7fb323e7319bd365d29abaa`，没有直接修改、提交、合并或发布 main。报告契约兼容补丁 `04bc39e` 为嵌入的 v2 选择上下文补充可选 Schema 字段，业务 bundle Hash 不变。交付 [草稿 PR #4](https://github.com/peterisdev42/scad-ai-ide/pull/4)，依赖 #3／#2。后续证据提交只更新本文及归档。
 
 实现 Manifest／本地 Schema、作者稳定 ID、安全 define／整文件导出、Float64 装配变换、原始实体前提、区间距离、接触／交叠／包含／空腔分类、五类约束、v3 快照与历史报告、共享任务和独立取消、Problems／Dispatcher 命令、测量及冻结世界坐标 PNG。新增 listParts／checkAssembly，两项修复 Skill；共 **46 Tools / 9 Skills**，原有 diagnostics v1／mesh v2 入口保持兼容。详见 [架构](phase3-architecture.md)。
 

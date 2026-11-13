@@ -4,5 +4,6 @@
   "fail": 0,
   "assemblyIncluded": 21,
   "exitCode": 0,
-  "productCommit": "03891aa6af10aa72ad8299af262e9528cd83a75a"
+  "productCommit": "03891aa6af10aa72ad8299af262e9528cd83a75a",
+  "contractCommit": "04bc39e49e4c8a4fdcfebd290be35ee81a8fc970"
 }

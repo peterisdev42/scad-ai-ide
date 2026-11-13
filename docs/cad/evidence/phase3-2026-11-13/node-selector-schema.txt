@@ -1,0 +1,13 @@
+✔ v2 shares one immutable mesh, isolates cancellation, blocks stale evidence and reuses complete facts (49.296875ms)
+✔ an input changed and restored while mesh analysis is running cannot publish a v2 report (2.570709ms)
+✔ v2 report schema validates complete and incomplete evidence and unavailable artifacts never rerender report IDs (48.5445ms)
+✔ an oversized evidence report is rejected rather than returning an immediately evicted PASS (29.115834ms)
+✔ last caller cancellation during final capture cannot populate a cached PASS (3.245458ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 230.030167

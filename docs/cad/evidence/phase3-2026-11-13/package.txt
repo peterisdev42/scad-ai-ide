@@ -3,7 +3,7 @@ npm notice run scad-ai-ide@0.0.1 vscode:prepublish
 npm notice run npm run build:lsp && npm run package
 npm notice run scad-ai-ide@0.0.1 build:lsp
 npm notice run node scripts/build-lsp.cjs
-    Finished `release` profile [optimized] target(s) in 0.19s
+    Finished `release` profile [optimized] target(s) in 0.04s
 Staged openscad-LSP in /Users/q/Documents/Code/scad-ai-ide/server/darwin-arm64
 npm notice run scad-ai-ide@0.0.1 package
 npm notice run npm run check:agents && npm run check-types && npm run lint && node esbuild.js --production && npm run prepare:licenses
@@ -105,12 +105,12 @@ scad-ai-ide-phase3-final.vsix
    ├─ package.json [147.11 KB]
    ├─ readme.md [11.17 KB]
    ├─ dist/ (18 files) [8.93 MB]
-   ├─ docs/ (45 files) [362.32 KB]
+   ├─ docs/ (46 files) [368.49 KB]
    ├─ examples/ (3 files) [1.81 KB]
    ├─ instructions/ (2 files) [6.32 KB]
    ├─ licenses/ (63 files) [169.36 KB]
    ├─ media/ (11 files) [151.36 KB]
-   ├─ resources/ (11 files) [109.38 KB]
+   ├─ resources/ (11 files) [110.15 KB]
    ├─ server/ (2 files) [5 MB]
    ├─ site/ (4 files) [48.25 KB]
    ├─ skills/ (14 files) [35.23 KB]
@@ -119,4 +119,4 @@ scad-ai-ide-phase3-final.vsix
 
 => Run vsce ls --tree to see all included files.
 
- DONE  Packaged: .build/scad-ai-ide-phase3-final.vsix (183 files, 4.55 MB)
+ DONE  Packaged: .build/scad-ai-ide-phase3-final.vsix (184 files, 4.55 MB)

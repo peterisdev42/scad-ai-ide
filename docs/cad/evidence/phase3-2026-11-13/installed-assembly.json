@@ -1,6 +1,6 @@
 {
   "declarations": {
-    "manifestUri": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-Tdu4vw/workspace/.scad/verification.json",
+    "manifestUri": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-X2h7Vf/workspace/.scad/verification.json",
     "manifestDigest": "2d7e14d3fe2b5fddb37518d39b1da4d9ec3f6cd5ba178f6f822b840511c0a768",
     "current": true,
     "status": "PASS",
@@ -29,7 +29,7 @@
           ]
         },
         "identity": {
-          "manifestUri": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-Tdu4vw/workspace/.scad/verification.json",
+          "manifestUri": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-X2h7Vf/workspace/.scad/verification.json",
           "partId": "a"
         }
       },
@@ -53,7 +53,7 @@
           ]
         },
         "identity": {
-          "manifestUri": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-Tdu4vw/workspace/.scad/verification.json",
+          "manifestUri": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-X2h7Vf/workspace/.scad/verification.json",
           "partId": "b"
         }
       }
@@ -71,9 +71,9 @@
   },
   "badAssembly": {
     "schemaVersion": 3,
-    "reportUri": "scad-cad-report:/cad-f78bb1ba-13ba-4fbb-9f43-1c79bd11c021",
-    "reportId": "cad-f78bb1ba-13ba-4fbb-9f43-1c79bd11c021",
-    "snapshotId": "cad6f37c4f889a51c51bd31164e1159c75a43b3ff294ca2a79baf3ba51f2e940",
+    "reportUri": "scad-cad-report:/cad-9e3caaa1-f57d-4ca4-a1b4-16fc2501e09f",
+    "reportId": "cad-9e3caaa1-f57d-4ca4-a1b4-16fc2501e09f",
+    "snapshotId": "b6ba2b6d95878f20f156c4d1215fcf1938c955309c9aa5ecc30dd59cb50aebc1",
     "manifestDigest": "2d7e14d3fe2b5fddb37518d39b1da4d9ec3f6cd5ba178f6f822b840511c0a768",
     "current": true,
     "executionStatus": "SUCCEEDED",
@@ -101,7 +101,7 @@
         "required": true,
         "status": "FAIL",
         "issueIds": [
-          "a303e6b52b50e07e7d41c6fa925c5e11e3d8192e43be7b446c8ce3b07c541878"
+          "0e58d08545cde0c9212ab3dd8879b2d78fcba1776ec83b4ba4d3389008e5c054"
         ],
         "pairId": "0473ef2dc0d324ab659d3580c1134e9d812035905c4781fdd6d529b0c6860e13",
         "relation": "clearanceViolation"
@@ -110,14 +110,14 @@
     "checkCount": 3,
     "issues": [
       {
-        "id": "a303e6b52b50e07e7d41c6fa925c5e11e3d8192e43be7b446c8ce3b07c541878",
+        "id": "0e58d08545cde0c9212ab3dd8879b2d78fcba1776ec83b4ba4d3389008e5c054",
         "code": "ASSEMBLY_CONSTRAINT_FAILED",
         "title": "gap: clearanceViolation",
         "status": "FAIL",
         "source": "constraints",
         "severity": "error",
         "location": {
-          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-Tdu4vw/workspace/.scad/verification.json",
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-X2h7Vf/workspace/.scad/verification.json",
           "line": 0,
           "character": 210,
           "confidence": "exact"
@@ -197,7 +197,7 @@
         "method": "exact-dyadic-bvh-v1",
         "complete": true,
         "errorBound": 0,
-        "durationMs": 6.941042000000152
+        "durationMs": 7.649208000000044
       }
     ],
     "pairCount": 1,
@@ -219,9 +219,9 @@
   },
   "goodAssembly": {
     "schemaVersion": 3,
-    "reportUri": "scad-cad-report:/cad-add43143-1af5-445e-be65-8cf19b66047f",
-    "reportId": "cad-add43143-1af5-445e-be65-8cf19b66047f",
-    "snapshotId": "50cb1b13c4f04319fdaa5e4306ad0c856a8385251d6d9aa27cacf79a80063e64",
+    "reportUri": "scad-cad-report:/cad-7d6ab7b3-6c1b-4485-b6d0-879f685705a9",
+    "reportId": "cad-7d6ab7b3-6c1b-4485-b6d0-879f685705a9",
+    "snapshotId": "4b8f1c128a893544093e9504ed967bbd64ea3afd8c29fc82946af5eff62a6766",
     "manifestDigest": "2d7e14d3fe2b5fddb37518d39b1da4d9ec3f6cd5ba178f6f822b840511c0a768",
     "current": true,
     "executionStatus": "SUCCEEDED",
@@ -321,7 +321,7 @@
         "method": "exact-dyadic-bvh-v1",
         "complete": true,
         "errorBound": 0,
-        "durationMs": 6.433959000000186
+        "durationMs": 6.314416999999821
       }
     ],
     "pairCount": 1,
@@ -342,8 +342,8 @@
     ]
   },
   "assemblyMeasure": {
-    "reportId": "cad-add43143-1af5-445e-be65-8cf19b66047f",
-    "snapshotId": "50cb1b13c4f04319fdaa5e4306ad0c856a8385251d6d9aa27cacf79a80063e64",
+    "reportId": "cad-7d6ab7b3-6c1b-4485-b6d0-879f685705a9",
+    "snapshotId": "4b8f1c128a893544093e9504ed967bbd64ea3afd8c29fc82946af5eff62a6766",
     "current": true,
     "units": "mm",
     "precision": "based-on-frozen-exported-mesh",
@@ -472,23 +472,23 @@
     "incomplete": []
   },
   "assemblyImages": {
-    "reportId": "cad-add43143-1af5-445e-be65-8cf19b66047f",
-    "snapshotId": "50cb1b13c4f04319fdaa5e4306ad0c856a8385251d6d9aa27cacf79a80063e64",
+    "reportId": "cad-7d6ab7b3-6c1b-4485-b6d0-879f685705a9",
+    "snapshotId": "4b8f1c128a893544093e9504ed967bbd64ea3afd8c29fc82946af5eff62a6766",
     "current": true,
     "renderStatus": "AVAILABLE",
     "frames": [
       {
         "view": "iso",
         "artifact": {
-          "id": "92c594a19783f376ae04d01e63e6e510e3ce299a3fee96ab89d93c2af6dd01de",
-          "snapshotId": "50cb1b13c4f04319fdaa5e4306ad0c856a8385251d6d9aa27cacf79a80063e64",
+          "id": "011ac989c27814fe3c7328318a1f49704d72b72f0351b999102aabed3f7e1d53",
+          "snapshotId": "4b8f1c128a893544093e9504ed967bbd64ea3afd8c29fc82946af5eff62a6766",
           "kind": "image",
           "mimeType": "image/png",
           "sha256": "89e140e4b42c7755d3ff5c15997f6820b2e23bc003b1b6d2eaad1a6207ec8a32",
           "bytes": 8848
         },
-        "artifactUri": "scad-cad-artifact:/92c594a19783f376ae04d01e63e6e510e3ce299a3fee96ab89d93c2af6dd01de.png",
-        "renderSnapshotId": "85dde17116ba9a39ac1c1180e1f93a78be1efba345d6fdd1027ceaa6c18f0763",
+        "artifactUri": "scad-cad-artifact:/011ac989c27814fe3c7328318a1f49704d72b72f0351b999102aabed3f7e1d53.png",
+        "renderSnapshotId": "7f8959e4bb2f01e13897700d42a69d21496cc6561a257318fe307eb8eaf6e95b",
         "sourceMeshSha256": "ab443a711868a52f982ed46614d534b5f9717206880d9019a55c99fd62102d25",
         "renderedMeshSha256": "97b2c3ba8152e3c22b7cfcabd7e5a01bf5a5b72572e7cc34a36a6cbbfb5955d9",
         "camera": {
@@ -509,7 +509,7 @@
           512
         ],
         "runtime": {
-          "identityHash": "fd8c41243cd99a9fdc45d24ea8e7bcbf7de27a637e3ac4b266f6bdf179d6084b",
+          "identityHash": "352c831d44a9e746aa832df7850b1d500664ff319f7fafc34a6bb09bcc58c7d2",
           "version": "2026.11-RC0"
         },
         "displayOnly": true,

@@ -1,11 +1,11 @@
 {
   "geometry": {
     "schemaVersion": 2,
-    "reportId": "cad-e464012b-6910-4c42-b3b3-9218290b4431",
-    "snapshotId": "6538f4a88c64af6e69386efbfe98632cabb20ca78731775228b1d1c9051dcd36",
+    "reportId": "cad-31fd9da1-a2e4-459b-a8d7-859243088167",
+    "snapshotId": "055792e2c80abd0ea334ff7e9771fee4ffc3a16ce501d850943658ce8f5e797d",
     "current": true,
     "document": {
-      "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-Tdu4vw/workspace/cad-diagnostics.scad",
+      "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-X2h7Vf/workspace/cad-diagnostics.scad",
       "version": 3,
       "sourceSha256": "a31ee19c8a470195185a94e635a19bf524794c2f8b7b5d3cfd88b2942c92283e",
       "dirty": true
@@ -143,16 +143,16 @@
     "incomplete": [],
     "artifacts": [
       {
-        "id": "0cb60c8d1189412b401c8f4d3c4b18d2bbc876e3b06b799398dd8d0c61cb9f95",
-        "snapshotId": "6538f4a88c64af6e69386efbfe98632cabb20ca78731775228b1d1c9051dcd36",
+        "id": "d9e982648719192c6c8250fcd7e4f2a0af3da85bb7f3e5e75e1507eef9c5f474",
+        "snapshotId": "055792e2c80abd0ea334ff7e9771fee4ffc3a16ce501d850943658ce8f5e797d",
         "kind": "log",
         "mimeType": "text/plain",
         "sha256": "7cf5af8b5c314eedd541d414cbf91f7445df2ad3549504ffc47e82cc0491a801",
         "bytes": 245
       },
       {
-        "id": "c00a7eaa616dfd4d48131ace4273a888201882b6de2e6d6561b3aa5f0d53d772",
-        "snapshotId": "6538f4a88c64af6e69386efbfe98632cabb20ca78731775228b1d1c9051dcd36",
+        "id": "4147f05c01d378572ff68adddda36e8943d666fd645909486c1aac2c6fbb5bb3",
+        "snapshotId": "055792e2c80abd0ea334ff7e9771fee4ffc3a16ce501d850943658ce8f5e797d",
         "kind": "mesh",
         "mimeType": "model/stl",
         "sha256": "b7b475bd3117b8ebab639c7bd983ac7b3cfdb8cc505b666ebfd074d2a7f3c470",
@@ -160,8 +160,8 @@
         "role": "raw"
       },
       {
-        "id": "8a5f9fffbc73c58771dd3eaca55eb4bb8d153adb9f55038da5dd783e19bc3627",
-        "snapshotId": "6538f4a88c64af6e69386efbfe98632cabb20ca78731775228b1d1c9051dcd36",
+        "id": "ff6fc3af806dd87892cdfdf7a868c2debe524efea96247589c624e1e1c6759eb",
+        "snapshotId": "055792e2c80abd0ea334ff7e9771fee4ffc3a16ce501d850943658ce8f5e797d",
         "kind": "mesh",
         "mimeType": "model/stl",
         "sha256": "8333d183b81da0447a3829cbb0f0028d8a060c89e3ffb988dc950d867ca82d25",
@@ -174,19 +174,19 @@
         }
       },
       {
-        "id": "1217c7181a671f8ee92744109be4d3182c44673b3ec00465b2404e353743757e",
-        "snapshotId": "6538f4a88c64af6e69386efbfe98632cabb20ca78731775228b1d1c9051dcd36",
+        "id": "9b67636d1503c219b67516708636e19de176e9e5901a96e24387240231640191",
+        "snapshotId": "055792e2c80abd0ea334ff7e9771fee4ffc3a16ce501d850943658ce8f5e797d",
         "kind": "analysis",
         "mimeType": "application/json",
-        "sha256": "72812222da41ba9da342c70b7a03f5eee773be6e00632e520a27244d22748fcf",
+        "sha256": "e1227275009fd71ae638bd04983a25ac487ee1bd29249776861ffc26d9b3d336",
         "bytes": 1945
       }
     ],
-    "reportUri": "scad-cad-report:/cad-e464012b-6910-4c42-b3b3-9218290b4431"
+    "reportUri": "scad-cad-report:/cad-31fd9da1-a2e4-459b-a8d7-859243088167"
   },
   "measured": {
-    "reportId": "cad-e464012b-6910-4c42-b3b3-9218290b4431",
-    "snapshotId": "6538f4a88c64af6e69386efbfe98632cabb20ca78731775228b1d1c9051dcd36",
+    "reportId": "cad-31fd9da1-a2e4-459b-a8d7-859243088167",
+    "snapshotId": "055792e2c80abd0ea334ff7e9771fee4ffc3a16ce501d850943658ce8f5e797d",
     "current": true,
     "overallStatus": "PASS",
     "units": "modelUnits",
@@ -304,23 +304,23 @@
     ]
   },
   "views": {
-    "reportId": "cad-e464012b-6910-4c42-b3b3-9218290b4431",
-    "snapshotId": "6538f4a88c64af6e69386efbfe98632cabb20ca78731775228b1d1c9051dcd36",
+    "reportId": "cad-31fd9da1-a2e4-459b-a8d7-859243088167",
+    "snapshotId": "055792e2c80abd0ea334ff7e9771fee4ffc3a16ce501d850943658ce8f5e797d",
     "current": true,
     "renderStatus": "AVAILABLE",
     "frames": [
       {
         "view": "iso",
         "artifact": {
-          "id": "8176ff524a087238d49cd86cc40838af6d89c5bb42c82484f4d7189a91e942a3",
-          "snapshotId": "6538f4a88c64af6e69386efbfe98632cabb20ca78731775228b1d1c9051dcd36",
+          "id": "a1dd596f496639ff8e288ec97afb30a386e8e4beafefaed8ec23b328ad2c83af",
+          "snapshotId": "055792e2c80abd0ea334ff7e9771fee4ffc3a16ce501d850943658ce8f5e797d",
           "kind": "image",
           "mimeType": "image/png",
           "sha256": "ee73ee12b93c684ede4b3fb0d7813ac7863a42573381f86c60a224ed0f74cf4c",
           "bytes": 8287
         },
-        "artifactUri": "scad-cad-artifact:/8176ff524a087238d49cd86cc40838af6d89c5bb42c82484f4d7189a91e942a3.png",
-        "renderSnapshotId": "564bb38cac3c705712eaf07d863d54d082ddf9bcaa791125b0fc75e51b6e8938",
+        "artifactUri": "scad-cad-artifact:/a1dd596f496639ff8e288ec97afb30a386e8e4beafefaed8ec23b328ad2c83af.png",
+        "renderSnapshotId": "76d303a23aa73f11de8882b238775966589395b42215a2c83071c8c6a544804f",
         "sourceMeshSha256": "b7b475bd3117b8ebab639c7bd983ac7b3cfdb8cc505b666ebfd074d2a7f3c470",
         "renderedMeshSha256": "8333d183b81da0447a3829cbb0f0028d8a060c89e3ffb988dc950d867ca82d25",
         "camera": {
@@ -341,7 +341,7 @@
           512
         ],
         "runtime": {
-          "identityHash": "fd8c41243cd99a9fdc45d24ea8e7bcbf7de27a637e3ac4b266f6bdf179d6084b",
+          "identityHash": "352c831d44a9e746aa832df7850b1d500664ff319f7fafc34a6bb09bcc58c7d2",
           "version": "2026.11-RC0"
         },
         "displayOnly": true,

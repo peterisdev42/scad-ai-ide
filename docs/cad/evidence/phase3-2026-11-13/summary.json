@@ -11,7 +11,8 @@
     "fail": 0,
     "assemblyIncluded": 21,
     "exitCode": 0,
-    "productCommit": "03891aa6af10aa72ad8299af262e9528cd83a75a"
+    "productCommit": "03891aa6af10aa72ad8299af262e9528cd83a75a",
+    "contractCommit": "04bc39e49e4c8a4fdcfebd290be35ee81a8fc970"
   },
   "host": [
     {
@@ -37,7 +38,7 @@
   },
   "vsix": {
     "file": ".build/scad-ai-ide-phase3-final.vsix",
-    "sha256": "99959a14378e8ad48e678567c0e838a55e0f129203be7c11b8364b44574be1ca",
+    "sha256": "d1ee446f8c109cea0e904078674b40ef0e2720f349df07c09a7502e3447225d5",
     "bundleSha256": "c8c76a6287394fb474ef092ece8317c07b4592366619f30b952c577e3618d641",
     "workerSha256": "4cf6a34e20c858734c7863050e37ab521cbcbd375e9f6fbaedb74315de2c3c83",
     "assetCheckExitCode": 0
@@ -49,7 +50,7 @@
     "diagnosticSlice": "PASS",
     "wholeSmoke": "FAIL",
     "reason": "ENV_FOCUS_NOT_ACQUIRED at fixture line 133 before native Undo",
-    "localEvidence": "/private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-Tdu4vw"
+    "localEvidence": "/private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-X2h7Vf"
   },
   "native": {
     "attempts": 1,
@@ -84,5 +85,9 @@
     "exitCode": 0,
     "elapsedMs": 7132,
     "restoredProductionBundleFrom": ".build/scad-ai-ide-phase3-final.vsix"
-  }
+  },
+  "contractCommit": "04bc39e49e4c8a4fdcfebd290be35ee81a8fc970",
+  "pr": "https://github.com/peterisdev42/scad-ai-ide/pull/4",
+  "evidenceCommit": "9444f2c973a1fdc02f4f9d1fbdf893031b685b99",
+  "schemaCompatibility": "Optional selector context validates in embedded v2 reports; runtime bundle unchanged."
 }
