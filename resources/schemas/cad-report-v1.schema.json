@@ -56,6 +56,10 @@
                         },
                         "libraryEnvironmentHash": {
                             "type": "string"
+                        },
+                        "dependencyResolutionHash": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
                         }
                     },
                     "required": [
@@ -210,6 +214,10 @@
                     "items": {
                         "type": "string"
                     }
+                },
+                "inputEvidenceHash": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
                 }
             },
             "required": [
@@ -224,7 +232,8 @@
                 "constraintsDigest",
                 "kernelVersion",
                 "complete",
-                "unresolvedInputs"
+                "unresolvedInputs",
+                "inputEvidenceHash"
             ]
         },
         "executionStatus": {

@@ -1,3 +1,4 @@
+import { dependencyResolution } from '../../platform/openscad/dependencyResolution'
 import { runtimeExecutableFiles } from '../../platform/openscad/runtimeIdentity'
 import * as vscode from 'vscode'
 import { createHash } from 'node:crypto'
@@ -5,7 +6,7 @@ import { createReadStream, watchFile, unwatchFile, type Stats } from 'node:fs'
 import { readFile, realpath, readdir, stat, lstat } from 'node:fs/promises'
 import { dirname, isAbsolute, join, relative, resolve } from 'node:path'
 import { CadVerificationService, type AnalyzeInput } from '../../core/cad/CadVerificationService'
-import { digest, identifySnapshot } from '../../core/cad/snapshot'
+import { digest, identifySnapshot, sameSnapshotEvidence } from '../../core/cad/snapshot'
 import type { CadDependency, CadInputs, CadParameters, VerificationReport } from '../../core/cad/types'
 import type { CustomizerService } from '../../core/customizer/CustomizerService'
 import { analyzeCustomizerSource } from '../../core/customizer/CustomizerSourceAnalyzer'
@@ -38,13 +39,21 @@ async function fileHash(file: string, maxBytes = 128 * 1048576) {
     return { hash: hash.digest('hex'), bytes, stamp: stamp(after) }
 }
 
+interface PreviewExecutionContext {
+    parameters: CadParameters
+    format: string
+    lazyUnion?: boolean
+    sourceTransport?: 'stdin' | 'file'
+}
+
 /** Extension Host adapter; no panel or active-editor state is needed for tools. */
 export class CadWorkspaceService implements vscode.Disposable {
     readonly verification: CadVerificationService
     private subscriptions: vscode.Disposable[] = []
     private watched = new Map<string, (current: Stats, previous: Stats) => void>()
+    private resolutionPaths = new Map<string, string[]>()
     private reportWatchers = new Map<string, string[]>()
-    private previewContexts = new Map<string, { parameters: CadParameters; format: string; lazyUnion?: boolean; sourceTransport?: 'stdin' | 'file'; overridesDigest: string }>()
+    private previewContexts = new Map<string, PreviewExecutionContext & { overridesDigest: string }>()
     private readonly reportChanged = new vscode.EventEmitter<vscode.Uri>()
     readonly onDidChangeReports = this.reportChanged.event
     private readonly staleReports = new Set<string>()
@@ -199,7 +208,7 @@ export class CadWorkspaceService implements vscode.Disposable {
         }
         return roots
     }
-    async capture(raw: string, dependencyPaths: string[], requestedRoot?: string, execution?: { parameters: CadParameters; format: string; lazyUnion?: boolean; sourceTransport?: 'stdin' | 'file' }): Promise<CadInputs> {
+    async capture(raw: string, dependencyPaths: string[], requestedRoot?: string, execution?: PreviewExecutionContext): Promise<CadInputs> {
         if (this.disposed) throw new CapabilityError('DISPOSED', 'CAD service has been disposed.')
         if (!vscode.workspace.isTrusted) throw new CapabilityError('UNTRUSTED_WORKSPACE', 'Trust this workspace to analyze OpenSCAD.')
         let uri = vscode.Uri.parse(raw, true)
@@ -286,6 +295,17 @@ export class CadWorkspaceService implements vscode.Disposable {
                 unresolvedInputs.push(`DEPENDENCY_UNAVAILABLE:${dependencyUri}`)
             }
         }
+        const resolutionSources = [{ path: sourceCanonical, text }]
+        for (const dependency of dependencies.filter(d => d.status === 'resolved')) {
+            const path = await realpath(vscode.Uri.parse(dependency.uri).fsPath)
+            if ((await stat(path)).size > 8 * 1048576) { unresolvedInputs.push('DEPENDENCY_RESOLUTION_SOURCE_LIMIT'); continue }
+            resolutionSources.push({ path, text: await readFile(path, 'utf8') })
+        }
+        const resolution = await dependencyResolution(resolutionSources, roots, path => roots.some(root => within(root, path)))
+        unresolvedInputs.push(...resolution.unresolved)
+        this.resolutionPaths.delete(uri.toString())
+        this.resolutionPaths.set(uri.toString(), resolution.paths)
+        while (this.resolutionPaths.size > 128) this.resolutionPaths.delete(this.resolutionPaths.keys().next().value!)
         const constraintsPath = join(root, '.scad', 'verification.json')
         let constraintsDigest = 'missing'
         const libraryDrafts: Array<{ uri: string; sha256: string }> = []
@@ -318,7 +338,7 @@ export class CadWorkspaceService implements vscode.Disposable {
             binaries.push({ file, hash: identity.hash })
             fileStamps[file] = identity.stamp
         }
-        const snapshot = identifySnapshot({ schemaVersion: 1, document: { uri: uri.toString(), version: document?.version, sourceSha256: digest(text), dirty: !!document?.isDirty }, project: { rootUri, libraryEnvironmentHash: digest({ project: await libraryEnvironment.getDependencyFingerprint(uri.fsPath), environment: env, libraryDrafts }) }, dependencies, runtime: { executable: runtime.command.executable, version: runtime.version, identityHash: digest({ command: runtime.command, binaries, version: runtime.version }), capabilityHash: await cadExecution.capabilityHash(runtime.command), hostPlatform: `${process.platform}-${process.arch}` }, parameters: { overrides: parameters, digest: digest(parameters) }, evaluation: { sourceTransport: execution?.sourceTransport ?? 'stdin', mode: !execution || execution.format === 'csg' ? 'csg' : 'full-mesh', exportFormat: (execution?.format ?? 'csg') as 'csg' | 'stl' | '3mf' | 'png', settingsHash: digest({ format: execution?.format ?? 'csg', lazyUnion: execution?.lazyUnion ?? false, cliTimeoutMs: this.timeout() }) }, constraintsDigest, kernelVersion: 'diagnostics-v1', complete: !unresolvedInputs.length, unresolvedInputs })
+        const snapshot = identifySnapshot({ schemaVersion: 1, document: { uri: uri.toString(), version: document?.version, sourceSha256: digest(text), dirty: !!document?.isDirty }, project: { rootUri, libraryEnvironmentHash: digest({ project: await libraryEnvironment.getDependencyFingerprint(uri.fsPath), environment: env, libraryDrafts }), dependencyResolutionHash: resolution.hash }, dependencies, runtime: { executable: runtime.command.executable, version: runtime.version, identityHash: digest({ command: runtime.command, binaries, version: runtime.version }), capabilityHash: await cadExecution.capabilityHash(runtime.command), hostPlatform: `${process.platform}-${process.arch}` }, parameters: { overrides: parameters, digest: digest(parameters) }, evaluation: { sourceTransport: execution?.sourceTransport ?? 'stdin', mode: !execution || execution.format === 'csg' ? 'csg' : 'full-mesh', exportFormat: (execution?.format ?? 'csg') as 'csg' | 'stl' | '3mf' | 'png', settingsHash: digest({ format: execution?.format ?? 'csg', lazyUnion: execution?.lazyUnion ?? false, cliTimeoutMs: this.timeout() }) }, constraintsDigest, kernelVersion: 'diagnostics-v1', complete: !unresolvedInputs.length, unresolvedInputs })
         return { snapshot, fileStamps, path: uri.fsPath, text, hasGeometry: canPreviewSource(text), command: runtime.command, env, parameters }
     }
     async current(report: VerificationReport) {
@@ -332,14 +352,14 @@ export class CadWorkspaceService implements vscode.Disposable {
                 report.snapshot.project.rootUri,
                 context,
             )
-            return input.snapshot.id === report.snapshot.id
+            return sameSnapshotEvidence(input.snapshot, report.snapshot)
         } catch {
             return false
         }
     }
     private watch(report: VerificationReport) {
         const root = vscode.Uri.parse(report.snapshot.project.rootUri).fsPath
-        const paths = [...this.runtimeFiles, vscode.Uri.parse(report.snapshot.document.uri).fsPath, ...report.snapshot.dependencies.map((d) => vscode.Uri.parse(d.uri).fsPath), report.snapshot.runtime.executable, join(root, '.scad'), join(root, '.scad', 'lib'), ...['dependencies.json', 'dependencies.lock.json', 'mounts.json', 'verification.json'].map((file) => join(root, '.scad', file))]
+        const paths = [...(this.resolutionPaths.get(report.snapshot.document.uri) ?? []), ...this.runtimeFiles, vscode.Uri.parse(report.snapshot.document.uri).fsPath, ...report.snapshot.dependencies.map((d) => vscode.Uri.parse(d.uri).fsPath), report.snapshot.runtime.executable, join(root, '.scad'), join(root, '.scad', 'lib'), ...['dependencies.json', 'dependencies.lock.json', 'mounts.json', 'verification.json'].map((file) => join(root, '.scad', file))]
         this.reportWatchers.delete(report.snapshot.document.uri)
         this.reportWatchers.set(report.snapshot.document.uri, paths)
         while (this.reportWatchers.size > 128) this.reportWatchers.delete(this.reportWatchers.keys().next().value!)
@@ -405,18 +425,19 @@ export class CadWorkspaceService implements vscode.Disposable {
         try {
             const uri = vscode.Uri.file(request.path).toString()
             const overridesDigest = digest(this.customizer.getOverrides(uri))
-            const before = await this.capture(uri, this.verification.knownDependencies(uri), undefined, { parameters: request.parameters, format: request.format, lazyUnion: request.lazyUnion, sourceTransport: request.source === undefined ? 'file' : 'stdin' })
+            const context: PreviewExecutionContext = { parameters: request.parameters, format: request.format, lazyUnion: request.lazyUnion, sourceTransport: request.source === undefined ? 'file' : 'stdin' }
+            const before = await this.capture(uri, this.verification.knownDependencies(uri), undefined, context)
             return async (result: import('../../core/cad/types').CadExecutionResult) => {
                 const after = await this.capture(
                     uri,
                     before.snapshot.dependencies.map((d) => vscode.Uri.parse(d.uri).fsPath),
                     undefined,
-                    { parameters: request.parameters, format: request.format, lazyUnion: request.lazyUnion, sourceTransport: request.source === undefined ? 'file' : 'stdin' },
+                    context,
                 )
-                if (after.snapshot.id !== before.snapshot.id || digest(after.fileStamps) !== digest(before.fileStamps)) return false
+                if (!sameSnapshotEvidence(after.snapshot, before.snapshot) || digest(after.fileStamps) !== digest(before.fileStamps)) return false
                 const report = await this.verification.acceptExecution(before, result)
                 this.watch(report)
-                this.previewContexts.set(report.reportId, { parameters: request.parameters, format: request.format, lazyUnion: request.lazyUnion, sourceTransport: request.source === undefined ? 'file' : 'stdin', overridesDigest })
+                this.previewContexts.set(report.reportId, { ...context, overridesDigest })
                 while (this.previewContexts.size > 128) this.previewContexts.delete(this.previewContexts.keys().next().value!)
                 return this.problems.reportVerification(report, () => this.current(report), 'preview-cli')
             }
@@ -434,6 +455,7 @@ export class CadWorkspaceService implements vscode.Disposable {
         for (const [file, listener] of this.watched) unwatchFile(file, listener)
         this.watched.clear()
         this.reportWatchers.clear()
+        this.resolutionPaths.clear()
         this.previewContexts.clear()
         this.runtimeHashes.clear()
         this.parameterDigests.clear()

@@ -1,5 +1,7 @@
 # Agent-native CAD：Phase 0–1 交付与验收
 
+> 下文保留 2026-11-12 初始交付历史；当前状态见 [2026-11-13 修复后审查](cad-phase01-review-2026-11-13.md)。
+
 本次交付以 SPEC v1.2 和经确认的实施计划为范围：只建立官方 CLI/CSG 诊断闭环。Phase 2 网格/测量、Phase 3 装配/约束、Phase 4 Diff/空间反馈及 Phase 5 可选 MCP 尚未实现。CSG 的 PASS 不能解释为模型整体设计、网格或可打印性通过。
 
 ## 基线与产物

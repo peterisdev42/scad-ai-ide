@@ -16,12 +16,12 @@ export function digest(value: unknown): string {
         .update(typeof value === 'string' ? value : canonical(value))
         .digest('hex')
 }
-export function identifySnapshot(input: Omit<CadSnapshot, 'id'>): CadSnapshot {
-    const { id: _existingId, ...fields } = input as CadSnapshot
+export function identifySnapshot(input: Omit<CadSnapshot, 'id' | 'inputEvidenceHash'>): CadSnapshot {
+    const { id: _existingId, inputEvidenceHash: _existingEvidence, ...fields } = input as CadSnapshot
     const { version: _version, dirty: _dirty, ...document } = input.document
     const normalized = { ...fields, dependencies: [...input.dependencies].sort((a, b) => (a.uri < b.uri ? -1 : a.uri > b.uri ? 1 : 0)) }
     const { complete: _complete, unresolvedInputs: _unresolved, ...identity } = normalized
-    return { ...normalized, id: digest({ ...identity, document }) }
+    return { ...normalized, inputEvidenceHash: digest([input.complete, [...input.unresolvedInputs].sort()]), id: digest({ ...identity, document }) }
 }
 export function verdict(execution: ExecutionStatus, checks: VerificationCheck[], complete: boolean): CheckStatus {
     const required = checks.filter((c) => c.required)
@@ -29,4 +29,9 @@ export function verdict(execution: ExecutionStatus, checks: VerificationCheck[],
     if (execution !== 'SUCCEEDED' || !complete || !required.length || required.some((c) => c.status === 'UNRESOLVED')) return 'UNRESOLVED'
     if (required.some((c) => c.status === 'SKIPPED')) return 'SKIPPED'
     return 'PASS'
+}
+
+/** Evidence completeness can change without changing compiler input identity. */
+export function sameSnapshotEvidence(a: CadSnapshot, b: CadSnapshot): boolean {
+    return a.id === b.id && a.inputEvidenceHash === b.inputEvidenceHash
 }

@@ -246,3 +246,32 @@ test('immutable reports clone caller-owned vectors rather than freezing Customiz
         assert.equal(Object.isFrozen(report.snapshot.parameters.overrides.vector), true)
     } finally { service.dispose() }
 })
+
+test('new incomplete evidence cannot reuse a cached PASS, even after invalidation', async () => {
+    let incomplete = false, calls = 0
+    const service = new CadVerificationService({
+        capture: async () => { const input = inputs(); input.snapshot = identifySnapshot({ ...input.snapshot, complete: !incomplete, unresolvedInputs: incomplete ? ['CONSTRAINTS_UNREADABLE'] : [] }); return input },
+        execute: async () => { calls++; return result() }, locate: async () => undefined,
+    })
+    try {
+        const good = await service.analyze({ uri: 'file:///workspace/model.scad' })
+        incomplete = true
+        service.invalidate()
+        assert.equal(await service.isCurrent(good), false)
+        const partial = await service.analyze({ uri: 'file:///workspace/model.scad' })
+        assert.equal(partial.snapshot.id, good.snapshot.id)
+        assert.equal(partial.overallStatus, 'UNRESOLVED')
+        assert.notEqual(partial.reportId, good.reportId)
+        assert.equal(calls, 2)
+        assert.equal(await service.isCurrent(partial), true)
+    } finally { service.dispose() }
+})
+
+test('CLI-derived unresolved evidence can remain current without matching input completeness', async () => {
+    const service = new CadVerificationService({ capture: async () => inputs(), execute: async () => result({ diagnostics: normalizeCliDiagnostics("WARNING: Ignoring unknown module 'missing'", 0) }), locate: async () => undefined })
+    try {
+        const report = await service.analyze({ uri: 'file:///workspace/model.scad' })
+        assert.equal(report.overallStatus, 'UNRESOLVED')
+        assert.equal(await service.isCurrent(report), true)
+    } finally { service.dispose() }
+})

@@ -1,6 +1,6 @@
 import { PreviewProblems } from '../features/preview/extension/services/PreviewProblems'
 import * as assert from 'node:assert/strict'
-import { readFile, writeFile, mkdir, rm, realpath } from 'node:fs/promises'
+import { readFile, writeFile, mkdir, rm, realpath, symlink } from 'node:fs/promises'
 import { join } from 'node:path'
 import * as vscode from 'vscode'
 import type { activate } from '../extension'
@@ -231,4 +231,52 @@ suite('CAD verification Extension Host', () => {
         assert.equal(api.cad.verification.reports.get('missing'), undefined)
         await assert.rejects(api.cad.issueDetails('missing', 'a'.repeat(64)), /expired|evicted/)
     })
+    test('new higher-priority dependency invalidates cached PASS and executes the replacement', async () => {
+        const project = join(root, 'shadow-project'), lib = join(project, '.scad', 'lib')
+        await mkdir(lib, { recursive: true })
+        await writeFile(join(lib, 'nested.scad'), 'module nested(){cube(2);}')
+        await writeFile(join(lib, 'part.scad'), 'use <nested.scad> module part(){nested();}')
+        const file = join(project, 'model.scad')
+        await writeFile(join(project, 'entry.txt'), 'include <part.scad>')
+        await writeFile(file, 'use <entry.txt>\npart();')
+        let uri = vscode.Uri.file(file)
+        if (process.platform !== 'win32') {
+            const alias = join(root, 'shadow-project-alias')
+            await symlink(project, alias, 'dir')
+            uri = vscode.Uri.file(join(alias, 'model.scad'))
+            const doc = await vscode.workspace.openTextDocument(uri)
+            const edit = new vscode.WorkspaceEdit()
+            edit.insert(uri, new vscode.Position(0, 0), '// dirty alias root\n')
+            assert.equal(await vscode.workspace.applyEdit(edit), true)
+            assert.equal(doc.isDirty, true)
+        }
+        const good = await api.cad.analyze({ uri: uri.toString() })
+        assert.equal(good.overallStatus, 'PASS', JSON.stringify(good))
+        await writeFile(join(project, 'part.scad'), 'module part(){assert(false,"shadow replacement");cube(1);}')
+        assert.equal(await api.cad.current(good), false)
+        const bad = await api.cad.analyze({ uri: uri.toString() })
+        assert.equal(bad.overallStatus, 'FAIL', JSON.stringify(bad))
+        assert.notEqual(bad.snapshot.id, good.snapshot.id)
+        assert.ok(bad.issues.some(i => i.title.includes('shadow replacement')))
+    })
+    test('unreadable constraints cannot revive a cached PASS and unresolved report stays readable', async () => {
+        const project = join(root, 'evidence-project')
+        await mkdir(join(project, '.scad'), { recursive: true })
+        const uri = vscode.Uri.file(join(project, 'model.scad'))
+        await writeFile(uri.fsPath, 'cube(1);')
+        const good = await api.cad.analyze({ uri: uri.toString() })
+        assert.equal(good.overallStatus, 'PASS')
+        await mkdir(join(project, '.scad', 'verification.json'))
+        assert.equal(await api.cad.current(good), false)
+        const partial = await api.cad.analyze({ uri: uri.toString() })
+        assert.equal(partial.overallStatus, 'UNRESOLVED')
+        assert.ok(partial.incomplete.includes('CONSTRAINTS_UNREADABLE'))
+        assert.equal(JSON.parse(await api.cad.reportText(partial.reportId)).current, true)
+        if (process.platform !== 'win32') {
+            const link = join(project, 'closed-link.scad')
+            await symlink(uri.fsPath, link)
+            await assert.rejects(api.cad.analyze({ uri: vscode.Uri.file(link).toString() }), /Symbolic-link targets are not allowed/)
+        }
+    })
+
 })

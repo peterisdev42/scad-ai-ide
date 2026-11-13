@@ -1,7 +1,7 @@
 import { pathToFileURL, fileURLToPath } from 'node:url'
 import { basename, dirname, isAbsolute, resolve } from 'node:path'
 import { CapabilityError } from '../capabilities/CapabilityTypes'
-import { digest } from './snapshot'
+import { digest, sameSnapshotEvidence } from './snapshot'
 import { createVerificationReport } from './report'
 import { ReportStore } from './ReportStore'
 import { SharedTasks } from './SharedTasks'
@@ -63,7 +63,7 @@ export class CadVerificationService {
     }
     async isCurrent(report: VerificationReport): Promise<boolean> {
         try {
-            return (await this.host.capture(report.snapshot.document.uri, this.dependencies.get(report.snapshot.document.uri) ?? [], report.snapshot.project.rootUri)).snapshot.id === report.snapshot.id
+            return sameSnapshotEvidence((await this.host.capture(report.snapshot.document.uri, this.dependencies.get(report.snapshot.document.uri) ?? [], report.snapshot.project.rootUri)).snapshot, report.snapshot)
         } catch {
             return false
         }
@@ -85,11 +85,11 @@ export class CadVerificationService {
         signal?.throwIfAborted()
         if (input.expectedSnapshotId && initial.snapshot.id !== input.expectedSnapshotId) throw new CapabilityError('SNAPSHOT_CHANGED', 'Expected snapshot is no longer current. Read the current report before retrying.', true)
         const cached = this.reports.find(initial.snapshot.id)
-        if (cached && cached.executionStatus === 'SUCCEEDED' && cached.snapshot.complete) return cached
+        if (initial.snapshot.complete && !initial.snapshot.unresolvedInputs.length && cached && cached.executionStatus === 'SUCCEEDED' && cached.snapshot.complete) return cached
         const epoch = this.epoch,
             revision = this.revisions.get(input.uri) ?? 0
         return this.shared.run(
-            `${input.uri}\n${initial.snapshot.id}:${epoch}:${revision}`,
+            `${input.uri}\n${initial.snapshot.id}:${digest([initial.snapshot.complete, initial.snapshot.unresolvedInputs])}:${epoch}:${revision}`,
             async (sharedSignal) => {
                 const ensure = () => {
                     if (epoch !== this.epoch || revision !== (this.revisions.get(input.uri) ?? 0)) throw new CapabilityError('SNAPSHOT_CHANGED', 'Analysis is historical because inputs changed. Re-run analysis.', true)
@@ -117,7 +117,7 @@ export class CadVerificationService {
                 // Completeness describes evidence, not a different compiler input identity.
                 const report = await createVerificationReport(current, result, unresolved, this.host.locate)
                 const latest = await this.host.capture(input.uri, this.dependencies.get(input.uri) ?? [], input.projectRoot)
-                if (latest.snapshot.id !== current.snapshot.id || digest(latest.fileStamps) !== digest(current.fileStamps) || (latest.snapshot.document.version !== undefined && current.snapshot.document.version !== undefined && latest.snapshot.document.version !== current.snapshot.document.version) || epoch !== this.epoch || revision !== (this.revisions.get(input.uri) ?? 0)) throw new CapabilityError('SNAPSHOT_CHANGED', `Analysis ${report.reportId} is historical because inputs changed. Re-run analysis.`, true)
+                if (!sameSnapshotEvidence(latest.snapshot, current.snapshot) || digest(latest.fileStamps) !== digest(current.fileStamps) || (latest.snapshot.document.version !== undefined && current.snapshot.document.version !== undefined && latest.snapshot.document.version !== current.snapshot.document.version) || epoch !== this.epoch || revision !== (this.revisions.get(input.uri) ?? 0)) throw new CapabilityError('SNAPSHOT_CHANGED', `Analysis ${report.reportId} is historical because inputs changed. Re-run analysis.`, true)
                 return this.reports.put(report, result.log)
             },
             signal,

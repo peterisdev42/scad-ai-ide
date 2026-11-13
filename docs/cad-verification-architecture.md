@@ -90,3 +90,11 @@ Schema v1 位于随 VSIX 打包的 `resources/schemas/cad-report-v1.schema.json`
 Phase 2 再加入原始网格诊断、测量和 CLI 图片；缺陷检查先于 Manifold 修复。Phase 3 加入可选 Manifest、稳定 Parts、装配和不可弱化的约束。Phase 4 加入几何 Diff、空间反馈及明确 profile 下的打印相关检查。Phase 5 的 MCP 必须共享已有领域服务，不能猜测编辑器缓冲区。
 
 本阶段没有把“已有 Manifold/mesh worker”“新增 Tool 数量”或“空 Problems”当作几何能力完成证据。
+
+## 2026-11-13 修复：输入证据与解析命名空间
+
+草稿 Schema v1 增加 `snapshot.inputEvidenceHash`，记录捕获时的 complete/unresolvedInputs，与 CLI 后续形成的报告完整性分开。缓存命中要求当前输入完整；current、执行前后和 Preview 发布比较输入证据 Hash。这样既拒绝不完整输入复用旧 PASS，也允许未知符号等合法 UNRESOLVED 报告保持可读。
+
+`project.dependencyResolutionHash` 独立记录根/已知依赖中 literal include/use 的潜在目标，包含尚不存在的高优先级候选；同时监听这些路径。所选依赖仍使用内容 Hash，候选路径的存在、身份及文件 stamp 用来检测解析命名空间变化。首次发现嵌套依赖可以扩展解析指纹，不误当作 Library 环境变化。源路径统一真实目录形式，跳过注释和字符串中的伪引用，候选最多 2048。根文件 symlink 沿用既有路径策略拒绝；无法证明依赖文件级 symlink 的相对解析上下文时返回 UNRESOLVED；目录别名下的 dirty 根仍受支持。前后执行设置统一为 PreviewExecutionContext。
+
+复审与本轮证据见 [Phase 0–1 修复后审查](cad-phase01-review-2026-11-13.md)。历史报告保留原始失败，本轮结果不回填为过去的 PASS。

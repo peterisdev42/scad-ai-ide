@@ -12,8 +12,9 @@ export interface CadDependency {
 export interface CadSnapshot {
     schemaVersion: 1
     id: string
+    inputEvidenceHash: string
     document: { uri: string; version?: number; sourceSha256: string; dirty: boolean }
-    project: { rootUri: string; libraryEnvironmentHash: string }
+    project: { rootUri: string; libraryEnvironmentHash: string; dependencyResolutionHash?: string }
     dependencies: CadDependency[]
     runtime: { executable: string; version: string; identityHash: string; capabilityHash: string; hostPlatform: string }
     parameters: { overrides: CadParameters; digest: string }
