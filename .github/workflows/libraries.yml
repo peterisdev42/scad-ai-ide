@@ -74,6 +74,10 @@ jobs:
             - name: Run required native library gate
               shell: bash
               run: npm run test:libraries 2>&1 | tee .build/library-tests.log
+            - name: Run required native CAD diagnostics gate
+              if: always() && env.SCAD_OPENSCAD_EXECUTABLE != ''
+              shell: bash
+              run: npm run test:cad:real 2>&1 | tee .build/cad-real.log
             - name: Preserve native comparison
               if: always()
               uses: actions/upload-artifact@v4
@@ -85,6 +89,7 @@ jobs:
                       .build/customizer-native-import.json
                       .build/customizer-windows-environment.json
                       .build/library-tests.log
+                      .build/cad-real.log
                   if-no-files-found: warn
             - name: Save test report context
               if: always()

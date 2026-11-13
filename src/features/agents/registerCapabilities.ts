@@ -1,3 +1,6 @@
+import type { CadWorkspaceService } from '../cad-verification/CadWorkspaceService'
+import { meshReportSummary } from '../../core/mesh/summary'
+import { reportSummary } from '../../core/cad/summary'
 import { safePreview } from '../../core/capabilities/SafeOutput'
 import type { CustomizerSourceDomainService } from '../sidebar/CustomizerSourceDomainService'
 import type { SourceExpectation } from '../../core/customizer/CustomizerSourceTypes'
@@ -13,6 +16,7 @@ import type { registerGitHub } from '../github/registerGitHub'
 import type { ParameterValue } from '../../core/customizer/CustomizerParser'
 
 export interface CapabilityServices {
+    cad?: CadWorkspaceService
     runtime: ReturnType<typeof createRuntimeService>
     libraries: LibraryService
     customizerSource: CustomizerSourceDomainService
@@ -29,7 +33,7 @@ const page = <T>(items: T[], input: Record<string, unknown>) => {
 
 /** Binds domain methods, never GUI adapters. Every catalog entry must have one handler. */
 export function registerCapabilities(services: CapabilityServices) {
-    const { runtime, libraries, customizer, customizerSource, github, development } = services
+    const { runtime, libraries, customizer, customizerSource, github, development, cad } = services
     const registry = new CapabilityRegistry()
     const dispatcher = new CapabilityDispatcher(registry)
     let runtimeRevision = 0
@@ -44,17 +48,58 @@ export function registerCapabilities(services: CapabilityServices) {
     }
     const librarySnapshot = async (input: Record<string, unknown>, global: boolean) => {
         const state = await libraries.getState()
-        return { revision: libraryRevision, ...libraries.activity(), status: state.registryBusy ? 'loading' : state.registryError ? 'error' : state.registryLoaded ? 'ready' : 'notLoaded', registryError: state.registryError, registryStatus: state.registryStatus, ...(global ? { cache: page(state.global.map((entity) => ({ ...entity, versions: entity.versions.slice(0, 10), references: { ...entity.references, projects: entity.references.projects.slice(0, 10), unavailable: entity.references.unavailable.slice(0, 10), total: entity.references.projects.length + entity.references.unavailable.length } })), input), issues: state.globalIssues.slice(0, 50) } : { libraries: page(state.registry.filter((l) => !input.query || JSON.stringify([l.id, l.name]).toLowerCase().includes(String(input.query).toLowerCase())), input) }) }
+        return {
+            revision: libraryRevision,
+            ...libraries.activity(),
+            status: state.registryBusy ? 'loading' : state.registryError ? 'error' : state.registryLoaded ? 'ready' : 'notLoaded',
+            registryError: state.registryError,
+            registryStatus: state.registryStatus,
+            ...(global
+                ? {
+                      cache: page(
+                          state.global.map((entity) => ({ ...entity, versions: entity.versions.slice(0, 10), references: { ...entity.references, projects: entity.references.projects.slice(0, 10), unavailable: entity.references.unavailable.slice(0, 10), total: entity.references.projects.length + entity.references.unavailable.length } })),
+                          input,
+                      ),
+                      issues: state.globalIssues.slice(0, 50),
+                  }
+                : {
+                      libraries: page(
+                          state.registry.filter((l) => !input.query || JSON.stringify([l.id, l.name]).toLowerCase().includes(String(input.query).toLowerCase())),
+                          input,
+                      ),
+                  }),
+        }
     }
     const projectSnapshot = async (project: string, input: Record<string, unknown> = {}) => {
         const state = await libraries.projectState(project)
         return { revision: libraryRevision, ...libraries.activity(), project, dependencies: page(state.dependencies, input), affectedDependency: input.id ? state.dependencies.find((entry) => entry.id === input.id) : undefined }
     }
     const runtimeMutation = async (ctx: CapabilityContext, task: () => Promise<void>) => {
-        const subscription = runtime.onDidChange(() => { const state = runtime.getState(); if (state.installing) ctx.report?.(state.installing.message) })
-        try { await task(); return runtimeSnapshot() } finally { subscription.dispose() }
+        const subscription = runtime.onDidChange(() => {
+            const state = runtime.getState()
+            if (state.installing) ctx.report?.(state.installing.message)
+        })
+        try {
+            await task()
+            return runtimeSnapshot()
+        } finally {
+            subscription.dispose()
+        }
     }
     const handlers: Record<string, (input: Record<string, unknown>, ctx: CapabilityContext) => unknown> = {
+        'cad.modelAnalyze': async (input, ctx) => {
+            if (input.mode === 'verify') {
+                ctx.report?.('Verifying the frozen raw mesh; no mesh repair is applied.')
+                return meshReportSummary(await cad!.geometry!.verify(input as unknown as import('../../core/mesh/types').VerifyMeshInput, ctx.signal))
+            }
+            ctx.report?.('Evaluating official CLI diagnostics; geometry checks are not examined.')
+            const report = await cad!.analyze(input as unknown as import('../../core/cad/CadVerificationService').AnalyzeInput, ctx.signal)
+            ctx.report?.(`CLI diagnostics: ${report.overallStatus}`)
+            return reportSummary(report)
+        },
+        'cad.issueDetails': (input) => cad!.issueDetails(String(input.reportId), String(input.issueId), input.includeEvidence === true, Number(input.cursor ?? 0), Number(input.limit ?? 100)),
+        'cad.modelMeasure': (input, ctx) => cad!.geometry!.measure(input as import('../../core/mesh/types').MeshReference, ctx.signal),
+        'cad.modelRenderViews': (input, ctx) => cad!.geometry!.renderViews(input as import('../../core/mesh/types').RenderViewsInput, ctx.signal),
         'capabilities.discover': (input, ctx) => registry.discover(ctx, Number(input.offset ?? 0), Number(input.limit ?? 20)),
         'operation.status': (input) => dispatcher.operations.status(input.id as string | undefined, Number(input.offset ?? 0), Number(input.limit ?? 20)),
         'operation.cancel': (input) => {
@@ -64,14 +109,29 @@ export function registerCapabilities(services: CapabilityServices) {
             }
             return dispatcher.operations.cancel(String(input.id))
         },
-        'runtime.state': async (input) => { await runtime.whenReady(); return runtimeSnapshot(input) },
+        'runtime.state': async (input) => {
+            await runtime.whenReady()
+            return runtimeSnapshot(input)
+        },
         'runtime.builds': async (input) => {
             await runtime.whenReady()
             const before = runtime.getState()
             if (input.refresh === true || (!before.buildsLoaded && !before.builds.length)) await runtime.loadBuilds(input.refresh === true)
             const state = runtime.getState()
             if (state.buildsError && (input.refresh === true || !state.builds.length)) throw new CapabilityError('CATALOG_FAILED', state.buildsError, true)
-            return { revision: runtimeRevision, cached: !state.buildsLoaded || !!state.buildsError, error: state.buildsError, system: state.system, recommendedBuildId: state.recommendedBuildId, recommendedBuild: state.builds.find((build) => build.id === state.recommendedBuildId) ?? null, installedBuildIds: state.installedBuildIds, builds: page(state.builds.filter((b) => !input.channel || b.channel === input.channel).map((build) => ({ ...build, installed: state.installedBuildIds.includes(build.id) })), input) }
+            return {
+                revision: runtimeRevision,
+                cached: !state.buildsLoaded || !!state.buildsError,
+                error: state.buildsError,
+                system: state.system,
+                recommendedBuildId: state.recommendedBuildId,
+                recommendedBuild: state.builds.find((build) => build.id === state.recommendedBuildId) ?? null,
+                installedBuildIds: state.installedBuildIds,
+                builds: page(
+                    state.builds.filter((b) => !input.channel || b.channel === input.channel).map((build) => ({ ...build, installed: state.installedBuildIds.includes(build.id) })),
+                    input,
+                ),
+            }
         },
         'runtime.refresh': async (input) => {
             if (input.mode === 'installed') await runtime.refreshInstalled()
@@ -80,12 +140,16 @@ export function registerCapabilities(services: CapabilityServices) {
             if (/Detection failed:/.test(state.message)) throw new CapabilityError('DISCOVERY_FAILED', state.message, true)
             return runtimeSnapshot()
         },
-        'runtime.installBuild': (input, ctx) => runtimeMutation(ctx, async () => {
-            await runtime.installBuild(Number(input.id), ctx.signal)
-            if (!runtime.getState().installedBuildIds.includes(Number(input.id))) throw new CapabilityError('POSTCONDITION_FAILED', 'Installation returned but the requested build is not in the installed inventory. Refresh Runtime state.', true)
-        }),
+        'runtime.installBuild': (input, ctx) =>
+            runtimeMutation(ctx, async () => {
+                await runtime.installBuild(Number(input.id), ctx.signal)
+                if (!runtime.getState().installedBuildIds.includes(Number(input.id))) throw new CapabilityError('POSTCONDITION_FAILED', 'Installation returned but the requested build is not in the installed inventory. Refresh Runtime state.', true)
+            }),
         'runtime.installArchive': (input, ctx) => runtimeMutation(ctx, () => runtime.installArchivePath(String(input.path), ctx.signal)),
-        'runtime.addExecutable': async (input) => { await runtime.addExecutable(String(input.path)); return runtimeSnapshot() },
+        'runtime.addExecutable': async (input) => {
+            await runtime.addExecutable(String(input.path))
+            return runtimeSnapshot()
+        },
         'runtime.select': async (input) => {
             await runtime.select(String(input.id))
             if (runtime.getActiveRuntime()?.id !== input.id) throw new CapabilityError('POSTCONDITION_FAILED', 'Requested runtime did not become active. Refresh discovery.', true)
@@ -113,20 +177,32 @@ export function registerCapabilities(services: CapabilityServices) {
             if (state.registryError) throw new CapabilityError('REGISTRY_FAILED', state.registryError, true)
             return librarySnapshot(input, false)
         },
-        'libraries.projectState': async (input) => input.project ? projectSnapshot(String(input.project), input) : { revision: libraryRevision, ...libraries.activity(), projects: page(await libraries.projects(), input) },
+        'libraries.projectState': async (input) => (input.project ? projectSnapshot(String(input.project), input) : { revision: libraryRevision, ...libraries.activity(), projects: page(await libraries.projects(), input) }),
         'libraries.globalState': (input) => librarySnapshot(input, true),
         'libraries.verify': async (input, ctx) => {
             await libraries.execute({ action: input.key ? 'libraries.verify' : 'libraries.verifyAll', key: input.key }, ctx)
-            return { ...await librarySnapshot(input, true), summary: (await libraries.getState()).bulkResult || 'File inventory verified, not independent supply-chain authenticity.' }
+            return { ...(await librarySnapshot(input, true)), summary: (await libraries.getState()).bulkResult || 'File inventory verified, not independent supply-chain authenticity.' }
         },
-        'libraries.repair': async (input, ctx) => { await libraries.execute({ action: 'libraries.repairGlobal', key: input.key }, ctx); return librarySnapshot(input, true) },
+        'libraries.repair': async (input, ctx) => {
+            await libraries.execute({ action: 'libraries.repairGlobal', key: input.key }, ctx)
+            return librarySnapshot(input, true)
+        },
         'libraries.cleanupPlan': (input) => {
             if (input.key && input.mode) throw new CapabilityError('INVALID_INPUT', 'Choose key or mode, not both.')
             return libraries.planCleanup(input as { key?: string; mode?: 'unused' | 'all' })
         },
         'libraries.cleanupExecute': (input) => libraries.executeCleanup(String(input.planId)),
-        'more.githubStatus': async () => { await github.refresh(); const { mode, busy, account, loginSuggested, message } = github.getState(); return { mode, busy, account, loginSuggested, message: message ? safePreview(message) : undefined } },
-        'more.authorizeGitHub': async () => { await github.connect(); await runtime.loadBuilds(true); const { mode, busy, account, loginSuggested, message } = github.getState(); return { mode, busy, account, loginSuggested, message: message ? safePreview(message) : undefined } },
+        'more.githubStatus': async () => {
+            await github.refresh()
+            const { mode, busy, account, loginSuggested, message } = github.getState()
+            return { mode, busy, account, loginSuggested, message: message ? safePreview(message) : undefined }
+        },
+        'more.authorizeGitHub': async () => {
+            await github.connect()
+            await runtime.loadBuilds(true)
+            const { mode, busy, account, loginSuggested, message } = github.getState()
+            return { mode, busy, account, loginSuggested, message: message ? safePreview(message) : undefined }
+        },
         'development.status': () => ({ enabled: development.enabled, reason: development.enabled ? undefined : 'DEVELOPMENT_ONLY' }),
         'development.listCaches': (input) => development.listSafe(Number(input.offset ?? 0), Number(input.limit ?? 20)),
         'development.inspectCache': (input) => development.inspectSafe(String(input.id)),
@@ -148,6 +224,11 @@ export function registerCapabilities(services: CapabilityServices) {
         if (!handlers[definition.id]) throw new Error(`No binding for ${definition.id}`)
         registry.bind(definition.id, {
             available: () => {
+                if (definition.id.startsWith('cad.')) {
+                    if (!cad) return { enabled: false, reasonCode: 'NOT_REGISTERED' }
+                    if (!vscode.workspace.isTrusted) return { enabled: false, reasonCode: 'UNTRUSTED_WORKSPACE' }
+                    return definition.id === 'cad.issueDetails' ? { enabled: true } : (cad.geometry?.availability() ?? cad.availability())
+                }
                 if (definition.id.startsWith('development.') && definition.id !== 'development.status' && !development.enabled) return { enabled: false, reasonCode: 'DEVELOPMENT_ONLY' }
                 if ((definition.risk !== 'read' || ['libraries.verify', 'libraries.cleanupPlan'].includes(definition.id)) && !definition.id.startsWith('more.') && !definition.id.startsWith('development.') && !['operation.cancel', 'customizer.set', 'customizer.reset', 'customizer.applyPreset'].includes(definition.id) && !vscode.workspace.isTrusted) return { enabled: false, reasonCode: 'UNTRUSTED_WORKSPACE' }
                 if (definition.risk !== 'read') {
@@ -165,5 +246,11 @@ export function registerCapabilities(services: CapabilityServices) {
         })
     }
     registry.assertComplete()
-    return { dispatcher, dispose() { dispatcher.operations.dispose(); subscriptions.forEach((s) => s.dispose()) } }
+    return {
+        dispatcher,
+        dispose() {
+            dispatcher.operations.dispose()
+            subscriptions.forEach((s) => s.dispose())
+        },
+    }
 }

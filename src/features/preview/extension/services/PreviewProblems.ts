@@ -10,6 +10,8 @@ export class PreviewProblems implements vscode.Disposable {
     private readonly issues = new Map<'view', Array<{ uri: vscode.Uri; diagnostic: vscode.Diagnostic }>>()
     private disposed = false
 
+    private static sequence = 0
+    private readonly owner = `preview-view:${++PreviewProblems.sequence}`
     private renderStamp?: string
     constructor(private readonly document: vscode.Uri, private readonly sources: PreviewSourceProblems) { this.beginRender() }
 
@@ -19,6 +21,7 @@ export class PreviewProblems implements vscode.Disposable {
 
     report(error: unknown, stage: 'render' | 'view') {
         if (this.disposed) return
+        if (stage === 'render' && error && typeof error === 'object' && 'cadReported' in error && error.cadReported) return
         if (error instanceof Error && (error.message === 'Render cancelled' || error.name === 'AbortError')) return
         const empty = error instanceof EmptyModelError
         const issues = previewErrorDetails(error).map(detail => {
@@ -33,14 +36,14 @@ export class PreviewProblems implements vscode.Disposable {
             if (uri.toString() !== this.document.toString()) diagnostic.relatedInformation = [new vscode.DiagnosticRelatedInformation(new vscode.Location(this.document, new vscode.Range(0, 0, 0, 0)), 'Reported while previewing this document.')]
             return { uri, diagnostic }
         })
-        if (stage === 'render' && /\.(scad|csg)$/i.test(this.document.path)) { this.sources.report(this.document, issues, this.renderStamp); return }
+        if (stage === 'render' && /\.(scad|csg)$/i.test(this.document.path)) { this.sources.report(this.document, issues, this.renderStamp, this.owner); return }
         this.issues.set('view', issues)
         this.publish()
     }
 
     clear(stage: 'render' | 'view') {
         if (this.disposed) return
-        if (stage === 'render' && /\.(scad|csg)$/i.test(this.document.path)) { this.sources.clear(this.document); return }
+        if (stage === 'render' && /\.(scad|csg)$/i.test(this.document.path)) { this.sources.clear(this.document, this.owner); return }
         this.issues.delete('view')
         this.publish()
     }

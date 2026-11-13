@@ -1,0 +1,71 @@
+{
+  "sourceCommit": "22a6caa4ba918fde2f397a2d25197288c58b1b3f",
+  "branch": "codex/agent-native-cad-lifecycle",
+  "attempts": 1,
+  "budgetMs": 240000,
+  "build": {
+    "command": "npm run package",
+    "exitCode": 0,
+    "localLog": ".build/cad-final-reaccept-build.log",
+    "logSha256": "8fdc87c4b81034ddbac8d63e9fa76a9aaa90b83832067d8ce5e0564079449f25",
+    "bundleSha256": "de67d2e7858ea91b3fa2b817087a939573666d028ede7de9856ea0ab9cb02d03",
+    "matchesNativeLoadedBundle": true
+  },
+  "native": {
+    "command": "SCAD_NATIVE_FIXTURE_EDIT_APPROVED=width-0-to-1 SCAD_AGENT_MODEL=Qwen3.8-27B-4bit SCAD_AGENT_TIMEOUT_MS=240000 node scripts/test-cad-native.mjs",
+    "exitCode": 1,
+    "localLog": ".build/cad-final-reaccept-native.log",
+    "logSha256": "9db5426db1c6f3be5d3bd2cc468e6af2da499174a96cb591cbcee81f762eefdd",
+    "pass": false,
+    "error": "AssertionError [ERR_ASSERTION]: HARNESS_UNAVAILABLE: Native request did not complete successfully",
+    "vscode": "1.146.0",
+    "provider": {
+      "id": "techopolis.omlx-copilot-chat",
+      "version": "0.1.2"
+    },
+    "model": "Qwen3.8-27B-4bit",
+    "chatSettings": {
+      "saveBeforeSend": false,
+      "autoSave": "off"
+    },
+    "loadedBundleSha256": "de67d2e7858ea91b3fa2b817087a939573666d028ede7de9856ea0ab9cb02d03",
+    "analyses": [
+      {
+        "reportId": "cad-ef33f61d-8de2-4c40-90d3-a107eaba9af6",
+        "snapshotId": "80dae736be8a45e7cf29b0e343bd4ecd42a18a0d2f80adf4c5461bfcf56e7150",
+        "status": "FAIL"
+      }
+    ],
+    "approvalCount": 1,
+    "observation": {
+      "snapshot": true,
+      "buffer": "// Unsaved Native Agent acceptance buffer\nwidth=1;\nassert(width>0,\"width must be positive\");\ncube(width);\n",
+      "dirty": false,
+      "disk": "// Unsaved Native Agent acceptance buffer\nwidth=1;\nassert(width>0,\"width must be positive\");\ncube(width);\n",
+      "problems": [],
+      "operations": {
+        "total": 1,
+        "offset": 0,
+        "hasMore": false,
+        "nextOffset": null,
+        "operations": [
+          {
+            "id": "692eab10-f1ca-4096-8761-aed6ad48c50f",
+            "capabilityId": "cad.modelAnalyze",
+            "status": "succeeded",
+            "message": "CLI diagnostics: FAIL"
+          }
+        ]
+      }
+    },
+    "bufferSha256": "e8e516fd6bb17060f9554965bfab5d01e07028d0095062357cb150466997d009",
+    "diskSha256": "e8e516fd6bb17060f9554965bfab5d01e07028d0095062357cb150466997d009"
+  },
+  "gate": "NOT_PASS / DEFERRED_BY_USER",
+  "interpretation": "One real analyze detected the intended assertion. Reviewed native edit changed width=0 to width=1 and saved the earlier unsaved buffer. No second analyze or final reply was observed before the 240s deadline. Empty Problems after editing are invalidated evidence, not a verification PASS.",
+  "notRun": [
+    "remaining D/S-specific Host evidence",
+    "Windows/Linux/remote native release acceptance"
+  ],
+  "nextDevelopment": "User requested one final bounded retry and then issue tracking if still open. No further retries or implementation changes in this handoff."
+}

@@ -1,0 +1,1205 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 2
+    },
+    "reportId": {
+      "type": "string"
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 2
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "inputEvidenceHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "sourceStateId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "document": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "uri": {
+              "type": "string"
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sourceSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "dirty": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "uri",
+            "sourceSha256",
+            "dirty"
+          ]
+        },
+        "project": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "rootUri": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "rootUri"
+          ]
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "uri": {
+                "type": "string"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "resolved",
+                  "missing",
+                  "unreadable"
+                ]
+              },
+              "dirty": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "uri",
+              "status",
+              "dirty"
+            ]
+          }
+        },
+        "inputKind": {
+          "enum": [
+            "scad",
+            "stl",
+            "3mf"
+          ]
+        },
+        "runtime": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "used": {
+              "type": "boolean"
+            },
+            "identityHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "version": {
+              "type": "string"
+            },
+            "executable": {
+              "type": "string"
+            },
+            "backend": {
+              "type": "string"
+            },
+            "commandHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "used"
+          ]
+        },
+        "quality": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "profile": {
+              "const": "verification"
+            },
+            "requestedGlobalTessellation": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number"
+              }
+            },
+            "localSettings": {
+              "const": "source-controlled"
+            },
+            "effectiveOverrides": {
+              "type": "object",
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "required": [
+            "profile",
+            "requestedGlobalTessellation",
+            "localSettings"
+          ]
+        },
+        "units": {
+          "enum": [
+            "modelUnits",
+            "mm"
+          ]
+        },
+        "sourceUnit": {
+          "type": "string"
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "unresolvedInputs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "policyHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "kernelVersion": {
+          "type": "string"
+        },
+        "sourceSnapshotId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "meshSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "id",
+        "inputEvidenceHash",
+        "sourceStateId",
+        "document",
+        "project",
+        "dependencies",
+        "inputKind",
+        "runtime",
+        "quality",
+        "units",
+        "sourceUnit",
+        "complete",
+        "unresolvedInputs",
+        "policyHash",
+        "kernelVersion"
+      ]
+    },
+    "executionStatus": {
+      "type": "string",
+      "enum": [
+        "SUCCEEDED",
+        "FAILED",
+        "CANCELLED",
+        "TIMED_OUT"
+      ]
+    },
+    "overallStatus": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "UNRESOLVED",
+        "SKIPPED"
+      ]
+    },
+    "units": {
+      "enum": [
+        "modelUnits",
+        "mm"
+      ]
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "category": {
+            "enum": [
+              "compile",
+              "format",
+              "mesh",
+              "measurement"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PASS",
+              "FAIL",
+              "UNRESOLVED",
+              "SKIPPED"
+            ]
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "issueIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "category",
+          "status",
+          "required",
+          "issueIds"
+        ]
+      }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "code": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "error",
+              "warning",
+              "information"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "FAIL",
+              "UNRESOLVED",
+              "SKIPPED"
+            ]
+          },
+          "source": {
+            "enum": [
+              "cli",
+              "mesh"
+            ]
+          },
+          "location": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "uri": {
+                "type": "string"
+              },
+              "line": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "character": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "confidence": {
+                "type": "string",
+                "enum": [
+                  "exact",
+                  "fallback"
+                ]
+              }
+            },
+            "required": [
+              "uri",
+              "line",
+              "character",
+              "confidence"
+            ]
+          },
+          "relatedTrace": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "evidenceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "hint": {
+            "type": "string"
+          },
+          "spatial": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "instanceId": {
+                "type": "string"
+              },
+              "triangles": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "point": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number"
+                }
+              },
+              "triangleSamples": {
+                "type": "array",
+                "maxItems": 2,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "triangle": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "vertices": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "array",
+                        "minItems": 3,
+                        "maxItems": 3,
+                        "items": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "triangle",
+                    "vertices"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "triangles"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "title",
+          "severity",
+          "status",
+          "source",
+          "relatedTrace",
+          "evidenceIds"
+        ]
+      }
+    },
+    "issueCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "facts": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "algorithm": {
+              "const": "raw-mesh-v1"
+            },
+            "precision": {
+              "const": "computed-on-decoded-mesh"
+            },
+            "numericType": {
+              "const": "float64"
+            },
+            "topologyWeld": {
+              "const": "exact"
+            },
+            "objects": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "instanceId": {
+                    "type": "string"
+                  },
+                  "objectId": {
+                    "type": "string"
+                  },
+                  "vertices": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "triangles": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "duplicateVertices": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "degenerateFaces": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "duplicateFaces": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "boundaryEdges": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "nonManifoldEdges": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "nonManifoldVertices": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "inconsistentEdges": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "componentCount": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "components": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "triangles": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "signedVolume": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "status": {
+                              "enum": [
+                                "PASS",
+                                "FAIL",
+                                "UNRESOLVED",
+                                "SKIPPED"
+                              ]
+                            },
+                            "value": {
+                              "anyOf": [
+                                {
+                                  "type": "number"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "reason": {
+                              "type": "string"
+                            },
+                            "errorEstimate": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "value"
+                          ]
+                        },
+                        "parent": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "depth": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "triangles",
+                        "signedVolume",
+                        "parent",
+                        "depth"
+                      ]
+                    }
+                  },
+                  "bounds": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "min": {
+                            "type": "array",
+                            "minItems": 3,
+                            "maxItems": 3,
+                            "items": {
+                              "type": "number"
+                            }
+                          },
+                          "max": {
+                            "type": "array",
+                            "minItems": 3,
+                            "maxItems": 3,
+                            "items": {
+                              "type": "number"
+                            }
+                          },
+                          "dimensions": {
+                            "type": "array",
+                            "minItems": 3,
+                            "maxItems": 3,
+                            "items": {
+                              "type": "number"
+                            }
+                          }
+                        },
+                        "required": [
+                          "min",
+                          "max",
+                          "dimensions"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "surfaceArea": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "status": {
+                        "enum": [
+                          "PASS",
+                          "FAIL",
+                          "UNRESOLVED",
+                          "SKIPPED"
+                        ]
+                      },
+                      "value": {
+                        "anyOf": [
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "reason": {
+                        "type": "string"
+                      },
+                      "errorEstimate": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "status",
+                      "value"
+                    ]
+                  },
+                  "signedVolume": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "status": {
+                        "enum": [
+                          "PASS",
+                          "FAIL",
+                          "UNRESOLVED",
+                          "SKIPPED"
+                        ]
+                      },
+                      "value": {
+                        "anyOf": [
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "reason": {
+                        "type": "string"
+                      },
+                      "errorEstimate": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "status",
+                      "value"
+                    ]
+                  },
+                  "physicalVolume": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "status": {
+                        "enum": [
+                          "PASS",
+                          "FAIL",
+                          "UNRESOLVED",
+                          "SKIPPED"
+                        ]
+                      },
+                      "value": {
+                        "anyOf": [
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "reason": {
+                        "type": "string"
+                      },
+                      "errorEstimate": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "status",
+                      "value"
+                    ]
+                  },
+                  "status": {
+                    "enum": [
+                      "PASS",
+                      "FAIL",
+                      "UNRESOLVED",
+                      "SKIPPED"
+                    ]
+                  }
+                },
+                "required": [
+                  "instanceId",
+                  "objectId",
+                  "vertices",
+                  "triangles",
+                  "duplicateVertices",
+                  "degenerateFaces",
+                  "duplicateFaces",
+                  "boundaryEdges",
+                  "nonManifoldEdges",
+                  "nonManifoldVertices",
+                  "inconsistentEdges",
+                  "componentCount",
+                  "components",
+                  "bounds",
+                  "surfaceArea",
+                  "signedVolume",
+                  "physicalVolume",
+                  "status"
+                ]
+              }
+            },
+            "bounds": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "min": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "number"
+                      }
+                    },
+                    "max": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "number"
+                      }
+                    },
+                    "dimensions": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "number"
+                      }
+                    }
+                  },
+                  "required": [
+                    "min",
+                    "max",
+                    "dimensions"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "surfaceArea": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "status": {
+                  "enum": [
+                    "PASS",
+                    "FAIL",
+                    "UNRESOLVED",
+                    "SKIPPED"
+                  ]
+                },
+                "value": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "errorEstimate": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "status",
+                "value"
+              ]
+            },
+            "signedVolume": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "status": {
+                  "enum": [
+                    "PASS",
+                    "FAIL",
+                    "UNRESOLVED",
+                    "SKIPPED"
+                  ]
+                },
+                "value": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "errorEstimate": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "status",
+                "value"
+              ]
+            },
+            "physicalVolume": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "status": {
+                  "enum": [
+                    "PASS",
+                    "FAIL",
+                    "UNRESOLVED",
+                    "SKIPPED"
+                  ]
+                },
+                "value": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "errorEstimate": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "status",
+                "value"
+              ]
+            },
+            "findings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "enum": [
+                      "FAIL",
+                      "UNRESOLVED"
+                    ]
+                  },
+                  "message": {
+                    "type": "string"
+                  },
+                  "instanceId": {
+                    "type": "string"
+                  },
+                  "triangles": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "point": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "items": {
+                      "type": "number"
+                    }
+                  },
+                  "triangleSamples": {
+                    "type": "array",
+                    "maxItems": 2,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "triangle": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "vertices": {
+                          "type": "array",
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "items": {
+                            "type": "array",
+                            "minItems": 3,
+                            "maxItems": 3,
+                            "items": {
+                              "type": "number"
+                            }
+                          }
+                        }
+                      },
+                      "required": [
+                        "triangle",
+                        "vertices"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "code",
+                  "status",
+                  "message",
+                  "triangles"
+                ]
+              }
+            },
+            "findingCount": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "complete": {
+              "type": "boolean"
+            },
+            "pairTests": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "elapsedMs": {
+              "type": "number"
+            },
+            "units": {
+              "enum": [
+                "modelUnits",
+                "mm"
+              ]
+            },
+            "sourceUnit": {
+              "type": "string"
+            },
+            "scale": {
+              "type": "number"
+            },
+            "rawVertices": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "rawTriangles": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "limitations": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "algorithm",
+            "precision",
+            "numericType",
+            "topologyWeld",
+            "objects",
+            "bounds",
+            "surfaceArea",
+            "signedVolume",
+            "physicalVolume",
+            "findings",
+            "findingCount",
+            "complete",
+            "pairTests",
+            "elapsedMs",
+            "units",
+            "sourceUnit",
+            "scale",
+            "rawVertices",
+            "rawTriangles",
+            "limitations"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "kind": {
+            "enum": [
+              "mesh",
+              "image",
+              "analysis",
+              "log"
+            ]
+          },
+          "mimeType": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "snapshotId": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "role": {
+            "enum": [
+              "raw",
+              "render"
+            ]
+          },
+          "derivation": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "inputSha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "numericType": {
+                "const": "float32"
+              },
+              "maxCoordinateError": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "inputSha256",
+              "numericType",
+              "maxCoordinateError"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "mimeType",
+          "sha256",
+          "bytes",
+          "snapshotId"
+        ]
+      }
+    },
+    "examined": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notExamined": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "incomplete": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "elapsedMs": {
+          "type": "number",
+          "minimum": 0
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "elapsedMs",
+        "truncated"
+      ]
+    },
+    "createdAt": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "reportId",
+    "snapshot",
+    "executionStatus",
+    "overallStatus",
+    "units",
+    "checks",
+    "issues",
+    "issueCount",
+    "facts",
+    "artifacts",
+    "examined",
+    "notExamined",
+    "incomplete",
+    "metrics",
+    "createdAt"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:scad-ai-ide:cad-report:2",
+  "title": "Raw mesh verification report v2"
+}

@@ -1,0 +1,12 @@
+{
+  "productCommit": "d43e328",
+  "command": "node scripts/test-agent-installed.mjs /Users/q/Documents/Code/scad-ai-ide/.build/scad-ai-ide-phase2.vsix",
+  "exitCode": 1,
+  "signal": null,
+  "elapsedMs": 7884,
+  "archive": "/Users/q/Documents/Code/scad-ai-ide/.build/scad-ai-ide-phase2.vsix",
+  "archiveSha256": "06807da7b608a06d9277474b48a8c93a831e723c8061eadfc24a5454a12d7fe8",
+  "log": "/Users/q/Documents/Code/scad-ai-ide/.build/p2-delivery-installed.log",
+  "evidenceDirectory": "/private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-ZHrTJh",
+  "scope": "Full Production smoke failed to acquire native focus at fixture line 120; Phase 2 mesh slice completed before that failure."
+}
