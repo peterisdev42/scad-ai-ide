@@ -1,0 +1,482 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "urn:scad-ai-ide:cad-report:1",
+    "title": "SCAD AI IDE diagnostics report v1",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "schemaVersion": {
+            "const": 1
+        },
+        "reportId": {
+            "type": "string"
+        },
+        "snapshot": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "schemaVersion": {
+                    "const": 1
+                },
+                "id": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                },
+                "document": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "uri": {
+                            "type": "string"
+                        },
+                        "version": {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        "sourceSha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "dirty": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "uri",
+                        "sourceSha256",
+                        "dirty"
+                    ]
+                },
+                "project": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "rootUri": {
+                            "type": "string"
+                        },
+                        "libraryEnvironmentHash": {
+                            "type": "string"
+                        },
+                        "dependencyResolutionHash": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                        }
+                    },
+                    "required": [
+                        "rootUri",
+                        "libraryEnvironmentHash"
+                    ]
+                },
+                "dependencies": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                            "uri": {
+                                "type": "string"
+                            },
+                            "sha256": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                            },
+                            "status": {
+                                "type": "string",
+                                "enum": [
+                                    "resolved",
+                                    "missing",
+                                    "unreadable"
+                                ]
+                            },
+                            "dirty": {
+                                "type": "boolean"
+                            }
+                        },
+                        "required": [
+                            "uri",
+                            "status",
+                            "dirty"
+                        ]
+                    }
+                },
+                "runtime": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "executable": {
+                            "type": "string"
+                        },
+                        "version": {
+                            "type": "string"
+                        },
+                        "identityHash": {
+                            "type": "string"
+                        },
+                        "capabilityHash": {
+                            "type": "string"
+                        },
+                        "hostPlatform": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "executable",
+                        "version",
+                        "identityHash",
+                        "capabilityHash",
+                        "hostPlatform"
+                    ]
+                },
+                "parameters": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "overrides": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "anyOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "number"
+                                    },
+                                    {
+                                        "type": "boolean"
+                                    },
+                                    {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "number"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        "digest": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "overrides",
+                        "digest"
+                    ]
+                },
+                "evaluation": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "mode": {
+                            "type": "string",
+                            "enum": [
+                                "csg",
+                                "full-mesh"
+                            ]
+                        },
+                        "settingsHash": {
+                            "type": "string"
+                        },
+                        "exportFormat": {
+                            "type": "string",
+                            "enum": [
+                                "csg",
+                                "stl",
+                                "3mf",
+                                "png"
+                            ]
+                        },
+                        "sourceTransport": {
+                            "type": "string",
+                            "enum": [
+                                "stdin",
+                                "file"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "mode",
+                        "settingsHash",
+                        "exportFormat",
+                        "sourceTransport"
+                    ]
+                },
+                "constraintsDigest": {
+                    "type": "string"
+                },
+                "kernelVersion": {
+                    "const": "diagnostics-v1"
+                },
+                "complete": {
+                    "type": "boolean"
+                },
+                "unresolvedInputs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "inputEvidenceHash": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                }
+            },
+            "required": [
+                "schemaVersion",
+                "id",
+                "document",
+                "project",
+                "dependencies",
+                "runtime",
+                "parameters",
+                "evaluation",
+                "constraintsDigest",
+                "kernelVersion",
+                "complete",
+                "unresolvedInputs",
+                "inputEvidenceHash"
+            ]
+        },
+        "executionStatus": {
+            "type": "string",
+            "enum": [
+                "SUCCEEDED",
+                "FAILED",
+                "CANCELLED",
+                "TIMED_OUT"
+            ]
+        },
+        "overallStatus": {
+            "type": "string",
+            "enum": [
+                "PASS",
+                "FAIL",
+                "UNRESOLVED",
+                "SKIPPED"
+            ]
+        },
+        "checks": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "category": {
+                        "const": "compile"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "PASS",
+                            "FAIL",
+                            "UNRESOLVED",
+                            "SKIPPED"
+                        ]
+                    },
+                    "required": {
+                        "type": "boolean"
+                    },
+                    "issueIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "reason": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "category",
+                    "status",
+                    "required",
+                    "issueIds"
+                ]
+            }
+        },
+        "issues": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "severity": {
+                        "type": "string",
+                        "enum": [
+                            "error",
+                            "warning",
+                            "information"
+                        ]
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "FAIL",
+                            "UNRESOLVED",
+                            "SKIPPED"
+                        ]
+                    },
+                    "source": {
+                        "const": "cli"
+                    },
+                    "location": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                            "uri": {
+                                "type": "string"
+                            },
+                            "line": {
+                                "type": "integer",
+                                "minimum": 0
+                            },
+                            "character": {
+                                "type": "integer",
+                                "minimum": 0
+                            },
+                            "confidence": {
+                                "type": "string",
+                                "enum": [
+                                    "exact",
+                                    "fallback"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "uri",
+                            "line",
+                            "character",
+                            "confidence"
+                        ]
+                    },
+                    "relatedTrace": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "evidenceIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "hint": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "code",
+                    "title",
+                    "severity",
+                    "status",
+                    "source",
+                    "relatedTrace",
+                    "evidenceIds"
+                ]
+            }
+        },
+        "examined": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "notExamined": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "incomplete": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "units": {
+            "const": "modelUnits"
+        },
+        "cliExitCode": {
+            "type": [
+                "integer",
+                "null"
+            ]
+        },
+        "artifacts": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "kind": {
+                        "const": "log"
+                    },
+                    "mimeType": {
+                        "const": "text/plain"
+                    },
+                    "snapshotId": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                    }
+                },
+                "required": [
+                    "id",
+                    "kind",
+                    "mimeType",
+                    "snapshotId"
+                ]
+            }
+        },
+        "metrics": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "elapsedMs": {
+                    "type": "number",
+                    "minimum": 0
+                },
+                "truncated": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "elapsedMs",
+                "truncated"
+            ]
+        }
+    },
+    "required": [
+        "schemaVersion",
+        "reportId",
+        "snapshot",
+        "executionStatus",
+        "overallStatus",
+        "checks",
+        "issues",
+        "examined",
+        "notExamined",
+        "incomplete",
+        "units",
+        "cliExitCode",
+        "artifacts",
+        "metrics"
+    ]
+}

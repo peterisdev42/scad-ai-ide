@@ -207,6 +207,7 @@ test('all catalog handlers execute without panels and preserve exact service arg
     let libraryAbort: AbortController | undefined
     const runtimeState = { recommendedBuildId: 1, installedBuildIds: [1], activeId: 'runtime', runtimes: [{ id: 'runtime', version: 'test', command: { executable: '/installed/openscad', argsPrefix: [] as string[] }, source: 'managed' }], builds: [{ id: 1, channel: 'Stable' }], busy: false, buildsLoaded: true, message: '' }
     const services = {
+        cad: { availability: () => ({ enabled: true }), analyze: async () => ({ schemaVersion: 1, reportId: 'fixture', snapshot: { id: 'hash', document: { uri: 'file:///workspace/model.scad' }, project: { rootUri: 'file:///workspace' }, runtime: {}, complete: true }, checks: [], issues: [], incomplete: [], examined: [], notExamined: [], artifacts: [], metrics: {} }), issueDetails: record('cad.issueDetails') },
         runtime: { cancel: () => { if (!runtimeAbort) return false; runtimeAbort.abort(); return true }, refreshInstalled: record('refreshInstalled'), onDidChange: () => disposable, getState: () => runtimeState, getActiveRuntime: () => runtimeState.runtimes.find((r) => r.id === runtimeState.activeId), whenReady: async () => {}, loadBuilds: record('loadBuilds'), refresh: record('refresh'), installBuild: record('installBuild'), installArchivePath: record('installArchivePath'), addExecutable: record('addExecutable'), select: record('select'), deleteRuntime: async (id: string) => { calls.push({ name: 'deleteRuntime', input: id }); runtimeState.runtimes = runtimeState.runtimes.filter((r) => r.id !== id); runtimeState.activeId = '' } },
         libraries: { activity: () => ({ busy: !!libraryAbort, cancellable: !!libraryAbort, message: libraryAbort ? 'Installing from GUI' : '', error: '', trusted: true }), search: record('search', []), cancel: () => { if (!libraryAbort) return false; libraryAbort.abort(); return true }, isBusy: () => false, onDidChange: () => disposable, getState: async () => ({ registry: [], global: [], globalIssues: [], registryLoaded: true }), projects: async () => ['/workspace'], projectState: record('projectState', { dependencies: [] }), loadRegistry: record('loadRegistry'), execute: record('library.execute'), planCleanup: record('planCleanup', { id: 'plan' }), executeCleanup: record('executeCleanup', { removed: 1 }), manager: { registry: { search: record('search', []), getLibrary: record('getLibrary', { id: 'fixture', versions: [] }) } } },
         customizerSource: { analyze: record('sourceAnalyze'), apply: record('sourceApply'), validate: record('sourceValidate') },
@@ -214,12 +215,14 @@ test('all catalog handlers execute without panels and preserve exact service arg
         github: { refresh: record('github.refresh'), connect: record('github.connect'), getState: () => ({ mode: 'anonymous', busy: false, message: 'Authentication unavailable: Bearer hidden-value', accessToken: 'must-not-leak' }) },
         development: { isBusy: () => false, enabled: true, listSafe: record('listSafe'), inspectSafe: record('inspectSafe'), clearSafe: record('clearSafe') },
     } as unknown as CapabilityServices
-    const module = load<typeof import('../features/agents/registerCapabilities')>('../features/agents/registerCapabilities.js', { Uri, workspace: { isTrusted: true } }, {
+    const hostWorkspace = { isTrusted: true }
+    const module = load<typeof import('../features/agents/registerCapabilities')>('../features/agents/registerCapabilities.js', { Uri, workspace: hostWorkspace }, {
         '/CapabilityRegistry': { CapabilityRegistry, capabilityCatalog }, '/CapabilityDispatcher': { CapabilityDispatcher }, '/CapabilityTypes': { CapabilityError },
     })
     const capabilities = module.registerCapabilities(services)
     try {
         const inputs: Record<string, Record<string, unknown>> = {
+            'cad.modelAnalyze': { uri: 'file:///workspace/model.scad' }, 'cad.issueDetails': { reportId: 'fixture', issueId: 'a'.repeat(64) },
             'runtime.installBuild': { id: 1 }, 'runtime.installArchive': { path: '/host/archive.zip' }, 'runtime.addExecutable': { path: '/host/openscad' }, 'runtime.select': { id: 'runtime' }, 'runtime.remove': { id: 'runtime' },
             'customizer.sourceAnalyze': { uri: 'file:///workspace/model.scad' }, 'customizer.sourceValidate': { uri: 'file:///workspace/model.scad' }, 'customizer.sourceApply': { mode: 'commit', planId: 'plan' },
             'customizer.set': { target: 'file:///workspace/model.scad', revision: 1, values: { width: 25 } }, 'customizer.reset': { target: 'file:///workspace/model.scad', revision: 1 },
@@ -298,6 +301,13 @@ test('all catalog handlers execute without panels and preserve exact service arg
         assert.ok(calls.some((call) => call.name === 'library.execute' && (call.input as { project: string; version: string }).project === '/workspace' && (call.input as { version: string }).version === 'v1'))
         assert.ok(calls.some((call) => call.name === 'installBuild' && call.input === 1))
         assert.ok(calls.some((call) => call.name === 'installArchivePath' && call.input === '/host/archive.zip'))
+        hostWorkspace.isTrusted = false
+        for (const id of ['cad.modelAnalyze', 'cad.issueDetails']) {
+            assert.equal(capabilityCatalog.find(d => d.id === id)?.risk, 'read')
+            const blocked = await capabilities.dispatcher.invoke(id, inputs[id], { actor: 'agent' })
+            assert.equal(blocked.ok, false, 'Read-only CAD still requires Workspace Trust')
+            if (!blocked.ok) assert.equal(blocked.error.code, 'UNTRUSTED_WORKSPACE')
+        }
     } finally { capabilities.dispose() }
 })
 

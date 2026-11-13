@@ -721,5 +721,29 @@
         ]
       }
     }
+  },
+  {
+    "group": "CAD diagnostic commands",
+    "source": "src/features/cad-verification/registerCadVerification.ts",
+    "pattern": "registerCommand\\('([^']+)'",
+    "actions": {
+      "scad-ai-ide.model.analyze": {
+        "capabilities": [
+          "cad.modelAnalyze"
+        ],
+        "examples": [
+          {
+            "capability": "cad.modelAnalyze",
+            "input": {
+              "uri": "file:///workspace/model.scad",
+              "mode": "diagnostics"
+            }
+          }
+        ]
+      },
+      "scad-ai-ide.model.openReport": {
+        "uiOnly": "Reveal a stored read-only report; computation and issue facts are already exposed through CAD capabilities."
+      }
+    }
   }
 ]

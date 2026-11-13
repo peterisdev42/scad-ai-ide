@@ -1,0 +1,344 @@
+{
+  "dateUTC": "2026-11-12T10:37:39.325104+00:00",
+  "scope": "Phase 0–1 CLI/CSG diagnostics only",
+  "baseline": "8a3ff1fe394b11aeb7fb323e7319bd365d29abaa",
+  "branch": "codex/agent-native-cad-lifecycle",
+  "remoteMainAtFinalFetch": "8a3ff1fe394b11aeb7fb323e7319bd365d29abaa",
+  "deliveryHead": "Resolve from the containing commit / PR head; implementation was tested before committing this evidence.",
+  "mainModifiedOrCommitted": false,
+  "environment": {
+    "platform": "macOS arm64",
+    "node": "24.16.0",
+    "openscad": "2026.11-RC0",
+    "minimumHost": "1.140.0",
+    "stableHost": "1.146.0"
+  },
+  "candidateBundleSha256": "ffd8f00ea6bc2d934481f70f46555838afe7def1e4fdfba8c529fd680830ea68",
+  "testedVsix": {
+    "path": ".build/scad-ai-ide-agent-cad.vsix",
+    "sha256": "e2d9762854f05a414fd5d1580d6a573c703911eafa72c5581f931a5f3a245064",
+    "vsce": "4.1.0"
+  },
+  "catalog": {
+    "tools": 42,
+    "unchangedBaselineTools": 40,
+    "instructions": 2,
+    "skills": 6
+  },
+  "tests": [
+    {
+      "localLog": ".build/cad-final-ui-manifest.log",
+      "sha256": "c7df2b72979a548fdb1701681a279fc086ad9de749c0ebbb8855d824e83b19c0",
+      "exitCode": 0,
+      "summary": [
+        "ℹ tests 3",
+        "ℹ pass 3",
+        "ℹ fail 0",
+        "ℹ skipped 0"
+      ]
+    },
+    {
+      "localLog": ".build/cad-vsix-package.log",
+      "sha256": "59b4fcefaea81eaca574901ab8ce81a97c8e58f35aebf9f6701fd9d59a69acc7",
+      "exitCode": 0,
+      "summary": []
+    },
+    {
+      "localLog": ".build/cad-full-host-minimum-complete.log",
+      "sha256": "0304e5878b33c3dc58cce6f07b33a50b87bfc46b5f51afebbf4d744b99f7f474",
+      "exitCode": 1,
+      "summary": [
+        "43 passing (37s)",
+        "3 failing"
+      ],
+      "failures": "3 failing\n  1) Agent capabilities extension host\n       agent source transaction preserves the earlier unsaved buffer through native Undo and Redo:\n\n      AssertionError [ERR_ASSERTION]: Native test window did not gain focus\n      + expected - actual\n\n      -false\n      +true\n      \n  \tat focusTestEditor (out/test/HostEditorFocus.js:59:16)\n  \tat async Context.<anonymous> (out/test/capabilities.integration.test.js:1028:17)\n\n  2) Agent capabilities extension host\n       editor source transaction preserves the earlier unsaved buffer through native Undo and Redo:\n\n      AssertionError [ERR_ASSERTION]: Native test window did not gain focus\n      + expected - actual\n\n      -false\n      +true\n      \n  \tat focusTestEditor (out/test/HostEditorFocus.js:59:16)\n  \tat async Context.<anonymous> (out/test/capabilities.integration.test.js:1028:17)\n\n  3) OpenSCAD language integration\n       native Enter indents unbraced bodies once, nested vectors and block comments:\n\n      AssertionError [ERR_ASSERTION]: Native test window did not gain focus\n      + expected - actual\n\n      -false\n      +true\n      \n  \tat focusTestEditor (out/test/HostEditorFocus.js:59:16)\n  \tat async typeText (out/test/language.integration.test.js:54:5)\n  \tat async Context.<anonymous> (out/test/language.integration.test.js:79:17)\n\n3 tests failed.\n[main 2026-11-12T10:34:23.473Z] Extension host with pid 27180 exited with code: 0, signal: unknown.\nExit code:   1"
+    },
+    {
+      "localLog": ".build/cad-full-host-stable-complete.log",
+      "sha256": "f2fa6feeaa8fe9854a663195e5c837a6e77fcfe39b7d4172b3424019740d87ae",
+      "exitCode": 1,
+      "summary": [
+        "43 passing (36s)",
+        "3 failing"
+      ],
+      "failures": "3 failing\n  1) Agent capabilities extension host\n       agent source transaction preserves the earlier unsaved buffer through native Undo and Redo:\n\n      AssertionError [ERR_ASSERTION]: Native test window did not gain focus\n      + expected - actual\n\n      -false\n      +true\n      \n  \tat focusTestEditor (out/test/HostEditorFocus.js:59:16)\n  \tat async Context.<anonymous> (out/test/capabilities.integration.test.js:1028:17)\n\n  2) Agent capabilities extension host\n       editor source transaction preserves the earlier unsaved buffer through native Undo and Redo:\n\n      AssertionError [ERR_ASSERTION]: Native test window did not gain focus\n      + expected - actual\n\n      -false\n      +true\n      \n  \tat focusTestEditor (out/test/HostEditorFocus.js:59:16)\n  \tat async Context.<anonymous> (out/test/capabilities.integration.test.js:1028:17)\n\n  3) OpenSCAD language integration\n       native Enter indents unbraced bodies once, nested vectors and block comments:\n\n      AssertionError [ERR_ASSERTION]: Native test window did not gain focus\n      + expected - actual\n\n      -false\n      +true\n      \n  \tat focusTestEditor (out/test/HostEditorFocus.js:59:16)\n  \tat async typeText (out/test/language.integration.test.js:54:5)\n  \tat async Context.<anonymous> (out/test/language.integration.test.js:79:17)\n\n3 tests failed.\n[main 2026-11-12T10:33:01.308Z] Extension host with pid 26109 exited with code: 0, signal: unknown.\nExit code:   1"
+    },
+    {
+      "localLog": ".build/cad-installed-stable-final.log",
+      "sha256": "adabdd0baca0f0ea93584222430967173f0fbe46a06274361b0574ef66d24321",
+      "exitCode": 1,
+      "summary": []
+    },
+    {
+      "localLog": ".build/cad-final-npm-test.log",
+      "sha256": "a1ac887bb669f3fd5e7afa80bd635b26b1dbc998b5da7a9a978117c2ad2bfde7",
+      "exitCode": 0,
+      "summary": [
+        "ℹ tests 221",
+        "ℹ pass 221",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ tests 29",
+        "ℹ pass 26",
+        "ℹ fail 0",
+        "ℹ skipped 3",
+        "ℹ tests 103",
+        "ℹ pass 103",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ tests 19",
+        "ℹ pass 19",
+        "ℹ fail 0",
+        "ℹ skipped 0"
+      ]
+    },
+    {
+      "localLog": ".build/cad-final-real.log",
+      "sha256": "db9213fd463828eb317af69a8b14cd4bf6f4be55dfec120e937146c90335ee41",
+      "exitCode": 0,
+      "summary": [
+        "ℹ tests 1",
+        "ℹ pass 1",
+        "ℹ fail 0",
+        "ℹ skipped 0"
+      ]
+    },
+    {
+      "localLog": ".build/cad-final-package.log",
+      "sha256": "8fdc87c4b81034ddbac8d63e9fa76a9aaa90b83832067d8ce5e0564079449f25",
+      "exitCode": 0,
+      "summary": []
+    },
+    {
+      "localLog": ".build/cad-host-minimum-delivery.log",
+      "sha256": "ec5e97cd99a7dd326d6d6b6e77153c94f2cd99a73dcf7491fb2c0058e1dbe54e",
+      "exitCode": 0,
+      "summary": [
+        "7 passing (2s)"
+      ]
+    },
+    {
+      "localLog": ".build/cad-host-stable-delivery.log",
+      "sha256": "9be6b123cdf138059a1ed151accf2e027521d5ff9c25d89a43ae9c4c16926ecc",
+      "exitCode": 0,
+      "summary": [
+        "7 passing (3s)"
+      ]
+    },
+    {
+      "localLog": ".build/cad-final-capabilities.log",
+      "sha256": "22b55aebfb1868cb44d773e9a682a30c7af7c7bf81bf062df2a123a1215a2896",
+      "exitCode": 0,
+      "summary": [
+        "ℹ tests 32",
+        "ℹ pass 32",
+        "ℹ fail 0",
+        "ℹ skipped 0"
+      ]
+    },
+    {
+      "localLog": ".build/cad-installed-delivery.log",
+      "exitCode": 0,
+      "sha256": "2651d430d14f58f6dfd7d3319657c71e3c64b05f2a8d10ca6901816a02436739",
+      "summary": [
+        "Installed Production smoke PASS, actual final VSIX, including native Undo/Redo and real CAD"
+      ]
+    }
+  ],
+  "installedCAD": "PASS: final Production VSIX complete smoke including CAD and original Undo/Redo passed; see installed-cad.json and installed-production.json",
+  "gates": {
+    "P0": "PASS",
+    "P1Functional": "IMPLEMENTED_ACCEPTANCE_INCOMPLETE: all 7 CAD Host cases pass both versions; 3 old native-focus tests fail each full suite",
+    "realAgent": "NOT_PASS: real oMLX calls FAIL→PASS and Problems clear, but native edit saved the fixture and final response timed out. Not a dirty-buffer E2E PASS.",
+    "crossPlatformRelease": "KNOWN_PLATFORM_GAP: Windows native Unicode; Linux/Windows/SSH/WSL/containers not run locally"
+  },
+  "notImplemented": [
+    "Phase 2 mesh/measure/images",
+    "Phase 3 parts/assembly/constraints engine",
+    "Phase 4 diff/spatial/printability",
+    "Phase 5 MCP"
+  ],
+  "sourceFiles": [
+    {
+      "path": ".github/workflows/agent-parity.yml",
+      "sha256": "5969a58cb9138fa3d8412a9c927713188746015c9a3a2b74d6e225d245aa8326"
+    },
+    {
+      "path": ".github/workflows/libraries.yml",
+      "sha256": "ebeaaf410752011fe1ea3ff9a1037374919f5db0e4e59c599950cd407a5cee58"
+    },
+    {
+      "path": ".vscode-test.mjs",
+      "sha256": "75bf84c1588cca6d743cb53f313225d4951256dc3d173f6c033bee5a08d4327e"
+    },
+    {
+      "path": ".vscodeignore",
+      "sha256": "5eaa50b84aa0d022374eea72b6fe09c966526ec90805f9d0b7878ce3107b4971"
+    },
+    {
+      "path": "package.json",
+      "sha256": "3d751afbeeb64d0ba3d9535fce495aa7dfe8b33a3088bfbd7ff3658c4c410d7d"
+    },
+    {
+      "path": "scripts/agent-manifest.mjs",
+      "sha256": "d9c2ec31724be59dbedec67b5b82fd63371cdf198c94d772ac4bec041faa1bde"
+    },
+    {
+      "path": "scripts/agent-manifest.test.mjs",
+      "sha256": "814574b50bd8bcff9b3a7c54e0f9ed5292dddd0798f9dfd6ecd43567236761d4"
+    },
+    {
+      "path": "scripts/ai-panel.test.mjs",
+      "sha256": "3281e3dcae09aaf381787ec7b6d1cea132c14a1b2bf71dcaf880197de6a557a5"
+    },
+    {
+      "path": "scripts/assert-feature-branch.mjs",
+      "sha256": "615d47f877609ec971eac874518614db363a6cbe5b97f78bb284638b55039865"
+    },
+    {
+      "path": "scripts/fixtures/agent-installed-smoke.cjs",
+      "sha256": "afca7f84114109b3c3bc8fcaebc477d23c54fa70b043cc6a099e29ab5908fb7f"
+    },
+    {
+      "path": "scripts/fixtures/cad-native-agent.cjs",
+      "sha256": "08c6a97570bec277c74a35a3cd119039548852819e7f62aaefe528a8e38fa7e0"
+    },
+    {
+      "path": "scripts/test-agent-installed.mjs",
+      "sha256": "6906d7c44c3837ef8999f8a43e69fd1887add4b3f9769aca4a306c0567a977bf"
+    },
+    {
+      "path": "scripts/test-cad-host.mjs",
+      "sha256": "f738c652d32e2fee999eec12770bd78d08647b51f929d3ddede30c8d68c336bb"
+    },
+    {
+      "path": "scripts/test-cad-native.mjs",
+      "sha256": "797f1c775c2e59b1327dbe75693f3e8f2592628838bd179243ff4b76f845cbec"
+    },
+    {
+      "path": "scripts/verify-agent-vsix.mjs",
+      "sha256": "d5e4f6c1209be641d69c7fd7a5ee0692b9340a2e6462d31e67d9640e6e287158"
+    },
+    {
+      "path": "src/core/cad/CadVerificationService.ts",
+      "sha256": "9ca4f8393173e251131af7bee20629ec4a797225bf781cdbdc6245c29691344b"
+    },
+    {
+      "path": "src/core/cad/ReportStore.ts",
+      "sha256": "268eb83d0281e13b3adc92d9ab5993d57a716960fd3ab91bcbf76efde655335c"
+    },
+    {
+      "path": "src/core/cad/SharedTasks.ts",
+      "sha256": "525372c686416ff0c3667f9a11d620276d6161a7c4e2f40b90266b82144b4dbf"
+    },
+    {
+      "path": "src/core/cad/diagnostics.ts",
+      "sha256": "d3b5b481c3971cbe9095389dc2a6a057199b90db7ecc6b937f832dd1f85c33ca"
+    },
+    {
+      "path": "src/core/cad/report.ts",
+      "sha256": "f4ae3276bea423551af572afcf53d49318ab9d29d0207a1faf18f0e74868aaa3"
+    },
+    {
+      "path": "src/core/cad/snapshot.ts",
+      "sha256": "4d6c599d2473fcd1d851c3c9efe986971f8dbf5199fd27663478ad832d3d81a7"
+    },
+    {
+      "path": "src/core/cad/summary.ts",
+      "sha256": "596b90e85500b20893fe06b800a40135f00675d04cdf72453da34472453e212e"
+    },
+    {
+      "path": "src/core/cad/types.ts",
+      "sha256": "27fcfe2ce964e5380b659b25c1c615ac5dfccf5c0dd6b94c33dbacd18590be82"
+    },
+    {
+      "path": "src/core/capabilities/catalog.json",
+      "sha256": "6d74356043c5241793feba0307fc05bc724de0dace99c8534b450fb95b087c03"
+    },
+    {
+      "path": "src/core/capabilities/gui-actions.json",
+      "sha256": "09da157476944f0f3e0f280f85133c3d3f222674386c14521f7bb031d127baa5"
+    },
+    {
+      "path": "src/core/capabilities/resources.json",
+      "sha256": "337e2ab025555098a94394df180222bdf6ca7b420a9395470e3a0b3b1d024e62"
+    },
+    {
+      "path": "src/extension.ts",
+      "sha256": "f8136f3a1c2e350f061f9c2a3bf4afa3969dd895227fd8dec9455854807c5fb4"
+    },
+    {
+      "path": "src/features/agents/registerCapabilities.ts",
+      "sha256": "7d133d0216e2e026e8a3070667e79f0b4d2c9f4d5aa5167027cc365e5bac3f16"
+    },
+    {
+      "path": "src/features/cad-verification/CadWorkspaceService.ts",
+      "sha256": "6894ad3cc36f5bbcf7506819edc637f466a12da4401edc253e77502b77c15ad7"
+    },
+    {
+      "path": "src/features/cad-verification/registerCadVerification.ts",
+      "sha256": "cc2998d667e852704ebf32f172b32e2d29ea47f5221192a316bcf88ff6f91bc7"
+    },
+    {
+      "path": "src/features/preview/extension/services/PreviewProblems.ts",
+      "sha256": "2a435d8b71983df04ac27c41f4a6eeb112ea34d2ebdeb7a54859177f7118c63c"
+    },
+    {
+      "path": "src/features/preview/extension/services/PreviewSourceProblems.ts",
+      "sha256": "b2dc6f8e7d9446e7fba11efe00c3e6f9fd7999eb72deb6f6f19c2a57827d901f"
+    },
+    {
+      "path": "src/features/preview/extension/services/ScadClient.ts",
+      "sha256": "11994145b6c883f8ebed05c01c3e408aabdf562fb83d7b2d7bd3e2093f84594b"
+    },
+    {
+      "path": "src/features/preview/registerPreview.ts",
+      "sha256": "48f06d11ddeb413c5eef82af383542bbee10e0ff025483e48171462f40963d62"
+    },
+    {
+      "path": "src/platform/openscad/CadExecutionService.ts",
+      "sha256": "6bee8451591de5e6352ff03d4fe85b3554110b104b0b41ee9d23ae59bd957762"
+    },
+    {
+      "path": "src/platform/openscad/runtimeIdentity.ts",
+      "sha256": "261cf81930f3bc132e4d8c9f6817ba718756a4a9a4105e17a2c1881969c60d2b"
+    },
+    {
+      "path": "src/test/cad.integration.test.ts",
+      "sha256": "717a120d5c013926d8df55e682d57aaddd33e4781ac96bac9d9975acf4e980aa"
+    },
+    {
+      "path": "src/test/cad/contracts.test.ts",
+      "sha256": "66ef913d42a9dfe8455dd588533be383476cfec59065ba43dc1a7c345cb8cc9e"
+    },
+    {
+      "path": "src/test/cad/execution.test.ts",
+      "sha256": "da4c5ed3c05e1f12576d26dd82914c56e590c830512ff3b137d97b02b4f5ba3a"
+    },
+    {
+      "path": "src/test/cad/real.acceptance.ts",
+      "sha256": "13c85626603436e51bc4bacaa6187666845c22640a64645b3fda28c08eab415c"
+    },
+    {
+      "path": "src/test/cad/runtimeIdentity.test.ts",
+      "sha256": "859cc658b193d6cdeaa7ac766f196b1bff69fc730da770aa01cd009dd1aec471"
+    },
+    {
+      "path": "src/test/capabilityServices.test.ts",
+      "sha256": "9b35b8ccd8c00c328238e68747e5c20e85d7ffea53d20fbb6e91075e980d0b2e"
+    },
+    {
+      "path": "src/test/preview/eligibility.test.ts",
+      "sha256": "78bbd8b95886f3ca0a3366897d21dabac6b00fc36ef8a7b0e1414f2c49b3c2b1"
+    }
+  ],
+  "sourceFilesHash": "606d31a2bee1dfd76cd8b654271b9793906bdb81d9dcafb3c3a4735a6c4a5083",
+  "nativeTestBundleSha256": "335f90aee8299907fb0bd287f38e9915f951712eddb3784bb87ca97b7e664b56",
+  "nativeBundleScope": "Native run preceded the final Preview-only stale-result fallback fix; final CAD Host and Node regressions cover that fix. Native gate remains NOT_PASS.",
+  "deliveryVsix": {
+    "path": ".build/scad-ai-ide-agent-cad.vsix",
+    "sha256": "8502a3d481b3b46b6c151add1b4f5512e3d36892b2243f4247289efcbb8e2ba0",
+    "bundleSha256": "e4a87c38ec1296f28ef9bb797d350f42f61395ebeb05da70c9d2736e36b71c11",
+    "verification": "42 tools, 2 Instructions, 6 Skills, packaged Schema and UI assets PASS"
+  }
+}
