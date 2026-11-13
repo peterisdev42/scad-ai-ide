@@ -29,6 +29,7 @@ jobs:
             - run: npm run test:customizer:compatibility
             - run: node --test out/test/customizer.test.js
             - run: npm run test:customizer:source
+            - run: npm run test:mesh
             - run: npm run test:cad:unit
             - run: npm run test:capabilities
             - run: npm run test:libraries

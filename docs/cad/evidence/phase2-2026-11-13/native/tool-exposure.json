@@ -1,0 +1,364 @@
+{
+  "scope": "Transparent loopback forwarding; no credentials or payload changes recorded",
+  "requests": [
+    {
+      "at": "2026-11-13T07:14:28.734Z",
+      "path": "/v1/models",
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T07:14:28.762Z",
+      "path": "/v1/models",
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T07:14:28.792Z",
+      "path": "/v1/models",
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T07:14:28.858Z",
+      "path": "/v1/models",
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T07:14:29.295Z",
+      "path": "/v1/models",
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T07:14:29.535Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "tools": [],
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T07:14:29.538Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "tools": [],
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T07:14:29.618Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "tools": [
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "7fd1e90049fb7be62819aacbe7ad721d5a528a257a3999d46dfea2321dc73cf3"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "8296d24f3174515cd87ff31be6c751ae133c083c83ee47f04248774ba5daccbd"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "9754dc5fb738ded1eaba3656c13d5a2cc993dda1ff9da39b5530bbcf2320df8d"
+        }
+      ],
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T07:15:04.621Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "tools": [
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "7fd1e90049fb7be62819aacbe7ad721d5a528a257a3999d46dfea2321dc73cf3"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "8296d24f3174515cd87ff31be6c751ae133c083c83ee47f04248774ba5daccbd"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "9754dc5fb738ded1eaba3656c13d5a2cc993dda1ff9da39b5530bbcf2320df8d"
+        }
+      ],
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T07:15:19.350Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "tools": [
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "7fd1e90049fb7be62819aacbe7ad721d5a528a257a3999d46dfea2321dc73cf3"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "8296d24f3174515cd87ff31be6c751ae133c083c83ee47f04248774ba5daccbd"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "9754dc5fb738ded1eaba3656c13d5a2cc993dda1ff9da39b5530bbcf2320df8d"
+        }
+      ],
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T07:15:32.100Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "tools": [
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "7fd1e90049fb7be62819aacbe7ad721d5a528a257a3999d46dfea2321dc73cf3"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "8296d24f3174515cd87ff31be6c751ae133c083c83ee47f04248774ba5daccbd"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "9754dc5fb738ded1eaba3656c13d5a2cc993dda1ff9da39b5530bbcf2320df8d"
+        }
+      ],
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T07:15:38.364Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "tools": [
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "7fd1e90049fb7be62819aacbe7ad721d5a528a257a3999d46dfea2321dc73cf3"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "8296d24f3174515cd87ff31be6c751ae133c083c83ee47f04248774ba5daccbd"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "9754dc5fb738ded1eaba3656c13d5a2cc993dda1ff9da39b5530bbcf2320df8d"
+        }
+      ],
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T07:15:50.936Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "tools": [
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "7fd1e90049fb7be62819aacbe7ad721d5a528a257a3999d46dfea2321dc73cf3"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "8296d24f3174515cd87ff31be6c751ae133c083c83ee47f04248774ba5daccbd"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "9754dc5fb738ded1eaba3656c13d5a2cc993dda1ff9da39b5530bbcf2320df8d"
+        }
+      ],
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T07:15:54.828Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "tools": [
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "7fd1e90049fb7be62819aacbe7ad721d5a528a257a3999d46dfea2321dc73cf3"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "8296d24f3174515cd87ff31be6c751ae133c083c83ee47f04248774ba5daccbd"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "9754dc5fb738ded1eaba3656c13d5a2cc993dda1ff9da39b5530bbcf2320df8d"
+        }
+      ],
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T07:16:06.045Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "tools": [
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "7fd1e90049fb7be62819aacbe7ad721d5a528a257a3999d46dfea2321dc73cf3"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "8296d24f3174515cd87ff31be6c751ae133c083c83ee47f04248774ba5daccbd"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "9754dc5fb738ded1eaba3656c13d5a2cc993dda1ff9da39b5530bbcf2320df8d"
+        }
+      ],
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T07:16:14.995Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "tools": [
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "7fd1e90049fb7be62819aacbe7ad721d5a528a257a3999d46dfea2321dc73cf3"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "8296d24f3174515cd87ff31be6c751ae133c083c83ee47f04248774ba5daccbd"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "9754dc5fb738ded1eaba3656c13d5a2cc993dda1ff9da39b5530bbcf2320df8d"
+        }
+      ],
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T07:16:18.830Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "tools": [
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "7fd1e90049fb7be62819aacbe7ad721d5a528a257a3999d46dfea2321dc73cf3"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "8296d24f3174515cd87ff31be6c751ae133c083c83ee47f04248774ba5daccbd"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "9754dc5fb738ded1eaba3656c13d5a2cc993dda1ff9da39b5530bbcf2320df8d"
+        }
+      ],
+      "status": 200
+    }
+  ]
+}

@@ -25,3 +25,23 @@ test('artifacts are content-bound, leased, evicted and never accept filesystem p
         await rm(dir, { recursive: true, force: true })
     }
 })
+
+test('artifact leases protect TTL expiry while corruption is always rejected', async () => {
+    const { writeFile } = await import('node:fs/promises')
+    const dir = await mkdtemp(join(tmpdir(), 'cad-artifact-ttl-')),
+        store = new ArtifactStore(dir, 32, 2, 5)
+    try {
+        const ref = await store.put('snapshot', 'mesh', 'model/stl', Buffer.from('bytes')),
+            release = store.lease([ref.id])
+        await new Promise((resolve) => setTimeout(resolve, 15))
+        assert.equal((await store.read(ref.id)).toString(), 'bytes')
+        await writeFile(join(dir, ref.id), 'other')
+        await assert.rejects(store.read(ref.id), /changed|unavailable/)
+        release()
+        const expired = await store.put('snapshot', 'mesh', 'model/stl', Buffer.from('fresh'))
+        await new Promise((resolve) => setTimeout(resolve, 15))
+        await assert.rejects(store.read(expired.id), /expired|evicted/)
+    } finally {
+        await store.dispose()
+    }
+})

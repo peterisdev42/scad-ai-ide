@@ -23,9 +23,9 @@ _From code to solid._
 | **3D preview in Markdown**      | Interactively preview `openscad` / `scad` code blocks in documentation              | ✅ Available     |
 | **Per-part coloring**           | Automatically color separate parts in a multi-part model for easier inspection      | 🧪 Experimental³ |
 | **Fast CSG preview**            | Preview CSG with a separate image-space Preview Exporter                            | 🧪 Experimental² |
-| **AI agent integrations**       | Native Agent Tools/Skills for management and snapshot-bound CLI diagnostics; MCP planned | 🚧 Partial |
+| **AI agent integrations**       | Native Agent Tools/Skills for management, raw mesh verification and frozen PNG; MCP planned | 🚧 Partial |
 
-<sub>¹ Export formats and some inspection tools depend on the runtime and render mode. ² Fast CSG preview currently requires a separately installed Preview Exporter on supported macOS ARM64 setups. ³ Per-part coloring changes only the preview, not source files, presets, or exports; overlapping or complex geometry can be misidentified. **Native Agent Tools and Skills cover management and CLI diagnostics. Mesh/assembly verification, portable MCP and a fully verified autonomous CAD lifecycle remain planned.**</sub>
+<sub>¹ Export formats and some inspection tools depend on the runtime and render mode. ² Fast CSG preview currently requires a separately installed Preview Exporter on supported macOS ARM64 setups. ³ Per-part coloring changes only the preview, not source files, presets, or exports; overlapping or complex geometry can be misidentified. **Native Agent Tools and Skills cover management, CLI diagnostics and raw mesh verification. Assembly verification, portable MCP and a fully verified autonomous CAD lifecycle remain planned.**</sub>
 
 ## Why SCAD AI IDE?
 
@@ -41,7 +41,7 @@ Stay in VS Code with your own shortcuts, editor settings, Git, terminal, and ext
 
 Manual design and agent-driven development should share one underlying toolchain. Our goal is to offer controlled access to the same rendering, diagnostics, parameters, runtimes, and dependency operations—whether a person or AI agent initiates them.
 
-> **Current status:** Core IDE features are implemented. Native Agent Tools and Skills are available for management and CLI diagnostics. Geometry/assembly verification, MCP and full end-to-end CAD acceptance remain pending.
+> **Current status:** Core IDE features are implemented. Native Agent Tools and Skills are available for management, CLI diagnostics, mesh measurements and frozen PNG evidence. Assembly verification, MCP and full end-to-end CAD acceptance remain pending.
 
 ## Quick start
 
@@ -95,7 +95,7 @@ See the [library manager documentation](docs/library-manager.md).
 
 Existing IDE services are exposed through **VS Code Agent Tools and Skills**, with portable MCP planned so people and agents can work with the same capabilities and permission boundaries. You should be able to build manually, collaborate with AI, or delegate tasks while retaining control of the result.
 
-**These agent interfaces are planned and are not available in the current version.**
+**Native Agent interfaces are implemented; their functional, real-model and platform gates are recorded separately. MCP remains planned.**
 
 ## Development and contributing
 
@@ -105,10 +105,10 @@ SCAD AI IDE is licensed under [GPL-3.0](LICENSE). It is an independent community
 
 ### Agent tools and shared capabilities
 
-SCAD AI IDE contributes 42 VS Code Language Model Tools for Runtime, Customizer,
-Libraries and snapshot-bound CAD diagnostics, plus two Instructions and six task Skills.
+SCAD AI IDE contributes 44 VS Code Language Model Tools for Runtime, Customizer,
+Libraries and snapshot-bound CAD verification, plus two Instructions and seven task Skills.
 GUI, commands and tools share domain services; tools work without opening panels.
-The AI Panel lists every tool in six category tables with permissions and live
+The AI Panel lists every tool in seven category tables with permissions and live
 availability, followed by the bundled Instruction and Skills.
 Customizer changes are per-model overrides and do not edit SCAD source. Project
 library writes use an explicit workspace project and exact versions. Destructive
@@ -140,3 +140,7 @@ Run **OpenSCAD: Analyze Model Diagnostics**, or let an Agent use `scad_ai_ide_mo
 Analysis requires Workspace Trust and a selected official Runtime. Unsaved include/use buffers are not injected: affected checks return `UNRESOLVED`. Source edits, dependency changes and Runtime/parameter changes invalidate old results. Analysis is explicit by default; `scad-ai-ide.verification.onSave` can enable saved-file diagnostics.
 
 CSG `PASS` is not mesh validity, correct assembly clearance, visual review or printability. See [architecture](docs/cad-verification-architecture.md) and [actual acceptance evidence](docs/cad-agent-acceptance.md).
+
+### Raw mesh verification and measurement
+
+Use `scad_ai_ide_model_analyze` with `mode="verify"` for SCAD/CSG Full Render or standalone STL/3MF raw checks. `scad_ai_ide_model_measure` reads snapshot-bound measurements; `scad_ai_ide_model_renderViews` generates official CLI PNG from frozen geometry. Standalone mesh checks need no Runtime; SCAD and PNG do. Raw meshes are never repaired. Physical volume requires solid proof; ambiguous and unsupported cases return `UNRESOLVED`. See [usage and limits](docs/cad-mesh-verification.md) and [Phase 2 acceptance](docs/cad/phase2-acceptance.md).

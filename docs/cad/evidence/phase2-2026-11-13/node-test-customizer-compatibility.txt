@@ -1,0 +1,54 @@
+✔ native compatibility: scalar (2.431875ms)
+✔ native compatibility: max-only (1.080667ms)
+✔ native compatibility: range (0.58575ms)
+✔ native compatibility: stepped (0.150833ms)
+✔ native compatibility: spin-step (0.129333ms)
+✔ native compatibility: checkbox (0.100667ms)
+✔ native compatibility: vector (0.213208ms)
+✔ native compatibility: unlisted-default (0.187875ms)
+✔ native compatibility: mixed-enum (0.11725ms)
+✔ native compatibility: quoted-delimiters (0.27875ms)
+✔ native compatibility: description (0.110125ms)
+✔ native compatibility: description-gap (0.0625ms)
+✔ native compatibility: description-indent (0.038917ms)
+✔ native compatibility: description-block (0.067875ms)
+✔ native compatibility: expanded-range (0.507125ms)
+✔ native compatibility: expanded-vector (0.059875ms)
+✔ native compatibility: off-grid (0.0305ms)
+✔ native compatibility: text-length (0.051167ms)
+✔ native compatibility: hidden-global (0.084708ms)
+✔ native compatibility: compound-group (0.028041ms)
+✔ native compatibility: superseded (0.040209ms)
+✔ native compatibility: expression (0.026959ms)
+✔ native compatibility: long-vector (0.022875ms)
+✔ native compatibility: brace-comment (0.061541ms)
+✔ native compatibility: trailing-prose (0.038875ms)
+✔ native compatibility: same-line-brace (0.022333ms)
+✔ native compatibility: same-line-assignments (0.027583ms)
+✔ native compatibility: nfc (0.398834ms)
+✔ native compatibility: hint-hex (0.054459ms)
+✔ native compatibility: string-single-number (0.039ms)
+✔ native compatibility: phase1-firstLineHint (0.0615ms)
+✔ native compatibility: phase1-groupReset (0.034833ms)
+✔ native compatibility: phase1-noNewline (0.024917ms)
+✔ native compatibility: phase1-multiline (0.043125ms)
+✔ native compatibility: phase1-textImport (0.044041ms)
+✔ native compatibility: phase1-utf8Import (0.144084ms)
+✔ native compatibility: phase1-unknownVersion (0.058042ms)
+✔ native compatibility: phase1-maxNegative (0.076125ms)
+✔ native compatibility: phase1-hex (0.157042ms)
+✔ native compatibility: phase1-stringEscape (0.08425ms)
+✔ native compatibility: include-brace-cutoff (0.052583ms)
+✔ native compatibility: string-brace-cutoff (0.030584ms)
+ℹ tests 42
+ℹ suites 0
+ℹ pass 42
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 50.385625
+npm notice run scad-ai-ide@0.0.1 test:customizer:compatibility
+npm notice run npm run compile-tests && node --test out/test/customizerCompatibility.acceptance.js
+npm notice run scad-ai-ide@0.0.1 compile-tests
+npm notice run tsc -p . --outDir out

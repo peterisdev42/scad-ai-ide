@@ -39,3 +39,6 @@ docs/customizer-closeout-plan.md
 
 # CAD acceptance traces stay in the reviewable repository, outside runtime assets.
 docs/cad/evidence/**
+
+# Phase 2 delivery ledger refers to immutable archive hashes; keep it in the review repository.
+docs/cad/phase2-acceptance.md

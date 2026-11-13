@@ -1,0 +1,155 @@
+{
+  "scope": "Review evidence, not runtime artifacts; excludes this index",
+  "files": [
+    {
+      "path": "host-geometry-minimum.json",
+      "bytes": 17176,
+      "sha256": "37b0656094881d5d1fd508f3fc7507a3b7af3d747b713e595cec2bbb22d89b55"
+    },
+    {
+      "path": "host-geometry-stable.json",
+      "bytes": 17172,
+      "sha256": "f648c471146cf3348df7f71ac584204114f28bfb96c461b83b2be657c093e746"
+    },
+    {
+      "path": "host-minimum.txt",
+      "bytes": 5442,
+      "sha256": "d7bae2bd4f1910880517116b6ad9d090e9cdd964c34449cf3a44f408f33ad95c"
+    },
+    {
+      "path": "host-runs.json",
+      "bytes": 3254,
+      "sha256": "f41cc8f16926442c1ddab0d4ad7b9b656047bae579ded371ba5f81c326ddbaaa"
+    },
+    {
+      "path": "host-stable.txt",
+      "bytes": 5309,
+      "sha256": "3eb8ab5bebbae29e9bcbac92472b18eff040477caba11a972b4f8afe93715815"
+    },
+    {
+      "path": "installed-cad.json",
+      "bytes": 5051,
+      "sha256": "d06458d94338cb15b1ea2485e72cbf6a005c13208c073d382adf3b92a979ec3b"
+    },
+    {
+      "path": "installed-failure.txt",
+      "bytes": 443,
+      "sha256": "4d8b858c049ce79ea6ddfa8a4c0d108cd0f517231dfc2211d53b7ee016917e99"
+    },
+    {
+      "path": "installed-mesh.json",
+      "bytes": 10469,
+      "sha256": "b2fe86d048d388418d8a672e774720ed900074d816c80de4292252da21667e7a"
+    },
+    {
+      "path": "installed-run.json",
+      "bytes": 710,
+      "sha256": "b3535decf8ef4cf1ee3e0fdf1cb94bc4a736dac022ae01140cef7355aea3a80c"
+    },
+    {
+      "path": "intermediate-runs.json",
+      "bytes": 9990,
+      "sha256": "3da7f21f2a2d8e26abffe1b46ade2c4aa66507b877e3e7a46077ac24ab0d66f8"
+    },
+    {
+      "path": "native/assessment.json",
+      "bytes": 1101,
+      "sha256": "58398110a7d7afe03b65937f4e94012c513c87df95828f433ea107760b821819"
+    },
+    {
+      "path": "native/ready.json",
+      "bytes": 3071,
+      "sha256": "6d13f815a4b82439bdbdec3241949af4e24ce0b7a2b4b4610446ab8474400bd0"
+    },
+    {
+      "path": "native/request-input.json",
+      "bytes": 1119,
+      "sha256": "f3001aeef5852ea39dba2add6755cd6f3195001656b2558cf7d0a0bac92eba61"
+    },
+    {
+      "path": "native/result.json",
+      "bytes": 50450,
+      "sha256": "9608d194f4926fd2e161da20ada1198f8f2e28dc21ce7a3a632eec1cf8f30b78"
+    },
+    {
+      "path": "native/tool-exposure.json",
+      "bytes": 12317,
+      "sha256": "de02acd02d8aea51a4b16122fffe5315138bafe93ee561be02773aabd8b6020e"
+    },
+    {
+      "path": "native/tool-traces.json",
+      "bytes": 18942,
+      "sha256": "b3fe0b6d78bdfc45e7293144db12f1a1c56f960c33a8e3e75eeb4f6762102972"
+    },
+    {
+      "path": "node-check-agents.txt",
+      "bytes": 198,
+      "sha256": "1fce318a4d17fe49c9c1c44287edc9a0ea9e31fc9e4711d77b61a3388a7547d9"
+    },
+    {
+      "path": "node-check-types.txt",
+      "bytes": 105,
+      "sha256": "b126c241cbba8b206f08d3660705be6345679e3d0212fdd14f6f14abf938adad"
+    },
+    {
+      "path": "node-lint.txt",
+      "bytes": 64,
+      "sha256": "9733fca2b567c3403d4db443ce064674568f419c45f267369b70fb01d416b24c"
+    },
+    {
+      "path": "node-runs.json",
+      "bytes": 2272,
+      "sha256": "d10a91c7da7997a06c461e8e74ebaf23969d6a1ed65a06563f191c2d5256a053"
+    },
+    {
+      "path": "node-test-agents-manifest.txt",
+      "bytes": 472,
+      "sha256": "3f514f6fa1399bd4c698f6c6ec3fb0302087c436eb81761445fe82078cf877e0"
+    },
+    {
+      "path": "node-test-customizer-compatibility.txt",
+      "bytes": 2592,
+      "sha256": "31b90a51cb83572735d35b7cc8046998593ea305a1bf769b814c250c1f2ebd8b"
+    },
+    {
+      "path": "node-test.txt",
+      "bytes": 46316,
+      "sha256": "17e1c6e7f7083b1ea96964d9b4ac7bea423c4e575f5c74e773bd1789b242197d"
+    },
+    {
+      "path": "official/box.stl",
+      "bytes": 684,
+      "sha256": "e369f5baf047c8eec12d84899e36d2f0b05672b993f505eed85ba9a65abd30bf"
+    },
+    {
+      "path": "official/cavity.stl",
+      "bytes": 1284,
+      "sha256": "fb2f4b4d0d17a439afcaabb2dd508f79f0215dafea8947eadb2a1ecd5314f9c6"
+    },
+    {
+      "path": "official/compiled-csg.stl",
+      "bytes": 684,
+      "sha256": "e369f5baf047c8eec12d84899e36d2f0b05672b993f505eed85ba9a65abd30bf"
+    },
+    {
+      "path": "official/compiled.csg",
+      "bytes": 41,
+      "sha256": "215d02680d29c84c459c12521aff1c433c4688dd95acf1b65ad3ff6f461eff39"
+    },
+    {
+      "path": "official/frozen-box-iso.png",
+      "bytes": 7958,
+      "sha256": "56e2874d7fd1e344178f29888e85df7a1e655d5616ac6bb387b476f8b47c062b"
+    },
+    {
+      "path": "official/official-cli.json",
+      "bytes": 2376,
+      "sha256": "c85d5ef1a3fa5e46e8963aff138ac85447501dc9090af9a41a290a2e3c0af43a"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 2877,
+      "sha256": "598f8cd2de4b680671c6864f16709909cb4ff605eb307ad6858137198a38934a"
+    }
+  ]
+}

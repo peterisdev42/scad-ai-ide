@@ -18,6 +18,8 @@ test('official Full Render and frozen STL PNG retain geometry, requested quality
         records: unknown[] = []
     await writeFile(path, 'cube(1);')
     try {
+        const artifactDirectory = process.env.SCAD_MESH_EVIDENCE
+        if (artifactDirectory) await mkdir(artifactDirectory, { recursive: true })
         const request = { command: { executable, argsPrefix: [] }, path, env: process.env, parameters: { $preview: false }, format: 'stl' as const }
         for (const [name, source, expected] of [
             ['box', 'cube([2,3,4]);', 24],
@@ -29,17 +31,31 @@ test('official Full Render and frozen STL PNG retain geometry, requested quality
             assert.equal(audit.facts?.physicalVolume.value, expected, JSON.stringify(audit))
             const file = join(root, name + '.stl')
             await writeFile(file, mesh.content)
+            if (artifactDirectory) await writeFile(join(artifactDirectory, name + '.stl'), mesh.content)
             records.push({ name, sha256: sha(mesh.content), triangles: audit.facts.rawTriangles, physicalVolume: audit.facts.physicalVolume })
             if (name === 'box') {
                 const frozenHash = sha(mesh.content)
                 const image = await cli.execute({ ...request, source: `import(${JSON.stringify(file)});`, format: 'png', image: { camera: [0, 0, 0, 55, 0, 25, 15], projection: 'orthographic', fit: true, size: [512, 512] } })
                 assert.equal(image.status, 'SUCCEEDED', image.log)
+                if (artifactDirectory) await writeFile(join(artifactDirectory, 'frozen-box-iso.png'), image.content)
                 const png = PNG.sync.read(image.content)
                 assert.equal(png.width, 512)
                 assert.equal(png.height, 512)
                 assert.equal(sha(await readFile(file)), frozenHash)
                 records.push({ name: 'frozen-png', sourceMeshSha256: frozenHash, pngSha256: sha(image.content), width: png.width, height: png.height })
             }
+        }
+        const csg = await cli.execute({ ...request, format: 'csg', source: 'cube([2,3,4]);' })
+        assert.equal(csg.status, 'SUCCEEDED', csg.log)
+        const csgPath = join(root, 'compiled.csg')
+        await writeFile(csgPath, csg.content)
+        const fromCsg = await cli.execute({ ...request, path: csgPath, source: Buffer.from(csg.content).toString('utf8') })
+        assert.equal(fromCsg.status, 'SUCCEEDED', fromCsg.log)
+        assert.equal((await analyzeInWorker(fromCsg.content, 'stl')).facts?.physicalVolume.value, 24)
+        records.push({ name: 'csg-input', sourceSha256: sha(csg.content), meshSha256: sha(fromCsg.content), physicalVolume: 24 })
+        if (artifactDirectory) {
+            await writeFile(join(artifactDirectory, 'compiled.csg'), csg.content)
+            await writeFile(join(artifactDirectory, 'compiled-csg.stl'), fromCsg.content)
         }
         const triangles = []
         for (const fn of [12, 48]) {
