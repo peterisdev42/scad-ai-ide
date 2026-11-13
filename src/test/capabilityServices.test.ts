@@ -207,7 +207,7 @@ test('all catalog handlers execute without panels and preserve exact service arg
     let libraryAbort: AbortController | undefined
     const runtimeState = { recommendedBuildId: 1, installedBuildIds: [1], activeId: 'runtime', runtimes: [{ id: 'runtime', version: 'test', command: { executable: '/installed/openscad', argsPrefix: [] as string[] }, source: 'managed' }], builds: [{ id: 1, channel: 'Stable' }], busy: false, buildsLoaded: true, message: '' }
     const services = {
-        cad: { availability: () => ({ enabled: true }), analyze: async () => ({ schemaVersion: 1, reportId: 'fixture', snapshot: { id: 'hash', document: { uri: 'file:///workspace/model.scad' }, project: { rootUri: 'file:///workspace' }, runtime: {}, complete: true }, checks: [], issues: [], incomplete: [], examined: [], notExamined: [], artifacts: [], metrics: {} }), issueDetails: record('cad.issueDetails') },
+        cad: { geometry: { availability: () => ({ enabled: true }), measure:record('cad.modelMeasure'), renderViews:record('cad.modelRenderViews') }, availability: () => ({ enabled: true }), analyze: async () => ({ schemaVersion: 1, reportId: 'fixture', snapshot: { id: 'hash', document: { uri: 'file:///workspace/model.scad' }, project: { rootUri: 'file:///workspace' }, runtime: {}, complete: true }, checks: [], issues: [], incomplete: [], examined: [], notExamined: [], artifacts: [], metrics: {} }), issueDetails: record('cad.issueDetails') },
         runtime: { cancel: () => { if (!runtimeAbort) return false; runtimeAbort.abort(); return true }, refreshInstalled: record('refreshInstalled'), onDidChange: () => disposable, getState: () => runtimeState, getActiveRuntime: () => runtimeState.runtimes.find((r) => r.id === runtimeState.activeId), whenReady: async () => {}, loadBuilds: record('loadBuilds'), refresh: record('refresh'), installBuild: record('installBuild'), installArchivePath: record('installArchivePath'), addExecutable: record('addExecutable'), select: record('select'), deleteRuntime: async (id: string) => { calls.push({ name: 'deleteRuntime', input: id }); runtimeState.runtimes = runtimeState.runtimes.filter((r) => r.id !== id); runtimeState.activeId = '' } },
         libraries: { activity: () => ({ busy: !!libraryAbort, cancellable: !!libraryAbort, message: libraryAbort ? 'Installing from GUI' : '', error: '', trusted: true }), search: record('search', []), cancel: () => { if (!libraryAbort) return false; libraryAbort.abort(); return true }, isBusy: () => false, onDidChange: () => disposable, getState: async () => ({ registry: [], global: [], globalIssues: [], registryLoaded: true }), projects: async () => ['/workspace'], projectState: record('projectState', { dependencies: [] }), loadRegistry: record('loadRegistry'), execute: record('library.execute'), planCleanup: record('planCleanup', { id: 'plan' }), executeCleanup: record('executeCleanup', { removed: 1 }), manager: { registry: { search: record('search', []), getLibrary: record('getLibrary', { id: 'fixture', versions: [] }) } } },
         customizerSource: { analyze: record('sourceAnalyze'), apply: record('sourceApply'), validate: record('sourceValidate') },
@@ -222,7 +222,7 @@ test('all catalog handlers execute without panels and preserve exact service arg
     const capabilities = module.registerCapabilities(services)
     try {
         const inputs: Record<string, Record<string, unknown>> = {
-            'cad.modelAnalyze': { uri: 'file:///workspace/model.scad' }, 'cad.issueDetails': { reportId: 'fixture', issueId: 'a'.repeat(64) },
+            'cad.modelMeasure': {uri:'file:///workspace/model.stl'}, 'cad.modelRenderViews': {uri:'file:///workspace/model.stl'}, 'cad.modelAnalyze': { uri: 'file:///workspace/model.scad' }, 'cad.issueDetails': { reportId: 'fixture', issueId: 'a'.repeat(64) },
             'runtime.installBuild': { id: 1 }, 'runtime.installArchive': { path: '/host/archive.zip' }, 'runtime.addExecutable': { path: '/host/openscad' }, 'runtime.select': { id: 'runtime' }, 'runtime.remove': { id: 'runtime' },
             'customizer.sourceAnalyze': { uri: 'file:///workspace/model.scad' }, 'customizer.sourceValidate': { uri: 'file:///workspace/model.scad' }, 'customizer.sourceApply': { mode: 'commit', planId: 'plan' },
             'customizer.set': { target: 'file:///workspace/model.scad', revision: 1, values: { width: 25 } }, 'customizer.reset': { target: 'file:///workspace/model.scad', revision: 1 },
@@ -302,7 +302,7 @@ test('all catalog handlers execute without panels and preserve exact service arg
         assert.ok(calls.some((call) => call.name === 'installBuild' && call.input === 1))
         assert.ok(calls.some((call) => call.name === 'installArchivePath' && call.input === '/host/archive.zip'))
         hostWorkspace.isTrusted = false
-        for (const id of ['cad.modelAnalyze', 'cad.issueDetails']) {
+        for (const id of ['cad.modelAnalyze', 'cad.issueDetails', 'cad.modelMeasure', 'cad.modelRenderViews']) {
             assert.equal(capabilityCatalog.find(d => d.id === id)?.risk, 'read')
             const blocked = await capabilities.dispatcher.invoke(id, inputs[id], { actor: 'agent' })
             assert.equal(blocked.ok, false, 'Read-only CAD still requires Workspace Trust')
@@ -770,4 +770,19 @@ test('source plan preview accepts bounded metadata and rejects output above 32 K
         await assert.rejects(f.domain.apply({ mode: 'plan', uri: f.uri, identity, edits: intents }), { code: 'LIMIT_EXCEEDED' })
         assert.equal(f.applied, 0)
     } finally { await f.dispose() }
+})
+
+test('mesh image adapter emits native image parts only on explicit inline request and falls back without API',async()=>{
+    const render={reportId:'r',snapshotId:'s',current:true,renderStatus:'AVAILABLE',frames:[],delivery:'metadata',notExamined:[]}
+    const registry=new CapabilityRegistry();registry.bind('cad.modelRenderViews',{available:()=>({enabled:true}),invoke:()=>structuredClone(render)})
+    const dispatcher=new CapabilityDispatcher(registry),definition=capabilityCatalog.find(d=>d.id==='cad.modelRenderViews')!
+    const api={LanguageModelToolResult:class{constructor(readonly content:unknown[]){}},LanguageModelTextPart:class{constructor(readonly value:string){}},LanguageModelDataPart:{image:(bytes:Uint8Array,mime:string)=>({bytes,mime})}}
+    const {AgentToolAdapter}=load<typeof import('../features/agents/AgentToolAdapter')>('../features/agents/AgentToolAdapter.js',api)
+    let loads=0;const adapter=new AgentToolAdapter(definition,dispatcher,async()=>{loads++;return[{bytes:new Uint8Array([1,2,3]),mime:'image/png'}]})
+    const token={onCancellationRequested:()=>disposable,isCancellationRequested:false} as unknown as vscode.CancellationToken
+    const invoke=(delivery:'metadata'|'inline')=>adapter.invoke({input:{reportId:'r',delivery},toolInvocationToken:undefined} as vscode.LanguageModelToolInvocationOptions<Record<string,unknown>>,token)
+    assert.equal((await invoke('metadata')).content.length,1);assert.equal(loads,0)
+    const inline=await invoke('inline');assert.equal(inline.content.length,2);assert.equal(JSON.parse((inline.content[0] as vscode.LanguageModelTextPart).value).data.delivery,'inline')
+    delete (api as {LanguageModelDataPart?:unknown}).LanguageModelDataPart
+    const fallback=await invoke('inline');assert.equal(fallback.content.length,1);assert.equal(JSON.parse((fallback.content[0] as vscode.LanguageModelTextPart).value).data.deliveryReason,'IMAGE_API_UNAVAILABLE')
 })

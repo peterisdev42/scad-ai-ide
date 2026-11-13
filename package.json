@@ -152,6 +152,21 @@
                 "command": "scad-ai-ide.model.openReport",
                 "title": "Open CAD Verification Report",
                 "category": "OpenSCAD"
+            },
+            {
+                "command": "scad-ai-ide.model.verify",
+                "title": "Verify Raw CAD Mesh",
+                "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai-ide.model.measure",
+                "title": "Measure CAD Mesh",
+                "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai-ide.model.renderViews",
+                "title": "Render Frozen CAD Mesh Views",
+                "category": "SCAD AI IDE"
             }
         ],
         "configuration": {
@@ -2114,8 +2129,8 @@
             },
             {
                 "name": "scad_ai_ide_model_analyze",
-                "displayName": "Analyze OpenSCAD model diagnostics",
-                "modelDescription": "Evaluate the explicit workspace SCAD/CSG document with the selected official CLI, including its dirty root buffer and effective Customizer overrides. Does not need Preview. Returns snapshot-bound diagnostics and publishes current Problems. CSG evaluation only: no mesh, assembly, visual or printability proof. UNRESOLVED means inputs or evidence are incomplete (including unsaved include/use dependencies); never treat ok:true or empty Problems as verification PASS. After edits analyze again. No source writes or dependency installation. Requires Workspace Trust and a runtime.",
+                "displayName": "Analyze CAD diagnostics or verify raw mesh",
+                "modelDescription": "Analyze an explicit workspace URI without Preview. Default diagnostics preserves SCAD/CSG CLI diagnostics. mode=verify Full Renders SCAD/CSG to frozen STL or audits standalone STL/3MF without a runtime. Returns snapshot-bound raw format/topology/intersection/shell checks and mesh measurements. Requires Workspace Trust. No source writes, mesh repair, assembly or printability proof. Read units, completeness and UNRESOLVED checks; ok:true means a report was returned, not PASS. After edits analyze again. SCAD and PNG require the selected official CLI.",
                 "canBeReferencedInPrompt": true,
                 "toolReferenceName": "scad_model_analyze",
                 "inputSchema": {
@@ -2127,32 +2142,121 @@
                             "minLength": 1,
                             "maxLength": 4096
                         },
+                        "mode": {
+                            "type": "string",
+                            "enum": [
+                                "diagnostics",
+                                "verify"
+                            ],
+                            "default": "diagnostics"
+                        },
                         "projectRoot": {
                             "type": "string",
                             "minLength": 1,
                             "maxLength": 4096
                         },
-                        "mode": {
-                            "type": "string",
-                            "enum": [
-                                "diagnostics"
-                            ],
-                            "default": "diagnostics"
-                        },
                         "expectedSnapshotId": {
                             "type": "string",
                             "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "quality": {
+                            "type": "string",
+                            "enum": [
+                                "verification"
+                            ]
+                        },
+                        "units": {
+                            "type": "string",
+                            "enum": [
+                                "mm"
+                            ]
+                        },
+                        "requireNonEmpty": {
+                            "type": "boolean"
+                        },
+                        "tessellation": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "fn": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 10000
+                                },
+                                "fa": {
+                                    "type": "number",
+                                    "exclusiveMinimum": 0,
+                                    "maximum": 360
+                                },
+                                "fs": {
+                                    "type": "number",
+                                    "exclusiveMinimum": 0
+                                }
+                            }
                         }
                     },
                     "required": [
                         "uri"
+                    ],
+                    "allOf": [
+                        {
+                            "if": {
+                                "properties": {
+                                    "mode": {
+                                        "const": "verify"
+                                    }
+                                },
+                                "required": [
+                                    "mode"
+                                ]
+                            },
+                            "then": {},
+                            "else": {
+                                "not": {
+                                    "anyOf": [
+                                        {
+                                            "required": [
+                                                "quality"
+                                            ],
+                                            "properties": {
+                                                "quality": {}
+                                            }
+                                        },
+                                        {
+                                            "required": [
+                                                "units"
+                                            ],
+                                            "properties": {
+                                                "units": {}
+                                            }
+                                        },
+                                        {
+                                            "required": [
+                                                "requireNonEmpty"
+                                            ],
+                                            "properties": {
+                                                "requireNonEmpty": {}
+                                            }
+                                        },
+                                        {
+                                            "required": [
+                                                "tessellation"
+                                            ],
+                                            "properties": {
+                                                "tessellation": {}
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
                     ]
                 }
             },
             {
                 "name": "scad_ai_ide_model_getIssue",
                 "displayName": "Read OpenSCAD CAD issue evidence",
-                "modelDescription": "Read one issue from a specific analysis report. Optional bounded local CLI evidence; includes runtime, snapshot ID and whether the report is still current. Expired reports are not recomputed implicitly. Historical results are evidence only; analyze the current document before claiming a repair. No source writes or CLI execution.",
+                "modelDescription": "Read one issue from a specific analysis report. Optional bounded local CLI evidence; includes runtime, snapshot ID and whether the report is still current. Expired reports are not recomputed implicitly. Historical results are evidence only; analyze the current document before claiming a repair. No source writes or CLI execution. Geometry v2 includes bounded triangle/component/spatial evidence and pagination. Binary mesh issues have model-level positions, never invented source lines.",
                 "canBeReferencedInPrompt": true,
                 "toolReferenceName": "scad_model_getIssue",
                 "inputSchema": {
@@ -2171,11 +2275,411 @@
                         "includeEvidence": {
                             "type": "boolean",
                             "default": false
+                        },
+                        "cursor": {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        "limit": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 200
                         }
                     },
                     "required": [
                         "reportId",
                         "issueId"
+                    ]
+                }
+            },
+            {
+                "name": "scad_ai_ide_model_measure",
+                "displayName": "Measure a verified CAD mesh",
+                "modelDescription": "Read basic mesh measurements by existing reportId, or explicitly verify a workspace uri first. Report IDs never recompile missing/expired evidence. Includes snapshot/current status, units, scope and unresolved items. Physical volume is returned only when raw topology, self-intersection, shell composition and winding permit it. Based on exported mesh; no analytic surface, assembly or printability proof. Standalone STL/3MF requires no runtime. Workspace Trust required.",
+                "canBeReferencedInPrompt": true,
+                "toolReferenceName": "scad_model_measure",
+                "inputSchema": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "uri": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4096
+                        },
+                        "reportId": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 128
+                        },
+                        "projectRoot": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4096
+                        },
+                        "expectedSnapshotId": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "quality": {
+                            "type": "string",
+                            "enum": [
+                                "verification"
+                            ]
+                        },
+                        "units": {
+                            "type": "string",
+                            "enum": [
+                                "mm"
+                            ]
+                        },
+                        "requireNonEmpty": {
+                            "type": "boolean"
+                        },
+                        "tessellation": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "fn": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 10000
+                                },
+                                "fa": {
+                                    "type": "number",
+                                    "exclusiveMinimum": 0,
+                                    "maximum": 360
+                                },
+                                "fs": {
+                                    "type": "number",
+                                    "exclusiveMinimum": 0
+                                }
+                            }
+                        },
+                        "measurementTypes": {
+                            "type": "array",
+                            "minItems": 1,
+                            "maxItems": 5,
+                            "uniqueItems": true,
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "bounds",
+                                    "surfaceArea",
+                                    "signedVolume",
+                                    "physicalVolume",
+                                    "topology"
+                                ]
+                            }
+                        }
+                    },
+                    "oneOf": [
+                        {
+                            "required": [
+                                "uri"
+                            ],
+                            "not": {
+                                "required": [
+                                    "reportId"
+                                ],
+                                "properties": {
+                                    "reportId": {}
+                                }
+                            },
+                            "properties": {
+                                "uri": {}
+                            }
+                        },
+                        {
+                            "required": [
+                                "reportId"
+                            ],
+                            "not": {
+                                "anyOf": [
+                                    {
+                                        "required": [
+                                            "uri"
+                                        ],
+                                        "properties": {
+                                            "uri": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "projectRoot"
+                                        ],
+                                        "properties": {
+                                            "projectRoot": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "expectedSnapshotId"
+                                        ],
+                                        "properties": {
+                                            "expectedSnapshotId": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "quality"
+                                        ],
+                                        "properties": {
+                                            "quality": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "units"
+                                        ],
+                                        "properties": {
+                                            "units": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "requireNonEmpty"
+                                        ],
+                                        "properties": {
+                                            "requireNonEmpty": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "tessellation"
+                                        ],
+                                        "properties": {
+                                            "tessellation": {}
+                                        }
+                                    }
+                                ]
+                            },
+                            "properties": {
+                                "reportId": {}
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "scad_ai_ide_model_renderViews",
+                "displayName": "Render frozen CAD mesh views",
+                "modelDescription": "Render the same frozen mesh artifact using official CLI PNG. Supply uri to verify first, or reportId to use existing evidence only. Default iso/front/top 512x512, at most four views. Metadata/artifact delivery by default. Explicit inline uses native image parts within 4 MiB, otherwise metadata fallback. Camera, source/rendered hashes, runtime and display quantization accompany images. Images are display evidence, not visual PASS. Missing runtime/render environment leaves geometry evidence valid. Requires Workspace Trust; no source writes.",
+                "canBeReferencedInPrompt": true,
+                "toolReferenceName": "scad_model_renderViews",
+                "inputSchema": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "uri": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4096
+                        },
+                        "reportId": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 128
+                        },
+                        "projectRoot": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4096
+                        },
+                        "expectedSnapshotId": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "quality": {
+                            "type": "string",
+                            "enum": [
+                                "verification"
+                            ]
+                        },
+                        "units": {
+                            "type": "string",
+                            "enum": [
+                                "mm"
+                            ]
+                        },
+                        "requireNonEmpty": {
+                            "type": "boolean"
+                        },
+                        "tessellation": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "fn": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 10000
+                                },
+                                "fa": {
+                                    "type": "number",
+                                    "exclusiveMinimum": 0,
+                                    "maximum": 360
+                                },
+                                "fs": {
+                                    "type": "number",
+                                    "exclusiveMinimum": 0
+                                }
+                            }
+                        },
+                        "cameras": {
+                            "type": "array",
+                            "minItems": 1,
+                            "maxItems": 4,
+                            "items": {
+                                "oneOf": [
+                                    {
+                                        "type": "string",
+                                        "enum": [
+                                            "iso",
+                                            "front",
+                                            "top",
+                                            "right"
+                                        ]
+                                    },
+                                    {
+                                        "type": "object",
+                                        "additionalProperties": false,
+                                        "required": [
+                                            "eye",
+                                            "target"
+                                        ],
+                                        "properties": {
+                                            "eye": {
+                                                "type": "array",
+                                                "minItems": 3,
+                                                "maxItems": 3,
+                                                "items": {
+                                                    "type": "number"
+                                                }
+                                            },
+                                            "target": {
+                                                "type": "array",
+                                                "minItems": 3,
+                                                "maxItems": 3,
+                                                "items": {
+                                                    "type": "number"
+                                                }
+                                            },
+                                            "projection": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "orthographic",
+                                                    "perspective"
+                                                ]
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        "imageSize": {
+                            "type": "array",
+                            "minItems": 2,
+                            "maxItems": 2,
+                            "items": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 1024
+                            }
+                        },
+                        "delivery": {
+                            "type": "string",
+                            "enum": [
+                                "metadata",
+                                "inline"
+                            ],
+                            "default": "metadata"
+                        }
+                    },
+                    "oneOf": [
+                        {
+                            "required": [
+                                "uri"
+                            ],
+                            "not": {
+                                "required": [
+                                    "reportId"
+                                ],
+                                "properties": {
+                                    "reportId": {}
+                                }
+                            },
+                            "properties": {
+                                "uri": {}
+                            }
+                        },
+                        {
+                            "required": [
+                                "reportId"
+                            ],
+                            "not": {
+                                "anyOf": [
+                                    {
+                                        "required": [
+                                            "uri"
+                                        ],
+                                        "properties": {
+                                            "uri": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "projectRoot"
+                                        ],
+                                        "properties": {
+                                            "projectRoot": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "expectedSnapshotId"
+                                        ],
+                                        "properties": {
+                                            "expectedSnapshotId": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "quality"
+                                        ],
+                                        "properties": {
+                                            "quality": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "units"
+                                        ],
+                                        "properties": {
+                                            "units": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "requireNonEmpty"
+                                        ],
+                                        "properties": {
+                                            "requireNonEmpty": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "tessellation"
+                                        ],
+                                        "properties": {
+                                            "tessellation": {}
+                                        }
+                                    }
+                                ]
+                            },
+                            "properties": {
+                                "reportId": {}
+                            }
+                        }
                     ]
                 }
             }
@@ -2206,6 +2710,9 @@
             },
             {
                 "path": "./skills/openscad-model-debugging/SKILL.md"
+            },
+            {
+                "path": "./skills/openscad-geometry-verification/SKILL.md"
             }
         ]
     },
@@ -2220,7 +2727,7 @@
         "watch-tests": "tsc -p . -w --outDir out",
         "check-types": "tsc --noEmit && tsc -p tsconfig.webview.json",
         "lint": "eslint src",
-        "test": "npm run compile-tests && node --test out/test/capabilities.test.js out/test/capabilityServices.test.js out/test/notifications.test.js out/test/runtime.test.js out/test/github.test.js out/test/installation.test.js out/test/customizer.test.js out/test/customizerSource*.test.js out/test/language.test.js out/test/markdown.test.js && npm run test:libraries && npm run test:preview && npm run test:cad:unit",
+        "test": "npm run compile-tests && node --test out/test/capabilities.test.js out/test/capabilityServices.test.js out/test/notifications.test.js out/test/runtime.test.js out/test/github.test.js out/test/installation.test.js out/test/customizer.test.js out/test/customizerSource*.test.js out/test/language.test.js out/test/markdown.test.js && npm run test:libraries && npm run test:preview && npm run test:mesh && npm run test:cad:unit",
         "test:customizer": "npm run compile-tests && node esbuild.js && node --test scripts/customizer-scrollbar.test.mjs scripts/customizer-preview-fields.test.mjs",
         "test:markdown": "npm run compile && npm run compile-tests && node --test out/test/markdown.test.js && node --test scripts/markdown-preview.test.mjs",
         "test:markdown-host": "npm run compile && node --test scripts/markdown-webview.test.mjs",
@@ -2257,7 +2764,9 @@
         "test:cad:unit": "node --import tsx --test src/test/cad/*.test.ts",
         "test:cad:real": "node --import tsx --test src/test/cad/real.acceptance.ts",
         "test:cad:host": "node scripts/test-cad-host.mjs",
-        "check:cad:branch": "node scripts/assert-feature-branch.mjs"
+        "check:cad:branch": "node scripts/assert-feature-branch.mjs",
+        "test:mesh": "node esbuild.js && node --import tsx --test src/test/mesh/*.test.ts",
+        "test:mesh:real": "node --import tsx --test src/test/mesh/real.acceptance.ts"
     },
     "devDependencies": {
         "@types/markdown-it": "^14.2.0",

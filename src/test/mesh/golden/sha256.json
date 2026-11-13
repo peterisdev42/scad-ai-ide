@@ -30,6 +30,11 @@
       "name": "inch.3mf",
       "bytes": 763,
       "sha256": "24296b32cda099e4f28d9ac1134633d48e202a036e22e04f113bca3fe845a91b"
+    },
+    {
+      "name": "inward-ascii.stl",
+      "bytes": 1059,
+      "sha256": "296420886dcf42bfaa1dfe7b0a9194ac6b671ddf4d02cfe38c56eaa1356d8c5f"
     }
   ]
 }

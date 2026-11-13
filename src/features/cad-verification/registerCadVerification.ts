@@ -1,3 +1,6 @@
+import { notifications } from '../../platform/notifications'
+import { MeshArtifactProvider } from './MeshArtifactProvider'
+import { MeshWorkspaceService } from './MeshWorkspaceService'
 import * as vscode from 'vscode'
 import type { CustomizerService } from '../../core/customizer/CustomizerService'
 import { cadExecution } from '../../platform/openscad/CadExecutionService'
@@ -9,6 +12,9 @@ import { CadWorkspaceService } from './CadWorkspaceService'
 export function registerCadVerification(context: vscode.ExtensionContext, runtime: ReturnType<typeof registerRuntime>, customizer: CustomizerService) {
     const problems = new PreviewSourceProblems()
     const service = new CadWorkspaceService(runtime, customizer, problems)
+    const geometry = new MeshWorkspaceService(context, service, runtime)
+    service.geometry = geometry
+    context.subscriptions.push(geometry)
     const output = vscode.window.createOutputChannel('SCAD AI IDE CAD')
     ScadClient.configure(
         async () => {
@@ -21,6 +27,7 @@ export function registerCadVerification(context: vscode.ExtensionContext, runtim
     )
     context.subscriptions.push(
         problems,
+        vscode.workspace.registerFileSystemProvider('scad-cad-artifact', new MeshArtifactProvider(geometry), { isReadonly: true, isCaseSensitive: true }),
         problems.registerNavigation(),
         service,
         output,
@@ -46,6 +53,36 @@ export function registerCadVerification(context: vscode.ExtensionContext, runtim
             })
             await vscode.commands.executeCommand('scad-ai-ide.model.openReport', report.reportId)
             return report
+        }),
+        vscode.commands.registerCommand('scad-ai-ide.model.verify', async (uri?: vscode.Uri) => {
+            const target = uri ?? vscode.window.activeTextEditor?.document.uri
+            if (!target) throw new Error('Choose a workspace SCAD/CSG/STL/3MF document.')
+            const report = await vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, title: 'Verify raw CAD mesh', cancellable: true }, async (_, token) => {
+                const abort = new AbortController(),
+                    sub = token.onCancellationRequested(() => abort.abort())
+                try {
+                    return await geometry.verify({ uri: target.toString() }, abort.signal)
+                } finally {
+                    sub.dispose()
+                }
+            })
+            await vscode.commands.executeCommand('scad-ai-ide.model.openReport', report.reportId)
+            return report
+        }),
+        vscode.commands.registerCommand('scad-ai-ide.model.measure', async (uri?: vscode.Uri) => {
+            const target = uri ?? vscode.window.activeTextEditor?.document.uri
+            if (!target) throw new Error('Choose a workspace CAD document.')
+            const result = await geometry.measure({ uri: target.toString() })
+            await vscode.commands.executeCommand('scad-ai-ide.model.openReport', result.reportId)
+            return result
+        }),
+        vscode.commands.registerCommand('scad-ai-ide.model.renderViews', async (uri?: vscode.Uri) => {
+            const target = uri ?? vscode.window.activeTextEditor?.document.uri
+            if (!target) throw new Error('Choose a workspace CAD document.')
+            const result = await geometry.renderViews({ uri: target.toString() })
+            if (result.frames.length) await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(result.frames[0].artifactUri))
+            else notifications.geometryImagesUnavailable(result.message ?? result.reasonCode ?? result.renderStatus, target.toString())
+            return result
         }),
         vscode.commands.registerCommand('scad-ai-ide.model.openReport', async (id: unknown) => {
             if (typeof id !== 'string' || !/^cad-[a-f0-9-]{36}$/.test(id)) throw new Error('Choose a current CAD report ID.')

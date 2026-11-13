@@ -1,3 +1,4 @@
+import type { MeshWorkspaceService } from './MeshWorkspaceService'
 import { dependencyResolution } from '../../platform/openscad/dependencyResolution'
 import { runtimeExecutableFiles } from '../../platform/openscad/runtimeIdentity'
 import * as vscode from 'vscode'
@@ -48,6 +49,7 @@ interface PreviewExecutionContext {
 
 /** Extension Host adapter; no panel or active-editor state is needed for tools. */
 export class CadWorkspaceService implements vscode.Disposable {
+    geometry?: MeshWorkspaceService
     readonly verification: CadVerificationService
     private subscriptions: vscode.Disposable[] = []
     private watched = new Map<string, (current: Stats, previous: Stats) => void>()
@@ -76,6 +78,7 @@ export class CadWorkspaceService implements vscode.Disposable {
             locate: (file) => this.locate(file),
         })
         const invalidate = (uri?: vscode.Uri) => {
+            this.geometry?.invalidate(uri)
             this.stale(uri?.toString())
             this.verification.invalidate(uri?.toString())
             if (uri) {
@@ -296,12 +299,15 @@ export class CadWorkspaceService implements vscode.Disposable {
             }
         }
         const resolutionSources = [{ path: sourceCanonical, text }]
-        for (const dependency of dependencies.filter(d => d.status === 'resolved')) {
+        for (const dependency of dependencies.filter((d) => d.status === 'resolved')) {
             const path = await realpath(vscode.Uri.parse(dependency.uri).fsPath)
-            if ((await stat(path)).size > 8 * 1048576) { unresolvedInputs.push('DEPENDENCY_RESOLUTION_SOURCE_LIMIT'); continue }
+            if ((await stat(path)).size > 8 * 1048576) {
+                unresolvedInputs.push('DEPENDENCY_RESOLUTION_SOURCE_LIMIT')
+                continue
+            }
             resolutionSources.push({ path, text: await readFile(path, 'utf8') })
         }
-        const resolution = await dependencyResolution(resolutionSources, roots, path => roots.some(root => within(root, path)))
+        const resolution = await dependencyResolution(resolutionSources, roots, (path) => roots.some((root) => within(root, path)))
         unresolvedInputs.push(...resolution.unresolved)
         this.resolutionPaths.delete(uri.toString())
         this.resolutionPaths.set(uri.toString(), resolution.paths)
@@ -343,7 +349,9 @@ export class CadWorkspaceService implements vscode.Disposable {
     }
     async current(report: VerificationReport) {
         try {
-            if (!this.availability().enabled || this.staleReports.has(report.reportId)) return false
+            // Event notifications can arrive after a new report was published. Capture remains
+            // authoritative for both complete and unresolved historical evidence.
+            if (!this.availability().enabled) return false
             const context = this.previewContexts.get(report.reportId)
             if (context && context.overridesDigest !== digest(this.customizer.getOverrides(report.snapshot.document.uri))) return false
             const input = await this.capture(
@@ -357,11 +365,23 @@ export class CadWorkspaceService implements vscode.Disposable {
             return false
         }
     }
-    private watch(report: VerificationReport) {
+    trackGeometryInputs(snapshot: import('../../core/cad/types').CadSnapshot) {
+        this.watch({ snapshot })
+    }
+    watchGeometryFiles(uri: string, paths: string[]) {
+        this.registerWatchedPaths(uri, paths)
+    }
+    notifyGeometryReports() {
+        for (const doc of vscode.workspace.textDocuments) if (doc.uri.scheme === 'scad-cad-report') this.reportChanged.fire(doc.uri)
+    }
+    private watch(report: Pick<VerificationReport, 'snapshot'>) {
         const root = vscode.Uri.parse(report.snapshot.project.rootUri).fsPath
         const paths = [...(this.resolutionPaths.get(report.snapshot.document.uri) ?? []), ...this.runtimeFiles, vscode.Uri.parse(report.snapshot.document.uri).fsPath, ...report.snapshot.dependencies.map((d) => vscode.Uri.parse(d.uri).fsPath), report.snapshot.runtime.executable, join(root, '.scad'), join(root, '.scad', 'lib'), ...['dependencies.json', 'dependencies.lock.json', 'mounts.json', 'verification.json'].map((file) => join(root, '.scad', file))]
-        this.reportWatchers.delete(report.snapshot.document.uri)
-        this.reportWatchers.set(report.snapshot.document.uri, paths)
+        this.registerWatchedPaths(report.snapshot.document.uri, paths)
+    }
+    private registerWatchedPaths(uri: string, paths: string[]) {
+        this.reportWatchers.delete(uri)
+        this.reportWatchers.set(uri, paths)
         while (this.reportWatchers.size > 128) this.reportWatchers.delete(this.reportWatchers.keys().next().value!)
         const wanted = new Set([...this.reportWatchers.values()].flat().slice(0, 4096))
         for (const [file, listener] of this.watched)
@@ -373,10 +393,13 @@ export class CadWorkspaceService implements vscode.Disposable {
             if (!this.watched.has(file)) {
                 const listener = (current: Stats, previous: Stats) => {
                     if (current.mtimeMs === previous.mtimeMs && current.size === previous.size && current.ctimeMs === previous.ctimeMs && current.ino === previous.ino) return
-                    // A dependency or settings change can affect multiple roots; bounded conservative invalidation is safe.
-                    this.stale()
-                    this.verification.invalidate()
-                    this.problems.invalidateAll()
+                    // Polling delivery can lag behind a fresh capture. Revalidate facts instead of
+                    // cancelling a new task which already captured this disk change. Executions
+                    // still compare content, evidence and filesystem stamps before publication.
+                    void this.refreshValidity()
+                    this.geometry?.refreshFileValidity()
+                    const roots = new Set([...this.reportWatchers].filter(([, paths]) => paths.includes(file)).map(([root]) => root))
+                    for (const report of this.verification.reports.all()) if (roots.has(report.snapshot.document.uri)) this.reportChanged.fire(vscode.Uri.from({ scheme: 'scad-cad-report', path: `/${report.reportId}` }))
                 }
                 watchFile(file, { persistent: false, interval: 1000 }, listener)
                 this.watched.set(file, listener)
@@ -407,8 +430,9 @@ export class CadWorkspaceService implements vscode.Disposable {
             this.requestControllers.delete(controller)
         }
     }
-    async issueDetails(reportId: string, issueId: string, includeEvidence = false) {
+    async issueDetails(reportId: string, issueId: string, includeEvidence = false, cursor = 0, limit = 100) {
         const entry = this.verification.reports.get(reportId)
+        if (!entry && this.geometry) return this.geometry.issueDetails(reportId, issueId, includeEvidence, cursor, limit)
         if (!entry) throw new CapabilityError('REPORT_NOT_FOUND', 'Report expired or was evicted. Explicitly analyze the current source again.', true)
         const issue = entry.report.issues.find((i) => i.id === issueId)
         if (!issue) throw new CapabilityError('ISSUE_NOT_FOUND', 'Issue does not belong to this report.')
@@ -416,6 +440,7 @@ export class CadWorkspaceService implements vscode.Disposable {
     }
     async reportText(reportId: string) {
         const entry = this.verification.reports.get(reportId)
+        if (!entry && this.geometry) return this.geometry.reportText(reportId)
         if (!entry) throw new CapabilityError('REPORT_NOT_FOUND', 'Report expired or was evicted.')
         return JSON.stringify({ current: await this.current(entry.report), ...entry.report }, null, 2)
     }

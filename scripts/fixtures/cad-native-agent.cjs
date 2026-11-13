@@ -71,15 +71,17 @@ exports.run = async context => {
                         assert.ok(vscode.workspace.getWorkspaceFolder(uri), 'The fixture must actually be in this window workspace')
                         const doc = await vscode.workspace.openTextDocument(uri)
                         await vscode.window.showTextDocument(doc)
+                        if (config.dirtySetup !== false) {
                         const setup = new vscode.WorkspaceEdit()
         setup.insert(uri, new vscode.Position(0, 0), '// Unsaved Native Agent acceptance buffer\n')
                         assert.equal(await vscode.workspace.applyEdit(setup), true)
+                        }
                         await fs.writeFile(path.join(directory, 'buffer-before.scad'), doc.getText())
                         const commands = await vscode.commands.getCommands(true)
                         const command = commands.includes('workbench.action.chat.newLocalChat') ? 'workbench.action.chat.newLocalChat' : 'workbench.action.chat.newChat'
                         await fs.writeFile(path.join(directory, 'local-chat-selection.json'), JSON.stringify({ command }))
                         await vscode.commands.executeCommand(command)
-                        const result = await vscode.commands.executeCommand('workbench.action.chat.open', { query: request.query, mode: 'agent', modelSelector: { vendor: 'omlx', id: request.model }, attachFiles: [uri, vscode.Uri.file(path.join(config.ideExtension, 'skills/openscad-model-debugging/SKILL.md'))], toolsInclude: request.toolsInclude, blockOnResponse: true })
+                        const result = await vscode.commands.executeCommand('workbench.action.chat.open', { query: request.query, mode: 'agent', modelSelector: { vendor: 'omlx', id: request.model }, attachFiles: [uri, vscode.Uri.file(path.join(config.ideExtension, config.skill ?? 'skills/openscad-model-debugging/SKILL.md'))], toolsInclude: request.toolsInclude, blockOnResponse: true })
                         await fs.writeFile(path.join(directory, 'response.json'), JSON.stringify({ result, ...await snapshot(), snapshot: false }, null, 2))
                     } catch (error) { await fs.writeFile(path.join(directory, 'response.json'), JSON.stringify({ error: String(error), stack: error.stack })) }
                     finally { pending = undefined }
