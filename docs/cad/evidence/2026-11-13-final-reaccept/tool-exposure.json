@@ -1,0 +1,140 @@
+{
+  "scope": "Transparent loopback forwarding; no credentials or payload changes recorded",
+  "requests": [
+    {
+      "at": "2026-11-13T03:30:39.887Z",
+      "path": "/v1/models",
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T03:30:40.027Z",
+      "path": "/v1/models",
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T03:30:40.059Z",
+      "path": "/v1/models",
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T03:30:40.100Z",
+      "path": "/v1/models",
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T03:30:40.584Z",
+      "path": "/v1/models",
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T03:30:40.949Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.8-27B-4bit",
+      "tools": [],
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T03:30:40.950Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.8-27B-4bit",
+      "tools": [],
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T03:30:41.050Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.8-27B-4bit",
+      "tools": [
+        {
+          "name": "insert_edit_into_file",
+          "schemaSha256": "ef22c58ddda2019ee06db3a7bef0ccfa2d369c2ce13df14cfb6e8879229a3281"
+        },
+        {
+          "name": "read_file",
+          "schemaSha256": "d6e1bd4f272a1d208faddef111a09e2a431220e70166f5e548908bd8212f9085"
+        },
+        {
+          "name": "replace_string_in_file",
+          "schemaSha256": "d1421dc675fc1235bd5fc5d88e7965388551c9b28a9933aafe7b4fa95edcd5d1"
+        },
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "0a28007ffe9270468948d2b81d8f21a2f7ceafd59fd42bceea069dd3d0188ae9"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "ee3170dcf75bac7d3358bfe4f3d03acaac3831219711f412534c222652a6ed42"
+        }
+      ],
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T03:33:53.908Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.8-27B-4bit",
+      "tools": [
+        {
+          "name": "insert_edit_into_file",
+          "schemaSha256": "ef22c58ddda2019ee06db3a7bef0ccfa2d369c2ce13df14cfb6e8879229a3281"
+        },
+        {
+          "name": "read_file",
+          "schemaSha256": "d6e1bd4f272a1d208faddef111a09e2a431220e70166f5e548908bd8212f9085"
+        },
+        {
+          "name": "replace_string_in_file",
+          "schemaSha256": "d1421dc675fc1235bd5fc5d88e7965388551c9b28a9933aafe7b4fa95edcd5d1"
+        },
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "0a28007ffe9270468948d2b81d8f21a2f7ceafd59fd42bceea069dd3d0188ae9"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "ee3170dcf75bac7d3358bfe4f3d03acaac3831219711f412534c222652a6ed42"
+        }
+      ],
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T03:34:32.063Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.8-27B-4bit",
+      "tools": [
+        {
+          "name": "insert_edit_into_file",
+          "schemaSha256": "ef22c58ddda2019ee06db3a7bef0ccfa2d369c2ce13df14cfb6e8879229a3281"
+        },
+        {
+          "name": "read_file",
+          "schemaSha256": "d6e1bd4f272a1d208faddef111a09e2a431220e70166f5e548908bd8212f9085"
+        },
+        {
+          "name": "replace_string_in_file",
+          "schemaSha256": "d1421dc675fc1235bd5fc5d88e7965388551c9b28a9933aafe7b4fa95edcd5d1"
+        },
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "0a28007ffe9270468948d2b81d8f21a2f7ceafd59fd42bceea069dd3d0188ae9"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "ee3170dcf75bac7d3358bfe4f3d03acaac3831219711f412534c222652a6ed42"
+        }
+      ],
+      "status": 200
+    }
+  ]
+}

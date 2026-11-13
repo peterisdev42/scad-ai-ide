@@ -103,6 +103,18 @@ async function main() {
         sourcemap: !production,
         plugins: [esbuildProblemMatcherPlugin],
     })
+    const meshVerification = await esbuild.context({
+        entryPoints: ['src/core/mesh/worker.mts'], bundle: true, format: 'esm', platform: 'node',
+        outfile: 'dist/mesh-verification-worker.mjs',
+        banner: { js: "import { createRequire as cadRequireFactory } from 'node:module'; const require = cadRequireFactory(import.meta.url);" },
+        minify: production, sourcemap: !production, legalComments: 'linked', plugins: [esbuildProblemMatcherPlugin],
+    })
+    const assemblyVerification = await esbuild.context({
+        entryPoints: ['src/core/assembly/worker.mts'], bundle: true, format: 'esm', platform: 'node',
+        outfile: 'dist/assembly-verification-worker.mjs',
+        banner: { js: "import { createRequire as cadRequireFactory } from 'node:module'; const require = cadRequireFactory(import.meta.url);" },
+        minify: production, sourcemap: !production, legalComments: 'linked', plugins: [esbuildProblemMatcherPlugin],
+    })
     const markdownPreview = await esbuild.context({
         entryPoints: ['src/features/preview/webview/markdown-entry.ts'],
         tsconfig: 'tsconfig.webview.json',
@@ -131,13 +143,13 @@ async function main() {
         plugins: [esbuildProblemMatcherPlugin],
     })
     if (watch) {
-        await Promise.all([ctx.watch(), webview.watch(), customizer.watch(), panelScrollbar.watch(), meshTopology.watch(), markdownPreview.watch(), markdownOwned.watch()])
+        await Promise.all([ctx.watch(), webview.watch(), customizer.watch(), panelScrollbar.watch(), meshTopology.watch(), meshVerification.watch(), assemblyVerification.watch(), markdownPreview.watch(), markdownOwned.watch()])
     } else {
         try {
-            await Promise.all([ctx.rebuild(), webview.rebuild(), customizer.rebuild(), panelScrollbar.rebuild(), meshTopology.rebuild(), markdownPreview.rebuild(), markdownOwned.rebuild()])
+            await Promise.all([ctx.rebuild(), webview.rebuild(), customizer.rebuild(), panelScrollbar.rebuild(), meshTopology.rebuild(), meshVerification.rebuild(), assemblyVerification.rebuild(), markdownPreview.rebuild(), markdownOwned.rebuild()])
             await fs.writeFile('dist/bundled-packages.json', JSON.stringify([...bundledPackages].sort(), null, 2) + '\n')
         } finally {
-            await Promise.all([ctx.dispose(), webview.dispose(), customizer.dispose(), panelScrollbar.dispose(), meshTopology.dispose(), markdownPreview.dispose(), markdownOwned.dispose()])
+            await Promise.all([ctx.dispose(), webview.dispose(), customizer.dispose(), panelScrollbar.dispose(), meshTopology.dispose(), meshVerification.dispose(), assemblyVerification.dispose(), markdownPreview.dispose(), markdownOwned.dispose()])
         }
     }
 }

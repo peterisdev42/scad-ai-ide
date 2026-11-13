@@ -61,6 +61,8 @@ try {
         const files = readdirSync(source).filter((file) => legalFile.test(file) || /^notices?(?:\.|$)/i.test(file))
         bundles.push({ name, sourceVersion: metadata.version, files: files.map((name) => ({ name, contents: readFileSync(path.join(source, name)) })) })
     }
+    const saxes = bundles.find(bundle => bundle.name === 'saxes')
+    if (saxes && !saxes.files.length) saxes.files.push({name:'LICENSE',contents:readFileSync(path.join(root,'resources/legal/saxes/LICENSE'))})
     for (const obsolete of ['openscad-csg-source', 'harfbuzzjs', '@zkl2333/freetype-wasm', 'straight-skeleton', 'dxf-parser']) rmSync(path.join(root, 'licenses', obsolete), { recursive: true, force: true })
     for (const bundle of bundles) {
         const destination = path.join(root, 'licenses', bundle.name)

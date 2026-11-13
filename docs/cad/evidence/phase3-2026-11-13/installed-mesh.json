@@ -1,0 +1,357 @@
+{
+  "geometry": {
+    "schemaVersion": 2,
+    "reportId": "cad-31fd9da1-a2e4-459b-a8d7-859243088167",
+    "snapshotId": "055792e2c80abd0ea334ff7e9771fee4ffc3a16ce501d850943658ce8f5e797d",
+    "current": true,
+    "document": {
+      "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-X2h7Vf/workspace/cad-diagnostics.scad",
+      "version": 3,
+      "sourceSha256": "a31ee19c8a470195185a94e635a19bf524794c2f8b7b5d3cfd88b2942c92283e",
+      "dirty": true
+    },
+    "inputKind": "scad",
+    "executionStatus": "SUCCEEDED",
+    "overallStatus": "PASS",
+    "complete": true,
+    "units": "modelUnits",
+    "sourceUnit": "undeclared",
+    "quality": {
+      "profile": "verification",
+      "requestedGlobalTessellation": {},
+      "effectiveOverrides": {
+        "$preview": false
+      },
+      "localSettings": "source-controlled"
+    },
+    "precision": "computed-on-decoded-mesh",
+    "checks": [
+      {
+        "id": "cli-evaluation",
+        "category": "compile",
+        "required": true,
+        "status": "PASS",
+        "issueIds": [],
+        "reason": "Official full-mesh export only; no independent mesh or assembly verification."
+      },
+      {
+        "id": "mesh-format",
+        "category": "format",
+        "required": true,
+        "status": "PASS",
+        "issueIds": []
+      },
+      {
+        "id": "mesh-topology",
+        "category": "mesh",
+        "required": true,
+        "status": "PASS",
+        "issueIds": []
+      },
+      {
+        "id": "mesh-self-intersection",
+        "category": "mesh",
+        "required": true,
+        "status": "PASS",
+        "issueIds": []
+      },
+      {
+        "id": "mesh-shell-relations",
+        "category": "mesh",
+        "required": true,
+        "status": "PASS",
+        "issueIds": []
+      },
+      {
+        "id": "raw-mesh-validity",
+        "category": "mesh",
+        "required": true,
+        "status": "PASS",
+        "issueIds": [],
+        "reason": "Raw topology, bounded self-intersection and shell checks; no repair or epsilon welding."
+      },
+      {
+        "id": "physical-volume",
+        "category": "measurement",
+        "required": true,
+        "status": "PASS",
+        "issueIds": [],
+        "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+      }
+    ],
+    "measurements": {
+      "bounds": {
+        "min": [
+          0,
+          0,
+          0
+        ],
+        "max": [
+          2,
+          2,
+          2
+        ],
+        "dimensions": [
+          2,
+          2,
+          2
+        ]
+      },
+      "surfaceArea": {
+        "status": "PASS",
+        "value": 24,
+        "errorEstimate": 2.2382096176443156e-13,
+        "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+      },
+      "signedVolume": {
+        "status": "PASS",
+        "value": 8,
+        "errorEstimate": 7.460698725481052e-14,
+        "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+      },
+      "physicalVolume": {
+        "status": "PASS",
+        "value": 8,
+        "errorEstimate": 7.460698725481052e-14,
+        "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+      },
+      "objectCount": 1,
+      "rawVertices": 36,
+      "rawTriangles": 12
+    },
+    "issues": [],
+    "issueCount": 0,
+    "issuesTruncated": false,
+    "examined": [
+      "raw-format",
+      "cli-diagnostics",
+      "full-render-export",
+      "raw-topology",
+      "self-intersection",
+      "shell-relations",
+      "mesh-measurements"
+    ],
+    "notExamined": [
+      "assembly",
+      "constraints",
+      "visual-inspection",
+      "diff",
+      "thickness",
+      "printability",
+      "analytic-surface-error"
+    ],
+    "incomplete": [],
+    "artifacts": [
+      {
+        "id": "d9e982648719192c6c8250fcd7e4f2a0af3da85bb7f3e5e75e1507eef9c5f474",
+        "snapshotId": "055792e2c80abd0ea334ff7e9771fee4ffc3a16ce501d850943658ce8f5e797d",
+        "kind": "log",
+        "mimeType": "text/plain",
+        "sha256": "7cf5af8b5c314eedd541d414cbf91f7445df2ad3549504ffc47e82cc0491a801",
+        "bytes": 245
+      },
+      {
+        "id": "4147f05c01d378572ff68adddda36e8943d666fd645909486c1aac2c6fbb5bb3",
+        "snapshotId": "055792e2c80abd0ea334ff7e9771fee4ffc3a16ce501d850943658ce8f5e797d",
+        "kind": "mesh",
+        "mimeType": "model/stl",
+        "sha256": "b7b475bd3117b8ebab639c7bd983ac7b3cfdb8cc505b666ebfd074d2a7f3c470",
+        "bytes": 684,
+        "role": "raw"
+      },
+      {
+        "id": "ff6fc3af806dd87892cdfdf7a868c2debe524efea96247589c624e1e1c6759eb",
+        "snapshotId": "055792e2c80abd0ea334ff7e9771fee4ffc3a16ce501d850943658ce8f5e797d",
+        "kind": "mesh",
+        "mimeType": "model/stl",
+        "sha256": "8333d183b81da0447a3829cbb0f0028d8a060c89e3ffb988dc950d867ca82d25",
+        "bytes": 684,
+        "role": "render",
+        "derivation": {
+          "inputSha256": "b7b475bd3117b8ebab639c7bd983ac7b3cfdb8cc505b666ebfd074d2a7f3c470",
+          "numericType": "float32",
+          "maxCoordinateError": 0
+        }
+      },
+      {
+        "id": "9b67636d1503c219b67516708636e19de176e9e5901a96e24387240231640191",
+        "snapshotId": "055792e2c80abd0ea334ff7e9771fee4ffc3a16ce501d850943658ce8f5e797d",
+        "kind": "analysis",
+        "mimeType": "application/json",
+        "sha256": "e1227275009fd71ae638bd04983a25ac487ee1bd29249776861ffc26d9b3d336",
+        "bytes": 1945
+      }
+    ],
+    "reportUri": "scad-cad-report:/cad-31fd9da1-a2e4-459b-a8d7-859243088167"
+  },
+  "measured": {
+    "reportId": "cad-31fd9da1-a2e4-459b-a8d7-859243088167",
+    "snapshotId": "055792e2c80abd0ea334ff7e9771fee4ffc3a16ce501d850943658ce8f5e797d",
+    "current": true,
+    "overallStatus": "PASS",
+    "units": "modelUnits",
+    "precision": "computed-on-decoded-mesh",
+    "values": {
+      "bounds": {
+        "min": [
+          0,
+          0,
+          0
+        ],
+        "max": [
+          2,
+          2,
+          2
+        ],
+        "dimensions": [
+          2,
+          2,
+          2
+        ]
+      },
+      "surfaceArea": {
+        "status": "PASS",
+        "value": 24,
+        "errorEstimate": 2.2382096176443156e-13,
+        "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+      },
+      "signedVolume": {
+        "status": "PASS",
+        "value": 8,
+        "errorEstimate": 7.460698725481052e-14,
+        "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+      },
+      "physicalVolume": {
+        "status": "PASS",
+        "value": 8,
+        "errorEstimate": 7.460698725481052e-14,
+        "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+      },
+      "topology": [
+        {
+          "instanceId": "stl:0",
+          "vertices": 8,
+          "triangles": 12,
+          "componentCount": 1,
+          "boundaryEdges": 0,
+          "nonManifoldEdges": 0,
+          "nonManifoldVertices": 0,
+          "inconsistentEdges": 0,
+          "degenerateFaces": 0,
+          "duplicateFaces": 0
+        }
+      ]
+    },
+    "objects": {
+      "total": 1,
+      "offset": 0,
+      "hasMore": false,
+      "nextOffset": null,
+      "items": [
+        {
+          "instanceId": "stl:0",
+          "objectId": "stl",
+          "status": "PASS",
+          "values": {
+            "bounds": {
+              "min": [
+                0,
+                0,
+                0
+              ],
+              "max": [
+                2,
+                2,
+                2
+              ],
+              "dimensions": [
+                2,
+                2,
+                2
+              ]
+            },
+            "surfaceArea": {
+              "status": "PASS",
+              "value": 24,
+              "errorEstimate": 3.410605131648481e-13,
+              "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+            },
+            "signedVolume": {
+              "status": "PASS",
+              "value": 8,
+              "errorEstimate": 7.460698725481052e-14,
+              "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+            },
+            "physicalVolume": {
+              "status": "PASS",
+              "value": 8,
+              "errorEstimate": 1.8829382497642655e-13,
+              "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+            }
+          }
+        }
+      ]
+    },
+    "incomplete": [],
+    "notExamined": [
+      "assembly",
+      "constraints",
+      "visual-inspection",
+      "diff",
+      "thickness",
+      "printability",
+      "analytic-surface-error"
+    ]
+  },
+  "views": {
+    "reportId": "cad-31fd9da1-a2e4-459b-a8d7-859243088167",
+    "snapshotId": "055792e2c80abd0ea334ff7e9771fee4ffc3a16ce501d850943658ce8f5e797d",
+    "current": true,
+    "renderStatus": "AVAILABLE",
+    "frames": [
+      {
+        "view": "iso",
+        "artifact": {
+          "id": "a1dd596f496639ff8e288ec97afb30a386e8e4beafefaed8ec23b328ad2c83af",
+          "snapshotId": "055792e2c80abd0ea334ff7e9771fee4ffc3a16ce501d850943658ce8f5e797d",
+          "kind": "image",
+          "mimeType": "image/png",
+          "sha256": "ee73ee12b93c684ede4b3fb0d7813ac7863a42573381f86c60a224ed0f74cf4c",
+          "bytes": 8287
+        },
+        "artifactUri": "scad-cad-artifact:/a1dd596f496639ff8e288ec97afb30a386e8e4beafefaed8ec23b328ad2c83af.png",
+        "renderSnapshotId": "76d303a23aa73f11de8882b238775966589395b42215a2c83071c8c6a544804f",
+        "sourceMeshSha256": "b7b475bd3117b8ebab639c7bd983ac7b3cfdb8cc505b666ebfd074d2a7f3c470",
+        "renderedMeshSha256": "8333d183b81da0447a3829cbb0f0028d8a060c89e3ffb988dc950d867ca82d25",
+        "camera": {
+          "arguments": [
+            0,
+            0,
+            0,
+            55,
+            0,
+            25,
+            6
+          ],
+          "projection": "orthographic",
+          "framing": "cli-autocenter-viewall"
+        },
+        "imageSize": [
+          512,
+          512
+        ],
+        "runtime": {
+          "identityHash": "352c831d44a9e746aa832df7850b1d500664ff319f7fafc34a6bb09bcc58c7d2",
+          "version": "2026.11-RC0"
+        },
+        "displayOnly": true,
+        "coordinateQuantizationError": 0
+      }
+    ],
+    "delivery": "metadata",
+    "notExamined": [
+      "visual-inspection",
+      "printability"
+    ]
+  }
+}
