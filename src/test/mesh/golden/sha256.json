@@ -1,0 +1,35 @@
+{
+  "generator": "src/test/mesh/fixtures.ts; analytic fixtures, no library repair",
+  "fixtures": [
+    {
+      "name": "box.stl",
+      "bytes": 684,
+      "sha256": "5a052414f49b1421c2deee3d209bb833656847069b2f04f174ef3aba6f613aba"
+    },
+    {
+      "name": "box-ascii.stl",
+      "bytes": 1059,
+      "sha256": "5e8646fd598421c963f97ea5226661960a2e653a0640897c1041e6e14746e66b"
+    },
+    {
+      "name": "inward.stl",
+      "bytes": 684,
+      "sha256": "3fa6f86ac4a430e7ca62b1ed539c1a932930126b9647fc1a4aff15e12df8a98d"
+    },
+    {
+      "name": "open.stl",
+      "bytes": 634,
+      "sha256": "64a8291b59ec93eb0e8abc2e431e9d60cf55401c0525dd7be6477c9f5259589b"
+    },
+    {
+      "name": "cavity.stl",
+      "bytes": 1284,
+      "sha256": "70366e6bfbf28ddb8f2da6a1410a630ce1933566f1b5fb23c2882740723366db"
+    },
+    {
+      "name": "inch.3mf",
+      "bytes": 763,
+      "sha256": "24296b32cda099e4f28d9ac1134633d48e202a036e22e04f113bca3fe845a91b"
+    }
+  ]
+}

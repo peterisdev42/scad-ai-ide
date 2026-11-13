@@ -2309,6 +2309,8 @@
         "manifold-3d": "^3.5.4",
         "pngjs": "7.0.0",
         "proper-lockfile": "^4.1.2",
+        "robust-predicates": "3.0.2",
+        "saxes": "6.0.0",
         "tar": "^7.5.22",
         "three": "0.187.0",
         "vscode-languageclient": "^9.0.1",
