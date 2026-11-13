@@ -150,4 +150,23 @@ suite('Static assembly Extension Host', () => {
         assert.equal(images.frames.length, 1)
         assert.ok(images.frames[0].sourceMeshSha256)
     })
+    test('nested projects resolve their own Manifest and retain distinct part identities without compiling metadata', async () => {
+        const nested = join(root, 'assembly-host/nested')
+        await mkdir(join(nested, '.scad'), { recursive: true })
+        await writeFile(join(nested, 'a.stl'), stl())
+        await writeFile(join(nested, 'b.stl'), stl(box([1, 1, 1], [1.3, 0, 0]), true))
+        const m = {
+            ...config(),
+            parts: [
+                { id: 'a', selector: { type: 'file', path: './a.stl' } },
+                { id: 'b', selector: { type: 'file', path: './b.stl' } },
+            ],
+        }
+        await writeFile(join(nested, '.scad/verification.json'), JSON.stringify(m))
+        const list = await invoke('listParts', { uri: vscode.Uri.file(join(nested, 'a.stl')).toString() })
+        assert.ok(list.manifestUri.includes('/nested/.scad/verification.json'))
+        assert.equal(list.items[0].identity.manifestUri, list.manifestUri)
+        const result = await invoke('checkAssembly', { uri: list.manifestUri, expectedManifestDigest: list.manifestDigest })
+        assert.equal(result.overallStatus, 'PASS')
+    })
 })

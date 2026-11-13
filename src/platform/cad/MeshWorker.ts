@@ -15,7 +15,7 @@ export function configureMeshVerificationWorker(path: string) {
 export function analyzeInWorker(bytes: Uint8Array, format: 'stl' | '3mf', signal?: AbortSignal, timeoutMs: number = meshLimits.timeoutMs): Promise<MeshWorkerResult> {
     signal?.throwIfAborted()
     return new Promise((resolve, reject) => {
-        const worker = new Worker(workerPath, { resourceLimits: { maxOldGenerationSizeMb: 512 } })
+        const worker = new Worker(workerPath, { execArgv: [], resourceLimits: { maxOldGenerationSizeMb: 512 } })
         let done = false
         const finish = (result?: MeshWorkerResult, error?: Error) => {
             if (done) return

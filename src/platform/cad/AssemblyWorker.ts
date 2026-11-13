@@ -15,7 +15,7 @@ export function assemblyInWorker(
 ): Promise<KernelResult> {
     signal?.throwIfAborted()
     return new Promise((resolve, reject) => {
-        const worker = new Worker(workerPath, { resourceLimits: { maxOldGenerationSizeMb: 512 } })
+        const worker = new Worker(workerPath, { execArgv: [], resourceLimits: { maxOldGenerationSizeMb: 512 } })
         let done = false
         const finish = (result?: KernelResult, error?: Error) => {
             if (done) return

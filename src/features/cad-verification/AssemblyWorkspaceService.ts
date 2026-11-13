@@ -1,3 +1,4 @@
+import { libraryEnvironment } from '../../platform/libraries/LibraryEnvironment'
 import { readWorldArtifact } from '../../core/assembly/worldMesh'
 import { displayMesh } from '../../core/mesh/displayMesh'
 import * as vscode from 'vscode'
@@ -66,7 +67,9 @@ export class AssemblyWorkspaceService implements vscode.Disposable {
         }
         const folder = await workspaceFolderForUri(uri)
         if (!folder) throw new CapabilityError('INVALID_PROJECT', 'Manifest must belong to an open workspace.')
-        return /\/\.scad\/verification\.json$/i.test(uri.path) ? uri : vscode.Uri.joinPath(folder.uri, '.scad', 'verification.json')
+        if (/\/\.scad\/verification\.json$/i.test(uri.path)) return uri
+        const project = /\.(scad|csg|stl|3mf)$/i.test(uri.path) ? await libraryEnvironment.resolveProjectRoot(uri.fsPath) : undefined
+        return vscode.Uri.joinPath(project ? vscode.Uri.file(project) : folder.uri, '.scad', 'verification.json')
     }
     private async registry(input: string) {
         this.trust()
@@ -238,6 +241,10 @@ export class AssemblyWorkspaceService implements vscode.Disposable {
         if (!input.reportId) {
             if (!(await this.core.current(report))) throw new CapabilityError('SNAPSHOT_CHANGED', 'Assembly report became historical before publication.', true)
             this.published.set(report.snapshot.document.uri, report)
+            this.cad.watchGeometryFiles(report.snapshot.document.uri, [
+                vscode.Uri.parse(report.snapshot.document.uri).fsPath,
+                ...report.snapshot.dependencies.map((d) => vscode.Uri.parse(d.uri).fsPath),
+            ])
             if (vscode.workspace.getConfiguration('scad-ai-ide.verification').get<boolean>('publishProblems', true))
                 await this.cad.problems.reportVerification(report, () => this.core.current(report), 'assembly')
             this.cad.notifyGeometryReports()
