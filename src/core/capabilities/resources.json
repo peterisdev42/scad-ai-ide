@@ -52,5 +52,17 @@
     "kind": "Skill",
     "name": "openscad-geometry-verification",
     "description": "Verify and measure raw SCAD/CSG/STL/3MF geometry, inspect mesh issues and request snapshot-bound multi-view PNG evidence without opening Preview."
+  },
+  {
+    "path": "./skills/openscad-assembly-design/SKILL.md",
+    "kind": "Skill",
+    "name": "openscad-assembly-design",
+    "description": "Inspect declared stable CAD parts, static assembly distances, contact, containment and constraint evidence without changing the acceptance baseline."
+  },
+  {
+    "path": "./skills/openscad-modeling-lifecycle/SKILL.md",
+    "kind": "Skill",
+    "name": "openscad-modeling-lifecycle",
+    "description": "Repair authorized CAD geometry and recheck every required static assembly constraint against an unchanged Manifest baseline."
   }
 ]

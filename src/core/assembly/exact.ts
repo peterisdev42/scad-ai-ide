@@ -139,7 +139,8 @@ function edgeEdge(a: I3, b: I3, c: I3, d: I3): Closest {
         const r = pointSegment(x, a, b)
         best = choose(best, { squared: r.squared, a: r.b, b: r.a })
     }
-    if (q > 0n && s >= 0n && s <= q && t >= 0n && t <= q) best = choose(best, { squared: rat(dot(w, w) * q + s * D - t * E, q), a: { p: add(mul(a, q), mul(u, s)), d: q }, b: { p: add(mul(c, q), mul(v, t)), d: q } })
+    if (q > 0n && s >= 0n && s <= q && t >= 0n && t <= q)
+        best = choose(best, { squared: rat(dot(w, w) * q + s * D - t * E, q), a: { p: add(mul(a, q), mul(u, s)), d: q }, b: { p: add(mul(c, q), mul(v, t)), d: q } })
     return best
 }
 function segmentTriangle(a: I3, b: I3, t: I3[]): Point | null {

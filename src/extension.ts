@@ -43,6 +43,16 @@ export async function activate(context: vscode.ExtensionContext) {
     const customizerSource = new CustomizerSourceDomainService()
     context.subscriptions.push(customizerSource)
     const capabilities = registerAgentTools(context, { runtime: runtime.service, libraries, customizer: customizerView.domain, customizerSource, github, development, cad })
+    context.subscriptions.push(vscode.commands.registerCommand('scad-ai-ide.model.checkAssembly', async (uri?: vscode.Uri) => {
+        const target = uri ?? vscode.window.activeTextEditor?.document.uri ?? vscode.workspace.workspaceFolders?.[0]?.uri
+        if (!target) throw new Error('Choose a workspace assembly Manifest.')
+        const result = await vscode.window.withProgress({location:vscode.ProgressLocation.Notification,title:'Check static CAD assembly',cancellable:true},async (_,token)=>{
+            const abort = new AbortController(), sub = token.onCancellationRequested(()=>abort.abort())
+            try { return await capabilities.invoke('cad.checkAssembly',{uri:target.toString()},{actor:'command',signal:abort.signal}) }
+            finally {sub.dispose()}
+        })
+        return result
+    }))
     const panels = new PanelManager(context.extensionUri, runtime, github, libraries, development, () => createAiPanelState(capabilities.registry))
     context.subscriptions.push(
         customizerView,

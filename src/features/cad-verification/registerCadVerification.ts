@@ -1,3 +1,4 @@
+import {AssemblyWorkspaceService} from './AssemblyWorkspaceService'
 import { notifications } from '../../platform/notifications'
 import { MeshArtifactProvider } from './MeshArtifactProvider'
 import { MeshWorkspaceService } from './MeshWorkspaceService'
@@ -14,6 +15,8 @@ export function registerCadVerification(context: vscode.ExtensionContext, runtim
     const service = new CadWorkspaceService(runtime, customizer, problems)
     const geometry = new MeshWorkspaceService(context, service, runtime)
     service.geometry = geometry
+    service.assembly = new AssemblyWorkspaceService(context,service,geometry)
+    context.subscriptions.push(service.assembly)
     context.subscriptions.push(geometry)
     const output = vscode.window.createOutputChannel('SCAD AI IDE CAD')
     ScadClient.configure(

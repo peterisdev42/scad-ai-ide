@@ -7,6 +7,10 @@ const validate = new Ajv({ strict: true, allErrors: true }).compile(schema)
 export { pairId } from './identity'
 import { pairId } from './identity'
 export function parseManifest(text: string): Registry {
+    if (Buffer.byteLength(text) > 1048576) {
+        const hash = digest(text)
+        return { manifest: null, digest: hash, contentHash: hash, issues: [{ code: 'MANIFEST_BUDGET', message: 'Manifest exceeds 1 MiB.', pointer: '', offset: 0, length: 1 }] }
+    }
     const contentHash = digest(text),
         errors: ParseError[] = [],
         tree = parseTree(text, errors, { disallowComments: true, allowTrailingComma: false }),
@@ -87,6 +91,12 @@ export function parseManifest(text: string): Registry {
             allowed.set(key, intersection)
         }
     })
-    const normalized = { ...manifest, parts: [...manifest.parts].sort((a, b) => a.id.localeCompare(b.id)), checks: [...manifest.checks].sort((a, b) => a.id.localeCompare(b.id)).map((r: Rule) => ('parts' in r ? { ...r, parts: [...r.parts].sort(), ...('allowed' in r ? { allowed: [...r.allowed].sort() } : {}) } : r)) }
+    const normalized = {
+        ...manifest,
+        parts: [...manifest.parts].sort((a, b) => a.id.localeCompare(b.id)),
+        checks: [...manifest.checks]
+            .sort((a, b) => a.id.localeCompare(b.id))
+            .map((r: Rule) => ('parts' in r ? { ...r, parts: [...r.parts].sort(), ...('allowed' in r ? { allowed: [...r.allowed].sort() } : {}) } : r)),
+    }
     return { manifest: issues.length ? null : manifest, digest: digest(normalized), contentHash, issues }
 }

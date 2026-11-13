@@ -7,7 +7,12 @@ let workerPath = join(__dirname, 'assembly-verification-worker.mjs')
 export function configureAssemblyWorker(path: string) {
     workerPath = path
 }
-export function assemblyInWorker(parts: KernelPartInput[], pairs: Array<[string, string]>, signal?: AbortSignal, timeoutMs: number = assemblyLimits.workerMs): Promise<KernelResult> {
+export function assemblyInWorker(
+    parts: KernelPartInput[],
+    pairs: Array<[string, string]>,
+    signal?: AbortSignal,
+    timeoutMs: number = assemblyLimits.workerMs,
+): Promise<KernelResult> {
     signal?.throwIfAborted()
     return new Promise((resolve, reject) => {
         const worker = new Worker(workerPath, { resourceLimits: { maxOldGenerationSizeMb: 512 } })

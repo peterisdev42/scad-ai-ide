@@ -2,9 +2,14 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { analyzeAssembly } from '../../core/assembly/AssemblyKernel'
 import { parseManifest } from '../../core/assembly/PartRegistry'
-import { box, stl } from '../mesh/fixtures'
+import { box, stl, threeMf } from '../mesh/fixtures'
 import { bound, rat, next } from '../../core/assembly/exact'
-const part = (id: string, size: [number, number, number] = [1, 1, 1], origin: [number, number, number] = [0, 0, 0]) => ({ id, bytes: stl(box(size, origin), true), format: 'stl' as const, transform: undefined })
+const part = (id: string, size: [number, number, number] = [1, 1, 1], origin: [number, number, number] = [0, 0, 0]) => ({
+    id,
+    bytes: stl(box(size, origin), true),
+    format: 'stl' as const,
+    transform: undefined,
+})
 async function pair(a = part('a'), b = part('b', [1, 1, 1], [1.3, 0, 0])) {
     return analyzeAssembly([a, b], [['a', 'b']])
 }
@@ -106,10 +111,24 @@ test('same pair facts evaluate .30/.18 against .25 independently, contact cannot
     }
     assert.equal(rangeStatus({ lower: 0.249999, upper: 0.250001 }, 0.25), 'UNRESOLVED')
 })
-test('rigid transform order, reflected intrinsic 3MF and mm volume', async () => {
+test('rigid transform order and mm volume', async () => {
     const a = part('a', [1, 2, 3])
     const r = await analyzeAssembly([{ ...a, transform: { rotate: [0, 0, 90], translate: [10, 0, 0] } }], [])
     assert.equal(r.parts[0].world.bounds?.min[0], 8)
     assert.equal(r.parts[0].world.bounds?.max[0], 10)
     assert.equal(r.parts[0].volumeBound?.lower, 6)
+})
+test('an enclosed cavity prevents whole-material containment even with every candidate vertex inside', async () => {
+    const shell = part('a')
+    shell.bytes = stl([...box([6, 6, 6]), ...box([1, 1, 1], [2.5, 2.5, 2.5]).map((t) => [t[0], t[2], t[1]])], true)
+    const r = await pair(shell, part('b', [4, 4, 4], [1, 1, 1]))
+    assert.equal(r.pairs[0].relation, 'overlap')
+    assert.equal(r.pairs[0].contained, false)
+})
+
+test('3MF intrinsic reflection is applied before Manifest assembly pose and preserves solid winding', async () => {
+    const r = await analyzeAssembly([{ id: 'a', bytes: threeMf({ transform: '-1 0 0 0 1 0 0 0 1 1 0 0' }), format: '3mf', transform: { translate: [10, 0, 0] } }], [])
+    assert.equal(r.parts[0].local.physicalVolume.status, 'PASS')
+    assert.equal(r.parts[0].world.bounds?.min[0], 10)
+    assert.equal(r.parts[0].volumeBound?.lower, 1)
 })

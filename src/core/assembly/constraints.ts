@@ -11,7 +11,19 @@ export function evaluate(manifest: Manifest, facts: KernelResult | null): Assemb
         pairs = new Map(facts?.pairs.map((p) => [p.pairId, p]))
     const checks: AssemblyCheck[] = manifest.parts.map((p) => {
         const f = parts.get(p.id)
-        return { id: `part:${p.id}:solid`, required: true, status: !f ? 'UNRESOLVED' : f.local.findings.some((i) => i.status === 'FAIL') || f.world.findings.some((i) => i.status === 'FAIL') || !f.local.rawTriangles ? 'FAIL' : f.local.physicalVolume.status === 'PASS' && f.world.physicalVolume.status === 'PASS' && f.local.complete && f.world.complete ? 'PASS' : 'UNRESOLVED', issueIds: [], reason: 'Every declared part must be a non-empty, valid raw solid.' }
+        return {
+            id: `part:${p.id}:solid`,
+            required: true,
+            status: !f
+                ? 'UNRESOLVED'
+                : f.local.findings.some((i) => i.status === 'FAIL') || f.world.findings.some((i) => i.status === 'FAIL') || !f.local.rawTriangles
+                  ? 'FAIL'
+                  : f.local.physicalVolume.status === 'PASS' && f.world.physicalVolume.status === 'PASS' && f.local.complete && f.world.complete
+                    ? 'PASS'
+                    : 'UNRESOLVED',
+            issueIds: [],
+            reason: 'Every declared part must be a non-empty, valid raw solid.',
+        }
     })
     for (const rule of manifest.checks) {
         const c: AssemblyCheck = { id: rule.id, required: rule.required !== false, status: 'UNRESOLVED', issueIds: [] },
@@ -30,7 +42,7 @@ export function evaluate(manifest: Manifest, facts: KernelResult | null): Assemb
                 c.reason = 'CONTACT_FORBIDDEN'
             } else {
                 c.status = rangeStatus(p.distanceBound, rule.min, rule.max)
-                if (c.status === 'FAIL') c.relation = 'clearanceViolation'
+                if (c.status === 'FAIL' && p.relation === 'clear') c.relation = 'clearanceViolation'
             }
         } else if (rule.type === 'mesh-validity') c.status = checks.find((c) => c.id === `part:${rule.part}:solid`)?.status ?? 'UNRESOLVED'
         else if (rule.type === 'volume') {
@@ -43,6 +55,7 @@ export function evaluate(manifest: Manifest, facts: KernelResult | null): Assemb
         }
         checks.push(c)
     }
-    if (!manifest.checks.some((c) => c.required !== false)) checks.push({ id: 'declared-required-constraints', required: true, status: 'UNRESOLVED', reason: 'NO_REQUIRED_CONSTRAINTS', issueIds: [] })
+    if (!manifest.checks.some((c) => c.required !== false))
+        checks.push({ id: 'declared-required-constraints', required: true, status: 'UNRESOLVED', reason: 'NO_REQUIRED_CONSTRAINTS', issueIds: [] })
     return checks
 }

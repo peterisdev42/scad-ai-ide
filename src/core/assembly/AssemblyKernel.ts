@@ -1,3 +1,4 @@
+import { worldArtifact } from './worldMesh'
 import { createHash } from 'node:crypto'
 import { decodeMesh } from '../mesh/decode'
 import { analyzeMesh } from '../mesh/analyze'
@@ -29,10 +30,14 @@ function transformed(decoded: DecodedMesh, m: number[]): DecodedMesh {
     }
 }
 function exact(decoded: DecodedMesh, e: number): E.I3[][][] {
-    return decoded.meshes.map((m) => Array.from({ length: m.indices.length / 3 }, (_, i) => [0, 1, 2].map((v) => [0, 1, 2].map((k) => E.integer(m.positions[m.indices[i * 3 + v] * 3 + k], e)) as E.I3)))
+    return decoded.meshes.map((m) =>
+        Array.from({ length: m.indices.length / 3 }, (_, i) => [0, 1, 2].map((v) => [0, 1, 2].map((k) => E.integer(m.positions[m.indices[i * 3 + v] * 3 + k], e)) as E.I3)),
+    )
 }
 function floatTriangles(decoded: DecodedMesh): Vec3[][] {
-    return decoded.meshes.flatMap((m) => Array.from({ length: m.indices.length / 3 }, (_, i) => [0, 1, 2].map((v) => [0, 1, 2].map((k) => m.positions[m.indices[i * 3 + v] * 3 + k]) as Vec3)))
+    return decoded.meshes.flatMap((m) =>
+        Array.from({ length: m.indices.length / 3 }, (_, i) => [0, 1, 2].map((v) => [0, 1, 2].map((k) => m.positions[m.indices[i * 3 + v] * 3 + k]) as Vec3)),
+    )
 }
 function exponent(decoded: DecodedMesh) {
     let e = 0
@@ -62,24 +67,6 @@ function volume(decoded: DecodedMesh): Interval | null {
     // 3MF positive-fill may contain redundant shells. Alternating shell semantics are
     // established by the caller before this value is used for STL only.
     return E.bound(E.rat(n, 6n), 3 * e)
-}
-/** Versioned Float64 geometry, preserving original indices and instance provenance. */
-export function worldArtifact(parts: Array<{ id: string; decoded: DecodedMesh }>): Uint8Array {
-    const metadata = Buffer.from(JSON.stringify({ schemaVersion: 1, numericType: 'float64', parts: parts.map((p) => ({ id: p.id, meshes: p.decoded.meshes.map((m) => ({ instanceId: m.instanceId, objectId: m.objectId, positions: m.positions.length, indices: m.indices.length })) })) })),
-        chunks: Buffer[] = []
-    const header = Buffer.alloc(8)
-    header.write('ASW1')
-    header.writeUInt32LE(metadata.length, 4)
-    chunks.push(header, metadata)
-    for (const p of parts)
-        for (const m of p.decoded.meshes) {
-            const positions = Buffer.alloc(m.positions.byteLength),
-                indices = Buffer.alloc(m.indices.byteLength)
-            m.positions.forEach((v, i) => positions.writeDoubleLE(v, i * 8))
-            m.indices.forEach((v, i) => indices.writeUInt32LE(v, i * 4))
-            chunks.push(positions, indices)
-        }
-    return Buffer.concat(chunks)
 }
 function lowerBoxes(a: Bvh, b: Bvh): number {
     let sum = 0
@@ -126,7 +113,8 @@ export async function analyzeAssembly(inputs: KernelPartInput[], requested: Arra
             arrayBytes += local.meshes.reduce((n, m) => n + 2 * m.positions.byteLength + m.indices.byteLength, 0)
             // BigInt coordinates and exact candidate temporaries are explicitly budgeted conservatively.
             arrayBytes += local.rawVertices * 3 * 160 + local.rawTriangles * 128
-            if (totalVertices > assemblyLimits.vertices || totalTriangles > assemblyLimits.triangles || arrayBytes > assemblyLimits.arrayBytes) throw new Error('ASSEMBLY_ARRAY_BUDGET')
+            if (totalVertices > assemblyLimits.vertices || totalTriangles > assemblyLimits.triangles || arrayBytes > assemblyLimits.arrayBytes)
+                throw new Error('ASSEMBLY_ARRAY_BUDGET')
             tick()
             const localFacts = await analyzeMesh(local),
                 m = matrix(input.transform),
@@ -134,15 +122,46 @@ export async function analyzeAssembly(inputs: KernelPartInput[], requested: Arra
                 worldFacts = await analyzeMesh(world)
             result.candidateTests += localFacts.pairTests + worldFacts.pairTests
             tick()
-            const sound = localFacts.complete && worldFacts.complete && localFacts.physicalVolume.status === 'PASS' && worldFacts.physicalVolume.status === 'PASS' && local.rawTriangles > 0
+            const sound =
+                localFacts.complete && worldFacts.complete && localFacts.physicalVolume.status === 'PASS' && worldFacts.physicalVolume.status === 'PASS' && local.rawTriangles > 0
             valid.set(input.id, sound)
             worlds.set(input.id, world)
-            const facts: PartFacts = { id: input.id, local: localFacts, world: worldFacts, matrix: m, volumeBound: sound && (local.format === 'stl' || (local.meshes.length === 1 && localFacts.objects.every((o) => o.components.every((c) => c.depth !== null && Math.sign(c.signedVolume.value ?? 0) === (c.depth % 2 ? -1 : 1))))) ? volume(local) : null, localDimensions: dimensions(local), worldDimensions: dimensions(world) }
+            const facts: PartFacts = {
+                id: input.id,
+                local: localFacts,
+                world: worldFacts,
+                matrix: m,
+                volumeBound:
+                    sound &&
+                    (local.format === 'stl' ||
+                        (local.meshes.length === 1 &&
+                            localFacts.objects.every((o) => o.components.every((c) => c.depth !== null && Math.sign(c.signedVolume.value ?? 0) === (c.depth % 2 ? -1 : 1)))))
+                        ? volume(local)
+                        : null,
+                localDimensions: dimensions(local),
+                worldDimensions: dimensions(world),
+            }
             result.parts.push(facts)
         }
         for (const [a, b] of requested) {
             const before = performance.now(),
-                base: PairFacts = { pairId: pairId(a, b), parts: [a, b], relation: 'undetermined', minDistance: null, distanceBound: null, closestPoints: null, witnessCoordinateBounds: null, triangles: null, contained: null, overlapVolume: null, overlapVolumeStatus: 'notChecked', method: 'exact-dyadic-bvh-v1', complete: false, errorBound: null, durationMs: 0 }
+                base: PairFacts = {
+                    pairId: pairId(a, b),
+                    parts: [a, b],
+                    relation: 'undetermined',
+                    minDistance: null,
+                    distanceBound: null,
+                    closestPoints: null,
+                    witnessCoordinateBounds: null,
+                    triangles: null,
+                    contained: null,
+                    overlapVolume: null,
+                    overlapVolumeStatus: 'notChecked',
+                    method: 'exact-dyadic-bvh-v1',
+                    complete: false,
+                    errorBound: null,
+                    durationMs: 0,
+                }
             result.pairs.push(base)
             if (!valid.get(a) || !valid.get(b)) {
                 base.reason = 'RAW_SOLID_PREREQUISITES_NOT_PROVEN'
@@ -203,7 +222,14 @@ export async function analyzeAssembly(inputs: KernelPartInput[], requested: Arra
                 base.reason = 'NUMERIC_ENCLOSURE_NOT_PROVEN'
                 continue
             }
-            Object.assign(base, { distanceBound: distance, minDistance: distance.lower + (distance.upper - distance.lower) / 2, closestPoints: [pa.point, pb.point], witnessCoordinateBounds: [pa.bounds, pb.bounds], triangles: ids, errorBound: distance.upper - distance.lower })
+            Object.assign(base, {
+                distanceBound: distance,
+                minDistance: distance.lower + (distance.upper - distance.lower) / 2,
+                closestPoints: [pa.point, pb.point],
+                witnessCoordinateBounds: [pa.bounds, pb.bounds],
+                triangles: ids,
+                errorBound: distance.upper - distance.lower,
+            })
             if (closest.squared.n === 0n && E.separatingPlane(at, bt, tick)) {
                 base.relation = 'contact'
                 base.contained = false
@@ -214,12 +240,14 @@ export async function analyzeAssembly(inputs: KernelPartInput[], requested: Arra
                 let overlap = false,
                     uncertain = false,
                     contained = false
+                const coverage: Array<{ all: boolean; any: boolean }> = []
                 for (const [own, other] of [
                     [ai, bi],
                     [bi, ai],
                 ]) {
                     const seen = new Set<string>()
-                    let allInside = true
+                    let allInside = true,
+                        anyInside = false
                     for (const instance of own)
                         for (const tri of instance)
                             for (const vertex of tri) {
@@ -227,14 +255,17 @@ export async function analyzeAssembly(inputs: KernelPartInput[], requested: Arra
                                 if (seen.has(key)) continue
                                 seen.add(key)
                                 const answer = E.inside({ p: vertex, d: 1n }, other, tick)
-                                if (answer === true) overlap = true
-                                else {
+                                if (answer === true) {
+                                    overlap = true
+                                    anyInside = true
+                                } else {
                                     allInside = false
                                     if (answer === undefined) uncertain = true
                                 }
                             }
-                    if (allInside && seen.size) contained = true
+                    coverage.push({ all: allInside && seen.size > 0, any: anyInside })
                 }
+                contained = (coverage[0].all && !coverage[1].any) || (coverage[1].all && !coverage[0].any)
                 if (!overlap && closest.squared.n === 0n) {
                     // Coplanar triangles alone are not solid overlap. Produce an independently
                     // verified interior witness (also covers coincident entities and crossing faces).
@@ -298,28 +329,4 @@ export async function analyzeAssembly(inputs: KernelPartInput[], requested: Arra
     if (result.pairs.some((p) => !p.complete)) result.incomplete.push('PAIR_RELATIONS_UNRESOLVED')
     result.complete &&= result.parts.length === inputs.length && result.pairs.length === requested.length && result.pairs.every((p) => p.complete)
     return result
-}
-export function readWorldArtifact(bytes: Uint8Array, selected: string[]): DecodedMesh {
-    const buffer = Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength)
-    if (buffer.length < 8 || buffer.toString('ascii', 0, 4) !== 'ASW1') throw new Error('WORLD_ARTIFACT_INVALID')
-    const length = buffer.readUInt32LE(4)
-    if (length > 1048576 || length + 8 > buffer.length) throw new Error('WORLD_ARTIFACT_INVALID')
-    const metadata = JSON.parse(buffer.toString('utf8', 8, 8 + length)) as { schemaVersion: number; parts: Array<{ id: string; meshes: Array<{ instanceId: string; objectId: string; positions: number; indices: number }> }> }
-    if (metadata.schemaVersion !== 1) throw new Error('WORLD_ARTIFACT_VERSION')
-    let offset = 8 + length
-    const meshes: RawMesh[] = []
-    for (const p of metadata.parts)
-        for (const m of p.meshes) {
-            if (!Number.isInteger(m.positions) || m.positions < 0 || m.positions % 3 || !Number.isInteger(m.indices) || m.indices < 0 || m.indices % 3 || offset + m.positions * 8 + m.indices * 4 > buffer.length) throw new Error('WORLD_ARTIFACT_INVALID')
-            if (selected.includes(p.id)) {
-                const positions = new Float64Array(m.positions),
-                    indices = new Uint32Array(m.indices)
-                positions.forEach((_, i) => (positions[i] = buffer.readDoubleLE(offset + i * 8)))
-                indices.forEach((_, i) => (indices[i] = buffer.readUInt32LE(offset + m.positions * 8 + i * 4)))
-                meshes.push({ ...m, positions, indices, instanceId: p.id + ':' + m.instanceId, reflected: false, transform: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0] })
-            }
-            offset += m.positions * 8 + m.indices * 4
-        }
-    if (offset !== buffer.length) throw new Error('WORLD_ARTIFACT_INVALID')
-    return { format: 'stl', units: 'mm', sourceUnit: 'frozen-world-mm', scale: 1, meshes, limitations: [], rawTriangles: meshes.reduce((n, m) => n + m.indices.length / 3, 0), rawVertices: meshes.reduce((n, m) => n + m.positions.length / 3, 0) }
 }

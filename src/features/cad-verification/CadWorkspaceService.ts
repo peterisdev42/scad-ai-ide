@@ -1,3 +1,4 @@
+import type {AssemblyWorkspaceService} from './AssemblyWorkspaceService'
 import type { MeshWorkspaceService } from './MeshWorkspaceService'
 import { dependencyResolution } from '../../platform/openscad/dependencyResolution'
 import { runtimeExecutableFiles } from '../../platform/openscad/runtimeIdentity'
@@ -49,6 +50,7 @@ interface PreviewExecutionContext {
 
 /** Extension Host adapter; no panel or active-editor state is needed for tools. */
 export class CadWorkspaceService implements vscode.Disposable {
+    assembly?: AssemblyWorkspaceService
     geometry?: MeshWorkspaceService
     readonly verification: CadVerificationService
     private subscriptions: vscode.Disposable[] = []
@@ -78,7 +80,8 @@ export class CadWorkspaceService implements vscode.Disposable {
             locate: (file) => this.locate(file),
         })
         const invalidate = (uri?: vscode.Uri, geometryScope: 'all' | 'scad' = 'all') => {
-            if (geometryScope === 'scad') this.geometry?.invalidateScad()
+            this.assembly?.core.refresh(geometryScope === 'scad')
+            if (geometryScope === 'scad') { this.geometry?.invalidateScad(); this.assembly?.invalidateScad() }
             else this.geometry?.invalidate(uri)
             this.stale(uri?.toString())
             this.verification.invalidate(uri?.toString())
@@ -327,7 +330,7 @@ export class CadWorkspaceService implements vscode.Disposable {
         try {
             await assertWorkspacePath(vscode.Uri.file(constraintsPath))
             const open = vscode.workspace.textDocuments.find((d) => !d.isClosed && d.uri.scheme === 'file' && resolve(d.uri.fsPath) === resolve(constraintsPath))
-            constraintsDigest = open ? digest(open.getText()) : (await fileHash(constraintsPath, 1048576)).hash
+            constraintsDigest = open?.isDirty ? digest(open.getText()) : (await fileHash(constraintsPath, 1048576)).hash
         } catch (error) {
             if ((error as NodeJS.ErrnoException).code !== 'ENOENT') unresolvedInputs.push('CONSTRAINTS_UNREADABLE')
         }
@@ -434,6 +437,7 @@ export class CadWorkspaceService implements vscode.Disposable {
     }
     async issueDetails(reportId: string, issueId: string, includeEvidence = false, cursor = 0, limit = 100) {
         const entry = this.verification.reports.get(reportId)
+        if (!entry && this.assembly?.core.has(reportId)) return this.assembly.issueDetails(reportId, issueId, includeEvidence, cursor, limit)
         if (!entry && this.geometry) return this.geometry.issueDetails(reportId, issueId, includeEvidence, cursor, limit)
         if (!entry) throw new CapabilityError('REPORT_NOT_FOUND', 'Report expired or was evicted. Explicitly analyze the current source again.', true)
         const issue = entry.report.issues.find((i) => i.id === issueId)
@@ -442,6 +446,7 @@ export class CadWorkspaceService implements vscode.Disposable {
     }
     async reportText(reportId: string) {
         const entry = this.verification.reports.get(reportId)
+        if (!entry && this.assembly?.core.has(reportId)) return this.assembly.reportText(reportId)
         if (!entry && this.geometry) return this.geometry.reportText(reportId)
         if (!entry) throw new CapabilityError('REPORT_NOT_FOUND', 'Report expired or was evicted.')
         return JSON.stringify({ current: await this.current(entry.report), ...entry.report }, null, 2)

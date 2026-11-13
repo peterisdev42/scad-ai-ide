@@ -98,8 +98,16 @@ export function registerCapabilities(services: CapabilityServices) {
             return reportSummary(report)
         },
         'cad.issueDetails': (input) => cad!.issueDetails(String(input.reportId), String(input.issueId), input.includeEvidence === true, Number(input.cursor ?? 0), Number(input.limit ?? 100)),
-        'cad.modelMeasure': (input, ctx) => cad!.geometry!.measure(input as import('../../core/mesh/types').MeshReference, ctx.signal),
-        'cad.modelRenderViews': (input, ctx) => cad!.geometry!.renderViews(input as import('../../core/mesh/types').RenderViewsInput, ctx.signal),
+         'cad.modelMeasure': (input, ctx) => {
+            if(input.partIds && !(typeof input.reportId==='string'&&cad!.assembly!.core.has(input.reportId)))throw new CapabilityError('PART_IDS_REQUIRE_ASSEMBLY','partIds requires an existing v3 assembly report.')
+            return typeof input.reportId==='string'&&cad!.assembly!.core.has(input.reportId)?cad!.assembly!.measure(input as import('../../core/mesh/types').MeshReference):cad!.geometry!.measure(input as import('../../core/mesh/types').MeshReference,ctx.signal)
+        },
+        'cad.modelRenderViews': (input, ctx) => {
+            if(input.partIds && !(typeof input.reportId==='string'&&cad!.assembly!.core.has(input.reportId)))throw new CapabilityError('PART_IDS_REQUIRE_ASSEMBLY','partIds requires an existing v3 assembly report.')
+            return typeof input.reportId==='string'&&cad!.assembly!.core.has(input.reportId)?cad!.assembly!.renderViews(input as import('../../core/mesh/types').RenderViewsInput,ctx.signal):cad!.geometry!.renderViews(input as import('../../core/mesh/types').RenderViewsInput,ctx.signal)
+        },
+        'cad.listParts': input => cad!.assembly!.list(input),
+        'cad.checkAssembly': (input,ctx) => cad!.assembly!.check(input,ctx.signal),
         'capabilities.discover': (input, ctx) => registry.discover(ctx, Number(input.offset ?? 0), Number(input.limit ?? 20)),
         'operation.status': (input) => dispatcher.operations.status(input.id as string | undefined, Number(input.offset ?? 0), Number(input.limit ?? 20)),
         'operation.cancel': (input) => {

@@ -1863,7 +1863,7 @@
     "id": "cad.modelMeasure",
     "toolName": "scad_ai_ide_model_measure",
     "title": "Measure a verified CAD mesh",
-    "description": "Read basic mesh measurements by existing reportId, or explicitly verify a workspace uri first. Report IDs never recompile missing/expired evidence. Includes snapshot/current status, units, scope and unresolved items. Physical volume is returned only when raw topology, self-intersection, shell composition and winding permit it. Based on exported mesh; no analytic surface, assembly or printability proof. Standalone STL/3MF requires no runtime. Workspace Trust required.",
+    "description": "Read basic mesh measurements by existing reportId, or explicitly verify a workspace uri first. Report IDs never recompile missing/expired evidence. Includes snapshot/current status, units, scope and unresolved items. Physical volume is returned only when raw topology, self-intersection, shell composition and winding permit it. Based on exported mesh; no analytic surface, assembly or printability proof. Standalone STL/3MF requires no runtime. Workspace Trust required. For assembly v3 reportId, partIds selects declared frozen parts; no implicit assembly compilation. Assembly total volume is not computed.",
     "risk": "read",
     "inputSchema": {
       "type": "object",
@@ -1948,6 +1948,16 @@
           "minimum": 1,
           "maximum": 20,
           "default": 20
+        },
+        "partIds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "maxLength": 64
+          }
         }
       },
       "oneOf": [
@@ -2044,7 +2054,7 @@
     "id": "cad.modelRenderViews",
     "toolName": "scad_ai_ide_model_renderViews",
     "title": "Render frozen CAD mesh views",
-    "description": "Render the same frozen mesh artifact using official CLI PNG. Supply uri to verify first, or reportId to use existing evidence only. Default iso/front/top 512x512, at most four views. Metadata/artifact delivery by default. Explicit inline uses native image parts within 4 MiB, otherwise metadata fallback. Camera, source/rendered hashes, runtime and display quantization accompany images. Images are display evidence, not visual PASS. Missing runtime/render environment leaves geometry evidence valid. Requires Workspace Trust; no source writes.",
+    "description": "Render the same frozen mesh artifact using official CLI PNG. Supply uri to verify first, or reportId to use existing evidence only. Default iso/front/top 512x512, at most four views. Metadata/artifact delivery by default. Explicit inline uses native image parts within 4 MiB, otherwise metadata fallback. Camera, source/rendered hashes, runtime and display quantization accompany images. Images are display evidence, not visual PASS. Missing runtime/render environment leaves geometry evidence valid. Requires Workspace Trust; no source writes. For assembly v3 reportId, partIds selects declared frozen parts; no implicit assembly compilation. Assembly total volume is not computed.",
     "risk": "read",
     "inputSchema": {
       "type": "object",
@@ -2172,6 +2182,16 @@
             "inline"
           ],
           "default": "metadata"
+        },
+        "partIds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "maxLength": 64
+          }
         }
       },
       "oneOf": [
@@ -2263,5 +2283,228 @@
     },
     "service": "MeshWorkspaceService.renderViews",
     "gui": "CAD: Render frozen mesh views"
+  },
+  {
+    "id": "cad.listParts",
+    "toolName": "scad_ai_ide_model_listParts",
+    "title": "List declared CAD parts and constraints",
+    "description": "Read optional .scad/verification.json declarations or an existing v3 report without compiling. Returns stable author IDs scoped to canonical Manifest URI, manifestDigest for repair baseline, and paginated parts/checks. Relative entries resolve from project root (parent of .scad). Missing Manifest returns UNRESOLVED NO_STABLE_PARTS. Requires Workspace Trust.",
+    "risk": "read",
+    "service": "AssemblyWorkspaceService.list",
+    "gui": "CAD commands",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "uri": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "reportId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "section": {
+          "enum": [
+            "parts",
+            "checks"
+          ],
+          "default": "parts"
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32
+        },
+        "includeHints": {
+          "type": "boolean"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "uri"
+          ],
+          "properties": {
+            "uri": {}
+          },
+          "not": {
+            "required": [
+              "reportId"
+            ],
+            "properties": {
+              "reportId": {}
+            }
+          }
+        },
+        {
+          "required": [
+            "reportId"
+          ],
+          "properties": {
+            "reportId": {}
+          },
+          "not": {
+            "required": [
+              "uri"
+            ],
+            "properties": {
+              "uri": {}
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "cad.checkAssembly",
+    "toolName": "scad_ai_ide_model_checkAssembly",
+    "title": "Check static CAD assembly constraints",
+    "description": "Freeze every declared part and validate all required raw-solid prerequisites and Manifest constraints in one snapshot. URI executes; reportId only reads existing evidence. expectedManifestDigest locks the repair baseline; pairIds can add geometric pair queries but cannot replace or override required checks. Distances are conservative intervals on frozen exported meshes. No overlap-volume, repair, motion or printability check. Requires Workspace Trust.",
+    "risk": "read",
+    "service": "AssemblyWorkspaceService.check",
+    "gui": "scad-ai-ide.model.checkAssembly",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "uri": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "reportId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "pairIds": {
+          "type": "array",
+          "maxItems": 512,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "expectedManifestDigest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "expectedSnapshotId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "quality": {
+          "enum": [
+            "verification"
+          ]
+        },
+        "tessellation": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "fn": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000
+            },
+            "fa": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 360
+            },
+            "fs": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "uri"
+          ],
+          "properties": {
+            "uri": {}
+          },
+          "not": {
+            "required": [
+              "reportId"
+            ],
+            "properties": {
+              "reportId": {}
+            }
+          }
+        },
+        {
+          "required": [
+            "reportId"
+          ],
+          "properties": {
+            "reportId": {}
+          },
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "uri"
+                ],
+                "properties": {
+                  "uri": {}
+                }
+              },
+              {
+                "required": [
+                  "pairIds"
+                ],
+                "properties": {
+                  "pairIds": {}
+                }
+              },
+              {
+                "required": [
+                  "expectedManifestDigest"
+                ],
+                "properties": {
+                  "expectedManifestDigest": {}
+                }
+              },
+              {
+                "required": [
+                  "expectedSnapshotId"
+                ],
+                "properties": {
+                  "expectedSnapshotId": {}
+                }
+              },
+              {
+                "required": [
+                  "quality"
+                ],
+                "properties": {
+                  "quality": {}
+                }
+              },
+              {
+                "required": [
+                  "tessellation"
+                ],
+                "properties": {
+                  "tessellation": {}
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
   }
 ]

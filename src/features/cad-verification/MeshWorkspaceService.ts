@@ -41,10 +41,14 @@ async function binaryIdentity(file: string) {
 }
 /** Host adapter for v2. No Preview, Customizer panel or runtime is needed for raw meshes. */
 export class MeshWorkspaceService implements vscode.Disposable {
+    externalCurrent?: (report: MeshReport) => Promise<boolean> | undefined
     readonly core: MeshVerificationService
+    private readonly partExports: MeshVerificationService
     readonly artifacts: ArtifactStore
     readonly images: MeshImages
     private readonly execution = new OperationQueue()
+    private readonly geometryWorkers = new OperationQueue()
+    runGeometry<T>(task:(signal:AbortSignal)=>Promise<T>,signal:AbortSignal) { return this.geometryWorkers.run(task,signal) }
     private readonly captures = new OperationQueue()
     private readonly dependencies = new Map<string, string[]>()
     private readonly subscriptions: vscode.Disposable[] = []
@@ -78,7 +82,10 @@ export class MeshWorkspaceService implements vscode.Disposable {
                 }
             })
             .catch(() => {})
-        this.core = new MeshVerificationService({ capture: (input) => this.captures.run(() => this.capture(input)), materialize: (source, input, signal) => this.materialize(source as Frozen, input, signal), analyze: (bytes, format, signal) => analyzeInWorker(bytes, format, signal), schedule: (task, signal) => this.execution.run(task, signal) }, this.artifacts)
+        this.core = new MeshVerificationService({ capture: (input) => this.captures.run(() => this.capture(input)), materialize: (source, input, signal) => this.materialize(source as Frozen, input, signal), analyze: (bytes, format, signal) => this.runGeometry(active=>analyzeInWorker(bytes, format, active),signal), schedule: (task, signal) => this.execution.run(task, signal) }, this.artifacts)
+        // Assembly transactions perform their own all-input revalidation. Their
+        // exports must not be cancelled by delayed document-wide Preview notifications.
+        this.partExports = new MeshVerificationService({ capture: input => this.captures.run(()=>this.capture(input)), materialize:(source,input,signal)=>this.materialize(source as Frozen,input,signal),analyze:(bytes,format,signal)=>this.runGeometry(active=>analyzeInWorker(bytes,format,active),signal),schedule:(task,signal)=>this.execution.run(task,signal)},this.artifacts)
         this.images = new MeshImages(
             this.artifacts,
             directory,
@@ -87,7 +94,7 @@ export class MeshWorkspaceService implements vscode.Disposable {
                 const active = this.runtime.getActiveRuntime()
                 return active ? { command: active.command, version: active.version } : undefined
             },
-            (report) => this.core.current(report),
+            (report) => this.externalCurrent?.(report) ?? this.core.current(report),
         )
         const invalidate = () => {
             this.cad.notifyGeometryReports()
@@ -116,7 +123,7 @@ export class MeshWorkspaceService implements vscode.Disposable {
         if (!uri) this.core.invalidate()
         else {
             this.core.invalidate(uri.toString())
-            for (const [root, deps] of this.dependencies) if (deps.some((p) => vscode.Uri.file(p).toString() === uri.toString())) this.core.invalidate(root)
+            for (const [root, deps] of this.dependencies) if (deps.some((p) => vscode.Uri.file(p).toString() === uri.toString())) this.core.invalidate(root.split("\n")[0])
         }
         this.cad.notifyGeometryReports()
     }
@@ -135,10 +142,15 @@ export class MeshWorkspaceService implements vscode.Disposable {
         const t = input.tessellation
         if (t && (Object.keys(t).some((k) => !['fn', 'fa', 'fs'].includes(k)) || Object.values(t).some((v) => typeof v !== 'number' || !Number.isFinite(v)) || (t.fn !== undefined && (!Number.isInteger(t.fn) || t.fn < 0 || t.fn > 10000)) || (t.fa !== undefined && (t.fa <= 0 || t.fa > 360)) || (t.fs !== undefined && t.fs <= 0))) throw new CapabilityError('INVALID_INPUT', 'Invalid explicit tessellation settings.')
     }
+    private dependencyKey(input: VerifyMeshInput) { return input.uri + "\n" + digest(input.exportSelection ?? null) }
+    async capturePart(input: VerifyMeshInput) { return this.capture(input) }
+    async verifyPart(input: VerifyMeshInput, signal?: AbortSignal) { this.assertAvailable(); return this.partExports.verify(input, signal) }
     private async scadCapture(input: VerifyMeshInput, deps: string[]) {
         const base = await this.cad.capture(input.uri, deps, input.projectRoot)
         const tess = Object.fromEntries(Object.entries(input.tessellation ?? {}).map(([key, value]) => [`$${key}`, value]))
-        const parameters = structuredClone({ ...base.parameters, ...tess, $preview: false })
+        const selection = input.exportSelection
+        if (selection && (!/^[A-Za-z_][A-Za-z0-9_]{0,63}$/.test(selection.name) || !["string", "number", "boolean"].includes(typeof selection.value) || typeof selection.value === "number" && !Number.isFinite(selection.value))) throw new CapabilityError("INVALID_SELECTOR", "Invalid internal export selector.")
+        const parameters = structuredClone({ ...base.parameters, ...(selection ? { [selection.name]: selection.value } : {}), ...tess, $preview: false })
         const frozen = await this.cad.capture(base.snapshot.document.uri, deps, input.projectRoot, { parameters, format: 'stl', sourceTransport: 'stdin', lazyUnion: false })
         if (base.snapshot.document.sourceSha256 !== frozen.snapshot.document.sourceSha256) throw new CapabilityError('SNAPSHOT_CHANGED', 'Source changed while capturing verification parameters.', true)
         return frozen
@@ -156,13 +168,13 @@ export class MeshWorkspaceService implements vscode.Disposable {
         if (kind !== 'scad' && input.tessellation && Object.keys(input.tessellation).length) throw new CapabilityError('INVALID_INPUT', 'Tessellation settings apply only to SCAD Full Render.')
         let snapshot: Omit<MeshSnapshot, 'id' | 'sourceStateId'>, stamps: Record<string, string>, scad: CadInputs | undefined
         const requestedGlobalTessellation = Object.fromEntries(Object.entries(input.tessellation ?? {}).map(([k, v]) => [`$${k}`, v]))
-        const policyHash = digest({ ...policy, units: kind === '3mf' ? undefined : input.units, requireNonEmpty: !!input.requireNonEmpty, tessellation: input.tessellation ?? {} })
+        const policyHash = digest({ ...policy, units: kind === '3mf' ? undefined : input.units, requireNonEmpty: !!input.requireNonEmpty, exportSelection: input.exportSelection, tessellation: input.tessellation ?? {} })
         if (kind === 'scad') {
             await this.runtime.whenReady()
-            scad = await this.scadCapture(input, this.dependencies.get(input.uri) ?? this.cad.verification.knownDependencies(input.uri))
+            scad = await this.scadCapture(input, this.dependencies.get(this.dependencyKey(input)) ?? (input.exportSelection ? [] : this.cad.verification.knownDependencies(input.uri)))
             const s = scad.snapshot
             this.cad.trackGeometryInputs(s)
-            snapshot = { schemaVersion: 2, kernelVersion: kernel, inputEvidenceHash: s.inputEvidenceHash, document: { ...s.document }, project: { rootUri: s.project.rootUri }, dependencies: s.dependencies, inputKind: kind, runtime: { used: true, identityHash: s.runtime.identityHash, version: s.runtime.version, executable: s.runtime.executable, backend: 'runtime-command/default', commandHash: digest(scad.command) }, quality: { profile: 'verification', requestedGlobalTessellation, effectiveOverrides: structuredClone(scad.parameters), localSettings: 'source-controlled' }, units: input.units ?? 'modelUnits', sourceUnit: input.units === 'mm' ? 'user-declared-mm' : 'undeclared', complete: s.complete, unresolvedInputs: s.unresolvedInputs, policyHash, sourceSnapshotId: s.id }
+            snapshot = { schemaVersion: 2, kernelVersion: kernel, inputEvidenceHash: s.inputEvidenceHash, document: { ...s.document }, project: { rootUri: s.project.rootUri }, dependencies: s.dependencies, inputKind: kind, runtime: { used: true, identityHash: s.runtime.identityHash, version: s.runtime.version, executable: s.runtime.executable, backend: 'runtime-command/default', commandHash: digest(scad.command) }, quality: { profile: 'verification', requestedGlobalTessellation, exportSelection: input.exportSelection, effectiveOverrides: structuredClone(scad.parameters), localSettings: 'source-controlled' }, units: input.units ?? 'modelUnits', sourceUnit: input.units === 'mm' ? 'user-declared-mm' : 'undeclared', complete: s.complete, unresolvedInputs: s.unresolvedInputs, policyHash, sourceSnapshotId: s.id }
             stamps = { ...scad.fileStamps, bufferVersion: String(s.document.version) }
         } else {
             const canonical = await realpath(uri.fsPath),
@@ -221,8 +233,8 @@ export class MeshWorkspaceService implements vscode.Disposable {
         try {
             const compilation = await service.analyze({ uri: pre.snapshot.document.uri, projectRoot: pre.snapshot.project.rootUri }, signal)
             const deps = service.knownDependencies(pre.snapshot.document.uri)
-            this.dependencies.delete(input.uri)
-            this.dependencies.set(input.uri, deps)
+            this.dependencies.delete(this.dependencyKey(input))
+            this.dependencies.set(this.dependencyKey(input), deps)
             while (this.dependencies.size > 128) this.dependencies.delete(this.dependencies.keys().next().value!)
             const final = await this.capture(input)
             if (final.snapshot.sourceSnapshotId !== lastInputs!.snapshot.id) throw new CapabilityError('SNAPSHOT_CHANGED', 'SCAD export is no longer current.', true)
@@ -317,8 +329,10 @@ export class MeshWorkspaceService implements vscode.Disposable {
         this.disposed = true
         clearInterval(this.heartbeat)
         this.execution.dispose()
+        this.geometryWorkers.dispose()
         this.captures.dispose()
         this.core.dispose()
+        this.partExports.dispose()
         this.images.dispose()
         this.subscriptions.forEach((s) => s.dispose())
         this.expiry.forEach(clearTimeout)

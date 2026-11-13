@@ -785,5 +785,25 @@
         ]
       }
     }
+  },
+  {
+    "group": "Assembly command",
+    "source": "src/extension.ts",
+    "pattern": "registerCommand\\('(scad-ai-ide.model.checkAssembly)'",
+    "actions": {
+      "scad-ai-ide.model.checkAssembly": {
+        "capabilities": [
+          "cad.checkAssembly"
+        ],
+        "examples": [
+          {
+            "capability": "cad.checkAssembly",
+            "input": {
+              "uri": "file:///workspace/.scad/verification.json"
+            }
+          }
+        ]
+      }
+    }
   }
 ]
