@@ -29,6 +29,7 @@ export class AssemblyWorkspaceService implements vscode.Disposable {
         this.core = new AssemblyVerificationService(
             {
                 freeze: (uri) => this.freeze(uri),
+                unchanged: (initial) => this.unchanged(initial),
                 verify: (input, signal) => mesh.verifyPart(input, signal),
                 current: (r) => mesh.core.current(r),
                 analyze: (parts, pairs, signal) => mesh.runGeometry((active) => assemblyInWorker(parts, pairs, active), signal),
@@ -138,20 +139,7 @@ export class AssemblyWorkspaceService implements vscode.Disposable {
                         exportSelection: selector.type === 'define' ? { name: selector.name, value: selector.value } : undefined,
                     },
                     capture = await this.mesh.capturePart(request)
-                const scad = capture.scad?.snapshot,
-                    s = capture.snapshot
-                const stabilityHash = digest({
-                    document: s.document.sourceSha256,
-                    uri: s.document.uri,
-                    runtime: s.runtime,
-                    quality: s.quality,
-                    units: s.units,
-                    policy: s.policyHash,
-                    project: scad?.project ?? s.project,
-                    constraints: scad?.constraintsDigest,
-                    evaluation: scad?.evaluation,
-                    inputEvidence: s.inputEvidenceHash,
-                })
+                const stabilityHash = this.partIdentity(capture)
                 parts.push({ id: part.id, input: request, capture, stabilityHash, inputBytes: capture.scad ? Buffer.byteLength(capture.scad.text) : (await stat(uri.fsPath)).size })
             }
         if (frozen.registry.issues.length) {
@@ -159,6 +147,34 @@ export class AssemblyWorkspaceService implements vscode.Disposable {
             parts.length = 0
         }
         return { ...frozen, parts }
+    }
+    private partIdentity(capture: Awaited<ReturnType<MeshWorkspaceService['capturePart']>>) {
+        const scad = capture.scad?.snapshot,
+            s = capture.snapshot
+        return digest({
+            document: s.document.sourceSha256,
+            uri: s.document.uri,
+            runtime: s.runtime,
+            quality: s.quality,
+            units: s.units,
+            policy: s.policyHash,
+            project: scad?.project ?? s.project,
+            constraints: scad?.constraintsDigest,
+            evaluation: scad?.evaluation,
+            inputEvidence: s.inputEvidenceHash,
+        })
+    }
+    private async unchanged(initial: FrozenAssembly) {
+        // Re-evaluate each original candidate/dependency scope. First CLI discovery
+        // may add dependencies, but cannot erase a changed original candidate.
+        for (const p of initial.parts) {
+            const basis = await this.mesh.capturePart(
+                p.input,
+                p.capture.snapshot.dependencies.map((d) => vscode.Uri.parse(d.uri).fsPath),
+            )
+            if (this.partIdentity(basis) !== p.stabilityHash || Object.entries(p.capture.stamps).some(([k, v]) => basis.stamps[k] !== v)) return false
+        }
+        return true
     }
     async list(input: { uri?: string; reportId?: string; section?: 'parts' | 'checks'; offset?: number; limit?: number; includeHints?: boolean }) {
         this.trust()
@@ -195,7 +211,7 @@ export class AssemblyWorkspaceService implements vscode.Disposable {
             manifestUri: uri,
             manifestDigest: digestValue,
             current: report ? await this.core.current(report) : true,
-            status: manifest ? 'PASS' : 'UNRESOLVED',
+            status: manifest ? 'PASS' : frozen?.registry.issues.some((i) => i.code !== 'NO_STABLE_PARTS') ? 'FAIL' : 'UNRESOLVED',
             issues: frozen?.registry.issues ?? [],
             section,
             total: all.length,
@@ -281,21 +297,34 @@ export class AssemblyWorkspaceService implements vscode.Disposable {
         const evidence = issue.pairId
             ? (report.facts?.pairs.filter((p) => p.pairId === issue.pairId) ?? [])
             : (report.facts?.parts.filter((p) => issue.partIds?.includes(p.id)).flatMap((p) => p.local.findings.slice(0, 100)) ?? [])
+        const items = evidence.slice(cursor, cursor + limit)
+        while (Buffer.byteLength(JSON.stringify(items)) > 8192 && items.length > 1) items.pop()
+        const log =
+            issue.source === 'cli'
+                ? report.snapshot.sources
+                      .filter((s) => issue.partIds?.includes(s.partId))
+                      .flatMap((s) => s.sourceReport.artifacts)
+                      .find((a) => a.kind === 'log')
+                : undefined
+        const text = log
+            ? Buffer.from(await this.mesh.artifacts.read(log.id))
+                  .toString('utf8')
+                  .slice(0, 8192)
+            : JSON.stringify(items).slice(0, 8192)
         return {
             reportId,
             snapshotId: report.snapshot.id,
             current: await this.core.current(report),
-            evidence: includeEvidence
-                ? { text: JSON.stringify(evidence.slice(cursor, cursor + limit)).slice(0, 32768), truncated: JSON.stringify(evidence).length > 32768 }
-                : undefined,
+            evidence: includeEvidence ? { text, artifactId: log?.id, truncated: (log?.bytes ?? 0) > 8192 || cursor + items.length < evidence.length } : undefined,
             issue: { ...issue, spatial: includeEvidence ? issue.spatial : undefined },
             ...(includeEvidence
                 ? {
                       geometryEvidence: {
                           coordinateUnits: 'mm',
-                          items: evidence.slice(cursor, cursor + limit),
-                          nextCursor: cursor + limit < evidence.length ? cursor + limit : null,
-                          artifacts: report.artifacts.slice(cursor, cursor + limit),
+                          items,
+                          nextCursor: cursor + items.length < evidence.length ? cursor + items.length : null,
+                          artifacts: report.artifacts.slice(cursor, cursor + Math.min(limit, 10)),
+                          nextArtifactCursor: cursor + Math.min(limit, 10) < report.artifacts.length ? cursor + Math.min(limit, 10) : null,
                       },
                   }
                 : {}),

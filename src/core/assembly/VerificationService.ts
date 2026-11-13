@@ -24,6 +24,7 @@ export interface FrozenAssembly {
 }
 export interface AssemblyHost {
     freeze(uri: string): Promise<FrozenAssembly>
+    unchanged?(initial: FrozenAssembly): Promise<boolean>
     verify(input: VerifyMeshInput, signal: AbortSignal): Promise<MeshReport>
     current(report: MeshReport): Promise<boolean>
     analyze(parts: KernelPartInput[], pairs: Array<[string, string]>, signal: AbortSignal): Promise<KernelResult>
@@ -34,27 +35,26 @@ export class AssemblyVerificationService {
     private active = new Map<string, boolean>()
     private baselines = new Map<string, FrozenAssembly>()
     private refreshing = new Set<string>()
+    private async unchanged(initial: FrozenAssembly, now: FrozenAssembly) {
+        if (initial.registry.contentHash !== now.registry.contentHash || initial.parts.length !== now.parts.length) return false
+        if (this.host.unchanged) return this.host.unchanged(initial)
+        return initial.parts.every((before) => {
+            const after = now.parts.find((p) => p.id === before.id)
+            return !!after && before.stabilityHash === after.stabilityHash && Object.entries(before.capture.stamps).every(([k, v]) => after.capture.stamps[k] === v)
+        })
+    }
     refresh(scadOnly = false) {
         for (const [key, initial] of this.baselines) {
             if ((scadOnly && !this.active.get(key)) || this.refreshing.has(key)) continue
             this.refreshing.add(key)
             void this.host
                 .freeze(initial.uri)
-                .then((now) => {
-                    if (
-                        now.registry.contentHash !== initial.registry.contentHash ||
-                        initial.parts.some((before) => {
-                            const after = now.parts.find((p) => p.id === before.id)
-                            return (
-                                !after ||
-                                after.stabilityHash !== before.stabilityHash ||
-                                Object.entries(before.capture.stamps).some(([k, v]) => k !== 'bufferVersion' && after.capture.stamps[k] !== v)
-                            )
-                        })
-                    )
-                        this.tasks.cancelWhere((k) => k === key)
+                .then(async (now) => {
+                    if (this.baselines.get(key) === initial && !(await this.unchanged(initial, now))) this.tasks.cancelWhere((k) => k === key)
                 })
-                .catch(() => this.tasks.cancelWhere((k) => k === key))
+                .catch(() => {
+                    if (this.baselines.get(key) === initial) this.tasks.cancelWhere((k) => k === key)
+                })
                 .finally(() => this.refreshing.delete(key))
         }
     }
@@ -242,11 +242,8 @@ export class AssemblyVerificationService {
                                 throw new CapabilityError('CONSTRAINT_BASELINE_CHANGED', 'Manifest baseline changed while checking. No current result was published.')
                             if (initial.registry.contentHash !== final.registry.contentHash || initial.parts.length !== final.parts.length)
                                 throw new CapabilityError('SNAPSHOT_CHANGED', 'Assembly inputs changed during verification.', true)
-                            for (const before of initial.parts) {
-                                const after = final.parts.find((p) => p.id === before.id)
-                                if (!after || before.stabilityHash !== after.stabilityHash || Object.entries(before.capture.stamps).some(([k, v]) => after.capture.stamps[k] !== v))
-                                    throw new CapabilityError('SNAPSHOT_CHANGED', 'A frozen assembly input changed before the complete result was ready.', true)
-                            }
+                            if (!(await this.unchanged(initial, final)))
+                                throw new CapabilityError('SNAPSHOT_CHANGED', 'A frozen assembly input changed before the complete result was ready.', true)
                             if (!(await Promise.all(sources.map((s) => this.host.current(s.sourceReport)))).every(Boolean))
                                 throw new CapabilityError('SNAPSHOT_CHANGED', 'A part became historical during assembly verification.', true)
                             const snapshotId = digest({
@@ -431,8 +428,10 @@ export class AssemblyVerificationService {
                         }
                     }, shared)
                     .finally(() => {
-                        this.active.delete(key)
-                        this.baselines.delete(key)
+                        if (this.baselines.get(key) === initial) {
+                            this.active.delete(key)
+                            this.baselines.delete(key)
+                        }
                     })
             },
             caller,

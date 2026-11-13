@@ -118,7 +118,8 @@ suite('Static assembly Extension Host', () => {
         await wait(() => api.cad.availability().enabled)
         const file = join(root, 'assembly-host/model.scad'),
             uri = vscode.Uri.file(file)
-        await writeFile(file, 'part="a";\ngap=0.18;\nif(part=="a")cube(1);else translate([1+gap,0,0])cube(1);\n')
+        await writeFile(join(root, 'assembly-host/piece.scad'), 'module partShape(){cube(1);}')
+        await writeFile(file, 'include <piece.scad>\npart="a";\ngap=0.18;\nif(part=="a")partShape();else translate([1+gap,0,0])partShape();\n')
         const m = {
             ...config(),
             entry: 'assembly-host/model.scad',

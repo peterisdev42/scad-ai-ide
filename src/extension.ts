@@ -51,6 +51,7 @@ export async function activate(context: vscode.ExtensionContext) {
             try { return await capabilities.invoke('cad.checkAssembly',{uri:target.toString()},{actor:'command',signal:abort.signal}) }
             finally {sub.dispose()}
         })
+        if(result.ok&&result.data&&typeof result.data==='object'&&'reportId' in result.data&&typeof result.data.reportId==='string')await vscode.commands.executeCommand('scad-ai-ide.model.openReport',result.data.reportId)
         return result
     }))
     const panels = new PanelManager(context.extensionUri, runtime, github, libraries, development, () => createAiPanelState(capabilities.registry))

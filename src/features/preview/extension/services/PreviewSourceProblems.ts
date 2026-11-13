@@ -135,7 +135,7 @@ export class PreviewSourceProblems implements vscode.Disposable {
             this.publish()
             return false
         }
-        if (/\.(stl|3mf)$/i.test(result.source.path) && result.reportId) {
+        if ((/\.(stl|3mf)$/i.test(result.source.path)||/\/\.scad\/verification\.json$/i.test(result.source.path)) && result.reportId) {
             await vscode.commands.executeCommand('scad-ai-ide.model.openReport', result.reportId)
             return true
         }

@@ -32,6 +32,7 @@ export function parseManifest(text: string): Registry {
         return { manifest: null, digest: contentHash, contentHash, issues }
     }
     if (errors.length || !tree) {
+        if(!tree&&!errors.length)issues.push({code:'MANIFEST_JSON',message:'Expected a JSON Manifest object.',pointer:'',offset:0,length:1})
         for (const e of errors.slice(0, 100)) issues.push({ code: 'MANIFEST_JSON', message: 'Invalid strict JSON.', pointer: '', offset: e.offset, length: e.length })
         return { manifest: null, digest: contentHash, contentHash, issues }
     }

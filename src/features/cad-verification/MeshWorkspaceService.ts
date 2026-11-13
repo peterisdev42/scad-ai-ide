@@ -143,7 +143,7 @@ export class MeshWorkspaceService implements vscode.Disposable {
         if (t && (Object.keys(t).some((k) => !['fn', 'fa', 'fs'].includes(k)) || Object.values(t).some((v) => typeof v !== 'number' || !Number.isFinite(v)) || (t.fn !== undefined && (!Number.isInteger(t.fn) || t.fn < 0 || t.fn > 10000)) || (t.fa !== undefined && (t.fa <= 0 || t.fa > 360)) || (t.fs !== undefined && t.fs <= 0))) throw new CapabilityError('INVALID_INPUT', 'Invalid explicit tessellation settings.')
     }
     private dependencyKey(input: VerifyMeshInput) { return input.uri + "\n" + digest(input.exportSelection ?? null) }
-    async capturePart(input: VerifyMeshInput) { return this.capture(input) }
+    async capturePart(input: VerifyMeshInput, dependencies?:string[]) { return this.capture(input,dependencies) }
     async verifyPart(input: VerifyMeshInput, signal?: AbortSignal) { this.assertAvailable(); return this.partExports.verify(input, signal) }
     private async scadCapture(input: VerifyMeshInput, deps: string[]) {
         const base = await this.cad.capture(input.uri, deps, input.projectRoot)
@@ -155,7 +155,7 @@ export class MeshWorkspaceService implements vscode.Disposable {
         if (base.snapshot.document.sourceSha256 !== frozen.snapshot.document.sourceSha256) throw new CapabilityError('SNAPSHOT_CHANGED', 'Source changed while capturing verification parameters.', true)
         return frozen
     }
-    private async capture(input: VerifyMeshInput): Promise<Frozen> {
+    private async capture(input: VerifyMeshInput, dependencies?:string[]): Promise<Frozen> {
         this.assertAvailable()
         this.validate(input)
         const uri = vscode.Uri.parse(input.uri, true)
@@ -171,7 +171,7 @@ export class MeshWorkspaceService implements vscode.Disposable {
         const policyHash = digest({ ...policy, units: kind === '3mf' ? undefined : input.units, requireNonEmpty: !!input.requireNonEmpty, exportSelection: input.exportSelection, tessellation: input.tessellation ?? {} })
         if (kind === 'scad') {
             await this.runtime.whenReady()
-            scad = await this.scadCapture(input, this.dependencies.get(this.dependencyKey(input)) ?? (input.exportSelection ? [] : this.cad.verification.knownDependencies(input.uri)))
+            scad = await this.scadCapture(input, dependencies ?? this.dependencies.get(this.dependencyKey(input)) ?? (input.exportSelection ? [] : this.cad.verification.knownDependencies(input.uri)))
             const s = scad.snapshot
             this.cad.trackGeometryInputs(s)
             snapshot = { schemaVersion: 2, kernelVersion: kernel, inputEvidenceHash: s.inputEvidenceHash, document: { ...s.document }, project: { rootUri: s.project.rootUri }, dependencies: s.dependencies, inputKind: kind, runtime: { used: true, identityHash: s.runtime.identityHash, version: s.runtime.version, executable: s.runtime.executable, backend: 'runtime-command/default', commandHash: digest(scad.command) }, quality: { profile: 'verification', requestedGlobalTessellation, exportSelection: input.exportSelection, effectiveOverrides: structuredClone(scad.parameters), localSettings: 'source-controlled' }, units: input.units ?? 'modelUnits', sourceUnit: input.units === 'mm' ? 'user-declared-mm' : 'undeclared', complete: s.complete, unresolvedInputs: s.unresolvedInputs, policyHash, sourceSnapshotId: s.id }
