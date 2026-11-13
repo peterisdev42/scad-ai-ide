@@ -5,7 +5,7 @@
   "branch": "codex/cad-mesh-measurements",
   "mainUnmodified": "8a3ff1fe394b11aeb7fb323e7319bd365d29abaa",
   "dependsOn": "https://github.com/peterisdev42/scad-ai-ide/pull/2",
-  "pullRequest": null,
+  "pullRequest": "https://github.com/peterisdev42/scad-ai-ide/pull/3",
   "environment": {
     "platform": "darwin",
     "arch": "arm64",
@@ -85,5 +85,6 @@
     "Provider consumption of inline images (Host native DataPart/fallback tested)",
     "final-candidate real Agent replay; no second attempt authorized by plan"
   ],
-  "p1Tracking": "docs/cad-gate-p1-followup.md unchanged"
+  "p1Tracking": "docs/cad-gate-p1-followup.md unchanged",
+  "deliveryHeadBeforeLinkCommit": "0b496596e1c2294f1a351eed743816af4d0d571d"
 }

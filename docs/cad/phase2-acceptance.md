@@ -7,7 +7,7 @@
 - 基线：`3e3628a12eeb64699815224a6a96221e1aa49c62`。
 - 功能分支：`codex/cad-mesh-measurements`；最终产品代码：`d43e3285d58d85fba764846f02f4a79c5dcadd24`。后续提交只补测试、CI、文档和证据。
 - main 保持 `8a3ff1fe394b11aeb7fb323e7319bd365d29abaa`。没有在 main 修改或提交，没有合并或发布。
-- 依赖 [P1 草稿 PR #2](https://github.com/peterisdev42/scad-ai-ide/pull/2)；P2 草稿 PR 创建后在本文件补链接。面向 main 的 PR 包含 P1 依赖提交，P2 审查应从 `3e3628a` 比较。
+- 依赖 [P1 草稿 PR #2](https://github.com/peterisdev42/scad-ai-ide/pull/2)；P2 为 [草稿 PR #3](https://github.com/peterisdev42/scad-ai-ide/pull/3)。面向 main 的 PR 包含 P1 依赖提交，P2 审查应从 `3e3628a` 比较。
 - 归档：`.build/scad-ai-ide-phase2.vsix`，SHA256 `06807da7b608a06d9277474b48a8c93a831e723c8061eadfc24a5454a12d7fe8`。它是本轮实际安装验证的归档，不承诺发布。
 
 ## P2A–P2D 完成范围
