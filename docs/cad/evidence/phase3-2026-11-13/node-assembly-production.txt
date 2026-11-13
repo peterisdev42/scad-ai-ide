@@ -1,0 +1,29 @@
+✔ certified scalar rounding and exact representable thresholds (0.787084ms)
+✔ positive separation, physical volume and dimensions (22.769709ms)
+✔ support plane proves face contact (8.208542ms)
+✔ support plane proves edge contact (7.488417ms)
+✔ support plane proves point contact (7.300875ms)
+✔ material overlap: crossing (7.673834ms)
+✔ material overlap: coincident (5.991792ms)
+✔ material overlap: contained (6.742791ms)
+✔ cavity is empty material, multi-region containment is not one-vertex sampling (13.151042ms)
+✔ invalid raw mesh cannot produce assembly PASS (1.79775ms)
+✔ manifest identity ignores array order, validates contradictions and injection (6.231584ms)
+✔ same pair facts evaluate .30/.18 against .25 independently, contact cannot waive minimum (23.181125ms)
+✔ rigid transform order and mm volume (1.669291ms)
+✔ an enclosed cavity prevents whole-material containment even with every candidate vertex inside (11.663458ms)
+✔ 3MF intrinsic reflection is applied before Manifest assembly pose and preserves solid winding (5.237833ms)
+✔ strict schema and semantic validation reject malformed declarations with JSON positions (9.515583ms)
+✔ semantic digest is stable for reordered declarations but binds thresholds, units and transforms (0.320875ms)
+✔ v3 schema, immutable evidence, cache, historical read and baseline precondition (52.567041ms)
+✔ independent cancellation preserves another waiter; last cancellation never caches PASS (192.621875ms)
+✔ input stamp race and active invalidation prevent publication (100.586208ms)
+✔ bundled isolated Worker, timeout termination and next-task recovery (71.253083ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 458.751375

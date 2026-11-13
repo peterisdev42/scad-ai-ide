@@ -1,0 +1,191 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 3
+    },
+    "reportId": {
+      "type": "string"
+    },
+    "snapshot": {
+      "type": "object",
+      "required": [
+        "schemaVersion",
+        "id",
+        "document",
+        "manifestDigest",
+        "manifest",
+        "sources",
+        "requirementsHash",
+        "algorithm",
+        "complete"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 3
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "manifestDigest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "requirementsHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "algorithm": {
+          "const": "exact-dyadic-bvh-v1"
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "document": {
+          "type": "object",
+          "required": [
+            "uri",
+            "sourceSha256",
+            "dirty"
+          ],
+          "properties": {
+            "uri": {
+              "type": "string"
+            },
+            "sourceSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "dirty": {
+              "type": "boolean"
+            }
+          }
+        },
+        "manifest": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "sources": {
+          "type": "array",
+          "maxItems": 32
+        },
+        "dependencies": {
+          "type": "array"
+        },
+        "project": {
+          "type": "object"
+        }
+      }
+    },
+    "executionStatus": {
+      "enum": [
+        "SUCCEEDED",
+        "FAILED",
+        "CANCELLED",
+        "TIMED_OUT"
+      ]
+    },
+    "overallStatus": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "UNRESOLVED",
+        "SKIPPED"
+      ]
+    },
+    "units": {
+      "const": "mm"
+    },
+    "checks": {
+      "type": "array",
+      "maxItems": 162,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "required",
+          "status",
+          "issueIds"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "status": {
+            "enum": [
+              "PASS",
+              "FAIL",
+              "UNRESOLVED",
+              "SKIPPED"
+            ]
+          },
+          "issueIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "issues": {
+      "type": "array"
+    },
+    "artifacts": {
+      "type": "array"
+    },
+    "facts": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "incomplete": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "examined": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-f0-9]{64}$"
+      }
+    },
+    "notExamined": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-f0-9]{64}$"
+      }
+    },
+    "createdAt": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "reportId",
+    "snapshot",
+    "executionStatus",
+    "overallStatus",
+    "units",
+    "checks",
+    "issues",
+    "artifacts",
+    "facts",
+    "incomplete",
+    "examined",
+    "notExamined",
+    "createdAt"
+  ]
+}

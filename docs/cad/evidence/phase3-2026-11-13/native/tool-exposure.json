@@ -1,0 +1,232 @@
+{
+  "scope": "Transparent loopback forwarding; no credentials or payload changes recorded",
+  "requests": [
+    {
+      "at": "2026-11-13T11:01:48.851Z",
+      "path": "/v1/models",
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T11:01:48.876Z",
+      "path": "/v1/models",
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T11:01:48.899Z",
+      "path": "/v1/models",
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T11:01:48.911Z",
+      "path": "/v1/models",
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T11:01:49.121Z",
+      "path": "/v1/models",
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T11:01:49.373Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "tools": [],
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T11:01:49.378Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "tools": [],
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T11:01:49.474Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "tools": [
+        {
+          "name": "insert_edit_into_file",
+          "schemaSha256": "ef22c58ddda2019ee06db3a7bef0ccfa2d369c2ce13df14cfb6e8879229a3281"
+        },
+        {
+          "name": "read_file",
+          "schemaSha256": "d6e1bd4f272a1d208faddef111a09e2a431220e70166f5e548908bd8212f9085"
+        },
+        {
+          "name": "replace_string_in_file",
+          "schemaSha256": "d1421dc675fc1235bd5fc5d88e7965388551c9b28a9933aafe7b4fa95edcd5d1"
+        },
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "scad_ai_ide_model_checkAssembly",
+          "schemaSha256": "836a055cb4fccf0840be14523b9229539f4d489a1624d34661406765306a5a16"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_listParts",
+          "schemaSha256": "2267244a1c3fe2508ea448f1d1b13cc9226a7435d247e1d9adc947f27cbfb2a1"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T11:02:49.878Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "tools": [
+        {
+          "name": "insert_edit_into_file",
+          "schemaSha256": "ef22c58ddda2019ee06db3a7bef0ccfa2d369c2ce13df14cfb6e8879229a3281"
+        },
+        {
+          "name": "read_file",
+          "schemaSha256": "d6e1bd4f272a1d208faddef111a09e2a431220e70166f5e548908bd8212f9085"
+        },
+        {
+          "name": "replace_string_in_file",
+          "schemaSha256": "d1421dc675fc1235bd5fc5d88e7965388551c9b28a9933aafe7b4fa95edcd5d1"
+        },
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_checkAssembly",
+          "schemaSha256": "836a055cb4fccf0840be14523b9229539f4d489a1624d34661406765306a5a16"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_listParts",
+          "schemaSha256": "2267244a1c3fe2508ea448f1d1b13cc9226a7435d247e1d9adc947f27cbfb2a1"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T11:03:43.463Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "tools": [
+        {
+          "name": "insert_edit_into_file",
+          "schemaSha256": "ef22c58ddda2019ee06db3a7bef0ccfa2d369c2ce13df14cfb6e8879229a3281"
+        },
+        {
+          "name": "read_file",
+          "schemaSha256": "d6e1bd4f272a1d208faddef111a09e2a431220e70166f5e548908bd8212f9085"
+        },
+        {
+          "name": "replace_string_in_file",
+          "schemaSha256": "d1421dc675fc1235bd5fc5d88e7965388551c9b28a9933aafe7b4fa95edcd5d1"
+        },
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_checkAssembly",
+          "schemaSha256": "836a055cb4fccf0840be14523b9229539f4d489a1624d34661406765306a5a16"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_listParts",
+          "schemaSha256": "2267244a1c3fe2508ea448f1d1b13cc9226a7435d247e1d9adc947f27cbfb2a1"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200
+    },
+    {
+      "at": "2026-11-13T11:03:59.501Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "tools": [
+        {
+          "name": "insert_edit_into_file",
+          "schemaSha256": "ef22c58ddda2019ee06db3a7bef0ccfa2d369c2ce13df14cfb6e8879229a3281"
+        },
+        {
+          "name": "read_file",
+          "schemaSha256": "d6e1bd4f272a1d208faddef111a09e2a431220e70166f5e548908bd8212f9085"
+        },
+        {
+          "name": "replace_string_in_file",
+          "schemaSha256": "d1421dc675fc1235bd5fc5d88e7965388551c9b28a9933aafe7b4fa95edcd5d1"
+        },
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_checkAssembly",
+          "schemaSha256": "836a055cb4fccf0840be14523b9229539f4d489a1624d34661406765306a5a16"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_listParts",
+          "schemaSha256": "2267244a1c3fe2508ea448f1d1b13cc9226a7435d247e1d9adc947f27cbfb2a1"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200
+    }
+  ]
+}

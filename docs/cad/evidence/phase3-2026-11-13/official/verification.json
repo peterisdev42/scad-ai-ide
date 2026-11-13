@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "units": "mm",
+  "entry": "./model.scad",
+  "parts": [
+    {
+      "id": "body",
+      "selector": {
+        "type": "define",
+        "name": "part",
+        "value": "body"
+      },
+      "transform": {
+        "translate": [
+          0,
+          0,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "id": "lid",
+      "selector": {
+        "type": "define",
+        "name": "part",
+        "value": "lid"
+      },
+      "transform": {
+        "translate": [
+          0,
+          0,
+          0
+        ],
+        "rotate": [
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  ],
+  "checks": [
+    {
+      "id": "gap",
+      "type": "clearance",
+      "parts": [
+        "body",
+        "lid"
+      ],
+      "min": 0.25,
+      "max": 0.35,
+      "required": true,
+      "allowContact": false
+    },
+    {
+      "id": "body-volume",
+      "type": "volume",
+      "part": "body",
+      "min": 1083.99,
+      "max": 1084.01,
+      "required": true
+    },
+    {
+      "id": "lid-volume",
+      "type": "volume",
+      "part": "lid",
+      "min": 399.99,
+      "max": 400.01,
+      "required": true
+    }
+  ]
+}

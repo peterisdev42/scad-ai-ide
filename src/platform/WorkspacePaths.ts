@@ -21,3 +21,19 @@ export async function assertWorkspacePath(uri: vscode.Uri, allowMissing = false)
     }
     throw new CapabilityError('INVALID_PROJECT', 'Target is outside the workspace. Choose a workspace file on the extension host.')
 }
+
+/** VS Code folder lookup is lexical; local canonical aliases (for example
+ * macOS /var and /private/var) still belong to the same guarded workspace. */
+export async function workspaceFolderForUri(uri: vscode.Uri): Promise<vscode.WorkspaceFolder | undefined> {
+    const direct = vscode.workspace.getWorkspaceFolder(uri)
+    if (direct) return direct
+    if (uri.scheme !== 'file') return undefined
+    const canonical = await realpath(uri.fsPath).catch(() => path.resolve(uri.fsPath))
+    for (const folder of [...(vscode.workspace.workspaceFolders ?? [])].sort((a, b) => b.uri.fsPath.length - a.uri.fsPath.length)) {
+        if (folder.uri.scheme !== 'file') continue
+        const root = await realpath(folder.uri.fsPath),
+            relative = path.relative(root, canonical)
+        if (relative === '' || (relative !== '..' && !relative.startsWith('..' + path.sep) && !path.isAbsolute(relative))) return folder
+    }
+    return undefined
+}

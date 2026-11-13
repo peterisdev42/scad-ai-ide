@@ -1,0 +1,11 @@
+npm notice run scad-ai-ide@0.0.1 test:assembly:real
+npm notice run node --import tsx --test src/test/assembly/real.acceptance.ts
+✔ official selector and project library exports retain the fixed clearance baseline and frozen PNG (299.419125ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 409.457792

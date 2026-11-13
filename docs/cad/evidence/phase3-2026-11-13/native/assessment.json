@@ -1,0 +1,40 @@
+{
+  "attempts": 1,
+  "budgetMs": 240000,
+  "actualElapsedMs": 150878,
+  "oraclePass": false,
+  "stage": "two declaration reads succeeded; assembly final revalidation rejected canonical workspace alias",
+  "failure": "INVALID_PROJECT: canonical /private/var Manifest did not match lexical /var workspace",
+  "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+  "provider": {
+    "id": "techopolis.omlx-copilot-chat",
+    "version": "0.1.2"
+  },
+  "sourceUnchanged": true,
+  "manifestUnchanged": true,
+  "successfulAssemblyReports": 0,
+  "repairOrReverificationObserved": false,
+  "retryAllowed": false,
+  "finalCandidateModelGate": "NOT_RUN after canonical-alias fix; original FAIL retained",
+  "exposedCadTools": [
+    "scad_ai_ide_model_checkAssembly",
+    "scad_ai_ide_model_getIssue",
+    "scad_ai_ide_model_listParts",
+    "scad_ai_ide_model_measure",
+    "scad_ai_ide_model_renderViews"
+  ],
+  "httpStatuses": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200
+  ],
+  "loadedBundleSha256": "01bcea001b29c513af0c1a9043898e14d5fa69b9a7995d6a15722aa3a59b160d"
+}

@@ -83,7 +83,7 @@ export class MeshVerificationService {
         return report
     }
     private input(report: MeshReport): VerifyMeshInput {
-        return { uri: report.snapshot.document.uri, projectRoot: report.snapshot.project.rootUri, mode: 'verify', quality: 'verification', units: report.snapshot.units === 'mm' && report.snapshot.inputKind !== '3mf' ? 'mm' : undefined, tessellation: Object.keys(report.snapshot.quality.requestedGlobalTessellation).length ? Object.fromEntries(Object.entries(report.snapshot.quality.requestedGlobalTessellation).map(([k, v]) => [k.slice(1), v])) : undefined, requireNonEmpty: report.checks.some((c) => c.id === 'mesh-nonempty' && c.required) }
+        return { exportSelection: report.snapshot.quality.exportSelection, uri: report.snapshot.document.uri, projectRoot: report.snapshot.project.rootUri, mode: 'verify', quality: 'verification', units: report.snapshot.units === 'mm' && report.snapshot.inputKind !== '3mf' ? 'mm' : undefined, tessellation: Object.keys(report.snapshot.quality.requestedGlobalTessellation).length ? Object.fromEntries(Object.entries(report.snapshot.quality.requestedGlobalTessellation).map(([k, v]) => [k.slice(1), v])) : undefined, requireNonEmpty: report.checks.some((c) => c.id === 'mesh-nonempty' && c.required) }
     }
     async current(report: MeshReport) {
         try {

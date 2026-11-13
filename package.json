@@ -167,6 +167,11 @@
                 "command": "scad-ai-ide.model.renderViews",
                 "title": "Render Frozen CAD Mesh Views",
                 "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai-ide.model.checkAssembly",
+                "title": "Check Static Assembly",
+                "category": "SCAD AI IDE"
             }
         ],
         "configuration": {
@@ -513,6 +518,12 @@
                     "**/.scad/dependencies.lock.json"
                 ],
                 "url": "./resources/libraries/dependencies.lock.schema.json"
+            },
+            {
+                "fileMatch": [
+                    "**/.scad/verification.json"
+                ],
+                "url": "./resources/schemas/cad-verification-v1.schema.json"
             }
         ],
         "languageModelTools": [
@@ -2295,7 +2306,7 @@
             {
                 "name": "scad_ai_ide_model_measure",
                 "displayName": "Measure a verified CAD mesh",
-                "modelDescription": "Read basic mesh measurements by existing reportId, or explicitly verify a workspace uri first. Report IDs never recompile missing/expired evidence. Includes snapshot/current status, units, scope and unresolved items. Physical volume is returned only when raw topology, self-intersection, shell composition and winding permit it. Based on exported mesh; no analytic surface, assembly or printability proof. Standalone STL/3MF requires no runtime. Workspace Trust required.",
+                "modelDescription": "Read basic mesh measurements by existing reportId, or explicitly verify a workspace uri first. Report IDs never recompile missing/expired evidence. Includes snapshot/current status, units, scope and unresolved items. Physical volume is returned only when raw topology, self-intersection, shell composition and winding permit it. Based on exported mesh; no analytic surface, assembly or printability proof. Standalone STL/3MF requires no runtime. Workspace Trust required. For assembly v3 reportId, partIds selects declared frozen parts; no implicit assembly compilation. Assembly total volume is not computed.",
                 "canBeReferencedInPrompt": true,
                 "toolReferenceName": "scad_model_measure",
                 "inputSchema": {
@@ -2381,6 +2392,16 @@
                             "minimum": 1,
                             "maximum": 20,
                             "default": 20
+                        },
+                        "partIds": {
+                            "type": "array",
+                            "minItems": 1,
+                            "maxItems": 32,
+                            "uniqueItems": true,
+                            "items": {
+                                "type": "string",
+                                "maxLength": 64
+                            }
                         }
                     },
                     "oneOf": [
@@ -2474,7 +2495,7 @@
             {
                 "name": "scad_ai_ide_model_renderViews",
                 "displayName": "Render frozen CAD mesh views",
-                "modelDescription": "Render the same frozen mesh artifact using official CLI PNG. Supply uri to verify first, or reportId to use existing evidence only. Default iso/front/top 512x512, at most four views. Metadata/artifact delivery by default. Explicit inline uses native image parts within 4 MiB, otherwise metadata fallback. Camera, source/rendered hashes, runtime and display quantization accompany images. Images are display evidence, not visual PASS. Missing runtime/render environment leaves geometry evidence valid. Requires Workspace Trust; no source writes.",
+                "modelDescription": "Render the same frozen mesh artifact using official CLI PNG. Supply uri to verify first, or reportId to use existing evidence only. Default iso/front/top 512x512, at most four views. Metadata/artifact delivery by default. Explicit inline uses native image parts within 4 MiB, otherwise metadata fallback. Camera, source/rendered hashes, runtime and display quantization accompany images. Images are display evidence, not visual PASS. Missing runtime/render environment leaves geometry evidence valid. Requires Workspace Trust; no source writes. For assembly v3 reportId, partIds selects declared frozen parts; no implicit assembly compilation. Assembly total volume is not computed.",
                 "canBeReferencedInPrompt": true,
                 "toolReferenceName": "scad_model_renderViews",
                 "inputSchema": {
@@ -2603,6 +2624,16 @@
                                 "inline"
                             ],
                             "default": "metadata"
+                        },
+                        "partIds": {
+                            "type": "array",
+                            "minItems": 1,
+                            "maxItems": 32,
+                            "uniqueItems": true,
+                            "items": {
+                                "type": "string",
+                                "maxLength": 64
+                            }
                         }
                     },
                     "oneOf": [
@@ -2692,6 +2723,225 @@
                         }
                     ]
                 }
+            },
+            {
+                "name": "scad_ai_ide_model_listParts",
+                "displayName": "List declared CAD parts and constraints",
+                "modelDescription": "Read optional .scad/verification.json declarations or an existing v3 report without compiling. Returns stable author IDs scoped to canonical Manifest URI, manifestDigest for repair baseline, and paginated parts/checks. Relative entries resolve from project root (parent of .scad). Missing Manifest returns UNRESOLVED NO_STABLE_PARTS. Requires Workspace Trust.",
+                "canBeReferencedInPrompt": true,
+                "toolReferenceName": "scad_model_listParts",
+                "inputSchema": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "uri": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4096
+                        },
+                        "reportId": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 128
+                        },
+                        "section": {
+                            "enum": [
+                                "parts",
+                                "checks"
+                            ],
+                            "default": "parts"
+                        },
+                        "offset": {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        "limit": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 32
+                        },
+                        "includeHints": {
+                            "type": "boolean"
+                        }
+                    },
+                    "oneOf": [
+                        {
+                            "required": [
+                                "uri"
+                            ],
+                            "properties": {
+                                "uri": {}
+                            },
+                            "not": {
+                                "required": [
+                                    "reportId"
+                                ],
+                                "properties": {
+                                    "reportId": {}
+                                }
+                            }
+                        },
+                        {
+                            "required": [
+                                "reportId"
+                            ],
+                            "properties": {
+                                "reportId": {}
+                            },
+                            "not": {
+                                "required": [
+                                    "uri"
+                                ],
+                                "properties": {
+                                    "uri": {}
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "scad_ai_ide_model_checkAssembly",
+                "displayName": "Check static CAD assembly constraints",
+                "modelDescription": "Freeze every declared part and validate all required raw-solid prerequisites and Manifest constraints in one snapshot. URI executes; reportId only reads existing evidence. expectedManifestDigest locks the repair baseline; pairIds can add geometric pair queries but cannot replace or override required checks. Distances are conservative intervals on frozen exported meshes. No overlap-volume, repair, motion or printability check. Requires Workspace Trust.",
+                "canBeReferencedInPrompt": true,
+                "toolReferenceName": "scad_model_checkAssembly",
+                "inputSchema": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "uri": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4096
+                        },
+                        "reportId": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 128
+                        },
+                        "pairIds": {
+                            "type": "array",
+                            "maxItems": 512,
+                            "uniqueItems": true,
+                            "items": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                            }
+                        },
+                        "expectedManifestDigest": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "expectedSnapshotId": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "quality": {
+                            "enum": [
+                                "verification"
+                            ]
+                        },
+                        "tessellation": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "fn": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 10000
+                                },
+                                "fa": {
+                                    "type": "number",
+                                    "exclusiveMinimum": 0,
+                                    "maximum": 360
+                                },
+                                "fs": {
+                                    "type": "number",
+                                    "exclusiveMinimum": 0
+                                }
+                            }
+                        }
+                    },
+                    "oneOf": [
+                        {
+                            "required": [
+                                "uri"
+                            ],
+                            "properties": {
+                                "uri": {}
+                            },
+                            "not": {
+                                "required": [
+                                    "reportId"
+                                ],
+                                "properties": {
+                                    "reportId": {}
+                                }
+                            }
+                        },
+                        {
+                            "required": [
+                                "reportId"
+                            ],
+                            "properties": {
+                                "reportId": {}
+                            },
+                            "not": {
+                                "anyOf": [
+                                    {
+                                        "required": [
+                                            "uri"
+                                        ],
+                                        "properties": {
+                                            "uri": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "pairIds"
+                                        ],
+                                        "properties": {
+                                            "pairIds": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "expectedManifestDigest"
+                                        ],
+                                        "properties": {
+                                            "expectedManifestDigest": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "expectedSnapshotId"
+                                        ],
+                                        "properties": {
+                                            "expectedSnapshotId": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "quality"
+                                        ],
+                                        "properties": {
+                                            "quality": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "tessellation"
+                                        ],
+                                        "properties": {
+                                            "tessellation": {}
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
             }
         ],
         "chatInstructions": [
@@ -2723,6 +2973,12 @@
             },
             {
                 "path": "./skills/openscad-geometry-verification/SKILL.md"
+            },
+            {
+                "path": "./skills/openscad-assembly-design/SKILL.md"
+            },
+            {
+                "path": "./skills/openscad-modeling-lifecycle/SKILL.md"
             }
         ]
     },
@@ -2737,7 +2993,7 @@
         "watch-tests": "tsc -p . -w --outDir out",
         "check-types": "tsc --noEmit && tsc -p tsconfig.webview.json",
         "lint": "eslint src",
-        "test": "npm run compile-tests && node --test out/test/capabilities.test.js out/test/capabilityServices.test.js out/test/notifications.test.js out/test/runtime.test.js out/test/github.test.js out/test/installation.test.js out/test/customizer.test.js out/test/customizerSource*.test.js out/test/language.test.js out/test/markdown.test.js && npm run test:libraries && npm run test:preview && npm run test:mesh && npm run test:cad:unit",
+        "test": "npm run compile-tests && node --test out/test/capabilities.test.js out/test/capabilityServices.test.js out/test/notifications.test.js out/test/runtime.test.js out/test/github.test.js out/test/installation.test.js out/test/customizer.test.js out/test/customizerSource*.test.js out/test/language.test.js out/test/markdown.test.js && npm run test:libraries && npm run test:preview && npm run test:mesh && npm run test:cad:unit && npm run test:assembly",
         "test:customizer": "npm run compile-tests && node esbuild.js && node --test scripts/customizer-scrollbar.test.mjs scripts/customizer-preview-fields.test.mjs",
         "test:markdown": "npm run compile && npm run compile-tests && node --test out/test/markdown.test.js && node --test scripts/markdown-preview.test.mjs",
         "test:markdown-host": "npm run compile && node --test scripts/markdown-webview.test.mjs",
@@ -2776,7 +3032,11 @@
         "test:cad:host": "node scripts/test-cad-host.mjs",
         "check:cad:branch": "node scripts/assert-feature-branch.mjs",
         "test:mesh": "node esbuild.js && node --import tsx --test src/test/mesh/*.test.ts",
-        "test:mesh:real": "node --import tsx --test src/test/mesh/real.acceptance.ts"
+        "test:mesh:real": "node --import tsx --test src/test/mesh/real.acceptance.ts",
+        "test:assembly": "node esbuild.js && node --import tsx --test src/test/assembly/*.test.ts",
+        "test:assembly:real": "node --import tsx --test src/test/assembly/real.acceptance.ts",
+        "test:assembly:host": "node scripts/test-assembly-host.mjs",
+        "test:assembly:native": "node scripts/test-assembly-native.mjs"
     },
     "devDependencies": {
         "@types/markdown-it": "^14.2.0",

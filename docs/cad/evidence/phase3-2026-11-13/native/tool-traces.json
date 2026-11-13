@@ -1,0 +1,226 @@
+[
+  {
+    "capability": "cad.listParts",
+    "input": {
+      "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-X78her/workspace/model.scad",
+      "section": "parts",
+      "limit": 32
+    },
+    "actor": "agent",
+    "started": "2026-11-13T11:02:49.806Z",
+    "manifestDiskHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "manifestBufferHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "sourceDiskHash": "4ddb3e00c99b8429b7ae72399f36eec49b11e641629c967eb3fc4a4353bb3e26",
+    "sourceBufferHash": "4ddb3e00c99b8429b7ae72399f36eec49b11e641629c967eb3fc4a4353bb3e26",
+    "output": {
+      "ok": true,
+      "capabilityId": "cad.listParts",
+      "data": {
+        "manifestUri": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-X78her/workspace/.scad/verification.json",
+        "manifestDigest": "c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f",
+        "current": true,
+        "status": "PASS",
+        "issues": [],
+        "section": "parts",
+        "total": 2,
+        "offset": 0,
+        "items": [
+          {
+            "id": "body",
+            "selector": {
+              "type": "define",
+              "name": "part",
+              "value": "body"
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                0
+              ],
+              "rotate": [
+                0,
+                0,
+                0
+              ]
+            },
+            "identity": {
+              "manifestUri": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-X78her/workspace/.scad/verification.json",
+              "partId": "body"
+            }
+          },
+          {
+            "id": "lid",
+            "selector": {
+              "type": "define",
+              "name": "part",
+              "value": "lid"
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                0
+              ],
+              "rotate": [
+                0,
+                0,
+                0
+              ]
+            },
+            "identity": {
+              "manifestUri": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-X78her/workspace/.scad/verification.json",
+              "partId": "lid"
+            }
+          }
+        ],
+        "nextOffset": null,
+        "pairs": [
+          {
+            "pairId": "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51",
+            "parts": [
+              "body",
+              "lid"
+            ]
+          }
+        ]
+      },
+      "operation": {
+        "id": "26ed5723-7325-40a1-a276-53a60904f2b4",
+        "capabilityId": "cad.listParts",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "cad.listParts",
+    "input": {
+      "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-X78her/workspace/model.scad",
+      "section": "checks",
+      "limit": 32
+    },
+    "actor": "agent",
+    "started": "2026-11-13T11:02:49.842Z",
+    "manifestDiskHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "manifestBufferHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "sourceDiskHash": "4ddb3e00c99b8429b7ae72399f36eec49b11e641629c967eb3fc4a4353bb3e26",
+    "sourceBufferHash": "4ddb3e00c99b8429b7ae72399f36eec49b11e641629c967eb3fc4a4353bb3e26",
+    "output": {
+      "ok": true,
+      "capabilityId": "cad.listParts",
+      "data": {
+        "manifestUri": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-X78her/workspace/.scad/verification.json",
+        "manifestDigest": "c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f",
+        "current": true,
+        "status": "PASS",
+        "issues": [],
+        "section": "checks",
+        "total": 5,
+        "offset": 0,
+        "items": [
+          {
+            "id": "gap",
+            "type": "clearance",
+            "parts": [
+              "body",
+              "lid"
+            ],
+            "min": 0.25,
+            "max": 0.35,
+            "required": true,
+            "allowContact": false
+          },
+          {
+            "id": "body-volume",
+            "type": "volume",
+            "part": "body",
+            "min": 1083.99,
+            "max": 1084.01,
+            "required": true
+          },
+          {
+            "id": "body-bounds",
+            "type": "bounds",
+            "part": "body",
+            "minDimensions": [
+              19.99999,
+              19.99999,
+              9.99999
+            ],
+            "maxDimensions": [
+              20.00001,
+              20.00001,
+              10.00001
+            ],
+            "required": true,
+            "frame": "local"
+          },
+          {
+            "id": "lid-volume",
+            "type": "volume",
+            "part": "lid",
+            "min": 399.99,
+            "max": 400.01,
+            "required": true
+          },
+          {
+            "id": "lid-bounds",
+            "type": "bounds",
+            "part": "lid",
+            "minDimensions": [
+              19.99999,
+              19.99999,
+              0.99999
+            ],
+            "maxDimensions": [
+              20.00001,
+              20.00001,
+              1.00001
+            ],
+            "required": true,
+            "frame": "local"
+          }
+        ],
+        "nextOffset": null
+      },
+      "operation": {
+        "id": "187e009d-9814-4366-9912-22f866075df1",
+        "capabilityId": "cad.listParts",
+        "status": "succeeded"
+      }
+    }
+  },
+  {
+    "capability": "cad.checkAssembly",
+    "input": {
+      "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-X78her/workspace/model.scad",
+      "expectedManifestDigest": "c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f",
+      "quality": "verification"
+    },
+    "actor": "agent",
+    "started": "2026-11-13T11:03:43.073Z",
+    "manifestDiskHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "manifestBufferHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "sourceDiskHash": "4ddb3e00c99b8429b7ae72399f36eec49b11e641629c967eb3fc4a4353bb3e26",
+    "sourceBufferHash": "4ddb3e00c99b8429b7ae72399f36eec49b11e641629c967eb3fc4a4353bb3e26",
+    "output": {
+      "ok": false,
+      "capabilityId": "cad.checkAssembly",
+      "error": {
+        "code": "INVALID_PROJECT",
+        "message": "Manifest must belong to an open workspace.",
+        "retryable": false
+      },
+      "operation": {
+        "id": "be65ee21-c610-4cf4-a316-554d24816d99",
+        "capabilityId": "cad.checkAssembly",
+        "status": "failed",
+        "error": {
+          "code": "INVALID_PROJECT",
+          "message": "Manifest must belong to an open workspace.",
+          "retryable": false
+        }
+      }
+    }
+  }
+]

@@ -1,0 +1,16 @@
+{
+  "pr": "https://github.com/peterisdev42/scad-ai-ide/pull/4",
+  "target": "main",
+  "dependencies": [
+    "https://github.com/peterisdev42/scad-ai-ide/pull/3",
+    "https://github.com/peterisdev42/scad-ai-ide/pull/2"
+  ],
+  "incrementalBase": "2385de712f4ea97ee0463b9316a097315b281512",
+  "productBundleCommit": "03891aa6af10aa72ad8299af262e9528cd83a75a",
+  "contractCommit": "04bc39e49e4c8a4fdcfebd290be35ee81a8fc970",
+  "branch": "codex/cad-parts-assembly",
+  "mainUnchanged": "8a3ff1fe394b11aeb7fb323e7319bd365d29abaa",
+  "draft": true,
+  "merged": false,
+  "published": false
+}

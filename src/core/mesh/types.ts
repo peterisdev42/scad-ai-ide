@@ -11,6 +11,7 @@ export interface RawMesh {
     reflected: boolean
 }
 export interface DecodedMesh {
+    expandedBytes?: number
     meshes: RawMesh[]
     format: 'stl' | '3mf'
     units: 'modelUnits' | 'mm'
@@ -109,7 +110,7 @@ export interface MeshSnapshot {
     dependencies: CadDependency[]
     inputKind: 'scad' | 'stl' | '3mf'
     runtime: { used: boolean; identityHash?: string; version?: string; executable?: string; backend?: string; commandHash?: string }
-    quality: { profile: 'verification'; requestedGlobalTessellation: Record<string, number>; localSettings: 'source-controlled'; effectiveOverrides?: import('../cad/types').CadParameters }
+    quality: { profile: 'verification'; requestedGlobalTessellation: Record<string, number>; localSettings: 'source-controlled'; exportSelection?: { name: string; value: string | number | boolean }; effectiveOverrides?: import('../cad/types').CadParameters }
     units: 'modelUnits' | 'mm'
     sourceUnit: string
     complete: boolean
@@ -149,6 +150,8 @@ export interface MeshReport {
     createdAt: number
 }
 export interface VerifyMeshInput {
+    /** Internal trusted selector; never accepted by the public mesh tool schema. */
+    exportSelection?: { name: string; value: string | number | boolean }
     uri: string
     projectRoot?: string
     expectedSnapshotId?: string

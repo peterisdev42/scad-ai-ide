@@ -1,0 +1,365 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "units": {
+      "const": "mm"
+    },
+    "entry": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "parts": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_.-]{0,63}$"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "selector": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "type": {
+                    "const": "define"
+                  },
+                  "name": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 256
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      }
+                    ]
+                  },
+                  "entry": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  }
+                },
+                "required": [
+                  "type",
+                  "name",
+                  "value"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "type": {
+                    "const": "file"
+                  },
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  }
+                },
+                "required": [
+                  "type",
+                  "path"
+                ]
+              }
+            ]
+          },
+          "transform": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "translate": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number"
+                }
+              },
+              "rotate": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number"
+                }
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "id",
+          "selector"
+        ]
+      }
+    },
+    "checks": {
+      "type": "array",
+      "maxItems": 128,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_.-]{0,63}$"
+              },
+              "required": {
+                "type": "boolean",
+                "default": true
+              },
+              "why": {
+                "type": "string",
+                "maxLength": 1024
+              },
+              "type": {
+                "const": "clearance"
+              },
+              "parts": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z_][A-Za-z0-9_.-]{0,63}$"
+                }
+              },
+              "min": {
+                "type": "number",
+                "minimum": 0
+              },
+              "max": {
+                "type": "number",
+                "minimum": 0
+              },
+              "allowContact": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "parts",
+              "min"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_.-]{0,63}$"
+              },
+              "required": {
+                "type": "boolean",
+                "default": true
+              },
+              "why": {
+                "type": "string",
+                "maxLength": 1024
+              },
+              "type": {
+                "const": "relation"
+              },
+              "parts": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z_][A-Za-z0-9_.-]{0,63}$"
+                }
+              },
+              "allowed": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 3,
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "clear",
+                    "contact",
+                    "overlap"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "parts",
+              "allowed"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_.-]{0,63}$"
+              },
+              "required": {
+                "type": "boolean",
+                "default": true
+              },
+              "why": {
+                "type": "string",
+                "maxLength": 1024
+              },
+              "type": {
+                "const": "mesh-validity"
+              },
+              "part": {
+                "type": "string",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_.-]{0,63}$"
+              },
+              "watertight": {
+                "const": true
+              },
+              "manifold": {
+                "const": true
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "part"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_.-]{0,63}$"
+              },
+              "required": {
+                "type": "boolean",
+                "default": true
+              },
+              "why": {
+                "type": "string",
+                "maxLength": 1024
+              },
+              "type": {
+                "const": "bounds"
+              },
+              "part": {
+                "type": "string",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_.-]{0,63}$"
+              },
+              "minDimensions": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "maxDimensions": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "frame": {
+                "enum": [
+                  "local",
+                  "assembly"
+                ],
+                "default": "local"
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "part"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_.-]{0,63}$"
+              },
+              "required": {
+                "type": "boolean",
+                "default": true
+              },
+              "why": {
+                "type": "string",
+                "maxLength": 1024
+              },
+              "type": {
+                "const": "volume"
+              },
+              "part": {
+                "type": "string",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_.-]{0,63}$"
+              },
+              "min": {
+                "type": "number",
+                "minimum": 0
+              },
+              "max": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "part"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "units",
+    "parts",
+    "checks"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:scad-ai-ide:verification:1",
+  "title": "Static assembly verification manifest v1"
+}

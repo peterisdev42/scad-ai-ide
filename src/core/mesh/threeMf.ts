@@ -361,5 +361,5 @@ export function decodeThreeMf(bytes: Uint8Array): DecodedMesh {
         meshes.push({ positions, indices, instanceId: instance, objectId: id, transform, reflected })
     }
     for (let i = 0; i < builds.length; i++) visit(builds[i].id, builds[i].matrix, [], `${i}:${builds[i].id}`)
-    return { meshes, format: '3mf', units: 'mm', sourceUnit: unit, scale, limitations: [...numbers.limitations], rawVertices, rawTriangles }
+    return { expandedBytes: archiveBytes, meshes, format: '3mf', units: 'mm', sourceUnit: unit, scale, limitations: [...numbers.limitations], rawVertices, rawTriangles }
 }
