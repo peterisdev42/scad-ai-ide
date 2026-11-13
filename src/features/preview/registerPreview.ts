@@ -2,23 +2,21 @@ import { PreviewSourceProblems } from './extension/services/PreviewSourceProblem
 import type { CustomizerDomainService } from '../sidebar/CustomizerDomainService'
 import { libraryEnvironment } from '../../platform/libraries/LibraryEnvironment'
 import * as vscode from 'vscode'
-import { RuntimeUnavailableError } from '../../core/runtime/errors'
 import type { CustomizerService } from '../../core/customizer/CustomizerService'
 import type { registerRuntime } from '../runtime/registerRuntime'
 import { previewEditorViewType, registerShowPanelCommand } from './extension/commands/showPanel'
 import { ScadSessionManager } from './extension/core/ScadSessionManager'
-import { ScadClient } from './extension/services/ScadClient'
 import { MeshPreviewEditorProvider } from './extension/views/MeshPreviewEditorProvider'
 import { meshPreviewEditorViewType } from './extension/services/previewFile'
 import { ScadPreviewEditorProvider } from './extension/views/ScadPreviewEditorProvider'
 import { configureMeshTopologyWorker } from '../../core/formats/meshTopology'
 import { registerPreviewExporter } from './extension/services/PreviewExporter'
 
-export function registerPreview(context: vscode.ExtensionContext, runtime: ReturnType<typeof registerRuntime>, customizer: CustomizerService, domain?: CustomizerDomainService) {
+export function registerPreview(context: vscode.ExtensionContext, runtime: ReturnType<typeof registerRuntime>, customizer: CustomizerService, domain?: CustomizerDomainService, sharedProblems?: PreviewSourceProblems) {
     registerPreviewExporter(context)
     configureMeshTopologyWorker(vscode.Uri.joinPath(context.extensionUri, 'dist', 'mesh-topology-worker.mjs').fsPath)
-    const sourceProblems = new PreviewSourceProblems()
-    context.subscriptions.push(sourceProblems, sourceProblems.registerNavigation())
+    const sourceProblems = sharedProblems ?? new PreviewSourceProblems()
+    if (!sharedProblems) context.subscriptions.push(sourceProblems, sourceProblems.registerNavigation())
     const sessions = new ScadSessionManager(customizer, domain)
     const runtimeIdentity = () => {
         const active = runtime.getActiveRuntime()
@@ -26,17 +24,7 @@ export function registerPreview(context: vscode.ExtensionContext, runtime: Retur
     }
     let previousRuntime = runtimeIdentity()
     let runtimeWasInstalling = false
-    ScadClient.configure(async () => {
-        await runtime.whenReady()
-        const active = runtime.getActiveRuntime()
-        if (!active) {
-            throw new RuntimeUnavailableError()
-        }
-        return active.command
-    })
     context.subscriptions.push(
-        ScadClient.outputChannel,
-        { dispose: () => ScadClient.dispose() },
         sessions,
         libraryEnvironment.onDidChange(() => sessions.refresh()),
         registerShowPanelCommand(),

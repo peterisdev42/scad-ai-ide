@@ -1,3 +1,4 @@
+import { cadExecution } from '../../platform/openscad/CadExecutionService'
 import type { PreviewTimings } from '../../core/preview/performance'
 import type { ScadClient } from '../../features/preview/extension/services/ScadClient'
 import * as cliDependencies from '../../core/formats/dependencies'
@@ -53,8 +54,11 @@ test('CLI empty results are distinct from failures; configuration skips executio
     vm.runInNewContext(transformSync(sourceFile, { loader: 'ts', format: 'cjs', target: 'es2022' }).code, {
         module,
         Buffer,
+        AbortController,
+        AbortSignal,
         performance,
         require: (id: string) => {
+            if (id.endsWith('/openscad/CadExecutionService')) return { cadExecution }
             if (id.endsWith('/renderDiagnostics')) return { PreviewOutput }
             if (id.endsWith('/dependencies')) return cliDependencies
             if (id.endsWith('/previewExporter/runtime')) return {}
@@ -73,21 +77,27 @@ test('CLI empty results are distinct from failures; configuration skips executio
         },
     })
     const client = module.exports.ScadClient
-    client.configure(async () => {
+    const resolveCommand = async () => {
         executions++
         return { executable: process.execPath, argsPrefix: [cli, mode] }
-    })
+    }
+    client.configure(resolveCommand)
     try {
         await writeFile(path, 'only_config = 1;')
-        await writeFile(cli, `const fs = require('node:fs'); const assert = require('node:assert/strict'); const mode = process.argv[2]; process.stdin.resume(); process.stdin.on('end', () => { assert.equal(process.argv[process.argv.indexOf('--export-format')+1], 'binstl'); const output = process.argv[process.argv.indexOf('-o')+1]; assert.equal(require('node:path').extname(output), '.stl'); if (mode === 'geometry') { fs.writeFileSync(output, Buffer.from(${JSON.stringify(mesh.toString('base64'))}, 'base64')); } else { process.stderr.write(${JSON.stringify(empty)}); if (mode === 'error') process.stderr.write('ERROR: assertion failed\\n'); process.exitCode = 1; } });`)
+        await writeFile(cli, `const fs = require('node:fs'); if(process.argv.includes('--help')){console.log(' -o file\\n -d file\\n --export-format format');process.exit(0)}; const assert = require('node:assert/strict'); const mode = process.argv[2]; process.stdin.resume(); process.stdin.on('end', () => { assert.equal(process.argv[process.argv.indexOf('--export-format')+1], 'binstl'); const output = process.argv[process.argv.indexOf('-o')+1]; assert.equal(require('node:path').extname(output), '.stl'); if (mode === 'geometry') { fs.writeFileSync(output, Buffer.from(${JSON.stringify(mesh.toString('base64'))}, 'base64')); } else { process.stderr.write(${JSON.stringify(empty)}); if (mode === 'error') process.stderr.write('ERROR: assertion failed\\n'); process.exitCode = 1; } });`)
         await assert.rejects(client.render(path), EmptyModelError)
         mode = 'error'
         await assert.rejects(client.render(path), (error: Error) => error.name !== 'EmptyModelError' && error.message.includes('assertion failed'))
-        await writeFile(cli, `const fs = require('node:fs'); process.stdin.resume(); process.stdin.on('end', () => { fs.writeFileSync(process.argv[process.argv.indexOf('-o')+1], Buffer.from(${JSON.stringify(mesh.toString('base64'))}, 'base64')); process.stderr.write('WARNING: flood\\n'.repeat(20000)); process.stderr.write('ERROR: evaluator failed in file model.scad, line 1\\n'); process.stderr.write('WARNING: tail\\n'.repeat(20000)); process.exitCode = 0; });`)
+        let sharedPipelineHandled = false
+        client.configure(resolveCommand, async () => async () => { sharedPipelineHandled = true; return false })
+        await assert.rejects(client.render(path), (error: Error & { cadReported?: boolean }) => error.cadReported === true && error.message.includes('assertion failed'))
+        assert.equal(sharedPipelineHandled, true, 'Rejected stale reports must not fall back to legacy Problems')
+        client.configure(resolveCommand)
+        await writeFile(cli, `const fs = require('node:fs'); if(process.argv.includes('--help')){console.log(' -o file\\n -d file\\n --export-format format');process.exit(0)}; process.stdin.resume(); process.stdin.on('end', () => { fs.writeFileSync(process.argv[process.argv.indexOf('-o')+1], Buffer.from(${JSON.stringify(mesh.toString('base64'))}, 'base64')); process.stderr.write('WARNING: flood\\n'.repeat(20000)); process.stderr.write('ERROR: evaluator failed in file model.scad, line 1\\n'); process.stderr.write('WARNING: tail\\n'.repeat(20000)); process.exitCode = 0; });`)
         const output: string[] = []
         await assert.rejects(client.render(path, {}, ModelFormat.STL, chunk => output.push(chunk)), (error: Error) => error.message.includes('ERROR: evaluator failed') && error.message.length < 300000)
         assert.ok(output.join('').length < 132000, 'Webview/Output logging must remain bounded')
-        await writeFile(cli, `const fs = require('node:fs'); process.stdin.resume(); process.stdin.on('end', () => fs.writeFileSync(process.argv[process.argv.indexOf('-o')+1], Buffer.from(${JSON.stringify(mesh.toString('base64'))}, 'base64')));`)
+        await writeFile(cli, `const fs = require('node:fs'); if(process.argv.includes('--help')){console.log(' -o file\\n -d file\\n --export-format format');process.exit(0)}; process.stdin.resume(); process.stdin.on('end', () => fs.writeFileSync(process.argv[process.argv.indexOf('-o')+1], Buffer.from(${JSON.stringify(mesh.toString('base64'))}, 'base64')));`)
         mode = 'geometry'
         source = 'cube(1);'
         const timings: PreviewTimings = {}

@@ -1689,5 +1689,76 @@
     },
     "service": "CustomizerSourceDomainService.validate",
     "gui": "Problems / Quick Fix"
+  },
+  {
+    "id": "cad.modelAnalyze",
+    "toolName": "scad_ai_ide_model_analyze",
+    "title": "Analyze OpenSCAD model diagnostics",
+    "description": "Evaluate the explicit workspace SCAD/CSG document with the selected official CLI, including its dirty root buffer and effective Customizer overrides. Does not need Preview. Returns snapshot-bound diagnostics and publishes current Problems. CSG evaluation only: no mesh, assembly, visual or printability proof. UNRESOLVED means inputs or evidence are incomplete (including unsaved include/use dependencies); never treat ok:true or empty Problems as verification PASS. After edits analyze again. No source writes or dependency installation. Requires Workspace Trust and a runtime.",
+    "risk": "read",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "uri": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "projectRoot": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "diagnostics"
+          ],
+          "default": "diagnostics"
+        },
+        "expectedSnapshotId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "uri"
+      ]
+    },
+    "service": "CadWorkspaceService.analyze",
+    "gui": "OpenSCAD: Analyze model diagnostics"
+  },
+  {
+    "id": "cad.issueDetails",
+    "toolName": "scad_ai_ide_model_getIssue",
+    "title": "Read OpenSCAD CAD issue evidence",
+    "description": "Read one issue from a specific analysis report. Optional bounded local CLI evidence; includes runtime, snapshot ID and whether the report is still current. Expired reports are not recomputed implicitly. Historical results are evidence only; analyze the current document before claiming a repair. No source writes or CLI execution.",
+    "risk": "read",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reportId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "issueId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "includeEvidence": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": [
+        "reportId",
+        "issueId"
+      ]
+    },
+    "service": "CadWorkspaceService.issueDetails",
+    "gui": "CAD report / issue evidence"
   }
 ]

@@ -1,6 +1,7 @@
 // All content is metadata from the shared capability catalog; no tool is executed here.
 if (page === 'ai') {
     const groups = [
+        { label: 'CAD diagnostics', prefixes: ['cad.'] },
         { label: 'Runtime', prefixes: ['runtime.'] },
         { label: 'Customizer', prefixes: ['customizer.'] },
         { label: 'Libraries', prefixes: ['libraries.'] },
@@ -14,6 +15,9 @@ if (page === 'ai') {
         UNTRUSTED_WORKSPACE: 'Workspace trust required',
         BUSY: 'Operation in progress',
         NOT_REGISTERED: 'Tools not registered',
+        RUNTIME_UNAVAILABLE: 'Select an OpenSCAD runtime',
+        DISABLED: 'CAD verification disabled in settings',
+        DISPOSED: 'Extension session ended',
     }
     function table(labels, name) {
         const wrapper = element('div', undefined, 'ai-table-scroll')

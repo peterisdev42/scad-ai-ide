@@ -1,0 +1,518 @@
+{
+  "vscode": "1.146.0",
+  "extension": "undefined_publisher.scad-ai-ide",
+  "toolCount": 42,
+  "availableChatModels": 0,
+  "productionDevDenied": true,
+  "cad": {
+    "status": "PASS",
+    "scope": "Production VSIX + real CLI; direct Host invocation, not model E2E",
+    "failed": {
+      "schemaVersion": 1,
+      "reportId": "cad-89044577-2581-4a89-a6c7-128c51fed246",
+      "snapshotId": "b522e609433982fde762223dd7a89ac2885565a25d91a756e8fce40b034d4963",
+      "document": {
+        "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-494KGz/workspace/cad-diagnostics.scad",
+        "version": 2,
+        "sourceSha256": "b53980ee2719c5369da5835df519742689b648ad93c60293fbea40b5d1a030b6",
+        "dirty": true
+      },
+      "projectRoot": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-494KGz/workspace",
+      "runtime": {
+        "executable": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+        "version": "2026.11-RC0",
+        "identityHash": "96641cfec22e509646217ebbe5a9a02c9505dcb3d01f0f12a9d980e5479a1f72",
+        "capabilityHash": "35a1f9f5109478c041b3e06a17b25e3f6e75a66cf941f17fb1d1ca2120505450",
+        "hostPlatform": "darwin-arm64"
+      },
+      "executionStatus": "FAILED",
+      "overallStatus": "FAIL",
+      "complete": true,
+      "units": "modelUnits",
+      "checks": [
+        {
+          "id": "cli-evaluation",
+          "category": "compile",
+          "required": true,
+          "status": "FAIL",
+          "issueIds": [
+            "e140cce50c871881bae65a52f294a4475357d95bb969cd2932292d8506fa7e66"
+          ],
+          "reason": "CSG evaluation only; no full-mesh or assembly verification."
+        }
+      ],
+      "issues": [
+        {
+          "id": "e140cce50c871881bae65a52f294a4475357d95bb969cd2932292d8506fa7e66",
+          "code": "SCAD_CLI_ASSERT_FAILED",
+          "severity": "error",
+          "status": "FAIL",
+          "title": "ERROR: Assertion 'false' failed: \"installed CAD assertion\"",
+          "location": {
+            "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-494KGz/workspace/cad-diagnostics.scad",
+            "line": 1,
+            "character": 0,
+            "confidence": "exact"
+          }
+        }
+      ],
+      "issueCount": 1,
+      "issuesTruncated": false,
+      "examined": [
+        "cli-diagnostics"
+      ],
+      "notExamined": [
+        "full-render",
+        "mesh-validity",
+        "dimensions",
+        "constraints",
+        "assembly",
+        "visual",
+        "diff",
+        "printability"
+      ],
+      "incomplete": [],
+      "artifacts": [
+        {
+          "id": "cad-89044577-2581-4a89-a6c7-128c51fed246:log",
+          "kind": "log",
+          "mimeType": "text/plain",
+          "snapshotId": "b522e609433982fde762223dd7a89ac2885565a25d91a756e8fce40b034d4963"
+        }
+      ],
+      "metrics": {
+        "elapsedMs": 29.21354199999996,
+        "truncated": false
+      },
+      "reportUri": "scad-cad-report:/cad-89044577-2581-4a89-a6c7-128c51fed246"
+    },
+    "passed": {
+      "schemaVersion": 1,
+      "reportId": "cad-31153bda-e087-4ea9-95d6-7fc570dd1217",
+      "snapshotId": "8dceb6818e34ec4ffbdd614ea4825717caa9d79d5d9e48ca07d26a5ed4140fcf",
+      "document": {
+        "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-494KGz/workspace/cad-diagnostics.scad",
+        "version": 3,
+        "sourceSha256": "a31ee19c8a470195185a94e635a19bf524794c2f8b7b5d3cfd88b2942c92283e",
+        "dirty": true
+      },
+      "projectRoot": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-494KGz/workspace",
+      "runtime": {
+        "executable": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+        "version": "2026.11-RC0",
+        "identityHash": "96641cfec22e509646217ebbe5a9a02c9505dcb3d01f0f12a9d980e5479a1f72",
+        "capabilityHash": "35a1f9f5109478c041b3e06a17b25e3f6e75a66cf941f17fb1d1ca2120505450",
+        "hostPlatform": "darwin-arm64"
+      },
+      "executionStatus": "SUCCEEDED",
+      "overallStatus": "PASS",
+      "complete": true,
+      "units": "modelUnits",
+      "checks": [
+        {
+          "id": "cli-evaluation",
+          "category": "compile",
+          "required": true,
+          "status": "PASS",
+          "issueIds": [],
+          "reason": "CSG evaluation only; no full-mesh or assembly verification."
+        }
+      ],
+      "issues": [],
+      "issueCount": 0,
+      "issuesTruncated": false,
+      "examined": [
+        "cli-diagnostics"
+      ],
+      "notExamined": [
+        "full-render",
+        "mesh-validity",
+        "dimensions",
+        "constraints",
+        "assembly",
+        "visual",
+        "diff",
+        "printability"
+      ],
+      "incomplete": [],
+      "artifacts": [
+        {
+          "id": "cad-31153bda-e087-4ea9-95d6-7fc570dd1217:log",
+          "kind": "log",
+          "mimeType": "text/plain",
+          "snapshotId": "8dceb6818e34ec4ffbdd614ea4825717caa9d79d5d9e48ca07d26a5ed4140fcf"
+        }
+      ],
+      "metrics": {
+        "elapsedMs": 25.977124999999887,
+        "truncated": false
+      },
+      "reportUri": "scad-cad-report:/cad-31153bda-e087-4ea9-95d6-7fc570dd1217"
+    },
+    "diskUnchanged": true,
+    "previewRequired": false
+  },
+  "sourceAuthoring": {
+    "analyzed": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-494KGz/workspace/source-authoring.scad",
+          "version": 1,
+          "sha256": "aee2bb6ce9a771963a48dae91dcc6843080dbf30e9dfb0aef87941e5831b7348"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "",
+            "defaultValue": 40,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "48613325-198d-466b-b007-6166ba75a3f4",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    },
+    "unmet": {
+      "ok": true,
+      "capabilityId": "customizer.sourceValidate",
+      "data": {
+        "identity": {
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-494KGz/workspace/source-authoring.scad",
+          "version": 1,
+          "sha256": "aee2bb6ce9a771963a48dae91dcc6843080dbf30e9dfb0aef87941e5831b7348"
+        },
+        "sourceStatus": {
+          "status": "complete",
+          "reasons": []
+        },
+        "contractStatus": "mismatch",
+        "qualityStatus": "clear",
+        "semanticPass": false,
+        "checked": 1,
+        "matched": 0,
+        "expectationResults": [
+          {
+            "parameter": "width",
+            "matched": false,
+            "issues": [
+              "Expected widget \"slider\"; actual \"spinbox\""
+            ],
+            "details": [
+              {
+                "code": "EXPECTED_WIDGET",
+                "message": "Expected widget \"slider\"; actual \"spinbox\"",
+                "range": {
+                  "start": {
+                    "line": 0,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 0,
+                    "character": 9
+                  }
+                }
+              }
+            ],
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            }
+          }
+        ],
+        "omittedExpectations": 0,
+        "diagnostics": [],
+        "omittedDiagnostics": 0,
+        "runtimeCheck": {
+          "status": "notRequested"
+        },
+        "guiCheck": {
+          "status": "notRequested"
+        },
+        "complete": true
+      },
+      "operation": {
+        "id": "1aff5e98-e537-4b35-ac7d-8f0f02ed7025",
+        "capabilityId": "customizer.sourceValidate",
+        "status": "succeeded"
+      }
+    },
+    "planned": {
+      "ok": true,
+      "capabilityId": "customizer.sourceApply",
+      "data": {
+        "planId": "c625f952-c1be-4e73-b76a-f94cd41e3d71",
+        "identity": {
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-494KGz/workspace/source-authoring.scad",
+          "version": 1,
+          "sha256": "aee2bb6ce9a771963a48dae91dcc6843080dbf30e9dfb0aef87941e5831b7348"
+        },
+        "summary": "Update Customizer source: width",
+        "preview": [
+          {
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 9
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            },
+            "before": "",
+            "after": " // [10:5:100]"
+          }
+        ],
+        "validation": {
+          "sourceStatus": {
+            "status": "complete",
+            "reasons": []
+          },
+          "contractStatus": "matched",
+          "qualityStatus": "clear",
+          "semanticPass": true,
+          "checked": 1,
+          "matched": 1,
+          "expectationResults": [
+            {
+              "parameter": "width",
+              "matched": true,
+              "issues": [],
+              "details": [],
+              "range": {
+                "start": {
+                  "line": 0,
+                  "character": 0
+                },
+                "end": {
+                  "line": 0,
+                  "character": 9
+                }
+              }
+            }
+          ],
+          "omittedExpectations": 0,
+          "diagnostics": [],
+          "omittedDiagnostics": 0,
+          "runtimeCheck": {
+            "status": "notRequested"
+          },
+          "guiCheck": {
+            "status": "notRequested"
+          },
+          "complete": true,
+          "pass": true
+        },
+        "expiresInSeconds": 120,
+        "continuation": {
+          "tool": "scad_ai_ide_customizer_sourceApply",
+          "input": {
+            "mode": "commit",
+            "planId": "c625f952-c1be-4e73-b76a-f94cd41e3d71"
+          },
+          "requiresReview": true
+        }
+      },
+      "operation": {
+        "id": "80661d9c-3e1a-4e2b-868b-c39a3ad171d5",
+        "capabilityId": "customizer.sourceApply",
+        "status": "succeeded"
+      }
+    },
+    "committed": {
+      "ok": true,
+      "capabilityId": "customizer.sourceApply",
+      "data": {
+        "applied": true,
+        "identity": {
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-494KGz/workspace/source-authoring.scad",
+          "version": 2,
+          "sha256": "4f5e8cba047a8b3a4c4edcbfc0a2155fb616b7c10b18a3db68c6da97b12839b6"
+        },
+        "changedParameters": [
+          "width"
+        ],
+        "postValidation": {
+          "sourceStatus": {
+            "status": "complete",
+            "reasons": []
+          },
+          "contractStatus": "matched",
+          "qualityStatus": "clear",
+          "semanticPass": true,
+          "checked": 1,
+          "matched": 1,
+          "expectationResults": [
+            {
+              "parameter": "width",
+              "matched": true,
+              "issues": [],
+              "details": [],
+              "range": {
+                "start": {
+                  "line": 0,
+                  "character": 0
+                },
+                "end": {
+                  "line": 0,
+                  "character": 9
+                }
+              }
+            }
+          ],
+          "omittedExpectations": 0,
+          "diagnostics": [],
+          "omittedDiagnostics": 0,
+          "runtimeCheck": {
+            "status": "notRequested"
+          },
+          "guiCheck": {
+            "status": "notRequested"
+          },
+          "complete": true,
+          "pass": true
+        },
+        "semanticPass": true,
+        "savedToDisk": false
+      },
+      "operation": {
+        "id": "db01a1d7-5623-4eb2-a4b2-75425042ab0d",
+        "capabilityId": "customizer.sourceApply",
+        "status": "succeeded"
+      }
+    },
+    "validated": {
+      "ok": true,
+      "capabilityId": "customizer.sourceValidate",
+      "data": {
+        "identity": {
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-494KGz/workspace/source-authoring.scad",
+          "version": 2,
+          "sha256": "4f5e8cba047a8b3a4c4edcbfc0a2155fb616b7c10b18a3db68c6da97b12839b6"
+        },
+        "sourceStatus": {
+          "status": "complete",
+          "reasons": []
+        },
+        "contractStatus": "matched",
+        "qualityStatus": "clear",
+        "semanticPass": true,
+        "checked": 1,
+        "matched": 1,
+        "expectationResults": [
+          {
+            "parameter": "width",
+            "matched": true,
+            "issues": [],
+            "details": [],
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            }
+          }
+        ],
+        "omittedExpectations": 0,
+        "diagnostics": [],
+        "omittedDiagnostics": 0,
+        "runtimeCheck": {
+          "status": "notRequested"
+        },
+        "guiCheck": {
+          "status": "notRequested"
+        },
+        "complete": true
+      },
+      "operation": {
+        "id": "ff134e12-4430-4497-a571-bea9588368e2",
+        "capabilityId": "customizer.sourceValidate",
+        "status": "succeeded"
+      }
+    },
+    "singleUseRejected": true,
+    "unsavedSource": "width=40; // [10:5:100]\nmodule model() { cube([width,2,3]); }\n",
+    "diskUnchanged": true
+  },
+  "undoRedo": true,
+  "adr12": {
+    "warning": true,
+    "primaryLine": 2,
+    "relatedLine": 0,
+    "controlsLost": true,
+    "unsavedRepairClearsWarning": true,
+    "diskUnchanged": true
+  },
+  "presetSnapshot": {
+    "invalidRejectedBeforeWrite": true,
+    "invalidErrorCode": "PRESET_INVALID_VALUE",
+    "rejectedStateUnchanged": true,
+    "validSnapshotReplayed": true,
+    "sourceUnchanged": true,
+    "sourceDirty": false
+  },
+  "panelsRequired": false,
+  "instructions": [
+    {
+      "path": "./instructions/openscad.instructions.md"
+    },
+    {
+      "path": "./instructions/openscad-customizer.instructions.md"
+    }
+  ],
+  "skills": [
+    {
+      "path": "./skills/openscad-runtime/SKILL.md"
+    },
+    {
+      "path": "./skills/openscad-libraries/SKILL.md"
+    },
+    {
+      "path": "./skills/openscad-customizer/SKILL.md"
+    },
+    {
+      "path": "./skills/openscad-customizer-authoring/SKILL.md"
+    },
+    {
+      "path": "./skills/scad-ai-ide-diagnostics/SKILL.md"
+    },
+    {
+      "path": "./skills/openscad-model-debugging/SKILL.md"
+    }
+  ]
+}

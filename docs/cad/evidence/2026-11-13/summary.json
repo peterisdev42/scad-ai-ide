@@ -1,0 +1,264 @@
+{
+  "reviewDate": "2026-11-13",
+  "fixBase": "d8290a870187b86956bbf8345628bde3a88b6cff",
+  "branch": "codex/agent-native-cad-lifecycle",
+  "pullRequest": "https://github.com/peterisdev42/scad-ai-ide/pull/2",
+  "deliveryHead": "Containing commit / PR head",
+  "environment": {
+    "platform": "darwin-arm64",
+    "node": "24.16.0",
+    "officialRuntime": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+    "openscadVersion": "2026.11-RC0",
+    "stable": "1.146.0",
+    "minimum": "1.140.0",
+    "previewExporter": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/preview-exporter/openscad-2026.11-RC0/bin/openscad-preview-exporter"
+  },
+  "tests": [
+    {
+      "command": "npm test",
+      "localLog": ".build/cad-fix-npm-final.log",
+      "exitCode": 0,
+      "sha256": "3995d8761f4122baf436f56280a90779fea0976565b5ed77c5b339a60cd602d5",
+      "summary": [
+        "ℹ tests 221",
+        "ℹ pass 221",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ tests 29",
+        "ℹ pass 26",
+        "ℹ fail 0",
+        "ℹ skipped 3",
+        "ℹ tests 103",
+        "ℹ pass 103",
+        "ℹ fail 0",
+        "ℹ skipped 0",
+        "ℹ tests 22",
+        "ℹ pass 22",
+        "ℹ fail 0",
+        "ℹ skipped 0"
+      ]
+    },
+    {
+      "command": "npm run package",
+      "localLog": ".build/cad-fix-package-final.log",
+      "exitCode": 0,
+      "sha256": "8fdc87c4b81034ddbac8d63e9fa76a9aaa90b83832067d8ce5e0564079449f25",
+      "summary": []
+    },
+    {
+      "command": "SCAD_OPENSCAD_EXECUTABLE=<official-runtime> npm run test:cad:real",
+      "localLog": ".build/cad-fix-real.log",
+      "exitCode": 0,
+      "sha256": "c815452c150cb7c13630ff604d58ef87f3e15a86ff86b93c62d7577fad917e75",
+      "summary": [
+        "ℹ tests 1",
+        "ℹ pass 1",
+        "ℹ fail 0",
+        "ℹ skipped 0"
+      ]
+    },
+    {
+      "command": "node --test scripts/agent-manifest.test.mjs scripts/ai-panel.test.mjs",
+      "localLog": ".build/cad-fix-ui-manifest.log",
+      "exitCode": 0,
+      "sha256": "3ff4773f22a557e0f0d44d501d3a57d65ce18b3ad629b9ad3f5654d948ab8b32",
+      "summary": [
+        "ℹ tests 3",
+        "ℹ pass 3",
+        "ℹ fail 0",
+        "ℹ skipped 0"
+      ]
+    },
+    {
+      "command": "SCAD_TEST_TRUSTED_FIXTURE=1 SCAD_TEST_WORKSPACE=.build/cad-fix-full-final/workspace SCAD_TEST_USER_DATA=.build/cad-fix-full-final/profile SCAD_VSCODE_EXECUTABLE=<stable> SCAD_TEST_OPENSCAD=<official-runtime> SCAD_PREVIEW_EXPORTER=<preview-exporter> SCAD_TEST_FOCUS_HELPER=.build/customizer-focus SCAD_TEST_FOCUS_APP=<stable-app> node node_modules/@vscode/test-cli/out/bin.mjs",
+      "localLog": ".build/cad-fix-full-stable-final.log",
+      "exitCode": 0,
+      "sha256": "4c0a42e02365f04cdd03f88cdfb678089380fcde5bce3c924e38a92f52715c34",
+      "summary": [
+        "48 passing (22s)"
+      ]
+    },
+    {
+      "command": "SCAD_TEST_TRUSTED_FIXTURE=1 SCAD_TEST_WORKSPACE=.build/cad-fix-full-min-final/workspace SCAD_TEST_USER_DATA=.build/cad-fix-full-min-final/profile SCAD_TEST_OPENSCAD=<official-runtime> SCAD_PREVIEW_EXPORTER=<preview-exporter> SCAD_TEST_FOCUS_HELPER=.build/customizer-focus SCAD_TEST_FOCUS_APP=<minimum-app> node node_modules/@vscode/test-cli/out/bin.mjs",
+      "localLog": ".build/cad-fix-full-minimum-final.log",
+      "exitCode": 1,
+      "sha256": "1e707aeb6f7d3ab283bdcece0ccc4c35627dcdc924f3ae1aa1f4092b6017d690",
+      "summary": [
+        "45 passing (33s)",
+        "3 failing"
+      ],
+      "failureDetails": "  3 failing\n  1) Agent capabilities extension host\n       agent source transaction preserves the earlier unsaved buffer through native Undo and Redo:\n\n      AssertionError [ERR_ASSERTION]: Undo/Redo did not establish its exact buffer: {\"phase\":\"native undo\",\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:100]\\n\",\"inputTrace\":[{\"phase\":\"initial\",\"version\":2,\"changes\":[{\"offset\":0,\"length\":0,\"text\":\"// Earlier unsaved user change\\n\"}],\"buffer\":\"// Earlier unsaved user change\\nwidth=40;\\n\"},{\"phase\":\"initial\",\"version\":2,\"changes\":[],\"buffer\":\"// Earlier unsaved user change\\nwidth=40;\\n\"},{\"phase\":\"applying source transaction\",\"version\":3,\"changes\":[{\"offset\":40,\"length\":0,\"text\":\" // [10:100]\"}],\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:100]\\n\"}]}\n      + expected - actual\n\n      -false\n      +true\n      \n  \tat waitFor (out/test/capabilities.integration.test.js:997:28)\n  \tat async Context.<anonymous> (out/test/capabilities.integration.test.js:1031:17)\n\n  2) Agent capabilities extension host\n       editor source transaction preserves the earlier unsaved buffer through native Undo and Redo:\n\n      AssertionError [ERR_ASSERTION]: Undo/Redo did not establish its exact buffer: {\"phase\":\"native undo\",\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:100]\\n\",\"inputTrace\":[{\"phase\":\"initial\",\"version\":2,\"changes\":[{\"offset\":0,\"length\":0,\"text\":\"// Earlier unsaved user change\\n\"}],\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:0:100]\\n\"},{\"phase\":\"initial\",\"version\":2,\"changes\":[],\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:0:100]\\n\"},{\"phase\":\"applying source transaction\",\"version\":3,\"changes\":[{\"offset\":48,\"length\":2,\"text\":\"\"}],\"buffer\":\"// Earlier unsaved user change\\nwidth=40; // [10:100]\\n\"}]}\n      + expected - actual\n\n      -false\n      +true\n      \n  \tat waitFor (out/test/capabilities.integration.test.js:997:28)\n  \tat async Context.<anonymous> (out/test/capabilities.integration.test.js:1031:17)\n\n  3) OpenSCAD language integration\n       native Enter indents unbraced bodies once, nested vectors and block comments:\n\n      AssertionError [ERR_ASSERTION]: Timed out waiting for VS Code editor state\n      + expected - actual\n\n      -false\n      +true\n      \n  \tat eventually (out/test/language.integration.test.js:47:20)\n  \tat async typeText (out/test/language.integration.test.js:58:5)\n  \tat async Context.<anonymous> (out/test/language.integration.test.js:79:17)\n\n3 tests failed.\n[main 2026-11-13T02:04:52.404Z] Extension host with pid 51943 exited with code: 0, signal: unknown.\nExit code:   1\n"
+    },
+    {
+      "command": "node node_modules/@vscode/test-cli/out/bin.mjs",
+      "selectedRuntime": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+      "testSettings": {
+        "trustedFixture": true,
+        "workspace": ".build/cad-fix-final5/stable/workspace",
+        "userData": ".build/cad-fix-final5/stable/profile",
+        "host": "1.146.0",
+        "focusHelper": ".build/customizer-focus"
+      },
+      "localLog": ".build/cad-fix-final5-stable.log",
+      "sha256": "554e25c9ad3ade0fa64a9fe570da9719dfaab1fe5db5fdd0d5b636512d574a1e",
+      "exitCode": 0,
+      "summary": [
+        "48 passing (20s)"
+      ]
+    },
+    {
+      "command": "node node_modules/@vscode/test-cli/out/bin.mjs",
+      "selectedRuntime": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+      "testSettings": {
+        "trustedFixture": true,
+        "workspace": ".build/cad-fix-final5/minimum/workspace",
+        "userData": ".build/cad-fix-final5/minimum/profile",
+        "host": "1.140.0",
+        "focusHelper": ".build/customizer-focus"
+      },
+      "localLog": ".build/cad-fix-final5-minimum.log",
+      "sha256": "15f0da7d07f541da7e1251e376f886a2570e5033d59bc4920710c6de5967d863",
+      "exitCode": 0,
+      "summary": [
+        "48 passing (19s)"
+      ]
+    },
+    {
+      "command": "SCAD_OPENSCAD_EXECUTABLE=<official-runtime> SCAD_VSCODE_EXECUTABLE=<stable> node scripts/test-agent-installed.mjs .build/scad-ai-ide-cad-fixes.vsix",
+      "localLog": ".build/cad-fix-installed-final.log",
+      "sha256": "d4dd481d3bf02eb0d2aa4ce4ce269206902529f4b763c8916dbdfa94f15e8226",
+      "exitCode": 0,
+      "summary": [
+        "Installed Production smoke PASS"
+      ]
+    }
+  ],
+  "bundleSha256": "de67d2e7858ea91b3fa2b817087a939573666d028ede7de9856ea0ab9cb02d03",
+  "sourceFiles": [
+    {
+      "path": "resources/schemas/cad-report-v1.schema.json",
+      "sha256": "918ea510698620106c0904ba69b9be05981e5a5ca1679ea880ae65dab3159848"
+    },
+    {
+      "path": "src/core/cad/CadVerificationService.ts",
+      "sha256": "19de65947e746e5ad860c23235d65baddc03dea7bd4181f19716514c332f5390"
+    },
+    {
+      "path": "src/core/cad/snapshot.ts",
+      "sha256": "30f901098beddb7b6ec80bdf2352fe28728b8842d787f3e22fa98cfddc6bdce8"
+    },
+    {
+      "path": "src/core/cad/types.ts",
+      "sha256": "bf77b460b3bbf3d843a5f36ffea627f138cd980247bcaae7f0b457c8582a136f"
+    },
+    {
+      "path": "src/features/cad-verification/CadWorkspaceService.ts",
+      "sha256": "7d9f8b7d010d15fe7e0a841da84eb540b6cdf7382d23afd2fe767c5232b58b3c"
+    },
+    {
+      "path": "src/platform/openscad/dependencyResolution.ts",
+      "sha256": "69721b00b50c89dbcf80c57e633d40f725969627cded974d3c9471e20ebe6d9f"
+    },
+    {
+      "path": "src/test/cad.integration.test.ts",
+      "sha256": "f43a4dde4d8f82da94d6122979a34ed82c347759f55034c945ac64ed37e590a7"
+    },
+    {
+      "path": "src/test/cad/contracts.test.ts",
+      "sha256": "79fa7323132ff4b4e5eec2817a2ab7673dcd9a4cfda36ef1d411453d61b328f8"
+    },
+    {
+      "path": "src/test/cad/dependencyResolution.test.ts",
+      "sha256": "f2bbbea2b9bbdbe4a55419c8bdd8347afc1bb43eeee4c51df0d0278c1dbf4645"
+    }
+  ],
+  "fixed": [
+    "incomplete inputs cannot revive cached PASS",
+    "shadow dependency candidates change snapshot identity",
+    "directory aliases retain supported dirty-root semantics",
+    "PreviewExecutionContext duplicates removed",
+    "literal nested includes are scanned regardless of dependency filename extension"
+  ],
+  "limits": [
+    "root file symlink rejected by existing path policy; dependency file symlink resolution unproven -> UNRESOLVED",
+    "real Agent final candidate not rerun / historical gate NOT_PASS",
+    "remaining D/S scenario-specific Host evidence incomplete",
+    "Windows Unicode KNOWN_PLATFORM_GAP; cross-platform/remote not run"
+  ],
+  "gates": {
+    "P0": "IMPLEMENTED",
+    "P1": "NOT_SIGNED_PASS",
+    "StableFullHost": "PASS 48/48",
+    "MinimumFullHost": "PASS 48/48",
+    "CADHost": "9 PASS both versions in full suites",
+    "realAgent": "NOT_PASS / NOT_RERUN",
+    "release": "KNOWN_PLATFORM_GAP",
+    "installedProduction": "PASS on final archive"
+  },
+  "mainChanged": false,
+  "historicalRuns": [
+    {
+      "localLog": ".build/cad-fix-final2-stable.log",
+      "sha256": "b310913f68dc1462593c573cdba90d335ffeba2d5c9ed1efb5edb3b8a5cb58c2",
+      "exitCode": 1,
+      "summary": [
+        "47 passing (23s)",
+        "1 failing"
+      ],
+      "classification": "historical fixture expectation failure; fixed without weakening product permissions or PASS oracle"
+    },
+    {
+      "localLog": ".build/cad-fix-final2-minimum.log",
+      "sha256": "6949706f36e38988ea7b8884ec86b8bf06dae443eb09e19bc891bff4be49bb8e",
+      "exitCode": 1,
+      "summary": [
+        "47 passing (22s)",
+        "1 failing"
+      ],
+      "classification": "historical fixture expectation failure; fixed without weakening product permissions or PASS oracle"
+    },
+    {
+      "localLog": ".build/cad-fix-final3-stable.log",
+      "sha256": "a696cd52f9513c8859a65699f7de43118aec9852b696ba87fd3f117f9e493125",
+      "exitCode": 0,
+      "summary": [
+        "48 passing (21s)"
+      ],
+      "classification": "historical pass before final coverage expansion"
+    },
+    {
+      "localLog": ".build/cad-fix-final3-minimum.log",
+      "sha256": "1126f40a319287dcae9a0f0fd4ddc10524986fb0dcd8e3c189d4a29a3710916a",
+      "exitCode": 0,
+      "summary": [
+        "48 passing (20s)"
+      ],
+      "classification": "historical pass before final coverage expansion"
+    },
+    {
+      "localLog": ".build/cad-fix-final4-stable.log",
+      "sha256": "426cf571eef0fd41b38f1739dfc865f1061f278159b43f63c62596d99b68e002",
+      "exitCode": 1,
+      "summary": [
+        "47 passing (20s)",
+        "1 failing"
+      ],
+      "classification": "historical fixture expectation failure; fixed without weakening product permissions or PASS oracle"
+    },
+    {
+      "localLog": ".build/cad-fix-final4-minimum.log",
+      "sha256": "bf7ac6f887572992db23e8505918dead538cd327bc645ca482bd8695a003953e",
+      "exitCode": 1,
+      "summary": [
+        "47 passing (20s)",
+        "1 failing"
+      ],
+      "classification": "historical fixture expectation failure; fixed without weakening product permissions or PASS oracle"
+    }
+  ],
+  "artifact": {
+    "vsix": ".build/scad-ai-ide-cad-fixes.vsix",
+    "sha256": "6781978c2c66441490bd324ec006f364998f5298e5434e506a28a0e305d3020d",
+    "verification": "PASS 42 tools, 2 Instructions, 6 Skills, Schema/assets"
+  }
+}

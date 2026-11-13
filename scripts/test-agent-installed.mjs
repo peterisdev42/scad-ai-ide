@@ -19,9 +19,13 @@ const result = path.join(directory, 'result.json')
 // Execute the installed host as Node for its CLI; avoids touching the user's profile.
 const appRoot = process.platform === 'darwin' ? path.resolve(path.dirname(executable), '../Resources/app') : path.resolve(path.dirname(executable), 'resources/app')
 execFileSync(executable, [path.join(appRoot, 'out/cli.js'), '--user-data-dir', profile, '--shared-data-dir', shared, '--extensions-dir', extensions, '--install-extension', vsix, '--force'], { env: { ...process.env, ELECTRON_RUN_AS_NODE: '1' }, stdio: 'inherit' })
+if (process.env.SCAD_OPENSCAD_EXECUTABLE) {
+    await mkdir(path.join(profile, 'User'), { recursive: true })
+    await writeFile(path.join(profile, 'User/settings.json'), JSON.stringify({ 'scad-ai-ide.runtimeCommand': { executable: process.env.SCAD_OPENSCAD_EXECUTABLE, argsPrefix: [] }, 'chat.saveBeforeSend': false, 'files.autoSave': 'off', 'scad-ai-ide.languageServer.enabled': false }))
+}
 await writeFile(path.join(directory, 'package.json'), JSON.stringify({ name: 'scad-parity-smoke', publisher: 'local-test', version: '0.0.1', engines: { vscode: '^1.140.0' }, main: 'index.cjs' }))
 await writeFile(path.join(directory, 'index.cjs'), 'exports.activate = () => ({})\n')
 await copyFile(new URL('./fixtures/agent-installed-smoke.cjs', import.meta.url), testFile)
-await runTests({ vscodeExecutablePath: executable, extensionDevelopmentPath: directory, extensionTestsPath: testFile, extensionTestsEnv: { SCAD_SMOKE_EXTENSIONS_DIR: extensions, SCAD_SMOKE_RESULT: result }, launchArgs: [workspace, '--disable-workspace-trust', '--user-data-dir', profile, '--shared-data-dir', shared, '--extensions-dir', extensions, '--skip-welcome', '--skip-release-notes'] })
+await runTests({ vscodeExecutablePath: executable, extensionDevelopmentPath: directory, extensionTestsPath: testFile, extensionTestsEnv: { SCAD_SMOKE_EXTENSIONS_DIR: extensions, SCAD_SMOKE_RESULT: result, SCAD_SMOKE_REQUIRE_CAD: process.env.SCAD_OPENSCAD_EXECUTABLE ? '1' : '0' }, launchArgs: [workspace, '--disable-workspace-trust', '--user-data-dir', profile, '--shared-data-dir', shared, '--extensions-dir', extensions, '--skip-welcome', '--skip-release-notes'] })
 console.log(await readFile(result, 'utf8'))
 console.log(`Installed Production smoke PASS. Isolated evidence: ${directory}`)

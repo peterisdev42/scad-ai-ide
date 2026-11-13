@@ -27,6 +27,47 @@ exports.run = async () => {
     assert.equal(api.panels.getPanel('runtime'), undefined)
     const folder = vscode.workspace.workspaceFolders?.[0]
     assert.ok(folder, 'Installed source smoke requires its isolated workspace')
+    let cad = { status: 'NOT_RUN', reason: 'Set SCAD_OPENSCAD_EXECUTABLE for real installed CAD acceptance.' }
+    if (process.env.SCAD_SMOKE_REQUIRE_CAD === '1') {
+        await waitFor(() => api.cad.availability().enabled)
+        const uri = vscode.Uri.joinPath(folder.uri, 'cad-diagnostics.scad')
+        const disk = 'assert(false,"installed CAD assertion");cube(1);'
+        await vscode.workspace.fs.writeFile(uri, Buffer.from(disk))
+        const doc = await vscode.workspace.openTextDocument(uri)
+        await vscode.window.showTextDocument(doc)
+        const setup = new vscode.WorkspaceEdit()
+        setup.insert(uri, new vscode.Position(0, 0), '// unsaved installed CAD buffer\n')
+        assert.ok(await vscode.workspace.applyEdit(setup))
+        const invoke = async (name, input) => {
+            const reply = await vscode.lm.invokeTool(name, { input, toolInvocationToken: undefined })
+            const output = JSON.parse(reply.content[0].value)
+            assert.equal(output.ok, true, JSON.stringify(output))
+            return output.data
+        }
+        const failed = await invoke('scad_ai_ide_model_analyze', { uri: uri.toString(), mode: 'diagnostics' })
+        assert.equal(failed.overallStatus, 'FAIL'); assert.equal(failed.document.dirty, true)
+        const issue = failed.issues.find(i => i.code === 'SCAD_CLI_ASSERT_FAILED')
+        assert.ok(issue)
+        const details = await invoke('scad_ai_ide_model_getIssue', { reportId: failed.reportId, issueId: issue.id, includeEvidence: true })
+        assert.equal(details.current, true); assert.match(details.evidence.text, /installed CAD assertion/)
+        const report = await vscode.workspace.openTextDocument(vscode.Uri.parse(failed.reportUri))
+        assert.equal(JSON.parse(report.getText()).reportId, failed.reportId)
+        assert.ok(vscode.languages.getDiagnostics(uri).some(d => d.code === 'SCAD_CLI_ASSERT_FAILED'))
+        const repair = new vscode.WorkspaceEdit()
+        repair.replace(uri, new vscode.Range(doc.positionAt(0), doc.positionAt(doc.getText().length)), 'cube(2);')
+        assert.ok(await vscode.workspace.applyEdit(repair))
+        const passed = await invoke('scad_ai_ide_model_analyze', { uri: uri.toString(), mode: 'diagnostics' })
+        assert.equal(passed.overallStatus, 'PASS'); assert.equal(passed.document.dirty, true)
+        assert.notEqual(passed.snapshotId, failed.snapshotId)
+        assert.ok(passed.notExamined.includes('mesh-validity'))
+        assert.equal(Buffer.from(await vscode.workspace.fs.readFile(uri)).toString(), disk)
+        await waitFor(() => !vscode.languages.getDiagnostics(uri).some(d => d.code === 'SCAD_CLI_ASSERT_FAILED'))
+        cad = { status: 'PASS', scope: 'Production VSIX + real CLI; direct Host invocation, not model E2E', failed, passed, diskUnchanged: true, previewRequired: false }
+        await fs.writeFile(process.env.SCAD_SMOKE_RESULT + '.cad.json', JSON.stringify(cad, null, 2))
+        await vscode.window.showTextDocument(doc)
+        await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor')
+        await vscode.workspace.fs.delete(uri)
+    }
     const sourceUri = vscode.Uri.joinPath(folder.uri, 'source-authoring.scad')
     await vscode.workspace.fs.writeFile(sourceUri, Buffer.from('width=40;\nmodule model() { cube([width,2,3]); }\n'))
     const sourceDocument = await vscode.workspace.openTextDocument(sourceUri)
@@ -60,6 +101,11 @@ exports.run = async () => {
     const appliedText = sourceDocument.getText()
     const diskText = Buffer.from(await vscode.workspace.fs.readFile(sourceUri)).toString()
     await vscode.window.showTextDocument(sourceDocument, { preserveFocus: false })
+    if (process.platform === 'darwin' && process.env.SCAD_TEST_FOCUS_HELPER) {
+        assert.match(process.env.VSCODE_PID ?? '', /^\d+$/)
+        assert.ok(process.env.SCAD_TEST_FOCUS_APP)
+        require('node:child_process').execFileSync(process.env.SCAD_TEST_FOCUS_HELPER, [process.env.VSCODE_PID, process.env.SCAD_TEST_FOCUS_APP], { timeout: 5000 })
+    }
     const commands = await vscode.commands.getCommands(true)
     if (commands.includes('workbench.action.focusWindow')) await vscode.commands.executeCommand('workbench.action.focusWindow')
     else if (commands.includes('workbench.action.focusMainWindow')) await vscode.commands.executeCommand('workbench.action.focusMainWindow')
@@ -140,5 +186,5 @@ exports.run = async () => {
     api.customizer.clear()
     await vscode.workspace.fs.delete(snapshotUri)
     await vscode.workspace.fs.delete(snapshotFile)
-    await fs.writeFile(process.env.SCAD_SMOKE_RESULT, JSON.stringify({ vscode: vscode.version, extension: extension.id, toolCount: names.length, availableChatModels, productionDevDenied: true, sourceAuthoring, undoRedo: true, adr12, presetSnapshot, panelsRequired: false, instructions: extension.packageJSON.contributes.chatInstructions, skills: extension.packageJSON.contributes.chatSkills }, null, 2))
+    await fs.writeFile(process.env.SCAD_SMOKE_RESULT, JSON.stringify({ vscode: vscode.version, extension: extension.id, toolCount: names.length, availableChatModels, productionDevDenied: true, cad, sourceAuthoring, undoRedo: true, adr12, presetSnapshot, panelsRequired: false, instructions: extension.packageJSON.contributes.chatInstructions, skills: extension.packageJSON.contributes.chatSkills }, null, 2))
 }

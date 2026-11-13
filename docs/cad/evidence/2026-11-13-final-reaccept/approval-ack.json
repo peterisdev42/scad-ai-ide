@@ -1,0 +1,7 @@
+{
+  "nativeAction": "workbench.action.chat.acceptTool",
+  "toolId": "copilot_replaceString",
+  "oldString": "// Unsaved Native Agent acceptance buffer\nwidth=0;\nassert(width>0,\"width must be positive\");\ncube(width);",
+  "newString": "// Unsaved Native Agent acceptance buffer\nwidth=1;\nassert(width>0,\"width must be positive\");\ncube(width);",
+  "authorization": "user-approved-width-0-to-1-20261112"
+}

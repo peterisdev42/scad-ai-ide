@@ -1,3 +1,5 @@
+import type { CadWorkspaceService } from '../cad-verification/CadWorkspaceService'
+import { reportSummary } from '../../core/cad/summary'
 import { safePreview } from '../../core/capabilities/SafeOutput'
 import type { CustomizerSourceDomainService } from '../sidebar/CustomizerSourceDomainService'
 import type { SourceExpectation } from '../../core/customizer/CustomizerSourceTypes'
@@ -13,6 +15,7 @@ import type { registerGitHub } from '../github/registerGitHub'
 import type { ParameterValue } from '../../core/customizer/CustomizerParser'
 
 export interface CapabilityServices {
+    cad?: CadWorkspaceService
     runtime: ReturnType<typeof createRuntimeService>
     libraries: LibraryService
     customizerSource: CustomizerSourceDomainService
@@ -29,7 +32,7 @@ const page = <T>(items: T[], input: Record<string, unknown>) => {
 
 /** Binds domain methods, never GUI adapters. Every catalog entry must have one handler. */
 export function registerCapabilities(services: CapabilityServices) {
-    const { runtime, libraries, customizer, customizerSource, github, development } = services
+    const { runtime, libraries, customizer, customizerSource, github, development, cad } = services
     const registry = new CapabilityRegistry()
     const dispatcher = new CapabilityDispatcher(registry)
     let runtimeRevision = 0
@@ -55,6 +58,13 @@ export function registerCapabilities(services: CapabilityServices) {
         try { await task(); return runtimeSnapshot() } finally { subscription.dispose() }
     }
     const handlers: Record<string, (input: Record<string, unknown>, ctx: CapabilityContext) => unknown> = {
+        'cad.modelAnalyze': async (input, ctx) => {
+            ctx.report?.('Evaluating official CLI diagnostics; geometry checks are not examined.')
+            const report = await cad!.analyze(input as unknown as import('../../core/cad/CadVerificationService').AnalyzeInput, ctx.signal)
+            ctx.report?.(`CLI diagnostics: ${report.overallStatus}`)
+            return reportSummary(report)
+        },
+        'cad.issueDetails': input => cad!.issueDetails(String(input.reportId), String(input.issueId), input.includeEvidence === true),
         'capabilities.discover': (input, ctx) => registry.discover(ctx, Number(input.offset ?? 0), Number(input.limit ?? 20)),
         'operation.status': (input) => dispatcher.operations.status(input.id as string | undefined, Number(input.offset ?? 0), Number(input.limit ?? 20)),
         'operation.cancel': (input) => {
@@ -148,6 +158,11 @@ export function registerCapabilities(services: CapabilityServices) {
         if (!handlers[definition.id]) throw new Error(`No binding for ${definition.id}`)
         registry.bind(definition.id, {
             available: () => {
+                if (definition.id.startsWith('cad.')) {
+                    if (!cad) return { enabled: false, reasonCode: 'NOT_REGISTERED' }
+                    if (!vscode.workspace.isTrusted) return { enabled: false, reasonCode: 'UNTRUSTED_WORKSPACE' }
+                    return definition.id === 'cad.modelAnalyze' ? cad.availability() : { enabled: true }
+                }
                 if (definition.id.startsWith('development.') && definition.id !== 'development.status' && !development.enabled) return { enabled: false, reasonCode: 'DEVELOPMENT_ONLY' }
                 if ((definition.risk !== 'read' || ['libraries.verify', 'libraries.cleanupPlan'].includes(definition.id)) && !definition.id.startsWith('more.') && !definition.id.startsWith('development.') && !['operation.cancel', 'customizer.set', 'customizer.reset', 'customizer.applyPreset'].includes(definition.id) && !vscode.workspace.isTrusted) return { enabled: false, reasonCode: 'UNTRUSTED_WORKSPACE' }
                 if (definition.risk !== 'read') {
