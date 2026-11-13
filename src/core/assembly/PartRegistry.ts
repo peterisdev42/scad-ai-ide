@@ -4,9 +4,8 @@ import schema from '../../../resources/schemas/cad-verification-v1.schema.json'
 import { digest } from '../cad/snapshot'
 import type { ConfigIssue, Manifest, Registry, Rule } from './types'
 const validate = new Ajv({ strict: true, allErrors: true }).compile(schema)
-export function pairId(a: string, b: string) {
-    return digest([a, b].sort())
-}
+export { pairId } from './identity'
+import { pairId } from './identity'
 export function parseManifest(text: string): Registry {
     const contentHash = digest(text),
         errors: ParseError[] = [],
