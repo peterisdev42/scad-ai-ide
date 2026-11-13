@@ -29,6 +29,7 @@ for (const name of ['package.json', 'dist', 'resources', 'skills', 'instructions
 await cp(staged.omlxExtension, providerExtension, { recursive: true })
 
 const exposure = []
+const networkAbort = new AbortController()
 const relay = createServer(async (request, response) => {
     if (!['/v1/models', '/v1/chat/completions'].includes(request.url)) {
         response.writeHead(404).end()
@@ -47,7 +48,7 @@ const relay = createServer(async (request, response) => {
         const record = { at: new Date().toISOString(), path: request.url, model: body?.model, tools: body?.tools?.map((t) => ({ name: t.function.name, schemaSha256: createHash('sha256').update(JSON.stringify(t.function.parameters)).digest('hex') })) }
         exposure.push(record)
         await writeFile(join(directory, 'tool-exposure.json'), JSON.stringify({ scope: 'Transparent loopback forwarding; no credentials, prompts or payload changes recorded', requests: exposure }, null, 2))
-        const incoming = await fetch(`http://127.0.0.1:8000${request.url}`, { method: request.method, headers: { 'content-type': 'application/json', ...(request.headers.authorization ? { authorization: request.headers.authorization } : {}) }, ...(bytes.length ? { body: bytes } : {}), signal: AbortSignal.timeout(Number(process.env.SCAD_AGENT_TIMEOUT_MS ?? 240000)) })
+        const incoming = await fetch(`http://127.0.0.1:8000${request.url}`, { method: request.method, headers: { 'content-type': 'application/json', ...(request.headers.authorization ? { authorization: request.headers.authorization } : {}) }, ...(bytes.length ? { body: bytes } : {}), signal: AbortSignal.any([networkAbort.signal, AbortSignal.timeout(240000)]) })
         record.status = incoming.status
         response.writeHead(incoming.status, { 'content-type': incoming.headers.get('content-type') ?? 'application/json' })
         if (incoming.body) for await (const chunk of incoming.body) response.write(Buffer.from(chunk))
@@ -145,6 +146,7 @@ try {
 } finally {
     await writeFile(join(directory, 'result.json'), JSON.stringify(result, null, 2))
     await writeFile(join(directory, 'finish'), 'done')
+    networkAbort.abort()
     relay.closeAllConnections()
     await new Promise((resolve) => relay.close(resolve))
     console.log(JSON.stringify({ pass: result?.pass, error: result?.error, evidence: directory, attempts: 1 }))

@@ -174,3 +174,14 @@ test('predicates lock signs and classify shared simplices beyond simply skipping
         'cross',
     )
 })
+
+test('3MF measurements bound referenced geometry while retaining unused source vertices', async () => {
+    const { unzipSync, zipSync, strToU8, strFromU8 } = await import('fflate')
+    const files = unzipSync(threeMf())
+    files['Models/main.model'] = strToU8(strFromU8(files['Models/main.model']).replace('</vertices>', '<vertex x="100" y="100" z="100"/></vertices>'))
+    const f = await facts(zipSync(files), '3mf')
+    assert.deepEqual(f.bounds?.dimensions, [1, 1, 1])
+    assert.equal(f.physicalVolume.value, 1)
+    assert.equal(f.rawVertices, 37)
+    assert.equal(f.objects[0].vertices, 9)
+})

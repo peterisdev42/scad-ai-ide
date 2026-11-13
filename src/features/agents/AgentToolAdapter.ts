@@ -30,6 +30,7 @@ export class AgentToolAdapter implements vscode.LanguageModelTool<Record<string,
                         for (const payload of await this.imagePayloads(data)) images.push(vscode.LanguageModelDataPart.image(payload.bytes, payload.mime))
                         if (images.length) data.delivery = 'inline'
                     } catch (error) {
+                        images.length = 0
                         data.deliveryReason = error instanceof Error ? error.message.slice(0, 256) : 'IMAGE_ARTIFACT_UNAVAILABLE'
                     }
                 }

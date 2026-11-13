@@ -783,6 +783,11 @@ test('mesh image adapter emits native image parts only on explicit inline reques
     const invoke=(delivery:'metadata'|'inline')=>adapter.invoke({input:{reportId:'r',delivery},toolInvocationToken:undefined} as vscode.LanguageModelToolInvocationOptions<Record<string,unknown>>,token)
     assert.equal((await invoke('metadata')).content.length,1);assert.equal(loads,0)
     const inline=await invoke('inline');assert.equal(inline.content.length,2);assert.equal(JSON.parse((inline.content[0] as vscode.LanguageModelTextPart).value).data.delivery,'inline')
+    let parts=0
+    api.LanguageModelDataPart.image=(bytes,mime)=>{if(++parts===2)throw new Error('fixture unsupported image');return{bytes,mime}}
+    const partialAdapter=new AgentToolAdapter(definition,dispatcher,async()=>[{bytes:new Uint8Array([1]),mime:'image/png'},{bytes:new Uint8Array([2]),mime:'image/png'}])
+    const partial=await partialAdapter.invoke({input:{reportId:'r',delivery:'inline'},toolInvocationToken:undefined} as vscode.LanguageModelToolInvocationOptions<Record<string,unknown>>,token)
+    assert.equal(partial.content.length,1);assert.equal(JSON.parse((partial.content[0] as vscode.LanguageModelTextPart).value).data.delivery,'metadata')
     delete (api as {LanguageModelDataPart?:unknown}).LanguageModelDataPart
     const fallback=await invoke('inline');assert.equal(fallback.content.length,1);assert.equal(JSON.parse((fallback.content[0] as vscode.LanguageModelTextPart).value).data.deliveryReason,'IMAGE_API_UNAVAILABLE')
 })

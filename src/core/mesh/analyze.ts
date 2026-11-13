@@ -101,7 +101,11 @@ export async function analyzeMesh(decoded: DecodedMesh, options: { maxPairs?: nu
                 duplicateFaces = new Set<string>(),
                 adjacent = new Int32Array(n * 3).fill(-1),
                 incident: number[][] = Array.from({ length: positions.length }, () => [])
-            const box = bounds(positions),
+            const box = bounds(
+                    (function* () {
+                        for (const index of indices) yield positions[index]
+                    })(),
+                ),
                 diagonal = box ? length(box.dimensions) : 0,
                 maxCoordinate = box ? Math.max(...box.min.map(Math.abs), ...box.max.map(Math.abs)) : 0
             const epsilon = Math.max(1e-12, diagonal * 1e-9, maxCoordinate * Number.EPSILON * 32)
