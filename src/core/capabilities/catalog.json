@@ -1938,6 +1938,16 @@
               "topology"
             ]
           }
+        },
+        "objectOffset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "objectLimit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20,
+          "default": 20
         }
       },
       "oneOf": [

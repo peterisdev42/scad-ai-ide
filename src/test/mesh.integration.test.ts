@@ -45,6 +45,10 @@ suite('Raw mesh verification Extension Host', () => {
         api?.cad.problems.invalidateAll()
     })
     suiteTeardown(async () => {
+        for (const doc of vscode.workspace.textDocuments.filter((d) => d.uri.scheme === 'file' && d.uri.fsPath.startsWith(root + '/') && !d.isClosed)) {
+            await vscode.window.showTextDocument(doc, { preview: false })
+            await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor')
+        }
         if (root) await rm(root, { recursive: true, force: true })
     })
     test('raw STL/3MF verify, measure and readonly history work without Preview or a runtime', async () => {
@@ -75,7 +79,7 @@ suite('Raw mesh verification Extension Host', () => {
             assert.equal(((await service.measure({ reportId: raw.reportId })).values.physicalVolume as Quantity).value, 24)
             const three = join(root, 'inch.3mf')
             await writeFile(three, threeMf({ unit: 'inch' }))
-            const r = await service.verify({ uri: vscode.Uri.file(three).toString() })
+            const r = await service.verify({ uri: vscode.Uri.file(three).toString(), units: 'mm' })
             assert.equal(r.units, 'mm')
             assert.equal(r.snapshot.sourceUnit, 'inch')
             assert.ok(Math.abs(r.facts!.physicalVolume.value! - 25.4 ** 3) < 1e-8)

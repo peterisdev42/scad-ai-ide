@@ -9,6 +9,7 @@ import { OperationQueue } from '../../platform/cad/OperationQueue'
 import { analyzeInWorker, configureMeshVerificationWorker } from '../../platform/cad/MeshWorker'
 import { MeshVerificationService, type MeshCapture, type MaterializedMesh } from '../../core/mesh/VerificationService'
 import { meshLimits, type MeshSnapshot, type MeshReport, type VerifyMeshInput, type MeshReference, type RenderViewsInput } from '../../core/mesh/types'
+import { libraryEnvironment } from '../../platform/libraries/LibraryEnvironment'
 import { digest } from '../../core/cad/snapshot'
 import { CadVerificationService } from '../../core/cad/CadVerificationService'
 import type { CadInputs, CadExecutionResult } from '../../core/cad/types'
@@ -147,7 +148,7 @@ export class MeshWorkspaceService implements vscode.Disposable {
         if (kind !== 'scad' && input.tessellation && Object.keys(input.tessellation).length) throw new CapabilityError('INVALID_INPUT', 'Tessellation settings apply only to SCAD Full Render.')
         let snapshot: Omit<MeshSnapshot, 'id' | 'sourceStateId'>, stamps: Record<string, string>, scad: CadInputs | undefined
         const requestedGlobalTessellation = Object.fromEntries(Object.entries(input.tessellation ?? {}).map(([k, v]) => [`$${k}`, v]))
-        const policyHash = digest({ ...policy, units: input.units, requireNonEmpty: !!input.requireNonEmpty, tessellation: input.tessellation ?? {} })
+        const policyHash = digest({ ...policy, units: kind === '3mf' ? undefined : input.units, requireNonEmpty: !!input.requireNonEmpty, tessellation: input.tessellation ?? {} })
         if (kind === 'scad') {
             await this.runtime.whenReady()
             scad = await this.scadCapture(input, this.dependencies.get(input.uri) ?? this.cad.verification.knownDependencies(input.uri))
@@ -160,12 +161,13 @@ export class MeshWorkspaceService implements vscode.Disposable {
                 identity = await binaryIdentity(canonical),
                 folder = vscode.workspace.getWorkspaceFolder(uri)
             if (!folder) throw new CapabilityError('INVALID_PROJECT', 'Mesh must belong to an open workspace.')
-            if (input.projectRoot && (await realpath(vscode.Uri.parse(input.projectRoot, true).fsPath)) !== (await realpath(folder.uri.fsPath))) throw new CapabilityError('INVALID_PROJECT', 'projectRoot does not match the mesh workspace.')
+            const project = (await libraryEnvironment.resolveProjectRoot(canonical)) ?? folder.uri.fsPath
+            if (input.projectRoot && (await realpath(vscode.Uri.parse(input.projectRoot, true).fsPath)) !== (await realpath(project))) throw new CapabilityError('INVALID_PROJECT', 'projectRoot does not match the mesh workspace.')
             const aliases = await Promise.all(vscode.workspace.textDocuments.filter((d) => !d.isClosed && d.uri.scheme === 'file').map(async (d) => ({ document: d, path: await realpath(d.uri.fsPath).catch(() => undefined) })))
             const related = aliases.filter((d) => d.path === canonical).map((d) => d.document),
                 open = related.find((d) => d.isDirty) ?? related[0],
                 unresolved = related.some((d) => d.isDirty) ? ['DIRTY_MESH_BUFFER_NOT_EVALUATED'] : []
-            snapshot = { schemaVersion: 2, kernelVersion: kernel, inputEvidenceHash: digest([!unresolved.length, unresolved]), document: { uri: uri.toString(), sourceSha256: identity.hash, dirty: !!open?.isDirty, version: open?.version }, project: { rootUri: vscode.Uri.file(await realpath(folder.uri.fsPath)).toString() }, dependencies: [], inputKind: kind, runtime: { used: false }, quality: { profile: 'verification', requestedGlobalTessellation: {}, localSettings: 'source-controlled' }, units: kind === '3mf' || input.units === 'mm' ? 'mm' : 'modelUnits', sourceUnit: kind === '3mf' ? '3mf-metadata' : input.units === 'mm' ? 'user-declared-mm' : 'undeclared', complete: !unresolved.length, unresolvedInputs: unresolved, policyHash }
+            snapshot = { schemaVersion: 2, kernelVersion: kernel, inputEvidenceHash: digest([!unresolved.length, unresolved]), document: { uri: uri.toString(), sourceSha256: identity.hash, dirty: !!open?.isDirty, version: open?.version }, project: { rootUri: vscode.Uri.file(await realpath(project)).toString() }, dependencies: [], inputKind: kind, runtime: { used: false }, quality: { profile: 'verification', requestedGlobalTessellation: {}, localSettings: 'source-controlled' }, units: kind === '3mf' || input.units === 'mm' ? 'mm' : 'modelUnits', sourceUnit: kind === '3mf' ? '3mf-metadata' : input.units === 'mm' ? 'user-declared-mm' : 'undeclared', complete: !unresolved.length, unresolvedInputs: unresolved, policyHash }
             stamps = { [canonical]: identity.stamp, bufferVersion: String(open?.version) }
             this.cad.watchGeometryFiles(uri.toString(), [canonical])
         }
@@ -254,14 +256,19 @@ export class MeshWorkspaceService implements vscode.Disposable {
         await this.core.ensureArtifacts(report)
         return report
     }
-    async measure(input: MeshReference & { measurementTypes?: string[] }, signal?: AbortSignal) {
+    async measure(input: MeshReference & { measurementTypes?: string[]; objectOffset?: number; objectLimit?: number }, signal?: AbortSignal) {
         const report = await this.resolve(input, signal),
             current = await this.core.current(report),
             facts = report.facts
         const requested = input.measurementTypes ?? ['bounds', 'surfaceArea', 'signedVolume', 'physicalVolume', 'topology']
         if (requested.some((t) => !['bounds', 'surfaceArea', 'signedVolume', 'physicalVolume', 'topology'].includes(t))) throw new CapabilityError('INVALID_INPUT', 'Unknown measurement type.')
-        const values = Object.fromEntries(requested.map((type) => [type, type === 'topology' ? (facts?.objects.map((o) => ({ instanceId: o.instanceId, vertices: o.vertices, triangles: o.triangles, componentCount: o.componentCount, boundaryEdges: o.boundaryEdges, nonManifoldEdges: o.nonManifoldEdges, nonManifoldVertices: o.nonManifoldVertices, inconsistentEdges: o.inconsistentEdges, degenerateFaces: o.degenerateFaces, duplicateFaces: o.duplicateFaces })) ?? null) : (facts?.[type as 'bounds' | 'surfaceArea' | 'signedVolume' | 'physicalVolume'] ?? null)]))
-        return { reportId: report.reportId, snapshotId: report.snapshot.id, current, overallStatus: report.overallStatus, units: report.units, precision: 'computed-on-decoded-mesh', values, incomplete: report.incomplete, notExamined: report.notExamined }
+        const offset = input.objectOffset ?? 0,
+            limit = input.objectLimit ?? 20
+        if (!Number.isInteger(offset) || offset < 0 || !Number.isInteger(limit) || limit < 1 || limit > 20) throw new CapabilityError('INVALID_INPUT', 'Invalid object pagination.')
+        const objects = facts?.objects ?? [],
+            selected = objects.slice(offset, offset + limit)
+        const values = Object.fromEntries(requested.map((type) => [type, type === 'topology' ? (selected.map((o) => ({ instanceId: o.instanceId, vertices: o.vertices, triangles: o.triangles, componentCount: o.componentCount, boundaryEdges: o.boundaryEdges, nonManifoldEdges: o.nonManifoldEdges, nonManifoldVertices: o.nonManifoldVertices, inconsistentEdges: o.inconsistentEdges, degenerateFaces: o.degenerateFaces, duplicateFaces: o.duplicateFaces })) ?? null) : (facts?.[type as 'bounds' | 'surfaceArea' | 'signedVolume' | 'physicalVolume'] ?? null)]))
+        return { reportId: report.reportId, snapshotId: report.snapshot.id, current, overallStatus: report.overallStatus, units: report.units, precision: 'computed-on-decoded-mesh', values, objects: { total: objects.length, offset, hasMore: offset + selected.length < objects.length, nextOffset: offset + selected.length < objects.length ? offset + selected.length : null, items: selected.map((o) => ({ instanceId: o.instanceId, objectId: o.objectId, status: o.status, values: Object.fromEntries(requested.filter((t) => t !== 'topology').map((t) => [t, o[t as 'bounds' | 'surfaceArea' | 'signedVolume' | 'physicalVolume']])) })) }, incomplete: report.incomplete, notExamined: report.notExamined }
     }
     async reportText(id: string) {
         const report = this.get(id)

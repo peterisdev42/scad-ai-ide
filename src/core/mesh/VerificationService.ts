@@ -117,12 +117,15 @@ export class MeshVerificationService {
     }
     async verify(input: VerifyMeshInput, signal?: AbortSignal): Promise<MeshReport> {
         signal?.throwIfAborted()
+        // Generation belongs to the completed initial capture, before any shared execution.
+        // Notifications delivered while capturing may describe input already included by it.
+        const initial = await this.host.capture(input)
+        signal?.throwIfAborted()
         const epoch = this.epoch,
             revision = this.revisions.get(input.uri) ?? 0
         const ensureGeneration = () => {
             if (epoch !== this.epoch || revision !== (this.revisions.get(input.uri) ?? 0)) throw new CapabilityError('SNAPSHOT_CHANGED', 'Input generation changed during verification.', true)
         }
-        const initial = await this.host.capture(input)
         ensureGeneration()
         signal?.throwIfAborted()
         this.prune()
