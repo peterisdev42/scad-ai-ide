@@ -112,6 +112,11 @@ test('v2 report schema validates complete and incomplete evidence and unavailabl
     try {
         const r = await service.verify({ uri: 'file:///workspace/model.stl' })
         assert.equal(validate(JSON.parse(JSON.stringify(r))), true, JSON.stringify(validate.errors))
+        const selected = JSON.parse(JSON.stringify(r))
+        selected.snapshot.quality.exportSelection={name:'part',value:'body'}
+        assert.equal(validate(selected),true,JSON.stringify(validate.errors))
+        selected.snapshot.quality.exportSelection.name='$fn'
+        assert.equal(validate(selected),false,'Internal selection metadata must obey the same safe identifier contract.')
         await rm(join(dir, r.artifacts[0].id))
         await assert.rejects(service.ensureArtifacts(service.get(r.reportId)), /unavailable|changed/)
         assert.equal(calls, 1)
