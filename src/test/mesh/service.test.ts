@@ -121,3 +121,29 @@ test('v2 report schema validates complete and incomplete evidence and unavailabl
         await store.dispose()
     }
 })
+
+test('an oversized evidence report is rejected rather than returning an immediately evicted PASS', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'cad-v2-report-budget-')),
+        store = new ArtifactStore(dir),
+        queue = new OperationQueue()
+    const service = new MeshVerificationService(
+        {
+            capture: async () => capture(false),
+            materialize: async (source) => ({ source, bytes: stl(), empty: false, executionStatus: 'SUCCEEDED', checks: [], issues: [], incomplete: [] }),
+            analyze: async (bytes) => {
+                const facts = await analyzeMesh(decodeMesh(bytes, 'stl'))
+                facts.limitations = ['x'.repeat(16 * 1048576)]
+                return { executionStatus: 'SUCCEEDED', facts }
+            },
+            schedule: (task, signal) => queue.run(task, signal),
+        },
+        store,
+    )
+    try {
+        await assert.rejects(service.verify({ uri: 'file:///workspace/model.stl' }), /exceeds the bounded evidence store/)
+    } finally {
+        service.dispose()
+        queue.dispose()
+        await store.dispose()
+    }
+})

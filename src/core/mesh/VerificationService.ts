@@ -102,6 +102,8 @@ export class MeshVerificationService {
         }
     }
     private store(report: MeshReport) {
+        const bytes = Buffer.byteLength(JSON.stringify(report))
+        if (bytes > 16 * 1048576) throw new CapabilityError('REPORT_BUDGET_EXCEEDED', 'Mesh report exceeds the bounded evidence store; no PASS was returned.')
         const clone = structuredClone(report)
         const freeze = (value: unknown) => {
             if (value && typeof value === 'object' && !Object.isFrozen(value)) {
@@ -110,7 +112,7 @@ export class MeshVerificationService {
             }
         }
         freeze(clone)
-        this.reports.set(clone.reportId, { report: clone, expires: Date.now() + 1800000, bytes: Buffer.byteLength(JSON.stringify(clone)) })
+        this.reports.set(clone.reportId, { report: clone, expires: Date.now() + 1800000, bytes })
         this.latest.set(clone.snapshot.sourceStateId, clone.reportId)
         this.prune()
         return clone
