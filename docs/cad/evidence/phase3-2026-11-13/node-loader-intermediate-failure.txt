@@ -1,0 +1,595 @@
+npm notice run scad-ai-ide@0.0.1 test
+npm notice run npm run compile-tests && node --test out/test/capabilities.test.js out/test/capabilityServices.test.js out/test/notifications.test.js out/test/runtime.test.js out/test/github.test.js out/test/installation.test.js out/test/customizer.test.js out/test/customizerSource*.test.js out/test/language.test.js out/test/markdown.test.js && npm run test:libraries && npm run test:preview && npm run test:mesh && npm run test:cad:unit && npm run test:assembly
+npm notice run scad-ai-ide@0.0.1 compile-tests
+npm notice run tsc -p . --outDir out
+✔ capability contract preserves caller, cancellation and explicit failure identity (0.565959ms)
+✔ Source Apply exposes object properties to model clients without changing the accepted input contract (47.73525ms)
+✔ all catalog schemas compile strictly, completeness and duplicate bindings are enforced (104.969458ms)
+✔ schemas reject forged approval, unknown fields, missing targets, invalid enums and excessive reads (82.994542ms)
+✔ dispatcher denies unavailable handlers even when invoked directly and preserves failed terminal state (151.935333ms)
+✔ running operations expose progress, cancellation reaches AbortSignal and never claims success (71.248625ms)
+✔ cache previews redact credentials and personal identifiers, cap depth/entries/bytes, handle cycles (0.770833ms)
+✔ source tool schemas reject arbitrary edits, numeric strings, forged permission and mixed plan/commit fields (68.373042ms)
+✔ cancellation accepts exactly an Agent operation ID or a supported GUI domain (65.04475ms)
+✔ Customizer has full schema with no panel, atomic validation, shared Preview events and stale guards (9.538541ms)
+✔ Customizer preset deletion cannot be approved by model input and leaves state unchanged (3.260167ms)
+✔ Production denies every Dev cache read/mutation path when called directly (9.553292ms)
+✔ Workspace paths reject outside files and canonical symlink escapes; allow workspace files and new sidecars (6.9665ms)
+✔ LM adapter registers side-effect confirmation and bridges cancellation to structured failures (116.605208ms)
+✔ Library GUI and Agent share exact-version transactions, explicit projects, verification and human-confirmed two-phase cleanup (75.378667ms)
+✔ all catalog handlers execute without panels and preserve exact service arguments and safe outputs (91.810958ms)
+✔ Development cache inspection is bounded/redacted; confirmation, stale state and partial clear failures preserve managed artifacts (8.205958ms)
+✔ preset import rejects an asynchronous target switch with TARGET_CHANGED before rebinding files (3.131375ms)
+✔ source plan/commit reads unsaved buffers, never writes disk and consumes plans once (85.368584ms)
+✔ source CAS rejects version, hash-only changes, closed targets, expiry, trust loss and cancellation (22.281417ms)
+✔ source continuation retains native review and cancellation, and failed plans expose no continuation (75.087625ms)
+✔ source tools independently reject outside paths and symlink escapes, with read-only analysis in untrusted workspaces (4.442916ms)
+✔ source commit reports rejected WorkspaceEdit and real postcondition failure without overwriting concurrent text (7.150667ms)
+✔ Customizer code actions require actual diagnostics, keep optional refactors separate and use commands (5.27075ms)
+✔ the shared Library cancel service aborts a GUI-started installation and clears its cancellable state (5.595792ms)
+✔ Runtime Agent lifecycle forces catalog refresh, downloads/probes a real archive, selects, confirms deletion and verifies disk/state (249.407667ms)
+✔ editor actions retain untrusted/outside-workspace access while Agent boundaries stay intact (6.3965ms)
+✔ editor CAS, expiry, provider permissions, close and rejected edits do not change the buffer (26.29325ms)
+✔ editor commands consume once under concurrent invocations and report postcondition interference (8.866834ms)
+✔ source pending plans allow 32, reject the 33rd, and reclaim expired plans (16.995583ms)
+✔ source analysis cache bounds retention to 16 documents and disposal clears retained metadata (9.435875ms)
+✔ source plan preview accepts bounded metadata and rejects output above 32 KiB (6.680292ms)
+✔ mesh image adapter emits native image parts only on explicit inline request and falls back without API (72.067459ms)
+✔ parses scalar parameters, groups, descriptions, ranges and enum labels without evaluating code (2.830292ms)
+✔ the original URL-brace fixture follows the native cutoff while retaining prior controls (0.378ms)
+✔ comments and quoted delimiters do not create parameters or corrupt annotations (0.141292ms)
+✔ validates finite numbers, types, ranges, steps and enum values (2.141458ms)
+✔ overrides are per file, use CLI argument arrays, reset to defaults and preserve source (2.342709ms)
+✔ runtime manager selects a valid result and respects invalid explicit overrides (0.101625ms)
+✔ official widget hints cover max-only sliders, steps, text lengths and all vector sizes (0.242458ms)
+✔ scanner supports multiline literals, multiple statements and library directives without evaluating code (0.122833ms)
+✔ groups, Hidden, Global, block descriptions and malformed hints stay isolated (0.123792ms)
+✔ vectors and text constraints validate at the host boundary and reset without changing source (0.269209ms)
+✔ OpenSCAD string escapes, hex numbers and trailing vector commas preserve literal values (0.099333ms)
+✔ decimal controls infer precision and preserve explicit steps (0.136708ms)
+✔ later assignments invalidate obsolete controls, including Hidden and assignments after geometry (0.076042ms)
+✔ compound headings, Unicode identifiers, mixed enums and unlisted defaults remain editable (0.577583ms)
+✔ OpenSCAD preset files round-trip every widget, mixed enums and hidden metadata (0.598916ms)
+✔ preset changes notify their target even when selecting the same values again (0.223375ms)
+✔ declared constraints remain observable while runtime validation uses native effective limits without quantizing (0.130834ms)
+✔ text input validates native UTF-8 byte limits and never truncates source defaults or preset data (0.3885ms)
+✔ current preset snapshots reject invalid defaults without altering them (0.230667ms)
+✔ current preset snapshots replay valid widget values with their original types (0.128083ms)
+✔ current preset snapshots reject enum values shadowed by an earlier native interpretation (0.097125ms)
+✔ incomplete source is explicit and does not erase existing overrides (0.1255ms)
+✔ unknown preset versions can be analyzed without being authorized for apply or overwrite (0.298125ms)
+✔ preset decoding follows native mixed-menu order, bool encoding and NFC without altering raw keys (0.119709ms)
+✔ service exposes lost-control locations and clears them when repaired or closed (0.124667ms)
+Customizer analyzer 107124 bytes p95=3.28ms; darwin/arm64 Node v24.16.0
+Customizer analyzer 1048576 bytes single sample=6.01ms; not a cross-platform benchmark
+✔ source analyzer retains existing GUI fixtures and all supported widgets (5.213625ms)
+✔ shared scanner tracks exact UTF-16 declaration/comment spans, Unicode, strings and CRLF (2.390667ms)
+✔ groups, Hidden, post-brace variables and duplicates retain legacy visibility (0.4435ms)
+✔ ordinary variables, prose and expressions without intent produce no warnings (0.370792ms)
+✔ deterministic invalid ranges, steps, defaults, choices and malformed hints (2.091708ms)
+✔ incomplete and bounded analyses never claim completeness (0.15125ms)
+✔ 100 KiB source analysis benchmark reports p95 and remains below 100 ms locally (29.354042ms)
+✔ oversized metadata is omitted rather than fabricated or leaked as an unbounded result (0.534917ms)
+✔ legal range hints and effective literal reassignments do not produce duplicate warnings (0.202958ms)
+✔ superseded invalid hints/defaults stop reporting once the effective declaration is corrected (0.170584ms)
+✔ ordinary SCAD and optional or unsupported Customizer usage never generate diagnostics (0.584458ms)
+✔ every warning is tied to written syntax, has a concrete fix and clears after that repair (0.389416ms)
+✔ closed bracket comments followed by prose are not falsely diagnosed as missing a bracket (0.138541ms)
+✔ annotation semantics use native comment tokens rather than source hexadecimal literals (0.081041ms)
+✔ the 64 KiB metadata budget covers parameters, diagnostics and candidates together (6.305417ms)
+✔ source byte boundary includes exactly 1 MiB and rejects multibyte overflow (9.033708ms)
+✔ 501 parameter and candidate inputs obey both count and aggregate metadata bounds (1.744125ms)
+✔ seeded long-tail prose corpus never creates a missing-bracket diagnostic (23.722459ms)
+✔ post-block overrides diagnose lost controls at the effective assignment with the original location (0.198334ms)
+✔ native string brace cutoff removes controls without inventing a SCAD scope or override warning (0.177125ms)
+✔ compatibility corpus covers every semantic audit axis and identifies native evidence (7.140458ms)
+✔ extracted literal and delimiter modules preserve lexical safety without evaluating source (0.411792ms)
+✔ minimal edits preserve CRLF, indentation, geometry, directives and final newline; idempotent (4.449875ms)
+✔ batch group intents preserve neighboring groups and all non-target declarations (3.717208ms)
+✔ insert literal, move group, hide parameter, quoted choices and explicit range conversion (4.500834ms)
+✔ structured edits refuse ambiguous comments/expressions/multiple declarations and invalid contracts (1.144417ms)
+✔ literal insertion preserves BOM and is idempotent; multiline vectors keep geometry untouched (1.073709ms)
+✔ structured Widget edits preserve explanations after a bracketed comment by refusing ambiguous replacement (0.120041ms)
+✔ source plans enforce the actual 50-edit boundary, not only intent count (5.389791ms)
+✔ CUST-ANN-01 repairs one annotation, preserves unrelated warnings and is idempotent (11.281791ms)
+✔ CUST-ANN-02 repairs one annotation, preserves unrelated warnings and is idempotent (0.471834ms)
+✔ CUST-RANGE-02 repairs one annotation, preserves unrelated warnings and is idempotent (0.425709ms)
+✔ CUST-ANN-03 repairs one annotation, preserves unrelated warnings and is idempotent (2.803542ms)
+✔ review-only fixes do not swap bounds, change defaults, truncate text or delete complex options (0.633334ms)
+✔ ordinary bracketed prose never gains a fix or a warning from isolated punctuation (2.414542ms)
+✔ preset storage stages and atomically replaces only the expected original (0.67025ms)
+✔ external edits before or during staging survive with STALE_PRESET and no temp leak (0.301667ms)
+✔ failed staging, rename and final target guard preserve the original and clean temporary data (0.181709ms)
+✔ concurrent extension writers cannot overwrite a completed transaction with an old snapshot (0.134708ms)
+✔ file creation detects another writer creating the previously missing destination (0.07975ms)
+✔ validator compares every explicit expectation and reports independent skipped checks (8.110875ms)
+✔ missing, wrong-widget, hidden and unsupported defaults fail explicit visible contracts (0.273083ms)
+✔ no targets means only static consistency; warnings filtering never hides a failed pass (0.60625ms)
+✔ validation compares the effective control rather than rejecting legal reassignment counts (0.230667ms)
+✔ unmet explicit targets are business results, never source errors or missing-syntax warnings (0.897042ms)
+✔ large unmet target results remain bounded without becoming source diagnostics (9.644292ms)
+✔ source completeness, explicit goals and quality are independent without changing legacy semanticPass (0.359417ms)
+✔ overridden controls fail explicit visibility contracts and remain warnings without expectations (0.200125ms)
+✔ GitHub client uses the current token, preserves request headers and remains anonymous after logout (13.513958ms)
+✔ concurrent GitHub requests share an in-flight session lookup without caching tokens across later requests (0.27875ms)
+✔ GitHub tokens are never attached to insecure, lookalike or non-GitHub URLs (0.3755ms)
+✔ host fetch preserves same-origin authentication and strips it on cross-origin download redirects (17.404209ms)
+✔ authenticated and anonymous API requests keep the host network path instead of forcing manual redirects (0.353666ms)
+✔ explicit redirect options and request signals are delegated to the host fetch unchanged (0.120292ms)
+✔ unavailable GitHub authentication falls back to anonymous requests and reports the authentication error (0.385209ms)
+✔ VS Code GitHub adapter uses silent Authentication API access and never passes tokens into logs (3.92625ms)
+✔ VS Code GitHub sign-in is interactive only when Connect is explicitly called (0.986708ms)
+✔ failed or cancelled authorization explains VS Code sign-in and preserves anonymous requests (3.540959ms)
+✔ release pagination, runtime downloads and checksums all use the shared authenticated GitHub client (11.046916ms)
+✔ More GitHub state follows authorized sessions and logout without serializing the access token (0.85975ms)
+✔ More exposes authentication failure reasons and continues anonymous GitHub access (0.825708ms)
+✔ a late stale authentication check cannot overwrite the current More connection state (0.692709ms)
+✔ anonymous GitHub failures suggest sign-in without consuming responses or replacing the original error (0.37675ms)
+✔ More retains the shared sign-in hint across anonymous checks and clears it after connecting (0.974375ms)
+✔ panel navigation shares GitHub guidance and opens requested Runtime tabs before and after readiness (10.376042ms)
+✔ background GitHub session checks preserve the connected UI without showing interactive loading (0.798708ms)
+▶ release checksum is downloaded and verified when present, and skipped only when absent
+  ✔ valid (29.902583ms)
+  ✔ absent (7.433958ms)
+  ✔ mismatch (3.62925ms)
+  ✔ malformed (2.954584ms)
+  ✔ download failed (3.337708ms)
+✔ release checksum is downloaded and verified when present, and skipped only when absent (55.681ms)
+✔ installation verifies, extracts, probes and discovers all managed versions from disk (532.063166ms)
+✔ failed or cancelled installs never publish a partial runtime and clean staging (9.397584ms)
+✔ Windows ZIP installation preserves dependency files and discovers openscad.exe (3.621ms)
+✔ archive extraction rejects traversal and escaping symlinks (2.333083ms)
+✔ local archive imports copy, verify and discover a renamed package offline, without retaining archives or duplicate imports (156.981375ms)
+✔ local Windows ZIP imports preserve dependencies and their source archives (5.116541ms)
+✔ failed validation in staging or at the final path removes all imported files and keeps the original archive (134.398083ms)
+✔ local cancelled copies, invalid archives and wrong-platform packages leave no installation or copied archive (6.750458ms)
+✔ Available installation detection reads asset directories and imported release metadata, including damaged runtimes (2.092209ms)
+✔ reinstall removes matching offline imports before downloading and preserves other versions and the original ZIP (8.365875ms)
+✔ runtime deletion removes only the selected managed installation and rejects paths outside its ownership (2.791625ms)
+✔ indentation rules handle SCAD blocks, vectors, calls and comment lines (0.610792ms)
+✔ single-statement bodies indent once without treating complete statements or expressions as headers (0.15475ms)
+✔ block comment Enter rules continue stars and leave completed comments (0.531375ms)
+✔ fold markers accept regions and do not treat geometry or customizer headers as markers (0.115125ms)
+✔ language contributions resolve packaged assets and preserve editor pairs (1.225ms)
+✔ TextMate tokenization distinguishes declarations, paths, numbers and multiline strings/comments (27.105541ms)
+✔ TextMate scopes distinguish multiline parameters, nested defaults, named arguments and variable references (2.307042ms)
+✔ server resolution uses bundle before PATH and rejects an invalid explicit override (19.748334ms)
+(node:45682) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ model cache deduplicates blocks, serializes CLI work and caches errors until invalidated (36.332375ms)
+✔ invalidating a running model aborts it, skips queued work and suppresses stale updates (9.689416ms)
+✔ Mesh CLI rendering requests binary STL, preserves command prefixes, stdin and cwd; cleans up on errors and cancellation (147.441083ms)
+✔ Markdown fences support both aliases and capitalization, preserve code and other languages, and embed cached interactive models (140.476084ms)
+✔ preview highlighting reuses OpenSCAD scopes, preserves multiline state and escapes code (2.418917ms)
+✔ preview resolves the selected theme includes and user token overrides instead of hard-coded colors (6.833458ms)
+✔ Markdown rendering respects trust, disabled settings and document context; compiler errors are escaped (107.450625ms)
+✔ tab containers keep the Markdown source mapping visible without changing cached fence tokens (1.883208ms)
+✔ switching between image-based and full rendering invalidates Markdown models (116.862ms)
+✔ owned Markdown escapes source and diagnostics while preserving stable model slots (2.812125ms)
+✔ editing Markdown keeps unchanged source cache entries and cancels removed work (25.122375ms)
+✔ concurrent producers and dismissed persistent issues aggregate until recovery (0.527417ms)
+✔ transient notifications distinguish file and error and reappear after cooldown (0.532375ms)
+✔ UI and action failures are contained and permit retry (0.211541ms)
+✔ recovery and disposal invalidate actions in old UI prompts (0.152083ms)
+✔ catalog merges missing Runtime from startup, rendering, export and slicer (0.568042ms)
+✔ language failure is aggregated independently and resets on successful start (0.139125ms)
+✔ compiler failures preserve full error identity even when their visible summary matches (0.123166ms)
+✔ transient problem remains aggregated while its UI is open beyond the cooldown (0.10375ms)
+✔ all runtime lists sort by release name year, month, day and natural suffix without changing discovery priority (1.2745ms)
+✔ equal versions ignore source, path, runtime ID and git metadata when sorting (0.097916ms)
+✔ explicit override precedes PATH, ignores relative PATH entries and deduplicates (0.280834ms)
+✔ Windows prefers console launchers and honors Scoop environment roots (0.262042ms)
+✔ registry matches OpenSCAD installations and extracts console paths from quoted icons (0.307333ms)
+✔ Flatpak preserves branches and installation scopes as argument arrays (0.138292ms)
+✔ version parser accepts release and snapshot output and rejects unrelated binaries (0.176417ms)
+✔ discovery resolves aliases, retains separate Flatpak branches and explicit errors (0.364375ms)
+✔ Scoop launches the physical version directory and Snap preserves dispatcher identity (0.141417ms)
+✔ bundled CLI is discovered and unavailable candidates do not stop the scan (0.167ms)
+✔ real process validation captures stderr and safely handles paths with shell characters (129.75625ms)
+✔ process runner times out stuck commands and rejects nonzero exits (126.67925ms)
+✔ macOS app metadata resolves custom executable names and rejects path traversal (7.754083ms)
+✔ selecting a discovered installation preserves its source label (0.167ms)
+✔ runtime build matching requires the exact OS and architecture and excludes checksum files (0.330791ms)
+✔ release listing follows pagination and includes stable and prerelease matching archives only (9.361417ms)
+✔ release listing handles empty results, API failures, invalid payloads and untrusted downloads (0.599417ms)
+✔ system detection returns the extension host platform, version and normalized architecture (6.450792ms)
+✔ managed macOS app and wrapper appear once, preserving PATH installations and separate builds (0.496042ms)
+✔ explicitly selected app keeps priority when merged into its managed launcher, including canonical storage aliases (0.321333ms)
+✔ managed launchers on PATH retain managed metadata and distinct argument prefixes (0.15125ms)
+✔ an unusable managed wrapper does not hide a working app entry (0.2415ms)
+✔ Windows PATH and repeated registry entries merge .com/.exe launchers case-insensitively (0.469583ms)
+✔ Windows falls back to .exe when the .com launcher fails without duplicating registry results (0.253375ms)
+✔ Windows managed packages merge PATH, registry, root and bin launchers while preserving selected priority and other builds (0.950417ms)
+✔ Windows Scoop junction aliases merge with physical paths without merging separate launch arguments (0.329458ms)
+✔ release channels use validated YAML and never infer Stable or Snapshot from a date (4.429792ms)
+✔ invalid or inconsistent release metadata is rejected safely (1.641291ms)
+✔ GitHub Latest chooses the recommended stable tag independently of snapshots (0.428708ms)
+✔ available builds sort by upstream title date, then tag, with publication time only as fallback (0.499792ms)
+✔ GitHub rate-limit failures preserve the upstream message, status, reset time and request metadata (0.713042ms)
+✔ GitHub permission errors are distinct from rate limits and plain upstream failures keep their response (0.38025ms)
+✔ GitHub network failures expose DNS, TLS, timeout and aggregate connection causes (0.199875ms)
+✔ invalid GitHub response content retains the request and parsing error or unexpected payload (0.133125ms)
+✔ startup waits for discovery and offers Runtime Available once when no runtime exists (4.1635ms)
+✔ startup stays quiet when a usable runtime is discovered (1.347083ms)
+✔ dismissing startup guidance leaves Runtime closed (1.807625ms)
+✔ startup defers missing-runtime guidance until the workspace is trusted (1.182916ms)
+✔ discovery failures do not claim that OpenSCAD is missing (1.136417ms)
+✔ Installed scans silently, coalesces repeated visits and publishes only changed discovery results (1.382834ms)
+✔ silent scan failures publish the actual reason and clear stale runtime results (1.203459ms)
+✔ switching runtime exposes only the selected ID while validating silently and clears it after success (1.64225ms)
+✔ failed runtime selection clears its button state, preserves the active runtime and returns the actual error (1.827208ms)
+✔ installation publishes completion even when discovery is unchanged and cancellation is not an error (2.952625ms)
+✔ workspace trust prerequisites are panel warnings and do not start runtime operations (1.498125ms)
+✔ deleting an active managed runtime clears its saved selection and keeps the fallback; failed deletion preserves it (1.824125ms)
+✔ discovery shares missing Runtime with preview and rearms only after successful recovery (1.49525ms)
+✔ Runtime recommendation uses Latest Stable while keeping snapshots first in Available (2.825417ms)
+✔ Runtime catalog persists across restarts, restores Installed channels without GitHub and survives failed refreshes (3.60675ms)
+✔ Runtime catalog cache rejects corrupt data, foreign platforms and untrusted download URLs (0.122791ms)
+✔ legacy file catalog migrates into globalState without GitHub access (2.49025ms)
+✔ each Runtime panel load shows cached data while GitHub refresh is pending, then replaces UI and globalState (1.590292ms)
+✔ Runtime shared service rejects cancellation, forged unmanaged deletion and human-denied removal without GUI dependencies (1.141375ms)
+✔ the shared Runtime cancel service stops a GUI-started installation and reports no cancellable task after completion (1.192917ms)
+ℹ tests 222
+ℹ suites 0
+ℹ pass 222
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1024.479125
+npm notice run scad-ai-ide@0.0.1 test:libraries
+npm notice run node --import tsx --test src/test/libraries/*.test.ts
+✔ Independent Node extension hosts serialize changes to the same Store (411.875375ms)
+✔ Abandoned heartbeat leases can be recovered before replaying a project transaction (5.65675ms)
+✔ Environment isolates workspaces, preserves base env and fingerprints version/link changes (73.05625ms)
+﹣ Real OpenSCAD resolves a linked library, changes geometry after version switch and retains Store on removal (3.027ms) # OpenSCAD CLI is not available. Set SCAD_OPENSCAD_EXECUTABLE.
+✔ Windows uses semicolons and retains inherited case-insensitive OPENSCADPATH; POSIX uses colons (0.489625ms)
+﹣ Real Fast Preview and Markdown use the same project library environment (0.05875ms) # SKIP
+✔ Cleanup refuses known references, requires explicit confirmation and rechecks after confirmation (79.422791ms)
+✔ Unreadable known projects block cleanup; forged deletion IDs are rejected (16.395375ms)
+✔ A known project without any dependencies does not masquerade as an unreadable reference (9.300667ms)
+✔ Unreferenced cleanup removes all unused versions across repositories and preserves project-used versions (51.221708ms)
+✔ Bulk cleanup rechecks project references after confirmation and never deletes newly added versions (27.698459ms)
+✔ Delete-all mode removes referenced sources without changing project manifests or lockfiles (21.108875ms)
+✔ Immutable store deduplicates concurrent installs, separates commits/repositories and detects corruption (125.858584ms)
+✔ Failed/cancelled downloads and unsafe redirects never publish an entity (4.6265ms)
+✔ ZIP rejects traversal, Windows names, Unicode/case collisions and symlinks (4.961167ms)
+✔ ZIP checksum corruption is rejected; orphaned metadata is visible rather than reused (12.004583ms)
+﹣ Online BOSL2: Registry → commit archive → global Store → project link → real CLI → offline Restore (0.333084ms) # SKIP
+✔ Two projects isolate versions; lockfile-only restore works offline and removal preserves global content (74.642584ms)
+✔ Mount failures roll back project version and never overwrite unmanaged directories (18.897959ms)
+✔ Interrupted publication restores old links and files before another operation (22.90725ms)
+✔ Copy fallback requires confirmation, detects edited copies and can be declined (16.727208ms)
+✔ Project symlink roots and foreign mount links are not followed during mutation (11.657667ms)
+✔ Registry v1/v2 validates exact repository-pinned versions and preserves null latest (1.209709ms)
+✔ Snapshot and sync errors remain explicit; unreviewed layouts never guessed (0.437792ms)
+✔ Manifests and locks reject unsafe paths, ranges and cross-platform collisions (0.23375ms)
+✔ Registry supports ETag/304, validated disk cache and offline cold restart (19.662208ms)
+✔ Registry globalState list is immediately available while refresh is pending, shared by callers and preserved on failure (3.679917ms)
+✔ Registry imports its old disk list, prefers valid globalState and ignores corrupt or foreign cache data (6.095375ms)
+✔ A bad Registry response cannot overwrite cached results; failed persistence does not discard a fresh list (1.524417ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 3
+ℹ todo 0
+ℹ duration_ms 503.330833
+npm notice run scad-ai-ide@0.0.1 test:preview
+npm notice run node esbuild.js && node --import tsx --test src/test/preview/*.test.ts
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+(node:45847) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CSG identities and source colors survive explode transforms and difference cutters do not enlarge part bounds (1.204ms)
+✔ CSG assistance colors touching geometry by source scope rather than connected shells (1.198041ms)
+✔ uncolored top-level CSG groups retain paths, and unsupported primitives fall back without inventing bounds (0.310792ms)
+✔ rotations, nested matrices and polyhedron points produce world-space conservative bounds (0.115792ms)
+✔ expired matching budgets return the original geometry-color fallback (0.145416ms)
+(node:45848) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ Cube edges snap to exact 45-degree views after every corner (perspective) (15.913666ms)
+✔ Cube edges snap to exact 45-degree views after every corner (orthographic) (2.037292ms)
+✔ All 26 cube views converge from every other view, including opposites and rolled cameras (7.884125ms)
+✔ An edge selection interrupts an unfinished corner animation and stays at the selected edge (0.374541ms)
+✔ Initial Top–Left–Front fit keeps tall and wide models in frame in both projections (1.110167ms)
+✔ preset selection renders immediately before file initialization and ordinary edits always update Preview (73.913333ms)
+✔ continuous changes are accepted only for a proven CSG backend; release still renders after changing to mesh (5.9545ms)
+✔ Preview routes preset mutations to the shared host domain and refuses a changed target (4.618625ms)
+✔ renderer-only sessions cannot fall back to independent preset writes (6.144958ms)
+✔ Preview incomplete source never prunes stored overrides and resumes with complete definitions (5.067125ms)
+✔ configuration detection handles expressions, comments, strings and multiline vectors (0.498083ms)
+✔ geometry, includes, module calls and unknown or incomplete syntax stay eligible (0.0715ms)
+✔ empty model classification preserves real compiler failures (0.194292ms)
+✔ CLI empty results are distinct from failures; configuration skips execution and dirty geometry is rendered (359.809875ms)
+✔ preview command opens configuration and model files without filtering or notifications (2.500458ms)
+(node:45851) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ unsupported platforms reject Fast Preview and identify Full Render (4.821542ms)
+✔ normal CLI cannot masquerade as Preview Exporter (0.413625ms)
+✔ download rejects a changed published checksum before archive extraction (27.937042ms)
+✔ download verifies archive contents against pinned SHA256 (26.003875ms)
+✔ mode changes cancel old work, publish only latest, and Full Render keeps native mesh (79.327083ms)
+✔ continuous parameters abort obsolete work and coalesce to newest request (9.08125ms)
+✔ cache reuse avoids exporter work; invalidation and disposal prevent stale publication (4.891625ms)
+✔ exporter errors are surfaced with no legacy or mesh fallback (6.69775ms)
+✔ continuous input never starves frames and only the newest pending sample runs (16.005083ms)
+✔ host phase timings survive prepared-scene transport metadata parsing (8.329083ms)
+✔ Changing only dependency fingerprint prevents reuse of a previous library version (5.759292ms)
+(node:45853) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ image renderer shares exporter meshes and disposes every shared resource exactly once (14.64325ms)
+✔ CPU picking follows Products and editor transforms, without final topology generation (7.742ms)
+✔ prepared scene validation rejects invalid convexity and untrusted provenance before GPU allocation (1.179541ms)
+✔ phase timing validation keeps measured zero/fractions, rejects nonfinite and unknown values (0.470458ms)
+(node:45854) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ Key light shadow camera covers small, large and displaced models (1.495875ms)
+✔ Mesh stl preview preserves raw bytes, reloads file changes and disposes its watcher without a Runtime (60.051584ms)
+✔ Mesh 3mf preview preserves raw bytes, reloads file changes and disposes its watcher without a Runtime (3.905916ms)
+✔ Older or disposed mesh reads cannot overwrite newer results, and read errors are reported (2.648833ms)
+✔ Source, binary editors and both preview types share toggle commands (4.234041ms)
+✔ standalone STL clipping uses only the mesh worker and requires no CLI/exporter (292.915125ms)
+✔ standard 3MF colors, units and clipping stay independent from prepared previews (153.37125ms)
+(node:45857) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ Mouse panning maps CSS pixel displacement 1:1 in both camera modes (1.670417ms)
+✔ Build plate center and printable lower-left origins align correctly (0.34725ms)
+✔ Print-plate reset frames the plate for fitting XY models and the model for oversized XY (0.259833ms)
+✔ Turntable yaw/pitch use fixed angular gain, preserve target/distance and avoid accumulated roll (0.327583ms)
+✔ Turntable recovers rolled views and protects exact Top/Bottom without flipping (0.287917ms)
+✔ Middle, right and modifier drags all pan by exactly the pointer displacement (0.350708ms)
+✔ preview adapts the IDE parser without overriding expressions or hidden values (3.451041ms)
+✔ Preview mirrors host preset identity without independently applying or clearing overrides (0.343917ms)
+✔ shared customizer notifies both editors and isolates file overrides and subscriptions (0.472875ms)
+✔ vectors and text limits survive preview synchronization and definition changes (0.25075ms)
+✔ Preview projection uses effective bounds and keeps source defaults unchanged (0.609292ms)
+(node:45859) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ part detection welds STL seams but keeps disconnected shells separate, for indexed and nonindexed meshes (0.865375ms)
+✔ part colors distinguish shells and restore source vertex colors and manual overrides (1.100584ms)
+✔ shared 3MF instances receive independent colors and retain their original material after toggling (0.539166ms)
+(node:45863) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ standard mesh picking and measurement follow translation and nonuniform scaling without native queries (2.360667ms)
+(node:45866) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ real exporter v1 fixture: cube (4.134583ms)
+✔ real exporter v1 fixture: sphere (1.601041ms)
+✔ real exporter v1 fixture: cylinder (0.572709ms)
+✔ real exporter v1 fixture: union (1.414542ms)
+✔ real exporter v1 fixture: difference (1.346792ms)
+✔ real exporter v1 fixture: intersection (1.275625ms)
+✔ real exporter v1 fixture: nested (1.31575ms)
+✔ real exporter v1 fixture: transform (0.351792ms)
+✔ real exporter v1 fixture: modifiers (0.834208ms)
+✔ real exporter v1 fixture: polygon (0.88225ms)
+✔ real exporter v1 fixture: grid (0.747625ms)
+✔ real exporter v1 fixture: empty (0.217458ms)
+✔ schema, provenance, finite tuples, indices, transforms, terms and budgets are enforced (0.913625ms)
+✔ difference picking sees the through-hole and wall; clipping produces correct caps (2.788ms)
+✔ products truth table uses intersections AND NOT subtractions; union is OR (0.093583ms)
+✔ row-major translation, rotation, mirror and large-coordinate rebasing agree with Three (1.647625ms)
+✔ highlight and background keep distinct products and original flags (0.58325ms)
+✔ syntax diagnostics retain the file and line without CLI output noise (0.500542ms)
+✔ syntax failures replace stale models with a persistent centered message and recover after a successful render (32.343375ms)
+✔ syntax failures before webview readiness are replayed, while empty models and other errors keep their handling (2.544416ms)
+✔ a superseded canvas cannot overwrite timings or acknowledge the next host request (3.583084ms)
+✔ CSG is exported only when requested, cached for the current model and invalidated after a new render (3.677167ms)
+✔ obsolete CSG responses are discarded and in-flight exports abort when the model starts changing (3.641333ms)
+✔ failed CSG assistance quietly falls back and is not repeatedly exported on camera updates or retoggles (3.498375ms)
+✔ preview Problems cover render and webview errors, reject stale models and clear recovered scopes (3.0505ms)
+✔ Problems error projection deduplicates bounded errors and only attributes explicit locations (0.600167ms)
+✔ stderr capture retains middle errors across split chunks without unbounded output (2.075833ms)
+✔ fast Preview exporter failures reach Problems before the preview-only UI early return (2.54125ms)
+✔ missing Runtime offers simple installation guidance and opens Available (30.140292ms)
+✔ compiler failures still show output and do not open Runtime management (2.009959ms)
+✔ dismissing missing-Runtime guidance does not open another panel (1.629583ms)
+✔ startup and multiple preview failures share one unresolved Runtime problem (1.155958ms)
+✔ opening Runtime or refreshing release lists does not rerender an unchanged or missing Runtime (35.459875ms)
+✔ Runtime discovery, switching and removal refresh previews once after settling (2.39425ms)
+✔ reinstalling the same active Runtime retries rendering once, without retrying missing-Runtime errors (3.376792ms)
+(node:45871) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ theme-derived model, build plate and grids remain distinct in light, dark and low-contrast custom themes (0.470583ms)
+✔ theme refresh updates existing default materials and preserves explicit 3MF colors (0.806958ms)
+✔ existing build plate and grid buffers follow theme changes without replacing geometry or origin (92.763417ms)
+✔ Default model is neutral and user color survives theme switches until reset (0.213416ms)
+✔ Plate palette stays charcoal across bright, dark and strongly tinted custom themes (0.443959ms)
+(node:45872) [THREE_CJS_DEPRECATED] DeprecationWarning: `require("three")` is deprecated and will be removed.
+Replace `const THREE = require("three")` with `import * as THREE from "three"`.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ View cube exposes exactly 6 face, 12 edge and 8 corner directions (0.782958ms)
+✔ All 26 cube regions are independently pickable by outward-facing geometry (5.0015ms)
+✔ Face labels follow OpenSCAD Z-up coordinates and pole directions are exact (0.438708ms)
+✔ Face labels have fixed, outward-facing orientations tied to the requested adjacent faces (0.243583ms)
+✔ Every cube target has a valid reference pose (0.243125ms)
+✔ Side, edge and corner clicks restore Z-up while poles retain the nearest local roll (5.273792ms)
+ℹ tests 103
+ℹ suites 0
+ℹ pass 103
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 528.833209
+npm notice run scad-ai-ide@0.0.1 test:mesh
+npm notice run node esbuild.js && node --import tsx --test src/test/mesh/*.test.ts
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+✔ artifacts are content-bound, leased, evicted and never accept filesystem paths (11.789125ms)
+✔ artifact leases protect TTL expiry while corruption is always rejected (36.248ms)
+✔ 3MF rejects unsafe ZIP paths, XML entities, reference cycles, missing parts and invalid indices (8.86525ms)
+✔ checked-in golden meshes retain their reviewed hashes (3.81425ms)
+✔ raw binary/ASCII box has analytic bounds, area, signed and physical volume (11.075292ms)
+✔ inward winding stays negative and does not become a positive physical volume (1.404458ms)
+✔ open, non-manifold, degenerate, duplicate and self-intersecting meshes preserve raw defects (4.915291ms)
+✔ proper cavity and disjoint components have material-aware volume (2.898583ms)
+✔ pair budget and roundoff never produce a trusted physical volume (0.922833ms)
+✔ 3MF root relationships, unit, components and reflected transforms retain physical orientation (6.921958ms)
+✔ malformed raw inputs, unsupported 3MF extension, singular transforms and non-finite data are controlled (1.441041ms)
+✔ 3MF disjoint/contained build items are measured once and overlaps stay unresolved (6.026125ms)
+✔ decimal collapse is unresolved rather than epsilon-welded into a certified solid (0.409875ms)
+✔ pinched vertices, inconsistent orientation and near contact cannot certify a solid (4.587708ms)
+✔ predicates lock signs and classify shared simplices beyond simply skipping adjacent faces (0.36475ms)
+✔ 3MF measurements bound referenced geometry while retaining unused source vertices (9.115125ms)
+✔ inline byte budget falls back before reading image payloads and empty models do not need a renderer (0.795958ms)
+✔ v2 shares one immutable mesh, isolates cancellation, blocks stale evidence and reuses complete facts (51.399709ms)
+✔ an input changed and restored while mesh analysis is running cannot publish a v2 report (3.154125ms)
+✔ v2 report schema validates complete and incomplete evidence and unavailable artifacts never rerender report IDs (53.253625ms)
+✔ an oversized evidence report is rejected rather than returning an immediately evicted PASS (32.738292ms)
+✔ last caller cancellation during final capture cannot populate a cached PASS (3.4605ms)
+FATAL ERROR: v8::ToLocalChecked Empty MaybeLocal
+----- Native stack trace -----
+
+ 1: 0x100e51fac node::OnFatalError(char const*, char const*) [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+ 2: 0x1010ae608 v8::Utils::ReportApiFailure(char const*, char const*) [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+ 3: 0x100e355b0 node::cjs_lexer::Parse(v8::FunctionCallbackInfo<v8::Value> const&) [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+ 4: 0x101d2a818 Builtins_CallApiCallbackGeneric [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+ 5: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+ 6: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+ 7: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+ 8: 0x13a68a270 
+ 9: 0x13a68a5ac 
+10: 0x13a68a888 
+11: 0x13a68d99c 
+12: 0x13a68e898 
+13: 0x13a68ee04 
+14: 0x13a68ae80 
+15: 0x13a6903d0 
+16: 0x13a690878 
+17: 0x101d25978 Builtins_JSConstructStubGeneric [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+18: 0x13a68dd2c 
+19: 0x13a68e898 
+20: 0x13a68ee04 
+21: 0x13a68ae80 
+22: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+23: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+24: 0x101d29400 Builtins_InterpreterPushArgsThenFastConstructFunction [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+25: 0x101eb9628 Builtins_ConstructHandler [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+26: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+27: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+28: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+29: 0x13a68ae80 
+30: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+31: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+32: 0x101d29400 Builtins_InterpreterPushArgsThenFastConstructFunction [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+33: 0x101eb9628 Builtins_ConstructHandler [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+34: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+35: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+36: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+37: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+38: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+39: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+40: 0x101d29400 Builtins_InterpreterPushArgsThenFastConstructFunction [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+41: 0x101eb9628 Builtins_ConstructHandler [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+42: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+43: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+44: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+45: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+46: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+47: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+48: 0x101d29400 Builtins_InterpreterPushArgsThenFastConstructFunction [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+49: 0x101eb9628 Builtins_ConstructHandler [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+50: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+51: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+52: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+53: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+54: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+55: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+56: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+57: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+58: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+59: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+60: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+61: 0x101d28bec Builtins_InterpreterEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+62: 0x101d268cc Builtins_JSEntryTrampoline [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+63: 0x101d26570 Builtins_JSEntry [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+64: 0x101251a94 v8::internal::(anonymous namespace)::Invoke(v8::internal::Isolate*, v8::internal::(anonymous namespace)::InvokeParams const&) [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+65: 0x1012513f8 v8::internal::Execution::Call(v8::internal::Isolate*, v8::internal::DirectHandle<v8::internal::Object>, v8::internal::DirectHandle<v8::internal::Object>, v8::base::Vector<v8::internal::DirectHandle<v8::internal::Object> const>) [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+66: 0x1010c5e78 v8::Function::Call(v8::Isolate*, v8::Local<v8::Context>, v8::Local<v8::Value>, int, v8::Local<v8::Value>*) [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+67: 0x100d333d8 node::InternalMakeCallback(node::Environment*, v8::Local<v8::Object>, v8::Local<v8::Object>, v8::Local<v8::Function>, int, v8::Local<v8::Value>*, node::async_context, v8::Local<v8::Value>) [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+68: 0x100d4bdd0 node::AsyncWrap::MakeCallback(v8::Local<v8::Function>, int, v8::Local<v8::Value>*) [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+69: 0x100eaf620 node::worker::MessagePort::OnMessage(node::worker::MessagePort::MessageProcessingMode) [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+70: 0x101d05874 uv__async_io [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+71: 0x101d1a16c uv__io_poll [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+72: 0x101d061c8 uv_run [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+73: 0x100d346a8 node::SpinEventLoopInternal(node::Environment*) [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+74: 0x100f81440 node::worker::Worker::Run() [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+75: 0x100f85cd4 node::worker::Worker::StartThread(v8::FunctionCallbackInfo<v8::Value> const&)::$_0::__invoke(void*) [/Users/q/.volta/tools/image/node/24.16.0/bin/node]
+76: 0x19d6e5d00 _pthread_start [/usr/lib/system/libsystem_pthread.dylib]
+77: 0x19d6e0cec thread_start [/usr/lib/system/libsystem_pthread.dylib]
+
+----- JavaScript stack trace -----
+
+1: cjsPreparseModuleExports (node:internal/modules/esm/translators:397:44)
+2: createCJSModuleWrap (node:internal/modules/esm/translators:212:35)
+3: commonjsStrategy (node:internal/modules/esm/translators:353:10)
+4: #translate (node:internal/modules/esm/loader:435:20)
+5: afterLoad (node:internal/modules/esm/loader:491:29)
+6: loadAndTranslate (node:internal/modules/esm/loader:496:12)
+7: #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)
+8: afterResolve (node:internal/modules/esm/loader:597:52)
+9: getOrCreateModuleJob (node:internal/modules/esm/loader:603:12)
+10: syncLink (node:internal/modules/esm/module_job:163:33)
+
+
+✖ src/test/mesh/worker.test.ts (181.792292ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 22
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 223.255708
+
+✖ failing tests:
+
+test at src/test/mesh/worker.test.ts:1:1
+✖ src/test/mesh/worker.test.ts (181.792292ms)
+  'test failed'

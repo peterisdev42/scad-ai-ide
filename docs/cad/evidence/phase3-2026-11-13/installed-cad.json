@@ -1,0 +1,148 @@
+{
+  "status": "PASS",
+  "scope": "Production VSIX + real CLI; direct Host invocation, not model E2E",
+  "failed": {
+    "schemaVersion": 1,
+    "reportId": "cad-579733d1-270e-4b93-978c-f443733efcc1",
+    "snapshotId": "0915940546599e60f7137d34c8cb5e7f1b03c68e896cd8dfb959d617c5b58883",
+    "document": {
+      "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-Tdu4vw/workspace/cad-diagnostics.scad",
+      "version": 2,
+      "sourceSha256": "b53980ee2719c5369da5835df519742689b648ad93c60293fbea40b5d1a030b6",
+      "dirty": true
+    },
+    "projectRoot": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-Tdu4vw/workspace",
+    "runtime": {
+      "executable": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+      "version": "2026.11-RC0",
+      "identityHash": "96641cfec22e509646217ebbe5a9a02c9505dcb3d01f0f12a9d980e5479a1f72",
+      "capabilityHash": "35a1f9f5109478c041b3e06a17b25e3f6e75a66cf941f17fb1d1ca2120505450",
+      "hostPlatform": "darwin-arm64"
+    },
+    "executionStatus": "FAILED",
+    "overallStatus": "FAIL",
+    "complete": true,
+    "units": "modelUnits",
+    "checks": [
+      {
+        "id": "cli-evaluation",
+        "category": "compile",
+        "required": true,
+        "status": "FAIL",
+        "issueIds": [
+          "6493aa398f3bea4eff91f3f3401ff27bcbf05c871c2cc82d726933527b730e16"
+        ],
+        "reason": "CSG evaluation only; no full-mesh or assembly verification."
+      }
+    ],
+    "issues": [
+      {
+        "id": "6493aa398f3bea4eff91f3f3401ff27bcbf05c871c2cc82d726933527b730e16",
+        "code": "SCAD_CLI_ASSERT_FAILED",
+        "severity": "error",
+        "status": "FAIL",
+        "title": "ERROR: Assertion 'false' failed: \"installed CAD assertion\"",
+        "location": {
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-Tdu4vw/workspace/cad-diagnostics.scad",
+          "line": 1,
+          "character": 0,
+          "confidence": "exact"
+        }
+      }
+    ],
+    "issueCount": 1,
+    "issuesTruncated": false,
+    "examined": [
+      "cli-diagnostics"
+    ],
+    "notExamined": [
+      "full-render",
+      "mesh-validity",
+      "dimensions",
+      "constraints",
+      "assembly",
+      "visual",
+      "diff",
+      "printability"
+    ],
+    "incomplete": [],
+    "artifacts": [
+      {
+        "id": "cad-579733d1-270e-4b93-978c-f443733efcc1:log",
+        "kind": "log",
+        "mimeType": "text/plain",
+        "snapshotId": "0915940546599e60f7137d34c8cb5e7f1b03c68e896cd8dfb959d617c5b58883"
+      }
+    ],
+    "metrics": {
+      "elapsedMs": 25.47420800000009,
+      "truncated": false
+    },
+    "reportUri": "scad-cad-report:/cad-579733d1-270e-4b93-978c-f443733efcc1"
+  },
+  "passed": {
+    "schemaVersion": 1,
+    "reportId": "cad-d1b35557-3e33-495b-8e6a-d71adc3a2dde",
+    "snapshotId": "d0f66d32f813bfecd258461da410f8471c835ede97e51568c1d5b4752e5d4b91",
+    "document": {
+      "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-Tdu4vw/workspace/cad-diagnostics.scad",
+      "version": 3,
+      "sourceSha256": "a31ee19c8a470195185a94e635a19bf524794c2f8b7b5d3cfd88b2942c92283e",
+      "dirty": true
+    },
+    "projectRoot": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-Tdu4vw/workspace",
+    "runtime": {
+      "executable": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+      "version": "2026.11-RC0",
+      "identityHash": "96641cfec22e509646217ebbe5a9a02c9505dcb3d01f0f12a9d980e5479a1f72",
+      "capabilityHash": "35a1f9f5109478c041b3e06a17b25e3f6e75a66cf941f17fb1d1ca2120505450",
+      "hostPlatform": "darwin-arm64"
+    },
+    "executionStatus": "SUCCEEDED",
+    "overallStatus": "PASS",
+    "complete": true,
+    "units": "modelUnits",
+    "checks": [
+      {
+        "id": "cli-evaluation",
+        "category": "compile",
+        "required": true,
+        "status": "PASS",
+        "issueIds": [],
+        "reason": "CSG evaluation only; no full-mesh or assembly verification."
+      }
+    ],
+    "issues": [],
+    "issueCount": 0,
+    "issuesTruncated": false,
+    "examined": [
+      "cli-diagnostics"
+    ],
+    "notExamined": [
+      "full-render",
+      "mesh-validity",
+      "dimensions",
+      "constraints",
+      "assembly",
+      "visual",
+      "diff",
+      "printability"
+    ],
+    "incomplete": [],
+    "artifacts": [
+      {
+        "id": "cad-d1b35557-3e33-495b-8e6a-d71adc3a2dde:log",
+        "kind": "log",
+        "mimeType": "text/plain",
+        "snapshotId": "d0f66d32f813bfecd258461da410f8471c835ede97e51568c1d5b4752e5d4b91"
+      }
+    ],
+    "metrics": {
+      "elapsedMs": 29.575457999999912,
+      "truncated": false
+    },
+    "reportUri": "scad-cad-report:/cad-d1b35557-3e33-495b-8e6a-d71adc3a2dde"
+  },
+  "diskUnchanged": true,
+  "previewRequired": false
+}

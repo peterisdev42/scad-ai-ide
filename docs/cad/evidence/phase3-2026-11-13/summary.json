@@ -1,0 +1,88 @@
+{
+  "baseline": "2385de712f4ea97ee0463b9316a097315b281512",
+  "productCommit": "03891aa6af10aa72ad8299af262e9528cd83a75a",
+  "branch": "codex/cad-parts-assembly",
+  "mainUnchanged": "8a3ff1fe394b11aeb7fb323e7319bd365d29abaa",
+  "tools": 46,
+  "skills": 9,
+  "unitTests": {
+    "pass": 417,
+    "skip": 3,
+    "fail": 0,
+    "assemblyIncluded": 21,
+    "exitCode": 0,
+    "productCommit": "03891aa6af10aa72ad8299af262e9528cd83a75a"
+  },
+  "host": [
+    {
+      "label": "stable",
+      "exitCode": 1,
+      "passing": 51,
+      "failing": 3,
+      "bundleUnchanged": true,
+      "workerUnchanged": true
+    },
+    {
+      "label": "minimum",
+      "exitCode": 1,
+      "passing": 51,
+      "failing": 3,
+      "bundleUnchanged": true,
+      "workerUnchanged": true
+    }
+  ],
+  "officialCli": {
+    "exitCode": 0,
+    "evidence": "official/official-cli.json"
+  },
+  "vsix": {
+    "file": ".build/scad-ai-ide-phase3-final.vsix",
+    "sha256": "99959a14378e8ad48e678567c0e838a55e0f129203be7c11b8364b44574be1ca",
+    "bundleSha256": "c8c76a6287394fb474ef092ece8317c07b4592366619f30b952c577e3618d641",
+    "workerSha256": "4cf6a34e20c858734c7863050e37ab521cbcbd375e9f6fbaedb74315de2c3c83",
+    "assetCheckExitCode": 0
+  },
+  "installed": {
+    "exitCode": 1,
+    "assemblySlice": "PASS",
+    "meshSlice": "PASS",
+    "diagnosticSlice": "PASS",
+    "wholeSmoke": "FAIL",
+    "reason": "ENV_FOCUS_NOT_ACQUIRED at fixture line 133 before native Undo",
+    "localEvidence": "/private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-Tdu4vw"
+  },
+  "native": {
+    "attempts": 1,
+    "budgetMs": 240000,
+    "actualElapsedMs": 150878,
+    "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+    "pass": false,
+    "candidate": "e24c6f3",
+    "loadedOriginalVsixBundleMatches": true,
+    "matchesFinalBundle": false,
+    "failure": "INVALID_PROJECT during final canonical Manifest revalidation; no successful assembly report, edit or recheck",
+    "finalCandidate": "NOT_RUN; no repeat after canonical-alias fix"
+  },
+  "gates": {
+    "functionalAutomation": "PARTIAL; domain/CLI/assembly Host PASS, full Host focus failures retained",
+    "realAgent": "FAIL on original candidate; final NOT_RUN",
+    "installed": "PARTIAL; assembly slice PASS, whole smoke FAIL",
+    "crossPlatform": "NOT_RUN; Windows Unicode KNOWN_PLATFORM_GAP retained",
+    "GateP3": "NOT_CLOSED"
+  },
+  "commands": {
+    "default": "npm test",
+    "contracts": "npm run check-types; npm run lint; npm run check:agents; node --test scripts/agent-manifest.test.mjs",
+    "host": "node scripts/test-assembly-host.mjs stable; node scripts/test-assembly-host.mjs minimum",
+    "native": "node scripts/test-assembly-native.mjs (once, 240s)",
+    "installed": "node scripts/test-agent-installed.mjs .build/scad-ai-ide-phase3-final.vsix",
+    "official": "SCAD_ASSEMBLY_EVIDENCE=.build/p3-official-final npm run test:assembly:real"
+  },
+  "hostBundleMatchesVsix": true,
+  "finalNodeRun": {
+    "command": "npm test",
+    "exitCode": 0,
+    "elapsedMs": 7132,
+    "restoredProductionBundleFrom": ".build/scad-ai-ide-phase3-final.vsix"
+  }
+}

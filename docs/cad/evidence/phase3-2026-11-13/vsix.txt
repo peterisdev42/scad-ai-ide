@@ -1,0 +1,122 @@
+Executing prepublish script 'npm run vscode:prepublish'...
+npm notice run scad-ai-ide@0.0.1 vscode:prepublish
+npm notice run npm run build:lsp && npm run package
+npm notice run scad-ai-ide@0.0.1 build:lsp
+npm notice run node scripts/build-lsp.cjs
+    Finished `release` profile [optimized] target(s) in 0.18s
+Staged openscad-LSP in /Users/q/Documents/Code/scad-ai-ide/server/darwin-arm64
+npm notice run scad-ai-ide@0.0.1 package
+npm notice run npm run check:agents && npm run check-types && npm run lint && node esbuild.js --production && npm run prepare:licenses
+npm notice run scad-ai-ide@0.0.1 check:agents
+npm notice run node scripts/agent-manifest.mjs
+Validated 46 tools, 2 instruction and 9 skills.
+Verified 13 GUI groups and 46 business action contracts.
+npm notice run scad-ai-ide@0.0.1 check-types
+npm notice run tsc --noEmit && tsc -p tsconfig.webview.json
+npm notice run scad-ai-ide@0.0.1 lint
+npm notice run eslint src
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build started
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+[watch] build finished
+npm notice run scad-ai-ide@0.0.1 prepare:licenses
+npm notice run node scripts/prepare-licenses.cjs
+Staged 1 license/notice file(s) in licenses/vscode-openscad-preview/
+Staged 1 license/notice file(s) in licenses/openscad-LSP/
+Staged 1 license/notice file(s) in licenses/openscad/
+Staged 2 license/notice file(s) in licenses/monaco-editor/
+Staged 1 license/notice file(s) in licenses/vscode-textmate/
+Staged 2 license/notice file(s) in licenses/vscode-oniguruma/
+Staged 1 license/notice file(s) in licenses/jsonc-parser/
+Staged 1 license/notice file(s) in licenses/manifold-3d/
+Staged 1 license/notice file(s) in licenses/three/
+Staged 1 license/notice file(s) in licenses/linkedom/
+Staged 1 license/notice file(s) in licenses/pngjs/
+Staged 1 license/notice file(s) in licenses/fflate/
+Staged 1 license/notice file(s) in licenses/@lit/context/
+Staged 1 license/notice file(s) in licenses/@lit/reactive-element/
+Staged 1 license/notice file(s) in licenses/@vscode-elements/elements/
+Staged 1 license/notice file(s) in licenses/ajv/
+Staged 0 license/notice file(s) in licenses/boolbase/
+Staged 1 license/notice file(s) in licenses/css-select/
+Staged 1 license/notice file(s) in licenses/css-what/
+Staged 1 license/notice file(s) in licenses/cssom/
+Staged 1 license/notice file(s) in licenses/dom-serializer/
+Staged 1 license/notice file(s) in licenses/domelementtype/
+Staged 1 license/notice file(s) in licenses/domhandler/
+Staged 1 license/notice file(s) in licenses/domutils/
+Staged 1 license/notice file(s) in licenses/entities/
+Staged 1 license/notice file(s) in licenses/fast-deep-equal/
+Staged 1 license/notice file(s) in licenses/fast-uri/
+Staged 1 license/notice file(s) in licenses/graceful-fs/
+Staged 1 license/notice file(s) in licenses/htmlparser2/
+Staged 1 license/notice file(s) in licenses/entities@7.0.1/
+Staged 1 license/notice file(s) in licenses/json-schema-traverse/
+Staged 1 license/notice file(s) in licenses/linkify-it/
+Staged 1 license/notice file(s) in licenses/lit/
+Staged 1 license/notice file(s) in licenses/lit-element/
+Staged 1 license/notice file(s) in licenses/lit-html/
+Staged 1 license/notice file(s) in licenses/markdown-it/
+Staged 1 license/notice file(s) in licenses/mdurl/
+Staged 1 license/notice file(s) in licenses/nth-check/
+Staged 1 license/notice file(s) in licenses/pend/
+Staged 1 license/notice file(s) in licenses/proper-lockfile/
+Staged 1 license/notice file(s) in licenses/signal-exit/
+Staged 1 license/notice file(s) in licenses/punycode.js/
+Staged 1 license/notice file(s) in licenses/retry/
+Staged 1 license/notice file(s) in licenses/robust-predicates/
+Staged 1 license/notice file(s) in licenses/saxes/
+Staged 1 license/notice file(s) in licenses/semver/
+Staged 1 license/notice file(s) in licenses/tar/
+Staged 1 license/notice file(s) in licenses/uc.micro/
+Staged 1 license/notice file(s) in licenses/uhyphen/
+Staged 2 license/notice file(s) in licenses/vscode-jsonrpc/
+Staged 1 license/notice file(s) in licenses/vscode-languageclient/
+Staged 1 license/notice file(s) in licenses/balanced-match/
+Staged 1 license/notice file(s) in licenses/brace-expansion/
+Staged 1 license/notice file(s) in licenses/minimatch/
+Staged 2 license/notice file(s) in licenses/vscode-languageserver-protocol/
+Staged 2 license/notice file(s) in licenses/vscode-languageserver-types/
+Staged 1 license/notice file(s) in licenses/xmlchars/
+Staged 1 license/notice file(s) in licenses/yaml/
+Staged 1 license/notice file(s) in licenses/yauzl/
+ INFO  Files included in the VSIX:
+scad-ai-ide-phase3.vsix
+├─ [Content_Types].xml 
+├─ extension.vsixmanifest 
+└─ extension/
+   ├─ LICENSE.txt [34.33 KB]
+   ├─ changelog.md [3.37 KB]
+   ├─ language-configuration.json [3 KB]
+   ├─ package.json [147.11 KB]
+   ├─ readme.md [11.17 KB]
+   ├─ dist/ (18 files) [8.93 MB]
+   ├─ docs/ (45 files) [362.32 KB]
+   ├─ examples/ (3 files) [1.81 KB]
+   ├─ instructions/ (2 files) [6.32 KB]
+   ├─ licenses/ (63 files) [169.36 KB]
+   ├─ media/ (11 files) [151.36 KB]
+   ├─ resources/ (11 files) [109.38 KB]
+   ├─ server/ (2 files) [5 MB]
+   ├─ site/ (4 files) [48.25 KB]
+   ├─ skills/ (14 files) [35.23 KB]
+   ├─ snippets/ (1 file) [3.04 KB]
+   └─ syntaxes/ (2 files) [11.38 KB]
+
+=> Run vsce ls --tree to see all included files.
+
+ DONE  Packaged: .build/scad-ai-ide-phase3.vsix (183 files, 4.55 MB)

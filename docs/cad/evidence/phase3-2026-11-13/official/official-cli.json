@@ -1,0 +1,257 @@
+{
+  "executable": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+  "records": [
+    {
+      "gap": 0.18,
+      "manifestDigest": "0dfacad40e257ebbd9c881f107188536445cb41e44cae989973cf3c2e1b9780b",
+      "sourceSha256": "b21dc2d69b141d7927d1ced2f2856194026a5ca0460c5bdca2fdbd9086c6c5f2",
+      "diskSha256": "b21dc2d69b141d7927d1ced2f2856194026a5ca0460c5bdca2fdbd9086c6c5f2",
+      "meshes": [
+        {
+          "id": "body",
+          "sha256": "0e628ad3a6d90c1baee76930d8c20f0b203c133c620d984b5b975b0e7469a6e9"
+        },
+        {
+          "id": "lid",
+          "sha256": "4fa29cdd13af1fd75cac680c9cc4d502d3ad22b6ed4af9e4f621241305b37f71"
+        }
+      ],
+      "worldSha256": "3f0b2de4f80e2e329591ca0c67dfc7e1003d650927565bcb7023eb90ca3a2a46",
+      "displaySha256": "f9df2c7c68ba165175151a0f7d1cd804efc32c90be274cc7f53bb400088bcd79",
+      "checks": [
+        {
+          "id": "part:body:solid",
+          "required": true,
+          "status": "PASS",
+          "issueIds": [],
+          "reason": "Every declared part must be a non-empty, valid raw solid."
+        },
+        {
+          "id": "part:lid:solid",
+          "required": true,
+          "status": "PASS",
+          "issueIds": [],
+          "reason": "Every declared part must be a non-empty, valid raw solid."
+        },
+        {
+          "id": "gap",
+          "required": true,
+          "status": "FAIL",
+          "issueIds": [],
+          "pairId": "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51",
+          "relation": "clearanceViolation"
+        },
+        {
+          "id": "body-volume",
+          "required": true,
+          "status": "PASS",
+          "issueIds": []
+        },
+        {
+          "id": "lid-volume",
+          "required": true,
+          "status": "PASS",
+          "issueIds": []
+        }
+      ],
+      "pairs": [
+        {
+          "pairId": "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51",
+          "parts": [
+            "body",
+            "lid"
+          ],
+          "relation": "clear",
+          "minDistance": 0.18000030517578125,
+          "distanceBound": {
+            "lower": 0.18000030517578125,
+            "upper": 0.18000030517578125
+          },
+          "closestPoints": [
+            [
+              0,
+              0,
+              10
+            ],
+            [
+              0,
+              0,
+              10.180000305175781
+            ]
+          ],
+          "witnessCoordinateBounds": [
+            [
+              {
+                "lower": 0,
+                "upper": 0
+              },
+              {
+                "lower": 0,
+                "upper": 0
+              },
+              {
+                "lower": 10,
+                "upper": 10
+              }
+            ],
+            [
+              {
+                "lower": 0,
+                "upper": 0
+              },
+              {
+                "lower": 0,
+                "upper": 0
+              },
+              {
+                "lower": 10.180000305175781,
+                "upper": 10.180000305175781
+              }
+            ]
+          ],
+          "triangles": [
+            0,
+            10
+          ],
+          "contained": false,
+          "overlapVolume": null,
+          "overlapVolumeStatus": "notChecked",
+          "method": "exact-dyadic-bvh-v1",
+          "complete": true,
+          "errorBound": 0,
+          "durationMs": 14.670500000000004
+        }
+      ]
+    },
+    {
+      "gap": 0.3,
+      "manifestDigest": "0dfacad40e257ebbd9c881f107188536445cb41e44cae989973cf3c2e1b9780b",
+      "sourceSha256": "513e3e58565bef9bd13f12929d3f932d91f02baba12298ef8f260b2774670855",
+      "diskSha256": "b21dc2d69b141d7927d1ced2f2856194026a5ca0460c5bdca2fdbd9086c6c5f2",
+      "meshes": [
+        {
+          "id": "body",
+          "sha256": "0e628ad3a6d90c1baee76930d8c20f0b203c133c620d984b5b975b0e7469a6e9"
+        },
+        {
+          "id": "lid",
+          "sha256": "c9fb2f472a5c75f2df49711828aa2265e7bb32c9a0d6650ac25df19ff6d1cd9f"
+        }
+      ],
+      "worldSha256": "acdb921d38002870eb2850a51619e34c0e59ba744160c03d7393c407b678f240",
+      "displaySha256": "2d9a3b5da7b8738aaafd99d7f8265ec856111441fc10457435309fa08862d5cd",
+      "checks": [
+        {
+          "id": "part:body:solid",
+          "required": true,
+          "status": "PASS",
+          "issueIds": [],
+          "reason": "Every declared part must be a non-empty, valid raw solid."
+        },
+        {
+          "id": "part:lid:solid",
+          "required": true,
+          "status": "PASS",
+          "issueIds": [],
+          "reason": "Every declared part must be a non-empty, valid raw solid."
+        },
+        {
+          "id": "gap",
+          "required": true,
+          "status": "PASS",
+          "issueIds": [],
+          "pairId": "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51",
+          "relation": "clear"
+        },
+        {
+          "id": "body-volume",
+          "required": true,
+          "status": "PASS",
+          "issueIds": []
+        },
+        {
+          "id": "lid-volume",
+          "required": true,
+          "status": "PASS",
+          "issueIds": []
+        }
+      ],
+      "pairs": [
+        {
+          "pairId": "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51",
+          "parts": [
+            "body",
+            "lid"
+          ],
+          "relation": "clear",
+          "minDistance": 0.3000001907348633,
+          "distanceBound": {
+            "lower": 0.3000001907348633,
+            "upper": 0.3000001907348633
+          },
+          "closestPoints": [
+            [
+              0,
+              0,
+              10
+            ],
+            [
+              0,
+              0,
+              10.300000190734863
+            ]
+          ],
+          "witnessCoordinateBounds": [
+            [
+              {
+                "lower": 0,
+                "upper": 0
+              },
+              {
+                "lower": 0,
+                "upper": 0
+              },
+              {
+                "lower": 10,
+                "upper": 10
+              }
+            ],
+            [
+              {
+                "lower": 0,
+                "upper": 0
+              },
+              {
+                "lower": 0,
+                "upper": 0
+              },
+              {
+                "lower": 10.300000190734863,
+                "upper": 10.300000190734863
+              }
+            ]
+          ],
+          "triangles": [
+            0,
+            10
+          ],
+          "contained": false,
+          "overlapVolume": null,
+          "overlapVolumeStatus": "notChecked",
+          "method": "exact-dyadic-bvh-v1",
+          "complete": true,
+          "errorBound": 0,
+          "durationMs": 14.541999999999973
+        }
+      ]
+    },
+    {
+      "pngSha256": "9c452d2fb04c045809589b7beaef477730009ed1767331c9da10ce4799ba6c08",
+      "sourceMeshSha256": "2d9a3b5da7b8738aaafd99d7f8265ec856111441fc10457435309fa08862d5cd",
+      "width": 512,
+      "height": 512
+    }
+  ],
+  "manifestDigest": "0dfacad40e257ebbd9c881f107188536445cb41e44cae989973cf3c2e1b9780b",
+  "diskUnchanged": true
+}
