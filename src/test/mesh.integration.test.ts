@@ -119,6 +119,8 @@ suite('Raw mesh verification Extension Host', () => {
         assert.equal(detail.geometryEvidence.triangleSamples[0].vertices.length, 3)
         const diagnostics = vscode.languages.getDiagnostics(brokenUri).filter((d) => d.source === 'CAD Mesh')
         assert.ok(diagnostics.length > 0)
+        api.cad.problems.invalidateScad()
+        assert.ok(vscode.languages.getDiagnostics(brokenUri).some((d) => d.source === 'CAD Mesh'))
         await vscode.workspace.openTextDocument(brokenUri)
         const actions = await vscode.commands.executeCommand<vscode.CodeAction[]>('vscode.executeCodeActionProvider', brokenUri, diagnostics[0].range)
         assert.ok(actions?.some((a) => a.title === 'CAD: open verification report'))

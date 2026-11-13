@@ -25,7 +25,7 @@ export class PreviewSourceProblems implements vscode.Disposable {
     private readonly subscriptions: vscode.Disposable[]
     private disposed = false
     private sequence = 0
-    private readonly pending = new Map<string, number>()
+    private readonly pending = new Map<string, { ticket: number; source: vscode.Uri; dependencies: string[] }>()
 
     constructor() {
         this.subscriptions = [
@@ -34,10 +34,11 @@ export class PreviewSourceProblems implements vscode.Disposable {
             }),
             vscode.workspace.onDidOpenTextDocument((document) => {
                 for (const result of this.results.values())
-                    if (result.source.toString() === document.uri.toString() && result.stamp !== this.stamp(document.uri)) {
+                    if (result.source.toString() === document.uri.toString() && !result.valid && result.stamp !== this.stamp(document.uri)) {
                         this.invalidate(document.uri)
                         break
                     }
+                void this.revalidate()
             }),
             vscode.workspace.onDidDeleteFiles((event) => event.files.forEach((uri) => this.invalidate(uri))),
             vscode.workspace.onDidRenameFiles((event) => event.files.forEach((file) => this.invalidate(file.oldUri))),
@@ -67,8 +68,11 @@ export class PreviewSourceProblems implements vscode.Disposable {
         const source = vscode.Uri.parse(report.snapshot.document.uri)
         const key = this.key(source, owner),
             ticket = ++this.sequence
-        this.pending.set(key, ticket)
-        if (this.disposed || !(await valid()) || this.pending.get(key) !== ticket) return false
+        this.pending.set(key, { ticket, source, dependencies: report.snapshot.dependencies.map((d) => d.uri) })
+        if (this.disposed || !(await valid()) || this.pending.get(key)?.ticket !== ticket) {
+            if (this.pending.get(key)?.ticket === ticket) this.pending.delete(key)
+            return false
+        }
         const entries = report.issues.map((issue) => {
             const location = issue.location
             const uri = location ? vscode.Uri.parse(location.uri) : source
@@ -95,8 +99,13 @@ export class PreviewSourceProblems implements vscode.Disposable {
     }
     invalidate(uri: vscode.Uri) {
         const key = uri.toString()
-        this.pending.clear()
+        for (const [owner, pending] of this.pending) if (pending.source.toString() === key || pending.dependencies.includes(key)) this.pending.delete(owner)
         for (const [owner, result] of this.results) if (result.source.toString() === key || result.dependencies.includes(key) || result.entries.some((e) => e.uri.toString() === key)) this.results.delete(owner)
+        this.publish()
+    }
+    invalidateScad() {
+        for (const [key, value] of this.results) if (/\.(scad|csg)$/i.test(value.source.path)) this.results.delete(key)
+        for (const [key, value] of this.pending) if (/\.(scad|csg)$/i.test(value.source.path)) this.pending.delete(key)
         this.publish()
     }
     invalidateAll() {
@@ -126,7 +135,10 @@ export class PreviewSourceProblems implements vscode.Disposable {
             this.publish()
             return false
         }
-        if (/\.(stl|3mf)$/i.test(result.source.path) && result.reportId) { await vscode.commands.executeCommand('scad-ai-ide.model.openReport', result.reportId); return true }
+        if (/\.(stl|3mf)$/i.test(result.source.path) && result.reportId) {
+            await vscode.commands.executeCommand('scad-ai-ide.model.openReport', result.reportId)
+            return true
+        }
         await vscode.workspace.openTextDocument(result.source)
         if (this.results.get(key) !== result || result.stamp !== this.stamp(result.source)) return false
         if (result.valid && !(await result.valid())) return false
@@ -175,7 +187,8 @@ export class PreviewSourceProblems implements vscode.Disposable {
                 const key = entry.uri.toString(),
                     d = entry.diagnostic
                 const group = grouped.get(key) ?? { uri: entry.uri, diagnostics: [], seen: new Set<string>() }
-                let semanticCode = d.code, semanticMessage = d.message
+                let semanticCode = d.code,
+                    semanticMessage = d.message
                 if (d.source === 'OpenSCAD Preview' && d.code === 'PREVIEW_RENDER_FAILED') {
                     const normalized = normalizeCliDiagnostics(d.message, 0)
                     if (normalized.length === 1 && normalized[0].line === d.range.start.line && normalized[0].code !== 'SCAD_CLI_ERROR') {

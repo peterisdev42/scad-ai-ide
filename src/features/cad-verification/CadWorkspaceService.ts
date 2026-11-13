@@ -95,7 +95,8 @@ export class CadWorkspaceService implements vscode.Disposable {
                             }
                         })
                         .catch(() => {})
-            } else this.problems.invalidateAll()
+            } else if (geometryScope === 'scad') this.problems.invalidateScad()
+            else this.problems.invalidateAll()
         }
         let runtimeIdentity = JSON.stringify(runtime.getActiveRuntime())
         let runtimeWasInstalling = false
