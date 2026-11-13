@@ -14,10 +14,14 @@ test('artifacts are content-bound, leased, evicted and never accept filesystem p
         const release = store.lease([a.id])
         await assert.rejects(store.put('b', 'mesh', 'model/stl', Buffer.from('x')), /leased/)
         assert.equal((await store.read(a.id)).toString(), '12345678')
-        release(); const b = await store.put('b', 'mesh', 'model/stl', Buffer.from('x'))
+        release()
+        const b = await store.put('b', 'mesh', 'model/stl', Buffer.from('x'))
         await assert.rejects(store.read(a.id), /expired|evicted/)
         assert.equal((await store.read(b.id)).toString(), 'x')
         await assert.rejects(store.read('../secret'), /expired|evicted/)
         assert.equal((await store.put('b', 'mesh', 'model/stl', Buffer.from('x'))).id, b.id)
-    } finally { await store.dispose(); await rm(dir, { recursive: true, force: true }) }
+    } finally {
+        await store.dispose()
+        await rm(dir, { recursive: true, force: true })
+    }
 })

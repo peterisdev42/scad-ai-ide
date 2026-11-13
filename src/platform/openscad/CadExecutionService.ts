@@ -20,6 +20,7 @@ export interface ExecutionRequest {
     format: 'csg' | 'stl' | '3mf' | 'png'
     signal?: AbortSignal
     timeoutMs?: number
+    image?: { camera: number[]; projection: 'orthographic' | 'perspective'; size: [number, number]; fit: boolean }
     lazyUnion?: boolean
     onStderr?: (text: string) => void
 }
@@ -29,6 +30,7 @@ export interface CliCapabilities {
     dependencies: boolean
     output: boolean
     lazyUnion: boolean
+    png: boolean
 }
 interface ProcessResult {
     status: ExecutionStatus
@@ -156,7 +158,7 @@ export class CadExecutionService {
         if (result.status === 'CANCELLED') throw new DOMException('CLI cancelled', 'AbortError')
         if (result.status === 'TIMED_OUT') throw new CapabilityError('TIMED_OUT', 'OpenSCAD capability probe timed out.', true)
         const help = result.stdout + result.stderr
-        const capabilities = { hash: digest(help), exportFormat: help.includes('--export-format'), dependencies: /(?:^|\s)-d(?:\s|,)/m.test(help), output: /(?:^|\s)-o(?:\s|,)/m.test(help), lazyUnion: help.includes('lazy-union') }
+        const capabilities = { hash: digest(help), exportFormat: help.includes('--export-format'), dependencies: /(?:^|\s)-d(?:\s|,)/m.test(help), output: /(?:^|\s)-o(?:\s|,)/m.test(help), lazyUnion: help.includes('lazy-union'), png: ['--camera', '--imgsize', '--projection', '--render', '--viewall'].every(flag => help.includes(flag)) }
         if (!capabilities.output) throw new CapabilityError('NOT_SUPPORTED', 'Selected runtime does not advertise CLI output support.')
         this.probes.set(key, capabilities)
         while (this.probes.size > 16) this.probes.delete(this.probes.keys().next().value!)
@@ -203,7 +205,11 @@ export class CadExecutionService {
                     if (!/^[A-Za-z_$][\w$]*$/.test(name) || (typeof value === 'number' && !Number.isFinite(value)) || (Array.isArray(value) && (!value.every((v) => typeof v === 'number' && Number.isFinite(v)) || value.length > 1024))) throw new CapabilityError('INVALID_INPUT', 'Invalid OpenSCAD parameter.')
                     return ['-D', `${name}=${JSON.stringify(value)}`]
                 })
-            const args = [...(capability.dependencies ? ['-d', dependencyFile] : []), ...(capability.exportFormat ? ['--export-format', request.format === 'stl' ? 'binstl' : request.format] : []), ...(request.lazyUnion && capability.lazyUnion ? ['--enable', 'lazy-union'] : []), '-o', output, ...parameters, request.source === undefined ? request.path : '-']
+            const image = request.image
+            if (request.format === 'png' && (!capability.png || !image)) throw new CapabilityError('NOT_SUPPORTED', 'Runtime does not advertise the required PNG/camera capabilities.')
+            if (image && (![6, 7].includes(image.camera.length) || image.camera.some(v => !Number.isFinite(v)) || !image.size.every(v => Number.isInteger(v) && v > 0 && v <= 1024) || !['orthographic','perspective'].includes(image.projection))) throw new CapabilityError('INVALID_INPUT', 'Invalid PNG camera or dimensions.')
+            const imageArgs = image ? ['--render', '--camera', image.camera.join(','), '--projection', image.projection === 'orthographic' ? 'o' : 'p', '--imgsize', image.size.join(','), ...(image.fit ? ['--viewall', '--autocenter'] : [])] : []
+            const args = [...imageArgs,...(capability.dependencies ? ['-d', dependencyFile] : []), ...(capability.exportFormat && request.format !== 'png' ? ['--export-format', request.format === 'stl' ? 'binstl' : request.format] : []), ...(request.lazyUnion && capability.lazyUnion ? ['--enable', 'lazy-union'] : []), '-o', output, ...parameters, request.source === undefined ? request.path : '-']
             const renderingStarted = performance.now()
             const result = await this.process(request.command, args, { cwd: dirname(request.path), env: request.env, source: request.source, signal, timeoutMs: request.timeoutMs ?? 120000, onStderr: request.onStderr })
             timings.meshExportMs = performance.now() - renderingStarted
@@ -217,7 +223,7 @@ export class CadExecutionService {
             if (status === 'SUCCEEDED') {
                 try {
                     const info = await stat(output)
-                    if (info.size > (request.format === 'csg' ? 2 : 128) * 1048576) throw new Error('OpenSCAD output exceeds its byte budget.')
+                    if (info.size > (request.format === 'csg' ? 2 : request.format === 'png' ? 8 : 128) * 1048576) throw new Error('OpenSCAD output exceeds its byte budget.')
                     content = await readFile(output)
                     if (!content.length && !empty) throw new Error('OpenSCAD produced an empty output.')
                 } catch (error) {

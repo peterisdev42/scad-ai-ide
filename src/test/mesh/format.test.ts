@@ -33,8 +33,14 @@ test('3MF rejects unsafe ZIP paths, XML entities, reference cycles, missing part
     assert.throws(() => decodeMesh(damaged, '3mf'))
 })
 
-test('checked-in golden meshes retain their reviewed hashes', async()=>{
-    const {readFile}=await import('node:fs/promises'),{createHash}=await import('node:crypto')
-    const manifest=JSON.parse(await readFile('src/test/mesh/golden/sha256.json','utf8'))
-    for(const row of manifest.fixtures){const bytes=await readFile('src/test/mesh/golden/'+row.name);assert.equal(bytes.length,row.bytes);assert.equal(createHash('sha256').update(bytes).digest('hex'),row.sha256);assert.doesNotThrow(()=>decodeMesh(bytes,row.name.endsWith('.3mf')?'3mf':'stl'))}
+test('checked-in golden meshes retain their reviewed hashes', async () => {
+    const { readFile } = await import('node:fs/promises'),
+        { createHash } = await import('node:crypto')
+    const manifest = JSON.parse(await readFile('src/test/mesh/golden/sha256.json', 'utf8'))
+    for (const row of manifest.fixtures) {
+        const bytes = await readFile('src/test/mesh/golden/' + row.name)
+        assert.equal(bytes.length, row.bytes)
+        assert.equal(createHash('sha256').update(bytes).digest('hex'), row.sha256)
+        assert.doesNotThrow(() => decodeMesh(bytes, row.name.endsWith('.3mf') ? '3mf' : 'stl'))
+    }
 })
