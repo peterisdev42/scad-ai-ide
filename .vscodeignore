@@ -36,3 +36,6 @@ docs/customizer-progress.md
 docs/customizer-acceptance.md
 docs/customizer-delivery.md
 docs/customizer-closeout-plan.md
+
+# CAD acceptance traces stay in the reviewable repository, outside runtime assets.
+docs/cad/evidence/**

@@ -142,6 +142,16 @@
                 "command": "scad-ai-ide.selectPreviewExporter",
                 "title": "Select Preview Exporter",
                 "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai-ide.model.analyze",
+                "title": "Analyze Model Diagnostics",
+                "category": "OpenSCAD"
+            },
+            {
+                "command": "scad-ai-ide.model.openReport",
+                "title": "Open CAD Verification Report",
+                "category": "OpenSCAD"
             }
         ],
         "configuration": {
@@ -276,6 +286,32 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Report static Customizer source diagnostics and offer safe Quick Fixes. Files larger than 1 MiB are skipped."
+                },
+                "scad-ai-ide.verification.enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable explicit CAD diagnostic analysis."
+                },
+                "scad-ai-ide.verification.onSave": {
+                    "type": "string",
+                    "enum": [
+                        "off",
+                        "diagnostics"
+                    ],
+                    "default": "off",
+                    "description": "Optionally evaluate CLI diagnostics when a SCAD/CSG document is saved. Full geometry checks are explicit."
+                },
+                "scad-ai-ide.verification.cliTimeoutMs": {
+                    "type": "integer",
+                    "minimum": 1000,
+                    "maximum": 600000,
+                    "default": 120000,
+                    "description": "Maximum duration of one CAD CLI execution in milliseconds."
+                },
+                "scad-ai-ide.verification.publishProblems": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Publish current CAD analysis issues to native Problems."
                 }
             }
         },
@@ -2075,6 +2111,73 @@
                         "uri"
                     ]
                 }
+            },
+            {
+                "name": "scad_ai_ide_model_analyze",
+                "displayName": "Analyze OpenSCAD model diagnostics",
+                "modelDescription": "Evaluate the explicit workspace SCAD/CSG document with the selected official CLI, including its dirty root buffer and effective Customizer overrides. Does not need Preview. Returns snapshot-bound diagnostics and publishes current Problems. CSG evaluation only: no mesh, assembly, visual or printability proof. UNRESOLVED means inputs or evidence are incomplete (including unsaved include/use dependencies); never treat ok:true or empty Problems as verification PASS. After edits analyze again. No source writes or dependency installation. Requires Workspace Trust and a runtime.",
+                "canBeReferencedInPrompt": true,
+                "toolReferenceName": "scad_model_analyze",
+                "inputSchema": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "uri": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4096
+                        },
+                        "projectRoot": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4096
+                        },
+                        "mode": {
+                            "type": "string",
+                            "enum": [
+                                "diagnostics"
+                            ],
+                            "default": "diagnostics"
+                        },
+                        "expectedSnapshotId": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                        }
+                    },
+                    "required": [
+                        "uri"
+                    ]
+                }
+            },
+            {
+                "name": "scad_ai_ide_model_getIssue",
+                "displayName": "Read OpenSCAD CAD issue evidence",
+                "modelDescription": "Read one issue from a specific analysis report. Optional bounded local CLI evidence; includes runtime, snapshot ID and whether the report is still current. Expired reports are not recomputed implicitly. Historical results are evidence only; analyze the current document before claiming a repair. No source writes or CLI execution.",
+                "canBeReferencedInPrompt": true,
+                "toolReferenceName": "scad_model_getIssue",
+                "inputSchema": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "reportId": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 128
+                        },
+                        "issueId": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "includeEvidence": {
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    "required": [
+                        "reportId",
+                        "issueId"
+                    ]
+                }
             }
         ],
         "chatInstructions": [
@@ -2100,6 +2203,9 @@
             },
             {
                 "path": "./skills/scad-ai-ide-diagnostics/SKILL.md"
+            },
+            {
+                "path": "./skills/openscad-model-debugging/SKILL.md"
             }
         ]
     },
@@ -2114,7 +2220,7 @@
         "watch-tests": "tsc -p . -w --outDir out",
         "check-types": "tsc --noEmit && tsc -p tsconfig.webview.json",
         "lint": "eslint src",
-        "test": "npm run compile-tests && node --test out/test/capabilities.test.js out/test/capabilityServices.test.js out/test/notifications.test.js out/test/runtime.test.js out/test/github.test.js out/test/installation.test.js out/test/customizer.test.js out/test/customizerSource*.test.js out/test/language.test.js out/test/markdown.test.js && npm run test:libraries && npm run test:preview",
+        "test": "npm run compile-tests && node --test out/test/capabilities.test.js out/test/capabilityServices.test.js out/test/notifications.test.js out/test/runtime.test.js out/test/github.test.js out/test/installation.test.js out/test/customizer.test.js out/test/customizerSource*.test.js out/test/language.test.js out/test/markdown.test.js && npm run test:libraries && npm run test:preview && npm run test:cad:unit",
         "test:customizer": "npm run compile-tests && node esbuild.js && node --test scripts/customizer-scrollbar.test.mjs scripts/customizer-preview-fields.test.mjs",
         "test:markdown": "npm run compile && npm run compile-tests && node --test out/test/markdown.test.js && node --test scripts/markdown-preview.test.mjs",
         "test:markdown-host": "npm run compile && node --test scripts/markdown-webview.test.mjs",
@@ -2147,7 +2253,11 @@
         "test:ollama-dev": "node scripts/test-ollama-dev.mjs",
         "test:customizer:source": "npm run compile-tests && node --test out/test/customizerSource*.test.js",
         "test:customizer:compatibility": "npm run compile-tests && node --test out/test/customizerCompatibility.acceptance.js",
-        "check:customizer:architecture": "node scripts/customizer-architecture-check.mjs"
+        "check:customizer:architecture": "node scripts/customizer-architecture-check.mjs",
+        "test:cad:unit": "node --import tsx --test src/test/cad/*.test.ts",
+        "test:cad:real": "node --import tsx --test src/test/cad/real.acceptance.ts",
+        "test:cad:host": "node scripts/test-cad-host.mjs",
+        "check:cad:branch": "node scripts/assert-feature-branch.mjs"
     },
     "devDependencies": {
         "@types/markdown-it": "^14.2.0",

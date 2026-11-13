@@ -1,3 +1,4 @@
+import { registerCadVerification } from './features/cad-verification/registerCadVerification'
 import { registerCustomizerPresetDiagnostics } from './features/language/CustomizerPresetDiagnostics'
 import { CustomizerSourceDomainService } from './features/sidebar/CustomizerSourceDomainService'
 import { createAiPanelState } from './features/agents/CapabilityPresentation'
@@ -31,7 +32,8 @@ export async function activate(context: vscode.ExtensionContext) {
     const customizer = new CustomizerService()
     const customizerView = new CustomizerViewProvider(customizer, context.extensionUri)
     registerCustomizerPresetDiagnostics(context, customizerView.domain)
-    const preview = registerPreview(context, runtime, customizer, customizerView.domain)
+    const cad = registerCadVerification(context, runtime, customizer)
+    const preview = registerPreview(context, runtime, customizer, customizerView.domain, cad.problems)
     registerOwnedMarkdownPreview(context, runtime)
     const { ready: markdownReady, ...markdown } = registerMarkdown(context, runtime)
     const development = new DeveloperCacheController(context, async (key) => {
@@ -40,7 +42,7 @@ export async function activate(context: vscode.ExtensionContext) {
     })
     const customizerSource = new CustomizerSourceDomainService()
     context.subscriptions.push(customizerSource)
-    const capabilities = registerAgentTools(context, { runtime: runtime.service, libraries, customizer: customizerView.domain, customizerSource, github, development })
+    const capabilities = registerAgentTools(context, { runtime: runtime.service, libraries, customizer: customizerView.domain, customizerSource, github, development, cad })
     const panels = new PanelManager(context.extensionUri, runtime, github, libraries, development, () => createAiPanelState(capabilities.registry))
     context.subscriptions.push(
         customizerView,
@@ -57,7 +59,7 @@ export async function activate(context: vscode.ExtensionContext) {
     // Markdown's plugin hook is synchronous. Make its grammar ready before VS Code
     // obtains the hook, instead of relying on a refresh racing the first webview load.
     await markdownReady
-    return { ...markdown, preview, language, libraries, capabilities, customizerSource, getActiveRuntime: runtime.getActiveRuntime, refresh: runtime.refresh, customizer, panels, getRenderArguments: () => customizer.getArguments() }
+    return { ...markdown, cad, preview, language, libraries, capabilities, customizerSource, getActiveRuntime: runtime.getActiveRuntime, refresh: runtime.refresh, customizer, panels, getRenderArguments: () => customizer.getArguments() }
 }
 
 export async function deactivate() {

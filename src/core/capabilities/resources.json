@@ -40,5 +40,11 @@
     "kind": "Skill",
     "name": "scad-ai-ide-diagnostics",
     "description": "Diagnose SCAD AI IDE runtime, library and GitHub status, or inspect bounded redacted disposable caches only when the extension runs in Development mode."
+  },
+  {
+    "path": "./skills/openscad-model-debugging/SKILL.md",
+    "kind": "Skill",
+    "name": "openscad-model-debugging",
+    "description": "Diagnose and repair OpenSCAD compiler, assert, missing-library and unknown-symbol problems using current Problems and snapshot-bound official CLI evidence. Does not prove mesh validity, assembly clearance or printability."
   }
 ]
