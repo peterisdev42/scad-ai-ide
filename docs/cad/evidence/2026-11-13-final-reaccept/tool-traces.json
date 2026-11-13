@@ -1,0 +1,100 @@
+[
+  {
+    "capability": "cad.modelAnalyze",
+    "input": {
+      "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/cad-native-f5-50RBOZ/workspace/model.scad",
+      "mode": "diagnostics"
+    },
+    "actor": "agent",
+    "started": "2026-11-13T03:33:53.725Z",
+    "output": {
+      "ok": true,
+      "capabilityId": "cad.modelAnalyze",
+      "data": {
+        "schemaVersion": 1,
+        "reportId": "cad-ef33f61d-8de2-4c40-90d3-a107eaba9af6",
+        "snapshotId": "80dae736be8a45e7cf29b0e343bd4ecd42a18a0d2f80adf4c5461bfcf56e7150",
+        "document": {
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/cad-native-f5-50RBOZ/workspace/model.scad",
+          "version": 2,
+          "sourceSha256": "2c8b7b94d989cef14e31dff8e889487d878e64a8cd54d6fcaed701eb761a2f6d",
+          "dirty": true
+        },
+        "projectRoot": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/cad-native-f5-50RBOZ/workspace",
+        "runtime": {
+          "executable": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+          "version": "2026.11-RC0",
+          "identityHash": "96641cfec22e509646217ebbe5a9a02c9505dcb3d01f0f12a9d980e5479a1f72",
+          "capabilityHash": "35a1f9f5109478c041b3e06a17b25e3f6e75a66cf941f17fb1d1ca2120505450",
+          "hostPlatform": "darwin-arm64"
+        },
+        "executionStatus": "FAILED",
+        "overallStatus": "FAIL",
+        "complete": true,
+        "units": "modelUnits",
+        "checks": [
+          {
+            "id": "cli-evaluation",
+            "category": "compile",
+            "required": true,
+            "status": "FAIL",
+            "issueIds": [
+              "4287c7eeb63821c03856aa4b227e96e1281bb6880f34a975942b44c53bbe02df"
+            ],
+            "reason": "CSG evaluation only; no full-mesh or assembly verification."
+          }
+        ],
+        "issues": [
+          {
+            "id": "4287c7eeb63821c03856aa4b227e96e1281bb6880f34a975942b44c53bbe02df",
+            "code": "SCAD_CLI_ASSERT_FAILED",
+            "severity": "error",
+            "status": "FAIL",
+            "title": "ERROR: Assertion '(width > 0)' failed: \"width must be positive\"",
+            "location": {
+              "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/cad-native-f5-50RBOZ/workspace/model.scad",
+              "line": 2,
+              "character": 0,
+              "confidence": "exact"
+            }
+          }
+        ],
+        "issueCount": 1,
+        "issuesTruncated": false,
+        "examined": [
+          "cli-diagnostics"
+        ],
+        "notExamined": [
+          "full-render",
+          "mesh-validity",
+          "dimensions",
+          "constraints",
+          "assembly",
+          "visual",
+          "diff",
+          "printability"
+        ],
+        "incomplete": [],
+        "artifacts": [
+          {
+            "id": "cad-ef33f61d-8de2-4c40-90d3-a107eaba9af6:log",
+            "kind": "log",
+            "mimeType": "text/plain",
+            "snapshotId": "80dae736be8a45e7cf29b0e343bd4ecd42a18a0d2f80adf4c5461bfcf56e7150"
+          }
+        ],
+        "metrics": {
+          "elapsedMs": 30.19154199998593,
+          "truncated": false
+        },
+        "reportUri": "scad-cad-report:/cad-ef33f61d-8de2-4c40-90d3-a107eaba9af6"
+      },
+      "operation": {
+        "id": "692eab10-f1ca-4096-8761-aed6ad48c50f",
+        "capabilityId": "cad.modelAnalyze",
+        "status": "succeeded",
+        "message": "CLI diagnostics: FAIL"
+      }
+    }
+  }
+]
