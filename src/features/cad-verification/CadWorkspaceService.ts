@@ -77,8 +77,9 @@ export class CadWorkspaceService implements vscode.Disposable {
             },
             locate: (file) => this.locate(file),
         })
-        const invalidate = (uri?: vscode.Uri) => {
-            this.geometry?.invalidate(uri)
+        const invalidate = (uri?: vscode.Uri, geometryScope: 'all' | 'scad' = 'all') => {
+            if (geometryScope === 'scad') this.geometry?.invalidateScad()
+            else this.geometry?.invalidate(uri)
             this.stale(uri?.toString())
             this.verification.invalidate(uri?.toString())
             if (uri) {
@@ -114,7 +115,7 @@ export class CadWorkspaceService implements vscode.Disposable {
                 void this.problems.revalidate()
             }),
             vscode.workspace.onDidChangeWorkspaceFolders(() => invalidate()),
-            vscode.workspace.onDidDeleteFiles((e) => e.files.forEach(invalidate)),
+            vscode.workspace.onDidDeleteFiles((e) => e.files.forEach((uri) => invalidate(uri))),
             vscode.workspace.onDidRenameFiles((e) =>
                 e.files.forEach((f) => {
                     invalidate(f.oldUri)
@@ -122,9 +123,9 @@ export class CadWorkspaceService implements vscode.Disposable {
                 }),
             ),
             vscode.workspace.onDidChangeConfiguration((e) => {
-                if (e.affectsConfiguration('scad-ai-ide')) invalidate()
+                if (e.affectsConfiguration('scad-ai-ide')) invalidate(undefined, e.affectsConfiguration('scad-ai-ide.verification') ? 'all' : 'scad')
             }),
-            libraryEnvironment.onDidChange(() => invalidate()),
+            libraryEnvironment.onDidChange(() => invalidate(undefined, 'scad')),
             customizer.onDidChangeValues((target) => {
                 const next = digest(customizer.getOverrides(target))
                 if (this.parameterDigests.get(target) === next) return
@@ -136,7 +137,7 @@ export class CadWorkspaceService implements vscode.Disposable {
                 runtimeWasInstalling ||= !!state.installing
                 if (state.busy || state.selectingId || state.installing || state.deletingId) return
                 const next = JSON.stringify(runtime.getActiveRuntime())
-                if (next !== runtimeIdentity || runtimeWasInstalling) invalidate()
+                if (next !== runtimeIdentity || runtimeWasInstalling) invalidate(undefined, 'scad')
                 else void this.refreshValidity()
                 runtimeIdentity = next
                 runtimeWasInstalling = false

@@ -65,6 +65,7 @@ suite('Raw mesh verification Extension Host', () => {
         assert.equal(measured.snapshotId, first.snapshotId)
         const report = await vscode.workspace.openTextDocument(vscode.Uri.parse(first.reportUri))
         assert.equal(JSON.parse(report.getText()).current, true)
+        api.cad.geometry!.invalidateScad() // Runtime/Library notifications cannot expire independent mesh facts.
         const repeat = (await invoke('analyze', { uri: uri.toString(), mode: 'verify' })).data
         assert.equal(repeat.reportId, first.reportId)
         // Real Host adapter with no selected runtime; raw input path must never ask for one.

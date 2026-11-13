@@ -50,6 +50,7 @@ export class MeshWorkspaceService implements vscode.Disposable {
     private readonly subscriptions: vscode.Disposable[] = []
     private readonly published = new Map<string, string>()
     private readonly expiry = new Set<ReturnType<typeof setTimeout>>()
+    private readonly inputKinds = new Map<string, string>()
     private disposed = false
     private readonly heartbeat: ReturnType<typeof setInterval>
     constructor(
@@ -102,6 +103,10 @@ export class MeshWorkspaceService implements vscode.Disposable {
             vscode.workspace.onDidChangeWorkspaceFolders(invalidate),
         )
     }
+    invalidateScad() {
+        for (const [uri, kind] of this.inputKinds) if (kind === 'scad') this.core.invalidate(uri)
+        this.cad.notifyGeometryReports()
+    }
     refreshFileValidity() {
         this.cad.notifyGeometryReports()
         void this.cad.problems.revalidate()
@@ -145,6 +150,9 @@ export class MeshWorkspaceService implements vscode.Disposable {
         if (uri.scheme !== 'file' || !/\.(scad|csg|stl|3mf)$/i.test(uri.path)) throw new CapabilityError('INVALID_PATH', 'Choose a workspace SCAD/CSG/STL/3MF file URI.')
         await assertWorkspacePath(uri)
         const kind = /\.(scad|csg)$/i.test(uri.path) ? 'scad' : /\.3mf$/i.test(uri.path) ? '3mf' : 'stl'
+        this.inputKinds.delete(input.uri)
+        this.inputKinds.set(input.uri, kind)
+        while (this.inputKinds.size > 128) this.inputKinds.delete(this.inputKinds.keys().next().value!)
         if (kind !== 'scad' && input.tessellation && Object.keys(input.tessellation).length) throw new CapabilityError('INVALID_INPUT', 'Tessellation settings apply only to SCAD Full Render.')
         let snapshot: Omit<MeshSnapshot, 'id' | 'sourceStateId'>, stamps: Record<string, string>, scad: CadInputs | undefined
         const requestedGlobalTessellation = Object.fromEntries(Object.entries(input.tessellation ?? {}).map(([k, v]) => [`$${k}`, v]))
