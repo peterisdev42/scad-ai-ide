@@ -23,7 +23,7 @@ export function identifySnapshot(input: Omit<CadSnapshot, 'id' | 'inputEvidenceH
     const { complete: _complete, unresolvedInputs: _unresolved, ...identity } = normalized
     return { ...normalized, inputEvidenceHash: digest([input.complete, [...input.unresolvedInputs].sort()]), id: digest({ ...identity, document }) }
 }
-export function verdict(execution: ExecutionStatus, checks: VerificationCheck[], complete: boolean): CheckStatus {
+export function verdict(execution: ExecutionStatus, checks: Array<Pick<VerificationCheck, 'required' | 'status'>>, complete: boolean): CheckStatus {
     const required = checks.filter((c) => c.required)
     if (required.some((c) => c.status === 'FAIL')) return 'FAIL'
     if (execution !== 'SUCCEEDED' || !complete || !required.length || required.some((c) => c.status === 'UNRESOLVED')) return 'UNRESOLVED'
