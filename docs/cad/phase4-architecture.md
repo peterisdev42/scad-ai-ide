@@ -15,3 +15,5 @@ Printing is opt-in through a local millimeter FDM profile. It screens one subjec
 New interfaces: `model_compare`, `model_getFeedback`, `model_requestPointing`, `model_checkPrintability`, `model_manageReview`. Original 46 tools retain their contracts. New skills cover design review, human spatial feedback and explicit print screening. No Phase 5 MCP or assembly identity expansion is included.
 
 Acceptance records distinguish automated functionality, true Native Agent/human interaction, installed-product checks and cross-platform release. Earlier open gates and Windows Unicode gaps are not inherited as passes. Each real Agent scenario is limited to one 240-second attempt.
+
+Feedback remap history retains the original anchor, including camera origin, pose and provenance. A confirmed remap clears unavailable current-camera evidence instead of reusing an old view. Tool projections enforce the 32 KiB budget and may omit explicitly flagged deep evidence while preserving committed record identities.

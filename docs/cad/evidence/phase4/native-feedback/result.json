@@ -1,0 +1,75 @@
+{
+  "scenario": "feedback",
+  "scope": "One real Native Agent session; graphical pointing only by an actual human",
+  "ready": {
+    "setup": {
+      "baselineReportId": "cad-f3919c13-f425-4135-a765-f6d19dbd192d",
+      "baselineSnapshotId": "4b815b4036ab4fa205c14d0e448f272472345710dba776dd076fd5cdaeddacf7",
+      "manifestDigest": "3544eacf48e9c6c957268476580c372c010d9669bb82cb56f6e44cdcf6baaaa1"
+    },
+    "scenario": "feedback",
+    "vscode": "1.146.0",
+    "extensionPath": "/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-feedback-f5-BEMVYG/scad-ai-ide",
+    "bundleSha256": "68230395e9f116df701fa15bc0d7688e40d1663e7cdce269664e9c4721391d72",
+    "workspace": [
+      "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-feedback-f5-BEMVYG/workspace"
+    ],
+    "provider": {
+      "id": "techopolis.omlx-copilot-chat",
+      "version": "0.1.2"
+    },
+    "nativeAgent": {
+      "present": true,
+      "active": true
+    },
+    "chatSettings": {
+      "saveBeforeSend": false,
+      "autoSave": "off"
+    },
+    "tools": [
+      {
+        "name": "copilot_readFile",
+        "description": "Read the contents of a file.\n\nYou must specify the line range you're interested in. Line numbers are 1-indexed. If the file contents returned are insufficient for your task, you may call this tool again to retrieve more content. Prefer reading larger ranges over doing many small reads. Binary files use startLine/endLine as byte offsets."
+      },
+      {
+        "name": "copilot_getErrors",
+        "description": "Get any compile or lint errors in a specific file or across all files. If the user mentions errors or problems in a file, they may be referring to these. Use the tool to see the same errors that the user is seeing. If the user asks you to analyze all errors, or does not specify a file, use this tool to gather errors for all files. Also use this tool after editing a file to validate the change."
+      },
+      {
+        "name": "copilot_replaceString",
+        "description": "This is a tool for making edits in an existing file in the workspace. For moving or renaming files, use run in terminal tool with the 'mv' command instead. For larger edits, split them into smaller edits and call the edit tool multiple times to ensure accuracy. Before editing, always ensure you have the context to understand the file's contents and context. To edit a file, provide: 1) filePath (absolute path), 2) oldString (MUST be the exact literal text to replace including all whitespace, indentation, new"
+      },
+      {
+        "name": "copilot_multiReplaceString",
+        "description": "This tool allows you to apply multiple replace_string_in_file operations in a single call, which is more efficient than calling replace_string_in_file multiple times. It takes an array of replacement operations and applies them sequentially. Each replacement operation has the same parameters as replace_string_in_file: filePath, oldString, newString, and explanation. This tool is ideal when you need to make multiple edits across different files or multiple edits in the same file. The tool will provide a summ"
+      }
+    ],
+    "models": [
+      {
+        "id": "Hy-MT2-7B-4bit",
+        "name": "Hy-MT2-7B-4bit",
+        "vendor": "omlx",
+        "maxInputTokens": 262144
+      },
+      {
+        "id": "Qwen3.6-35B-A3B-OptiQ-4bit",
+        "name": "Qwen3.6-35B-A3B-OptiQ-4bit",
+        "vendor": "omlx",
+        "maxInputTokens": 262144
+      },
+      {
+        "id": "Qwen3.8-27B-4bit",
+        "name": "Qwen3.8-27B-4bit",
+        "vendor": "omlx",
+        "maxInputTokens": 262144
+      }
+    ]
+  },
+  "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+  "approvals": [],
+  "manifestHash": "97ada8722c4af15ff8cd971e9354e416bc56ed2c2789861cff2a9801ce623f70",
+  "profileHash": "9521afd9ac63af1db6f9bf248d412b8e8624169c085b209666478e6d27a69df1",
+  "pass": false,
+  "error": "AssertionError [ERR_ASSERTION]: AGENT_UNCLOSED: no successful completion within 240 seconds",
+  "stack": "AssertionError [ERR_ASSERTION]: AGENT_UNCLOSED: no successful completion within 240 seconds\n    at file:///Users/q/Documents/Code/scad-ai-ide/scripts/test-review-native.mjs:146:12"
+}

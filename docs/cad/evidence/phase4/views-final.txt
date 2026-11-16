@@ -1,0 +1,10 @@
+✔ frozen evidence Stage renders and picks the target with original triangle identity on WebGPU and WebGL2 (1125.900084ms)
+✔ production frozen-view entry receives hashed chunks, gates explicit simulated submission and preserves the original Float64 ray (794.473833ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1368.917041

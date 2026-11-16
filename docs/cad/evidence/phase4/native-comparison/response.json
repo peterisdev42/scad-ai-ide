@@ -1,0 +1,46 @@
+{
+  "result": {},
+  "snapshot": false,
+  "buffer": "part=\"body\";\nhole=3;\nif(part==\"body\") difference(){cube([20,20,5]);translate([10,10,-1])cylinder(h=7,r=hole,$fn=32);}\nelse if(part==\"shell\")translate([30,0,0])cube([10,10,5]);\n",
+  "dirty": false,
+  "disk": "part=\"body\";\nhole=3;\nif(part==\"body\") difference(){cube([20,20,5]);translate([10,10,-1])cylinder(h=7,r=hole,$fn=32);}\nelse if(part==\"shell\")translate([30,0,0])cube([10,10,5]);\n",
+  "manifestDiskHash": "97ada8722c4af15ff8cd971e9354e416bc56ed2c2789861cff2a9801ce623f70",
+  "manifestBufferHash": "97ada8722c4af15ff8cd971e9354e416bc56ed2c2789861cff2a9801ce623f70",
+  "bufferHash": "69cee08108385dfbb52c444d0f2124e96d74a489392e3b9e8b11b318f40f9f7e",
+  "diskHash": "69cee08108385dfbb52c444d0f2124e96d74a489392e3b9e8b11b318f40f9f7e",
+  "problems": [],
+  "operations": {
+    "total": 4,
+    "offset": 0,
+    "hasMore": false,
+    "nextOffset": null,
+    "operations": [
+      {
+        "id": "defd6823-0f5a-4d8f-b396-12a68b9bf874",
+        "capabilityId": "cad.checkPrintability",
+        "status": "succeeded"
+      },
+      {
+        "id": "700a4e18-d108-4369-a584-c9458509eb8d",
+        "capabilityId": "cad.modelMeasure",
+        "status": "succeeded"
+      },
+      {
+        "id": "f2097c13-9422-42a1-b236-d99dfcf02d67",
+        "capabilityId": "cad.compare",
+        "status": "failed",
+        "error": {
+          "code": "REPORT_NOT_FOUND",
+          "message": "Review report expired; no geometry was recomputed.",
+          "retryable": false
+        }
+      },
+      {
+        "id": "1705c1a7-1a01-47b0-8c6d-062afa51e51c",
+        "capabilityId": "cad.modelAnalyze",
+        "status": "succeeded",
+        "message": "Verifying the frozen raw mesh; no mesh repair is applied."
+      }
+    ]
+  }
+}

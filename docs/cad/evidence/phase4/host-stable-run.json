@@ -1,0 +1,36 @@
+{
+  "label": "stable",
+  "command": [
+    "/Users/q/.volta/tools/image/node/24.16.0/bin/node",
+    "node_modules/@vscode/test-cli/out/bin.mjs"
+  ],
+  "exitCode": 1,
+  "elapsedMs": 39025,
+  "bundleSha256": "c63418d9e781991a415002e1b9a86a7a00cd73e06d669a597bf35d8fa96b7314",
+  "workerSha256": "4cf6a34e20c858734c7863050e37ab521cbcbd375e9f6fbaedb74315de2c3c83",
+  "reviewAssets": {
+    "review-geometry-worker.mjs": {
+      "sha256": "72d3205a220506d988d881b5f539595a6bf73a56bb111b3c5604fe8e80f4b201",
+      "unchanged": true
+    },
+    "review-view.js": {
+      "sha256": "e9a0b430ff0d35dd9647ce3e99b570b6d36d251443b651ec36bb72ad4353facc",
+      "unchanged": true
+    }
+  },
+  "bundleUnchanged": true,
+  "workerUnchanged": true,
+  "environment": {
+    "SCAD_HOST_LABEL": "phase4",
+    "SCAD_TEST_TRUSTED_FIXTURE": "1",
+    "SCAD_TEST_WORKSPACE": "/Users/q/Documents/Code/scad-ai-ide/.build/phase4-host-stable-1794807007502/workspace",
+    "SCAD_TEST_USER_DATA": "/Users/q/Documents/Code/scad-ai-ide/.build/phase4-host-stable-1794807007502/profile",
+    "SCAD_MESH_EVIDENCE": "/Users/q/Documents/Code/scad-ai-ide/.build/phase4-host-stable-1794807007502/evidence",
+    "SCAD_OPENSCAD_EXECUTABLE": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+    "SCAD_TEST_OPENSCAD": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+    "SCAD_VSCODE_EXECUTABLE": "/Applications/Visual Studio Code.app/Contents/MacOS/Code",
+    "SCAD_TEST_FOCUS_HELPER": "/Users/q/Documents/Code/scad-ai-ide/.build/customizer-focus",
+    "SCAD_TEST_FOCUS_APP": "/Applications/Visual Studio Code.app",
+    "SCAD_PREVIEW_EXPORTER": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/preview-exporter/openscad-2026.11-RC0/bin/openscad-preview-exporter"
+  }
+}
