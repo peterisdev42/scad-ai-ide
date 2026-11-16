@@ -137,6 +137,7 @@ export class App extends LitElement {
         base64Data: null,
         isLoading: true,
         loadingMessage: 'Rendering SCAD...',
+        openEvidence:()=>this.bridge.openEvidence(),
         export: () => this.bridge.exportModel(),
         sendToSlicer: () => this.bridge.sendToSlicer(),
     }

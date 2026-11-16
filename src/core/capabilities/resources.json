@@ -64,5 +64,23 @@
     "kind": "Skill",
     "name": "openscad-modeling-lifecycle",
     "description": "Repair authorized CAD geometry and recheck every required static assembly constraint against an unchanged Manifest baseline."
+  },
+  {
+    "path": "./skills/openscad-design-review/SKILL.md",
+    "kind": "Skill",
+    "name": "openscad-design-review",
+    "description": "Compare frozen CAD baselines and detect required constraint regressions."
+  },
+  {
+    "path": "./skills/openscad-spatial-feedback/SKILL.md",
+    "kind": "Skill",
+    "name": "openscad-spatial-feedback",
+    "description": "Request human surface feedback in frozen evidence views and respect stale anchors."
+  },
+  {
+    "path": "./skills/openscad-printability/SKILL.md",
+    "kind": "Skill",
+    "name": "openscad-printability",
+    "description": "Screen an explicit millimeter FDM build envelope and triangle overhang candidates."
   }
 ]

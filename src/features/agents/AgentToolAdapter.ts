@@ -12,7 +12,7 @@ export class AgentToolAdapter implements vscode.LanguageModelTool<Record<string,
         const target = String(options.input.target ?? options.input.project ?? options.input.id ?? options.input.planId ?? options.input.path ?? options.input.uri ?? options.input.scope ?? '')
         return {
             invocationMessage: `${this.definition.title}${target ? `: ${target}` : ''}`,
-            confirmationMessages: this.definition.risk === 'read' || (this.definition.id === 'customizer.sourceApply' && options.input.mode === 'plan') ? undefined : { title: this.definition.title, message: `${this.definition.description}\nTarget: ${target || 'See operation arguments'}` },
+            confirmationMessages: !this.definition.requiresInteraction && (this.definition.risk === 'read' || (this.definition.id === 'customizer.sourceApply' && options.input.mode === 'plan')) ? undefined : { title: this.definition.title, message: `${this.definition.description}\nTarget: ${target || 'See operation arguments'}` },
         }
     }
     async invoke(options: vscode.LanguageModelToolInvocationOptions<Record<string, unknown>>, token: vscode.CancellationToken) {

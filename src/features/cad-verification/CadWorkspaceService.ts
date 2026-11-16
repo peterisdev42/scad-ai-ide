@@ -441,7 +441,8 @@ export class CadWorkspaceService implements vscode.Disposable {
     async issueDetails(reportId: string, issueId: string, includeEvidence = false, cursor = 0, limit = 100) {
         if(this.review?.has(reportId)) return this.review.issueDetails(reportId,issueId,includeEvidence,cursor,limit)
         const entry = this.verification.reports.get(reportId)
-        if (!entry && this.assembly?.core.has(reportId)) return this.assembly.issueDetails(reportId, issueId, includeEvidence, cursor, limit)
+        if(!entry&&this.assembly?.core.has(reportId)){try{return await this.assembly.issueDetails(reportId,issueId,includeEvidence,cursor,limit)}catch(e){if(!this.review||!(e instanceof CapabilityError)||e.code!=='ARTIFACT_NOT_FOUND')throw e}}
+        if(!entry&&this.geometry?.core.has(reportId)){try{return await this.geometry.issueDetails(reportId,issueId,includeEvidence,cursor,limit)}catch(e){if(!this.review||!(e instanceof CapabilityError)||e.code!=='ARTIFACT_NOT_FOUND')throw e}}
         if (!entry && this.review) return this.review.originalIssue(reportId,issueId,includeEvidence,cursor,limit)
         if (!entry && this.geometry) return this.geometry.issueDetails(reportId, issueId, includeEvidence, cursor, limit)
         if (!entry) throw new CapabilityError('REPORT_NOT_FOUND', 'Report expired or was evicted. Explicitly analyze the current source again.', true)
@@ -452,7 +453,8 @@ export class CadWorkspaceService implements vscode.Disposable {
     async reportText(reportId: string) {
         if(this.review?.has(reportId)) return this.review.reportText(reportId)
         const entry = this.verification.reports.get(reportId)
-        if (!entry && this.assembly?.core.has(reportId)) return this.assembly.reportText(reportId)
+        if(!entry&&this.assembly?.core.has(reportId)){try{return await this.assembly.reportText(reportId)}catch(e){if(!this.review||!(e instanceof CapabilityError)||e.code!=='ARTIFACT_NOT_FOUND')throw e}}
+        if(!entry&&this.geometry?.core.has(reportId)){try{return await this.geometry.reportText(reportId)}catch(e){if(!this.review||!(e instanceof CapabilityError)||e.code!=='ARTIFACT_NOT_FOUND')throw e}}
         if (!entry && this.review) return this.review.originalText(reportId)
         if (!entry && this.geometry) return this.geometry.reportText(reportId)
         if (!entry) throw new CapabilityError('REPORT_NOT_FOUND', 'Report expired or was evicted.')

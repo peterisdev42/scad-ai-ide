@@ -17,6 +17,8 @@ if (page === 'ai') {
         NOT_REGISTERED: 'Tools not registered',
         RUNTIME_UNAVAILABLE: 'Select an OpenSCAD runtime',
         DISABLED: 'CAD verification disabled in settings',
+        INTERACTION_UNAVAILABLE:'A graphical frozen evidence view and human submission are required',
+        STALE_SNAPSHOT:'Verify current inputs before requesting new feedback',
         DISPOSED: 'Extension session ended',
     }
     function table(labels, name) {

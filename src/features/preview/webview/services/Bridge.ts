@@ -96,6 +96,7 @@ export class Bridge {
         this.post({ type: 'applyParameterSet', name })
     }
 
+    public openEvidence(){this.post({type:'openEvidence'})}
     public exportModel() {
         this.post({ type: 'exportModel' })
     }

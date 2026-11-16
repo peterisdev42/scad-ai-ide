@@ -14,6 +14,7 @@ export interface CapabilityDefinition {
     toolName: string
     title: string
     description: string
+    requiresInteraction?: boolean
     risk: CapabilityRisk
     inputSchema: object
     service: string

@@ -1,3 +1,5 @@
+import {ReviewWorkspaceService} from '../cad-review/ReviewWorkspaceService'
+import {EvidenceViews} from '../cad-review/EvidenceViews'
 import {AssemblyWorkspaceService} from './AssemblyWorkspaceService'
 import { notifications } from '../../platform/notifications'
 import { MeshArtifactProvider } from './MeshArtifactProvider'
@@ -16,6 +18,9 @@ export function registerCadVerification(context: vscode.ExtensionContext, runtim
     const geometry = new MeshWorkspaceService(context, service, runtime)
     service.geometry = geometry
     service.assembly = new AssemblyWorkspaceService(context,service,geometry)
+    service.review=new ReviewWorkspaceService(context,service)
+    service.review.views=new EvidenceViews(context,service.review)
+    context.subscriptions.push(service.review)
     context.subscriptions.push(service.assembly)
     context.subscriptions.push(geometry)
     const output = vscode.window.createOutputChannel('SCAD AI IDE CAD')

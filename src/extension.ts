@@ -1,3 +1,4 @@
+import {registerReviewCommands} from './features/cad-review/registerReviewCommands'
 import { registerCadVerification } from './features/cad-verification/registerCadVerification'
 import { registerCustomizerPresetDiagnostics } from './features/language/CustomizerPresetDiagnostics'
 import { CustomizerSourceDomainService } from './features/sidebar/CustomizerSourceDomainService'
@@ -43,6 +44,7 @@ export async function activate(context: vscode.ExtensionContext) {
     const customizerSource = new CustomizerSourceDomainService()
     context.subscriptions.push(customizerSource)
     const capabilities = registerAgentTools(context, { runtime: runtime.service, libraries, customizer: customizerView.domain, customizerSource, github, development, cad })
+    registerReviewCommands(context,cad.review!,capabilities)
     context.subscriptions.push(vscode.commands.registerCommand('scad-ai-ide.model.checkAssembly', async (uri?: vscode.Uri) => {
         const target = uri ?? vscode.window.activeTextEditor?.document.uri ?? vscode.workspace.workspaceFolders?.[0]?.uri
         if (!target) throw new Error('Choose a workspace assembly Manifest.')

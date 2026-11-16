@@ -99,13 +99,20 @@ export function registerCapabilities(services: CapabilityServices) {
         },
         'cad.issueDetails': (input) => cad!.issueDetails(String(input.reportId), String(input.issueId), input.includeEvidence === true, Number(input.cursor ?? 0), Number(input.limit ?? 100)),
          'cad.modelMeasure': (input, ctx) => {
+            if(typeof input.reportId==='string'&&cad!.review&&!cad!.assembly!.core.has(input.reportId)&&!cad!.geometry!.core.has(input.reportId))return cad!.review.measure(input as import('../../core/mesh/types').MeshReference & {partIds?:string[]})
             if(input.partIds && !(typeof input.reportId==='string'&&cad!.assembly!.core.has(input.reportId)))throw new CapabilityError('PART_IDS_REQUIRE_ASSEMBLY','partIds requires an existing v3 assembly report.')
             return typeof input.reportId==='string'&&cad!.assembly!.core.has(input.reportId)?cad!.assembly!.measure(input as import('../../core/mesh/types').MeshReference):cad!.geometry!.measure(input as import('../../core/mesh/types').MeshReference,ctx.signal)
         },
         'cad.modelRenderViews': (input, ctx) => {
+            if(typeof input.reportId==='string'&&cad!.review&&!cad!.assembly!.core.has(input.reportId)&&!cad!.geometry!.core.has(input.reportId))return cad!.review.renderViews(input as import('../../core/mesh/types').RenderViewsInput & {partIds?:string[]},ctx.signal)
             if(input.partIds && !(typeof input.reportId==='string'&&cad!.assembly!.core.has(input.reportId)))throw new CapabilityError('PART_IDS_REQUIRE_ASSEMBLY','partIds requires an existing v3 assembly report.')
             return typeof input.reportId==='string'&&cad!.assembly!.core.has(input.reportId)?cad!.assembly!.renderViews(input as import('../../core/mesh/types').RenderViewsInput,ctx.signal):cad!.geometry!.renderViews(input as import('../../core/mesh/types').RenderViewsInput,ctx.signal)
         },
+        'cad.compare': (input,ctx) => cad!.review!.compare(input,ctx.signal),
+        'cad.getFeedback': input => cad!.review!.getFeedback(input),
+        'cad.requestPointing': (input,ctx) => cad!.review!.requestPointing(input as unknown as Parameters<NonNullable<CadWorkspaceService['review']>['requestPointing']>[0],ctx.signal),
+        'cad.checkPrintability': (input,ctx) => cad!.review!.print(input as unknown as Parameters<NonNullable<CadWorkspaceService['review']>['print']>[0],ctx.signal),
+        'cad.manageReview': input => cad!.review!.manage(input as unknown as Parameters<NonNullable<CadWorkspaceService['review']>['manage']>[0]),
         'cad.listParts': input => cad!.assembly!.list(input),
         'cad.checkAssembly': (input,ctx) => cad!.assembly!.check(input,ctx.signal),
         'capabilities.discover': (input, ctx) => registry.discover(ctx, Number(input.offset ?? 0), Number(input.limit ?? 20)),
@@ -235,6 +242,7 @@ export function registerCapabilities(services: CapabilityServices) {
                 if (definition.id.startsWith('cad.')) {
                     if (!cad) return { enabled: false, reasonCode: 'NOT_REGISTERED' }
                     if (!vscode.workspace.isTrusted) return { enabled: false, reasonCode: 'UNTRUSTED_WORKSPACE' }
+                    if(definition.id==='cad.requestPointing'&&cad.review&&!cad.review.views)return{enabled:false,reasonCode:'INTERACTION_UNAVAILABLE'}
                     return definition.id === 'cad.issueDetails' ? { enabled: true } : (cad.geometry?.availability() ?? cad.availability())
                 }
                 if (definition.id.startsWith('development.') && definition.id !== 'development.status' && !development.enabled) return { enabled: false, reasonCode: 'DEVELOPMENT_ONLY' }

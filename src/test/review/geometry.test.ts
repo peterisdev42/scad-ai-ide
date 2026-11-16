@@ -91,3 +91,4 @@ test('print envelope uses local geometry and explicit print pose, with exact bed
     const near = printScreen(input(stl(box([1, 1, 1], [1e-12, 0, 0]), true)), { ...profile, buildVolumeMm: [1, 1, 1] }, true)
     assert.equal(near.envelope.status, 'FAIL')
 })
+test('overhang angle boundary is unresolved and exact vertical faces at zero threshold are not downward candidates',()=>{const triangle=stl([[[0,0,1],[0,1,0],[1,0,1]]],true),near=printScreen(input(triangle),profile,true);assert.equal(near.overhang.status,'UNRESOLVED');assert.equal(near.overhang.uncertainCount,1);const vertical=printScreen(input(),{...profile,maxOverhangFromVerticalDeg:0},true);assert.equal(vertical.overhang.uncertainCount,0);assert.equal(vertical.overhang.candidateCount,0)})

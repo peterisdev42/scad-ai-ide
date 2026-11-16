@@ -81,6 +81,13 @@ exports.run = async () => {
         const assemblyMeasure=await invoke('scad_ai_ide_model_measure',{reportId:goodAssembly.reportId,partIds:['a']});assert.equal(assemblyMeasure.parts[0].physicalVolumeBound.lower,1)
         const assemblyImages=await invoke('scad_ai_ide_model_renderViews',{reportId:goodAssembly.reportId,cameras:['iso']});assert.equal(assemblyImages.renderStatus,'AVAILABLE');assert.equal(assemblyImages.snapshotId,goodAssembly.snapshotId)
         assert.equal(Buffer.from(await vscode.workspace.fs.readFile(manifestUri)).toString(),manifestText)
+        const baselineSaved=await invoke('scad_ai_ide_model_manageReview',{action:'retainBaseline',reportId:badAssembly.reportId,label:'Installed Phase 4 baseline'})
+        const compared=await invoke('scad_ai_ide_model_compare',{baselineReportId:badAssembly.reportId,targetReportId:goodAssembly.reportId,expectUnchangedPartIds:['a']});assert.equal(compared.regressionStatus,'NO_REGRESSIONS_FOUND');assert.equal(compared.targetModelStatus,'PASS');assert.equal(compared.items.find(r=>r.partId==='a').geometryChanged,false)
+        const profileUri=vscode.Uri.joinPath(folder.uri,'.scad','print-profile.json');await vscode.workspace.fs.writeFile(profileUri,Buffer.from(JSON.stringify({schemaVersion:1,units:'mm',process:'fdm',buildVolumeMm:[10,10,10],buildPose:{rotate:[0,0,0],translate:[0,0,0]},maxOverhangFromVerticalDeg:45})))
+        const print=await invoke('scad_ai_ide_model_checkPrintability',{reportId:goodAssembly.reportId,partId:'a',profileUri:profileUri.toString()});assert.equal(print.result.envelope.status,'PASS');assert.equal(print.printability,'NOT_CHECKED')
+        const feedback=await invoke('scad_ai_ide_model_getFeedback',{reportId:goodAssembly.reportId});assert.equal(feedback.items.length,0)
+        const baselineReleased=await invoke('scad_ai_ide_model_manageReview',{action:'releaseBaseline',reportId:badAssembly.reportId})
+        await fs.writeFile(process.env.SCAD_SMOKE_RESULT+'.review.json',JSON.stringify({baselineSaved,compared,print,feedback,baselineReleased,realHumanPointing:'NOT_RUN'},null,2))
         await fs.writeFile(process.env.SCAD_SMOKE_RESULT+'.assembly.json',JSON.stringify({declarations,badAssembly,goodAssembly,assemblyMeasure,assemblyImages,manifestUnchanged:true},null,2))
         await fs.writeFile(process.env.SCAD_SMOKE_RESULT+'.mesh.json',JSON.stringify({geometry,measured,views},null,2))
         cad = { status: 'PASS', scope: 'Production VSIX + real CLI; direct Host invocation, not model E2E', failed, passed, diskUnchanged: true, previewRequired: false }
