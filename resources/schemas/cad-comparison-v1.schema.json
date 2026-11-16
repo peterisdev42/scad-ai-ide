@@ -1,0 +1,126 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "reportId": {
+      "type": "string",
+      "pattern": "^cad-[a-f0-9-]{36}$"
+    },
+    "ownerUri": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "number"
+    },
+    "kind": {
+      "const": "comparison"
+    },
+    "baselineReportId": {
+      "type": "string",
+      "pattern": "^cad-[a-f0-9-]{36}$"
+    },
+    "targetReportId": {
+      "type": "string",
+      "pattern": "^cad-[a-f0-9-]{36}$"
+    },
+    "baselineModelStatus": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "UNRESOLVED",
+        "SKIPPED"
+      ]
+    },
+    "targetModelStatus": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "UNRESOLVED",
+        "SKIPPED"
+      ]
+    },
+    "baselineSnapshotId": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "targetSnapshotId": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "units": {
+      "enum": [
+        "mm",
+        "modelUnits"
+      ]
+    },
+    "comparisonStatus": {
+      "enum": [
+        "COMPLETE",
+        "PARTIAL",
+        "INCOMPATIBLE"
+      ]
+    },
+    "regressionStatus": {
+      "enum": [
+        "REGRESSIONS_FOUND",
+        "NO_REGRESSIONS_FOUND",
+        "UNRESOLVED"
+      ]
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "incomplete": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "expectUnchangedPartIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "reportId",
+    "ownerUri",
+    "createdAt",
+    "kind",
+    "baselineReportId",
+    "targetReportId",
+    "baselineModelStatus",
+    "targetModelStatus",
+    "baselineSnapshotId",
+    "targetSnapshotId",
+    "units",
+    "comparisonStatus",
+    "regressionStatus",
+    "rows",
+    "checks",
+    "issues",
+    "incomplete",
+    "expectUnchangedPartIds"
+  ]
+}
