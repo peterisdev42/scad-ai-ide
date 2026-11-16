@@ -119,7 +119,7 @@ export class EvidenceRepository {
             }
         if (report) {
             const r = report
-            await assertWorkspacePath(vscode.Uri.parse(r.snapshot.document.uri, true))
+            await assertWorkspacePath(vscode.Uri.parse(r.snapshot.document.uri, true),true)
             const store = await this.storeForOwner(r.snapshot.document.uri)
             try {
                 const release = this.cad.geometry!.artifacts.lease(rawRefs(r).map((a) => a.id))

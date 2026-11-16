@@ -2,7 +2,7 @@ import { readWorldArtifact } from '../../core/assembly/worldMesh'
 import { displayMesh } from '../../core/mesh/displayMesh'
 import { assertWorkspacePath } from '../../platform/WorkspacePaths'
 import * as vscode from 'vscode'
-import { randomUUID } from 'node:crypto'
+import { randomUUID,createHash } from 'node:crypto'
 import { realpath, stat } from 'node:fs/promises'
 import { digest } from '../../core/cad/snapshot'
 import { SharedTasks } from '../../core/cad/SharedTasks'
@@ -143,6 +143,7 @@ export class ReviewWorkspaceService implements vscode.Disposable {
         this.evidence.trust()
         const active = this.signal(signal)
         if (input.reportId) {
+            if(!this.has(input.reportId)&&(this.cad.geometry?.core.has(input.reportId)||this.cad.assembly?.core.has(input.reportId)))throw new CapabilityError('INVALID_INPUT','reportId reads a comparison result returned by model_compare. To compare frozen model reports, provide baselineReportId and targetReportId instead.')
             const r = this.get(input.reportId)
             if (r.kind !== 'comparison') throw new CapabilityError('INVALID_INPUT', 'Expected a comparison report.')
             return this.comparisonSummary(r, input)
@@ -464,10 +465,11 @@ export class ReviewWorkspaceService implements vscode.Disposable {
                 min = [0, 1, 2].map((k) => Math.min(...boxes.map((b) => b.min[k]))) as [number, number, number],
                 max = [0, 1, 2].map((k) => Math.max(...boxes.map((b) => b.max[k]))) as [number, number, number],
                 bounds = boxes.length ? { min, max, dimensions: max.map((v, k) => v - min[k]) as [number, number, number] } : null
+            const worldHash=createHash('sha256').update(render.world).digest('hex'),sourceHash=h.report.schemaVersion===2?(source.snapshot.meshSha256??source.artifacts.find(a=>a.role==='raw')?.sha256):h.report.artifacts.find(a=>a.mimeType==='application/vnd.scad-ai-ide.world-mesh')?.sha256
             const ref = await this.cad.geometry!.artifacts.put(h.report.snapshot.id, 'mesh', 'model/stl', display.bytes),
                 release = this.cad.geometry!.artifacts.lease([ref.id])
             try {
-                const view: import('../../core/mesh/types').MeshReport = { ...source, reportId: h.report.reportId, snapshot: { ...source.snapshot, id: h.report.snapshot.id, meshSha256: digest(render.world) }, facts: source.facts ? { ...source.facts, bounds } : null, artifacts: [{ ...ref, role: 'render', derivation: { inputSha256: digest(render.world), numericType: 'float32', maxCoordinateError: display.maxCoordinateError } }] }
+                const view: import('../../core/mesh/types').MeshReport = { ...source, reportId: h.report.reportId, snapshot: { ...source.snapshot, id: h.report.snapshot.id, meshSha256: sourceHash??worldHash }, facts: source.facts ? { ...source.facts, bounds } : null, artifacts: [{ ...ref, role: 'render', derivation: { inputSha256: worldHash, numericType: 'float32', maxCoordinateError: display.maxCoordinateError } }] }
                 const result = await this.cad.geometry!.images.render(view, input, active)
                 return { ...result, current: await h.current(), partIds: input.partIds, sourceCoordinateFrame: h.report.schemaVersion === 3 ? 'assembly-world' : 'source-local' }
             } finally {

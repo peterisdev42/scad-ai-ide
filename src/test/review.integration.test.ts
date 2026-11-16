@@ -18,6 +18,7 @@ suite('Frozen CAD review Extension Host',()=>{
   const file=join(root,'compare.stl'),before=await verify(file),retained=await invoke('manageReview',{action:'retainBaseline',reportId:before.reportId,label:'Host baseline'})
   assert.equal(retained.retained,true);await writeFile(file,stl(box([2,1,1])));const after=await api.cad.geometry!.verify({uri:vscode.Uri.file(file).toString(),units:'mm'}),compared=await invoke('compare',{baselineReportId:before.reportId,targetReportId:after.reportId})
   assert.equal(compared.items[0].geometryChanged,true);assert.equal(compared.regressionStatus,'NO_REGRESSIONS_FOUND');assert.equal(compared.current.baseline,false);assert.equal(compared.current.target,true)
+  await assert.rejects(api.cad.review!.compare({reportId:after.reportId}),/baselineReportId and targetReportId/)
   const readonly=await vscode.workspace.openTextDocument(vscode.Uri.parse(compared.reportUri));assert.equal(JSON.parse(readonly.getText()).targetReportId,after.reportId)
   const profile=join(root,'print.json');await writeFile(profile,JSON.stringify({schemaVersion:1,units:'mm',process:'fdm',buildVolumeMm:[1,1,1],buildPose:{rotate:[0,0,0],translate:[0,0,0]},maxOverhangFromVerticalDeg:45}))
   const screened=await invoke('checkPrintability',{reportId:after.reportId,profileUri:vscode.Uri.file(profile).toString()});assert.equal(screened.result.envelope.status,'FAIL');assert.equal(screened.printability,'NOT_CHECKED');assert.equal(after.overallStatus,'PASS')
@@ -29,7 +30,7 @@ suite('Frozen CAD review Extension Host',()=>{
  test('cold repository reads retained original report and raw mesh with no compile, including a deleted source',async()=>{
   const file=join(root,'restart.stl'),r=await verify(file),review=api.cad.review!;await review.manage({action:'retainBaseline',reportId:r.reportId});const h=await review.evidence.resolve(r.reportId),storage=dirname(dirname(h.store.directory));h.release()
   const cold=new EvidenceRepository({extensionUri:extension.extensionUri,globalStorageUri:vscode.Uri.file(storage)} as vscode.ExtensionContext,{...api.cad,assembly:undefined,verification:api.cad.verification,geometry:{core:{get(){throw new CapabilityError('REPORT_NOT_FOUND','No live cache')}},capturePart:api.cad.geometry!.capturePart.bind(api.cad.geometry)}} as never)
-  await rm(file);const read=await cold.resolve(r.reportId);try{assert.equal(read.report.reportId,r.reportId);assert.equal(await read.current(),false);assert.deepEqual(await read.read(r.artifacts.find(a=>a.role==='raw')!.id),Buffer.from(stl()))}finally{read.release()}
+  await rm(file);const liveRead=await review.evidence.resolve(r.reportId);liveRead.release();const views=await review.renderViews({reportId:r.reportId,cameras:['iso']});assert.equal(views.renderStatus,'AVAILABLE');assert.equal(views.current,false);assert.equal(views.frames[0].sourceMeshSha256,r.snapshot.meshSha256);const read=await cold.resolve(r.reportId);try{assert.equal(read.report.reportId,r.reportId);assert.equal(await read.current(),false);assert.deepEqual(await read.read(r.artifacts.find(a=>a.role==='raw')!.id),Buffer.from(stl()))}finally{read.release()}
   await review.manage({action:'releaseBaseline',reportId:r.reportId})
  })
  test('scripted interaction adapter tests commit/CAS/stale lifecycle, without claiming real human acceptance',async()=>{

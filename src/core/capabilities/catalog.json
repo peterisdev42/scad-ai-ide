@@ -2511,7 +2511,7 @@
     "id": "cad.compare",
     "toolName": "scad_ai_ide_model_compare",
     "title": "Compare frozen CAD evidence",
-    "description": "Compare existing v2/v3 reports or explicitly retained baselines, without compilation. Stable identity is Manifest URI + declared partId, or whole document URI for v2. Summaries only; exported mesh changes do not prove local-region preservation. Required constraint removal/changes never count as repair. Optional expectUnchangedPartIds protects whole local mesh and assembly pose. Requires Trust.",
+    "description": "Compare existing v2/v3 reports or explicitly retained baselines, without compilation. Stable identity is Manifest URI + declared partId, or whole document URI for v2. Summaries only; exported mesh changes do not prove local-region preservation. Required constraint removal/changes never count as repair. Optional expectUnchangedPartIds protects whole local mesh and assembly pose. Requires Trust. To CREATE a comparison, pass baselineReportId AND targetReportId. reportId ONLY reads a comparison report returned by this tool; never put a v2/v3 model ID there.",
     "risk": "read",
     "inputSchema": {
       "type": "object",
@@ -2519,15 +2519,18 @@
       "properties": {
         "reportId": {
           "type": "string",
-          "pattern": "^cad-[a-f0-9-]{36}$"
+          "pattern": "^cad-[a-f0-9-]{36}$",
+          "description": "Read a prior comparison result only; not a source v2/v3 model ID."
         },
         "baselineReportId": {
           "type": "string",
-          "pattern": "^cad-[a-f0-9-]{36}$"
+          "pattern": "^cad-[a-f0-9-]{36}$",
+          "description": "Frozen v2/v3 model report ID used as the before baseline. Required together with targetReportId to create a comparison."
         },
         "targetReportId": {
           "type": "string",
-          "pattern": "^cad-[a-f0-9-]{36}$"
+          "pattern": "^cad-[a-f0-9-]{36}$",
+          "description": "Frozen v2/v3 model report ID used as the after target. Required together with baselineReportId."
         },
         "expectUnchangedPartIds": {
           "type": "array",
