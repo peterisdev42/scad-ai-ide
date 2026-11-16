@@ -31,7 +31,7 @@
 ## 未闭合项
 
 - **CAD-P4-AGENT-01 / FAIL**：F5 oMLX Provider 0.1.2、Qwen3.6，单场 240 秒。模型成功分析当前源码，随后把 v2 原始报告 ID 作为 `model_compare.reportId` 读取，未在总期限内完成比较与打印流程。已补清“创建比较必须 baselineReportId + targetReportId；reportId 只读已有比较结果”的 Schema 说明与错误提示。原始失败保留，未重跑；该场不作为最终候选的 Agent PASS。见 [assessment](evidence/phase4/native-comparison/assessment.json)、[轨迹](evidence/phase4/native-comparison/tool-traces.json)、[Provider 暴露](evidence/phase4/native-comparison/tool-exposure.json)。
-- **CAD-P4-AGENT-02 / UNRESOLVED**：独立单场 240 秒。预检装配通过；模型读取反馈并提出定位请求，但原生工具确认在期限内未完成，没有实际表面提交、没有几何修改。已通知用户所需窗口与操作，期限结束后停止。Manifest／profile Hash 和磁盘源码仍保持验收基准。见 [assessment](evidence/phase4/native-feedback/assessment.json)、[原生确认](evidence/phase4/native-feedback/pending-confirmation.json)。不将意愿回复或自动化点选计作真人闭环。
+- **CAD-P4-AGENT-02 / UNRESOLVED**：独立单场 240 秒。预检装配通过；模型读取反馈并提出定位请求，但原生工具确认在期限内未完成，没有实际表面提交、没有几何修改。已通知用户所需窗口与操作，期限结束后停止。Manifest／profile Hash 和磁盘源码仍保持验收基准。见 [assessment](evidence/phase4/native-feedback/assessment.json)、[原生确认](evidence/phase4/native-feedback/human-needed.json)。不将意愿回复或自动化点选计作真人闭环。
 - **CAD-P4-HOST-01 / ENV_FOCUS_NOT_ACQUIRED**：完整宿主与 installed 的原生 Undo／Redo／Enter 焦点检查仍失败，延续此前环境缺口。
 - **CAD-P4-HOST-02 / ENV_WORKSPACE_UPDATE_REJECTED**：实际动态添加／移除工作区测试被宿主拒绝或未收到完成事件。原始失败日志保留；现以 `SCAD_TEST_DYNAMIC_WORKSPACE=1` 显式启用，默认 pending，不计通过。产品每次枚举仍重新核对持久 store 的当前工作区归属。
 - 最初无效报告错误文案兼容性回归已恢复；比较部分解析失败的引用泄漏、保留图片的字节 Hash 和多个回归规则的问题身份已修复并补测。
