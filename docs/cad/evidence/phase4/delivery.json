@@ -1,0 +1,114 @@
+{
+  "date": "2026-11-16",
+  "baseline": "12c106372be287f50775320bb79c97e1077f337c",
+  "branch": "codex/cad-diff-feedback",
+  "codeHead": "48d194e22ab3dd1afdfa574e78091935f623bbce",
+  "pullRequest": "https://github.com/peterisdev42/scad-ai-ide/pull/5",
+  "headRecord": "Final evidence commit HEAD is recorded in PR #5 description; codeHead is the immutable candidate used for final Host/installed acceptance.",
+  "base": "main",
+  "mainBeforeAndAfter": "8a3ff1fe394b11aeb7fb323e7319bd365d29abaa",
+  "dependsOn": [
+    4,
+    3,
+    2
+  ],
+  "gates": {
+    "functional": "PARTIAL: executed automated review checks PASS; dynamic workspace mutation UNRESOLVED",
+    "nativeAgent": "OPEN: two single 240s attempts unclosed; no final-candidate model rerun",
+    "installed": "PARTIAL: business review PASS; full focus timeout FAIL",
+    "crossPlatform": "NOT_RUN; Windows Unicode KNOWN_PLATFORM_GAP"
+  },
+  "runtime": "OpenSCAD 2026.11-RC0",
+  "vscode": {
+    "minimum": "1.140.0",
+    "stable": "1.146.0"
+  },
+  "node": "v24.16.0",
+  "platform": "darwin-arm64",
+  "commands": [
+    {
+      "command": "npm test",
+      "exitCode": 0,
+      "pass": 436,
+      "skip": 3
+    },
+    {
+      "command": "npm run check-types",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run lint -- --fix",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run generate:agents",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:agents:manifest",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:agents:ui",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:preview-gpu",
+      "exitCode": 0
+    },
+    {
+      "command": "node --import tsx --test scripts/review-gpu.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node --import tsx --test scripts/review-view.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/review-preview-performance.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "vsce package --no-dependencies --no-yarn --allow-missing-repository --out .build/scad-ai-ide-phase4.vsix",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/verify-agent-vsix.mjs .build/scad-ai-ide-phase4.vsix",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/test-review-host.mjs stable",
+      "exitCode": 1,
+      "pass": 56,
+      "pending": 1,
+      "fail": 3
+    },
+    {
+      "command": "node scripts/test-review-host.mjs minimum",
+      "exitCode": 1,
+      "pass": 56,
+      "pending": 1,
+      "fail": 3
+    },
+    {
+      "command": "node scripts/test-review-native.mjs comparison",
+      "exitCode": 1,
+      "attempts": 1,
+      "budgetMs": 240000
+    },
+    {
+      "command": "node scripts/test-review-native.mjs feedback",
+      "exitCode": 1,
+      "attempts": 1,
+      "budgetMs": 240000
+    },
+    {
+      "command": "node scripts/test-agent-installed.mjs .build/scad-ai-ide-phase4.vsix",
+      "exitCode": 1
+    }
+  ],
+  "merged": false,
+  "released": false,
+  "reviewUnitCount": 19,
+  "finalNativeModelRun": "NOT_RUN: both bounded attempts are preserved; no repeat after later hardening"
+}

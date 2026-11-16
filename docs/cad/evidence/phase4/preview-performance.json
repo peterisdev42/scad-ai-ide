@@ -1,0 +1,48 @@
+{
+  "baseline": "12c106372be287f50775320bb79c97e1077f337c",
+  "scope": "same machine, same largeBoolean Fast Preview fixture; drawFrame plus GPU completion; 40 warmup +160 measured frames per backend/variant",
+  "results": [
+    {
+      "variant": "baseline",
+      "backend": "webgpu",
+      "sampleCount": 160,
+      "p50Ms": 0.8999999985098839,
+      "p95Ms": 1
+    },
+    {
+      "variant": "baseline",
+      "backend": "webgl2",
+      "sampleCount": 160,
+      "p50Ms": 8.300000000745058,
+      "p95Ms": 9.199999999254942
+    },
+    {
+      "variant": "phase4",
+      "backend": "webgpu",
+      "sampleCount": 160,
+      "p50Ms": 0.8000000007450581,
+      "p95Ms": 0.900000000372529
+    },
+    {
+      "variant": "phase4",
+      "backend": "webgl2",
+      "sampleCount": 160,
+      "p50Ms": 8.300000000745058,
+      "p95Ms": 9.199999999254942
+    }
+  ],
+  "comparisons": [
+    {
+      "backend": "webgpu",
+      "deltaP95Ms": -0.09999999962747097,
+      "allowedDeltaMs": 1,
+      "pass": true
+    },
+    {
+      "backend": "webgl2",
+      "deltaP95Ms": 0,
+      "allowedDeltaMs": 1,
+      "pass": true
+    }
+  ]
+}

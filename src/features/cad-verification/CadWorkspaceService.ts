@@ -1,3 +1,4 @@
+import type {ReviewWorkspaceService} from '../cad-review/ReviewWorkspaceService'
 import type {AssemblyWorkspaceService} from './AssemblyWorkspaceService'
 import type { MeshWorkspaceService } from './MeshWorkspaceService'
 import { dependencyResolution } from '../../platform/openscad/dependencyResolution'
@@ -50,6 +51,7 @@ interface PreviewExecutionContext {
 
 /** Extension Host adapter; no panel or active-editor state is needed for tools. */
 export class CadWorkspaceService implements vscode.Disposable {
+    review?: ReviewWorkspaceService
     assembly?: AssemblyWorkspaceService
     geometry?: MeshWorkspaceService
     readonly verification: CadVerificationService
@@ -437,8 +439,11 @@ export class CadWorkspaceService implements vscode.Disposable {
         }
     }
     async issueDetails(reportId: string, issueId: string, includeEvidence = false, cursor = 0, limit = 100) {
+        if(this.review?.has(reportId)) return this.review.issueDetails(reportId,issueId,includeEvidence,cursor,limit)
         const entry = this.verification.reports.get(reportId)
-        if (!entry && this.assembly?.core.has(reportId)) return this.assembly.issueDetails(reportId, issueId, includeEvidence, cursor, limit)
+        if(!entry&&this.assembly?.core.has(reportId)){try{return await this.assembly.issueDetails(reportId,issueId,includeEvidence,cursor,limit)}catch(e){if(!this.review||!(e instanceof CapabilityError)||e.code!=='ARTIFACT_NOT_FOUND')throw e}}
+        if(!entry&&this.geometry?.core.has(reportId)){try{return await this.geometry.issueDetails(reportId,issueId,includeEvidence,cursor,limit)}catch(e){if(!this.review||!(e instanceof CapabilityError)||e.code!=='ARTIFACT_NOT_FOUND')throw e}}
+        if (!entry && this.review) return this.review.originalIssue(reportId,issueId,includeEvidence,cursor,limit)
         if (!entry && this.geometry) return this.geometry.issueDetails(reportId, issueId, includeEvidence, cursor, limit)
         if (!entry) throw new CapabilityError('REPORT_NOT_FOUND', 'Report expired or was evicted. Explicitly analyze the current source again.', true)
         const issue = entry.report.issues.find((i) => i.id === issueId)
@@ -446,8 +451,11 @@ export class CadWorkspaceService implements vscode.Disposable {
         return { reportId, snapshotId: entry.report.snapshot.id, current: await this.current(entry.report), issue, cliExitCode: entry.report.cliExitCode, runtime: entry.report.snapshot.runtime, ...(includeEvidence ? { evidence: { artifactId: entry.report.artifacts[0]?.id, text: entry.log.slice(0, 32768), truncated: entry.report.metrics.truncated || entry.log.length > 32768 } } : {}) }
     }
     async reportText(reportId: string) {
+        if(this.review?.has(reportId)) return this.review.reportText(reportId)
         const entry = this.verification.reports.get(reportId)
-        if (!entry && this.assembly?.core.has(reportId)) return this.assembly.reportText(reportId)
+        if(!entry&&this.assembly?.core.has(reportId)){try{return await this.assembly.reportText(reportId)}catch(e){if(!this.review||!(e instanceof CapabilityError)||e.code!=='ARTIFACT_NOT_FOUND')throw e}}
+        if(!entry&&this.geometry?.core.has(reportId)){try{return await this.geometry.reportText(reportId)}catch(e){if(!this.review||!(e instanceof CapabilityError)||e.code!=='ARTIFACT_NOT_FOUND')throw e}}
+        if (!entry && this.review) return this.review.originalText(reportId)
         if (!entry && this.geometry) return this.geometry.reportText(reportId)
         if (!entry) throw new CapabilityError('REPORT_NOT_FOUND', 'Report expired or was evicted.')
         return JSON.stringify({ current: await this.current(entry.report), ...entry.report }, null, 2)

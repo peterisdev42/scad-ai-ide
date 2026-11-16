@@ -7,11 +7,13 @@ import type { PreviewMode } from '../../shared/types/PreviewMode'
 import type { GeometryData } from '../../../../core/preview/types'
 
 export interface ModelContext {
+    evidence?: import('../../../../core/review/display').EvidenceDisplay
     format: ModelFormat | null
     modelVersion?: number
     csgPartsAvailable?: boolean
     csgPartHints?: CsgPartHint[]
     previewError?: string
+    openEvidence?:()=>void
     openProblemSource?: () => void
     queryTopology?: (planes?: ClipPlane[]) => Promise<GeometryData>
     reportPerformance?: (timings: PreviewTimings) => void

@@ -1,0 +1,34 @@
+[
+  {
+    "capability": "cad.getFeedback",
+    "input": {
+      "reportId": "cad-f3919c13-f425-4135-a765-f6d19dbd192d"
+    },
+    "actor": "agent",
+    "started": "2026-11-16T04:47:35.202Z",
+    "profileDiskHash": "9521afd9ac63af1db6f9bf248d412b8e8624169c085b209666478e6d27a69df1",
+    "manifestDiskHash": "97ada8722c4af15ff8cd971e9354e416bc56ed2c2789861cff2a9801ce623f70",
+    "manifestBufferHash": "97ada8722c4af15ff8cd971e9354e416bc56ed2c2789861cff2a9801ce623f70",
+    "sourceDiskHash": "0f8c540fd8d21a17d0589aa342dd0e03a28baf007ea421958f0a69e7ab02303b",
+    "sourceBufferHash": "0f8c540fd8d21a17d0589aa342dd0e03a28baf007ea421958f0a69e7ab02303b",
+    "output": {
+      "ok": true,
+      "capabilityId": "cad.getFeedback",
+      "revision": 0,
+      "data": {
+        "ownerUri": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-feedback-f5-BEMVYG/workspace/.scad/verification.json",
+        "revision": 0,
+        "items": [],
+        "total": 0,
+        "offset": 0,
+        "nextOffset": null,
+        "baselineItems": []
+      },
+      "operation": {
+        "id": "1b05aa81-af20-421d-bca8-fbf516e041a0",
+        "capabilityId": "cad.getFeedback",
+        "status": "succeeded"
+      }
+    }
+  }
+]

@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "units": "mm",
+  "entry": "./model.scad",
+  "parts": [
+    {
+      "id": "body",
+      "selector": {
+        "type": "define",
+        "name": "part",
+        "value": "body"
+      }
+    },
+    {
+      "id": "shell",
+      "selector": {
+        "type": "define",
+        "name": "part",
+        "value": "shell"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "id": "body-bounds",
+      "type": "bounds",
+      "part": "body",
+      "minDimensions": [
+        19.9999,
+        19.9999,
+        4.9999
+      ],
+      "maxDimensions": [
+        20.0001,
+        20.0001,
+        5.0001
+      ]
+    },
+    {
+      "id": "body-volume",
+      "type": "volume",
+      "part": "body",
+      "min": 1800,
+      "max": 2000
+    },
+    {
+      "id": "shell-volume",
+      "type": "volume",
+      "part": "shell",
+      "min": 499.99,
+      "max": 500.01
+    }
+  ]
+}

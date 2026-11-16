@@ -1,0 +1,38 @@
+[
+  {
+    "sourceCommit": "48d194e",
+    "command": [
+      "node",
+      "scripts/test-review-host.mjs",
+      "stable"
+    ],
+    "label": "stable",
+    "exitCode": 1,
+    "elapsedMs": 39054,
+    "log": ".build/p4-host-stable-closeout.log"
+  },
+  {
+    "sourceCommit": "48d194e",
+    "command": [
+      "node",
+      "scripts/test-review-host.mjs",
+      "minimum"
+    ],
+    "label": "minimum",
+    "exitCode": 1,
+    "elapsedMs": 38288,
+    "log": ".build/p4-host-minimum-closeout.log"
+  },
+  {
+    "sourceCommit": "48d194e",
+    "command": [
+      "node",
+      "scripts/test-agent-installed.mjs",
+      ".build/scad-ai-ide-phase4.vsix"
+    ],
+    "label": "installed",
+    "exitCode": 1,
+    "elapsedMs": 8387,
+    "log": ".build/p4-installed-final.log"
+  }
+]

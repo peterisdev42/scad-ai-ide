@@ -16,7 +16,7 @@ const file = path.join(root, 'package.json')
 const manifest = JSON.parse(readFileSync(file))
 const tools = catalog.map((d) => ({ name: d.toolName, displayName: d.title, modelDescription: d.description, canBeReferencedInPrompt: true, toolReferenceName: d.toolName.replace('scad_ai_ide_', 'scad_'), inputSchema: d.inputSchema }))
 const instructions = ['openscad', 'openscad-customizer'].map((name) => ({ path: `./instructions/${name}.instructions.md` }))
-const skills = ['openscad-runtime', 'openscad-libraries', 'openscad-customizer', 'openscad-customizer-authoring', 'scad-ai-ide-diagnostics', 'openscad-model-debugging', 'openscad-geometry-verification', 'openscad-assembly-design', 'openscad-modeling-lifecycle'].map((name) => ({ path: `./skills/${name}/SKILL.md` }))
+const skills = ['openscad-runtime', 'openscad-libraries', 'openscad-customizer', 'openscad-customizer-authoring', 'scad-ai-ide-diagnostics', 'openscad-model-debugging', 'openscad-geometry-verification', 'openscad-assembly-design', 'openscad-modeling-lifecycle', 'openscad-design-review', 'openscad-spatial-feedback', 'openscad-printability'].map((name) => ({ path: `./skills/${name}/SKILL.md` }))
 assert.equal(new Set(tools.map((t) => t.name)).size, tools.length)
 for (const asset of [...instructions, ...skills]) {
     const text = readText(path.join(root, asset.path))

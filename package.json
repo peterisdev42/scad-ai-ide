@@ -172,6 +172,36 @@
                 "command": "scad-ai-ide.model.checkAssembly",
                 "title": "Check Static Assembly",
                 "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai-ide.model.compare",
+                "title": "Compare frozen CAD reports",
+                "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai-ide.model.openEvidence",
+                "title": "Open frozen CAD evidence",
+                "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai-ide.model.getFeedback",
+                "title": "Read CAD spatial feedback",
+                "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai-ide.model.requestPointing",
+                "title": "Request CAD surface feedback",
+                "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai-ide.model.checkPrintability",
+                "title": "Screen CAD print setup",
+                "category": "SCAD AI IDE"
+            },
+            {
+                "command": "scad-ai-ide.model.manageReview",
+                "title": "Manage retained CAD review",
+                "category": "SCAD AI IDE"
             }
         ],
         "configuration": {
@@ -524,6 +554,10 @@
                     "**/.scad/verification.json"
                 ],
                 "url": "./resources/schemas/cad-verification-v1.schema.json"
+            },
+            {
+                "fileMatch": "**/.scad/print-profile.json",
+                "url": "./resources/schemas/cad-print-profile-v1.schema.json"
             }
         ],
         "languageModelTools": [
@@ -2942,6 +2976,393 @@
                         }
                     ]
                 }
+            },
+            {
+                "name": "scad_ai_ide_model_compare",
+                "displayName": "Compare frozen CAD evidence",
+                "modelDescription": "Compare existing v2/v3 reports or explicitly retained baselines, without compilation. Stable identity is Manifest URI + declared partId, or whole document URI for v2. Summaries only; exported mesh changes do not prove local-region preservation. Required constraint removal/changes never count as repair. Optional expectUnchangedPartIds protects whole local mesh and assembly pose. Requires Trust. To CREATE a comparison, pass baselineReportId AND targetReportId. reportId ONLY reads a comparison report returned by this tool; never put a v2/v3 model ID there.",
+                "canBeReferencedInPrompt": true,
+                "toolReferenceName": "scad_model_compare",
+                "inputSchema": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "reportId": {
+                            "type": "string",
+                            "pattern": "^cad-[a-f0-9-]{36}$",
+                            "description": "Read a prior comparison result only; not a source v2/v3 model ID."
+                        },
+                        "baselineReportId": {
+                            "type": "string",
+                            "pattern": "^cad-[a-f0-9-]{36}$",
+                            "description": "Frozen v2/v3 model report ID used as the before baseline. Required together with targetReportId to create a comparison."
+                        },
+                        "targetReportId": {
+                            "type": "string",
+                            "pattern": "^cad-[a-f0-9-]{36}$",
+                            "description": "Frozen v2/v3 model report ID used as the after target. Required together with baselineReportId."
+                        },
+                        "expectUnchangedPartIds": {
+                            "type": "array",
+                            "uniqueItems": true,
+                            "maxItems": 32,
+                            "items": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128
+                            }
+                        },
+                        "section": {
+                            "enum": [
+                                "parts",
+                                "checks",
+                                "issues"
+                            ]
+                        },
+                        "offset": {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        "limit": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    "required": [],
+                    "oneOf": [
+                        {
+                            "required": [
+                                "reportId"
+                            ],
+                            "not": {
+                                "anyOf": [
+                                    {
+                                        "required": [
+                                            "baselineReportId"
+                                        ],
+                                        "properties": {
+                                            "baselineReportId": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "targetReportId"
+                                        ],
+                                        "properties": {
+                                            "targetReportId": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "expectUnchangedPartIds"
+                                        ],
+                                        "properties": {
+                                            "expectUnchangedPartIds": {}
+                                        }
+                                    }
+                                ]
+                            },
+                            "properties": {
+                                "reportId": {}
+                            }
+                        },
+                        {
+                            "required": [
+                                "baselineReportId",
+                                "targetReportId"
+                            ],
+                            "not": {
+                                "required": [
+                                    "reportId"
+                                ],
+                                "properties": {
+                                    "reportId": {}
+                                }
+                            },
+                            "properties": {
+                                "baselineReportId": {},
+                                "targetReportId": {}
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "scad_ai_ide_model_getFeedback",
+                "displayName": "Read persistent CAD spatial feedback",
+                "modelDescription": "Read bounded persistent user feedback and retained baseline identities, revisions and stale state. Provide one owner URI or frozen reportId. Optional targetReportId proposes only provable identical-local-mesh rigid remap candidates; no remap is accepted automatically. Requires Trust.",
+                "canBeReferencedInPrompt": true,
+                "toolReferenceName": "scad_model_getFeedback",
+                "inputSchema": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "uri": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4096
+                        },
+                        "reportId": {
+                            "type": "string",
+                            "pattern": "^cad-[a-f0-9-]{36}$"
+                        },
+                        "snapshotId": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "status": {
+                            "enum": [
+                                "open",
+                                "resolved",
+                                "stale"
+                            ]
+                        },
+                        "targetReportId": {
+                            "type": "string",
+                            "pattern": "^cad-[a-f0-9-]{36}$"
+                        },
+                        "offset": {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        "limit": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    "required": [],
+                    "oneOf": [
+                        {
+                            "required": [
+                                "uri"
+                            ],
+                            "not": {
+                                "required": [
+                                    "reportId"
+                                ],
+                                "properties": {
+                                    "reportId": {}
+                                }
+                            },
+                            "properties": {
+                                "uri": {}
+                            }
+                        },
+                        {
+                            "required": [
+                                "reportId"
+                            ],
+                            "not": {
+                                "required": [
+                                    "uri"
+                                ],
+                                "properties": {
+                                    "uri": {}
+                                }
+                            },
+                            "properties": {
+                                "reportId": {}
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "scad_ai_ide_model_requestPointing",
+                "displayName": "Ask user for CAD surface feedback",
+                "modelDescription": "Open a frozen evidence view and wait for a human to select a surface and explicitly submit, or confirm a proven remap candidate. No source modification; no synthetic coordinates accepted. Current snapshot required, model PASS not required. Default timeout120s, max240s. User cancellation/timeout creates no feedback. Requires graphical interaction and Trust.",
+                "canBeReferencedInPrompt": true,
+                "toolReferenceName": "scad_model_requestPointing",
+                "inputSchema": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "reportId": {
+                            "type": "string",
+                            "pattern": "^cad-[a-f0-9-]{36}$"
+                        },
+                        "prompt": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 1024
+                        },
+                        "ttl": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 240
+                        },
+                        "remapCandidateId": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "feedbackId": {
+                            "type": "string",
+                            "pattern": "^cad-[a-f0-9-]{36}$"
+                        }
+                    },
+                    "required": [
+                        "reportId",
+                        "prompt"
+                    ],
+                    "dependencies": {
+                        "remapCandidateId": [
+                            "feedbackId"
+                        ],
+                        "feedbackId": [
+                            "remapCandidateId"
+                        ]
+                    }
+                }
+            },
+            {
+                "name": "scad_ai_ide_model_checkPrintability",
+                "displayName": "Screen explicit CAD print setup",
+                "modelDescription": "Screen one frozen mesh against an explicit local mm FDM profile: build envelope and numerical overhang triangle candidates only. No thickness, bridges, support, slicer or manufacturing guarantee; printability remains NOT_CHECKED. For v3 choose partId; uses local geometry and print pose, ignoring assembly pose. Existing print assessment reportId reads only. No automatic unit assumption or source compilation. Requires Trust.",
+                "canBeReferencedInPrompt": true,
+                "toolReferenceName": "scad_model_checkPrintability",
+                "inputSchema": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "reportId": {
+                            "type": "string",
+                            "pattern": "^cad-[a-f0-9-]{36}$"
+                        },
+                        "profileUri": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4096
+                        },
+                        "partId": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 128
+                        },
+                        "expectedProfileDigest": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                        }
+                    },
+                    "required": [
+                        "reportId"
+                    ]
+                }
+            },
+            {
+                "name": "scad_ai_ide_model_manageReview",
+                "displayName": "Manage retained CAD review evidence",
+                "modelDescription": "Explicitly retain/release a frozen baseline, or resolve/reopen/delete user feedback using its current revision. Changes local review records only, never geometry or constraints. Resolved feedback does not imply model PASS. Retained geometry persists across restart; bounded capacity has no silent eviction. Requires Trust.",
+                "canBeReferencedInPrompt": true,
+                "toolReferenceName": "scad_model_manageReview",
+                "inputSchema": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "action": {
+                            "enum": [
+                                "retainBaseline",
+                                "releaseBaseline",
+                                "resolveFeedback",
+                                "reopenFeedback",
+                                "deleteFeedback"
+                            ]
+                        },
+                        "reportId": {
+                            "type": "string",
+                            "pattern": "^cad-[a-f0-9-]{36}$"
+                        },
+                        "feedbackId": {
+                            "type": "string",
+                            "pattern": "^cad-[a-f0-9-]{36}$"
+                        },
+                        "expectedRevision": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "label": {
+                            "type": "string",
+                            "maxLength": 128
+                        }
+                    },
+                    "required": [
+                        "action"
+                    ],
+                    "oneOf": [
+                        {
+                            "properties": {
+                                "action": {
+                                    "enum": [
+                                        "retainBaseline",
+                                        "releaseBaseline"
+                                    ]
+                                },
+                                "reportId": {}
+                            },
+                            "required": [
+                                "reportId"
+                            ],
+                            "not": {
+                                "anyOf": [
+                                    {
+                                        "required": [
+                                            "feedbackId"
+                                        ],
+                                        "properties": {
+                                            "feedbackId": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "expectedRevision"
+                                        ],
+                                        "properties": {
+                                            "expectedRevision": {}
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "properties": {
+                                "action": {
+                                    "enum": [
+                                        "resolveFeedback",
+                                        "reopenFeedback",
+                                        "deleteFeedback"
+                                    ]
+                                },
+                                "feedbackId": {},
+                                "expectedRevision": {}
+                            },
+                            "required": [
+                                "feedbackId",
+                                "expectedRevision"
+                            ],
+                            "not": {
+                                "anyOf": [
+                                    {
+                                        "required": [
+                                            "reportId"
+                                        ],
+                                        "properties": {
+                                            "reportId": {}
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "label"
+                                        ],
+                                        "properties": {
+                                            "label": {}
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
             }
         ],
         "chatInstructions": [
@@ -2979,6 +3400,15 @@
             },
             {
                 "path": "./skills/openscad-modeling-lifecycle/SKILL.md"
+            },
+            {
+                "path": "./skills/openscad-design-review/SKILL.md"
+            },
+            {
+                "path": "./skills/openscad-spatial-feedback/SKILL.md"
+            },
+            {
+                "path": "./skills/openscad-printability/SKILL.md"
             }
         ]
     },
@@ -2993,7 +3423,7 @@
         "watch-tests": "tsc -p . -w --outDir out",
         "check-types": "tsc --noEmit && tsc -p tsconfig.webview.json",
         "lint": "eslint src",
-        "test": "npm run compile-tests && node --test out/test/capabilities.test.js out/test/capabilityServices.test.js out/test/notifications.test.js out/test/runtime.test.js out/test/github.test.js out/test/installation.test.js out/test/customizer.test.js out/test/customizerSource*.test.js out/test/language.test.js out/test/markdown.test.js && npm run test:libraries && npm run test:preview && npm run test:mesh && npm run test:cad:unit && npm run test:assembly",
+        "test": "npm run compile-tests && node --test out/test/capabilities.test.js out/test/capabilityServices.test.js out/test/notifications.test.js out/test/runtime.test.js out/test/github.test.js out/test/installation.test.js out/test/customizer.test.js out/test/customizerSource*.test.js out/test/language.test.js out/test/markdown.test.js && npm run test:libraries && npm run test:preview && npm run test:mesh && npm run test:cad:unit && npm run test:assembly && npm run test:review",
         "test:customizer": "npm run compile-tests && node esbuild.js && node --test scripts/customizer-scrollbar.test.mjs scripts/customizer-preview-fields.test.mjs",
         "test:markdown": "npm run compile && npm run compile-tests && node --test out/test/markdown.test.js && node --test scripts/markdown-preview.test.mjs",
         "test:markdown-host": "npm run compile && node --test scripts/markdown-webview.test.mjs",
@@ -3036,7 +3466,13 @@
         "test:assembly": "node esbuild.js && node --import tsx --test src/test/assembly/*.test.ts",
         "test:assembly:real": "node --import tsx --test src/test/assembly/real.acceptance.ts",
         "test:assembly:host": "node scripts/test-assembly-host.mjs",
-        "test:assembly:native": "node scripts/test-assembly-native.mjs"
+        "test:assembly:native": "node scripts/test-assembly-native.mjs",
+        "test:review": "node esbuild.js && node --import tsx --test src/test/review/*.test.ts",
+        "test:review:host": "node scripts/test-review-host.mjs",
+        "test:review:native": "node scripts/test-review-native.mjs",
+        "test:review:gpu": "node --import tsx --test scripts/review-gpu.test.mjs",
+        "benchmark:review-preview": "node scripts/review-preview-performance.mjs",
+        "test:review:view": "node --import tsx --test scripts/review-view.test.mjs"
     },
     "devDependencies": {
         "@types/markdown-it": "^14.2.0",

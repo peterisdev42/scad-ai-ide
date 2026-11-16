@@ -1,0 +1,1 @@
+{"schemaVersion":1,"units":"mm","process":"fdm","buildVolumeMm":[200,200,200],"buildPose":{"rotate":[0,0,0],"translate":[0,0,0]},"maxOverhangFromVerticalDeg":45}

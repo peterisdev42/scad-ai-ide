@@ -1,0 +1,63 @@
+{
+  "scenario": "comparison",
+  "attempts": 1,
+  "totalBudgetMs": 240000,
+  "passed": false,
+  "manifestUnchanged": true,
+  "profileUnchanged": true,
+  "manifestHash": "97ada8722c4af15ff8cd971e9354e416bc56ed2c2789861cff2a9801ce623f70",
+  "profileHash": "9521afd9ac63af1db6f9bf248d412b8e8624169c085b209666478e6d27a69df1",
+  "finalSourceSha256": "69cee08108385dfbb52c444d0f2124e96d74a489392e3b9e8b11b318f40f9f7e",
+  "sourceUnchangedDuringObservedCadCalls": true,
+  "calls": [
+    {
+      "capability": "cad.modelAnalyze",
+      "input": {
+        "mode": "verify",
+        "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-ZR94Uv/workspace/model.scad",
+        "units": "mm"
+      },
+      "ok": true
+    },
+    {
+      "capability": "cad.compare",
+      "input": {
+        "reportId": "cad-d288779d-ab26-4faf-b9ee-94d15e92d975"
+      },
+      "ok": false,
+      "error": {
+        "code": "REPORT_NOT_FOUND",
+        "message": "Review report expired; no geometry was recomputed.",
+        "retryable": false
+      }
+    },
+    {
+      "capability": "cad.modelMeasure",
+      "input": {
+        "measurementTypes": [
+          "bounds",
+          "surfaceArea",
+          "signedVolume",
+          "physicalVolume",
+          "topology"
+        ],
+        "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-ZR94Uv/workspace/model.scad",
+        "units": "mm"
+      },
+      "ok": true
+    },
+    {
+      "capability": "cad.checkPrintability",
+      "input": {
+        "profileUri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-ZR94Uv/workspace/.scad/print-profile.json",
+        "reportId": "cad-d288779d-ab26-4faf-b9ee-94d15e92d975"
+      },
+      "ok": true
+    }
+  ],
+  "humanSurfaceSubmission": "NOT_APPLICABLE",
+  "reason": "Model used source reportId as comparison reportId; no bounded successful completion. Comparison parameter documentation was subsequently clarified; no second model attempt.",
+  "matchesFinalBundle": false,
+  "testedBundleSha256": "77265393197b80b8a53cd0e2b0d73530a1b1de8ecf07e0c28d7aa1851d8aafcf",
+  "finalBundleSha256": "c63418d9e781991a415002e1b9a86a7a00cd73e06d669a597bf35d8fa96b7314"
+}

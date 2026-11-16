@@ -805,5 +805,84 @@
         ]
       }
     }
+  },
+  {
+    "group": "CAD evidence review",
+    "source": "src/features/cad-review/registerReviewCommands.ts",
+    "pattern": "registerCommand\\('([^']+)'",
+    "actions": {
+      "scad-ai-ide.model.compare": {
+        "capabilities": [
+          "cad.compare"
+        ],
+        "examples": [
+          {
+            "capability": "cad.compare",
+            "input": {
+              "baselineReportId": "cad-00000000-0000-0000-0000-000000000000",
+              "targetReportId": "cad-00000000-0000-0000-0000-000000000000"
+            }
+          }
+        ]
+      },
+      "scad-ai-ide.model.getFeedback": {
+        "capabilities": [
+          "cad.getFeedback"
+        ],
+        "examples": [
+          {
+            "capability": "cad.getFeedback",
+            "input": {
+              "reportId": "cad-00000000-0000-0000-0000-000000000000"
+            }
+          }
+        ]
+      },
+      "scad-ai-ide.model.requestPointing": {
+        "capabilities": [
+          "cad.requestPointing"
+        ],
+        "examples": [
+          {
+            "capability": "cad.requestPointing",
+            "input": {
+              "reportId": "cad-00000000-0000-0000-0000-000000000000",
+              "prompt": "Point at the surface."
+            }
+          }
+        ]
+      },
+      "scad-ai-ide.model.checkPrintability": {
+        "capabilities": [
+          "cad.checkPrintability"
+        ],
+        "examples": [
+          {
+            "capability": "cad.checkPrintability",
+            "input": {
+              "reportId": "cad-00000000-0000-0000-0000-000000000000",
+              "profileUri": "file:///workspace/.scad/print-profile.json"
+            }
+          }
+        ]
+      },
+      "scad-ai-ide.model.manageReview": {
+        "capabilities": [
+          "cad.manageReview"
+        ],
+        "examples": [
+          {
+            "capability": "cad.manageReview",
+            "input": {
+              "action": "retainBaseline",
+              "reportId": "cad-00000000-0000-0000-0000-000000000000"
+            }
+          }
+        ]
+      },
+      "scad-ai-ide.model.openEvidence": {
+        "uiOnly": "Reveal frozen mesh evidence only; no implicit compile, source edit or synthetic human submission."
+      }
+    }
   }
 ]

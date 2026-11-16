@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { createServer } from 'node:http'
 import { chromium } from 'playwright'
-export async function previewFixture() {
+export async function previewFixture(options={}) {
     const directory = await mkdtemp(join(tmpdir(), 'prepared-preview-gpu-'))
     await build({ stdin: { contents: "export {readPreviewScene} from './src/core/preview/read';export {tracePreview} from './src/core/preview/query';", resolveDir: process.cwd(), loader: 'ts' }, bundle: true, platform: 'node', format: 'cjs', outfile: join(directory, 'reader.cjs'), logLevel: 'silent' })
     const { readPreviewScene, tracePreview } = createRequire(import.meta.url)(join(directory, 'reader.cjs'))
@@ -39,6 +39,7 @@ export async function previewFixture() {
         format: 'esm',
         outfile: join(directory, 'fixture.js'),
         loader: { '.stl': 'binary', '.glsl': 'text' },
+        plugins: options.stageSource?[{name:'fixed-baseline-stage',setup(build){build.onLoad({filter:/\/preview\/Stage\.ts$/},args=>({contents:options.stageSource,loader:'ts',resolveDir:resolve('src/features/preview/webview/preview')}))}}]:[],
         logLevel: 'silent',
     })
     const server = createServer(async (req, res) => {

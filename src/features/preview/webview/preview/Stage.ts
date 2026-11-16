@@ -1,3 +1,4 @@
+import type {EvidenceDisplay} from '../../../../core/review/display'
 import type { CsgPartHint } from '../../../../core/preview/csgParts'
 import { GpuCompletion } from './passes/GpuCompletion'
 import { rendererBusy, withRenderer } from './passes/RendererJobs'
@@ -7,7 +8,7 @@ import type { PreviewScene } from '../../../../core/preview/types'
 import { beginGpuValidation } from './passes/GpuValidation'
 import { ModelRepresentation } from './models/ModelRepresentation'
 import { threeMfMillimeterScale } from '../../../../core/formats/threeMf'
-import { Box3, Color, FogExp2, Group, Mesh, MeshStandardMaterial, Object3D, PCFShadowMap, Plane, Raycaster, Scene, Vector2, Vector3 } from 'three'
+import { Box3, BufferGeometry, BufferAttribute, DoubleSide, Color, FogExp2, Line, LineBasicMaterial, SphereGeometry, Group, Mesh, MeshStandardMaterial, Object3D, PCFShadowMap, Plane, Raycaster, Scene, Vector2, Vector3 } from 'three'
 import { WebGPURenderer } from 'three/webgpu'
 
 // OpenSCAD uses Z-up; align Three.js to match so models load without reorientation.
@@ -129,6 +130,20 @@ export class Stage {
     private pointerDownY = 0
     private theme: Theme
     private disposed = false
+    private evidenceMode = false
+    private evidenceOrigin = new Vector3()
+    private evidenceOverlay = new Group()
+    private evidencePicked?: (hit:{key:string;triangle:number;ray:{origin:[number,number,number];direction:[number,number,number]};camera:unknown})=>void
+    public setEvidencePicking(callback?:typeof this.evidencePicked){this.evidencePicked=callback}
+    public setEvidenceVisible(role:'target'|'baseline',partId:string|null|undefined,visible:boolean){this.modelGroup.traverse(o=>{if(o instanceof Mesh&&o.userData.evidenceRole===role&&(partId===undefined||o.userData.evidencePart===partId))o.visible=visible})}
+    public setEvidenceMarkers(markers:Array<{position:number[];status?:string}>,lines:Array<{a:number[];b:number[]}>){
+        for(const child of this.evidenceOverlay.children){if(child instanceof Mesh||child instanceof Line){child.geometry.dispose();const materials=Array.isArray(child.material)?child.material:[child.material];materials.forEach(m=>m.dispose())}}this.evidenceOverlay.clear()
+        const size=Math.max(.05,new Box3().setFromObject(this.modelGroup).getSize(new Vector3()).length()/200)
+        for(const m of markers.slice(0,200)){const mesh=new Mesh(new SphereGeometry(size,8,6),new MeshStandardMaterial({color:m.status==='stale'?0x808080:0xff3355,depthTest:false}));mesh.position.fromArray(m.position).sub(this.evidenceOrigin);mesh.renderOrder=1001;this.evidenceOverlay.add(mesh)}
+        for(const l of lines.slice(0,200)){const a=new Vector3().fromArray(l.a).sub(this.evidenceOrigin),b=new Vector3().fromArray(l.b).sub(this.evidenceOrigin),geometry=new BufferGeometry().setFromPoints([a,b]);this.evidenceOverlay.add(new Line(geometry,new LineBasicMaterial({color:0xff3355,depthTest:false})))}
+        this.scene.add(this.evidenceOverlay)
+    }
+    private applyEvidenceColors(){this.modelGroup.traverse(o=>{if(o instanceof Mesh&&o.userData.evidenceRole){const base=o.userData.evidenceRole==='baseline',mat=new MeshStandardMaterial({color:base?0x6688dd:o.userData.evidenceChanged?0xeeaa33:0x55bbaa,side:DoubleSide,transparent:base,opacity:base?.2:1,depthWrite:!base});const old=Array.isArray(o.material)?o.material:[o.material];old.forEach(m=>m.dispose());o.material=mat}})}
     private paused = false
 
     private raycaster: Raycaster
@@ -270,6 +285,8 @@ export class Stage {
         this.renderer.domElement.removeEventListener('pointerdown', this.handlePointerDown, true)
         this.renderer.domElement.removeEventListener('pointermove', this.handlePointerMove, true)
 
+        this.setEvidenceMarkers([],[])
+        this.evidenceOverlay.removeFromParent()
         this.toolManager.dispose()
         this.transformControls.dispose()
         this.handles.forEach((h) => h.dispose())
@@ -337,6 +354,7 @@ export class Stage {
         this.scene.fog = new FogExp2(this.theme.fog, viewOptions.get('fogDensity'))
         this.materialManager.setTheme(this.modelGroup, this.theme, viewOptions.get('modelColor'), !!viewOptions.get('partColors'), this.csgPartHints)
         this.materialManager.applyToGroup(this.modelGroup, this.materialSettings!)
+        if(this.evidenceMode)this.applyEvidenceColors()
 
         // The visible preview exposes only the solid display mode.
     }
@@ -347,14 +365,16 @@ export class Stage {
         const generation = ++this.modelGeneration
         const started = performance.now()
         const nextGroup = new Group()
-        const { format, base64Data } = modelContext
-        if (!base64Data || !format) {
+        const { format, base64Data, evidence } = modelContext
+        this.evidenceMode=!!evidence
+        if(evidence)this.evidenceOrigin.fromArray(evidence.origin)
+        if ((!base64Data && !evidence) || !format) {
             this.clearModel()
             return
         }
 
         const decodeStarted = performance.now()
-        const binaryString = window.atob(base64Data)
+        const binaryString = window.atob(base64Data??'')
         const bytes = new Uint8Array(binaryString.length)
         for (let i = 0; i < binaryString.length; i++) {
             bytes[i] = binaryString.charCodeAt(i)
@@ -373,7 +393,9 @@ export class Stage {
             } else inactive.representation.dispose()
         }
         if (cachedCandidate) modelContext.reportPerformance?.(format === ModelFormat.PreviewScene ? { viewerParseMs: 0, viewerValidationMs: 0, resourcePreparationMs: 0 } : { meshParseMs: 0, resourcePreparationMs: 0 })
-        if (!cachedCandidate && format === ModelFormat.PreviewScene) {
+        if(evidence){
+            for(const part of evidence.parts){const geometry=new BufferGeometry();geometry.setAttribute('position',new BufferAttribute(part.positions,3));geometry.setIndex(new BufferAttribute(part.indices,1));geometry.computeVertexNormals();const mesh=new Mesh(geometry,new MeshStandardMaterial());mesh.userData.evidenceChanged=part.changed;mesh.userData.evidenceRole=part.role;mesh.userData.evidenceKey=part.key;mesh.userData.evidencePart=part.partId;mesh.userData.previewOverlay=part.role==='baseline';nextGroup.add(mesh)}
+        } else if (!cachedCandidate && format === ModelFormat.PreviewScene) {
             let phase = performance.now()
             const scene = JSON.parse(new TextDecoder().decode(bytes)) as PreviewScene
             modelContext.reportPerformance?.({ viewerParseMs: performance.now() - phase })
@@ -468,6 +490,7 @@ export class Stage {
         this.modelRepresentation = candidate
         if (this.materialSettings) this.materialManager.applyToGroup(nextGroup, this.materialSettings)
         this.modelGroup.add(...nextGroup.children)
+        if(evidence)this.applyEvidenceColors()
         if (this.csgPartHints && this.viewOptions) this.applySettings(this.viewOptions)
         this.firstFrame = { generation, start: started, notify: modelContext.frameReady, submitted: false }
         // Pick an absorption coefficient so a ray traversing the model's full
@@ -948,6 +971,10 @@ export class Stage {
         const rect = this.renderer.domElement.getBoundingClientRect()
         const ndc = new Vector2(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1)
 
+        if(this.evidenceMode){
+            if(this.evidencePicked){this.raycaster.setFromCamera(ndc,this.activeCameraRig.activeCamera);const hit=this.modelRepresentation?.pick(this.raycaster).value.find(h=>h.object.visible&&h.object.userData.evidenceRole==='target');if(hit&&hit.faceIndex!==undefined&&hit.faceIndex!==null){const ray=this.raycaster.ray,origin=ray.origin.clone().add(this.evidenceOrigin);this.evidencePicked({key:hit.object.userData.evidenceKey,triangle:hit.faceIndex,ray:{origin:origin.toArray(),direction:ray.direction.toArray()},camera:{origin:this.evidenceOrigin.toArray(),world:this.activeCameraRig.activeCamera.matrixWorld.toArray(),projection:this.activeCameraRig.activeCamera.projectionMatrix.toArray()}})}}
+            return
+        }
         // Check if gizmo consumed the click
         if (this.gizmoJustInteracted) return
 

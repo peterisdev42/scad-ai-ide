@@ -139,6 +139,7 @@ export class Parameters extends LitElement {
             )}
             </div>
             <div class="export-container">
+                ${this.modelContext.openEvidence ? html`<vscode-button title="Open existing frozen verification evidence" @click=${()=>this.modelContext.openEvidence?.()}>Evidence</vscode-button>` : nothing}
                 <vscode-button title="Send Model to 3D Slicer" @click=${() => this.modelContext.sendToSlicer()}> Print </vscode-button>
                 <vscode-button title="Write Model to File System" @click=${() => this.modelContext.export()}> Export </vscode-button>
             </div>

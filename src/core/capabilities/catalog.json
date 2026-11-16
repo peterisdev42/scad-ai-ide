@@ -2506,5 +2506,403 @@
         }
       ]
     }
+  },
+  {
+    "id": "cad.compare",
+    "toolName": "scad_ai_ide_model_compare",
+    "title": "Compare frozen CAD evidence",
+    "description": "Compare existing v2/v3 reports or explicitly retained baselines, without compilation. Stable identity is Manifest URI + declared partId, or whole document URI for v2. Summaries only; exported mesh changes do not prove local-region preservation. Required constraint removal/changes never count as repair. Optional expectUnchangedPartIds protects whole local mesh and assembly pose. Requires Trust. To CREATE a comparison, pass baselineReportId AND targetReportId. reportId ONLY reads a comparison report returned by this tool; never put a v2/v3 model ID there.",
+    "risk": "read",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reportId": {
+          "type": "string",
+          "pattern": "^cad-[a-f0-9-]{36}$",
+          "description": "Read a prior comparison result only; not a source v2/v3 model ID."
+        },
+        "baselineReportId": {
+          "type": "string",
+          "pattern": "^cad-[a-f0-9-]{36}$",
+          "description": "Frozen v2/v3 model report ID used as the before baseline. Required together with targetReportId to create a comparison."
+        },
+        "targetReportId": {
+          "type": "string",
+          "pattern": "^cad-[a-f0-9-]{36}$",
+          "description": "Frozen v2/v3 model report ID used as the after target. Required together with baselineReportId."
+        },
+        "expectUnchangedPartIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "section": {
+          "enum": [
+            "parts",
+            "checks",
+            "issues"
+          ]
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": [],
+      "oneOf": [
+        {
+          "required": [
+            "reportId"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "baselineReportId"
+                ],
+                "properties": {
+                  "baselineReportId": {}
+                }
+              },
+              {
+                "required": [
+                  "targetReportId"
+                ],
+                "properties": {
+                  "targetReportId": {}
+                }
+              },
+              {
+                "required": [
+                  "expectUnchangedPartIds"
+                ],
+                "properties": {
+                  "expectUnchangedPartIds": {}
+                }
+              }
+            ]
+          },
+          "properties": {
+            "reportId": {}
+          }
+        },
+        {
+          "required": [
+            "baselineReportId",
+            "targetReportId"
+          ],
+          "not": {
+            "required": [
+              "reportId"
+            ],
+            "properties": {
+              "reportId": {}
+            }
+          },
+          "properties": {
+            "baselineReportId": {},
+            "targetReportId": {}
+          }
+        }
+      ]
+    },
+    "service": "ReviewWorkspaceService.compare",
+    "gui": "CAD review commands / frozen evidence view"
+  },
+  {
+    "id": "cad.getFeedback",
+    "toolName": "scad_ai_ide_model_getFeedback",
+    "title": "Read persistent CAD spatial feedback",
+    "description": "Read bounded persistent user feedback and retained baseline identities, revisions and stale state. Provide one owner URI or frozen reportId. Optional targetReportId proposes only provable identical-local-mesh rigid remap candidates; no remap is accepted automatically. Requires Trust.",
+    "risk": "read",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "uri": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "reportId": {
+          "type": "string",
+          "pattern": "^cad-[a-f0-9-]{36}$"
+        },
+        "snapshotId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "status": {
+          "enum": [
+            "open",
+            "resolved",
+            "stale"
+          ]
+        },
+        "targetReportId": {
+          "type": "string",
+          "pattern": "^cad-[a-f0-9-]{36}$"
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": [],
+      "oneOf": [
+        {
+          "required": [
+            "uri"
+          ],
+          "not": {
+            "required": [
+              "reportId"
+            ],
+            "properties": {
+              "reportId": {}
+            }
+          },
+          "properties": {
+            "uri": {}
+          }
+        },
+        {
+          "required": [
+            "reportId"
+          ],
+          "not": {
+            "required": [
+              "uri"
+            ],
+            "properties": {
+              "uri": {}
+            }
+          },
+          "properties": {
+            "reportId": {}
+          }
+        }
+      ]
+    },
+    "service": "ReviewWorkspaceService.getFeedback",
+    "gui": "CAD review commands / frozen evidence view"
+  },
+  {
+    "id": "cad.requestPointing",
+    "toolName": "scad_ai_ide_model_requestPointing",
+    "title": "Ask user for CAD surface feedback",
+    "description": "Open a frozen evidence view and wait for a human to select a surface and explicitly submit, or confirm a proven remap candidate. No source modification; no synthetic coordinates accepted. Current snapshot required, model PASS not required. Default timeout120s, max240s. User cancellation/timeout creates no feedback. Requires graphical interaction and Trust.",
+    "risk": "read",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reportId": {
+          "type": "string",
+          "pattern": "^cad-[a-f0-9-]{36}$"
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "ttl": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 240
+        },
+        "remapCandidateId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "feedbackId": {
+          "type": "string",
+          "pattern": "^cad-[a-f0-9-]{36}$"
+        }
+      },
+      "required": [
+        "reportId",
+        "prompt"
+      ],
+      "dependencies": {
+        "remapCandidateId": [
+          "feedbackId"
+        ],
+        "feedbackId": [
+          "remapCandidateId"
+        ]
+      }
+    },
+    "service": "ReviewWorkspaceService.requestPointing",
+    "gui": "CAD review commands / frozen evidence view",
+    "requiresInteraction": true
+  },
+  {
+    "id": "cad.checkPrintability",
+    "toolName": "scad_ai_ide_model_checkPrintability",
+    "title": "Screen explicit CAD print setup",
+    "description": "Screen one frozen mesh against an explicit local mm FDM profile: build envelope and numerical overhang triangle candidates only. No thickness, bridges, support, slicer or manufacturing guarantee; printability remains NOT_CHECKED. For v3 choose partId; uses local geometry and print pose, ignoring assembly pose. Existing print assessment reportId reads only. No automatic unit assumption or source compilation. Requires Trust.",
+    "risk": "read",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reportId": {
+          "type": "string",
+          "pattern": "^cad-[a-f0-9-]{36}$"
+        },
+        "profileUri": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "partId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "expectedProfileDigest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "reportId"
+      ]
+    },
+    "service": "ReviewWorkspaceService.checkPrintability",
+    "gui": "CAD review commands / frozen evidence view"
+  },
+  {
+    "id": "cad.manageReview",
+    "toolName": "scad_ai_ide_model_manageReview",
+    "title": "Manage retained CAD review evidence",
+    "description": "Explicitly retain/release a frozen baseline, or resolve/reopen/delete user feedback using its current revision. Changes local review records only, never geometry or constraints. Resolved feedback does not imply model PASS. Retained geometry persists across restart; bounded capacity has no silent eviction. Requires Trust.",
+    "risk": "change",
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            "retainBaseline",
+            "releaseBaseline",
+            "resolveFeedback",
+            "reopenFeedback",
+            "deleteFeedback"
+          ]
+        },
+        "reportId": {
+          "type": "string",
+          "pattern": "^cad-[a-f0-9-]{36}$"
+        },
+        "feedbackId": {
+          "type": "string",
+          "pattern": "^cad-[a-f0-9-]{36}$"
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "action"
+      ],
+      "oneOf": [
+        {
+          "properties": {
+            "action": {
+              "enum": [
+                "retainBaseline",
+                "releaseBaseline"
+              ]
+            },
+            "reportId": {}
+          },
+          "required": [
+            "reportId"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "feedbackId"
+                ],
+                "properties": {
+                  "feedbackId": {}
+                }
+              },
+              {
+                "required": [
+                  "expectedRevision"
+                ],
+                "properties": {
+                  "expectedRevision": {}
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "action": {
+              "enum": [
+                "resolveFeedback",
+                "reopenFeedback",
+                "deleteFeedback"
+              ]
+            },
+            "feedbackId": {},
+            "expectedRevision": {}
+          },
+          "required": [
+            "feedbackId",
+            "expectedRevision"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "reportId"
+                ],
+                "properties": {
+                  "reportId": {}
+                }
+              },
+              {
+                "required": [
+                  "label"
+                ],
+                "properties": {
+                  "label": {}
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "service": "ReviewWorkspaceService.manageReview",
+    "gui": "CAD review commands / frozen evidence view"
   }
 ]
