@@ -270,7 +270,7 @@ export class ReviewWorkspaceService implements vscode.Disposable {
         const r = this.get(reportId),
             issue = r.issues.find((i) => i.id === issueId)
         if (!issue) throw new CapabilityError('ISSUE_NOT_FOUND', 'Issue does not belong to this review report.')
-        const items = r.kind === 'comparison' ? r.checks.filter((c) => c.transition === 'regression' || c.definitionChanged) : r.result.overhang.samples
+        const items = r.kind === 'comparison' ? issue.partIds?r.rows.filter(row=>row.partId!==null&&issue.partIds!.includes(row.partId)):r.checks.filter((c) => issue.checkId?c.id===issue.checkId:c.transition === 'regression' || c.definitionChanged) : r.result.overhang.samples
         return { reportId, issue: { ...issue, spatial: includeEvidence ? issue.spatial : undefined }, current: await this.current(r.kind === 'comparison' ? r.targetReportId : r.sourceReportId), ...(includeEvidence ? { evidence: { text: JSON.stringify(issue.spatial ?? items).slice(0, 8192), truncated: JSON.stringify(issue.spatial ?? items).length > 8192 }, geometryEvidence: this.page<unknown>(items, cursor, limit) } : {}) }
     }
     async reportText(id: string) {

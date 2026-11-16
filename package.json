@@ -3471,7 +3471,8 @@
         "test:review:host": "node scripts/test-review-host.mjs",
         "test:review:native": "node scripts/test-review-native.mjs",
         "test:review:gpu": "node --import tsx --test scripts/review-gpu.test.mjs",
-        "benchmark:review-preview": "node scripts/review-preview-performance.mjs"
+        "benchmark:review-preview": "node scripts/review-preview-performance.mjs",
+        "test:review:view": "node --import tsx --test scripts/review-view.test.mjs"
     },
     "devDependencies": {
         "@types/markdown-it": "^14.2.0",

@@ -18,8 +18,8 @@ export function compareReports(a: VerificationEvidence, b: VerificationEvidence,
         rows: ComparisonRow[] = [],
         checks: ComparisonReport['checks'] = []
     const report: ComparisonReport = { kind: 'comparison', schemaVersion: 1, reportId: `cad-${randomUUID()}`, baselineReportId: a.reportId, targetReportId: b.reportId, baselineModelStatus:a.overallStatus,targetModelStatus:b.overallStatus,baselineSnapshotId: a.snapshot.id, targetSnapshotId: b.snapshot.id, ownerUri: identity.target, units: b.units, comparisonStatus: 'COMPLETE', regressionStatus: 'NO_REGRESSIONS_FOUND', rows, checks, issues, incomplete, expectUnchangedPartIds: protectedIds, createdAt: Date.now() }
-    const problem = (code: string, title: string, partIds?: string[]) => {
-        issues.push({ id: digest([report.reportId, code, partIds]), code, title, source: 'diff', status: 'FAIL', severity: 'error', location: { uri: identity.target, line: 0, character: 0, confidence: 'fallback' }, relatedTrace: [], evidenceIds: [], partIds })
+    const problem = (code: string, title: string, partIds?: string[],checkId?:string) => {
+        issues.push({ id: digest([report.reportId, code, partIds,checkId??title]), code, title, source: 'diff',checkId,status: 'FAIL', severity: 'error', location: { uri: identity.target, line: 0, character: 0, confidence: 'fallback' }, relatedTrace: [], evidenceIds: [], partIds })
     }
     if (a.schemaVersion !== b.schemaVersion || identity.baseline !== identity.target) incomplete.push('PART_IDENTITY_CHANGED')
     if (a.units !== b.units) incomplete.push('UNITS_INCOMPATIBLE')
@@ -66,7 +66,7 @@ export function compareReports(a: VerificationEvidence, b: VerificationEvidence,
             transition = 'definition-changed'
             if (required) incomplete.push(`CONSTRAINT_BASELINE_CHANGED:${id}`)
         }
-        if (!definitionChanged && required && x?.status === 'PASS' && y?.status === 'FAIL') problem('DIFF_REQUIRED_REGRESSION', `Required check ${id} regressed from PASS to FAIL.`)
+        if (!definitionChanged && required && x?.status === 'PASS' && y?.status === 'FAIL') problem('DIFF_REQUIRED_REGRESSION', `Required check ${id} regressed from PASS to FAIL.`,undefined,id)
         if (required && (((!x || !y) && !!(old || next)) || y?.status === 'UNRESOLVED' || y?.status === 'SKIPPED')) incomplete.push(`CHECK_NOT_COMPARABLE:${id}`)
         checks.push({ id, baseline: x?.status, target: y?.status, baselineRecheck: recheck.find((c) => c.id === id)?.status, definitionChanged, transition })
     }

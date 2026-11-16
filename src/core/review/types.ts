@@ -20,6 +20,7 @@ export interface ReviewIssue {
     id: string
     code: string
     title: string
+    checkId?:string
     source: 'diff' | 'print'
     status: 'FAIL' | 'UNRESOLVED'
     severity: 'error' | 'warning'
