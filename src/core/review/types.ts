@@ -121,7 +121,7 @@ export interface FeedbackRecord {
     status: 'open' | 'resolved' | 'stale'
     text: string
     anchor: Anchor
-    history: Array<{ at: number; action: string; fromSnapshotId?: string; toSnapshotId?: string; method?: string }>
+    history: Array<{ anchor?:Anchor;at: number; action: string; fromSnapshotId?: string; toSnapshotId?: string; method?: string }>
     createdAt: number
     updatedAt: number
 }

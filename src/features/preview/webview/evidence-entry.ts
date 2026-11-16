@@ -38,6 +38,8 @@ let stage: Stage,
     requestId: string | undefined,
     clicked: unknown,
     display: EvidenceDisplay | undefined
+let retainedMarkers:Array<{position:number[];status?:string}>=[],retainedLines:Array<{a:number[];b:number[]}>=[]
+function markers(){const c=candidate as {position?:number[]}|undefined;stage?.setEvidenceMarkers([...(c?.position?[{position:c.position,status:'candidate'}]:[]),...retainedMarkers].slice(0,200),retainedLines)}
 let chunks: Uint8Array[] = [],
     total = 0,
     header: { bytes: number; hash: string; count: number } | undefined
@@ -165,12 +167,13 @@ window.addEventListener('message', async (event: MessageEvent) => {
         }
         if (m.type === 'viewState') {
             status.textContent = `${m.current?'当前冻结快照':'STALE：历史冻结证据'} · ${m.frame??'source'} · 显示误差 ≤ ${m.maxCoordinateError??0} ${m.units??'modelUnits'} · 蓝色基线／橙色变化零件；仅摘要比较`
-            stage?.setEvidenceMarkers(m.markers ?? [], m.lines ?? [])
+            retainedMarkers=m.markers??[];retainedLines=m.lines??[];markers()
             return
         }
         if (m.type === 'pointing') {
             requestId = m.requestId
             candidate = m.candidate
+            markers()
             clicked = undefined
             text.value = ''
             prompt.textContent = m.prompt
@@ -181,6 +184,7 @@ window.addEventListener('message', async (event: MessageEvent) => {
         if (m.type === 'pointingEnded') {
             requestId = undefined
             candidate = undefined
+            markers()
             clicked = undefined
             prompt.textContent = m.message ?? ''
             interaction()

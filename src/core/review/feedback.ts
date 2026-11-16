@@ -21,5 +21,5 @@ export function remapCandidate(f: FeedbackRecord, target: VerificationEvidence):
     return { id: digest([f.id, f.recordRevision, target.snapshot.id, m]), feedbackId: f.id, recordRevision: f.recordRevision, targetReportId: target.reportId, targetSnapshotId: target.snapshot.id, partId: f.anchor.partId, anchorHash: f.anchor.anchorHash, method: 'identical-local-mesh-rigid-transform', confidence: 'proven-mesh-identity', position, normal: normal.map((v) => v / length) as Vec3, matrix: m }
 }
 export function acceptedRemap(anchor: Anchor, c: RemapCandidate, source: Anchor['source']): Anchor {
-    return { ...anchor, reportId: c.targetReportId, snapshotId: c.targetSnapshotId, revision: c.targetSnapshotId, position: c.position, normal: c.normal, matrix: c.matrix, source }
+    return { ...anchor, reportId: c.targetReportId, snapshotId: c.targetSnapshotId, revision: c.targetSnapshotId,camera:null, position: c.position, normal: c.normal, matrix: c.matrix, source }
 }

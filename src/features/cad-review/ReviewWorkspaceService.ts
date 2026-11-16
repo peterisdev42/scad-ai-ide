@@ -1,3 +1,4 @@
+import {boundedReviewSummary,feedbackProjection} from '../../core/review/summary'
 import { readWorldArtifact } from '../../core/assembly/worldMesh'
 import { displayMesh } from '../../core/mesh/displayMesh'
 import { assertWorkspacePath } from '../../platform/WorkspacePaths'
@@ -294,7 +295,7 @@ export class ReviewWorkspaceService implements vscode.Disposable {
                     ownerUri,
                     revision: data.revision,
                     ...this.page(
-                        records.map((f) => ({ ...f, history:f.history.slice(-16),historyCount:f.history.length,historyTruncated:f.history.length>16,remapCandidate: target && targetCurrent ? remapCandidate(f, target.report) : null })),
+                        records.map((f) => ({ ...feedbackProjection(f),remapCandidate: target && targetCurrent ? remapCandidate(f, target.report) : null })),
                         input.offset,
                         input.limit,
                     ),
@@ -332,7 +333,7 @@ export class ReviewWorkspaceService implements vscode.Disposable {
             if (input.action === 'reopenFeedback' && (!(await this.current(f.anchor.reportId)) || f.status === 'stale')) throw new CapabilityError('STALE_SNAPSHOT', 'Reconfirm or point again instead of reviving stale feedback.')
             const result = await store.putFeedback({ ...f, status: f.status === 'stale' ? 'stale' : input.action === 'resolveFeedback' ? 'resolved' : 'open', history: [...f.history, { at: Date.now(), action: input.action }] }, f.recordRevision)
             this.changed.fire()
-            return result
+            return feedbackProjection(result)
         }
         throw new CapabilityError('FEEDBACK_NOT_FOUND', 'Unknown feedback.')
     }
@@ -374,7 +375,7 @@ export class ReviewWorkspaceService implements vscode.Disposable {
                         if (existing && candidate) {
                             const current = (await h.store.list()).feedback.find((f) => f.id === existing!.id)
                             if (!current || current.recordRevision !== existing.recordRevision) throw new CapabilityError('STALE_REVIEW_REVISION', 'Feedback changed while confirming remap.')
-                            record = { ...existing, status: 'open', anchor: acceptedRemap(existing.anchor, candidate, { ...existing.anchor.source, uri: anchor.source.uri, selector: anchor.source.selector }), history: [...existing.history, { at: Date.now(), action: 'user-confirmed-remap', fromSnapshotId: existing.anchor.snapshotId, toSnapshotId: h.report.snapshot.id, method: candidate.method }] }
+                            record = { ...existing, status: 'open', anchor: acceptedRemap(existing.anchor, candidate, { ...existing.anchor.source, uri: anchor.source.uri, selector: anchor.source.selector }), history: [...existing.history, { at: Date.now(), action: 'user-confirmed-remap', fromSnapshotId: existing.anchor.snapshotId, toSnapshotId: h.report.snapshot.id, method: candidate.method,anchor:existing.anchor }] }
                         } else record = { schemaVersion: 1, id: `cad-${randomUUID()}`, recordRevision: 0, ownerUri: h.ownerUri, status: 'open', text, anchor, history: [{ at: Date.now(), action: 'user-pointed' }], createdAt: Date.now(), updatedAt: Date.now() }
                         submitted = await h.store.putFeedback(record, existing?.recordRevision)
                         if (generation !== this.generation || !(await h.current())) {
@@ -388,11 +389,11 @@ export class ReviewWorkspaceService implements vscode.Disposable {
                 },
                 active,
             )
-            return { status: 'ACCEPTED', feedback: result }
+            return boundedReviewSummary({ status: 'ACCEPTED' as const, feedback: feedbackProjection(result) })
         } catch (e) {
             await commitSettled
-            if (submitted) return { status: 'ACCEPTED', feedback: submitted }
-            if ((e as Error).name === 'TimeoutError'||deadline?.aborted&&!signal?.aborted) return { status: 'TIMED_OUT' }
+            if (submitted) return { status: 'ACCEPTED' as const, feedback: feedbackProjection(submitted) }
+            if ((e as Error).name === 'TimeoutError'||deadline?.aborted&&!signal?.aborted) return { status: 'TIMED_OUT' as const }
             throw e
         } finally {
             this.pendingPointing = false

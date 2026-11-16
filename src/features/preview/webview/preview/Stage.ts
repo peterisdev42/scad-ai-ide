@@ -972,7 +972,7 @@ export class Stage {
         const ndc = new Vector2(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1)
 
         if(this.evidenceMode){
-            if(this.evidencePicked){this.raycaster.setFromCamera(ndc,this.activeCameraRig.activeCamera);const hit=this.modelRepresentation?.pick(this.raycaster).value.find(h=>h.object.visible&&h.object.userData.evidenceRole==='target');if(hit&&hit.faceIndex!==undefined&&hit.faceIndex!==null){const ray=this.raycaster.ray,origin=ray.origin.clone().add(this.evidenceOrigin);this.evidencePicked({key:hit.object.userData.evidenceKey,triangle:hit.faceIndex,ray:{origin:origin.toArray(),direction:ray.direction.toArray()},camera:{world:this.activeCameraRig.activeCamera.matrixWorld.toArray(),projection:this.activeCameraRig.activeCamera.projectionMatrix.toArray()}})}}
+            if(this.evidencePicked){this.raycaster.setFromCamera(ndc,this.activeCameraRig.activeCamera);const hit=this.modelRepresentation?.pick(this.raycaster).value.find(h=>h.object.visible&&h.object.userData.evidenceRole==='target');if(hit&&hit.faceIndex!==undefined&&hit.faceIndex!==null){const ray=this.raycaster.ray,origin=ray.origin.clone().add(this.evidenceOrigin);this.evidencePicked({key:hit.object.userData.evidenceKey,triangle:hit.faceIndex,ray:{origin:origin.toArray(),direction:ray.direction.toArray()},camera:{origin:this.evidenceOrigin.toArray(),world:this.activeCameraRig.activeCamera.matrixWorld.toArray(),projection:this.activeCameraRig.activeCamera.projectionMatrix.toArray()}})}}
             return
         }
         // Check if gizmo consumed the click
