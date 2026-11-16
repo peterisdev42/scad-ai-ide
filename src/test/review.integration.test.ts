@@ -1,5 +1,6 @@
+import {tmpdir} from 'node:os'
 import * as assert from 'node:assert/strict'
-import {mkdir,writeFile,rm} from 'node:fs/promises'
+import {mkdir,writeFile,rm,mkdtemp} from 'node:fs/promises'
 import {join,dirname} from 'node:path'
 import * as vscode from 'vscode'
 import type {activate} from '../extension'
@@ -45,4 +46,19 @@ suite('Frozen CAD review Extension Host',()=>{
   review.views={open:async()=>{},dispose(){},request:async(_input,signal)=>{ready();return new Promise((_resolve,reject)=>signal!.addEventListener('abort',()=>reject(new DOMException('Cancelled','AbortError')),{once:true}))}}
   try{const first=review.requestPointing({reportId:r.reportId,prompt:'Scripted cancel'},abort.signal);await entered;await assert.rejects(review.requestPointing({reportId:r.reportId,prompt:'Concurrent'}),/Another pointing/);abort.abort();await assert.rejects(first,/Cancelled/);assert.equal((await review.getFeedback({reportId:r.reportId})).items.length,0)}finally{review.views=original}
  })
+ test('retained project stores leave tool visibility when their workspace folder is removed',async function(){
+  if(process.env.SCAD_TEST_DYNAMIC_WORKSPACE!=='1'){this.skip();return} // Opt in on a Host that accepts folder mutation; prior rejected runs remain in the acceptance ledger.
+  const other=await mkdtemp(join(tmpdir(),'cad-review-scope-')),uri=vscode.Uri.file(other),file=join(other,'isolated.stl'),review=api.cad.review!
+  const change=(add:boolean)=>new Promise<void>((resolve,reject)=>{const timer=setTimeout(()=>{sub.dispose();reject(new Error('Workspace folder event timeout'))},10000),sub=vscode.workspace.onDidChangeWorkspaceFolders(()=>{clearTimeout(timer);sub.dispose();resolve()});const ok=add?vscode.workspace.updateWorkspaceFolders(vscode.workspace.workspaceFolders!.length,0,{uri}):vscode.workspace.updateWorkspaceFolders(vscode.workspace.workspaceFolders!.findIndex(f=>f.uri.path.endsWith('/'+other.split('/').at(-1)!)),1);if(!ok){clearTimeout(timer);sub.dispose();reject(new Error('Workspace folder update was rejected before its event'))}})
+  let id:string|undefined,store:import('../platform/review/ReviewEvidenceStore').ReviewEvidenceStore|undefined
+  try{await change(true);await writeFile(file,stl());const r=await api.cad.geometry!.verify({uri:vscode.Uri.file(file).toString(),units:'mm'});id=r.reportId;await review.manage({action:'retainBaseline',reportId:id});const h=await review.evidence.resolve(id),directory=h.store.directory;store=h.store;h.release();assert.ok((await review.evidence.activeStores()).some(s=>s.directory===directory))
+   await change(false);assert.ok(!(await review.evidence.activeStores()).some(s=>s.directory===directory));await assert.rejects(review.manage({action:'releaseBaseline',reportId:id}),/Unknown retained/)
+  }finally{if(id&&store)await store.releaseBaseline(id);if(vscode.workspace.getWorkspaceFolder(uri))await change(false);await rm(other,{recursive:true,force:true})}
+ })
+ test('partial comparison acquisition failures release caller and shared-job evidence leases',async()=>{
+  const r=await verify(join(root,'lease.stl')),review=api.cad.review!,original=review.evidence.resolve.bind(review.evidence);let leases=0,calls=0
+  review.evidence.resolve=async(id:string)=>{calls++;if(calls===2||calls===4)throw new CapabilityError('REPORT_NOT_FOUND','Scripted second-handle failure');const h=await original(id),release=h.release;leases++;h.release=()=>{leases--;release()};return h}
+  try{await assert.rejects(review.compare({baselineReportId:r.reportId,targetReportId:r.reportId}),/second-handle/);assert.equal(leases,0);calls=0;review.evidence.resolve=async(id:string)=>{calls++;if(calls===4)throw new CapabilityError('REPORT_NOT_FOUND','Scripted shared second-handle failure');const h=await original(id),release=h.release;leases++;h.release=()=>{leases--;release()};return h};await assert.rejects(review.compare({baselineReportId:r.reportId,targetReportId:r.reportId}),/shared second-handle/);assert.equal(leases,0)}finally{review.evidence.resolve=original}
+ })
+
 })

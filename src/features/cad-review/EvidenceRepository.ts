@@ -79,7 +79,9 @@ export class EvidenceRepository {
                 /* Unavailable retired projects are not opened or interpreted. */
             }
         }
-        return [...this.stores.values()]
+        const active:ReviewEvidenceStore[]=[]
+        for(const [key,store]of this.stores){try{const ownerPath=join(store.directory,'owner.json'),info=await lstat(ownerPath);if(info.isSymbolicLink()||info.size>4096)continue;const meta=JSON.parse(await readFile(ownerPath,'utf8'));if(meta.schemaVersion===1&&digest({project:meta.projectUri,remote:vscode.env.remoteName??'local'})===key&&await workspaceFolderForUri(vscode.Uri.parse(meta.projectUri,true)))active.push(store)}catch{/* Closed or changed project ownership is not exposed to another workspace. */}}
+        return active
     }
     async current(report: VerificationEvidence): Promise<boolean> {
         try {
@@ -105,7 +107,7 @@ export class EvidenceRepository {
     }
     async resolve(id: string): Promise<EvidenceHandle> {
         this.trust()
-        if (!/^cad-[a-f0-9-]{36}$/.test(id)) throw new CapabilityError('REPORT_NOT_FOUND', 'Invalid geometry report identity.')
+        if (!/^cad-[a-f0-9-]{36}$/.test(id)) throw new CapabilityError('REPORT_NOT_FOUND', 'Report expired, evicted or has an invalid geometry identity.')
         if (this.cad.verification.reports.get(id)) throw new CapabilityError('GEOMETRY_EVIDENCE_UNSUPPORTED', 'Diagnostics v1 has no frozen mesh. Explicitly verify geometry first.')
         let report: VerificationEvidence | undefined
         if (this.cad.assembly?.core.has(id)) report = this.cad.assembly.core.get(id)
@@ -136,8 +138,8 @@ export class EvidenceRepository {
     }
     private async saved(bundle: PersistedBundle, store: ReviewEvidenceStore): Promise<EvidenceHandle> {
         await assertWorkspacePath(vscode.Uri.parse(bundle.report.snapshot.document.uri, true), true)
-        const release = store.lease(bundle.report.reportId)
-        return { report: bundle.report, ownerUri: await this.canonical(bundle.report.snapshot.document.uri), store, read: (id) => store.readArtifact(bundle, id), release, current: () => this.current(bundle.report) }
+        const ownerUri=await this.canonical(bundle.report.snapshot.document.uri),release = store.lease(bundle.report.reportId)
+        return { report: bundle.report, ownerUri, store, read: (id) => store.readArtifact(bundle, id), release, current: () => this.current(bundle.report) }
     }
     async inputs(handle: EvidenceHandle, partIds?: Array<string | null>): Promise<SubjectInput[]> {
         const r = handle.report

@@ -148,8 +148,8 @@ export class ReviewWorkspaceService implements vscode.Disposable {
             return this.comparisonSummary(r, input)
         }
         if (!input.baselineReportId || !input.targetReportId) throw new CapabilityError('INVALID_INPUT', 'Provide both frozen report identities.')
-        const a = await this.evidence.resolve(input.baselineReportId),
-            b = await this.evidence.resolve(input.targetReportId)
+        const a = await this.evidence.resolve(input.baselineReportId)
+        let b:EvidenceHandle;try{b=await this.evidence.resolve(input.targetReportId)}catch(e){a.release();throw e}
         try {
             const key = digest([a.report.reportId,b.report.reportId,a.report.snapshot.id, b.report.snapshot.id, input.expectUnchangedPartIds?.slice().sort() ?? [], 'summary-diff-v1']),
                 cached = this.compareCache.get(key)
@@ -157,8 +157,8 @@ export class ReviewWorkspaceService implements vscode.Disposable {
             const result = (await this.tasks.run(
                 key,
                 async (shared) => {
-                    const taskA = await this.evidence.resolve(a.report.reportId),
-                        taskB = await this.evidence.resolve(b.report.reportId)
+                    const taskA = await this.evidence.resolve(a.report.reportId)
+                    let taskB:EvidenceHandle;try{taskB=await this.evidence.resolve(b.report.reportId)}catch(e){taskA.release();throw e}
                     try {
                         const ad = await this.geometryDigest(taskA, shared),
                             bd = await this.geometryDigest(taskB, shared)
