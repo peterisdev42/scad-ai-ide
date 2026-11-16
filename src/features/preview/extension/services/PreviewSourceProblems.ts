@@ -6,6 +6,7 @@ import type { CadIssue, CadSnapshot, VerificationReport } from '../../../../core
 export interface PreviewProblemEntry {
     uri: vscode.Uri
     diagnostic: vscode.Diagnostic
+    modelLevel?:boolean
     issueId?: string
 }
 export const OPEN_PREVIEW_PROBLEM_SOURCE = 'scad-ai-ide.preview.openProblemSource'
@@ -64,7 +65,7 @@ export class PreviewSourceProblems implements vscode.Disposable {
         while (this.results.size > 128) this.results.delete(this.results.keys().next().value!)
         this.publish()
     }
-    async reportVerification(report: Pick<VerificationReport, 'reportId'> & { snapshot: Pick<CadSnapshot, 'id' | 'document' | 'dependencies'>; issues: Array<Pick<CadIssue, 'id' | 'location' | 'title' | 'severity' | 'code'> & { source?: 'cli' | 'mesh' | 'manifest' | 'assembly' | 'constraints' }> }, valid: () => Promise<boolean>, owner = 'agent') {
+    async reportVerification(report: Pick<VerificationReport, 'reportId'> & { snapshot: Pick<CadSnapshot, 'id' | 'document' | 'dependencies'>; issues: Array<Pick<CadIssue, 'id' | 'location' | 'title' | 'severity' | 'code'> & { source?: 'cli' | 'mesh' | 'manifest' | 'assembly' | 'constraints' | 'diff' | 'print' }> }, valid: () => Promise<boolean>, owner = 'agent') {
         const source = vscode.Uri.parse(report.snapshot.document.uri)
         const key = this.key(source, owner),
             ticket = ++this.sequence
@@ -81,10 +82,10 @@ export class PreviewSourceProblems implements vscode.Disposable {
             const message = `${exact ? '' : 'Model-level issue; location unavailable. '}${issue.title}`
             const severity = issue.severity === 'error' ? vscode.DiagnosticSeverity.Error : issue.severity === 'warning' ? vscode.DiagnosticSeverity.Warning : vscode.DiagnosticSeverity.Information
             const diagnostic = new vscode.Diagnostic(new vscode.Range(line, 0, line, 0), message.slice(0, 8192), severity)
-            diagnostic.source = issue.source === 'mesh' ? 'CAD Mesh' : issue.source && issue.source !== 'cli' ? 'CAD Assembly' : 'OpenSCAD CLI'
+            diagnostic.source = issue.source === 'mesh' ? 'CAD Mesh' : issue.source === 'diff' ? 'CAD Diff' : issue.source === 'print' ? 'CAD Print Screening' : issue.source && issue.source !== 'cli' ? 'CAD Assembly' : 'OpenSCAD CLI'
             diagnostic.code = issue.code
             diagnostic.relatedInformation = uri.toString() === source.toString() ? undefined : [new vscode.DiagnosticRelatedInformation(new vscode.Location(source, new vscode.Range(0, 0, 0, 0)), `Report ${report.reportId}; snapshot ${report.snapshot.id}`)]
-            return { uri, diagnostic, issueId: issue.id }
+            return { uri, diagnostic, issueId: issue.id,modelLevel:!exact&&['diff','print','mesh'].includes(issue.source??'') }
         })
         this.pending.delete(key)
         this.set(key, { source, stamp: report.snapshot.document.sourceSha256, entries, reportId: report.reportId, dependencies: report.snapshot.dependencies.map((d) => d.uri), valid })
@@ -135,7 +136,7 @@ export class PreviewSourceProblems implements vscode.Disposable {
             this.publish()
             return false
         }
-        if ((/\.(stl|3mf)$/i.test(result.source.path)||/\/\.scad\/verification\.json$/i.test(result.source.path)) && result.reportId) {
+        if ((result.entries[index].modelLevel||/\.(stl|3mf)$/i.test(result.source.path)||/\/\.scad\/verification\.json$/i.test(result.source.path)) && result.reportId) {
             await vscode.commands.executeCommand('scad-ai-ide.model.openReport', result.reportId)
             return true
         }

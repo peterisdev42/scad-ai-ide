@@ -155,7 +155,7 @@ export class ReviewEvidenceStore {
     lease(id:string){
         const path=join(this.directory,`.lease-${id}-${randomUUID()}`)
         const heartbeat=()=>writeFileSync(path,JSON.stringify({schemaVersion:1,reportId:id,pid:process.pid,updatedAt:Date.now()}),{mode:0o600})
-        heartbeat();const timer=setInterval(heartbeat,10000);timer.unref();this.pins.set(id,(this.pins.get(id)??0)+1);let done=false
+        heartbeat();const timer=setInterval(()=>{try{heartbeat()}catch{/* Leased data may have been removed externally; reads will fail explicitly. */}},10000);timer.unref();this.pins.set(id,(this.pins.get(id)??0)+1);let done=false
         return()=>{if(done)return;done=true;clearInterval(timer);try{unlinkSync(path)}catch{/* Another process may have cleaned an expired crashed-host lease. */}const count=(this.pins.get(id)??1)-1;if(count)this.pins.set(id,count);else this.pins.delete(id)}
     }
     private async isPinned(id:string){

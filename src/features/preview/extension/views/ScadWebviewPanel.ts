@@ -8,7 +8,7 @@ import { showRenderError } from '../services/renderError'
 import type { PreviewSourceProblems } from '../services/PreviewSourceProblems'
 import { PreviewProblems } from '../services/PreviewProblems'
 import { syntaxErrorMessage } from '../services/renderDiagnostics'
-import { Disposable, Memento, ProgressLocation, Uri, Webview, WebviewPanel, env, window, workspace } from 'vscode'
+import { Disposable, Memento, ProgressLocation, Uri, Webview, WebviewPanel, commands, env, window, workspace } from 'vscode'
 import * as os from 'os'
 import * as path from 'path'
 import * as cp from 'child_process'
@@ -72,6 +72,9 @@ export class ScadWebviewPanel {
                             this.isWebviewReady = true
                             this.pushInitialState()
                             return
+                        case 'openEvidence':
+                            await commands.executeCommand('scad-ai-ide.model.openEvidence')
+                            break
                         case 'openProblemSource':
                             await this.problems.openSource()
                             return
@@ -117,7 +120,7 @@ export class ScadWebviewPanel {
                             this.topologyController?.abort()
                             const controller = (this.topologyController = new AbortController())
                             try {
-                                if (model.format === ModelFormat.PreviewScene) throw new Error('Image-based preview has no final edge/vertex topology. Use Full Render.')
+                                if (model.format === ModelFormat.PreviewScene || model.format === ModelFormat.Evidence) throw new Error('Image-based preview has no final edge/vertex topology. Use Full Render.')
                                 const geometry = await queryMeshTopology(model.base64Data, model.format, controller.signal, message.planes)
                                 if (!controller.signal.aborted && this.lastRender === model) this.postMessage({ type: 'topology', modelVersion: message.modelVersion, geometry })
                             } catch (error) {

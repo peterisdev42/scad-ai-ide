@@ -79,6 +79,7 @@ export class AssemblyVerificationService {
             algorithm: 'exact-dyadic-bvh-v1',
         })
     }
+    all(){this.prune();return [...this.reports.values()].map(e=>e.report)}
     get(id: string) {
         this.prune()
         const r = this.reports.get(id)?.report

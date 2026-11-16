@@ -76,6 +76,8 @@ export class MeshVerificationService {
         }
         for (const [key, id] of this.latest) if (!this.reports.has(id)) this.latest.delete(key)
     }
+    has(id:string){this.prune();return this.reports.has(id)}
+    all(){this.prune();return [...this.reports.values()].map(e=>e.report)}
     get(reportId: string) {
         this.prune()
         const report = this.reports.get(reportId)?.report

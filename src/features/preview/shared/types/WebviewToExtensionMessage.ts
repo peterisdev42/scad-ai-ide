@@ -5,6 +5,7 @@ import type { PreviewMode } from './PreviewMode'
 export type WebviewToExtensionMessage =
     | { type: 'ready' }
     | { type: 'openProblemSource' }
+    | { type: 'openEvidence' }
     | { type: 'setPartColors'; enabled: boolean; modelVersion: number }
     | { type: 'setPreviewMode'; mode: PreviewMode }
     | { type: 'queryTopology'; modelVersion: number; planes?: ClipPlane[] }

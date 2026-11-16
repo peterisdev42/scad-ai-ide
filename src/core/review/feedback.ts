@@ -13,7 +13,7 @@ export function remapCandidate(f: FeedbackRecord, target: VerificationEvidence):
     const m = target.facts?.parts.find((p) => p.id === f.anchor.partId)?.matrix ?? matrix(source.transform),
         p = f.anchor.localPosition,
         n = f.anchor.localNormal
-    if (m.length !== 16 || m.some((n) => !Number.isFinite(n))) return null
+    if (m.length !== 16 || m.some((n) => !Number.isFinite(n))||digest(m)!==digest(matrix(source.transform))) return null
     const position = [0, 1, 2].map((k) => m[k] * p[0] + m[4 + k] * p[1] + m[8 + k] * p[2] + m[12 + k]) as Vec3,
         normal = [0, 1, 2].map((k) => m[k] * n[0] + m[4 + k] * n[1] + m[8 + k] * n[2]) as Vec3,
         length = Math.hypot(...normal)

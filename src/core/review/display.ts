@@ -1,5 +1,6 @@
 type Vec3 = [number, number, number]
 export interface EvidenceDisplayPart {
+    changed?: boolean
     key: string
     partId: string | null
     role: 'baseline' | 'target'
