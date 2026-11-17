@@ -29,8 +29,8 @@ for (const source of ['AgentToolAdapter.ts', 'registerAgentTools.ts', 'registerC
     assert.doesNotMatch(code, /PanelManager|postMessage|showQuickPick|showOpenDialog|showSaveDialog|showInputBox/, `GUI dependency in ${source}`)
 }
 const resources = [
-    ...instructions.map((resource) => ({ ...resource, kind: 'Instruction' })),
-    ...skills.map((resource) => ({ ...resource, kind: 'Skill' })),
+    ...instructions.map(({ path }) => ({ path, kind: 'Instruction' })),
+    ...skills.map(({ path }) => ({ path, kind: 'Skill' })),
 ].map((resource) => {
     const text = readText(path.join(root, resource.path))
     return { ...resource, name: /^name: (.+)$/m.exec(text)[1], description: /^description: (.+)$/m.exec(text)[1] }
