@@ -1,0 +1,85 @@
+[
+  {
+    "runId": "cb12403b-e46d-42d0-9d3c-4ca5aaa497b1",
+    "seq": 0,
+    "type": "started",
+    "at": "2026-11-17T01:35:00.913Z",
+    "model": "Qwen3.6-35B-A3B-OptiQ-4bit"
+  },
+  {
+    "runId": "cb12403b-e46d-42d0-9d3c-4ca5aaa497b1",
+    "seq": 1,
+    "type": "didChange",
+    "at": "2026-11-17T01:36:45.421Z",
+    "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-kLG57M/workspace/model.scad",
+    "dirty": false,
+    "version": 2,
+    "bufferHash": "6d8380630c09031dfd4391b2aaf766fa69974d75856b35824e545fd239376d11",
+    "changes": [
+      {
+        "rangeOffset": 19,
+        "rangeLength": 2,
+        "insertedTextHash": "624b60c58c9d8bfb6ff1886c2fd605d2adeb6ea4da576068201b6c6958ce93f4"
+      }
+    ],
+    "diskObservedAt": "2026-11-17T01:36:45.421Z",
+    "diskHash": "4ddb3e00c99b8429b7ae72399f36eec49b11e641629c967eb3fc4a4353bb3e26"
+  },
+  {
+    "runId": "cb12403b-e46d-42d0-9d3c-4ca5aaa497b1",
+    "seq": 2,
+    "type": "didChange",
+    "at": "2026-11-17T01:36:45.422Z",
+    "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-kLG57M/workspace/model.scad",
+    "dirty": true,
+    "version": 2,
+    "bufferHash": "6d8380630c09031dfd4391b2aaf766fa69974d75856b35824e545fd239376d11",
+    "changes": [],
+    "diskObservedAt": "2026-11-17T01:36:45.423Z",
+    "diskHash": "4ddb3e00c99b8429b7ae72399f36eec49b11e641629c967eb3fc4a4353bb3e26"
+  },
+  {
+    "runId": "cb12403b-e46d-42d0-9d3c-4ca5aaa497b1",
+    "seq": 3,
+    "type": "didChange",
+    "at": "2026-11-17T01:36:45.464Z",
+    "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-kLG57M/workspace/model.scad",
+    "dirty": false,
+    "version": 2,
+    "bufferHash": "6d8380630c09031dfd4391b2aaf766fa69974d75856b35824e545fd239376d11",
+    "changes": [],
+    "diskObservedAt": "2026-11-17T01:36:45.464Z",
+    "diskHash": "6d8380630c09031dfd4391b2aaf766fa69974d75856b35824e545fd239376d11"
+  },
+  {
+    "runId": "cb12403b-e46d-42d0-9d3c-4ca5aaa497b1",
+    "seq": 4,
+    "type": "didChange",
+    "at": "2026-11-17T01:36:45.466Z",
+    "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-kLG57M/workspace/model.scad",
+    "dirty": false,
+    "version": 2,
+    "bufferHash": "6d8380630c09031dfd4391b2aaf766fa69974d75856b35824e545fd239376d11",
+    "changes": [],
+    "diskObservedAt": "2026-11-17T01:36:45.467Z",
+    "diskHash": "6d8380630c09031dfd4391b2aaf766fa69974d75856b35824e545fd239376d11"
+  },
+  {
+    "runId": "cb12403b-e46d-42d0-9d3c-4ca5aaa497b1",
+    "seq": 5,
+    "type": "didSave",
+    "at": "2026-11-17T01:36:45.467Z",
+    "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-kLG57M/workspace/model.scad",
+    "dirty": false,
+    "version": 2,
+    "bufferHash": "6d8380630c09031dfd4391b2aaf766fa69974d75856b35824e545fd239376d11",
+    "diskObservedAt": "2026-11-17T01:36:45.468Z",
+    "diskHash": "6d8380630c09031dfd4391b2aaf766fa69974d75856b35824e545fd239376d11"
+  },
+  {
+    "runId": "cb12403b-e46d-42d0-9d3c-4ca5aaa497b1",
+    "seq": 6,
+    "type": "completed",
+    "at": "2026-11-17T01:38:07.140Z"
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "name": "installed-minimum-final",
+  "command": [
+    "node",
+    "scripts/test-agent-installed.mjs",
+    ".build/scad-ai-ide-closeout-final.vsix"
+  ],
+  "exitCode": 0,
+  "elapsedMs": 4075,
+  "env": {
+    "SCAD_VSCODE_EXECUTABLE": "/Users/q/Documents/Code/scad-ai-ide/.vscode-test/vscode-darwin-arm64-1.140.0/Visual Studio Code.app/Contents/MacOS/Code"
+  },
+  "vsix": ".build/scad-ai-ide-closeout-final.vsix"
+}

@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-17",
+  "originalResultUnchanged": true,
+  "category": "HARNESS_OR_ORACLE",
+  "confidence": "supported",
+  "backupEligible": false,
+  "pass": false,
+  "explanation": "Native transcript 0.74.0 omits user messages. Marker-only lookup returned no arguments, incorrectly classifying the exact authorized edit as outside scope. Actual raw provider arguments validate against the full fixture allowlist. No edit accepted, no reanalysis or model PASS; do not retry this scene in this delivery.",
+  "evidence": {
+    "beforeHash": "2c8b7b94d989cef14e31dff8e889487d878e64a8cd54d6fcaed701eb761a2f6d",
+    "afterHash": "e8e516fd6bb17060f9554965bfab5d01e07028d0095062357cb150466997d009",
+    "diskHash": "83e18b9205f6b219641a6e226a1d7ead4bee92026fc7f8962cc6141ce5ab742f"
+  },
+  "rawToolCallId": "call_fdb4bc89",
+  "manualCase": "P1 follow-up, not a proven save/model failure"
+}

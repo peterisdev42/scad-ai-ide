@@ -1,0 +1,9 @@
+{
+  "exitCode": 0,
+  "attempts": 1,
+  "budgetMs": 600000,
+  "elapsedMs": 586758,
+  "model": "Qwen3.8-27B-4bit",
+  "candidateId": "f7e6300dddc12570b591b33942066cace6fa4322e8e5f616fc8d469f3252214f",
+  "result": "docs/cad/evidence/closeout/native/assembly-Qwen3.8-27B-4bit-38ecf9ec-35da-4eb2-9288-88ed5c4c8c93/result.json"
+}

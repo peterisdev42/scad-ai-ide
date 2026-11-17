@@ -1,0 +1,708 @@
+{
+  "scenario": "comparison",
+  "scope": "One real Native Agent session; graphical pointing only by an actual human",
+  "ready": {
+    "setup": {
+      "baselineReportId": "cad-42f411f9-5a1a-4cfe-a43c-1a8cbafc5ade",
+      "baselineSnapshotId": "3f55bc7e18bec64c734447791b7e91dd4dc14ab621236b5099d05fff5ea92f33"
+    },
+    "scenario": "comparison",
+    "vscode": "1.146.0",
+    "extensionPath": "/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/scad-ai-ide",
+    "bundleSha256": "59225b196f76fd7df1052725cf363c69099494abba36ac6e93319576fdc00384",
+    "workspace": [
+      "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace"
+    ],
+    "provider": {
+      "id": "techopolis.omlx-copilot-chat",
+      "version": "0.1.2"
+    },
+    "nativeAgent": {
+      "present": true,
+      "active": true
+    },
+    "chatSettings": {
+      "saveBeforeSend": false,
+      "autoSave": "off"
+    },
+    "tools": [
+      {
+        "name": "copilot_readFile",
+        "description": "Read the contents of a file.\n\nYou must specify the line range you're interested in. Line numbers are 1-indexed. If the file contents returned are insufficient for your task, you may call this tool again to retrieve more content. Prefer reading larger ranges over doing many small reads. Binary files use startLine/endLine as byte offsets."
+      },
+      {
+        "name": "copilot_getErrors",
+        "description": "Get any compile or lint errors in a specific file or across all files. If the user mentions errors or problems in a file, they may be referring to these. Use the tool to see the same errors that the user is seeing. If the user asks you to analyze all errors, or does not specify a file, use this tool to gather errors for all files. Also use this tool after editing a file to validate the change."
+      },
+      {
+        "name": "copilot_replaceString",
+        "description": "This is a tool for making edits in an existing file in the workspace. For moving or renaming files, use run in terminal tool with the 'mv' command instead. For larger edits, split them into smaller edits and call the edit tool multiple times to ensure accuracy. Before editing, always ensure you have the context to understand the file's contents and context. To edit a file, provide: 1) filePath (absolute path), 2) oldString (MUST be the exact literal text to replace including all whitespace, indentation, new"
+      },
+      {
+        "name": "copilot_multiReplaceString",
+        "description": "This tool allows you to apply multiple replace_string_in_file operations in a single call, which is more efficient than calling replace_string_in_file multiple times. It takes an array of replacement operations and applies them sequentially. Each replacement operation has the same parameters as replace_string_in_file: filePath, oldString, newString, and explanation. This tool is ideal when you need to make multiple edits across different files or multiple edits in the same file. The tool will provide a summ"
+      }
+    ],
+    "models": [
+      {
+        "id": "Hy-MT2-7B-4bit",
+        "name": "Hy-MT2-7B-4bit",
+        "vendor": "omlx",
+        "maxInputTokens": 262144
+      },
+      {
+        "id": "Qwen3.6-35B-A3B-OptiQ-4bit",
+        "name": "Qwen3.6-35B-A3B-OptiQ-4bit",
+        "vendor": "omlx",
+        "maxInputTokens": 262144
+      },
+      {
+        "id": "Qwen3.8-27B-4bit",
+        "name": "Qwen3.8-27B-4bit",
+        "vendor": "omlx",
+        "maxInputTokens": 262144
+      }
+    ]
+  },
+  "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+  "response": {
+    "result": {
+      "timings": {
+        "firstProgress": 30345,
+        "totalElapsed": 124868
+      },
+      "metadata": {
+        "codeBlocks": [],
+        "renderedUserMessage": [
+          {
+            "type": 1,
+            "text": "<attachments>\n<attachment id=\"model.scad\" filePath=\"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace/model.scad\">\npart=\"body\";\nhole=3;\nif(part==\"body\") difference(){cube([20,20,5]);translate([10,10,-1])cylinder(h=7,r=hole,$fn=32);}\nelse if(part==\"shell\")translate([30,0,0])cube([10,10,5]);\n</attachment>\n<attachment id=\"verification.json\" filePath=\"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace/.scad/verification.json\">\n{\n  \"schemaVersion\": 1,\n  \"units\": \"mm\",\n  \"entry\": \"./model.scad\",\n  \"parts\": [\n    {\n      \"id\": \"body\",\n      \"selector\": {\n        \"type\": \"define\",\n        \"name\": \"part\",\n        \"value\": \"body\"\n      }\n    },\n    {\n      \"id\": \"shell\",\n      \"selector\": {\n        \"type\": \"define\",\n        \"name\": \"part\",\n        \"value\": \"shell\"\n      }\n    }\n  ],\n  \"checks\": [\n    {\n      \"id\": \"body-bounds\",\n      \"type\": \"bounds\",\n      \"part\": \"body\",\n      \"minDimensions\": [\n        19.9999,\n        19.9999,\n        4.9999\n      ],\n      \"maxDimensions\": [\n        20.0001,\n        20.0001,\n        5.0001\n      ]\n    },\n    {\n      \"id\": \"body-volume\",\n      \"type\": \"volume\",\n      \"part\": \"body\",\n      \"min\": 1800,\n      \"max\": 2000\n    },\n    {\n      \"id\": \"shell-volume\",\n      \"type\": \"volume\",\n      \"part\": \"shell\",\n      \"min\": 499.99,\n      \"max\": 500.01\n    }\n  ]\n}\n</attachment>\n<attachment id=\"SKILL.md\" filePath=\"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/scad-ai-ide/skills/openscad-design-review/SKILL.md\">\n---\nname: openscad-design-review\ndescription: Compare frozen CAD baselines and detect required constraint regressions.\n---\n\nRead the baseline and target report identities, completeness, units and comparison scope. Use `scad_ai_ide_model_compare` with explicit frozen IDs. Retain a baseline only through `scad_ai_ide_model_manageReview` when authorized. A changed/removed constraint never counts as a repair. Protect independent stable parts with expectUnchangedPartIds. This summary does not prove that a region within a changed part stayed unchanged. Never claim a Boolean or sampled surface difference was checked. Read unresolved and incompatible reasons before recommending edits.\n</attachment>\n\n</attachments>\n<context>\nThe current date is 2026-11-17.\n</context>\n<editorContext>\nThe user's current file is /var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace/model.scad. \n</editorContext>\n<reminderInstructions>\n\n</reminderInstructions>\n<userRequest>\nCAD_ACCEPTANCE_RUN=1d229f3f-a600-458b-8ba4-66cced7251d0\n在未打开 Preview 的情况下检查临时模型 file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace/model.scad。只使用原生 CAD Tools：先 model_analyze(mode=\"verify\",units=\"mm\")获得当前 targetReportId；用 model_compare(baselineReportId=\"cad-42f411f9-5a1a-4cfe-a43c-1a8cbafc5ade\",targetReportId=刚取得的原始报告ID) 创建比较；reportId只用于读取已存在的比较报告，不接受原始网格报告ID。再 model_checkPrintability(reportId=targetReportId,profileUri=\"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace/.scad/print-profile.json\")。允许读取文件和 getIssue/measure；禁止编辑任何源文件、Manifest 或打印 profile。总结变化、单位、未决项、printability NOT_CHECKED 和两个 report/snapshot。不要调用任何终端。\n</userRequest>\n"
+          },
+          {
+            "type": 3,
+            "cacheType": "ephemeral"
+          }
+        ],
+        "renderedGlobalContext": [
+          {
+            "type": 1,
+            "text": "<environment_info>\nThe user's current OS is: macOS\n</environment_info>\n<workspace_info>\nI am working in a workspace with the following folders:\n- /var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace \n</workspace_info>\n"
+          },
+          {
+            "type": 3,
+            "cacheType": "ephemeral"
+          }
+        ],
+        "cacheKey": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace",
+        "promptTokens": 0,
+        "outputTokens": 0,
+        "toolCallRounds": [
+          {
+            "response": "\n\n我将按顺序执行 CAD 工具链：先 analyze 获取当前报告 ID，然后 compare 创建比较，最后 checkPrintability。\n\n",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_model_analyze",
+                "arguments": "{\"mode\":\"verify\",\"projectRoot\":\"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace\",\"uri\":\"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace/model.scad\",\"units\":\"mm\"}",
+                "id": "call_4458e1f1__vscode-1794879540449"
+              }
+            ],
+            "toolInputRetry": 0,
+            "id": "459ac242-4ffc-4533-a22f-1dfd65bdc666",
+            "timestamp": 1794879580010,
+            "modelId": "Qwen3.6-35B-A3B-OptiQ-4bit"
+          },
+          {
+            "response": "\n\nURI 缺少 scheme，需要修正为 `file://` 格式。\n\n",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_model_analyze",
+                "arguments": "{\"mode\":\"verify\",\"projectRoot\":\"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace\",\"uri\":\"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace/model.scad\",\"units\":\"mm\"}",
+                "id": "call_f94f0053__vscode-1794879540450"
+              }
+            ],
+            "toolInputRetry": 0,
+            "id": "5e08742c-b15c-4899-8852-7bea1c467e63",
+            "timestamp": 1794879589314,
+            "modelId": "Qwen3.6-35B-A3B-OptiQ-4bit"
+          },
+          {
+            "response": "\n\n获取到当前报告：\n- **reportId**: `cad-f27eadfd-cbe1-4899-962d-1cbdc14fd0b0`\n- **snapshotId**: `4e48e451e077165041ec7f74e9451f6aa3d5ae24a6cd9d06c1c8b5799ce9e922`\n\n现在创建比较报告：\n\n",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_model_compare",
+                "arguments": "{\"baselineReportId\":\"cad-42f411f9-5a1a-4cfe-a43c-1a8cbafc5ade\",\"targetReportId\":\"cad-f27eadfd-cbe1-4899-962d-1cbdc14fd0b0\"}",
+                "id": "call_bf5e30a7__vscode-1794879540451"
+              }
+            ],
+            "toolInputRetry": 0,
+            "id": "ffd48547-c450-433e-86de-d878ee36e59e",
+            "timestamp": 1794879610408,
+            "modelId": "Qwen3.6-35B-A3B-OptiQ-4bit"
+          },
+          {
+            "response": "\n\n比较报告已创建。现在执行 printability 检查：\n\n",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_model_checkPrintability",
+                "arguments": "{\"profileUri\":\"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace/.scad/print-profile.json\",\"reportId\":\"cad-f27eadfd-cbe1-4899-962d-1cbdc14fd0b0\"}",
+                "id": "call_df8471bc__vscode-1794879540452"
+              }
+            ],
+            "toolInputRetry": 0,
+            "id": "0a746f6a-a4c2-44c7-9c0c-c49d21c2f0e7",
+            "timestamp": 1794879622769,
+            "modelId": "Qwen3.6-35B-A3B-OptiQ-4bit"
+          },
+          {
+            "response": "\n\n## CAD 验收运行总结\n\n### 1. 当前分析 (`model_analyze`)\n\n| 项目 | 值 |\n|---|---|\n| **reportId** | `cad-f27eadfd-cbe1-4899-962d-1cbdc14fd0b0` |\n| **snapshotId** | `4e48e451e077165041ec7f74e9451f6aa3d5ae24a6cd9d06c1c8b5799ce9e922` |\n| **单位** | `mm` |\n| **整体状态** | `PASS` |\n| **模型状态** | `PASS` |\n| **拓扑** | 1 对象，1 组件，0 边界边，0 非流形边 |\n| **自相交** | 无 |\n| **Shell 关系** | 有效 |\n| **原始三角面/顶点** | 144 / 432 |\n\n### 2. 基线比较 (`model_compare`)\n\n| 项目 | 基线 `cad-42f411f9` | 当前 `cad-f27eadfd` |\n|---|---|---|\n| **geometryHash** | `0eba0c49...` | `ccbc47e1...` |\n| **三角面/顶点** | 144 / 432 | 144 / 432 |\n| **边界** | `[0,0,0] → [20,20,5]` | `[0,0,0] → [20,20,5]` |\n| **表面积** | 1237.7594 mm² | 1237.9104 mm² |\n| **物理体积** | 1937.5711 mm³ | 1859.5350 mm³ |\n| **几何变化** | ✅ 已改变 | — |\n| **位姿变化** | 无 | — |\n\n**回归状态**: `NO_REGRESSIONS_FOUND` — 但几何已变化（体积减少约 78 mm³，表面积微增 0.15 mm²）。\n\n**未检查项**: `surface-distance-heatmap`、`boolean-difference`、`within-part-preservation`。\n\n### 3. 打印性检查 (`checkPrintability`)\n\n| 项目 | 结果 |\n|---|---|\n| **printability** | `NOT_CHECKED` |\n| **评估状态** | `COMPLETE` |\n| **构建包络** | `PASS` — 20×20×5 mm，在 200×200×200 mm 包络内 |\n| **悬垂检测** | `NONE_FOUND` — 0 候选，0 不确定（45° 阈值） |\n| **未检查项** | 壁厚、桥接、支撑、床面粘附、Slicer、材料、制造成功率 |\n\n### 4. 关键结论\n\n- **单位**: 统一为 `mm`，源声明单位与网格计算单位一致。\n- **变化**: 几何 hash 已变更，体积从 1937.57 mm³ 降至 1859.54 mm³（-4.0%），边界未变，拓扑结构一致。\n- **未决项**: 比较工具未检查布尔差集区域和部件内区域保留；打印性仅完成包络和悬垂初筛，`NOT_CHECKED` 表示无壁厚/桥接/支撑等制造级验证。\n- **快照**: 基线 `3f55bc7e...` → 当前 `4e48e451...`。\n- **报告**: 比较报告 `cad-a0efca5e-aa0d-4e50-8e1a-afd666e6bc6e`，打印评估报告 `cad-821e71c3-2dfe-4c8e-9c37-a37fdb542720`。",
+            "toolCalls": [],
+            "toolInputRetry": 0,
+            "id": "b62d5402-0c0b-4031-9b21-089580badb5e",
+            "timestamp": 1794879667419,
+            "modelId": "Qwen3.6-35B-A3B-OptiQ-4bit"
+          }
+        ],
+        "toolCallResults": {
+          "call_4458e1f1__vscode-1794879540449": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "{\"ok\":false,\"capabilityId\":\"cad.modelAnalyze\",\"error\":{\"code\":\"OPERATION_FAILED\",\"message\":\"[UriError]: Scheme is missing: {scheme: \\\"\\\", authority: \\\"\\\", path: \\\"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace\\\", query: \\\"\\\", fragment: \\\"\\\"}\",\"retryable\":true},\"operation\":{\"id\":\"d3f64cf9-01f9-4aba-9d9a-c571806ed498\",\"capabilityId\":\"cad.modelAnalyze\",\"status\":\"failed\",\"message\":\"Verifying the frozen raw mesh; no mesh repair is applied.\",\"error\":{\"code\":\"OPERATION_FAILED\",\"message\":\"[UriError]: Scheme is missing: {scheme: \\\"\\\", authority: \\\"\\\", path: \\\"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace\\\", query: \\\"\\\", fragment: \\\"\\\"}\",\"retryable\":true}}}"
+              }
+            ]
+          },
+          "call_f94f0053__vscode-1794879540450": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "{\"ok\":true,\"capabilityId\":\"cad.modelAnalyze\",\"data\":{\"schemaVersion\":2,\"reportId\":\"cad-f27eadfd-cbe1-4899-962d-1cbdc14fd0b0\",\"snapshotId\":\"4e48e451e077165041ec7f74e9451f6aa3d5ae24a6cd9d06c1c8b5799ce9e922\",\"current\":true,\"document\":{\"uri\":\"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace/model.scad\",\"version\":1,\"sourceSha256\":\"69cee08108385dfbb52c444d0f2124e96d74a489392e3b9e8b11b318f40f9f7e\",\"dirty\":false},\"inputKind\":\"scad\",\"executionStatus\":\"SUCCEEDED\",\"overallStatus\":\"PASS\",\"complete\":true,\"units\":\"mm\",\"sourceUnit\":\"user-declared-mm\",\"quality\":{\"profile\":\"verification\",\"requestedGlobalTessellation\":{},\"effectiveOverrides\":{\"$preview\":false},\"localSettings\":\"source-controlled\"},\"precision\":\"computed-on-decoded-mesh\",\"checks\":[{\"id\":\"cli-evaluation\",\"category\":\"compile\",\"required\":true,\"status\":\"PASS\",\"issueIds\":[],\"reason\":\"Official full-mesh export only; no independent mesh or assembly verification.\"},{\"id\":\"mesh-format\",\"category\":\"format\",\"required\":true,\"status\":\"PASS\",\"issueIds\":[]},{\"id\":\"mesh-topology\",\"category\":\"mesh\",\"required\":true,\"status\":\"PASS\",\"issueIds\":[]},{\"id\":\"mesh-self-intersection\",\"category\":\"mesh\",\"required\":true,\"status\":\"PASS\",\"issueIds\":[]},{\"id\":\"mesh-shell-relations\",\"category\":\"mesh\",\"required\":true,\"status\":\"PASS\",\"issueIds\":[]},{\"id\":\"raw-mesh-validity\",\"category\":\"mesh\",\"required\":true,\"status\":\"PASS\",\"issueIds\":[],\"reason\":\"Raw topology, bounded self-intersection and shell checks; no repair or epsilon welding.\"},{\"id\":\"physical-volume\",\"category\":\"measurement\",\"required\":true,\"status\":\"PASS\",\"issueIds\":[],\"reason\":\"computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound\"}],\"measurements\":{\"bounds\":{\"min\":[0,0,0],\"max\":[20,20,5],\"dimensions\":[20,20,5]},\"surfaceArea\":{\"status\":\"PASS\",\"value\":1237.9104419076023,\"errorEstimate\":1.1544596070249667e-11,\"reason\":\"computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound\"},\"signedVolume\":{\"status\":\"PASS\",\"value\":1859.5349671009444,\"errorEstimate\":1.7341787698796833e-11,\"reason\":\"computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound\"},\"physicalVolume\":{\"status\":\"PASS\",\"value\":1859.5349671009444,\"errorEstimate\":1.7341787698796833e-11,\"reason\":\"computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound\"},\"objectCount\":1,\"rawVertices\":432,\"rawTriangles\":144},\"issues\":[],\"issueCount\":0,\"issuesTruncated\":false,\"examined\":[\"raw-format\",\"cli-diagnostics\",\"full-render-export\",\"raw-topology\",\"self-intersection\",\"shell-relations\",\"mesh-measurements\"],\"notExamined\":[\"assembly\",\"constraints\",\"visual-inspection\",\"diff\",\"thickness\",\"printability\",\"analytic-surface-error\"],\"incomplete\":[],\"artifacts\":[{\"id\":\"acc72f685d11c2bff1bb6c3148b8481c4033622d4977bffff4e3b376c6c44ade\",\"snapshotId\":\"4e48e451e077165041ec7f74e9451f6aa3d5ae24a6cd9d06c1c8b5799ce9e922\",\"kind\":\"log\",\"mimeType\":\"text/plain\",\"sha256\":\"f1abc562c4a5dea069767d8a6630f131a77b470a12c32bff924f02df9aeda669\",\"bytes\":297},{\"id\":\"277c52c383c773964b3052d8685ab5248f04b960a95b5252389ab7837af09940\",\"snapshotId\":\"4e48e451e077165041ec7f74e9451f6aa3d5ae24a6cd9d06c1c8b5799ce9e922\",\"kind\":\"mesh\",\"mimeType\":\"model/stl\",\"sha256\":\"8644a5a6f94b514e2ec889c5a064ac8fc4169d9a184176dda257c0b6af0101d4\",\"bytes\":7284,\"role\":\"raw\"},{\"id\":\"32e4fb302d23ac0bed709a5de729b7fed9296e9185005373dd658813a42ad77b\",\"snapshotId\":\"4e48e451e077165041ec7f74e9451f6aa3d5ae24a6cd9d06c1c8b5799ce9e922\",\"kind\":\"mesh\",\"mimeType\":\"model/stl\",\"sha256\":\"e32919211dc94970a45b2b2d7743f5aa26cb2b4ae83f7854cab5082053bc450f\",\"bytes\":7284,\"role\":\"render\",\"derivation\":{\"inputSha256\":\"8644a5a6f94b514e2ec889c5a064ac8fc4169d9a184176dda257c0b6af0101d4\",\"numericType\":\"float32\",\"maxCoordinateError\":0}},{\"id\":\"fb2493c196a6bfd242e7ab96bedf3c1fba93e1a0706ffcf18fd1df042c023b45\",\"snapshotId\":\"4e48e451e077165041ec7f74e9451f6aa3d5ae24a6cd9d06c1c8b5799ce9e922\",\"kind\":\"analysis\",\"mimeType\":\"application/json\",\"sha256\":\"d393a744c8e944ff810ad1e29e7734718bd5ef5d7fb4d908d2c2cd7d40d3c3a2\",\"bytes\":2077}],\"reportUri\":\"scad-cad-report:/cad-f27eadfd-cbe1-4899-962d-1cbdc14fd0b0\"},\"operation\":{\"id\":\"46677a9c-ad68-4cfb-ae67-fe0f2297a593\",\"capabilityId\":\"cad.modelAnalyze\",\"status\":\"succeeded\",\"message\":\"Verifying the frozen raw mesh; no mesh repair is applied.\"}}"
+              }
+            ]
+          },
+          "call_bf5e30a7__vscode-1794879540451": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "{\"ok\":true,\"capabilityId\":\"cad.compare\",\"data\":{\"kind\":\"comparison\",\"schemaVersion\":1,\"reportId\":\"cad-a0efca5e-aa0d-4e50-8e1a-afd666e6bc6e\",\"reportUri\":\"scad-cad-report:/cad-a0efca5e-aa0d-4e50-8e1a-afd666e6bc6e\",\"baselineReportId\":\"cad-42f411f9-5a1a-4cfe-a43c-1a8cbafc5ade\",\"targetReportId\":\"cad-f27eadfd-cbe1-4899-962d-1cbdc14fd0b0\",\"baselineModelStatus\":\"PASS\",\"targetModelStatus\":\"PASS\",\"baselineSnapshotId\":\"3f55bc7e18bec64c734447791b7e91dd4dc14ab621236b5099d05fff5ea92f33\",\"targetSnapshotId\":\"4e48e451e077165041ec7f74e9451f6aa3d5ae24a6cd9d06c1c8b5799ce9e922\",\"current\":{\"baseline\":false,\"target\":true},\"units\":\"mm\",\"comparisonStatus\":\"COMPLETE\",\"regressionStatus\":\"NO_REGRESSIONS_FOUND\",\"scope\":\"frozen-exported-mesh-summary; no analytic or within-part region guarantee\",\"incomplete\":[],\"section\":\"parts\",\"items\":[{\"partId\":null,\"status\":\"changed\",\"geometryChanged\":true,\"placementChanged\":false,\"baseline\":{\"id\":null,\"geometryHash\":\"0eba0c49499acedd208623d03276768ea76a504e714aec93de32d5a6298cead6\",\"anchorHash\":\"c0e92f47ce3f7869a7abddf1d3c128666c3be83e0bbcebfe64a6f798b698dc72\",\"triangles\":144,\"vertices\":432},\"target\":{\"id\":null,\"geometryHash\":\"ccbc47e1efb754eed51c2251e458ef7b6cbbf5d2b3ac55ada643068216150612\",\"anchorHash\":\"07524fc0a68da918dc41b8704ccdb09c3ca22922c7a3e90e375a90df1322583c\",\"triangles\":144,\"vertices\":432},\"metrics\":{\"baseline\":{\"bounds\":{\"min\":[0,0,0],\"max\":[20,20,5],\"dimensions\":[20,20,5]},\"surfaceArea\":{\"status\":\"PASS\",\"value\":1237.7594081087304,\"errorEstimate\":1.1543187548161234e-11,\"reason\":\"computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound\"},\"signedVolume\":{\"status\":\"PASS\",\"value\":1937.571101681824,\"errorEstimate\":1.8069542811058128e-11,\"reason\":\"computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound\"},\"physicalVolume\":{\"status\":\"PASS\",\"value\":1937.571101681824,\"errorEstimate\":1.8069542811058128e-11,\"reason\":\"computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound\"},\"rawTriangles\":144,\"rawVertices\":432,\"topology\":{\"objects\":1,\"components\":1,\"boundaryEdges\":0,\"nonManifoldEdges\":0},\"precision\":\"computed-on-decoded-mesh\"},\"target\":{\"bounds\":{\"min\":[0,0,0],\"max\":[20,20,5],\"dimensions\":[20,20,5]},\"surfaceArea\":{\"status\":\"PASS\",\"value\":1237.9104419076023,\"errorEstimate\":1.1544596070249667e-11,\"reason\":\"computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound\"},\"signedVolume\":{\"status\":\"PASS\",\"value\":1859.5349671009444,\"errorEstimate\":1.7341787698796833e-11,\"reason\":\"computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound\"},\"physicalVolume\":{\"status\":\"PASS\",\"value\":1859.5349671009444,\"errorEstimate\":1.7341787698796833e-11,\"reason\":\"computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound\"},\"rawTriangles\":144,\"rawVertices\":432,\"topology\":{\"objects\":1,\"components\":1,\"boundaryEdges\":0,\"nonManifoldEdges\":0},\"precision\":\"computed-on-decoded-mesh\"}},\"protected\":false}],\"total\":1,\"offset\":0,\"nextOffset\":null,\"issueIds\":[],\"notChecked\":[\"surface-distance-heatmap\",\"boolean-difference\",\"within-part-preservation\"]},\"operation\":{\"id\":\"3690c9f4-d816-47a7-aae6-8bbef0e277f0\",\"capabilityId\":\"cad.compare\",\"status\":\"succeeded\"}}"
+              }
+            ]
+          },
+          "call_df8471bc__vscode-1794879540452": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "{\"ok\":true,\"capabilityId\":\"cad.checkPrintability\",\"data\":{\"kind\":\"print-assessment\",\"schemaVersion\":1,\"reportId\":\"cad-821e71c3-2dfe-4c8e-9c37-a37fdb542720\",\"sourceReportId\":\"cad-f27eadfd-cbe1-4899-962d-1cbdc14fd0b0\",\"snapshotId\":\"4e48e451e077165041ec7f74e9451f6aa3d5ae24a6cd9d06c1c8b5799ce9e922\",\"ownerUri\":\"file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace/model.scad\",\"profileUri\":\"file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace/.scad/print-profile.json\",\"profileDigest\":\"ec8bcfdafc1940b1bc48511abba4e2f35ea30b944e960708b203f2b549baa7c0\",\"profileContentHash\":\"9521afd9ac63af1db6f9bf248d412b8e8624169c085b209666478e6d27a69df1\",\"profile\":{\"schemaVersion\":1,\"units\":\"mm\",\"process\":\"fdm\",\"buildVolumeMm\":[200,200,200],\"buildPose\":{\"rotate\":[0,0,0],\"translate\":[0,0,0]},\"maxOverhangFromVerticalDeg\":45},\"partId\":null,\"units\":\"mm\",\"assessmentStatus\":\"COMPLETE\",\"printability\":\"NOT_CHECKED\",\"result\":{\"envelope\":{\"status\":\"PASS\",\"bounds\":{\"min\":[{\"lower\":0,\"upper\":0},{\"lower\":0,\"upper\":0},{\"lower\":0,\"upper\":0}],\"max\":[{\"lower\":20,\"upper\":20},{\"lower\":20,\"upper\":20},{\"lower\":5,\"upper\":5}]}},\"overhang\":{\"status\":\"NONE_FOUND\",\"complete\":true,\"candidateCount\":0,\"uncertainCount\":0,\"candidateArea\":0,\"samples\":[]},\"incomplete\":[]},\"issues\":[],\"notChecked\":[\"wall-thickness\",\"bridging\",\"supports\",\"bed-adhesion\",\"slicer\",\"material\",\"manufacturing-success\"],\"createdAt\":1794879622829,\"current\":true,\"reportUri\":\"scad-cad-report:/cad-821e71c3-2dfe-4c8e-9c37-a37fdb542720\",\"precision\":\"frozen-Float64-envelope; numerical-triangle-angle-candidates\"},\"operation\":{\"id\":\"8b262024-35f7-48af-b194-f30d37d5e8d5\",\"capabilityId\":\"cad.checkPrintability\",\"status\":\"succeeded\"}}"
+              }
+            ]
+          }
+        },
+        "resolvedModel": "Qwen3.6-35B-A3B-OptiQ-4bit",
+        "modelMessageId": "ba369f88-bca8-4c00-aa36-e2f72ec8978e",
+        "responseId": "a764b93e-962a-43d8-bba9-7c2cfdad0d34",
+        "sessionId": "982fadcf-8f2b-4c5c-9bf5-f81d0c8c2d4a",
+        "agentId": "github.copilot.editsAgent"
+      },
+      "details": "Qwen3.6-35B-A3B-OptiQ-4bit"
+    },
+    "snapshot": false,
+    "buffer": "part=\"body\";\nhole=3;\nif(part==\"body\") difference(){cube([20,20,5]);translate([10,10,-1])cylinder(h=7,r=hole,$fn=32);}\nelse if(part==\"shell\")translate([30,0,0])cube([10,10,5]);\n",
+    "dirty": false,
+    "disk": "part=\"body\";\nhole=3;\nif(part==\"body\") difference(){cube([20,20,5]);translate([10,10,-1])cylinder(h=7,r=hole,$fn=32);}\nelse if(part==\"shell\")translate([30,0,0])cube([10,10,5]);\n",
+    "manifestDiskHash": "97ada8722c4af15ff8cd971e9354e416bc56ed2c2789861cff2a9801ce623f70",
+    "manifestBufferHash": "97ada8722c4af15ff8cd971e9354e416bc56ed2c2789861cff2a9801ce623f70",
+    "bufferHash": "69cee08108385dfbb52c444d0f2124e96d74a489392e3b9e8b11b318f40f9f7e",
+    "diskHash": "69cee08108385dfbb52c444d0f2124e96d74a489392e3b9e8b11b318f40f9f7e",
+    "problems": [],
+    "operations": {
+      "total": 4,
+      "offset": 0,
+      "hasMore": false,
+      "nextOffset": null,
+      "operations": [
+        {
+          "id": "8b262024-35f7-48af-b194-f30d37d5e8d5",
+          "capabilityId": "cad.checkPrintability",
+          "status": "succeeded"
+        },
+        {
+          "id": "3690c9f4-d816-47a7-aae6-8bbef0e277f0",
+          "capabilityId": "cad.compare",
+          "status": "succeeded"
+        },
+        {
+          "id": "46677a9c-ad68-4cfb-ae67-fe0f2297a593",
+          "capabilityId": "cad.modelAnalyze",
+          "status": "succeeded",
+          "message": "Verifying the frozen raw mesh; no mesh repair is applied."
+        },
+        {
+          "id": "d3f64cf9-01f9-4aba-9d9a-c571806ed498",
+          "capabilityId": "cad.modelAnalyze",
+          "status": "failed",
+          "message": "Verifying the frozen raw mesh; no mesh repair is applied.",
+          "error": {
+            "code": "OPERATION_FAILED",
+            "message": "[UriError]: Scheme is missing: {scheme: \"\", authority: \"\", path: \"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace\", query: \"\", fragment: \"\"}",
+            "retryable": true
+          }
+        }
+      ]
+    }
+  },
+  "approvals": [],
+  "compared": {
+    "kind": "comparison",
+    "schemaVersion": 1,
+    "reportId": "cad-a0efca5e-aa0d-4e50-8e1a-afd666e6bc6e",
+    "reportUri": "scad-cad-report:/cad-a0efca5e-aa0d-4e50-8e1a-afd666e6bc6e",
+    "baselineReportId": "cad-42f411f9-5a1a-4cfe-a43c-1a8cbafc5ade",
+    "targetReportId": "cad-f27eadfd-cbe1-4899-962d-1cbdc14fd0b0",
+    "baselineModelStatus": "PASS",
+    "targetModelStatus": "PASS",
+    "baselineSnapshotId": "3f55bc7e18bec64c734447791b7e91dd4dc14ab621236b5099d05fff5ea92f33",
+    "targetSnapshotId": "4e48e451e077165041ec7f74e9451f6aa3d5ae24a6cd9d06c1c8b5799ce9e922",
+    "current": {
+      "baseline": false,
+      "target": true
+    },
+    "units": "mm",
+    "comparisonStatus": "COMPLETE",
+    "regressionStatus": "NO_REGRESSIONS_FOUND",
+    "scope": "frozen-exported-mesh-summary; no analytic or within-part region guarantee",
+    "incomplete": [],
+    "section": "parts",
+    "items": [
+      {
+        "partId": null,
+        "status": "changed",
+        "geometryChanged": true,
+        "placementChanged": false,
+        "baseline": {
+          "id": null,
+          "geometryHash": "0eba0c49499acedd208623d03276768ea76a504e714aec93de32d5a6298cead6",
+          "anchorHash": "c0e92f47ce3f7869a7abddf1d3c128666c3be83e0bbcebfe64a6f798b698dc72",
+          "triangles": 144,
+          "vertices": 432
+        },
+        "target": {
+          "id": null,
+          "geometryHash": "ccbc47e1efb754eed51c2251e458ef7b6cbbf5d2b3ac55ada643068216150612",
+          "anchorHash": "07524fc0a68da918dc41b8704ccdb09c3ca22922c7a3e90e375a90df1322583c",
+          "triangles": 144,
+          "vertices": 432
+        },
+        "metrics": {
+          "baseline": {
+            "bounds": {
+              "min": [
+                0,
+                0,
+                0
+              ],
+              "max": [
+                20,
+                20,
+                5
+              ],
+              "dimensions": [
+                20,
+                20,
+                5
+              ]
+            },
+            "surfaceArea": {
+              "status": "PASS",
+              "value": 1237.7594081087304,
+              "errorEstimate": 1.1543187548161234e-11,
+              "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+            },
+            "signedVolume": {
+              "status": "PASS",
+              "value": 1937.571101681824,
+              "errorEstimate": 1.8069542811058128e-11,
+              "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+            },
+            "physicalVolume": {
+              "status": "PASS",
+              "value": 1937.571101681824,
+              "errorEstimate": 1.8069542811058128e-11,
+              "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+            },
+            "rawTriangles": 144,
+            "rawVertices": 432,
+            "topology": {
+              "objects": 1,
+              "components": 1,
+              "boundaryEdges": 0,
+              "nonManifoldEdges": 0
+            },
+            "precision": "computed-on-decoded-mesh"
+          },
+          "target": {
+            "bounds": {
+              "min": [
+                0,
+                0,
+                0
+              ],
+              "max": [
+                20,
+                20,
+                5
+              ],
+              "dimensions": [
+                20,
+                20,
+                5
+              ]
+            },
+            "surfaceArea": {
+              "status": "PASS",
+              "value": 1237.9104419076023,
+              "errorEstimate": 1.1544596070249667e-11,
+              "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+            },
+            "signedVolume": {
+              "status": "PASS",
+              "value": 1859.5349671009444,
+              "errorEstimate": 1.7341787698796833e-11,
+              "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+            },
+            "physicalVolume": {
+              "status": "PASS",
+              "value": 1859.5349671009444,
+              "errorEstimate": 1.7341787698796833e-11,
+              "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+            },
+            "rawTriangles": 144,
+            "rawVertices": 432,
+            "topology": {
+              "objects": 1,
+              "components": 1,
+              "boundaryEdges": 0,
+              "nonManifoldEdges": 0
+            },
+            "precision": "computed-on-decoded-mesh"
+          }
+        },
+        "protected": false
+      }
+    ],
+    "total": 1,
+    "offset": 0,
+    "nextOffset": null,
+    "issueIds": [],
+    "notChecked": [
+      "surface-distance-heatmap",
+      "boolean-difference",
+      "within-part-preservation"
+    ]
+  },
+  "print": {
+    "kind": "print-assessment",
+    "schemaVersion": 1,
+    "reportId": "cad-821e71c3-2dfe-4c8e-9c37-a37fdb542720",
+    "sourceReportId": "cad-f27eadfd-cbe1-4899-962d-1cbdc14fd0b0",
+    "snapshotId": "4e48e451e077165041ec7f74e9451f6aa3d5ae24a6cd9d06c1c8b5799ce9e922",
+    "ownerUri": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace/model.scad",
+    "profileUri": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace/.scad/print-profile.json",
+    "profileDigest": "ec8bcfdafc1940b1bc48511abba4e2f35ea30b944e960708b203f2b549baa7c0",
+    "profileContentHash": "9521afd9ac63af1db6f9bf248d412b8e8624169c085b209666478e6d27a69df1",
+    "profile": {
+      "schemaVersion": 1,
+      "units": "mm",
+      "process": "fdm",
+      "buildVolumeMm": [
+        200,
+        200,
+        200
+      ],
+      "buildPose": {
+        "rotate": [
+          0,
+          0,
+          0
+        ],
+        "translate": [
+          0,
+          0,
+          0
+        ]
+      },
+      "maxOverhangFromVerticalDeg": 45
+    },
+    "partId": null,
+    "units": "mm",
+    "assessmentStatus": "COMPLETE",
+    "printability": "NOT_CHECKED",
+    "result": {
+      "envelope": {
+        "status": "PASS",
+        "bounds": {
+          "min": [
+            {
+              "lower": 0,
+              "upper": 0
+            },
+            {
+              "lower": 0,
+              "upper": 0
+            },
+            {
+              "lower": 0,
+              "upper": 0
+            }
+          ],
+          "max": [
+            {
+              "lower": 20,
+              "upper": 20
+            },
+            {
+              "lower": 20,
+              "upper": 20
+            },
+            {
+              "lower": 5,
+              "upper": 5
+            }
+          ]
+        }
+      },
+      "overhang": {
+        "status": "NONE_FOUND",
+        "complete": true,
+        "candidateCount": 0,
+        "uncertainCount": 0,
+        "candidateArea": 0,
+        "samples": []
+      },
+      "incomplete": []
+    },
+    "issues": [],
+    "notChecked": [
+      "wall-thickness",
+      "bridging",
+      "supports",
+      "bed-adhesion",
+      "slicer",
+      "material",
+      "manufacturing-success"
+    ],
+    "createdAt": 1794879622829,
+    "current": true,
+    "reportUri": "scad-cad-report:/cad-821e71c3-2dfe-4c8e-9c37-a37fdb542720",
+    "precision": "frozen-Float64-envelope; numerical-triangle-angle-candidates"
+  },
+  "target": {
+    "schemaVersion": 2,
+    "reportId": "cad-f27eadfd-cbe1-4899-962d-1cbdc14fd0b0",
+    "snapshotId": "4e48e451e077165041ec7f74e9451f6aa3d5ae24a6cd9d06c1c8b5799ce9e922",
+    "current": true,
+    "document": {
+      "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-NFqbeu/workspace/model.scad",
+      "version": 1,
+      "sourceSha256": "69cee08108385dfbb52c444d0f2124e96d74a489392e3b9e8b11b318f40f9f7e",
+      "dirty": false
+    },
+    "inputKind": "scad",
+    "executionStatus": "SUCCEEDED",
+    "overallStatus": "PASS",
+    "complete": true,
+    "units": "mm",
+    "sourceUnit": "user-declared-mm",
+    "quality": {
+      "profile": "verification",
+      "requestedGlobalTessellation": {},
+      "effectiveOverrides": {
+        "$preview": false
+      },
+      "localSettings": "source-controlled"
+    },
+    "precision": "computed-on-decoded-mesh",
+    "checks": [
+      {
+        "id": "cli-evaluation",
+        "category": "compile",
+        "required": true,
+        "status": "PASS",
+        "issueIds": [],
+        "reason": "Official full-mesh export only; no independent mesh or assembly verification."
+      },
+      {
+        "id": "mesh-format",
+        "category": "format",
+        "required": true,
+        "status": "PASS",
+        "issueIds": []
+      },
+      {
+        "id": "mesh-topology",
+        "category": "mesh",
+        "required": true,
+        "status": "PASS",
+        "issueIds": []
+      },
+      {
+        "id": "mesh-self-intersection",
+        "category": "mesh",
+        "required": true,
+        "status": "PASS",
+        "issueIds": []
+      },
+      {
+        "id": "mesh-shell-relations",
+        "category": "mesh",
+        "required": true,
+        "status": "PASS",
+        "issueIds": []
+      },
+      {
+        "id": "raw-mesh-validity",
+        "category": "mesh",
+        "required": true,
+        "status": "PASS",
+        "issueIds": [],
+        "reason": "Raw topology, bounded self-intersection and shell checks; no repair or epsilon welding."
+      },
+      {
+        "id": "physical-volume",
+        "category": "measurement",
+        "required": true,
+        "status": "PASS",
+        "issueIds": [],
+        "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+      }
+    ],
+    "measurements": {
+      "bounds": {
+        "min": [
+          0,
+          0,
+          0
+        ],
+        "max": [
+          20,
+          20,
+          5
+        ],
+        "dimensions": [
+          20,
+          20,
+          5
+        ]
+      },
+      "surfaceArea": {
+        "status": "PASS",
+        "value": 1237.9104419076023,
+        "errorEstimate": 1.1544596070249667e-11,
+        "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+      },
+      "signedVolume": {
+        "status": "PASS",
+        "value": 1859.5349671009444,
+        "errorEstimate": 1.7341787698796833e-11,
+        "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+      },
+      "physicalVolume": {
+        "status": "PASS",
+        "value": 1859.5349671009444,
+        "errorEstimate": 1.7341787698796833e-11,
+        "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+      },
+      "objectCount": 1,
+      "rawVertices": 432,
+      "rawTriangles": 144
+    },
+    "issues": [],
+    "issueCount": 0,
+    "issuesTruncated": false,
+    "examined": [
+      "raw-format",
+      "cli-diagnostics",
+      "full-render-export",
+      "raw-topology",
+      "self-intersection",
+      "shell-relations",
+      "mesh-measurements"
+    ],
+    "notExamined": [
+      "assembly",
+      "constraints",
+      "visual-inspection",
+      "diff",
+      "thickness",
+      "printability",
+      "analytic-surface-error"
+    ],
+    "incomplete": [],
+    "artifacts": [
+      {
+        "id": "acc72f685d11c2bff1bb6c3148b8481c4033622d4977bffff4e3b376c6c44ade",
+        "snapshotId": "4e48e451e077165041ec7f74e9451f6aa3d5ae24a6cd9d06c1c8b5799ce9e922",
+        "kind": "log",
+        "mimeType": "text/plain",
+        "sha256": "f1abc562c4a5dea069767d8a6630f131a77b470a12c32bff924f02df9aeda669",
+        "bytes": 297
+      },
+      {
+        "id": "277c52c383c773964b3052d8685ab5248f04b960a95b5252389ab7837af09940",
+        "snapshotId": "4e48e451e077165041ec7f74e9451f6aa3d5ae24a6cd9d06c1c8b5799ce9e922",
+        "kind": "mesh",
+        "mimeType": "model/stl",
+        "sha256": "8644a5a6f94b514e2ec889c5a064ac8fc4169d9a184176dda257c0b6af0101d4",
+        "bytes": 7284,
+        "role": "raw"
+      },
+      {
+        "id": "32e4fb302d23ac0bed709a5de729b7fed9296e9185005373dd658813a42ad77b",
+        "snapshotId": "4e48e451e077165041ec7f74e9451f6aa3d5ae24a6cd9d06c1c8b5799ce9e922",
+        "kind": "mesh",
+        "mimeType": "model/stl",
+        "sha256": "e32919211dc94970a45b2b2d7743f5aa26cb2b4ae83f7854cab5082053bc450f",
+        "bytes": 7284,
+        "role": "render",
+        "derivation": {
+          "inputSha256": "8644a5a6f94b514e2ec889c5a064ac8fc4169d9a184176dda257c0b6af0101d4",
+          "numericType": "float32",
+          "maxCoordinateError": 0
+        }
+      },
+      {
+        "id": "fb2493c196a6bfd242e7ab96bedf3c1fba93e1a0706ffcf18fd1df042c023b45",
+        "snapshotId": "4e48e451e077165041ec7f74e9451f6aa3d5ae24a6cd9d06c1c8b5799ce9e922",
+        "kind": "analysis",
+        "mimeType": "application/json",
+        "sha256": "d393a744c8e944ff810ad1e29e7734718bd5ef5d7fb4d908d2c2cd7d40d3c3a2",
+        "bytes": 2077
+      }
+    ],
+    "reportUri": "scad-cad-report:/cad-f27eadfd-cbe1-4899-962d-1cbdc14fd0b0"
+  },
+  "manifestHash": "97ada8722c4af15ff8cd971e9354e416bc56ed2c2789861cff2a9801ce623f70",
+  "profileHash": "9521afd9ac63af1db6f9bf248d412b8e8624169c085b209666478e6d27a69df1",
+  "pass": true,
+  "runId": "1d229f3f-a600-458b-8ba4-66cced7251d0",
+  "candidateId": "d88e72bced4562c562877f2273cc8dbdfafd55c92157461d0626fd7a349b119d",
+  "candidateUnchanged": true,
+  "budgetMs": 600000,
+  "elapsedMs": 129041,
+  "commandState": {
+    "runId": "1d229f3f-a600-458b-8ba4-66cced7251d0",
+    "state": "completed",
+    "at": "2026-11-17T01:41:07.436Z"
+  },
+  "formalAttempt": 1,
+  "assessment": {
+    "category": "NONE",
+    "confidence": "observed",
+    "backupEligible": false,
+    "evidence": [
+      "strict scenario oracle"
+    ]
+  }
+}

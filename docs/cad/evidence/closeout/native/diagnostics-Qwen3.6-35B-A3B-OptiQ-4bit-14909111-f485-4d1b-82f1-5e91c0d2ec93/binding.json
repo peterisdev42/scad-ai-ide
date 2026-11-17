@@ -1,0 +1,8 @@
+{
+  "runId": "14909111-f485-4d1b-82f1-5e91c0d2ec93",
+  "candidateId": "e2029f852fe13a2610da83440dd7c093fe25490239b1c49f37d72bb70515ca47",
+  "directory": "/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/cad-native-f5-vZBRfK",
+  "scenario": "diagnostics",
+  "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+  "baseline": "docs/cad/evidence/closeout/baseline.json"
+}

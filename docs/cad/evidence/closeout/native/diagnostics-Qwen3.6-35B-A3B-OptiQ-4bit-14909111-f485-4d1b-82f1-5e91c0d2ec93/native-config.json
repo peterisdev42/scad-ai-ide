@@ -1,0 +1,1 @@
+{"runId":"14909111-f485-4d1b-82f1-5e91c0d2ec93","scenario":"diagnostics","baselineSource":"width=0;\nassert(width>0,\"width must be positive\");\ncube(width);\n","file":"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/cad-native-f5-vZBRfK/workspace/model.scad","ideExtension":"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/cad-native-f5-vZBRfK/scad-ai-ide"}

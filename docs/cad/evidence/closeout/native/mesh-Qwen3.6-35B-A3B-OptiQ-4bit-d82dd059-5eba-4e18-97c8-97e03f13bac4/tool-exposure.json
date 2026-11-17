@@ -1,0 +1,511 @@
+{
+  "runId": "d82dd059-5eba-4e18-97c8-97e03f13bac4",
+  "scope": "Transparent test-only loopback; no auth headers, prompt bodies or payload changes retained",
+  "requests": [
+    {
+      "runId": "d82dd059-5eba-4e18-97c8-97e03f13bac4",
+      "requestId": "978aaf3f-c7e0-4cb3-bf43-71212759a9a3",
+      "at": "2026-11-17T01:32:43.841Z",
+      "path": "/v1/models",
+      "runMarkerObserved": false,
+      "status": 200,
+      "headersMs": 25,
+      "firstByteMs": 26,
+      "streamEnded": true,
+      "sseDone": false,
+      "finishReasons": [],
+      "malformedSse": false,
+      "rawToolCalls": [],
+      "elapsedMs": 28
+    },
+    {
+      "runId": "d82dd059-5eba-4e18-97c8-97e03f13bac4",
+      "requestId": "0875b90c-77b6-4934-9c92-5a0fcddc839e",
+      "at": "2026-11-17T01:32:43.879Z",
+      "path": "/v1/models",
+      "runMarkerObserved": false,
+      "status": 200,
+      "headersMs": 5,
+      "firstByteMs": 6,
+      "streamEnded": true,
+      "sseDone": false,
+      "finishReasons": [],
+      "malformedSse": false,
+      "rawToolCalls": [],
+      "elapsedMs": 6
+    },
+    {
+      "runId": "d82dd059-5eba-4e18-97c8-97e03f13bac4",
+      "requestId": "b5e6e94a-5248-4fea-a941-474a3f2849d7",
+      "at": "2026-11-17T01:32:43.905Z",
+      "path": "/v1/models",
+      "runMarkerObserved": false,
+      "status": 200,
+      "headersMs": 5,
+      "firstByteMs": 5,
+      "streamEnded": true,
+      "sseDone": false,
+      "finishReasons": [],
+      "malformedSse": false,
+      "rawToolCalls": [],
+      "elapsedMs": 5
+    },
+    {
+      "runId": "d82dd059-5eba-4e18-97c8-97e03f13bac4",
+      "requestId": "2b245193-e3bc-4041-ab5e-7cb2646424db",
+      "at": "2026-11-17T01:32:44.009Z",
+      "path": "/v1/models",
+      "runMarkerObserved": false,
+      "status": 200,
+      "headersMs": 5,
+      "firstByteMs": 6,
+      "streamEnded": true,
+      "sseDone": false,
+      "finishReasons": [],
+      "malformedSse": false,
+      "rawToolCalls": [],
+      "elapsedMs": 7
+    },
+    {
+      "runId": "d82dd059-5eba-4e18-97c8-97e03f13bac4",
+      "requestId": "7f645309-b61a-438d-93f9-1cac4cbac905",
+      "at": "2026-11-17T01:32:44.214Z",
+      "path": "/v1/models",
+      "runMarkerObserved": false,
+      "status": 200,
+      "headersMs": 7,
+      "firstByteMs": 8,
+      "streamEnded": true,
+      "sseDone": false,
+      "finishReasons": [],
+      "malformedSse": false,
+      "rawToolCalls": [],
+      "elapsedMs": 8
+    },
+    {
+      "runId": "d82dd059-5eba-4e18-97c8-97e03f13bac4",
+      "requestId": "279bf376-c260-4338-a56c-a45b5ed84cc5",
+      "at": "2026-11-17T01:32:44.445Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": false,
+      "tools": [],
+      "status": 200,
+      "headersMs": 24,
+      "firstByteMs": 24,
+      "error": "AbortError: This operation was aborted",
+      "rawToolCalls": [],
+      "elapsedMs": 102418
+    },
+    {
+      "runId": "d82dd059-5eba-4e18-97c8-97e03f13bac4",
+      "requestId": "f76b129a-e90b-48b0-8810-ca7854f828b5",
+      "at": "2026-11-17T01:32:44.446Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": false,
+      "tools": [],
+      "status": 200,
+      "headersMs": 46,
+      "firstByteMs": 48
+    },
+    {
+      "runId": "d82dd059-5eba-4e18-97c8-97e03f13bac4",
+      "requestId": "c3137633-0fb6-4671-9000-f160f47527e8",
+      "at": "2026-11-17T01:32:44.518Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "7fd1e90049fb7be62819aacbe7ad721d5a528a257a3999d46dfea2321dc73cf3"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 30,
+      "firstByteMs": 31,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "tool_calls"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [
+        {
+          "id": "call_8962f543",
+          "name": "scad_ai_ide_model_analyze",
+          "arguments": "{\"mode\": \"verify\", \"projectRoot\": \"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/mesh-native-f5-s69Os9/workspace\", \"uri\": \"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/mesh-native-f5-s69Os9/workspace/model.stl\"}"
+        }
+      ],
+      "elapsedMs": 17121
+    },
+    {
+      "runId": "d82dd059-5eba-4e18-97c8-97e03f13bac4",
+      "requestId": "35be964e-160f-4149-90db-474d34476e8b",
+      "at": "2026-11-17T01:33:01.868Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "7fd1e90049fb7be62819aacbe7ad721d5a528a257a3999d46dfea2321dc73cf3"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 27,
+      "firstByteMs": 28,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "tool_calls"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [
+        {
+          "id": "call_b6030d57",
+          "name": "scad_ai_ide_model_analyze",
+          "arguments": "{\"mode\": \"verify\", \"projectRoot\": \"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/mesh-native-f5-s69Os9/workspace\", \"uri\": \"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/mesh-native-f5-s69Os9/workspace/model.stl\"}"
+        }
+      ],
+      "elapsedMs": 17458
+    },
+    {
+      "runId": "d82dd059-5eba-4e18-97c8-97e03f13bac4",
+      "requestId": "f51f0cb6-4d2d-4ec2-887c-694536554e24",
+      "at": "2026-11-17T01:33:19.523Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "7fd1e90049fb7be62819aacbe7ad721d5a528a257a3999d46dfea2321dc73cf3"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 29,
+      "firstByteMs": 29,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "tool_calls"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [
+        {
+          "id": "call_1c159fca",
+          "name": "scad_ai_ide_model_measure",
+          "arguments": "{\"measurementTypes\": [\"signedVolume\", \"physicalVolume\"], \"projectRoot\": \"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/mesh-native-f5-s69Os9/workspace\", \"reportId\": \"cad-a5159476-b5bd-4069-ab88-91f2fba31466\"}"
+        }
+      ],
+      "elapsedMs": 13744
+    },
+    {
+      "runId": "d82dd059-5eba-4e18-97c8-97e03f13bac4",
+      "requestId": "0409c384-3f3a-41bf-a0dc-bddcf1da3190",
+      "at": "2026-11-17T01:33:33.250Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "7fd1e90049fb7be62819aacbe7ad721d5a528a257a3999d46dfea2321dc73cf3"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 42,
+      "firstByteMs": 43,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "tool_calls"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [
+        {
+          "id": "call_176f5757",
+          "name": "scad_ai_ide_model_measure",
+          "arguments": "{\"measurementTypes\": [\"signedVolume\", \"physicalVolume\"], \"reportId\": \"cad-a5159476-b5bd-4069-ab88-91f2fba31466\"}"
+        }
+      ],
+      "elapsedMs": 3978
+    },
+    {
+      "runId": "d82dd059-5eba-4e18-97c8-97e03f13bac4",
+      "requestId": "4704f06a-6bc9-4534-9830-cf944240e768",
+      "at": "2026-11-17T01:33:37.267Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "7fd1e90049fb7be62819aacbe7ad721d5a528a257a3999d46dfea2321dc73cf3"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 24,
+      "firstByteMs": 25,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "tool_calls"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [
+        {
+          "id": "call_8c291592",
+          "name": "scad_ai_ide_model_getIssue",
+          "arguments": "{\"includeEvidence\": true, \"issueId\": \"a06ac3191ad989b90a79c490619b32370f93ebfc9f57759753ea7e1dda1bc485\", \"reportId\": \"cad-a5159476-b5bd-4069-ab88-91f2fba31466\"}"
+        }
+      ],
+      "elapsedMs": 8149
+    },
+    {
+      "runId": "d82dd059-5eba-4e18-97c8-97e03f13bac4",
+      "requestId": "fa09cf35-135a-4954-8e92-43c7b69f2dab",
+      "at": "2026-11-17T01:33:45.452Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "7fd1e90049fb7be62819aacbe7ad721d5a528a257a3999d46dfea2321dc73cf3"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 58,
+      "firstByteMs": 58,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "tool_calls"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [
+        {
+          "id": "call_ff1fb22b",
+          "name": "scad_ai_ide_model_renderViews",
+          "arguments": "{\"cameras\": [\"iso\"], \"delivery\": \"metadata\", \"projectRoot\": \"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/mesh-native-f5-s69Os9/workspace\", \"reportId\": \"cad-a5159476-b5bd-4069-ab88-91f2fba31466\"}"
+        }
+      ],
+      "elapsedMs": 10711
+    },
+    {
+      "runId": "d82dd059-5eba-4e18-97c8-97e03f13bac4",
+      "requestId": "c675edc8-f8f8-4431-909e-9922cd4eaf8c",
+      "at": "2026-11-17T01:33:56.197Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "7fd1e90049fb7be62819aacbe7ad721d5a528a257a3999d46dfea2321dc73cf3"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 28,
+      "firstByteMs": 28,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "tool_calls"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [
+        {
+          "id": "call_9e8a526e",
+          "name": "scad_ai_ide_model_renderViews",
+          "arguments": "{\"cameras\": [\"iso\"], \"delivery\": \"metadata\", \"reportId\": \"cad-a5159476-b5bd-4069-ab88-91f2fba31466\"}"
+        }
+      ],
+      "elapsedMs": 4998
+    },
+    {
+      "runId": "d82dd059-5eba-4e18-97c8-97e03f13bac4",
+      "requestId": "712f5585-119a-4c3d-b4dc-263b13e22c13",
+      "at": "2026-11-17T01:34:01.507Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_analyze",
+          "schemaSha256": "7fd1e90049fb7be62819aacbe7ad721d5a528a257a3999d46dfea2321dc73cf3"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 28,
+      "firstByteMs": 29,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "stop"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [],
+      "elapsedMs": 25079
+    }
+  ]
+}

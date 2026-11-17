@@ -1,0 +1,114 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "scad_ai_ide_model_analyze",
+      "description": "Analyze an explicit workspace URI without Preview. Default diagnostics preserves SCAD/CSG CLI diagnostics. mode=verify Full Renders SCAD/CSG to frozen STL or audits standalone STL/3MF without a runtime. Returns snapshot-bound raw format/topology/intersection/shell checks and mesh measurements. Requires Workspace Trust. No source writes, mesh repair, assembly or printability proof. Read units, completeness and UNRESOLVED checks; ok:true means a report was returned, not PASS. After edits analyze again. SCAD and PNG require the selected official CLI.",
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "uri": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "diagnostics",
+              "verify"
+            ],
+            "default": "diagnostics"
+          },
+          "projectRoot": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "expectedSnapshotId": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "quality": {
+            "type": "string",
+            "enum": [
+              "verification"
+            ]
+          },
+          "units": {
+            "type": "string",
+            "enum": [
+              "mm"
+            ]
+          },
+          "requireNonEmpty": {
+            "type": "boolean"
+          },
+          "tessellation": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "fn": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 10000
+              },
+              "fa": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 360
+              },
+              "fs": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            }
+          }
+        },
+        "required": [
+          "uri"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "scad_ai_ide_model_getIssue",
+      "description": "Read one issue from a specific analysis report. Optional bounded local CLI evidence; includes runtime, snapshot ID and whether the report is still current. Expired reports are not recomputed implicitly. Historical results are evidence only; analyze the current document before claiming a repair. No source writes or CLI execution. Geometry v2 includes bounded triangle/component/spatial evidence and pagination. Binary mesh issues have model-level positions, never invented source lines.",
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "reportId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "issueId": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "includeEvidence": {
+            "type": "boolean",
+            "default": false
+          },
+          "cursor": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          }
+        },
+        "required": [
+          "reportId",
+          "issueId"
+        ]
+      }
+    }
+  }
+]

@@ -148,3 +148,99 @@ VS Code 保存事件只公开 reason，不公开调用方。因此时间顺序�
 - 原始结果标记 MANUAL_REQUIRED 但并非 edit 内容越界。原始 result 不改写；[审阅归因](evidence/closeout/native/diagnostics-Qwen3.6-35B-A3B-OptiQ-4bit-14909111-f485-4d1b-82f1-5e91c0d2ec93/assessment-review.json) 用原始 Provider 参数及完整 fixture 校验，分类 `HARNESS_OR_ORACLE`。
 - 修复：关联“带本次 marker 的实际 Provider 请求 → 响应中的 tool-call ID/name/参数 → 原生 transcript 同一调用”；也兼容保留用户 marker 的版本。要求会话开始时间和唯一匹配，仍不按最近 CAD 对话选取。新增无用户消息／错误 ID／参数／时间的回归测试。
 - 本交付不重试 P1；原执行保留，最终 harness 候选的 P1 标 NOT_RUN。不是模型失败，不符合备选模型自动对照条件。P1 两个历史门禁继续开放，后续新批次再安排。
+
+## 2026-11-17 新批次实测（逐场追加）
+
+### 网格主模型：PASS
+
+- 冻结候选 `d88e72bced4562c562877f2273cc8dbdfafd55c92157461d0626fd7a349b119d`，代码/脚本 HEAD `4917290`，实际 bundle `59225b196f76fd7df1052725cf363c69099494abba36ac6e93319576fdc00384`。
+- 推荐 Qwen3.6，单次约 **106 秒**，严格 oracle PASS、原生命令 completed。四个业务工具使用 report `cad-a5159476-b5bd-4069-ab88-91f2fba31466`、snapshot `b69797173d2a6d39ee3193eee85921b0d0126b89b142d448d6a7f9f86e306d8b`。模型本身为预期的反绕序 FAIL；**验收流程 PASS 不等于该模型合格**。
+- signedVolume=-1，physicalVolume=null/UNRESOLVED，units=modelUnits；单 iso PNG，冻结源mesh Hash匹配、磁盘不改。见 [结果](evidence/closeout/native/mesh-Qwen3.6-35B-A3B-OptiQ-4bit-d82dd059-5eba-4e18-97c8-97e03f13bac4/result.json)、[原始请求/Schema](evidence/closeout/native/mesh-Qwen3.6-35B-A3B-OptiQ-4bit-d82dd059-5eba-4e18-97c8-97e03f13bac4/tool-exposure.json) 与同目录session-binding/trace。
+- 模型先将可选 projectRoot 误填普通路径，收到错误后改成 file URI，并自行纠正一次测量请求。恢复发生在同一次尝试内，没有脚本代填参数。不是产品几何失败，也不证明模型完全不能用工具；不触发备选对照。
+- CAD-P2-AGENT-01 的本地推荐模型核心流程现有当前候选 PASS；P2 整个 Gate 仍受手动／平台／规模证据边界约束。
+
+### P1 新路径别名缺陷：自动化修复通过
+
+- 产品修复提交 `d3586cc`；CLI/诊断别名先统一再去重，root/include 使用编辑器 URI，文件 stamp 始终用 canonical 键，保持所有输入前后复核。
+- 新增纯服务回归和真实 Host 回归；最终 CAD 专项 **21 PASS / 1 PENDING / 0 FAIL**，包括此前闭合文件、共享owner、include、LSP去重与装配 dirty selector 场景。见 [最终确定性 baseline](evidence/closeout/baseline.json)。CAD-P1-URI-04 在该证据范围内关闭；不连带关闭 P1 旧模型保存/复验门禁。
+
+### 装配主模型：PASS
+
+- 同一最终候选、Qwen3.6，单场严格 oracle PASS。声明读取→固定基准 FAIL→仅原生修改临时 gap=0.18→0.30 并保存→同 digest 全必需约束 PASS，新 snapshot；随后测量及 iso 图片指向新报告。
+- 每次 CAD 调用同时核对 Manifest disk/buffer Hash，最终源码逐字等于唯一允许的替换；部件 ID、变换、阈值、体积/尺寸约束保持不变。原生编辑此次直接执行，测试控制器没有合成批准；其权限来自既有原生配置与用户已授权的临时修复范围。保存行为属于本场明确允许的边界，不用它关闭 P1 strict dirty-buffer 项目。
+- 证据：[result](evidence/closeout/native/assembly-Qwen3.6-35B-A3B-OptiQ-4bit-cb12403b-e46d-42d0-9d3c-4ca5aaa497b1/result.json)、同目录tool-traces、document-events、tool-exposure和session-binding。
+- CAD-P3-AGENT-01 的修复后推荐模型闭环在本候选成立；P3 完整 Gate 仍不继承平台或未运行压力 PASS。没有备选对照需求。
+
+### CAD-TOOL-UX-04：可选 projectRoot 错误提示仍可改善（非场景阻断）
+
+- 本批次网格与比较两场均观察到模型先把 projectRoot 填成普通绝对路径，然后依据错误自行纠正为 file URI。合法输入的工具功能均正常；错误回复为泛化 OPERATION_FAILED / UriError，定位不如明确的 INVALID_INPUT 友好。
+- 分类：`TOOL_CONTRACT_UX` 与模型可选参数使用偏差共同贡献；未证明业务能力缺失，不因一次参数错误认定模型不能完成。P2/P4 原始参数、宿主接收参数和纠正轨迹都保留。
+- 当前状态：OPEN / 非关键提示改进；不改变最终冻结候选。后续可增强 optional projectRoot 的 Schema 示例／URI 格式与稳定错误码，并用确定性非法输入用例验证，不通过偷偷把用户路径转换成其他工程或放宽 Trust 修复。
+
+### 比较/打印主模型：PASS
+
+- 同一冻结候选、Qwen3.6，单场 **129 秒**，原生命令 completed、严格 oracle PASS。target verify→compare(baselineReportId,targetReportId)→显式 profile 打印筛查，regressionStatus=NO_REGRESSIONS_FOUND，printability=NOT_CHECKED。没有修改源码、Manifest 或 profile。
+- [本轮结果](evidence/closeout/native/comparison-Qwen3.6-35B-A3B-OptiQ-4bit-1d229f3f-a600-458b-8ba4-66cced7251d0/result.json)，原始/宿主参数、Schema、会话和时间轴同目录保存。当前提示与 Schema 约定足以让推荐模型完成；旧 reportId 误用失败不抹去，也不外推为模型永远无能力。
+- CAD-P4-AGENT-01 在本候选核心流程通过；真人反馈 CAD-P4-AGENT-02 仍 NOT_RUN，独立手动 M03–M05。当前三个最终候选自动模型场景都 PASS，P1是早一 harness 候选的测试缺陷中断；本批次 **未运行 Qwen3.8**，没有满足备选条件的可归因失败。
+
+### 完整 Host：两版已执行项目全部 PASS，动态目录仍 PENDING
+
+- 同一冻结候选，Stable **1.146.0** 与最低 **1.140.0** 均为 **60 PASS / 1 PENDING / 0 FAIL**，exit=0。原生 Undo/Redo/Enter 相关三个此前失败的焦点用例本轮实际通过；没有修改焦点实现。本轮可访问桌面环境中的结果更支持原环境/宿主前提解释，旧失败日志仍保留，不抹去或假称原来已过。
+- 证据：[Stable 全日志](evidence/closeout/full-host-stable.txt)、[最低版全日志](evidence/closeout/full-host-minimum.txt)。CAD-P4-HOST-01 的当前自动化焦点缺口在两版范围内关闭。真人 M01/M02 仍可独立核对 UI 交互感受，不把本次自动测试说成真人结果。
+- 唯一 pending 仍是动态工作区移除，CAD-P4-HOST-02 不关闭，M06 单列；真实未信任窗口、真人定位、平台与全容量压力不在这 60 项证明范围内。
+
+### Installed 与版本核对
+
+- 同一 VSIX 的 Stable 隔离安装 smoke **PASS、exit 0**，包括原先焦点停点及 CAD/review 业务子流程。见 [日志](evidence/closeout/installed.txt)、[实际结果](evidence/closeout/installed-result.json)。本轮 macOS Stable installed Gate 可在该 smoke 范围内签署；不推断其他平台。
+- [73 项生产资产 Hash](evidence/closeout/archive-binding.json) 与当前冻结代码一致，VSIX SHA256=`b8baf69b34271736c6ed57e55494bf44d3a3ce8086fd14a52123980fbefa27d5`。原生模型使用development拷贝，资产相同；不把它谎称为installed模型会话。
+- 执行时[官方更新页](https://code.visualstudio.com/updates/v1_146)为 2026-11-11 发布的 1.146.0 Stable；最低支持版1.140.0。公开版本API在web工具不可用，因此采用官网更新页与实际Host版本核对。
+
+### CAD-HOST-LOCAL-05：测试路径与默认 Harness 的证据边界
+
+- 本轮真实 oMLX 会话使用既有 F5 配置与 `workbench.action.chat.newLocalChat`（各原始 `local-chat-selection.json` 已归档）；它是 VS Code 内置 Agent 的 Local harness，不是外部 CAD Agent/MCP。51工具仍原生注册。
+- [1.146 官方说明](https://code.visualstudio.com/updates/v1_146)已宣布 Local harness 弃用、计划在2027年2月移除。当前通过的 F5 路径不能冒充默认 Copilot harness／Agent Host 同样经过模型验收。
+- 当前状态：兼容性证据缺口，默认 Copilot harness 未运行；不认定其功能缺失、不计入本轮三个已有F5模型PASS。后续需在默认harness中确认oMLX模型和原生工具可见性，迁移仍应使用VS Code原生API，不建设外部访问。手动检查见 M11。
+
+### CAD-P1-URI-04 追加：POSIX 反斜杠边界与最终候选变更
+
+- 最终代码检查发现跨平台分隔符正则会把 POSIX 文件名中的反斜杠误当目录；这可能把 `literal\\name.scad` 投影为实际另一个 `literal/name.scad`，属于本轮映射修复自身的边界缺陷，必须修正，不能为保留已跑证据而忽略。
+- 改为原生 `path.join` 后再构造 file URI；新增实际 Host 测试同时创建“应FAIL的字面反斜杠文件”和“应PASS的嵌套诱饵文件”，检查读对源码、位置和Problems，不在错误文件发布。Windows的反斜杠是路径分隔符，因此该POSIX专项不对Windows代签。
+- 该生产改动使候选内容Hash变化。此前 `d88e72...` 的三个模型PASS、60/1 Host及installed结果保持其原候选身份；最终候选另做确定性冻结、各一次推荐模型尝试、Host与同一新VSIX安装，不沿用旧PASS冒充新包验收。P1不重试，备选不作无证据补跑。
+
+### 最终候选装配主模型：严格场景 FAIL，几何复验 PASS
+
+- 候选 `f7e6300dddc12570b591b33942066cace6fa4322e8e5f616fc8d469f3252214f`、生产代码 `1d82001`，主模型Qwen3.6一次约189秒。原生命令正常结束，gap按允许范围修复，固定Manifest全部必需检查PASS、新snapshot；Manifest/ID/变换/其他约束保持不变。
+- **场景仍FAIL**：没有调用明确要求的getIssue证据步骤；measure反复使用不合Schema的参数（包括uri+reportId并存），最终业务INVALID_INPUT，没有成功测量。截图/几何PASS不能补成完整场景PASS。
+- [原始result](evidence/closeout/native/assembly-Qwen3.6-35B-A3B-OptiQ-4bit-239c9116-3eec-48b3-8d85-c97ad69fc69a/result.json)的机器UNKNOWN保留。[审阅归因](evidence/closeout/native/assembly-Qwen3.6-35B-A3B-OptiQ-4bit-239c9116-3eec-48b3-8d85-c97ad69fc69a/assessment-review.json)以原始输出、实际Schema暴露、Dispatcher参数、终态及同候选确定性PASS支持本轮 `MODEL_OUTPUT_ERROR`／步骤遵循不足。不是装配几何功能缺失，不声称模型永久不能完成。
+- 竞争解释也保留：模型一度把harness跟踪UUID当reportId，注入的跟踪标记可能贡献计划混淆；不会把所有影响归给模型。此前同推荐模型在上一候选完成相同流程的PASS保留，说明结果有波动。
+- 已满足同候选一次备选对照条件，授权审阅件为 [assembly-backup-eligibility.json](evidence/closeout/assembly-backup-eligibility.json)。只切Qwen3.8，不改提示、fixture预期或Manifest阈值；不覆盖主模型FAIL。备选结果另记，失败也不证明产品能力缺失。
+
+## 最终生产候选汇总（覆盖上文的“当前”判断，历史结果不改写）
+
+代码HEAD **1d82001**，候选 **f7e6300dddc12570b591b33942066cace6fa4322e8e5f616fc8d469f3252214f**，VSIX `.build/scad-ai-ide-closeout-final.vsix`，SHA256 **e95c1bcc90617b2fc63d41c047af0c6710f4f1fc135cd6531b36d46c2e35b3d0**。
+
+| 项目 | 最终候选实际结果 |
+|---|---|
+| 默认/类型/lint/资源 | 446 PASS / 2 SKIP；类型、lint、51 Tools/12 Skills校验通过 |
+| 官方CLI/原生CAD专项 | CLI 3/3；CAD专项22 PASS / 1 PENDING，含别名、POSIX反斜杠和装配原始输入复核 |
+| 主模型网格 | Qwen3.6 单次约85秒 PASS，四工具、同快照、负体积/单位/单图正确 |
+| 主模型装配 | 约189秒严格场景FAIL；几何修复与固定基准全约束PASS，但漏getIssue且测量请求INVALID_INPUT；详见审阅归因 |
+| 主模型比较/打印 | 单次约127秒 PASS；正确baseline/target和NOT_CHECKED，文件基准不改 |
+| P1模型 | 不重试；早期harness候选中断原记录保留，最终候选NOT_RUN，不关闭strict dirty Gate |
+| 最低版完整Host | **61 PASS / 1 PENDING / 0 FAIL**，exit0 |
+| Stable完整Host | **58 PASS / 1 PENDING / 3 FAIL**，exit1；原生焦点前提仍有波动，不沿用上一候选60/1全过 |
+| installed | 同一新VSIX在最低/Stable隔离安装smoke均PASS，exit0 |
+| 人工/平台/规模 | NOT_RUN分别列于M01–M11；Windows Unicode保持KNOWN_PLATFORM_GAP |
+
+[最终资产绑定](evidence/closeout/archive-binding-final.json)、[Stable最终日志](evidence/closeout/full-host-stable-final.txt)、[最低版最终日志](evidence/closeout/full-host-minimum-final.txt)、[Stable installed](evidence/closeout/installed-final.txt)、[最低 installed](evidence/closeout/installed-minimum-final.txt)。当前CAD-P4-HOST-01 **重开/仍OPEN**：上一候选的自动通过是真实的，但最终候选Stable再次失败，不能签稳定焦点Gate；人工M01/M02需要区分焦点环境与实际编辑语义。动态目录CAD-P4-HOST-02始终未闭合。
+
+主模型最终装配失败满足一次备选对照条件；备选结果在随后追加行及机器delivery单独记录。任何备选成功都不会覆盖主模型FAIL。测试副产物保留在隔离临时路径，未修改用户模型或main，没有发布。
+
+装配归因补充：`getIssue` 是当前严格oracle要求的独立步骤，初始装配摘要也可能已有足够的失败事实，后续应区分“未另调深度证据工具”和“根本没读到证据”，不能仅按调用次数断言模型不理解问题。此部分的oracle冗余风险已加入审阅竞争解释。本场**没有成功测量、原始测量参数违反Schema**是独立且可复核的失败事实；备选对照据此安排，未降低原断言或签PASS。
+
+### 最终候选备选装配：Qwen3.8 PASS（主模型FAIL保留）
+
+- 严格按一次条件式对照：**Qwen3.8-27B-4bit**，同一 `f7e630...` 候选、同一提示模板、源fixture/Manifest与黄金预期，600秒预算；实际 **586758 ms**，exit0、原生命令 completed、所有严格断言PASS。
+- 两次装配报告分别 `cad-77f1a617-096f-4645-9494-de8cc889950a` FAIL 与 `cad-19dc665d-aeca-47d7-bb87-84ef81b9b2a0` PASS；manifestDigest始终 `c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f`，不同snapshot。getIssue、成功测量与冻结单图均实际调用，源码只改gap，Manifest、ID、变换和约束不改。
+- [原始结果](evidence/closeout/native/assembly-Qwen3.8-27B-4bit-38ecf9ec-35da-4eb2-9288-88ed5c4c8c93/result.json)、同目录实际Schema/原始参数、trace、document-events及会话绑定。约8.8秒开始流响应，首次进度约273秒，首业务调用约287秒；随后也纠正了普通路径→URI。耗时包含本机推理与Provider背景请求，单样本不作通用模型排名。
+- 结论：**装配接口/几何/修复/测量闭环可用，备选在本场完成；推荐模型本场有参数和流程遵循失败**。不能据主模型失败说功能缺失，也不能据备选成功把主模型改成PASS。当前P3 Native结果按模型分开：Qwen3.6 FAIL、Qwen3.8 PASS；P1、人工反馈、Stable焦点和平台门禁仍OPEN。

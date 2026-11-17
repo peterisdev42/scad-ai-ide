@@ -4,6 +4,18 @@
 
 每个子项独立填写 `MANUAL_PASS / FAIL / BLOCKED / NOT_RUN`，不合并为整组 PASS。模型辅助默认 **oMLX / Qwen3.6-35B-A3B-OptiQ-4bit**；备选只有满足 [对照条件](acceptance-closeout.md#统一验收顺序) 才用 Qwen3.8。纯 UI 操作不需要模型。
 
+## 当前优先级
+
+| 项目 | 当前处理方式 |
+|---|---|
+| M03–M07 | 仍需真人点选、确认、动态目录与真正Restricted Mode；当前NOT_RUN |
+| M08 | 原生DataPart的Host类型/回退已有自动化；Provider实际图像可见性与真人观察单独记录 |
+| M09–M10 | 需目标平台/隔离测试环境；当前Windows Unicode缺口、其他未运行项保持原状态 |
+| M11 | 默认Copilot harness兼容性未验；当前真实模型证据只覆盖既有F5 Local路径 |
+| M01–M02 | 上一候选两版曾通过；最终候选最低版通过，但Stable又出现3项焦点失败。需真人区分稳定编辑语义与焦点环境波动，当前仍未闭合 |
+
+勾选表示实际执行，不能仅因对应自动用例通过就勾成“真人已验”。
+
 ## 一次准备
 
 1. 在本分支完成自动 baseline 后执行 `npm run prepare:cad:manual`。终端输出临时目录、fixture.json、workspace 和 launch 名称。旧目录保留；每次准备生成新目录，不覆盖历史。源码均在 `.build/cad-manual/<时间>/`。
@@ -143,3 +155,13 @@ related issue / next action:
 - [ ] M10g 最大容量/几何预算：独立测试机做全规模压力；记录资源、耗时、完成度和恢复，超限/未完成不PASS。
 
 没有目标环境时保持NOT_RUN，不计作本地模型失败或插件功能缺失。完成一个平台不自动勾选其他平台。
+
+## M11：默认 Copilot harness / Agent Host 与 oMLX 的可见性
+
+本批次模型场景用的是既有 F5 的内置 Local harness，具体选择见各session证据。VS Code 1.146 [官方更新说明](https://code.visualstudio.com/updates/v1_146)计划在2027年2月移除Local；此项是新默认路径的兼容性证据，不撤销当前F5场景结果。
+
+- [ ] M11a 在临时窗口选择 **Copilot** harness（明确区别Local），查看oMLX推荐模型是否出现；记录准确模型ID、Provider和harness，缺失就记BLOCKED/兼容性待定位，不臆称CAD Tool未实现。
+- [ ] M11b 若可用，在无Preview下请求网格验证→测量→问题→单图，保存实际工具Schema/结果、报告和snapshot。人工补调必须标assisted；未完成就原样记停点。
+- [ ] M11c 临时SCAD中按既有允许范围做固定基准装配修复；原生编辑确认由真人审阅，不扩大Manifest权限。
+
+不通过打开外部MCP/HTTP CAD接口绕过Provider/Host兼容性。如果该组合环境当前不可用，保持NOT_RUN/BLOCKED并记录原因，交由后续原生集成修复。

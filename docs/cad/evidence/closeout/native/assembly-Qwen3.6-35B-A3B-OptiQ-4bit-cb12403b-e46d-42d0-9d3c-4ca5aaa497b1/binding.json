@@ -1,0 +1,8 @@
+{
+  "runId": "cb12403b-e46d-42d0-9d3c-4ca5aaa497b1",
+  "candidateId": "d88e72bced4562c562877f2273cc8dbdfafd55c92157461d0626fd7a349b119d",
+  "directory": "/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-kLG57M",
+  "scenario": "assembly",
+  "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+  "baseline": "docs/cad/evidence/closeout/baseline.json"
+}

@@ -1,0 +1,559 @@
+[
+  {
+    "runId": "1e6034a7-078c-4e71-80c2-61409eea8f8e",
+    "callId": "ca750660-32bc-498e-a502-02148327490b",
+    "capability": "cad.modelAnalyze",
+    "input": {
+      "mode": "verify",
+      "projectRoot": "/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-bUUonj/workspace",
+      "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-bUUonj/workspace/model.scad",
+      "units": "mm"
+    },
+    "inputStage": "native dispatcher input before schema validation; canonical URIs appear in returned report",
+    "actor": "agent",
+    "started": "2026-11-17T01:58:41.335Z",
+    "sourceDiskHash": "69cee08108385dfbb52c444d0f2124e96d74a489392e3b9e8b11b318f40f9f7e",
+    "sourceBufferHash": "69cee08108385dfbb52c444d0f2124e96d74a489392e3b9e8b11b318f40f9f7e",
+    "manifestDiskHash": "97ada8722c4af15ff8cd971e9354e416bc56ed2c2789861cff2a9801ce623f70",
+    "manifestBufferHash": "97ada8722c4af15ff8cd971e9354e416bc56ed2c2789861cff2a9801ce623f70",
+    "profileDiskHash": "9521afd9ac63af1db6f9bf248d412b8e8624169c085b209666478e6d27a69df1",
+    "output": {
+      "ok": false,
+      "capabilityId": "cad.modelAnalyze",
+      "error": {
+        "code": "OPERATION_FAILED",
+        "message": "[UriError]: Scheme is missing: {scheme: \"\", authority: \"\", path: \"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-bUUonj/workspace\", query: \"\", fragment: \"\"}",
+        "retryable": true
+      },
+      "operation": {
+        "id": "da56f860-26bd-451b-97d5-343e68fb1ee5",
+        "capabilityId": "cad.modelAnalyze",
+        "status": "failed",
+        "message": "Verifying the frozen raw mesh; no mesh repair is applied.",
+        "error": {
+          "code": "OPERATION_FAILED",
+          "message": "[UriError]: Scheme is missing: {scheme: \"\", authority: \"\", path: \"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-bUUonj/workspace\", query: \"\", fragment: \"\"}",
+          "retryable": true
+        }
+      }
+    },
+    "finished": "2026-11-17T01:58:41.339Z",
+    "elapsedMs": 4
+  },
+  {
+    "runId": "1e6034a7-078c-4e71-80c2-61409eea8f8e",
+    "callId": "476a6c48-bc91-4e16-a0f5-6d98c90eb998",
+    "capability": "cad.modelAnalyze",
+    "input": {
+      "mode": "verify",
+      "projectRoot": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-bUUonj/workspace",
+      "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-bUUonj/workspace/model.scad",
+      "units": "mm"
+    },
+    "inputStage": "native dispatcher input before schema validation; canonical URIs appear in returned report",
+    "actor": "agent",
+    "started": "2026-11-17T01:58:54.487Z",
+    "sourceDiskHash": "69cee08108385dfbb52c444d0f2124e96d74a489392e3b9e8b11b318f40f9f7e",
+    "sourceBufferHash": "69cee08108385dfbb52c444d0f2124e96d74a489392e3b9e8b11b318f40f9f7e",
+    "manifestDiskHash": "97ada8722c4af15ff8cd971e9354e416bc56ed2c2789861cff2a9801ce623f70",
+    "manifestBufferHash": "97ada8722c4af15ff8cd971e9354e416bc56ed2c2789861cff2a9801ce623f70",
+    "profileDiskHash": "9521afd9ac63af1db6f9bf248d412b8e8624169c085b209666478e6d27a69df1",
+    "output": {
+      "ok": true,
+      "capabilityId": "cad.modelAnalyze",
+      "data": {
+        "schemaVersion": 2,
+        "reportId": "cad-72da955a-a39c-49f2-9150-1c0668724862",
+        "snapshotId": "fd73a44ef592fb723d2a2ef2e31019fb19ce7566148cc4ed1f1296b76fac3c98",
+        "current": true,
+        "document": {
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-bUUonj/workspace/model.scad",
+          "version": 1,
+          "sourceSha256": "69cee08108385dfbb52c444d0f2124e96d74a489392e3b9e8b11b318f40f9f7e",
+          "dirty": false
+        },
+        "inputKind": "scad",
+        "executionStatus": "SUCCEEDED",
+        "overallStatus": "PASS",
+        "complete": true,
+        "units": "mm",
+        "sourceUnit": "user-declared-mm",
+        "quality": {
+          "profile": "verification",
+          "requestedGlobalTessellation": {},
+          "effectiveOverrides": {
+            "$preview": false
+          },
+          "localSettings": "source-controlled"
+        },
+        "precision": "computed-on-decoded-mesh",
+        "checks": [
+          {
+            "id": "cli-evaluation",
+            "category": "compile",
+            "required": true,
+            "status": "PASS",
+            "issueIds": [],
+            "reason": "Official full-mesh export only; no independent mesh or assembly verification."
+          },
+          {
+            "id": "mesh-format",
+            "category": "format",
+            "required": true,
+            "status": "PASS",
+            "issueIds": []
+          },
+          {
+            "id": "mesh-topology",
+            "category": "mesh",
+            "required": true,
+            "status": "PASS",
+            "issueIds": []
+          },
+          {
+            "id": "mesh-self-intersection",
+            "category": "mesh",
+            "required": true,
+            "status": "PASS",
+            "issueIds": []
+          },
+          {
+            "id": "mesh-shell-relations",
+            "category": "mesh",
+            "required": true,
+            "status": "PASS",
+            "issueIds": []
+          },
+          {
+            "id": "raw-mesh-validity",
+            "category": "mesh",
+            "required": true,
+            "status": "PASS",
+            "issueIds": [],
+            "reason": "Raw topology, bounded self-intersection and shell checks; no repair or epsilon welding."
+          },
+          {
+            "id": "physical-volume",
+            "category": "measurement",
+            "required": true,
+            "status": "PASS",
+            "issueIds": [],
+            "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+          }
+        ],
+        "measurements": {
+          "bounds": {
+            "min": [
+              0,
+              0,
+              0
+            ],
+            "max": [
+              20,
+              20,
+              5
+            ],
+            "dimensions": [
+              20,
+              20,
+              5
+            ]
+          },
+          "surfaceArea": {
+            "status": "PASS",
+            "value": 1237.9104419076023,
+            "errorEstimate": 1.1544596070249667e-11,
+            "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+          },
+          "signedVolume": {
+            "status": "PASS",
+            "value": 1859.5349671009444,
+            "errorEstimate": 1.7341787698796833e-11,
+            "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+          },
+          "physicalVolume": {
+            "status": "PASS",
+            "value": 1859.5349671009444,
+            "errorEstimate": 1.7341787698796833e-11,
+            "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+          },
+          "objectCount": 1,
+          "rawVertices": 432,
+          "rawTriangles": 144
+        },
+        "issues": [],
+        "issueCount": 0,
+        "issuesTruncated": false,
+        "examined": [
+          "raw-format",
+          "cli-diagnostics",
+          "full-render-export",
+          "raw-topology",
+          "self-intersection",
+          "shell-relations",
+          "mesh-measurements"
+        ],
+        "notExamined": [
+          "assembly",
+          "constraints",
+          "visual-inspection",
+          "diff",
+          "thickness",
+          "printability",
+          "analytic-surface-error"
+        ],
+        "incomplete": [],
+        "artifacts": [
+          {
+            "id": "d7e8095417298f1d5156228aabb6d09d012ae072340e7f5f28ef880855a31944",
+            "snapshotId": "fd73a44ef592fb723d2a2ef2e31019fb19ce7566148cc4ed1f1296b76fac3c98",
+            "kind": "log",
+            "mimeType": "text/plain",
+            "sha256": "03968abf493f5657e66b55fd03e146570de2ce86a69535cb66d6510c68c8c34f",
+            "bytes": 297
+          },
+          {
+            "id": "145d7f2f50cb08ecc23503d11cf9b865e9c455d10d9d39abc78fc05da1734eff",
+            "snapshotId": "fd73a44ef592fb723d2a2ef2e31019fb19ce7566148cc4ed1f1296b76fac3c98",
+            "kind": "mesh",
+            "mimeType": "model/stl",
+            "sha256": "8644a5a6f94b514e2ec889c5a064ac8fc4169d9a184176dda257c0b6af0101d4",
+            "bytes": 7284,
+            "role": "raw"
+          },
+          {
+            "id": "ea431d0aa3f9f96c3e27a25c1c8d9846757e639f197090d1e31f7209a92ecc73",
+            "snapshotId": "fd73a44ef592fb723d2a2ef2e31019fb19ce7566148cc4ed1f1296b76fac3c98",
+            "kind": "mesh",
+            "mimeType": "model/stl",
+            "sha256": "e32919211dc94970a45b2b2d7743f5aa26cb2b4ae83f7854cab5082053bc450f",
+            "bytes": 7284,
+            "role": "render",
+            "derivation": {
+              "inputSha256": "8644a5a6f94b514e2ec889c5a064ac8fc4169d9a184176dda257c0b6af0101d4",
+              "numericType": "float32",
+              "maxCoordinateError": 0
+            }
+          },
+          {
+            "id": "69673224ea6b61b03f11970db0d4364f02d3b096fddb03f8aa378c513b05cbc3",
+            "snapshotId": "fd73a44ef592fb723d2a2ef2e31019fb19ce7566148cc4ed1f1296b76fac3c98",
+            "kind": "analysis",
+            "mimeType": "application/json",
+            "sha256": "be9c0549b6633b3bd257c9501f80ec57fd759a25b21c40dcbdbd2cb18ed32399",
+            "bytes": 2077
+          }
+        ],
+        "reportUri": "scad-cad-report:/cad-72da955a-a39c-49f2-9150-1c0668724862"
+      },
+      "operation": {
+        "id": "34343c48-5d3e-4db6-8473-7d69077faeab",
+        "capabilityId": "cad.modelAnalyze",
+        "status": "succeeded",
+        "message": "Verifying the frozen raw mesh; no mesh repair is applied."
+      }
+    },
+    "finished": "2026-11-17T01:58:54.691Z",
+    "elapsedMs": 204
+  },
+  {
+    "runId": "1e6034a7-078c-4e71-80c2-61409eea8f8e",
+    "callId": "3e62f2a5-5bc4-4b3e-87f4-633fb0630835",
+    "capability": "cad.compare",
+    "input": {
+      "baselineReportId": "cad-355963f6-9dd7-4f86-aef9-d28ff35ed15b",
+      "targetReportId": "cad-72da955a-a39c-49f2-9150-1c0668724862"
+    },
+    "inputStage": "native dispatcher input before schema validation; canonical URIs appear in returned report",
+    "actor": "agent",
+    "started": "2026-11-17T01:59:12.613Z",
+    "sourceDiskHash": "69cee08108385dfbb52c444d0f2124e96d74a489392e3b9e8b11b318f40f9f7e",
+    "sourceBufferHash": "69cee08108385dfbb52c444d0f2124e96d74a489392e3b9e8b11b318f40f9f7e",
+    "manifestDiskHash": "97ada8722c4af15ff8cd971e9354e416bc56ed2c2789861cff2a9801ce623f70",
+    "manifestBufferHash": "97ada8722c4af15ff8cd971e9354e416bc56ed2c2789861cff2a9801ce623f70",
+    "profileDiskHash": "9521afd9ac63af1db6f9bf248d412b8e8624169c085b209666478e6d27a69df1",
+    "output": {
+      "ok": true,
+      "capabilityId": "cad.compare",
+      "data": {
+        "kind": "comparison",
+        "schemaVersion": 1,
+        "reportId": "cad-336ab178-566d-4037-bb46-c0a96cc7755c",
+        "reportUri": "scad-cad-report:/cad-336ab178-566d-4037-bb46-c0a96cc7755c",
+        "baselineReportId": "cad-355963f6-9dd7-4f86-aef9-d28ff35ed15b",
+        "targetReportId": "cad-72da955a-a39c-49f2-9150-1c0668724862",
+        "baselineModelStatus": "PASS",
+        "targetModelStatus": "PASS",
+        "baselineSnapshotId": "66f663de3d49789959feee23c5d55805f9ecd97622da5f4eec3cf01143f56b14",
+        "targetSnapshotId": "fd73a44ef592fb723d2a2ef2e31019fb19ce7566148cc4ed1f1296b76fac3c98",
+        "current": {
+          "baseline": false,
+          "target": true
+        },
+        "units": "mm",
+        "comparisonStatus": "COMPLETE",
+        "regressionStatus": "NO_REGRESSIONS_FOUND",
+        "scope": "frozen-exported-mesh-summary; no analytic or within-part region guarantee",
+        "incomplete": [],
+        "section": "parts",
+        "items": [
+          {
+            "partId": null,
+            "status": "changed",
+            "geometryChanged": true,
+            "placementChanged": false,
+            "baseline": {
+              "id": null,
+              "geometryHash": "0eba0c49499acedd208623d03276768ea76a504e714aec93de32d5a6298cead6",
+              "anchorHash": "c0e92f47ce3f7869a7abddf1d3c128666c3be83e0bbcebfe64a6f798b698dc72",
+              "triangles": 144,
+              "vertices": 432
+            },
+            "target": {
+              "id": null,
+              "geometryHash": "ccbc47e1efb754eed51c2251e458ef7b6cbbf5d2b3ac55ada643068216150612",
+              "anchorHash": "07524fc0a68da918dc41b8704ccdb09c3ca22922c7a3e90e375a90df1322583c",
+              "triangles": 144,
+              "vertices": 432
+            },
+            "metrics": {
+              "baseline": {
+                "bounds": {
+                  "min": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "max": [
+                    20,
+                    20,
+                    5
+                  ],
+                  "dimensions": [
+                    20,
+                    20,
+                    5
+                  ]
+                },
+                "surfaceArea": {
+                  "status": "PASS",
+                  "value": 1237.7594081087304,
+                  "errorEstimate": 1.1543187548161234e-11,
+                  "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+                },
+                "signedVolume": {
+                  "status": "PASS",
+                  "value": 1937.571101681824,
+                  "errorEstimate": 1.8069542811058128e-11,
+                  "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+                },
+                "physicalVolume": {
+                  "status": "PASS",
+                  "value": 1937.571101681824,
+                  "errorEstimate": 1.8069542811058128e-11,
+                  "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+                },
+                "rawTriangles": 144,
+                "rawVertices": 432,
+                "topology": {
+                  "objects": 1,
+                  "components": 1,
+                  "boundaryEdges": 0,
+                  "nonManifoldEdges": 0
+                },
+                "precision": "computed-on-decoded-mesh"
+              },
+              "target": {
+                "bounds": {
+                  "min": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "max": [
+                    20,
+                    20,
+                    5
+                  ],
+                  "dimensions": [
+                    20,
+                    20,
+                    5
+                  ]
+                },
+                "surfaceArea": {
+                  "status": "PASS",
+                  "value": 1237.9104419076023,
+                  "errorEstimate": 1.1544596070249667e-11,
+                  "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+                },
+                "signedVolume": {
+                  "status": "PASS",
+                  "value": 1859.5349671009444,
+                  "errorEstimate": 1.7341787698796833e-11,
+                  "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+                },
+                "physicalVolume": {
+                  "status": "PASS",
+                  "value": 1859.5349671009444,
+                  "errorEstimate": 1.7341787698796833e-11,
+                  "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+                },
+                "rawTriangles": 144,
+                "rawVertices": 432,
+                "topology": {
+                  "objects": 1,
+                  "components": 1,
+                  "boundaryEdges": 0,
+                  "nonManifoldEdges": 0
+                },
+                "precision": "computed-on-decoded-mesh"
+              }
+            },
+            "protected": false
+          }
+        ],
+        "total": 1,
+        "offset": 0,
+        "nextOffset": null,
+        "issueIds": [],
+        "notChecked": [
+          "surface-distance-heatmap",
+          "boolean-difference",
+          "within-part-preservation"
+        ]
+      },
+      "operation": {
+        "id": "a4068370-d16b-4dce-8936-6e48d1ce1f1f",
+        "capabilityId": "cad.compare",
+        "status": "succeeded"
+      }
+    },
+    "finished": "2026-11-17T01:59:12.674Z",
+    "elapsedMs": 61
+  },
+  {
+    "runId": "1e6034a7-078c-4e71-80c2-61409eea8f8e",
+    "callId": "6be7b072-65cf-4772-8b4c-965a7ed5b031",
+    "capability": "cad.checkPrintability",
+    "input": {
+      "profileUri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-bUUonj/workspace/.scad/print-profile.json",
+      "reportId": "cad-72da955a-a39c-49f2-9150-1c0668724862"
+    },
+    "inputStage": "native dispatcher input before schema validation; canonical URIs appear in returned report",
+    "actor": "agent",
+    "started": "2026-11-17T01:59:23.521Z",
+    "sourceDiskHash": "69cee08108385dfbb52c444d0f2124e96d74a489392e3b9e8b11b318f40f9f7e",
+    "sourceBufferHash": "69cee08108385dfbb52c444d0f2124e96d74a489392e3b9e8b11b318f40f9f7e",
+    "manifestDiskHash": "97ada8722c4af15ff8cd971e9354e416bc56ed2c2789861cff2a9801ce623f70",
+    "manifestBufferHash": "97ada8722c4af15ff8cd971e9354e416bc56ed2c2789861cff2a9801ce623f70",
+    "profileDiskHash": "9521afd9ac63af1db6f9bf248d412b8e8624169c085b209666478e6d27a69df1",
+    "output": {
+      "ok": true,
+      "capabilityId": "cad.checkPrintability",
+      "data": {
+        "kind": "print-assessment",
+        "schemaVersion": 1,
+        "reportId": "cad-c1966b4a-f221-45bb-a4f7-381bbb3d09a4",
+        "sourceReportId": "cad-72da955a-a39c-49f2-9150-1c0668724862",
+        "snapshotId": "fd73a44ef592fb723d2a2ef2e31019fb19ce7566148cc4ed1f1296b76fac3c98",
+        "ownerUri": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-bUUonj/workspace/model.scad",
+        "profileUri": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-bUUonj/workspace/.scad/print-profile.json",
+        "profileDigest": "ec8bcfdafc1940b1bc48511abba4e2f35ea30b944e960708b203f2b549baa7c0",
+        "profileContentHash": "9521afd9ac63af1db6f9bf248d412b8e8624169c085b209666478e6d27a69df1",
+        "profile": {
+          "schemaVersion": 1,
+          "units": "mm",
+          "process": "fdm",
+          "buildVolumeMm": [
+            200,
+            200,
+            200
+          ],
+          "buildPose": {
+            "rotate": [
+              0,
+              0,
+              0
+            ],
+            "translate": [
+              0,
+              0,
+              0
+            ]
+          },
+          "maxOverhangFromVerticalDeg": 45
+        },
+        "partId": null,
+        "units": "mm",
+        "assessmentStatus": "COMPLETE",
+        "printability": "NOT_CHECKED",
+        "result": {
+          "envelope": {
+            "status": "PASS",
+            "bounds": {
+              "min": [
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 0,
+                  "upper": 0
+                }
+              ],
+              "max": [
+                {
+                  "lower": 20,
+                  "upper": 20
+                },
+                {
+                  "lower": 20,
+                  "upper": 20
+                },
+                {
+                  "lower": 5,
+                  "upper": 5
+                }
+              ]
+            }
+          },
+          "overhang": {
+            "status": "NONE_FOUND",
+            "complete": true,
+            "candidateCount": 0,
+            "uncertainCount": 0,
+            "candidateArea": 0,
+            "samples": []
+          },
+          "incomplete": []
+        },
+        "issues": [],
+        "notChecked": [
+          "wall-thickness",
+          "bridging",
+          "supports",
+          "bed-adhesion",
+          "slicer",
+          "material",
+          "manufacturing-success"
+        ],
+        "createdAt": 1794880763551,
+        "current": true,
+        "reportUri": "scad-cad-report:/cad-c1966b4a-f221-45bb-a4f7-381bbb3d09a4",
+        "precision": "frozen-Float64-envelope; numerical-triangle-angle-candidates"
+      },
+      "operation": {
+        "id": "53bcdb21-4ef8-4533-b855-22e428d3b240",
+        "capabilityId": "cad.checkPrintability",
+        "status": "succeeded"
+      }
+    },
+    "finished": "2026-11-17T01:59:23.576Z",
+    "elapsedMs": 55
+  }
+]
