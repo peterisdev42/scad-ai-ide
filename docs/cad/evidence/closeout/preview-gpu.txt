@@ -1,0 +1,42 @@
+npm notice run scad-ai-ide@0.0.1 test:preview-gpu
+npm notice run node --test scripts/prepared-preview-gpu.test.mjs
+cube webgpu 1 7
+sphere webgpu 0 3
+cylinder webgpu 0 2
+transform webgpu 0 2
+difference webgpu 0 4
+intersection webgpu 0 3
+nested webgpu 0 7
+union webgpu 0 2
+polygon webgpu 0 3
+largeBoolean webgpu 0 3
+separatedLarge webgpu 0 3
+coplanar webgpu 0 3
+thin webgpu 0 3
+concaveLayers webgpu 0 5
+cube webgl2 0 9
+sphere webgl2 0 9
+cylinder webgl2 0 9
+transform webgl2 0 9
+difference webgl2 0 9
+intersection webgl2 0 9
+nested webgl2 0 8
+union webgl2 0 9
+polygon webgl2 0 9
+largeBoolean webgl2 0 9
+separatedLarge webgl2 0 9
+coplanar webgl2 0 9
+thin webgl2 0 9
+concaveLayers webgl2 0 8
+✔ exporter products produce real Boolean holes on WebGPU and WebGL2 (4715.721542ms)
+✔ Goldfeather parity works under orbit, perspective, multiple layers, and a camera inside a subtraction (3593.597167ms)
+✔ image-space rendering preserves RGBA and empty prepared scenes on both backends (956.711583ms)
+✔ native raster depth equality leaves no pinholes across oblique Boolean surfaces (1481.884833ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10977.966542

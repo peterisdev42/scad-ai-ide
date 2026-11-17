@@ -1,0 +1,107 @@
+[
+  {
+    "runId": "14909111-f485-4d1b-82f1-5e91c0d2ec93",
+    "callId": "785fe60f-a059-43f9-8bfc-7f51618559bf",
+    "capability": "cad.modelAnalyze",
+    "input": {
+      "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/cad-native-f5-vZBRfK/workspace/model.scad",
+      "mode": "diagnostics"
+    },
+    "inputStage": "native dispatcher input before schema validation; canonical URIs appear in returned report",
+    "actor": "agent",
+    "started": "2026-11-17T01:27:46.638Z",
+    "sourceDiskHash": "83e18b9205f6b219641a6e226a1d7ead4bee92026fc7f8962cc6141ce5ab742f",
+    "sourceBufferHash": "2c8b7b94d989cef14e31dff8e889487d878e64a8cd54d6fcaed701eb761a2f6d",
+    "output": {
+      "ok": true,
+      "capabilityId": "cad.modelAnalyze",
+      "data": {
+        "schemaVersion": 1,
+        "reportId": "cad-909101d3-9f36-4954-8407-e1abb343ffca",
+        "snapshotId": "e8d2957b7512019311f0d9373c03cbefe93cbc4f31ad4793091dd613e11b8827",
+        "document": {
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/cad-native-f5-vZBRfK/workspace/model.scad",
+          "version": 2,
+          "sourceSha256": "2c8b7b94d989cef14e31dff8e889487d878e64a8cd54d6fcaed701eb761a2f6d",
+          "dirty": true
+        },
+        "projectRoot": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/cad-native-f5-vZBRfK/workspace",
+        "runtime": {
+          "executable": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+          "version": "2026.11-RC0",
+          "identityHash": "96641cfec22e509646217ebbe5a9a02c9505dcb3d01f0f12a9d980e5479a1f72",
+          "capabilityHash": "35a1f9f5109478c041b3e06a17b25e3f6e75a66cf941f17fb1d1ca2120505450",
+          "hostPlatform": "darwin-arm64"
+        },
+        "executionStatus": "FAILED",
+        "overallStatus": "FAIL",
+        "complete": true,
+        "units": "modelUnits",
+        "checks": [
+          {
+            "id": "cli-evaluation",
+            "category": "compile",
+            "required": true,
+            "status": "FAIL",
+            "issueIds": [
+              "828bdac17dc3ad5b98a98bc2d1fae25c4aa4cd5a653fe9f9fbc543fe6c107adf"
+            ],
+            "reason": "CSG evaluation only; no full-mesh or assembly verification."
+          }
+        ],
+        "issues": [
+          {
+            "id": "828bdac17dc3ad5b98a98bc2d1fae25c4aa4cd5a653fe9f9fbc543fe6c107adf",
+            "code": "SCAD_CLI_ASSERT_FAILED",
+            "severity": "error",
+            "status": "FAIL",
+            "title": "ERROR: Assertion '(width > 0)' failed: \"width must be positive\"",
+            "location": {
+              "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/cad-native-f5-vZBRfK/workspace/model.scad",
+              "line": 2,
+              "character": 0,
+              "confidence": "exact"
+            }
+          }
+        ],
+        "issueCount": 1,
+        "issuesTruncated": false,
+        "examined": [
+          "cli-diagnostics"
+        ],
+        "notExamined": [
+          "full-render",
+          "mesh-validity",
+          "dimensions",
+          "constraints",
+          "assembly",
+          "visual",
+          "diff",
+          "printability"
+        ],
+        "incomplete": [],
+        "artifacts": [
+          {
+            "id": "cad-909101d3-9f36-4954-8407-e1abb343ffca:log",
+            "kind": "log",
+            "mimeType": "text/plain",
+            "snapshotId": "e8d2957b7512019311f0d9373c03cbefe93cbc4f31ad4793091dd613e11b8827"
+          }
+        ],
+        "metrics": {
+          "elapsedMs": 36.50545899999997,
+          "truncated": false
+        },
+        "reportUri": "scad-cad-report:/cad-909101d3-9f36-4954-8407-e1abb343ffca"
+      },
+      "operation": {
+        "id": "e42195a2-ff55-4241-b8b9-7bfe96e1eecd",
+        "capabilityId": "cad.modelAnalyze",
+        "status": "succeeded",
+        "message": "CLI diagnostics: FAIL"
+      }
+    },
+    "finished": "2026-11-17T01:27:46.761Z",
+    "elapsedMs": 123
+  }
+]

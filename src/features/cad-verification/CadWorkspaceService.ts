@@ -180,7 +180,13 @@ export class CadWorkspaceService implements vscode.Disposable {
             const uri = vscode.Uri.file(file)
             await assertWorkspacePath(uri)
             await stat(file)
-            return uri.toString()
+            const folder = await workspaceFolderForUri(uri)
+            if (!folder) return undefined
+            // CLI dependency/diagnostic paths may use a canonical alias while VS Code
+            // keys its editors and Problems by the lexical workspace URI.
+            const canonical = await realpath(file)
+            const local = relative(await realpath(folder.uri.fsPath), canonical)
+            return vscode.Uri.file(join(folder.uri.fsPath, local)).toString()
         } catch {
             return undefined
         }
@@ -254,7 +260,7 @@ export class CadWorkspaceService implements vscode.Disposable {
                     /* A deleted open document cannot be this CLI input. */
                 }
             }
-        uri = document?.uri ?? vscode.Uri.file(sourceCanonical)
+        uri = document?.uri ?? vscode.Uri.parse((await this.locate(sourceCanonical)) ?? vscode.Uri.file(sourceCanonical).toString())
         if (!document && (await stat(uri.fsPath)).size > 8 * 1048576) throw new CapabilityError('INPUT_TOO_LARGE', 'SCAD source exceeds 8 MiB.')
         const text = document?.getText() ?? (await readFile(uri.fsPath, 'utf8'))
         if (Buffer.byteLength(text) > 8 * 1048576) throw new CapabilityError('INPUT_TOO_LARGE', 'SCAD source exceeds 8 MiB.')
@@ -290,13 +296,13 @@ export class CadWorkspaceService implements vscode.Disposable {
         }
         let bytes = 0
         for (const file of [...new Set(dependencyPaths)].sort()) {
-            const dependencyUri = vscode.Uri.file(file).toString()
+            const dependencyUri = (await this.locate(file)) ?? vscode.Uri.file(file).toString()
             try {
                 const canonical = await realpath(file)
                 if (!roots.some((root) => within(root, canonical))) throw new Error('DEPENDENCY_OUTSIDE_ALLOWED_ROOTS')
                 const result = await fileHash(file, Math.min(128 * 1048576, 256 * 1048576 - bytes))
                 bytes += result.bytes
-                fileStamps[file] = result.stamp
+                fileStamps[canonical] = result.stamp
                 const open = openDependencies.get(canonical)
                 const dirty = !!open?.isDirty && digest(open.getText()) !== result.hash
                 dependencies.push({ uri: dependencyUri, sha256: result.hash, status: 'resolved', dirty })

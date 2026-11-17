@@ -1,0 +1,992 @@
+{
+  "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+  "scope": "Transparent test-only loopback; no auth headers, prompt bodies or payload changes retained",
+  "requests": [
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "requestId": "add63b2f-d2ee-480b-93f4-d6502bd84d4d",
+      "at": "2026-11-17T01:54:55.963Z",
+      "path": "/v1/models",
+      "runMarkerObserved": false,
+      "status": 200,
+      "headersMs": 16,
+      "firstByteMs": 16,
+      "streamEnded": true,
+      "sseDone": false,
+      "finishReasons": [],
+      "malformedSse": false,
+      "rawToolCalls": [],
+      "elapsedMs": 19
+    },
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "requestId": "449d8adf-9d4d-491a-8601-aa328a148072",
+      "at": "2026-11-17T01:54:56.003Z",
+      "path": "/v1/models",
+      "runMarkerObserved": false,
+      "status": 200,
+      "headersMs": 5,
+      "firstByteMs": 5,
+      "streamEnded": true,
+      "sseDone": false,
+      "finishReasons": [],
+      "malformedSse": false,
+      "rawToolCalls": [],
+      "elapsedMs": 5
+    },
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "requestId": "2e1fe779-f1b8-4602-b57e-5ef0489f2765",
+      "at": "2026-11-17T01:54:56.036Z",
+      "path": "/v1/models",
+      "runMarkerObserved": false,
+      "status": 200,
+      "headersMs": 6,
+      "firstByteMs": 6,
+      "streamEnded": true,
+      "sseDone": false,
+      "finishReasons": [],
+      "malformedSse": false,
+      "rawToolCalls": [],
+      "elapsedMs": 6
+    },
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "requestId": "904bd8f5-42fa-40b6-bf4a-d80135668cb1",
+      "at": "2026-11-17T01:54:56.539Z",
+      "path": "/v1/models",
+      "runMarkerObserved": false,
+      "status": 200,
+      "headersMs": 4,
+      "firstByteMs": 4,
+      "streamEnded": true,
+      "sseDone": false,
+      "finishReasons": [],
+      "malformedSse": false,
+      "rawToolCalls": [],
+      "elapsedMs": 4
+    },
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "requestId": "5e7153bc-9f54-4588-9e61-ab15f68e21f6",
+      "at": "2026-11-17T01:54:56.747Z",
+      "path": "/v1/models",
+      "runMarkerObserved": false,
+      "status": 200,
+      "headersMs": 6,
+      "firstByteMs": 6,
+      "streamEnded": true,
+      "sseDone": false,
+      "finishReasons": [],
+      "malformedSse": false,
+      "rawToolCalls": [],
+      "elapsedMs": 7
+    },
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "requestId": "ae7896e9-c57f-444c-ba24-1b5f0e2802db",
+      "at": "2026-11-17T01:54:56.997Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": false,
+      "tools": [],
+      "status": 200,
+      "headersMs": 13,
+      "firstByteMs": 13,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "stop"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [],
+      "elapsedMs": 131208
+    },
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "requestId": "ccb8b086-2eb6-4916-a973-8f86135ad449",
+      "at": "2026-11-17T01:54:57.000Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": false,
+      "tools": [],
+      "status": 200,
+      "headersMs": 17,
+      "firstByteMs": 18,
+      "error": "AbortError: This operation was aborted",
+      "rawToolCalls": [],
+      "elapsedMs": 185745
+    },
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "requestId": "f7c37006-69be-407a-a2a6-25e23269b80d",
+      "at": "2026-11-17T01:54:57.076Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "insert_edit_into_file",
+          "schemaSha256": "ef22c58ddda2019ee06db3a7bef0ccfa2d369c2ce13df14cfb6e8879229a3281"
+        },
+        {
+          "name": "read_file",
+          "schemaSha256": "d6e1bd4f272a1d208faddef111a09e2a431220e70166f5e548908bd8212f9085"
+        },
+        {
+          "name": "replace_string_in_file",
+          "schemaSha256": "d1421dc675fc1235bd5fc5d88e7965388551c9b28a9933aafe7b4fa95edcd5d1"
+        },
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "scad_ai_ide_model_checkAssembly",
+          "schemaSha256": "836a055cb4fccf0840be14523b9229539f4d489a1624d34661406765306a5a16"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_listParts",
+          "schemaSha256": "2267244a1c3fe2508ea448f1d1b13cc9226a7435d247e1d9adc947f27cbfb2a1"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 44,
+      "firstByteMs": 44,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "tool_calls"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [
+        {
+          "id": "call_13ce3ae2",
+          "name": "scad_ai_ide_model_listParts",
+          "arguments": "{\"uri\": \"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/.scad/verification.json\", \"section\": \"parts\"}"
+        },
+        {
+          "id": "call_245eda86",
+          "name": "scad_ai_ide_model_listParts",
+          "arguments": "{\"uri\": \"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/.scad/verification.json\", \"section\": \"checks\"}"
+        }
+      ],
+      "elapsedMs": 44950
+    },
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "requestId": "2ac6639f-6d10-49e5-818a-79cafa5ee42b",
+      "at": "2026-11-17T01:55:42.317Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "insert_edit_into_file",
+          "schemaSha256": "ef22c58ddda2019ee06db3a7bef0ccfa2d369c2ce13df14cfb6e8879229a3281"
+        },
+        {
+          "name": "read_file",
+          "schemaSha256": "d6e1bd4f272a1d208faddef111a09e2a431220e70166f5e548908bd8212f9085"
+        },
+        {
+          "name": "replace_string_in_file",
+          "schemaSha256": "d1421dc675fc1235bd5fc5d88e7965388551c9b28a9933aafe7b4fa95edcd5d1"
+        },
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_checkAssembly",
+          "schemaSha256": "836a055cb4fccf0840be14523b9229539f4d489a1624d34661406765306a5a16"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_listParts",
+          "schemaSha256": "2267244a1c3fe2508ea448f1d1b13cc9226a7435d247e1d9adc947f27cbfb2a1"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 44,
+      "firstByteMs": 45,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "tool_calls"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [
+        {
+          "id": "call_c6260879",
+          "name": "scad_ai_ide_model_checkAssembly",
+          "arguments": "{\"uri\": \"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/model.scad\", \"expectedManifestDigest\": \"c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f\", \"quality\": \"verification\", \"reportId\": \"239c9116-3eec-48b3-8d85-c97ad69fc69a\"}"
+        }
+      ],
+      "elapsedMs": 40054
+    },
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "requestId": "44f93871-7fb2-43a2-9ba8-4a9498cfda96",
+      "at": "2026-11-17T01:56:22.540Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "insert_edit_into_file",
+          "schemaSha256": "ef22c58ddda2019ee06db3a7bef0ccfa2d369c2ce13df14cfb6e8879229a3281"
+        },
+        {
+          "name": "read_file",
+          "schemaSha256": "d6e1bd4f272a1d208faddef111a09e2a431220e70166f5e548908bd8212f9085"
+        },
+        {
+          "name": "replace_string_in_file",
+          "schemaSha256": "d1421dc675fc1235bd5fc5d88e7965388551c9b28a9933aafe7b4fa95edcd5d1"
+        },
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_checkAssembly",
+          "schemaSha256": "836a055cb4fccf0840be14523b9229539f4d489a1624d34661406765306a5a16"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_listParts",
+          "schemaSha256": "2267244a1c3fe2508ea448f1d1b13cc9226a7435d247e1d9adc947f27cbfb2a1"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 58,
+      "firstByteMs": 58,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "tool_calls"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [
+        {
+          "id": "call_63ceb005",
+          "name": "scad_ai_ide_model_checkAssembly",
+          "arguments": "{\"uri\": \"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/model.scad\", \"expectedManifestDigest\": \"c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f\", \"quality\": \"verification\"}"
+        }
+      ],
+      "elapsedMs": 9835
+    },
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "requestId": "e37b1499-153f-4e92-bb8e-5911323e2c4f",
+      "at": "2026-11-17T01:56:32.790Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "insert_edit_into_file",
+          "schemaSha256": "ef22c58ddda2019ee06db3a7bef0ccfa2d369c2ce13df14cfb6e8879229a3281"
+        },
+        {
+          "name": "read_file",
+          "schemaSha256": "d6e1bd4f272a1d208faddef111a09e2a431220e70166f5e548908bd8212f9085"
+        },
+        {
+          "name": "replace_string_in_file",
+          "schemaSha256": "d1421dc675fc1235bd5fc5d88e7965388551c9b28a9933aafe7b4fa95edcd5d1"
+        },
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_checkAssembly",
+          "schemaSha256": "836a055cb4fccf0840be14523b9229539f4d489a1624d34661406765306a5a16"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_listParts",
+          "schemaSha256": "2267244a1c3fe2508ea448f1d1b13cc9226a7435d247e1d9adc947f27cbfb2a1"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 35,
+      "firstByteMs": 35,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "tool_calls"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [
+        {
+          "id": "call_adb22c4c",
+          "name": "replace_string_in_file",
+          "arguments": "{\"filePath\": \"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/model.scad\", \"oldString\": \"part=\\\"body\\\";\\ngap=0.18;\", \"newString\": \"part=\\\"body\\\";\\ngap=0.30;\"}"
+        }
+      ],
+      "elapsedMs": 14904
+    },
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "requestId": "ad53b784-3bde-47c4-a976-a64ecacba761",
+      "at": "2026-11-17T01:56:47.828Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "insert_edit_into_file",
+          "schemaSha256": "ef22c58ddda2019ee06db3a7bef0ccfa2d369c2ce13df14cfb6e8879229a3281"
+        },
+        {
+          "name": "read_file",
+          "schemaSha256": "d6e1bd4f272a1d208faddef111a09e2a431220e70166f5e548908bd8212f9085"
+        },
+        {
+          "name": "replace_string_in_file",
+          "schemaSha256": "d1421dc675fc1235bd5fc5d88e7965388551c9b28a9933aafe7b4fa95edcd5d1"
+        },
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_checkAssembly",
+          "schemaSha256": "836a055cb4fccf0840be14523b9229539f4d489a1624d34661406765306a5a16"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_listParts",
+          "schemaSha256": "2267244a1c3fe2508ea448f1d1b13cc9226a7435d247e1d9adc947f27cbfb2a1"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 51,
+      "firstByteMs": 51,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "tool_calls"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [
+        {
+          "id": "call_972b58d4",
+          "name": "scad_ai_ide_model_checkAssembly",
+          "arguments": "{\"expectedManifestDigest\": \"c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f\", \"quality\": \"verification\", \"uri\": \"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/model.scad\"}"
+        }
+      ],
+      "elapsedMs": 10707
+    },
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "requestId": "235ae93f-ab8a-43b9-8c81-a2d20d2cd002",
+      "at": "2026-11-17T01:56:58.893Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "insert_edit_into_file",
+          "schemaSha256": "ef22c58ddda2019ee06db3a7bef0ccfa2d369c2ce13df14cfb6e8879229a3281"
+        },
+        {
+          "name": "read_file",
+          "schemaSha256": "d6e1bd4f272a1d208faddef111a09e2a431220e70166f5e548908bd8212f9085"
+        },
+        {
+          "name": "replace_string_in_file",
+          "schemaSha256": "d1421dc675fc1235bd5fc5d88e7965388551c9b28a9933aafe7b4fa95edcd5d1"
+        },
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_checkAssembly",
+          "schemaSha256": "836a055cb4fccf0840be14523b9229539f4d489a1624d34661406765306a5a16"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_listParts",
+          "schemaSha256": "2267244a1c3fe2508ea448f1d1b13cc9226a7435d247e1d9adc947f27cbfb2a1"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 50,
+      "firstByteMs": 50,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "tool_calls"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [
+        {
+          "id": "call_4c9cbaa6",
+          "name": "scad_ai_ide_model_measure",
+          "arguments": "{\"reportId\": \"cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49\", \"measurementTypes\": [\"bounds\", \"surfaceArea\", \"signedVolume\", \"physicalVolume\", \"topology\"], \"units\": \"mm\"}"
+        },
+        {
+          "id": "call_708be76c",
+          "name": "scad_ai_ide_model_renderViews",
+          "arguments": "{\"reportId\": \"cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49\", \"cameras\": [\"iso\"], \"delivery\": \"metadata\"}"
+        }
+      ],
+      "elapsedMs": 15791
+    },
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "requestId": "9ca80214-9fde-49b1-9ead-a709115cbffc",
+      "at": "2026-11-17T01:57:15.154Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "insert_edit_into_file",
+          "schemaSha256": "ef22c58ddda2019ee06db3a7bef0ccfa2d369c2ce13df14cfb6e8879229a3281"
+        },
+        {
+          "name": "read_file",
+          "schemaSha256": "d6e1bd4f272a1d208faddef111a09e2a431220e70166f5e548908bd8212f9085"
+        },
+        {
+          "name": "replace_string_in_file",
+          "schemaSha256": "d1421dc675fc1235bd5fc5d88e7965388551c9b28a9933aafe7b4fa95edcd5d1"
+        },
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_checkAssembly",
+          "schemaSha256": "836a055cb4fccf0840be14523b9229539f4d489a1624d34661406765306a5a16"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_listParts",
+          "schemaSha256": "2267244a1c3fe2508ea448f1d1b13cc9226a7435d247e1d9adc947f27cbfb2a1"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 49,
+      "firstByteMs": 49,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "tool_calls"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [
+        {
+          "id": "call_2fba6345",
+          "name": "scad_ai_ide_model_measure",
+          "arguments": "{\"reportId\": \"cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49\", \"units\": \"mm\", \"measurementTypes\": [\"bounds\", \"surfaceArea\", \"signedVolume\", \"physicalVolume\", \"topology\"]}"
+        }
+      ],
+      "elapsedMs": 8496
+    },
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "requestId": "a9ce6933-e6ac-4570-82a3-b8a7b1fe5c15",
+      "at": "2026-11-17T01:57:23.685Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "insert_edit_into_file",
+          "schemaSha256": "ef22c58ddda2019ee06db3a7bef0ccfa2d369c2ce13df14cfb6e8879229a3281"
+        },
+        {
+          "name": "read_file",
+          "schemaSha256": "d6e1bd4f272a1d208faddef111a09e2a431220e70166f5e548908bd8212f9085"
+        },
+        {
+          "name": "replace_string_in_file",
+          "schemaSha256": "d1421dc675fc1235bd5fc5d88e7965388551c9b28a9933aafe7b4fa95edcd5d1"
+        },
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_checkAssembly",
+          "schemaSha256": "836a055cb4fccf0840be14523b9229539f4d489a1624d34661406765306a5a16"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_listParts",
+          "schemaSha256": "2267244a1c3fe2508ea448f1d1b13cc9226a7435d247e1d9adc947f27cbfb2a1"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 52,
+      "firstByteMs": 52,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "tool_calls"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [
+        {
+          "id": "call_824c2082",
+          "name": "scad_ai_ide_model_measure",
+          "arguments": "{\"reportId\": \"cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49\", \"units\": \"mm\", \"measurementTypes\": [\"bounds\"]}"
+        }
+      ],
+      "elapsedMs": 5004
+    },
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "requestId": "981c6405-6cd0-4cf2-bc7d-c5fd5e49be84",
+      "at": "2026-11-17T01:57:28.714Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "insert_edit_into_file",
+          "schemaSha256": "ef22c58ddda2019ee06db3a7bef0ccfa2d369c2ce13df14cfb6e8879229a3281"
+        },
+        {
+          "name": "read_file",
+          "schemaSha256": "d6e1bd4f272a1d208faddef111a09e2a431220e70166f5e548908bd8212f9085"
+        },
+        {
+          "name": "replace_string_in_file",
+          "schemaSha256": "d1421dc675fc1235bd5fc5d88e7965388551c9b28a9933aafe7b4fa95edcd5d1"
+        },
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_checkAssembly",
+          "schemaSha256": "836a055cb4fccf0840be14523b9229539f4d489a1624d34661406765306a5a16"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_listParts",
+          "schemaSha256": "2267244a1c3fe2508ea448f1d1b13cc9226a7435d247e1d9adc947f27cbfb2a1"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 48,
+      "firstByteMs": 49,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "tool_calls"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [
+        {
+          "id": "call_3a338e7a",
+          "name": "scad_ai_ide_model_measure",
+          "arguments": "{\"reportId\": \"cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49\", \"units\": \"mm\"}"
+        }
+      ],
+      "elapsedMs": 4702
+    },
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "requestId": "8e29b885-13a6-43e1-bfe5-68bb41f8f394",
+      "at": "2026-11-17T01:57:33.437Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "insert_edit_into_file",
+          "schemaSha256": "ef22c58ddda2019ee06db3a7bef0ccfa2d369c2ce13df14cfb6e8879229a3281"
+        },
+        {
+          "name": "read_file",
+          "schemaSha256": "d6e1bd4f272a1d208faddef111a09e2a431220e70166f5e548908bd8212f9085"
+        },
+        {
+          "name": "replace_string_in_file",
+          "schemaSha256": "d1421dc675fc1235bd5fc5d88e7965388551c9b28a9933aafe7b4fa95edcd5d1"
+        },
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_checkAssembly",
+          "schemaSha256": "836a055cb4fccf0840be14523b9229539f4d489a1624d34661406765306a5a16"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_listParts",
+          "schemaSha256": "2267244a1c3fe2508ea448f1d1b13cc9226a7435d247e1d9adc947f27cbfb2a1"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 45,
+      "firstByteMs": 45,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "tool_calls"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [
+        {
+          "id": "call_c60ad065",
+          "name": "scad_ai_ide_model_measure",
+          "arguments": "{\"reportId\": \"cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49\", \"measurementTypes\": [\"bounds\", \"surfaceArea\", \"signedVolume\"], \"units\": \"mm\"}"
+        }
+      ],
+      "elapsedMs": 7058
+    },
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "requestId": "c6157dcc-32c5-447c-bb51-005b8ab77853",
+      "at": "2026-11-17T01:57:40.523Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "insert_edit_into_file",
+          "schemaSha256": "ef22c58ddda2019ee06db3a7bef0ccfa2d369c2ce13df14cfb6e8879229a3281"
+        },
+        {
+          "name": "read_file",
+          "schemaSha256": "d6e1bd4f272a1d208faddef111a09e2a431220e70166f5e548908bd8212f9085"
+        },
+        {
+          "name": "replace_string_in_file",
+          "schemaSha256": "d1421dc675fc1235bd5fc5d88e7965388551c9b28a9933aafe7b4fa95edcd5d1"
+        },
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_checkAssembly",
+          "schemaSha256": "836a055cb4fccf0840be14523b9229539f4d489a1624d34661406765306a5a16"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_listParts",
+          "schemaSha256": "2267244a1c3fe2508ea448f1d1b13cc9226a7435d247e1d9adc947f27cbfb2a1"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 49,
+      "firstByteMs": 49,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "tool_calls"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [
+        {
+          "id": "call_37f6076b",
+          "name": "scad_ai_ide_model_measure",
+          "arguments": "{\"uri\": \"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/model.scad\", \"reportId\": \"cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49\", \"measurementTypes\": [\"bounds\", \"surfaceArea\", \"signedVolume\"], \"units\": \"mm\"}"
+        }
+      ],
+      "elapsedMs": 9321
+    },
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "requestId": "12b315de-389b-4a15-82a0-1b7b3e8de548",
+      "at": "2026-11-17T01:57:49.902Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "insert_edit_into_file",
+          "schemaSha256": "ef22c58ddda2019ee06db3a7bef0ccfa2d369c2ce13df14cfb6e8879229a3281"
+        },
+        {
+          "name": "read_file",
+          "schemaSha256": "d6e1bd4f272a1d208faddef111a09e2a431220e70166f5e548908bd8212f9085"
+        },
+        {
+          "name": "replace_string_in_file",
+          "schemaSha256": "d1421dc675fc1235bd5fc5d88e7965388551c9b28a9933aafe7b4fa95edcd5d1"
+        },
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_checkAssembly",
+          "schemaSha256": "836a055cb4fccf0840be14523b9229539f4d489a1624d34661406765306a5a16"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_listParts",
+          "schemaSha256": "2267244a1c3fe2508ea448f1d1b13cc9226a7435d247e1d9adc947f27cbfb2a1"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 63,
+      "firstByteMs": 63,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "tool_calls"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [
+        {
+          "id": "call_f9f41f3e",
+          "name": "scad_ai_ide_model_measure",
+          "arguments": "{\"uri\": \"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/model.scad\", \"reportId\": \"cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49\", \"measurementTypes\": [\"bounds\"], \"units\": \"mm\"}"
+        }
+      ],
+      "elapsedMs": 7353
+    },
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "requestId": "602042ff-70f5-484f-8c8d-f72331167471",
+      "at": "2026-11-17T01:57:57.280Z",
+      "path": "/v1/chat/completions",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "runMarkerObserved": true,
+      "tools": [
+        {
+          "name": "insert_edit_into_file",
+          "schemaSha256": "ef22c58ddda2019ee06db3a7bef0ccfa2d369c2ce13df14cfb6e8879229a3281"
+        },
+        {
+          "name": "read_file",
+          "schemaSha256": "d6e1bd4f272a1d208faddef111a09e2a431220e70166f5e548908bd8212f9085"
+        },
+        {
+          "name": "replace_string_in_file",
+          "schemaSha256": "d1421dc675fc1235bd5fc5d88e7965388551c9b28a9933aafe7b4fa95edcd5d1"
+        },
+        {
+          "name": "session_store_sql",
+          "schemaSha256": "478ab45ea48f780a1fe9c853c806463c3d3dcba17306d8f000de78505c82855f"
+        },
+        {
+          "name": "manage_todo_list",
+          "schemaSha256": "06e767d3fd7587b778ef3472239294731d2036359f041f0224626187e17190e0"
+        },
+        {
+          "name": "scad_ai_ide_model_checkAssembly",
+          "schemaSha256": "836a055cb4fccf0840be14523b9229539f4d489a1624d34661406765306a5a16"
+        },
+        {
+          "name": "scad_ai_ide_model_getIssue",
+          "schemaSha256": "656970d17098302750d456cb2679d43c33b51a14dbbe90dd4331477b883c1fc0"
+        },
+        {
+          "name": "scad_ai_ide_model_listParts",
+          "schemaSha256": "2267244a1c3fe2508ea448f1d1b13cc9226a7435d247e1d9adc947f27cbfb2a1"
+        },
+        {
+          "name": "scad_ai_ide_model_measure",
+          "schemaSha256": "d482146ba1125a65802f66140ba9d96392bca7feb844fc1e077354368ac667cf"
+        },
+        {
+          "name": "scad_ai_ide_model_renderViews",
+          "schemaSha256": "1d2b077f93c14ebaafa9c05f8d49afb98d26fd9263deda20f54e69b2aff7bc86"
+        }
+      ],
+      "status": 200,
+      "headersMs": 54,
+      "firstByteMs": 55,
+      "streamEnded": true,
+      "sseDone": true,
+      "finishReasons": [
+        "stop"
+      ],
+      "malformedSse": false,
+      "rawToolCalls": [],
+      "elapsedMs": 4988
+    }
+  ]
+}

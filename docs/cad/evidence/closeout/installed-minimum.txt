@@ -1,0 +1,778 @@
+Installing extensions...
+Extension 'scad-ai-ide-closeout.vsix' was successfully installed.
+[90m[main 2026-11-17T01:49:08.392Z][0m [node-compile-cache] main: packaged cache inactive (status: disabled, configured: /Users/q/Documents/Code/scad-ai-ide/.vscode-test/vscode-darwin-arm64-1.140.0/Visual Studio Code.app/Contents/Resources/app/node-compile-cache/main, active: none)
+[90m[main 2026-11-17T01:49:08.409Z][0m StorageMainService: creating application shared storage
+[90m[main 2026-11-17T01:49:08.476Z][0m [shared storage] Creating shared storage database at ':memory:' (wasCreated: true)
+[90m[main 2026-11-17T01:49:08.476Z][0m [shared storage] Initializing fallback application storage (path: in-memory)
+[90m[main 2026-11-17T01:49:08.551Z][0m [shared storage] Fallback application storage initialized with 3 items
+[90m[main 2026-11-17T01:49:08.552Z][0m update#setState disabled
+[90m[main 2026-11-17T01:49:08.552Z][0m update#ctor - updates are disabled by the environment
+[RemoteAgentHost] Reconciling: desired=[], current=[]
+[AgentHost:renderer] Acquiring MessagePort to agent host...
+[90m[main 2026-11-17T01:49:08.922Z][0m AgentHostProcessManager: agent host started
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey=undefined conversationKey=undefined modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[AgentHost:renderer] MessagePort acquired, creating client...
+Started local extension host with pid 31729.
+[91m[main 2026-11-17T01:49:09.145Z][0m [AgentHost:stderr] (node:31711) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `Code Helper --trace-deprecation ...` to show where the warning was created)
+
+[AgentHost:renderer] Protocol connection established; clientId=0fff390d-261b-4a8c-9a2b-cdc99c5caf5e
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/Mzg5YWMzYjgtZjhkMS00NDg3LTllZWUtYjgwODFkZjYyOTJl" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+Loading development extension at /var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-DXKWpl
+Extension 'github.copilot-chat' appears in product.json but enables LESS API proposals than the extension wants.
+package.json (LOSES): agentSessionsWorkspace
+agentsWindowConfiguration
+chatDebug
+chatHooks
+envIsConnectionMetered
+extensionsAny
+newSymbolNamesProvider
+interactive
+codeActionAI
+activeComment
+commentReveal
+contribCommentThreadAdditionalMenu
+contribCommentsViewThreadMenus
+contribChatEditorInlineGutterMenu
+documentFiltersExclusive
+embeddings
+findTextInFiles
+findTextInFiles2
+languageModelToolSupportsModel
+findFiles2
+textSearchProvider
+terminalDataWriteEvent
+terminalExecuteCommandEvent
+terminalSelection
+terminalQuickFixProvider
+mappedEditsProvider
+aiRelatedInformation
+aiSettingsSearch
+chatParticipantAdditions
+defaultChatParticipant
+contribSourceControlInputBoxMenu
+authLearnMore
+authIssuers
+testObserver
+aiTextSearchProvider
+chatParticipantPrivate
+chatProvider
+contribDebugCreateConfiguration
+chatReferenceDiagnostic
+textSearchProvider2
+chatReferenceBinaryData
+languageModelSystem
+languageModelCapabilities
+languageModelPricing
+inlineCompletionsAdditions
+chatStatusItem
+chatInputNotification
+taskProblemMatcherStatus
+contribLanguageModelToolSets
+textDocumentChangeReason
+resolvers
+taskExecutionTerminal
+dataChannels
+languageModelThinkingPart
+chatSessionsProvider
+devDeviceId
+contribEditorContentMenu
+chatPromptFiles
+mcpServerDefinitions
+tabInputMultiDiff
+workspaceTrust
+environmentPower
+terminalTitle
+toolInvocationApproveCombination
+chatSessionCustomizationProvider
+product.json (WINS): agentSessionsWorkspace
+agentsWindowConfiguration
+interactive
+terminalDataWriteEvent
+terminalExecuteCommandEvent
+terminalSelection
+terminalQuickFixProvider
+chatParticipantAdditions
+defaultChatParticipant
+embeddings
+chatProvider
+mappedEditsProvider
+aiRelatedInformation
+aiSettingsSearch
+codeActionAI
+findTextInFiles
+findTextInFiles2
+textSearchProvider
+textSearchProvider2
+activeComment
+commentReveal
+contribSourceControlInputBoxMenu
+contribCommentEditorActionsMenu
+contribCommentThreadAdditionalMenu
+contribCommentsViewThreadMenus
+contribChatEditorInlineGutterMenu
+extensionAffinity
+newSymbolNamesProvider
+findFiles2
+chatReferenceDiagnostic
+extensionsAny
+authLearnMore
+testObserver
+aiTextSearchProvider
+documentFiltersExclusive
+chatParticipantPrivate
+contribDebugCreateConfiguration
+inlineCompletionsAdditions
+chatReferenceBinaryData
+languageModelSystem
+languageModelCapabilities
+languageModelThinkingPart
+languageModelToolSupportsModel
+chatStatusItem
+taskProblemMatcherStatus
+contribLanguageModelToolSets
+textDocumentChangeReason
+resolvers
+taskExecutionTerminal
+dataChannels
+chatSessionsProvider
+chatSessionCustomizationProvider
+devDeviceId
+contribEditorContentMenu
+tokenInformation
+toolInvocationApproveCombination
+chatPromptFiles
+mcpServerDefinitions
+tabInputMultiDiff
+workspaceTrust
+chatHooks
+chatDebug
+envIsConnectionMetered
+environmentPower
+terminalTitle
+languageModelPricing
+chatInputNotification
+DELTA: authIssuers
+Proceeding with EXTRA proposals (authIssuers) because extension is in development mode. Still, this EXTENSION WILL BE BROKEN unless product.json is updated.
+[AccountPolicyGate] apply: state=inactive, reason=undefined, isRestricted=false
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[RemoteAgentHost] Reconciling: desired=[], current=[]
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/Mzg5YWMzYjgtZjhkMS00NDg3LTllZWUtYjgwODFkZjYyOTJl" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/Mzg5YWMzYjgtZjhkMS00NDg3LTllZWUtYjgwODFkZjYyOTJl" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+Unknown channel: agentHostClientByokLm
+Unknown channel: agentHostClientProxy
+Unknown channel: agentHostClientProxy
+Settings Sync: Account status changed from uninitialized to unavailable
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[AgentHost] No signed-in session resolved for resource: https://api.github.com
+[AgentHost] No signed-in session resolved for resource: https://api.github.com/repos
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/Mzg5YWMzYjgtZjhkMS00NDg3LTllZWUtYjgwODFkZjYyOTJl" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/Mzg5YWMzYjgtZjhkMS00NDg3LTllZWUtYjgwODFkZjYyOTJl" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[ChatModelSelection] event=no-model-at-toolbar-build surface="workbench" sessionKey="local" conversationKey="vscode-chat-session://local/Mzg5YWMzYjgtZjhkMS00NDg3LTllZWUtYjgwODFkZjYyOTJl" modelTarget=undefined storageKey="chat.currentLanguageModel.panel" widgetViewKind="view"
+[90m[main 2026-11-17T01:49:11.872Z][0m Extension host with pid 31729 exited with code: 0, signal: unknown.
+Exit code:   0
+{
+  "vscode": "1.140.0",
+  "extension": "undefined_publisher.scad-ai-ide",
+  "toolCount": 51,
+  "availableChatModels": 0,
+  "productionDevDenied": true,
+  "cad": {
+    "status": "PASS",
+    "scope": "Production VSIX + real CLI; direct Host invocation, not model E2E",
+    "failed": {
+      "schemaVersion": 1,
+      "reportId": "cad-ad9a47ab-0263-452f-acfb-213d4e326148",
+      "snapshotId": "c8e67a4b4bce0e426ec4e745ee6479f5bbebb69296c37ccfd8f3dcb4db0e02db",
+      "document": {
+        "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-DXKWpl/workspace/cad-diagnostics.scad",
+        "version": 2,
+        "sourceSha256": "b53980ee2719c5369da5835df519742689b648ad93c60293fbea40b5d1a030b6",
+        "dirty": true
+      },
+      "projectRoot": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-DXKWpl/workspace",
+      "runtime": {
+        "executable": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+        "version": "2026.11-RC0",
+        "identityHash": "96641cfec22e509646217ebbe5a9a02c9505dcb3d01f0f12a9d980e5479a1f72",
+        "capabilityHash": "35a1f9f5109478c041b3e06a17b25e3f6e75a66cf941f17fb1d1ca2120505450",
+        "hostPlatform": "darwin-arm64"
+      },
+      "executionStatus": "FAILED",
+      "overallStatus": "FAIL",
+      "complete": true,
+      "units": "modelUnits",
+      "checks": [
+        {
+          "id": "cli-evaluation",
+          "category": "compile",
+          "required": true,
+          "status": "FAIL",
+          "issueIds": [
+            "58324521295c3da0f94300b6e055c2d5de34bcf3198a8061b69f4a256bfe4a55"
+          ],
+          "reason": "CSG evaluation only; no full-mesh or assembly verification."
+        }
+      ],
+      "issues": [
+        {
+          "id": "58324521295c3da0f94300b6e055c2d5de34bcf3198a8061b69f4a256bfe4a55",
+          "code": "SCAD_CLI_ASSERT_FAILED",
+          "severity": "error",
+          "status": "FAIL",
+          "title": "ERROR: Assertion 'false' failed: \"installed CAD assertion\"",
+          "location": {
+            "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-DXKWpl/workspace/cad-diagnostics.scad",
+            "line": 1,
+            "character": 0,
+            "confidence": "exact"
+          }
+        }
+      ],
+      "issueCount": 1,
+      "issuesTruncated": false,
+      "examined": [
+        "cli-diagnostics"
+      ],
+      "notExamined": [
+        "full-render",
+        "mesh-validity",
+        "dimensions",
+        "constraints",
+        "assembly",
+        "visual",
+        "diff",
+        "printability"
+      ],
+      "incomplete": [],
+      "artifacts": [
+        {
+          "id": "cad-ad9a47ab-0263-452f-acfb-213d4e326148:log",
+          "kind": "log",
+          "mimeType": "text/plain",
+          "snapshotId": "c8e67a4b4bce0e426ec4e745ee6479f5bbebb69296c37ccfd8f3dcb4db0e02db"
+        }
+      ],
+      "metrics": {
+        "elapsedMs": 26.65820800000006,
+        "truncated": false
+      },
+      "reportUri": "scad-cad-report:/cad-ad9a47ab-0263-452f-acfb-213d4e326148"
+    },
+    "passed": {
+      "schemaVersion": 1,
+      "reportId": "cad-155a7386-97bf-46d0-9940-e3e527b7ed6e",
+      "snapshotId": "88d66339cf562d25337cf4b9735fc9bd3762821fab03f5b90da45f4a9265a9e2",
+      "document": {
+        "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-DXKWpl/workspace/cad-diagnostics.scad",
+        "version": 3,
+        "sourceSha256": "a31ee19c8a470195185a94e635a19bf524794c2f8b7b5d3cfd88b2942c92283e",
+        "dirty": true
+      },
+      "projectRoot": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-DXKWpl/workspace",
+      "runtime": {
+        "executable": "/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad",
+        "version": "2026.11-RC0",
+        "identityHash": "96641cfec22e509646217ebbe5a9a02c9505dcb3d01f0f12a9d980e5479a1f72",
+        "capabilityHash": "35a1f9f5109478c041b3e06a17b25e3f6e75a66cf941f17fb1d1ca2120505450",
+        "hostPlatform": "darwin-arm64"
+      },
+      "executionStatus": "SUCCEEDED",
+      "overallStatus": "PASS",
+      "complete": true,
+      "units": "modelUnits",
+      "checks": [
+        {
+          "id": "cli-evaluation",
+          "category": "compile",
+          "required": true,
+          "status": "PASS",
+          "issueIds": [],
+          "reason": "CSG evaluation only; no full-mesh or assembly verification."
+        }
+      ],
+      "issues": [],
+      "issueCount": 0,
+      "issuesTruncated": false,
+      "examined": [
+        "cli-diagnostics"
+      ],
+      "notExamined": [
+        "full-render",
+        "mesh-validity",
+        "dimensions",
+        "constraints",
+        "assembly",
+        "visual",
+        "diff",
+        "printability"
+      ],
+      "incomplete": [],
+      "artifacts": [
+        {
+          "id": "cad-155a7386-97bf-46d0-9940-e3e527b7ed6e:log",
+          "kind": "log",
+          "mimeType": "text/plain",
+          "snapshotId": "88d66339cf562d25337cf4b9735fc9bd3762821fab03f5b90da45f4a9265a9e2"
+        }
+      ],
+      "metrics": {
+        "elapsedMs": 27.87824999999998,
+        "truncated": false
+      },
+      "reportUri": "scad-cad-report:/cad-155a7386-97bf-46d0-9940-e3e527b7ed6e"
+    },
+    "diskUnchanged": true,
+    "previewRequired": false
+  },
+  "sourceAuthoring": {
+    "analyzed": {
+      "ok": true,
+      "capabilityId": "customizer.sourceAnalyze",
+      "data": {
+        "identity": {
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-DXKWpl/workspace/source-authoring.scad",
+          "version": 1,
+          "sha256": "aee2bb6ce9a771963a48dae91dcc6843080dbf30e9dfb0aef87941e5831b7348"
+        },
+        "parameters": [
+          {
+            "name": "width",
+            "group": "",
+            "description": "",
+            "defaultValue": 40,
+            "widget": "spinbox",
+            "declarationRange": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            }
+          }
+        ],
+        "candidates": [],
+        "diagnostics": [],
+        "complete": true,
+        "incompleteReasons": [],
+        "omitted": {
+          "parameters": 0,
+          "diagnostics": 0,
+          "candidates": 0
+        }
+      },
+      "operation": {
+        "id": "4b3f8af4-b4aa-4c0c-a106-b1a499e3ae51",
+        "capabilityId": "customizer.sourceAnalyze",
+        "status": "succeeded"
+      }
+    },
+    "unmet": {
+      "ok": true,
+      "capabilityId": "customizer.sourceValidate",
+      "data": {
+        "identity": {
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-DXKWpl/workspace/source-authoring.scad",
+          "version": 1,
+          "sha256": "aee2bb6ce9a771963a48dae91dcc6843080dbf30e9dfb0aef87941e5831b7348"
+        },
+        "sourceStatus": {
+          "status": "complete",
+          "reasons": []
+        },
+        "contractStatus": "mismatch",
+        "qualityStatus": "clear",
+        "semanticPass": false,
+        "checked": 1,
+        "matched": 0,
+        "expectationResults": [
+          {
+            "parameter": "width",
+            "matched": false,
+            "issues": [
+              "Expected widget \"slider\"; actual \"spinbox\""
+            ],
+            "details": [
+              {
+                "code": "EXPECTED_WIDGET",
+                "message": "Expected widget \"slider\"; actual \"spinbox\"",
+                "range": {
+                  "start": {
+                    "line": 0,
+                    "character": 0
+                  },
+                  "end": {
+                    "line": 0,
+                    "character": 9
+                  }
+                }
+              }
+            ],
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            }
+          }
+        ],
+        "omittedExpectations": 0,
+        "diagnostics": [],
+        "omittedDiagnostics": 0,
+        "runtimeCheck": {
+          "status": "notRequested"
+        },
+        "guiCheck": {
+          "status": "notRequested"
+        },
+        "complete": true
+      },
+      "operation": {
+        "id": "fef2ccd5-2c48-465c-b760-1aa4ed508922",
+        "capabilityId": "customizer.sourceValidate",
+        "status": "succeeded"
+      }
+    },
+    "planned": {
+      "ok": true,
+      "capabilityId": "customizer.sourceApply",
+      "data": {
+        "planId": "348e02e1-af56-41f6-862a-74d73489cf3a",
+        "identity": {
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-DXKWpl/workspace/source-authoring.scad",
+          "version": 1,
+          "sha256": "aee2bb6ce9a771963a48dae91dcc6843080dbf30e9dfb0aef87941e5831b7348"
+        },
+        "summary": "Update Customizer source: width",
+        "preview": [
+          {
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 9
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            },
+            "before": "",
+            "after": " // [10:5:100]"
+          }
+        ],
+        "validation": {
+          "sourceStatus": {
+            "status": "complete",
+            "reasons": []
+          },
+          "contractStatus": "matched",
+          "qualityStatus": "clear",
+          "semanticPass": true,
+          "checked": 1,
+          "matched": 1,
+          "expectationResults": [
+            {
+              "parameter": "width",
+              "matched": true,
+              "issues": [],
+              "details": [],
+              "range": {
+                "start": {
+                  "line": 0,
+                  "character": 0
+                },
+                "end": {
+                  "line": 0,
+                  "character": 9
+                }
+              }
+            }
+          ],
+          "omittedExpectations": 0,
+          "diagnostics": [],
+          "omittedDiagnostics": 0,
+          "runtimeCheck": {
+            "status": "notRequested"
+          },
+          "guiCheck": {
+            "status": "notRequested"
+          },
+          "complete": true,
+          "pass": true
+        },
+        "expiresInSeconds": 120,
+        "continuation": {
+          "tool": "scad_ai_ide_customizer_sourceApply",
+          "input": {
+            "mode": "commit",
+            "planId": "348e02e1-af56-41f6-862a-74d73489cf3a"
+          },
+          "requiresReview": true
+        }
+      },
+      "operation": {
+        "id": "ec2442b3-09cd-44e8-8011-f10000ca7af5",
+        "capabilityId": "customizer.sourceApply",
+        "status": "succeeded"
+      }
+    },
+    "committed": {
+      "ok": true,
+      "capabilityId": "customizer.sourceApply",
+      "data": {
+        "applied": true,
+        "identity": {
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-DXKWpl/workspace/source-authoring.scad",
+          "version": 2,
+          "sha256": "4f5e8cba047a8b3a4c4edcbfc0a2155fb616b7c10b18a3db68c6da97b12839b6"
+        },
+        "changedParameters": [
+          "width"
+        ],
+        "postValidation": {
+          "sourceStatus": {
+            "status": "complete",
+            "reasons": []
+          },
+          "contractStatus": "matched",
+          "qualityStatus": "clear",
+          "semanticPass": true,
+          "checked": 1,
+          "matched": 1,
+          "expectationResults": [
+            {
+              "parameter": "width",
+              "matched": true,
+              "issues": [],
+              "details": [],
+              "range": {
+                "start": {
+                  "line": 0,
+                  "character": 0
+                },
+                "end": {
+                  "line": 0,
+                  "character": 9
+                }
+              }
+            }
+          ],
+          "omittedExpectations": 0,
+          "diagnostics": [],
+          "omittedDiagnostics": 0,
+          "runtimeCheck": {
+            "status": "notRequested"
+          },
+          "guiCheck": {
+            "status": "notRequested"
+          },
+          "complete": true,
+          "pass": true
+        },
+        "semanticPass": true,
+        "savedToDisk": false
+      },
+      "operation": {
+        "id": "9de16853-3c4f-4b5d-8dc8-fa08a6fc3592",
+        "capabilityId": "customizer.sourceApply",
+        "status": "succeeded"
+      }
+    },
+    "validated": {
+      "ok": true,
+      "capabilityId": "customizer.sourceValidate",
+      "data": {
+        "identity": {
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-DXKWpl/workspace/source-authoring.scad",
+          "version": 2,
+          "sha256": "4f5e8cba047a8b3a4c4edcbfc0a2155fb616b7c10b18a3db68c6da97b12839b6"
+        },
+        "sourceStatus": {
+          "status": "complete",
+          "reasons": []
+        },
+        "contractStatus": "matched",
+        "qualityStatus": "clear",
+        "semanticPass": true,
+        "checked": 1,
+        "matched": 1,
+        "expectationResults": [
+          {
+            "parameter": "width",
+            "matched": true,
+            "issues": [],
+            "details": [],
+            "range": {
+              "start": {
+                "line": 0,
+                "character": 0
+              },
+              "end": {
+                "line": 0,
+                "character": 9
+              }
+            }
+          }
+        ],
+        "omittedExpectations": 0,
+        "diagnostics": [],
+        "omittedDiagnostics": 0,
+        "runtimeCheck": {
+          "status": "notRequested"
+        },
+        "guiCheck": {
+          "status": "notRequested"
+        },
+        "complete": true
+      },
+      "operation": {
+        "id": "fd1a59bf-0366-4f35-a928-ec0056dd5471",
+        "capabilityId": "customizer.sourceValidate",
+        "status": "succeeded"
+      }
+    },
+    "singleUseRejected": true,
+    "unsavedSource": "width=40; // [10:5:100]\nmodule model() { cube([width,2,3]); }\n",
+    "diskUnchanged": true
+  },
+  "undoRedo": true,
+  "adr12": {
+    "warning": true,
+    "primaryLine": 2,
+    "relatedLine": 0,
+    "controlsLost": true,
+    "unsavedRepairClearsWarning": true,
+    "diskUnchanged": true
+  },
+  "presetSnapshot": {
+    "invalidRejectedBeforeWrite": true,
+    "invalidErrorCode": "PRESET_INVALID_VALUE",
+    "rejectedStateUnchanged": true,
+    "validSnapshotReplayed": true,
+    "sourceUnchanged": true,
+    "sourceDirty": false
+  },
+  "panelsRequired": false,
+  "instructions": [
+    {
+      "path": "./instructions/openscad.instructions.md"
+    },
+    {
+      "path": "./instructions/openscad-customizer.instructions.md"
+    }
+  ],
+  "skills": [
+    {
+      "path": "./skills/openscad-runtime/SKILL.md"
+    },
+    {
+      "path": "./skills/openscad-libraries/SKILL.md"
+    },
+    {
+      "path": "./skills/openscad-customizer/SKILL.md"
+    },
+    {
+      "path": "./skills/openscad-customizer-authoring/SKILL.md"
+    },
+    {
+      "path": "./skills/scad-ai-ide-diagnostics/SKILL.md"
+    },
+    {
+      "path": "./skills/openscad-model-debugging/SKILL.md"
+    },
+    {
+      "path": "./skills/openscad-geometry-verification/SKILL.md"
+    },
+    {
+      "path": "./skills/openscad-assembly-design/SKILL.md"
+    },
+    {
+      "path": "./skills/openscad-modeling-lifecycle/SKILL.md"
+    },
+    {
+      "path": "./skills/openscad-design-review/SKILL.md"
+    },
+    {
+      "path": "./skills/openscad-spatial-feedback/SKILL.md"
+    },
+    {
+      "path": "./skills/openscad-printability/SKILL.md"
+    }
+  ]
+}
+Installed Production smoke PASS. Isolated evidence: /var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/scad-installed-agent-DXKWpl

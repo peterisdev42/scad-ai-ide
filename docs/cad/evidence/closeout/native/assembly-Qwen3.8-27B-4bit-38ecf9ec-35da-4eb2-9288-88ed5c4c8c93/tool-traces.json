@@ -1,0 +1,1297 @@
+[
+  {
+    "runId": "38ecf9ec-35da-4eb2-9288-88ed5c4c8c93",
+    "callId": "c1c5651b-5f3b-431a-9a37-beaaa24d92f7",
+    "capability": "cad.listParts",
+    "input": {
+      "section": "parts",
+      "uri": "/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-dYr8oF/workspace/.scad/verification.json"
+    },
+    "inputStage": "native dispatcher input before schema validation; canonical URIs appear in returned report",
+    "actor": "agent",
+    "started": "2026-11-17T02:11:17.343Z",
+    "sourceDiskHash": "4ddb3e00c99b8429b7ae72399f36eec49b11e641629c967eb3fc4a4353bb3e26",
+    "sourceBufferHash": "4ddb3e00c99b8429b7ae72399f36eec49b11e641629c967eb3fc4a4353bb3e26",
+    "manifestDiskHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "manifestBufferHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "output": {
+      "ok": false,
+      "capabilityId": "cad.listParts",
+      "error": {
+        "code": "OPERATION_FAILED",
+        "message": "[UriError]: Scheme is missing: {scheme: \"\", authority: \"\", path: \"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-dYr8oF/workspace/.scad/verification.json\", query: \"\", fragment: \"\"}",
+        "retryable": true
+      },
+      "operation": {
+        "id": "aea85541-1193-4454-85b7-eb2c2933d708",
+        "capabilityId": "cad.listParts",
+        "status": "failed",
+        "error": {
+          "code": "OPERATION_FAILED",
+          "message": "[UriError]: Scheme is missing: {scheme: \"\", authority: \"\", path: \"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-dYr8oF/workspace/.scad/verification.json\", query: \"\", fragment: \"\"}",
+          "retryable": true
+        }
+      }
+    },
+    "finished": "2026-11-17T02:11:17.345Z",
+    "elapsedMs": 3
+  },
+  {
+    "runId": "38ecf9ec-35da-4eb2-9288-88ed5c4c8c93",
+    "callId": "60ba2503-3129-4b61-96a4-65c5a1c0e6e7",
+    "capability": "cad.listParts",
+    "input": {
+      "section": "checks",
+      "uri": "/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-dYr8oF/workspace/.scad/verification.json"
+    },
+    "inputStage": "native dispatcher input before schema validation; canonical URIs appear in returned report",
+    "actor": "agent",
+    "started": "2026-11-17T02:11:17.358Z",
+    "sourceDiskHash": "4ddb3e00c99b8429b7ae72399f36eec49b11e641629c967eb3fc4a4353bb3e26",
+    "sourceBufferHash": "4ddb3e00c99b8429b7ae72399f36eec49b11e641629c967eb3fc4a4353bb3e26",
+    "manifestDiskHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "manifestBufferHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "output": {
+      "ok": false,
+      "capabilityId": "cad.listParts",
+      "error": {
+        "code": "OPERATION_FAILED",
+        "message": "[UriError]: Scheme is missing: {scheme: \"\", authority: \"\", path: \"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-dYr8oF/workspace/.scad/verification.json\", query: \"\", fragment: \"\"}",
+        "retryable": true
+      },
+      "operation": {
+        "id": "dfbb6a64-20bf-40da-8206-858934ed95a9",
+        "capabilityId": "cad.listParts",
+        "status": "failed",
+        "error": {
+          "code": "OPERATION_FAILED",
+          "message": "[UriError]: Scheme is missing: {scheme: \"\", authority: \"\", path: \"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-dYr8oF/workspace/.scad/verification.json\", query: \"\", fragment: \"\"}",
+          "retryable": true
+        }
+      }
+    },
+    "finished": "2026-11-17T02:11:17.360Z",
+    "elapsedMs": 2
+  },
+  {
+    "runId": "38ecf9ec-35da-4eb2-9288-88ed5c4c8c93",
+    "callId": "9a933522-bece-4ccf-a168-f3c67a45d3d2",
+    "capability": "cad.listParts",
+    "input": {
+      "section": "parts",
+      "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-dYr8oF/workspace/.scad/verification.json"
+    },
+    "inputStage": "native dispatcher input before schema validation; canonical URIs appear in returned report",
+    "actor": "agent",
+    "started": "2026-11-17T02:11:52.329Z",
+    "sourceDiskHash": "4ddb3e00c99b8429b7ae72399f36eec49b11e641629c967eb3fc4a4353bb3e26",
+    "sourceBufferHash": "4ddb3e00c99b8429b7ae72399f36eec49b11e641629c967eb3fc4a4353bb3e26",
+    "manifestDiskHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "manifestBufferHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "output": {
+      "ok": true,
+      "capabilityId": "cad.listParts",
+      "data": {
+        "manifestUri": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-dYr8oF/workspace/.scad/verification.json",
+        "manifestDigest": "c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f",
+        "current": true,
+        "status": "PASS",
+        "issues": [],
+        "section": "parts",
+        "total": 2,
+        "offset": 0,
+        "items": [
+          {
+            "id": "body",
+            "selector": {
+              "type": "define",
+              "name": "part",
+              "value": "body"
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                0
+              ],
+              "rotate": [
+                0,
+                0,
+                0
+              ]
+            },
+            "identity": {
+              "manifestUri": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-dYr8oF/workspace/.scad/verification.json",
+              "partId": "body"
+            }
+          },
+          {
+            "id": "lid",
+            "selector": {
+              "type": "define",
+              "name": "part",
+              "value": "lid"
+            },
+            "transform": {
+              "translate": [
+                0,
+                0,
+                0
+              ],
+              "rotate": [
+                0,
+                0,
+                0
+              ]
+            },
+            "identity": {
+              "manifestUri": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-dYr8oF/workspace/.scad/verification.json",
+              "partId": "lid"
+            }
+          }
+        ],
+        "nextOffset": null,
+        "pairs": [
+          {
+            "pairId": "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51",
+            "parts": [
+              "body",
+              "lid"
+            ]
+          }
+        ]
+      },
+      "operation": {
+        "id": "a5bf8620-cc7a-40f6-b9ea-beb915e4203f",
+        "capabilityId": "cad.listParts",
+        "status": "succeeded"
+      }
+    },
+    "finished": "2026-11-17T02:11:52.335Z",
+    "elapsedMs": 6
+  },
+  {
+    "runId": "38ecf9ec-35da-4eb2-9288-88ed5c4c8c93",
+    "callId": "2c35625b-4127-45cb-967e-794c38e24db7",
+    "capability": "cad.listParts",
+    "input": {
+      "section": "checks",
+      "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-dYr8oF/workspace/.scad/verification.json"
+    },
+    "inputStage": "native dispatcher input before schema validation; canonical URIs appear in returned report",
+    "actor": "agent",
+    "started": "2026-11-17T02:11:52.339Z",
+    "sourceDiskHash": "4ddb3e00c99b8429b7ae72399f36eec49b11e641629c967eb3fc4a4353bb3e26",
+    "sourceBufferHash": "4ddb3e00c99b8429b7ae72399f36eec49b11e641629c967eb3fc4a4353bb3e26",
+    "manifestDiskHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "manifestBufferHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "output": {
+      "ok": true,
+      "capabilityId": "cad.listParts",
+      "data": {
+        "manifestUri": "file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-dYr8oF/workspace/.scad/verification.json",
+        "manifestDigest": "c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f",
+        "current": true,
+        "status": "PASS",
+        "issues": [],
+        "section": "checks",
+        "total": 5,
+        "offset": 0,
+        "items": [
+          {
+            "id": "gap",
+            "type": "clearance",
+            "parts": [
+              "body",
+              "lid"
+            ],
+            "min": 0.25,
+            "max": 0.35,
+            "required": true,
+            "allowContact": false
+          },
+          {
+            "id": "body-volume",
+            "type": "volume",
+            "part": "body",
+            "min": 1083.99,
+            "max": 1084.01,
+            "required": true
+          },
+          {
+            "id": "body-bounds",
+            "type": "bounds",
+            "part": "body",
+            "minDimensions": [
+              19.99999,
+              19.99999,
+              9.99999
+            ],
+            "maxDimensions": [
+              20.00001,
+              20.00001,
+              10.00001
+            ],
+            "required": true,
+            "frame": "local"
+          },
+          {
+            "id": "lid-volume",
+            "type": "volume",
+            "part": "lid",
+            "min": 399.99,
+            "max": 400.01,
+            "required": true
+          },
+          {
+            "id": "lid-bounds",
+            "type": "bounds",
+            "part": "lid",
+            "minDimensions": [
+              19.99999,
+              19.99999,
+              0.99999
+            ],
+            "maxDimensions": [
+              20.00001,
+              20.00001,
+              1.00001
+            ],
+            "required": true,
+            "frame": "local"
+          }
+        ],
+        "nextOffset": null
+      },
+      "operation": {
+        "id": "b5aefc73-4711-4144-903d-123fbf94055f",
+        "capabilityId": "cad.listParts",
+        "status": "succeeded"
+      }
+    },
+    "finished": "2026-11-17T02:11:52.344Z",
+    "elapsedMs": 5
+  },
+  {
+    "runId": "38ecf9ec-35da-4eb2-9288-88ed5c4c8c93",
+    "callId": "a56d2752-c532-4864-93ad-a59a95a5fc70",
+    "capability": "cad.checkAssembly",
+    "input": {
+      "quality": "verification",
+      "expectedManifestDigest": "c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f",
+      "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-dYr8oF/workspace/.scad/verification.json"
+    },
+    "inputStage": "native dispatcher input before schema validation; canonical URIs appear in returned report",
+    "actor": "agent",
+    "started": "2026-11-17T02:12:23.846Z",
+    "sourceDiskHash": "4ddb3e00c99b8429b7ae72399f36eec49b11e641629c967eb3fc4a4353bb3e26",
+    "sourceBufferHash": "4ddb3e00c99b8429b7ae72399f36eec49b11e641629c967eb3fc4a4353bb3e26",
+    "manifestDiskHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "manifestBufferHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "output": {
+      "ok": true,
+      "capabilityId": "cad.checkAssembly",
+      "data": {
+        "schemaVersion": 3,
+        "reportUri": "scad-cad-report:/cad-77f1a617-096f-4645-9494-de8cc889950a",
+        "reportId": "cad-77f1a617-096f-4645-9494-de8cc889950a",
+        "snapshotId": "d29adb1a714e9ef096ad7b70219e4a785aa2335e65b63a71f9a54c95930ed2de",
+        "manifestDigest": "c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f",
+        "current": true,
+        "executionStatus": "SUCCEEDED",
+        "overallStatus": "FAIL",
+        "units": "mm",
+        "precision": "based-on-frozen-exported-mesh",
+        "complete": true,
+        "checks": [
+          {
+            "id": "part:body:solid",
+            "required": true,
+            "status": "PASS",
+            "issueIds": [],
+            "reason": "Every declared part must be a non-empty, valid raw solid."
+          },
+          {
+            "id": "part:lid:solid",
+            "required": true,
+            "status": "PASS",
+            "issueIds": [],
+            "reason": "Every declared part must be a non-empty, valid raw solid."
+          },
+          {
+            "id": "gap",
+            "required": true,
+            "status": "FAIL",
+            "issueIds": [
+              "e918de67443ff66b3de06ee9bac8f40a27c21d5a17bf69f387bf8e2e590c1375"
+            ],
+            "pairId": "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51",
+            "relation": "clearanceViolation"
+          },
+          {
+            "id": "body-volume",
+            "required": true,
+            "status": "PASS",
+            "issueIds": []
+          },
+          {
+            "id": "body-bounds",
+            "required": true,
+            "status": "PASS",
+            "issueIds": []
+          },
+          {
+            "id": "lid-volume",
+            "required": true,
+            "status": "PASS",
+            "issueIds": []
+          },
+          {
+            "id": "lid-bounds",
+            "required": true,
+            "status": "PASS",
+            "issueIds": []
+          }
+        ],
+        "checkCount": 7,
+        "issues": [
+          {
+            "id": "e918de67443ff66b3de06ee9bac8f40a27c21d5a17bf69f387bf8e2e590c1375",
+            "code": "ASSEMBLY_CONSTRAINT_FAILED",
+            "title": "gap: clearanceViolation",
+            "status": "FAIL",
+            "source": "constraints",
+            "severity": "error",
+            "location": {
+              "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-dYr8oF/workspace/.scad/verification.json",
+              "line": 47,
+              "character": 4,
+              "confidence": "exact"
+            },
+            "relatedTrace": [],
+            "pairId": "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51",
+            "partIds": [
+              "body",
+              "lid"
+            ],
+            "pointer": "/checks/0"
+          }
+        ],
+        "issueCount": 1,
+        "pairs": [
+          {
+            "pairId": "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51",
+            "parts": [
+              "body",
+              "lid"
+            ],
+            "relation": "clear",
+            "minDistance": 0.18000030517578125,
+            "distanceBound": {
+              "lower": 0.18000030517578125,
+              "upper": 0.18000030517578125
+            },
+            "closestPoints": [
+              [
+                0,
+                0,
+                10
+              ],
+              [
+                0,
+                0,
+                10.180000305175781
+              ]
+            ],
+            "witnessCoordinateBounds": [
+              [
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 10,
+                  "upper": 10
+                }
+              ],
+              [
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 10.180000305175781,
+                  "upper": 10.180000305175781
+                }
+              ]
+            ],
+            "triangles": [
+              0,
+              10
+            ],
+            "contained": false,
+            "overlapVolume": null,
+            "overlapVolumeStatus": "notChecked",
+            "method": "exact-dyadic-bvh-v1",
+            "complete": true,
+            "errorBound": 0,
+            "durationMs": 15.232917000015732
+          }
+        ],
+        "pairCount": 1,
+        "incomplete": [],
+        "coverage": {
+          "checkedPairs": [
+            "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51"
+          ],
+          "uncheckedPairCount": 0,
+          "uncheckedPairs": []
+        },
+        "notChecked": [
+          "overlap-volume",
+          "motion",
+          "analytic-surface-error",
+          "thickness",
+          "printability"
+        ]
+      },
+      "operation": {
+        "id": "a7bb2a55-6fbf-4155-ad2c-5744f08dc1dd",
+        "capabilityId": "cad.checkAssembly",
+        "status": "succeeded"
+      }
+    },
+    "finished": "2026-11-17T02:12:24.194Z",
+    "elapsedMs": 348
+  },
+  {
+    "runId": "38ecf9ec-35da-4eb2-9288-88ed5c4c8c93",
+    "callId": "7f9b2e4e-840a-421c-874a-264256abb019",
+    "capability": "cad.issueDetails",
+    "input": {
+      "includeEvidence": true,
+      "issueId": "e918de67443ff66b3de06ee9bac8f40a27c21d5a17bf69f387bf8e2e590c1375",
+      "reportId": "cad-77f1a617-096f-4645-9494-de8cc889950a"
+    },
+    "inputStage": "native dispatcher input before schema validation; canonical URIs appear in returned report",
+    "actor": "agent",
+    "started": "2026-11-17T02:12:51.569Z",
+    "sourceDiskHash": "4ddb3e00c99b8429b7ae72399f36eec49b11e641629c967eb3fc4a4353bb3e26",
+    "sourceBufferHash": "4ddb3e00c99b8429b7ae72399f36eec49b11e641629c967eb3fc4a4353bb3e26",
+    "manifestDiskHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "manifestBufferHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "output": {
+      "ok": true,
+      "capabilityId": "cad.issueDetails",
+      "data": {
+        "reportId": "cad-77f1a617-096f-4645-9494-de8cc889950a",
+        "snapshotId": "d29adb1a714e9ef096ad7b70219e4a785aa2335e65b63a71f9a54c95930ed2de",
+        "current": true,
+        "evidence": {
+          "text": "[{\"pairId\":\"48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51\",\"parts\":[\"body\",\"lid\"],\"relation\":\"clear\",\"minDistance\":0.18000030517578125,\"distanceBound\":{\"lower\":0.18000030517578125,\"upper\":0.18000030517578125},\"closestPoints\":[[0,0,10],[0,0,10.180000305175781]],\"witnessCoordinateBounds\":[[{\"lower\":0,\"upper\":0},{\"lower\":0,\"upper\":0},{\"lower\":10,\"upper\":10}],[{\"lower\":0,\"upper\":0},{\"lower\":0,\"upper\":0},{\"lower\":10.180000305175781,\"upper\":10.180000305175781}]],\"triangles\":[0,10],\"contained\":false,\"overlapVolume\":null,\"overlapVolumeStatus\":\"notChecked\",\"method\":\"exact-dyadic-bvh-v1\",\"complete\":true,\"errorBound\":0,\"durationMs\":15.232917000015732}]",
+          "truncated": false
+        },
+        "issue": {
+          "id": "e918de67443ff66b3de06ee9bac8f40a27c21d5a17bf69f387bf8e2e590c1375",
+          "code": "ASSEMBLY_CONSTRAINT_FAILED",
+          "title": "gap: clearanceViolation",
+          "status": "FAIL",
+          "source": "constraints",
+          "severity": "error",
+          "location": {
+            "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-dYr8oF/workspace/.scad/verification.json",
+            "line": 47,
+            "character": 4,
+            "confidence": "exact"
+          },
+          "relatedTrace": [],
+          "evidenceIds": [
+            "6ff06b70d4dafc9a9d4cdb40726072b69df7e5a086cfa49f7fbb2cb4c957aa4d",
+            "afe648213a40b7d4af8e3cf802d4267d04b88d7f14c17ffeb15dd961149d9caf",
+            "37b390e88b46ddc76eae37845d6b344605fef1cf47765f7dcdafc4d626dfd34f",
+            "be32c6818e605c1e79a616d7114bbecc5fb72d277c0ca73592317c8f5eba5a78",
+            "5a3ab106d96db7865571e84af1956362566f1cc279482b28c4fa81d598a4c90e",
+            "7c7979c8839fdf5e011ce724a3eb5a9d8db7cd10c0df80025d671ead719426c6",
+            "fd91046417bd110edf45daf5762a2744e4d9ab23444989bcbe89c10fe812caa1",
+            "dda95f024dadc45289a61503fa8e1f5650a3eb9277e2ed20747f5044e6fb1ee0",
+            "e6b0fae9174838db76b5e674c0c0d0fec39384fb224ca4715b034c6b95c1a6fd",
+            "39d6c62eb8c0a98a88334827ab15a150b45758ab7558e4c7c20255053d848ead",
+            "b44e4637edadcabe619f08e357dbb8d1d6be20fa206782a15b95197f405c5906"
+          ],
+          "pairId": "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51",
+          "partIds": [
+            "body",
+            "lid"
+          ],
+          "pointer": "/checks/0",
+          "spatial": {
+            "pairId": "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51",
+            "parts": [
+              "body",
+              "lid"
+            ],
+            "relation": "clear",
+            "minDistance": 0.18000030517578125,
+            "distanceBound": {
+              "lower": 0.18000030517578125,
+              "upper": 0.18000030517578125
+            },
+            "closestPoints": [
+              [
+                0,
+                0,
+                10
+              ],
+              [
+                0,
+                0,
+                10.180000305175781
+              ]
+            ],
+            "witnessCoordinateBounds": [
+              [
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 10,
+                  "upper": 10
+                }
+              ],
+              [
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 10.180000305175781,
+                  "upper": 10.180000305175781
+                }
+              ]
+            ],
+            "triangles": [
+              0,
+              10
+            ],
+            "contained": false,
+            "overlapVolume": null,
+            "overlapVolumeStatus": "notChecked",
+            "method": "exact-dyadic-bvh-v1",
+            "complete": true,
+            "errorBound": 0,
+            "durationMs": 15.232917000015732
+          }
+        },
+        "geometryEvidence": {
+          "coordinateUnits": "mm",
+          "items": [
+            {
+              "pairId": "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51",
+              "parts": [
+                "body",
+                "lid"
+              ],
+              "relation": "clear",
+              "minDistance": 0.18000030517578125,
+              "distanceBound": {
+                "lower": 0.18000030517578125,
+                "upper": 0.18000030517578125
+              },
+              "closestPoints": [
+                [
+                  0,
+                  0,
+                  10
+                ],
+                [
+                  0,
+                  0,
+                  10.180000305175781
+                ]
+              ],
+              "witnessCoordinateBounds": [
+                [
+                  {
+                    "lower": 0,
+                    "upper": 0
+                  },
+                  {
+                    "lower": 0,
+                    "upper": 0
+                  },
+                  {
+                    "lower": 10,
+                    "upper": 10
+                  }
+                ],
+                [
+                  {
+                    "lower": 0,
+                    "upper": 0
+                  },
+                  {
+                    "lower": 0,
+                    "upper": 0
+                  },
+                  {
+                    "lower": 10.180000305175781,
+                    "upper": 10.180000305175781
+                  }
+                ]
+              ],
+              "triangles": [
+                0,
+                10
+              ],
+              "contained": false,
+              "overlapVolume": null,
+              "overlapVolumeStatus": "notChecked",
+              "method": "exact-dyadic-bvh-v1",
+              "complete": true,
+              "errorBound": 0,
+              "durationMs": 15.232917000015732
+            }
+          ],
+          "nextCursor": null,
+          "artifacts": [
+            {
+              "id": "6ff06b70d4dafc9a9d4cdb40726072b69df7e5a086cfa49f7fbb2cb4c957aa4d",
+              "snapshotId": "a2fddc0fc67bbd15992306a111f965490637bc3bcc29b709455af65b6a94f0b4",
+              "kind": "log",
+              "mimeType": "text/plain",
+              "sha256": "23f2eb4423ae6e245d002c1b9fe580e96ebff6ffb1dc4a38dc41ffe56ae400c2",
+              "bytes": 295
+            },
+            {
+              "id": "afe648213a40b7d4af8e3cf802d4267d04b88d7f14c17ffeb15dd961149d9caf",
+              "snapshotId": "a2fddc0fc67bbd15992306a111f965490637bc3bcc29b709455af65b6a94f0b4",
+              "kind": "mesh",
+              "mimeType": "model/stl",
+              "sha256": "0e628ad3a6d90c1baee76930d8c20f0b203c133c620d984b5b975b0e7469a6e9",
+              "bytes": 1484,
+              "role": "raw"
+            },
+            {
+              "id": "37b390e88b46ddc76eae37845d6b344605fef1cf47765f7dcdafc4d626dfd34f",
+              "snapshotId": "a2fddc0fc67bbd15992306a111f965490637bc3bcc29b709455af65b6a94f0b4",
+              "kind": "mesh",
+              "mimeType": "model/stl",
+              "sha256": "2b52f62d068587aa4c1b12498518ad307f440cf6bda2fc47e18ba877511b3065",
+              "bytes": 1484,
+              "role": "render",
+              "derivation": {
+                "inputSha256": "0e628ad3a6d90c1baee76930d8c20f0b203c133c620d984b5b975b0e7469a6e9",
+                "numericType": "float32",
+                "maxCoordinateError": 0
+              }
+            },
+            {
+              "id": "be32c6818e605c1e79a616d7114bbecc5fb72d277c0ca73592317c8f5eba5a78",
+              "snapshotId": "a2fddc0fc67bbd15992306a111f965490637bc3bcc29b709455af65b6a94f0b4",
+              "kind": "analysis",
+              "mimeType": "application/json",
+              "sha256": "67c52de6f487684ae7307a57ffcd2e2f20afd5fa86fb7a2b707c130a24a12536",
+              "bytes": 2046
+            },
+            {
+              "id": "5a3ab106d96db7865571e84af1956362566f1cc279482b28c4fa81d598a4c90e",
+              "snapshotId": "1111a15fde328d4a4cef5ea296117f36171d9c8eef84dadf9249c263d81037e9",
+              "kind": "log",
+              "mimeType": "text/plain",
+              "sha256": "dc63e44a8ba4f136eee579240e9e70355efaf8041abd9787917bf914a359d256",
+              "bytes": 246
+            },
+            {
+              "id": "7c7979c8839fdf5e011ce724a3eb5a9d8db7cd10c0df80025d671ead719426c6",
+              "snapshotId": "1111a15fde328d4a4cef5ea296117f36171d9c8eef84dadf9249c263d81037e9",
+              "kind": "mesh",
+              "mimeType": "model/stl",
+              "sha256": "4fa29cdd13af1fd75cac680c9cc4d502d3ad22b6ed4af9e4f621241305b37f71",
+              "bytes": 684,
+              "role": "raw"
+            },
+            {
+              "id": "fd91046417bd110edf45daf5762a2744e4d9ab23444989bcbe89c10fe812caa1",
+              "snapshotId": "1111a15fde328d4a4cef5ea296117f36171d9c8eef84dadf9249c263d81037e9",
+              "kind": "mesh",
+              "mimeType": "model/stl",
+              "sha256": "2a4f331a54a1c95249b13f3a0af622651e69726071c5de29bc66e9d91c483d26",
+              "bytes": 684,
+              "role": "render",
+              "derivation": {
+                "inputSha256": "4fa29cdd13af1fd75cac680c9cc4d502d3ad22b6ed4af9e4f621241305b37f71",
+                "numericType": "float32",
+                "maxCoordinateError": 0
+              }
+            },
+            {
+              "id": "dda95f024dadc45289a61503fa8e1f5650a3eb9277e2ed20747f5044e6fb1ee0",
+              "snapshotId": "1111a15fde328d4a4cef5ea296117f36171d9c8eef84dadf9249c263d81037e9",
+              "kind": "analysis",
+              "mimeType": "application/json",
+              "sha256": "5e32ac7f50ce304c349c1ad7ca6423587605a638cded08a0d08c527f1ae300a9",
+              "bytes": 2030
+            },
+            {
+              "id": "e6b0fae9174838db76b5e674c0c0d0fec39384fb224ca4715b034c6b95c1a6fd",
+              "snapshotId": "d29adb1a714e9ef096ad7b70219e4a785aa2335e65b63a71f9a54c95930ed2de",
+              "kind": "mesh",
+              "mimeType": "application/vnd.scad-ai-ide.world-mesh",
+              "sha256": "3f0b2de4f80e2e329591ca0c67dfc7e1003d650927565bcb7023eb90ca3a2a46",
+              "bytes": 3608
+            },
+            {
+              "id": "39d6c62eb8c0a98a88334827ab15a150b45758ab7558e4c7c20255053d848ead",
+              "snapshotId": "d29adb1a714e9ef096ad7b70219e4a785aa2335e65b63a71f9a54c95930ed2de",
+              "kind": "mesh",
+              "mimeType": "model/stl",
+              "sha256": "f9df2c7c68ba165175151a0f7d1cd804efc32c90be274cc7f53bb400088bcd79",
+              "bytes": 2084,
+              "role": "render",
+              "derivation": {
+                "inputSha256": "3f0b2de4f80e2e329591ca0c67dfc7e1003d650927565bcb7023eb90ca3a2a46",
+                "numericType": "float32",
+                "maxCoordinateError": 0
+              }
+            }
+          ],
+          "nextArtifactCursor": 10
+        }
+      },
+      "operation": {
+        "id": "5f7f71d2-a739-437d-b777-ebdcd39cf061",
+        "capabilityId": "cad.issueDetails",
+        "status": "succeeded"
+      }
+    },
+    "finished": "2026-11-17T02:12:51.589Z",
+    "elapsedMs": 20
+  },
+  {
+    "runId": "38ecf9ec-35da-4eb2-9288-88ed5c4c8c93",
+    "callId": "93473075-ccef-43e1-ba64-5946dea87111",
+    "capability": "cad.checkAssembly",
+    "input": {
+      "quality": "verification",
+      "expectedManifestDigest": "c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f",
+      "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-dYr8oF/workspace/.scad/verification.json"
+    },
+    "inputStage": "native dispatcher input before schema validation; canonical URIs appear in returned report",
+    "actor": "agent",
+    "started": "2026-11-17T02:14:22.906Z",
+    "sourceDiskHash": "6d8380630c09031dfd4391b2aaf766fa69974d75856b35824e545fd239376d11",
+    "sourceBufferHash": "6d8380630c09031dfd4391b2aaf766fa69974d75856b35824e545fd239376d11",
+    "manifestDiskHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "manifestBufferHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "output": {
+      "ok": true,
+      "capabilityId": "cad.checkAssembly",
+      "data": {
+        "schemaVersion": 3,
+        "reportUri": "scad-cad-report:/cad-19dc665d-aeca-47d7-bb87-84ef81b9b2a0",
+        "reportId": "cad-19dc665d-aeca-47d7-bb87-84ef81b9b2a0",
+        "snapshotId": "0bf926bec7fc782c682f5e0eda4588bd3e27ad5f244b0f68742ebba13b69ad46",
+        "manifestDigest": "c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f",
+        "current": true,
+        "executionStatus": "SUCCEEDED",
+        "overallStatus": "PASS",
+        "units": "mm",
+        "precision": "based-on-frozen-exported-mesh",
+        "complete": true,
+        "checks": [
+          {
+            "id": "part:body:solid",
+            "required": true,
+            "status": "PASS",
+            "issueIds": [],
+            "reason": "Every declared part must be a non-empty, valid raw solid."
+          },
+          {
+            "id": "part:lid:solid",
+            "required": true,
+            "status": "PASS",
+            "issueIds": [],
+            "reason": "Every declared part must be a non-empty, valid raw solid."
+          },
+          {
+            "id": "gap",
+            "required": true,
+            "status": "PASS",
+            "issueIds": [],
+            "pairId": "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51",
+            "relation": "clear"
+          },
+          {
+            "id": "body-volume",
+            "required": true,
+            "status": "PASS",
+            "issueIds": []
+          },
+          {
+            "id": "body-bounds",
+            "required": true,
+            "status": "PASS",
+            "issueIds": []
+          },
+          {
+            "id": "lid-volume",
+            "required": true,
+            "status": "PASS",
+            "issueIds": []
+          },
+          {
+            "id": "lid-bounds",
+            "required": true,
+            "status": "PASS",
+            "issueIds": []
+          }
+        ],
+        "checkCount": 7,
+        "issues": [],
+        "issueCount": 0,
+        "pairs": [
+          {
+            "pairId": "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51",
+            "parts": [
+              "body",
+              "lid"
+            ],
+            "relation": "clear",
+            "minDistance": 0.3000001907348633,
+            "distanceBound": {
+              "lower": 0.3000001907348633,
+              "upper": 0.3000001907348633
+            },
+            "closestPoints": [
+              [
+                0,
+                0,
+                10
+              ],
+              [
+                0,
+                0,
+                10.300000190734863
+              ]
+            ],
+            "witnessCoordinateBounds": [
+              [
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 10,
+                  "upper": 10
+                }
+              ],
+              [
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 10.300000190734863,
+                  "upper": 10.300000190734863
+                }
+              ]
+            ],
+            "triangles": [
+              0,
+              10
+            ],
+            "contained": false,
+            "overlapVolume": null,
+            "overlapVolumeStatus": "notChecked",
+            "method": "exact-dyadic-bvh-v1",
+            "complete": true,
+            "errorBound": 0,
+            "durationMs": 14.184499999973923
+          }
+        ],
+        "pairCount": 1,
+        "incomplete": [],
+        "coverage": {
+          "checkedPairs": [
+            "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51"
+          ],
+          "uncheckedPairCount": 0,
+          "uncheckedPairs": []
+        },
+        "notChecked": [
+          "overlap-volume",
+          "motion",
+          "analytic-surface-error",
+          "thickness",
+          "printability"
+        ]
+      },
+      "operation": {
+        "id": "cf6ccb9b-625c-48dc-ac93-6987a191a5ee",
+        "capabilityId": "cad.checkAssembly",
+        "status": "succeeded"
+      }
+    },
+    "finished": "2026-11-17T02:14:23.176Z",
+    "elapsedMs": 270
+  },
+  {
+    "runId": "38ecf9ec-35da-4eb2-9288-88ed5c4c8c93",
+    "callId": "665f8af1-e91f-4416-b40c-4afbdb2a6a8a",
+    "capability": "cad.modelMeasure",
+    "input": {
+      "measurementTypes": [
+        "bounds",
+        "surfaceArea",
+        "physicalVolume",
+        "topology"
+      ],
+      "reportId": "cad-19dc665d-aeca-47d7-bb87-84ef81b9b2a0"
+    },
+    "inputStage": "native dispatcher input before schema validation; canonical URIs appear in returned report",
+    "actor": "agent",
+    "started": "2026-11-17T02:15:22.319Z",
+    "sourceDiskHash": "6d8380630c09031dfd4391b2aaf766fa69974d75856b35824e545fd239376d11",
+    "sourceBufferHash": "6d8380630c09031dfd4391b2aaf766fa69974d75856b35824e545fd239376d11",
+    "manifestDiskHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "manifestBufferHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "output": {
+      "ok": true,
+      "capabilityId": "cad.modelMeasure",
+      "data": {
+        "reportId": "cad-19dc665d-aeca-47d7-bb87-84ef81b9b2a0",
+        "snapshotId": "0bf926bec7fc782c682f5e0eda4588bd3e27ad5f244b0f68742ebba13b69ad46",
+        "current": true,
+        "units": "mm",
+        "precision": "based-on-frozen-exported-mesh",
+        "overallStatus": "PASS",
+        "parts": [
+          {
+            "partId": "body",
+            "local": {
+              "bounds": {
+                "min": [
+                  0,
+                  0,
+                  0
+                ],
+                "max": [
+                  20,
+                  20,
+                  10
+                ],
+                "dimensions": [
+                  20,
+                  20,
+                  10
+                ]
+              },
+              "surfaceArea": {
+                "status": "PASS",
+                "value": 2248,
+                "errorEstimate": 2.0964563418601756e-11,
+                "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+              },
+              "physicalVolume": {
+                "status": "PASS",
+                "value": 1083.9999999999998,
+                "errorEstimate": 1.0109246773026824e-11,
+                "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+              },
+              "topology": {
+                "vertices": 84,
+                "triangles": 28,
+                "componentCount": 1,
+                "complete": true
+              }
+            },
+            "assembly": {
+              "bounds": {
+                "min": [
+                  0,
+                  0,
+                  0
+                ],
+                "max": [
+                  20,
+                  20,
+                  10
+                ],
+                "dimensions": [
+                  20,
+                  20,
+                  10
+                ]
+              },
+              "surfaceArea": {
+                "status": "PASS",
+                "value": 2248,
+                "errorEstimate": 2.0964563418601756e-11,
+                "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+              },
+              "physicalVolume": {
+                "status": "PASS",
+                "value": 1083.9999999999998,
+                "errorEstimate": 1.0109246773026824e-11,
+                "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+              },
+              "topology": {
+                "vertices": 84,
+                "triangles": 28,
+                "componentCount": 1,
+                "complete": true
+              }
+            },
+            "matrix": [
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1
+            ],
+            "physicalVolumeBound": {
+              "lower": 1084,
+              "upper": 1084
+            }
+          },
+          {
+            "partId": "lid",
+            "local": {
+              "bounds": {
+                "min": [
+                  0,
+                  0,
+                  10.300000190734863
+                ],
+                "max": [
+                  20,
+                  20,
+                  11.300000190734863
+                ],
+                "dimensions": [
+                  20,
+                  20,
+                  1
+                ]
+              },
+              "surfaceArea": {
+                "status": "PASS",
+                "value": 880,
+                "errorEstimate": 8.206768598029157e-12,
+                "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+              },
+              "physicalVolume": {
+                "status": "PASS",
+                "value": 400,
+                "errorEstimate": 3.730349362740526e-12,
+                "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+              },
+              "topology": {
+                "vertices": 36,
+                "triangles": 12,
+                "componentCount": 1,
+                "complete": true
+              }
+            },
+            "assembly": {
+              "bounds": {
+                "min": [
+                  0,
+                  0,
+                  10.300000190734863
+                ],
+                "max": [
+                  20,
+                  20,
+                  11.300000190734863
+                ],
+                "dimensions": [
+                  20,
+                  20,
+                  1
+                ]
+              },
+              "surfaceArea": {
+                "status": "PASS",
+                "value": 880,
+                "errorEstimate": 8.206768598029157e-12,
+                "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+              },
+              "physicalVolume": {
+                "status": "PASS",
+                "value": 400,
+                "errorEstimate": 3.730349362740526e-12,
+                "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+              },
+              "topology": {
+                "vertices": 36,
+                "triangles": 12,
+                "componentCount": 1,
+                "complete": true
+              }
+            },
+            "matrix": [
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1
+            ],
+            "physicalVolumeBound": {
+              "lower": 400,
+              "upper": 400
+            }
+          }
+        ],
+        "total": 2,
+        "offset": 0,
+        "nextOffset": null,
+        "assemblyPhysicalVolume": {
+          "status": "UNRESOLVED",
+          "value": null,
+          "reason": "UNION_VOLUME_NOT_CHECKED"
+        },
+        "incomplete": []
+      },
+      "operation": {
+        "id": "39e5ab35-d843-4e72-b393-c30d35fffb16",
+        "capabilityId": "cad.modelMeasure",
+        "status": "succeeded"
+      }
+    },
+    "finished": "2026-11-17T02:15:22.353Z",
+    "elapsedMs": 34
+  },
+  {
+    "runId": "38ecf9ec-35da-4eb2-9288-88ed5c4c8c93",
+    "callId": "aaab7e97-f9e5-4496-b9e8-d3d9f14819e9",
+    "capability": "cad.modelRenderViews",
+    "input": {
+      "cameras": [
+        "iso"
+      ],
+      "reportId": "cad-19dc665d-aeca-47d7-bb87-84ef81b9b2a0"
+    },
+    "inputStage": "native dispatcher input before schema validation; canonical URIs appear in returned report",
+    "actor": "agent",
+    "started": "2026-11-17T02:15:22.359Z",
+    "sourceDiskHash": "6d8380630c09031dfd4391b2aaf766fa69974d75856b35824e545fd239376d11",
+    "sourceBufferHash": "6d8380630c09031dfd4391b2aaf766fa69974d75856b35824e545fd239376d11",
+    "manifestDiskHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "manifestBufferHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "output": {
+      "ok": true,
+      "capabilityId": "cad.modelRenderViews",
+      "data": {
+        "reportId": "cad-19dc665d-aeca-47d7-bb87-84ef81b9b2a0",
+        "snapshotId": "0bf926bec7fc782c682f5e0eda4588bd3e27ad5f244b0f68742ebba13b69ad46",
+        "current": true,
+        "renderStatus": "AVAILABLE",
+        "frames": [
+          {
+            "view": "iso",
+            "artifact": {
+              "id": "e183568f368da27dbc30b4e4fbc1da55341e1e06da5dea9b8e0438cbb0712e97",
+              "snapshotId": "0bf926bec7fc782c682f5e0eda4588bd3e27ad5f244b0f68742ebba13b69ad46",
+              "kind": "image",
+              "mimeType": "image/png",
+              "sha256": "9c452d2fb04c045809589b7beaef477730009ed1767331c9da10ce4799ba6c08",
+              "bytes": 9978
+            },
+            "artifactUri": "scad-cad-artifact:/e183568f368da27dbc30b4e4fbc1da55341e1e06da5dea9b8e0438cbb0712e97.png",
+            "renderSnapshotId": "03ec39b970f5882b2385d44c2d9dd0fda303db6ad4c74745e8dac146ccf0cc74",
+            "sourceMeshSha256": "acdb921d38002870eb2850a51619e34c0e59ba744160c03d7393c407b678f240",
+            "renderedMeshSha256": "2d9a3b5da7b8738aaafd99d7f8265ec856111441fc10457435309fa08862d5cd",
+            "camera": {
+              "arguments": [
+                0,
+                0,
+                0,
+                55,
+                0,
+                25,
+                60
+              ],
+              "projection": "orthographic",
+              "framing": "cli-autocenter-viewall"
+            },
+            "imageSize": [
+              512,
+              512
+            ],
+            "runtime": {
+              "identityHash": "e96015c6055eecf80eb1d503856e3dc6385f64a20e47324c58da599c8034d94b",
+              "version": "2026.11-RC0"
+            },
+            "displayOnly": true,
+            "coordinateQuantizationError": 0
+          }
+        ],
+        "delivery": "metadata",
+        "notExamined": [
+          "visual-inspection",
+          "printability"
+        ],
+        "partIds": [
+          "body",
+          "lid"
+        ],
+        "sourceCoordinateFrame": "assembly-world"
+      },
+      "operation": {
+        "id": "51813cb7-2bbe-4812-aa1b-841becad246e",
+        "capabilityId": "cad.modelRenderViews",
+        "status": "succeeded"
+      }
+    },
+    "finished": "2026-11-17T02:15:22.590Z",
+    "elapsedMs": 231
+  }
+]

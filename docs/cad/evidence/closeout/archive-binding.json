@@ -1,0 +1,446 @@
+{
+  "vsix": ".build/scad-ai-ide-closeout.vsix",
+  "sha256": "b8baf69b34271736c6ed57e55494bf44d3a3ce8086fd14a52123980fbefa27d5",
+  "allMatch": true,
+  "scope": "Production assets only; test harness and repository-only docs are not installed runtime assets",
+  "assets": [
+    {
+      "file": "dist/assembly-verification-worker.mjs",
+      "packagedSha256": "4cf6a34e20c858734c7863050e37ab521cbcbd375e9f6fbaedb74315de2c3c83",
+      "currentSha256": "4cf6a34e20c858734c7863050e37ab521cbcbd375e9f6fbaedb74315de2c3c83",
+      "matches": true
+    },
+    {
+      "file": "dist/assembly-verification-worker.mjs.LEGAL.txt",
+      "packagedSha256": "7c8f23d0a40e5fda506e55c252e9aa93d489882a419bb9f3aff3f70c42dab276",
+      "currentSha256": "7c8f23d0a40e5fda506e55c252e9aa93d489882a419bb9f3aff3f70c42dab276",
+      "matches": true
+    },
+    {
+      "file": "dist/bundled-packages.json",
+      "packagedSha256": "a0c2693db02b537121e58325816f46bffb16d30a6198ca934a5bbc410d14f016",
+      "currentSha256": "a0c2693db02b537121e58325816f46bffb16d30a6198ca934a5bbc410d14f016",
+      "matches": true
+    },
+    {
+      "file": "dist/customizer.css",
+      "packagedSha256": "6e2b3177dcc5b4a6ae1f5b571019b319b975834c99c4a361f872dde0c83c151e",
+      "currentSha256": "6e2b3177dcc5b4a6ae1f5b571019b319b975834c99c4a361f872dde0c83c151e",
+      "matches": true
+    },
+    {
+      "file": "dist/customizer.js",
+      "packagedSha256": "5026cf28bd5e0f25a3d03847f07c05949a8339416cf7c9dfce37ec2770e5ab8f",
+      "currentSha256": "5026cf28bd5e0f25a3d03847f07c05949a8339416cf7c9dfce37ec2770e5ab8f",
+      "matches": true
+    },
+    {
+      "file": "dist/extension.js",
+      "packagedSha256": "59225b196f76fd7df1052725cf363c69099494abba36ac6e93319576fdc00384",
+      "currentSha256": "59225b196f76fd7df1052725cf363c69099494abba36ac6e93319576fdc00384",
+      "matches": true
+    },
+    {
+      "file": "dist/manifold.wasm",
+      "packagedSha256": "73e3b419ad31294f6b1cc478173944e50efc4a34bfdeeff0107bdfc12975f11c",
+      "currentSha256": "73e3b419ad31294f6b1cc478173944e50efc4a34bfdeeff0107bdfc12975f11c",
+      "matches": true
+    },
+    {
+      "file": "dist/markdown-owned.js",
+      "packagedSha256": "9871b202c1c3afd459fe304b1ad6d83f2198b3333012402e050e5d173c89e9a0",
+      "currentSha256": "9871b202c1c3afd459fe304b1ad6d83f2198b3333012402e050e5d173c89e9a0",
+      "matches": true
+    },
+    {
+      "file": "dist/markdown-preview.js",
+      "packagedSha256": "c29a706e57766ba8b0b6dd00d6a43dc766b05ea6980bfef97879f9bcdce939d3",
+      "currentSha256": "c29a706e57766ba8b0b6dd00d6a43dc766b05ea6980bfef97879f9bcdce939d3",
+      "matches": true
+    },
+    {
+      "file": "dist/mesh-topology-worker.mjs",
+      "packagedSha256": "0c72ca6341d0b22c62c0a594c21cc0e264b399f982d84194716136ce1fa91c4d",
+      "currentSha256": "0c72ca6341d0b22c62c0a594c21cc0e264b399f982d84194716136ce1fa91c4d",
+      "matches": true
+    },
+    {
+      "file": "dist/mesh-verification-worker.mjs",
+      "packagedSha256": "7b33903147604def6fd158996bcbeb5240265a0e1cebcf2e1a504c38f514c55e",
+      "currentSha256": "7b33903147604def6fd158996bcbeb5240265a0e1cebcf2e1a504c38f514c55e",
+      "matches": true
+    },
+    {
+      "file": "dist/mesh-verification-worker.mjs.LEGAL.txt",
+      "packagedSha256": "7c8f23d0a40e5fda506e55c252e9aa93d489882a419bb9f3aff3f70c42dab276",
+      "currentSha256": "7c8f23d0a40e5fda506e55c252e9aa93d489882a419bb9f3aff3f70c42dab276",
+      "matches": true
+    },
+    {
+      "file": "dist/onig.wasm",
+      "packagedSha256": "76ebc1f0d87b2e7449a45ff3cd1a1546a9f05f54bdac44ee03e8a2b8348897be",
+      "currentSha256": "76ebc1f0d87b2e7449a45ff3cd1a1546a9f05f54bdac44ee03e8a2b8348897be",
+      "matches": true
+    },
+    {
+      "file": "dist/panel-scrollbar.css",
+      "packagedSha256": "6e2b3177dcc5b4a6ae1f5b571019b319b975834c99c4a361f872dde0c83c151e",
+      "currentSha256": "6e2b3177dcc5b4a6ae1f5b571019b319b975834c99c4a361f872dde0c83c151e",
+      "matches": true
+    },
+    {
+      "file": "dist/panel-scrollbar.js",
+      "packagedSha256": "cbf7e42f41d7b4c3d323ab079c798ee10278357f674b8af9949df3f0e3f3060f",
+      "currentSha256": "cbf7e42f41d7b4c3d323ab079c798ee10278357f674b8af9949df3f0e3f3060f",
+      "matches": true
+    },
+    {
+      "file": "dist/preview.js",
+      "packagedSha256": "5a052516e2c2caf0a99a15986ac4a5cfeaa24945e1b939f2ea47586de0c03c04",
+      "currentSha256": "5a052516e2c2caf0a99a15986ac4a5cfeaa24945e1b939f2ea47586de0c03c04",
+      "matches": true
+    },
+    {
+      "file": "dist/review-geometry-worker.mjs",
+      "packagedSha256": "72d3205a220506d988d881b5f539595a6bf73a56bb111b3c5604fe8e80f4b201",
+      "currentSha256": "72d3205a220506d988d881b5f539595a6bf73a56bb111b3c5604fe8e80f4b201",
+      "matches": true
+    },
+    {
+      "file": "dist/review-geometry-worker.mjs.LEGAL.txt",
+      "packagedSha256": "7c8f23d0a40e5fda506e55c252e9aa93d489882a419bb9f3aff3f70c42dab276",
+      "currentSha256": "7c8f23d0a40e5fda506e55c252e9aa93d489882a419bb9f3aff3f70c42dab276",
+      "matches": true
+    },
+    {
+      "file": "dist/review-view.js",
+      "packagedSha256": "e9a0b430ff0d35dd9647ce3e99b570b6d36d251443b651ec36bb72ad4353facc",
+      "currentSha256": "e9a0b430ff0d35dd9647ce3e99b570b6d36d251443b651ec36bb72ad4353facc",
+      "matches": true
+    },
+    {
+      "file": "dist/review-view.js.LEGAL.txt",
+      "packagedSha256": "94e15cbba9180e3ab899dce5f22222705678ea7b78832f7354b26d8e2583c4a4",
+      "currentSha256": "94e15cbba9180e3ab899dce5f22222705678ea7b78832f7354b26d8e2583c4a4",
+      "matches": true
+    },
+    {
+      "file": "instructions/openscad-customizer.instructions.md",
+      "packagedSha256": "f4b5106933eab3cf06eb890104f26d699a308beda46942e01636bea3a5995f09",
+      "currentSha256": "f4b5106933eab3cf06eb890104f26d699a308beda46942e01636bea3a5995f09",
+      "matches": true
+    },
+    {
+      "file": "instructions/openscad.instructions.md",
+      "packagedSha256": "0da129683c24de54a25d76159855168fddd34a945371d11f42fc45b02d6d2f76",
+      "currentSha256": "0da129683c24de54a25d76159855168fddd34a945371d11f42fc45b02d6d2f76",
+      "matches": true
+    },
+    {
+      "file": "resources/openscad.svg",
+      "packagedSha256": "75a13719473b8820de0d3e39762e8cae60f711ea997b63499945159381b32d3a",
+      "currentSha256": "75a13719473b8820de0d3e39762e8cae60f711ea997b63499945159381b32d3a",
+      "matches": true
+    },
+    {
+      "file": "resources/scad.svg",
+      "packagedSha256": "c3f1485a7bfc650557fc8ac169b484ad53b7d7a80aebf913cc82d88803552b3f",
+      "currentSha256": "c3f1485a7bfc650557fc8ac169b484ad53b7d7a80aebf913cc82d88803552b3f",
+      "matches": true
+    },
+    {
+      "file": "server/LICENSE-APACHE",
+      "packagedSha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+      "currentSha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+      "matches": true
+    },
+    {
+      "file": "snippets/openscad.json",
+      "packagedSha256": "187279dde047297b0fd8996c1641b8035c39e1a8bedc6f2af84b52ca95b4095a",
+      "currentSha256": "187279dde047297b0fd8996c1641b8035c39e1a8bedc6f2af84b52ca95b4095a",
+      "matches": true
+    },
+    {
+      "file": "syntaxes/markdown-openscad.tmLanguage.json",
+      "packagedSha256": "ae7106b814b96187eb903ce0f468c5e14eca43699b5ed410c1bb8b8a189ff126",
+      "currentSha256": "ae7106b814b96187eb903ce0f468c5e14eca43699b5ed410c1bb8b8a189ff126",
+      "matches": true
+    },
+    {
+      "file": "syntaxes/openscad.tmLanguage.json",
+      "packagedSha256": "e7cbbb854c96ed6cf303c4c73d494eccae6ad9197b0d3bceaac84c919c744bb0",
+      "currentSha256": "e7cbbb854c96ed6cf303c4c73d494eccae6ad9197b0d3bceaac84c919c744bb0",
+      "matches": true
+    },
+    {
+      "file": "dist/codicons/codicon.css",
+      "packagedSha256": "04fca10892d8f2be5104c920b640d9a58ddcf87f4902ea300fcf08de6634f3f6",
+      "currentSha256": "04fca10892d8f2be5104c920b640d9a58ddcf87f4902ea300fcf08de6634f3f6",
+      "matches": true
+    },
+    {
+      "file": "dist/codicons/codicon.ttf",
+      "packagedSha256": "2bb558cb693451e73c28c33fe64aa89bc19b1a4b70f95948322c243f93476920",
+      "currentSha256": "2bb558cb693451e73c28c33fe64aa89bc19b1a4b70f95948322c243f93476920",
+      "matches": true
+    },
+    {
+      "file": "media/customizer/main.css",
+      "packagedSha256": "fb5318c59f5ab5769b36b5f502bdcd4a7848ada2deff8f9bff821dd7d5be2928",
+      "currentSha256": "fb5318c59f5ab5769b36b5f502bdcd4a7848ada2deff8f9bff821dd7d5be2928",
+      "matches": true
+    },
+    {
+      "file": "media/customizer/main.js",
+      "packagedSha256": "70c199daafee961232695d7e537028e5b09fdeacd1c76226170fc5f4e6dfa106",
+      "currentSha256": "70c199daafee961232695d7e537028e5b09fdeacd1c76226170fc5f4e6dfa106",
+      "matches": true
+    },
+    {
+      "file": "media/customizer/scrollbar.js",
+      "packagedSha256": "6edba05a467ab7f1d27fa099aba4aa11c16d1f8037c1ee5d106226c280ff2167",
+      "currentSha256": "6edba05a467ab7f1d27fa099aba4aa11c16d1f8037c1ee5d106226c280ff2167",
+      "matches": true
+    },
+    {
+      "file": "media/markdown/preview.css",
+      "packagedSha256": "2011de25ed7832e3c4d973cb9bdd79c52a91d752e98c3b6860c808733214e716",
+      "currentSha256": "2011de25ed7832e3c4d973cb9bdd79c52a91d752e98c3b6860c808733214e716",
+      "matches": true
+    },
+    {
+      "file": "media/markdown/preview.js",
+      "packagedSha256": "b8675fb6f0003b161240af2f52025ae944393fd30593fab6e4fb83ceee2ae0e6",
+      "currentSha256": "b8675fb6f0003b161240af2f52025ae944393fd30593fab6e4fb83ceee2ae0e6",
+      "matches": true
+    },
+    {
+      "file": "media/panels/ai.js",
+      "packagedSha256": "0d0bff275d5460aa95e8e085ee35485b27813b56028459d284dbd66444765e55",
+      "currentSha256": "0d0bff275d5460aa95e8e085ee35485b27813b56028459d284dbd66444765e55",
+      "matches": true
+    },
+    {
+      "file": "media/panels/index.html",
+      "packagedSha256": "5fa448274a4f1b2c0755788d82389a14c173aac9e491a94091d7e1672a799e9c",
+      "currentSha256": "5fa448274a4f1b2c0755788d82389a14c173aac9e491a94091d7e1672a799e9c",
+      "matches": true
+    },
+    {
+      "file": "media/panels/libraries.js",
+      "packagedSha256": "7fc18f5980cef97a1774e5fc81e6216529c9295028d6e35f8f1a0b73d82ac2a1",
+      "currentSha256": "7fc18f5980cef97a1774e5fc81e6216529c9295028d6e35f8f1a0b73d82ac2a1",
+      "matches": true
+    },
+    {
+      "file": "media/panels/main.css",
+      "packagedSha256": "f216622ea9739ec1fa1f0bb29fbef57827e7e38000667452802b6cec24f655b6",
+      "currentSha256": "f216622ea9739ec1fa1f0bb29fbef57827e7e38000667452802b6cec24f655b6",
+      "matches": true
+    },
+    {
+      "file": "media/panels/main.js",
+      "packagedSha256": "6e48e6f6d91170962394c4d7d6a2e25ea0b8d25d8fa2176d28b96853343059be",
+      "currentSha256": "6e48e6f6d91170962394c4d7d6a2e25ea0b8d25d8fa2176d28b96853343059be",
+      "matches": true
+    },
+    {
+      "file": "media/panels/scrollbar.js",
+      "packagedSha256": "929f512162d14ca035e57d58a5aacf0d5f4b82206624211e3232971a953fdee8",
+      "currentSha256": "929f512162d14ca035e57d58a5aacf0d5f4b82206624211e3232971a953fdee8",
+      "matches": true
+    },
+    {
+      "file": "resources/libraries/dependencies.lock.schema.json",
+      "packagedSha256": "6e609cab5abb27b2b86cd90856d079b42c0c36c786d4ea58c5666a9b9770228b",
+      "currentSha256": "6e609cab5abb27b2b86cd90856d079b42c0c36c786d4ea58c5666a9b9770228b",
+      "matches": true
+    },
+    {
+      "file": "resources/libraries/dependencies.schema.json",
+      "packagedSha256": "ba13be51add10c0699fec04e799e3957dea1e8327ef6088c68e35f12af5891fa",
+      "currentSha256": "ba13be51add10c0699fec04e799e3957dea1e8327ef6088c68e35f12af5891fa",
+      "matches": true
+    },
+    {
+      "file": "resources/libraries/layouts.json",
+      "packagedSha256": "0ae55ee535741c368d7ab44b1d895e091f12dbdcb7735ce0eec000db6537e23d",
+      "currentSha256": "0ae55ee535741c368d7ab44b1d895e091f12dbdcb7735ce0eec000db6537e23d",
+      "matches": true
+    },
+    {
+      "file": "resources/schemas/cad-comparison-v1.schema.json",
+      "packagedSha256": "2a28c210d73f21239969d461891f05772ec0bc606eb09dec805df4559077df78",
+      "currentSha256": "2a28c210d73f21239969d461891f05772ec0bc606eb09dec805df4559077df78",
+      "matches": true
+    },
+    {
+      "file": "resources/schemas/cad-feedback-v1.schema.json",
+      "packagedSha256": "9e369a660b510dabe8d7f4232f9ee87e6fde34413df4d8c89c6ea57f45d8c553",
+      "currentSha256": "9e369a660b510dabe8d7f4232f9ee87e6fde34413df4d8c89c6ea57f45d8c553",
+      "matches": true
+    },
+    {
+      "file": "resources/schemas/cad-print-assessment-v1.schema.json",
+      "packagedSha256": "c9246a9060b8652cb21dd8838525940a0ae52ff8fd622cf8c9e91ed6afef7b0d",
+      "currentSha256": "c9246a9060b8652cb21dd8838525940a0ae52ff8fd622cf8c9e91ed6afef7b0d",
+      "matches": true
+    },
+    {
+      "file": "resources/schemas/cad-print-profile-v1.schema.json",
+      "packagedSha256": "96dd9aafea3eabff5ca253f4b184c1548b547e3a76186844fb47286b797b7bb1",
+      "currentSha256": "96dd9aafea3eabff5ca253f4b184c1548b547e3a76186844fb47286b797b7bb1",
+      "matches": true
+    },
+    {
+      "file": "resources/schemas/cad-report-v1.schema.json",
+      "packagedSha256": "918ea510698620106c0904ba69b9be05981e5a5ca1679ea880ae65dab3159848",
+      "currentSha256": "918ea510698620106c0904ba69b9be05981e5a5ca1679ea880ae65dab3159848",
+      "matches": true
+    },
+    {
+      "file": "resources/schemas/cad-report-v2.schema.json",
+      "packagedSha256": "e02bbea7c887f6d82dafb4f9472ca5a060381f2639618736e768ab7bec2b0e64",
+      "currentSha256": "e02bbea7c887f6d82dafb4f9472ca5a060381f2639618736e768ab7bec2b0e64",
+      "matches": true
+    },
+    {
+      "file": "resources/schemas/cad-report-v3.schema.json",
+      "packagedSha256": "68c8f5115d01ed345c75e15b7a8d9410f36a2b0e91575bc31378dcec8d65080a",
+      "currentSha256": "68c8f5115d01ed345c75e15b7a8d9410f36a2b0e91575bc31378dcec8d65080a",
+      "matches": true
+    },
+    {
+      "file": "resources/schemas/cad-review-bundle-v1.schema.json",
+      "packagedSha256": "b9786052b43096550ab737c89c8d8b3f803ca4b2145ff3f792aa91c906918c59",
+      "currentSha256": "b9786052b43096550ab737c89c8d8b3f803ca4b2145ff3f792aa91c906918c59",
+      "matches": true
+    },
+    {
+      "file": "resources/schemas/cad-verification-v1.schema.json",
+      "packagedSha256": "0260a5d80ad8929fd3ab735614e9310832d6f3b315def713249bf0bb63789663",
+      "currentSha256": "0260a5d80ad8929fd3ab735614e9310832d6f3b315def713249bf0bb63789663",
+      "matches": true
+    },
+    {
+      "file": "server/darwin-arm64/openscad-lsp",
+      "packagedSha256": "433520a85d39d6dbc09f731227b25385d61a7b3924c34a9c79436d81120462ed",
+      "currentSha256": "433520a85d39d6dbc09f731227b25385d61a7b3924c34a9c79436d81120462ed",
+      "matches": true
+    },
+    {
+      "file": "skills/openscad-customizer/SKILL.md",
+      "packagedSha256": "b9964734fe8fc24132e276638184ce50681fb03592149dfb588bcaf2da461869",
+      "currentSha256": "b9964734fe8fc24132e276638184ce50681fb03592149dfb588bcaf2da461869",
+      "matches": true
+    },
+    {
+      "file": "skills/openscad-design-review/SKILL.md",
+      "packagedSha256": "bd3bafd8cd93cbab72f9c089013e7664bbd9e60fd167d73b3986a05cb71e431d",
+      "currentSha256": "bd3bafd8cd93cbab72f9c089013e7664bbd9e60fd167d73b3986a05cb71e431d",
+      "matches": true
+    },
+    {
+      "file": "skills/openscad-customizer-authoring/SKILL.md",
+      "packagedSha256": "118de547e188e460a2c365ad5bffb80c13db989d48f6f7ef58677a10a34c2df8",
+      "currentSha256": "118de547e188e460a2c365ad5bffb80c13db989d48f6f7ef58677a10a34c2df8",
+      "matches": true
+    },
+    {
+      "file": "skills/openscad-assembly-design/SKILL.md",
+      "packagedSha256": "5c6dc9e885a0a28a71b602498a2288fa7ea6778756be46f6bb495b219dfe3f0d",
+      "currentSha256": "5c6dc9e885a0a28a71b602498a2288fa7ea6778756be46f6bb495b219dfe3f0d",
+      "matches": true
+    },
+    {
+      "file": "skills/openscad-geometry-verification/SKILL.md",
+      "packagedSha256": "07ebed0e1257962bfaadb84ee17ee9de036620cf0be3aa5bbe5a09500b24e2aa",
+      "currentSha256": "07ebed0e1257962bfaadb84ee17ee9de036620cf0be3aa5bbe5a09500b24e2aa",
+      "matches": true
+    },
+    {
+      "file": "skills/openscad-libraries/SKILL.md",
+      "packagedSha256": "4375443259b56f2cdf2bff5d656ed1276d761943db04de8752aa05be0af958d2",
+      "currentSha256": "4375443259b56f2cdf2bff5d656ed1276d761943db04de8752aa05be0af958d2",
+      "matches": true
+    },
+    {
+      "file": "skills/openscad-model-debugging/SKILL.md",
+      "packagedSha256": "dd2b83a8a2058321d9bc006e98237c9cd875831656f3b58175acc43b62cc2f89",
+      "currentSha256": "dd2b83a8a2058321d9bc006e98237c9cd875831656f3b58175acc43b62cc2f89",
+      "matches": true
+    },
+    {
+      "file": "skills/openscad-modeling-lifecycle/SKILL.md",
+      "packagedSha256": "2874fed008701fc4d3e6159b362ce995541234ed214e14878eebe42b797ab571",
+      "currentSha256": "2874fed008701fc4d3e6159b362ce995541234ed214e14878eebe42b797ab571",
+      "matches": true
+    },
+    {
+      "file": "skills/openscad-printability/SKILL.md",
+      "packagedSha256": "9c21a7561ef6036a127321da3df7544b865d1ac4b19d9ad6042d41cc8015c564",
+      "currentSha256": "9c21a7561ef6036a127321da3df7544b865d1ac4b19d9ad6042d41cc8015c564",
+      "matches": true
+    },
+    {
+      "file": "skills/openscad-runtime/SKILL.md",
+      "packagedSha256": "c4fffba616d9a16c76986c44fa8e706a0c8d68ec68219a65e63907ff466ab8d0",
+      "currentSha256": "c4fffba616d9a16c76986c44fa8e706a0c8d68ec68219a65e63907ff466ab8d0",
+      "matches": true
+    },
+    {
+      "file": "skills/scad-ai-ide-diagnostics/SKILL.md",
+      "packagedSha256": "53c30da8ec32bfdcbf48f61c9e8d7e4e830eefc0228f1e1c00a80a6c6a0b246a",
+      "currentSha256": "53c30da8ec32bfdcbf48f61c9e8d7e4e830eefc0228f1e1c00a80a6c6a0b246a",
+      "matches": true
+    },
+    {
+      "file": "skills/openscad-spatial-feedback/SKILL.md",
+      "packagedSha256": "66140ba797e9b6ff689dcf80ce7063eb97e58e4734d01008fec0b196b0e878ee",
+      "currentSha256": "66140ba797e9b6ff689dcf80ce7063eb97e58e4734d01008fec0b196b0e878ee",
+      "matches": true
+    },
+    {
+      "file": "resources/legal/saxes/LICENSE",
+      "packagedSha256": "0fac2374380621b22e6b50451057721a9c52935b02d16d106a9f04897f061d0e",
+      "currentSha256": "0fac2374380621b22e6b50451057721a9c52935b02d16d106a9f04897f061d0e",
+      "matches": true
+    },
+    {
+      "file": "resources/legal/saxes/README.md",
+      "packagedSha256": "c1c38bdcf5b6fb66eaec1b70819e2e41dce83ee59ce048967d20b9e3e47d1561",
+      "currentSha256": "c1c38bdcf5b6fb66eaec1b70819e2e41dce83ee59ce048967d20b9e3e47d1561",
+      "matches": true
+    },
+    {
+      "file": "skills/openscad-customizer-authoring/references/compatibility.md",
+      "packagedSha256": "c61e4de5f173725f87aa879718b57675d4d3bf43608e2459184911329db6e82c",
+      "currentSha256": "c61e4de5f173725f87aa879718b57675d4d3bf43608e2459184911329db6e82c",
+      "matches": true
+    },
+    {
+      "file": "skills/openscad-customizer-authoring/references/diagnostics.md",
+      "packagedSha256": "70422dc6b2fcb2a0c4329c07c8769ad0e4238ed1f466770b5ab6d834e564742f",
+      "currentSha256": "70422dc6b2fcb2a0c4329c07c8769ad0e4238ed1f466770b5ab6d834e564742f",
+      "matches": true
+    },
+    {
+      "file": "skills/openscad-customizer-authoring/references/examples.md",
+      "packagedSha256": "88bd6fcbde5a49e709e0e17ca1682a14fefe43ecdbf31775c1270603b639d146",
+      "currentSha256": "88bd6fcbde5a49e709e0e17ca1682a14fefe43ecdbf31775c1270603b639d146",
+      "matches": true
+    },
+    {
+      "file": "skills/openscad-customizer-authoring/references/pitfalls.md",
+      "packagedSha256": "bbd155d4f1b0202d4055683d50484105c183348850976cd1f57f273e36a747b1",
+      "currentSha256": "bbd155d4f1b0202d4055683d50484105c183348850976cd1f57f273e36a747b1",
+      "matches": true
+    },
+    {
+      "file": "skills/openscad-customizer-authoring/references/syntax.md",
+      "packagedSha256": "3cedea671119ac4f83c12a4d2029250ec29a89827aba916f60036be5e9bda426",
+      "currentSha256": "3cedea671119ac4f83c12a4d2029250ec29a89827aba916f60036be5e9bda426",
+      "matches": true
+    }
+  ]
+}

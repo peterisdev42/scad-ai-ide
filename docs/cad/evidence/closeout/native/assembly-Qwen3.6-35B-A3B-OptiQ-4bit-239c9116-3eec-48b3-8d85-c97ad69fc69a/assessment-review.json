@@ -1,0 +1,28 @@
+{
+  "date": "2026-11-17",
+  "originalResultPath": "docs/cad/evidence/closeout/native/assembly-Qwen3.6-35B-A3B-OptiQ-4bit-239c9116-3eec-48b3-8d85-c97ad69fc69a/result.json",
+  "originalResultUnchanged": true,
+  "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+  "scenario": "assembly",
+  "candidateId": "f7e6300dddc12570b591b33942066cace6fa4322e8e5f616fc8d469f3252214f",
+  "pass": false,
+  "assessment": {
+    "category": "MODEL_OUTPUT_ERROR",
+    "confidence": "supported",
+    "backupEligible": true,
+    "evidence": [
+      "Native command completed normally",
+      "All fixed-Manifest required geometry checks PASS after exact gap edit",
+      "Requested getIssue evidence step absent despite actual provider schema exposure",
+      "Raw model_measure sent mutually exclusive uri and reportId; dispatcher preserved input and returned INVALID_INPUT",
+      "Same candidate deterministic real CLI/Host/service layers PASS; original candidate real model case also completed"
+    ],
+    "alternatives": [
+      "This supports a run-specific instruction/argument failure, not permanent model incapability",
+      "Tracking marker UUID was incorrectly reused as a reportId earlier in the run; harness annotation may contribute to planning confusion",
+      "No claim that two failed models would prove a product defect",
+      "The getIssue requirement is a strict harness step; initial assembly summaries may already contain useful failure evidence. Oracle redundancy should be reviewed separately. Successful measurement is still independently absent, with concrete invalid generated arguments."
+    ]
+  },
+  "backupPolicy": "One same-candidate/same-scenario Qwen3.8 comparison only; preserve primary FAIL"
+}

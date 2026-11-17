@@ -8,13 +8,14 @@ export async function createVerificationReport(input: CadInputs, result: CadExec
     const reportId = `cad-${randomUUID()}`,
         logId = `${reportId}:log`
     const issues: CadIssue[] = []
+    const sourceLocation = await locate(input.path)
     for (const diagnostic of result.diagnostics) {
         let uri = snapshot.document.uri,
             exact = diagnostic.line !== undefined
         if (diagnostic.file && !['-', '<stdin>', 'stdin', basename(input.path)].includes(diagnostic.file)) {
             const file = isAbsolute(diagnostic.file) ? diagnostic.file : resolve(dirname(input.path), diagnostic.file)
             const located = await locate(file)
-            if (located) uri = located
+            if (located) uri = located === sourceLocation ? snapshot.document.uri : located
             else exact = false
         }
         if (uri !== snapshot.document.uri && !snapshot.dependencies.some((d) => d.uri === uri && !d.dirty)) {

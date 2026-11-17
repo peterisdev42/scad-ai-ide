@@ -1,0 +1,41 @@
+{
+  "status": "FAIL",
+  "results": [
+    {
+      "name": "harness",
+      "command": [
+        "/Users/q/.volta/tools/image/node/24.16.0/bin/node",
+        "--test",
+        "scripts/cad-native-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 67,
+      "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/baseline-2026-11-17T01-11-37-135Z/harness.txt"
+    },
+    {
+      "name": "default",
+      "command": [
+        "npm",
+        "test"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 8138,
+      "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/baseline-2026-11-17T01-11-37-135Z/default.txt"
+    },
+    {
+      "name": "real-cli",
+      "command": [
+        "/Users/q/.volta/tools/image/node/24.16.0/bin/node",
+        "--import",
+        "tsx",
+        "--test",
+        "src/test/cad/real.acceptance.ts",
+        "src/test/mesh/real.acceptance.ts",
+        "src/test/assembly/real.acceptance.ts"
+      ],
+      "exitCode": 1,
+      "elapsedMs": 442,
+      "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/baseline-2026-11-17T01-11-37-135Z/real-cli.txt"
+    }
+  ]
+}

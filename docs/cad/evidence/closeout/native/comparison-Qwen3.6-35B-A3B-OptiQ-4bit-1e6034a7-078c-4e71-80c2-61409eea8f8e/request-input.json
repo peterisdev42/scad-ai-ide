@@ -1,0 +1,9 @@
+{
+  "scenario": "comparison",
+  "file": "/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-bUUonj/workspace/model.scad",
+  "sourceSha256": "0f8c540fd8d21a17d0589aa342dd0e03a28baf007ea421958f0a69e7ab02303b",
+  "scope": "One real Native Agent attempt per scenario, 600 seconds; human interaction is never simulated",
+  "manifestHash": "97ada8722c4af15ff8cd971e9354e416bc56ed2c2789861cff2a9801ce623f70",
+  "saveBeforeSend": false,
+  "autoSave": "off"
+}

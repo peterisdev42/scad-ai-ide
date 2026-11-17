@@ -69,7 +69,14 @@ export class CadVerificationService {
         }
     }
     private async discovered(result: CadExecutionResult, input: CadInputs) {
-        const paths = [...result.dependencies]
+        // Normalize CLI and diagnostic spellings through the same trusted locator before
+        // deduplication. Canonical aliases must not become duplicate snapshot inputs.
+        const paths = await Promise.all(
+            result.dependencies.map(async (path) => {
+                const located = await this.host.locate(path)
+                return located ? fileURLToPath(located) : path
+            }),
+        )
         const root = await this.host.locate(input.path)
         for (const issue of result.diagnostics) {
             if (!issue.file || ['-', '<stdin>', 'stdin', basename(input.path)].includes(issue.file)) continue

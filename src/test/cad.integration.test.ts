@@ -99,7 +99,7 @@ suite('CAD verification Extension Host', () => {
         await writeFile(include, 'module part(){cube(2);}')
         const good = await api.cad.analyze({ uri: uri.toString() })
         assert.equal(good.overallStatus, 'PASS', JSON.stringify(good))
-        assert.equal(good.snapshot.dependencies[0].uri, vscode.Uri.file(await realpath(include)).toString())
+        assert.equal(good.snapshot.dependencies[0].uri, includeUri.toString())
         const document = await vscode.workspace.openTextDocument(includeUri)
         const edit = new vscode.WorkspaceEdit()
         edit.insert(includeUri, new vscode.Position(0, 0), '// unsaved dependency\n')
@@ -122,6 +122,47 @@ suite('CAD verification Extension Host', () => {
         await wait(() => diagnostics(uri).some((d) => d.code === 'SCAD_CLI_ASSERT_FAILED'), 'Closed root failure should publish')
         await writeFile(file, 'cube(2);')
         await wait(() => diagnostics(uri).length === 0, 'External writes to closed models must invalidate old Problems')
+    })
+    test('canonical CLI paths project to the workspace editor URI for roots and dependencies', async () => {
+        const file = join(root, 'canonical-root.scad'),
+            include = join(root, 'canonical-include.scad')
+        await writeFile(include, 'assert(false,"canonical include failure");cube(1);')
+        await writeFile(file, 'include <canonical-include.scad>')
+        const uri = vscode.Uri.file(file),
+            includeUri = vscode.Uri.file(include)
+        const report = await api.cad.analyze({ uri: uri.toString() })
+        const canonicalInclude = vscode.Uri.file(await realpath(include))
+        assert.ok(
+            report.snapshot.dependencies.some((d) => d.uri === includeUri.toString()),
+            JSON.stringify(report.snapshot.dependencies),
+        )
+        assert.ok(
+            report.issues.some((i) => i.location?.uri === includeUri.toString()),
+            JSON.stringify(report.issues),
+        )
+        assert.equal(diagnostics(includeUri).filter((d) => d.code === 'SCAD_CLI_ASSERT_FAILED').length, 1)
+        if (canonicalInclude.toString() !== includeUri.toString()) assert.equal(diagnostics(canonicalInclude).length, 0, 'No orphan Problems under a hidden canonical alias')
+        const canonicalRoot = vscode.Uri.file(await realpath(file))
+        const canonical = await api.cad.analyze({ uri: canonicalRoot.toString() })
+        assert.ok(canonical.issues.some((i) => i.location?.uri === includeUri.toString()))
+        assert.equal(diagnostics(includeUri).filter((d) => d.code === 'SCAD_CLI_ASSERT_FAILED').length, 1, 'Alias reports share the same semantic projection')
+    })
+    test('POSIX literal backslash file names never resolve to a different nested model', async function () {
+        if (process.platform === 'win32') {
+            this.skip()
+            return
+        }
+        const file = join(root, 'literal\\name.scad'),
+            uri = vscode.Uri.file(file)
+        await mkdir(join(root, 'literal'), { recursive: true })
+        await writeFile(join(root, 'literal/name.scad'), 'cube(1);')
+        await writeFile(file, 'assert(false,"literal backslash source");cube(1);')
+        const report = await api.cad.analyze({ uri: uri.toString() })
+        assert.equal(report.overallStatus, 'FAIL')
+        assert.equal(report.snapshot.document.uri, uri.toString())
+        assert.ok(report.issues.some((issue) => issue.code === 'SCAD_CLI_ASSERT_FAILED' && issue.location?.uri === uri.toString()))
+        assert.equal(diagnostics(uri).filter((d) => d.code === 'SCAD_CLI_ASSERT_FAILED').length, 1)
+        assert.equal(diagnostics(vscode.Uri.file(join(root, 'literal/name.scad'))).length, 0)
     })
     test('shared owners deduplicate the same issue and survive unrelated owner cleanup', async () => {
         const file = join(root, 'owners.scad'),
@@ -148,10 +189,10 @@ suite('CAD verification Extension Host', () => {
         const agent = await api.cad.analyze({ uri: uri.toString() })
         const reporter = new PreviewProblems(uri, api.cad.problems)
         try {
-            const details = await api.cad.issueDetails(agent.reportId, agent.issues.find(i => i.code === 'SCAD_CLI_ASSERT_FAILED')!.id, true)
-            const raw = details.evidence!.text.split(/\r?\n/).find(line => /^ERROR:/.test(line))!
+            const details = await api.cad.issueDetails(agent.reportId, agent.issues.find((i) => i.code === 'SCAD_CLI_ASSERT_FAILED')!.id, true)
+            const raw = details.evidence!.text.split(/\r?\n/).find((line) => /^ERROR:/.test(line))!
             reporter.report(new Error(raw), 'render')
-            assert.equal(vscode.languages.getDiagnostics(uri).filter(d => d.message.includes('shared preview failure')).length, 1, 'Known legacy compiler errors share the canonical semantic projection')
+            assert.equal(vscode.languages.getDiagnostics(uri).filter((d) => d.message.includes('shared preview failure')).length, 1, 'Known legacy compiler errors share the canonical semantic projection')
             const session = api.preview.getOrCreateSession(document)
             const error = await new Promise<Error>((resolve, reject) => {
                 const timeout = setTimeout(() => {
@@ -171,7 +212,7 @@ suite('CAD verification Extension Host', () => {
             reporter.report(error, 'render')
             api.preview.removeSession(uri)
             const assertions = () => diagnostics(uri).filter((d) => d.code === 'SCAD_CLI_ASSERT_FAILED')
-            assert.equal(assertions().length, 1, JSON.stringify(assertions().map(d => ({ code: d.code, source: d.source, message: d.message, range: d.range }))))
+            assert.equal(assertions().length, 1, JSON.stringify(assertions().map((d) => ({ code: d.code, source: d.source, message: d.message, range: d.range }))))
             reporter.dispose()
             api.cad.problems.clear(uri, 'preview-cli')
             assert.equal(assertions().length, 1, 'Disposing a view and clearing Preview cannot remove the Agent owner')
@@ -232,7 +273,8 @@ suite('CAD verification Extension Host', () => {
         await assert.rejects(api.cad.issueDetails('missing', 'a'.repeat(64)), /expired|evicted/)
     })
     test('new higher-priority dependency invalidates cached PASS and executes the replacement', async () => {
-        const project = join(root, 'shadow-project'), lib = join(project, '.scad', 'lib')
+        const project = join(root, 'shadow-project'),
+            lib = join(project, '.scad', 'lib')
         await mkdir(lib, { recursive: true })
         await writeFile(join(lib, 'nested.scad'), 'module nested(){cube(2);}')
         await writeFile(join(lib, 'part.scad'), 'use <nested.scad> module part(){nested();}')
@@ -257,7 +299,7 @@ suite('CAD verification Extension Host', () => {
         const bad = await api.cad.analyze({ uri: uri.toString() })
         assert.equal(bad.overallStatus, 'FAIL', JSON.stringify(bad))
         assert.notEqual(bad.snapshot.id, good.snapshot.id)
-        assert.ok(bad.issues.some(i => i.title.includes('shadow replacement')))
+        assert.ok(bad.issues.some((i) => i.title.includes('shadow replacement')))
     })
     test('unreadable constraints cannot revive a cached PASS and unresolved report stays readable', async () => {
         const project = join(root, 'evidence-project')
@@ -278,5 +320,4 @@ suite('CAD verification Extension Host', () => {
             await assert.rejects(api.cad.analyze({ uri: vscode.Uri.file(link).toString() }), /Symbolic-link targets are not allowed/)
         }
     })
-
 })

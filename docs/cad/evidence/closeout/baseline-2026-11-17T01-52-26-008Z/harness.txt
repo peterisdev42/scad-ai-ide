@@ -1,0 +1,16 @@
+✔ model selection never falls back to an unrelated or backup model silently (0.963459ms)
+✔ backup requires supported attribution and the identical candidate/scenario (0.081417ms)
+✔ fixture approval validates full buffer, unchanged disk, path, unique replacement and baseline hash (0.693792ms)
+✔ whole-source gap replacement is the only assembly edit in the allowlist (0.095375ms)
+✔ stream collector reconstructs fragmented raw tool arguments and separates HTTP from stream end (0.388ms)
+✔ timeouts and HTTP 200 alone remain unknown, human waits and auth get independent categories (0.107ms)
+✔ model argument attribution needs raw generation, handler rejection and terminal evidence together (0.100667ms)
+✔ transcript correlation works without user messages and rejects unrelated sessions (0.186375ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 43.553875

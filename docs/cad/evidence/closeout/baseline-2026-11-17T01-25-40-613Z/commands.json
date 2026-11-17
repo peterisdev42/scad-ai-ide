@@ -1,0 +1,93 @@
+[
+  {
+    "name": "harness",
+    "command": [
+      "/Users/q/.volta/tools/image/node/24.16.0/bin/node",
+      "--test",
+      "scripts/cad-native-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 76,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/baseline-2026-11-17T01-25-40-613Z/harness.txt"
+  },
+  {
+    "name": "default",
+    "command": [
+      "npm",
+      "test"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 8096,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/baseline-2026-11-17T01-25-40-613Z/default.txt"
+  },
+  {
+    "name": "real-cli",
+    "command": [
+      "/Users/q/.volta/tools/image/node/24.16.0/bin/node",
+      "--import",
+      "tsx",
+      "--test",
+      "src/test/cad/real.acceptance.ts",
+      "src/test/mesh/real.acceptance.ts",
+      "src/test/assembly/real.acceptance.ts"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 535,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/baseline-2026-11-17T01-25-40-613Z/real-cli.txt"
+  },
+  {
+    "name": "manifest",
+    "command": [
+      "npm",
+      "run",
+      "test:agents:manifest"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 552,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/baseline-2026-11-17T01-25-40-613Z/manifest.txt"
+  },
+  {
+    "name": "view",
+    "command": [
+      "npm",
+      "run",
+      "test:review:view"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 827,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/baseline-2026-11-17T01-25-40-613Z/view.txt"
+  },
+  {
+    "name": "gpu",
+    "command": [
+      "npm",
+      "run",
+      "test:review:gpu"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 925,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/baseline-2026-11-17T01-25-40-613Z/gpu.txt"
+  },
+  {
+    "name": "package",
+    "command": [
+      "npm",
+      "run",
+      "package"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 4365,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/baseline-2026-11-17T01-25-40-613Z/package.txt"
+  },
+  {
+    "name": "cad-host",
+    "command": [
+      "/Users/q/.volta/tools/image/node/24.16.0/bin/node",
+      "scripts/test-review-host.mjs",
+      "stable"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 7233,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/baseline-2026-11-17T01-25-40-613Z/cad-host.txt"
+  }
+]

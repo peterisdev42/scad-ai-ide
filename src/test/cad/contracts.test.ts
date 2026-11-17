@@ -234,7 +234,8 @@ test('stdin and disk compiler messages project the same trusted semantic issue t
 })
 
 test('immutable reports clone caller-owned vectors rather than freezing Customizer state', async () => {
-    const vector = [1, 2, 3], input = inputs()
+    const vector = [1, 2, 3],
+        input = inputs()
     input.parameters.vector = vector
     input.snapshot = identifySnapshot({ ...input.snapshot, parameters: { overrides: { vector }, digest: digest({ vector }) } })
     const service = new CadVerificationService({ capture: async () => input, execute: async () => result(), locate: async () => undefined })
@@ -244,14 +245,25 @@ test('immutable reports clone caller-owned vectors rather than freezing Customiz
         vector[0] = 9
         assert.deepEqual(report.snapshot.parameters.overrides.vector, [1, 2, 3])
         assert.equal(Object.isFrozen(report.snapshot.parameters.overrides.vector), true)
-    } finally { service.dispose() }
+    } finally {
+        service.dispose()
+    }
 })
 
 test('new incomplete evidence cannot reuse a cached PASS, even after invalidation', async () => {
-    let incomplete = false, calls = 0
+    let incomplete = false,
+        calls = 0
     const service = new CadVerificationService({
-        capture: async () => { const input = inputs(); input.snapshot = identifySnapshot({ ...input.snapshot, complete: !incomplete, unresolvedInputs: incomplete ? ['CONSTRAINTS_UNREADABLE'] : [] }); return input },
-        execute: async () => { calls++; return result() }, locate: async () => undefined,
+        capture: async () => {
+            const input = inputs()
+            input.snapshot = identifySnapshot({ ...input.snapshot, complete: !incomplete, unresolvedInputs: incomplete ? ['CONSTRAINTS_UNREADABLE'] : [] })
+            return input
+        },
+        execute: async () => {
+            calls++
+            return result()
+        },
+        locate: async () => undefined,
     })
     try {
         const good = await service.analyze({ uri: 'file:///workspace/model.scad' })
@@ -264,7 +276,9 @@ test('new incomplete evidence cannot reuse a cached PASS, even after invalidatio
         assert.notEqual(partial.reportId, good.reportId)
         assert.equal(calls, 2)
         assert.equal(await service.isCurrent(partial), true)
-    } finally { service.dispose() }
+    } finally {
+        service.dispose()
+    }
 })
 
 test('CLI-derived unresolved evidence can remain current without matching input completeness', async () => {
@@ -273,5 +287,27 @@ test('CLI-derived unresolved evidence can remain current without matching input 
         const report = await service.analyze({ uri: 'file:///workspace/model.scad' })
         assert.equal(report.overallStatus, 'UNRESOLVED')
         assert.equal(await service.isCurrent(report), true)
-    } finally { service.dispose() }
+    } finally {
+        service.dispose()
+    }
+})
+
+// Alias spellings can originate independently in the CLI dependency file and ERROR text.
+test('CLI canonical and editor alias dependency paths freeze one input and remain current', async () => {
+    let calls = 0
+    const service = new CadVerificationService({
+        capture: async (_uri, deps) => inputs('include <part.scad>', deps),
+        locate: async (path) => `file://${path.replace('/private/workspace/', '/workspace/')}`,
+        execute: async () => {
+            calls++
+            return result({ dependencies: ['/private/workspace/part.scad'], diagnostics: [{ code: 'SCAD_CLI_ASSERT_FAILED', message: 'assertion', severity: 'error', file: '/private/workspace/part.scad', line: 0, trace: [] }] })
+        },
+    })
+    const report = await service.analyze({ uri: 'file:///workspace/model.scad' })
+    assert.equal(calls, 2)
+    assert.deepEqual(service.knownDependencies('file:///workspace/model.scad'), ['/workspace/part.scad'])
+    assert.equal(report.snapshot.dependencies.length, 1)
+    assert.equal(report.issues[0].location?.uri, 'file:///workspace/part.scad')
+    assert.equal(await service.isCurrent(report), true)
+    service.dispose()
 })

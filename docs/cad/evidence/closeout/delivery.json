@@ -1,0 +1,553 @@
+{
+  "date": "2026-11-17",
+  "baselineSha": "677dc681965e1d640ecf606f1ed0f60d1fe492a0",
+  "productionFixHeads": [
+    "d3586cc",
+    "1d82001"
+  ],
+  "candidateSourceHead": "1d82001",
+  "branch": "codex/cad-acceptance-closeout",
+  "candidateId": "f7e6300dddc12570b591b33942066cace6fa4322e8e5f616fc8d469f3252214f",
+  "dependsOn": [
+    5,
+    4,
+    3,
+    2
+  ],
+  "main": "8a3ff1fe394b11aeb7fb323e7319bd365d29abaa",
+  "originMain": "8a3ff1fe394b11aeb7fb323e7319bd365d29abaa",
+  "mcp": "CANCELLED_BY_USER",
+  "tools": 51,
+  "skills": 12,
+  "deterministicBaseline": "PASS",
+  "defaultTests": {
+    "tests": 448,
+    "pass": 446,
+    "fail": 0,
+    "skipped": 2
+  },
+  "commands": [
+    {
+      "name": "harness",
+      "command": [
+        "/Users/q/.volta/tools/image/node/24.16.0/bin/node",
+        "--test",
+        "scripts/cad-native-policy.test.mjs"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 70,
+      "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/baseline-2026-11-17T01-52-26-008Z/harness.txt"
+    },
+    {
+      "name": "default",
+      "command": [
+        "npm",
+        "test"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 8928,
+      "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/baseline-2026-11-17T01-52-26-008Z/default.txt"
+    },
+    {
+      "name": "real-cli",
+      "command": [
+        "/Users/q/.volta/tools/image/node/24.16.0/bin/node",
+        "--import",
+        "tsx",
+        "--test",
+        "src/test/cad/real.acceptance.ts",
+        "src/test/mesh/real.acceptance.ts",
+        "src/test/assembly/real.acceptance.ts"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 535,
+      "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/baseline-2026-11-17T01-52-26-008Z/real-cli.txt"
+    },
+    {
+      "name": "manifest",
+      "command": [
+        "npm",
+        "run",
+        "test:agents:manifest"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 570,
+      "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/baseline-2026-11-17T01-52-26-008Z/manifest.txt"
+    },
+    {
+      "name": "view",
+      "command": [
+        "npm",
+        "run",
+        "test:review:view"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 1129,
+      "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/baseline-2026-11-17T01-52-26-008Z/view.txt"
+    },
+    {
+      "name": "gpu",
+      "command": [
+        "npm",
+        "run",
+        "test:review:gpu"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 975,
+      "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/baseline-2026-11-17T01-52-26-008Z/gpu.txt"
+    },
+    {
+      "name": "package",
+      "command": [
+        "npm",
+        "run",
+        "package"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 4341,
+      "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/baseline-2026-11-17T01-52-26-008Z/package.txt"
+    },
+    {
+      "name": "cad-host",
+      "command": [
+        "/Users/q/.volta/tools/image/node/24.16.0/bin/node",
+        "scripts/test-review-host.mjs",
+        "stable"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 7851,
+      "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/baseline-2026-11-17T01-52-26-008Z/cad-host.txt"
+    },
+    {
+      "name": "full-host-stable-final",
+      "log": "docs/cad/evidence/closeout/full-host-stable-final.txt",
+      "observedCounts": {
+        "passing": 58,
+        "pending": 1,
+        "failing": 3
+      },
+      "exitCode": 1
+    },
+    {
+      "name": "full-host-minimum-final",
+      "log": "docs/cad/evidence/closeout/full-host-minimum-final.txt",
+      "observedCounts": {
+        "passing": 61,
+        "pending": 1
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "installed-final",
+      "log": "docs/cad/evidence/closeout/installed-final.txt",
+      "observedCounts": {},
+      "exitCode": 0
+    },
+    {
+      "name": "installed-minimum-final",
+      "log": "docs/cad/evidence/closeout/installed-minimum-final.txt",
+      "observedCounts": {},
+      "exitCode": 0
+    },
+    {
+      "name": "vsix-verify-final",
+      "log": "docs/cad/evidence/closeout/vsix-verify-final.txt",
+      "observedCounts": {},
+      "exitCode": 0
+    },
+    {
+      "name": "agent-ui",
+      "log": "docs/cad/evidence/closeout/agent-ui.txt",
+      "observedCounts": {},
+      "exitCode": 0
+    },
+    {
+      "name": "preview-gpu",
+      "log": "docs/cad/evidence/closeout/preview-gpu.txt",
+      "observedCounts": {},
+      "exitCode": 0
+    }
+  ],
+  "native": [
+    {
+      "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+      "scenario": "assembly",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "pass": false,
+      "candidateId": "f7e6300dddc12570b591b33942066cace6fa4322e8e5f616fc8d469f3252214f",
+      "candidateUnchanged": true,
+      "elapsedMs": 189349,
+      "budgetMs": 600000,
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'cad-353e5911-8f98-41fa-b88d-420e8cc192f7'\n",
+      "manual": null,
+      "assessment": {
+        "category": "UNKNOWN_OR_MULTI_FACTOR",
+        "confidence": "unresolved",
+        "backupEligible": false,
+        "evidence": [
+          "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'cad-353e5911-8f98-41fa-b88d-420e8cc192f7'\n"
+        ],
+        "alternatives": [
+          "Product, tool contract, model, provider, host and harness require independent checks"
+        ],
+        "latencyObservation": [
+          {
+            "status": 200,
+            "firstByteMs": 16,
+            "elapsedMs": 19,
+            "streamEnded": true
+          },
+          {
+            "status": 200,
+            "firstByteMs": 5,
+            "elapsedMs": 5,
+            "streamEnded": true
+          },
+          {
+            "status": 200,
+            "firstByteMs": 6,
+            "elapsedMs": 6,
+            "streamEnded": true
+          },
+          {
+            "status": 200,
+            "firstByteMs": 4,
+            "elapsedMs": 4,
+            "streamEnded": true
+          },
+          {
+            "status": 200,
+            "firstByteMs": 6,
+            "elapsedMs": 7,
+            "streamEnded": true
+          },
+          {
+            "status": 200,
+            "firstByteMs": 13,
+            "elapsedMs": 131208,
+            "streamEnded": true
+          },
+          {
+            "status": 200,
+            "firstByteMs": 18,
+            "elapsedMs": 185745
+          },
+          {
+            "status": 200,
+            "firstByteMs": 44,
+            "elapsedMs": 44950,
+            "streamEnded": true
+          },
+          {
+            "status": 200,
+            "firstByteMs": 45,
+            "elapsedMs": 40054,
+            "streamEnded": true
+          },
+          {
+            "status": 200,
+            "firstByteMs": 58,
+            "elapsedMs": 9835,
+            "streamEnded": true
+          },
+          {
+            "status": 200,
+            "firstByteMs": 35,
+            "elapsedMs": 14904,
+            "streamEnded": true
+          },
+          {
+            "status": 200,
+            "firstByteMs": 51,
+            "elapsedMs": 10707,
+            "streamEnded": true
+          },
+          {
+            "status": 200,
+            "firstByteMs": 50,
+            "elapsedMs": 15791,
+            "streamEnded": true
+          },
+          {
+            "status": 200,
+            "firstByteMs": 49,
+            "elapsedMs": 8496,
+            "streamEnded": true
+          },
+          {
+            "status": 200,
+            "firstByteMs": 52,
+            "elapsedMs": 5004,
+            "streamEnded": true
+          },
+          {
+            "status": 200,
+            "firstByteMs": 49,
+            "elapsedMs": 4702,
+            "streamEnded": true
+          },
+          {
+            "status": 200,
+            "firstByteMs": 45,
+            "elapsedMs": 7058,
+            "streamEnded": true
+          },
+          {
+            "status": 200,
+            "firstByteMs": 49,
+            "elapsedMs": 9321,
+            "streamEnded": true
+          },
+          {
+            "status": 200,
+            "firstByteMs": 63,
+            "elapsedMs": 7353,
+            "streamEnded": true
+          },
+          {
+            "status": 200,
+            "firstByteMs": 55,
+            "elapsedMs": 4988,
+            "streamEnded": true
+          }
+        ]
+      },
+      "reviewedAssessment": {
+        "date": "2026-11-17",
+        "originalResultPath": "docs/cad/evidence/closeout/native/assembly-Qwen3.6-35B-A3B-OptiQ-4bit-239c9116-3eec-48b3-8d85-c97ad69fc69a/result.json",
+        "originalResultUnchanged": true,
+        "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+        "scenario": "assembly",
+        "candidateId": "f7e6300dddc12570b591b33942066cace6fa4322e8e5f616fc8d469f3252214f",
+        "pass": false,
+        "assessment": {
+          "category": "MODEL_OUTPUT_ERROR",
+          "confidence": "supported",
+          "backupEligible": true,
+          "evidence": [
+            "Native command completed normally",
+            "All fixed-Manifest required geometry checks PASS after exact gap edit",
+            "Requested getIssue evidence step absent despite actual provider schema exposure",
+            "Raw model_measure sent mutually exclusive uri and reportId; dispatcher preserved input and returned INVALID_INPUT",
+            "Same candidate deterministic real CLI/Host/service layers PASS; original candidate real model case also completed"
+          ],
+          "alternatives": [
+            "This supports a run-specific instruction/argument failure, not permanent model incapability",
+            "Tracking marker UUID was incorrectly reused as a reportId earlier in the run; harness annotation may contribute to planning confusion",
+            "No claim that two failed models would prove a product defect",
+            "The getIssue requirement is a strict harness step; initial assembly summaries may already contain useful failure evidence. Oracle redundancy should be reviewed separately. Successful measurement is still independently absent, with concrete invalid generated arguments."
+          ]
+        },
+        "backupPolicy": "One same-candidate/same-scenario Qwen3.8 comparison only; preserve primary FAIL"
+      },
+      "path": "docs/cad/evidence/closeout/native/assembly-Qwen3.6-35B-A3B-OptiQ-4bit-239c9116-3eec-48b3-8d85-c97ad69fc69a/result.json",
+      "finalCandidate": true
+    },
+    {
+      "runId": "cb12403b-e46d-42d0-9d3c-4ca5aaa497b1",
+      "scenario": "assembly",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "pass": true,
+      "candidateId": "d88e72bced4562c562877f2273cc8dbdfafd55c92157461d0626fd7a349b119d",
+      "candidateUnchanged": true,
+      "elapsedMs": 189916,
+      "budgetMs": 600000,
+      "error": null,
+      "manual": null,
+      "assessment": {
+        "category": "NONE",
+        "confidence": "observed",
+        "backupEligible": false,
+        "evidence": [
+          "strict scenario oracle"
+        ]
+      },
+      "reviewedAssessment": null,
+      "path": "docs/cad/evidence/closeout/native/assembly-Qwen3.6-35B-A3B-OptiQ-4bit-cb12403b-e46d-42d0-9d3c-4ca5aaa497b1/result.json",
+      "finalCandidate": false
+    },
+    {
+      "runId": "38ecf9ec-35da-4eb2-9288-88ed5c4c8c93",
+      "scenario": "assembly",
+      "model": "Qwen3.8-27B-4bit",
+      "pass": true,
+      "candidateId": "f7e6300dddc12570b591b33942066cace6fa4322e8e5f616fc8d469f3252214f",
+      "candidateUnchanged": true,
+      "elapsedMs": 586758,
+      "budgetMs": 600000,
+      "error": null,
+      "manual": null,
+      "assessment": {
+        "category": "NONE",
+        "confidence": "observed",
+        "backupEligible": false,
+        "evidence": [
+          "strict scenario oracle"
+        ]
+      },
+      "reviewedAssessment": null,
+      "path": "docs/cad/evidence/closeout/native/assembly-Qwen3.8-27B-4bit-38ecf9ec-35da-4eb2-9288-88ed5c4c8c93/result.json",
+      "finalCandidate": true
+    },
+    {
+      "runId": "1d229f3f-a600-458b-8ba4-66cced7251d0",
+      "scenario": "comparison",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "pass": true,
+      "candidateId": "d88e72bced4562c562877f2273cc8dbdfafd55c92157461d0626fd7a349b119d",
+      "candidateUnchanged": true,
+      "elapsedMs": 129041,
+      "budgetMs": 600000,
+      "error": null,
+      "manual": null,
+      "assessment": {
+        "category": "NONE",
+        "confidence": "observed",
+        "backupEligible": false,
+        "evidence": [
+          "strict scenario oracle"
+        ]
+      },
+      "reviewedAssessment": null,
+      "path": "docs/cad/evidence/closeout/native/comparison-Qwen3.6-35B-A3B-OptiQ-4bit-1d229f3f-a600-458b-8ba4-66cced7251d0/result.json",
+      "finalCandidate": false
+    },
+    {
+      "runId": "1e6034a7-078c-4e71-80c2-61409eea8f8e",
+      "scenario": "comparison",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "pass": true,
+      "candidateId": "f7e6300dddc12570b591b33942066cace6fa4322e8e5f616fc8d469f3252214f",
+      "candidateUnchanged": true,
+      "elapsedMs": 126577,
+      "budgetMs": 600000,
+      "error": null,
+      "manual": null,
+      "assessment": {
+        "category": "NONE",
+        "confidence": "observed",
+        "backupEligible": false,
+        "evidence": [
+          "strict scenario oracle"
+        ]
+      },
+      "reviewedAssessment": null,
+      "path": "docs/cad/evidence/closeout/native/comparison-Qwen3.6-35B-A3B-OptiQ-4bit-1e6034a7-078c-4e71-80c2-61409eea8f8e/result.json",
+      "finalCandidate": true
+    },
+    {
+      "runId": "14909111-f485-4d1b-82f1-5e91c0d2ec93",
+      "scenario": "diagnostics",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "pass": false,
+      "candidateId": "e2029f852fe13a2610da83440dd7c093fe25490239b1c49f37d72bb70515ca47",
+      "candidateUnchanged": true,
+      "elapsedMs": 106344,
+      "budgetMs": 600000,
+      "error": "AssertionError [ERR_ASSERTION]: HUMAN_REVIEW_REQUIRED: proposed edit is outside the reviewed fixture change",
+      "manual": "edit-outside-allowlist",
+      "assessment": {
+        "category": "MANUAL_REQUIRED",
+        "confidence": "observed",
+        "backupEligible": false,
+        "evidence": [
+          "edit-outside-allowlist"
+        ]
+      },
+      "reviewedAssessment": {
+        "date": "2026-11-17",
+        "originalResultUnchanged": true,
+        "category": "HARNESS_OR_ORACLE",
+        "confidence": "supported",
+        "backupEligible": false,
+        "pass": false,
+        "explanation": "Native transcript 0.74.0 omits user messages. Marker-only lookup returned no arguments, incorrectly classifying the exact authorized edit as outside scope. Actual raw provider arguments validate against the full fixture allowlist. No edit accepted, no reanalysis or model PASS; do not retry this scene in this delivery.",
+        "evidence": {
+          "beforeHash": "2c8b7b94d989cef14e31dff8e889487d878e64a8cd54d6fcaed701eb761a2f6d",
+          "afterHash": "e8e516fd6bb17060f9554965bfab5d01e07028d0095062357cb150466997d009",
+          "diskHash": "83e18b9205f6b219641a6e226a1d7ead4bee92026fc7f8962cc6141ce5ab742f"
+        },
+        "rawToolCallId": "call_fdb4bc89",
+        "manualCase": "P1 follow-up, not a proven save/model failure"
+      },
+      "path": "docs/cad/evidence/closeout/native/diagnostics-Qwen3.6-35B-A3B-OptiQ-4bit-14909111-f485-4d1b-82f1-5e91c0d2ec93/result.json",
+      "finalCandidate": false
+    },
+    {
+      "runId": "15e56d46-ded6-4a82-851d-0e89b687b258",
+      "scenario": "mesh",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "pass": true,
+      "candidateId": "f7e6300dddc12570b591b33942066cace6fa4322e8e5f616fc8d469f3252214f",
+      "candidateUnchanged": true,
+      "elapsedMs": 84832,
+      "budgetMs": 600000,
+      "error": null,
+      "manual": null,
+      "assessment": {
+        "category": "NONE",
+        "confidence": "observed",
+        "backupEligible": false,
+        "evidence": [
+          "strict scenario oracle"
+        ]
+      },
+      "reviewedAssessment": null,
+      "path": "docs/cad/evidence/closeout/native/mesh-Qwen3.6-35B-A3B-OptiQ-4bit-15e56d46-ded6-4a82-851d-0e89b687b258/result.json",
+      "finalCandidate": true
+    },
+    {
+      "runId": "d82dd059-5eba-4e18-97c8-97e03f13bac4",
+      "scenario": "mesh",
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "pass": true,
+      "candidateId": "d88e72bced4562c562877f2273cc8dbdfafd55c92157461d0626fd7a349b119d",
+      "candidateUnchanged": true,
+      "elapsedMs": 106044,
+      "budgetMs": 600000,
+      "error": null,
+      "manual": null,
+      "assessment": {
+        "category": "NONE",
+        "confidence": "observed",
+        "backupEligible": false,
+        "evidence": [
+          "strict scenario oracle"
+        ]
+      },
+      "reviewedAssessment": null,
+      "path": "docs/cad/evidence/closeout/native/mesh-Qwen3.6-35B-A3B-OptiQ-4bit-d82dd059-5eba-4e18-97c8-97e03f13bac4/result.json",
+      "finalCandidate": false
+    }
+  ],
+  "manual": "NOT_RUN: docs/cad/manual-acceptance.md; temporary fixtures prepared, no human clicks/approvals claimed",
+  "maxScaleAndPowerLoss": "NOT_RUN: CAD-STORE-STRESS-01",
+  "windowsUnicode": "KNOWN_PLATFORM_GAP",
+  "otherPlatforms": "NOT_RUN",
+  "merged": false,
+  "published": false,
+  "vsix": {
+    "path": ".build/scad-ai-ide-closeout-final.vsix",
+    "sha256": "e95c1bcc90617b2fc63d41c047af0c6710f4f1fc135cd6531b36d46c2e35b3d0"
+  },
+  "gates": {
+    "functional": "PARTIAL: deterministic CAD 22/1 and official CLI 3/3 PASS; manual/platform/max-scale gaps remain",
+    "nativeAgent": "OPEN by scenario/model: final Qwen3.6 mesh/compare PASS, assembly strict FAIL with geometry repair PASS; one Qwen3.8 assembly PASS; P1 final NOT_RUN",
+    "host": "MINIMUM 61/1/0; STABLE 58/1/3 focus FAIL; dynamic workspace pending",
+    "installed": "PASS: final VSIX minimum and Stable smoke",
+    "manual": "NOT_RUN: M01-M11",
+    "crossPlatform": "NOT_RUN; Windows Unicode KNOWN_PLATFORM_GAP"
+  },
+  "finalNativeSource": "1d820011737325f1f9e799fede9f57f6079a36fc",
+  "headRecord": "Final evidence commit HEAD and draft PR recorded in PR metadata; source candidate is finalNativeSource.",
+  "backup": {
+    "policy": "conditional single comparison; original primary failure preserved",
+    "eligibility": "assembly-backup-eligibility.json",
+    "model": "Qwen3.8-27B-4bit",
+    "pass": true,
+    "elapsedMs": 586758
+  },
+  "pullRequest": "https://github.com/peterisdev42/scad-ai-ide/pull/6",
+  "base": "main",
+  "incrementalComparison": "https://github.com/peterisdev42/scad-ai-ide/compare/677dc681965e1d640ecf606f1ed0f60d1fe492a0...codex/cad-acceptance-closeout"
+}

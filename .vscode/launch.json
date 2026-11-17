@@ -6,6 +6,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "CAD Manual Acceptance + oMLX",
+            "type": "extensionHost",
+            "request": "launch",
+            "args": ["${workspaceFolder}/.build/cad-manual/current/manual.code-workspace", "--extensionDevelopmentPath=${workspaceFolder}", "--extensionDevelopmentPath=${workspaceFolder}/.build/omlx-dev/extensions/techopolis.omlx-copilot-chat", "--disable-extensions"],
+            "outFiles": ["${workspaceFolder}/dist/**/*.js"]
+        },
+        {
             "name": "Run Extension",
             "type": "extensionHost",
             "request": "launch",
@@ -17,11 +24,7 @@
             "name": "Run Extension + oMLX",
             "type": "extensionHost",
             "request": "launch",
-            "args": [
-                "--extensionDevelopmentPath=${workspaceFolder}",
-                "--extensionDevelopmentPath=${workspaceFolder}/.build/omlx-dev/extensions/techopolis.omlx-copilot-chat",
-                "--disable-extensions"
-            ],
+            "args": ["--extensionDevelopmentPath=${workspaceFolder}", "--extensionDevelopmentPath=${workspaceFolder}/.build/omlx-dev/extensions/techopolis.omlx-copilot-chat", "--disable-extensions"],
             "outFiles": ["${workspaceFolder}/dist/**/*.js"],
             "preLaunchTask": "watch + oMLX"
         }

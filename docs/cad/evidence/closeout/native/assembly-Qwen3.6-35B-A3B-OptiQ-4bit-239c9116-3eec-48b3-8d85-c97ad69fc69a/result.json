@@ -1,0 +1,1035 @@
+{
+  "scope": "One real Native Agent session, F5 oMLX development bundle; temporary gap edit/save only",
+  "ready": {
+    "vscode": "1.146.0",
+    "extensionPath": "/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/scad-ai-ide",
+    "bundleSha256": "ccd5ae18d4f6739aa16f9420ad19cd8ec89299caab2cba16877601bf90f5edb8",
+    "workspace": [
+      "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace"
+    ],
+    "provider": {
+      "id": "techopolis.omlx-copilot-chat",
+      "version": "0.1.2"
+    },
+    "nativeAgent": {
+      "present": true,
+      "active": true
+    },
+    "chatSettings": {
+      "saveBeforeSend": false,
+      "autoSave": "off"
+    },
+    "tools": [
+      {
+        "name": "copilot_readFile",
+        "description": "Read the contents of a file.\n\nYou must specify the line range you're interested in. Line numbers are 1-indexed. If the file contents returned are insufficient for your task, you may call this tool again to retrieve more content. Prefer reading larger ranges over doing many small reads. Binary files use startLine/endLine as byte offsets."
+      },
+      {
+        "name": "copilot_getErrors",
+        "description": "Get any compile or lint errors in a specific file or across all files. If the user mentions errors or problems in a file, they may be referring to these. Use the tool to see the same errors that the user is seeing. If the user asks you to analyze all errors, or does not specify a file, use this tool to gather errors for all files. Also use this tool after editing a file to validate the change."
+      },
+      {
+        "name": "copilot_replaceString",
+        "description": "This is a tool for making edits in an existing file in the workspace. For moving or renaming files, use run in terminal tool with the 'mv' command instead. For larger edits, split them into smaller edits and call the edit tool multiple times to ensure accuracy. Before editing, always ensure you have the context to understand the file's contents and context. To edit a file, provide: 1) filePath (absolute path), 2) oldString (MUST be the exact literal text to replace including all whitespace, indentation, new"
+      },
+      {
+        "name": "copilot_multiReplaceString",
+        "description": "This tool allows you to apply multiple replace_string_in_file operations in a single call, which is more efficient than calling replace_string_in_file multiple times. It takes an array of replacement operations and applies them sequentially. Each replacement operation has the same parameters as replace_string_in_file: filePath, oldString, newString, and explanation. This tool is ideal when you need to make multiple edits across different files or multiple edits in the same file. The tool will provide a summ"
+      }
+    ],
+    "models": [
+      {
+        "id": "Hy-MT2-7B-4bit",
+        "name": "Hy-MT2-7B-4bit",
+        "vendor": "omlx",
+        "maxInputTokens": 262144
+      },
+      {
+        "id": "Qwen3.6-35B-A3B-OptiQ-4bit",
+        "name": "Qwen3.6-35B-A3B-OptiQ-4bit",
+        "vendor": "omlx",
+        "maxInputTokens": 262144
+      },
+      {
+        "id": "Qwen3.8-27B-4bit",
+        "name": "Qwen3.8-27B-4bit",
+        "vendor": "omlx",
+        "maxInputTokens": 262144
+      }
+    ]
+  },
+  "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+  "response": {
+    "result": {
+      "timings": {
+        "firstProgress": 37282,
+        "totalElapsed": 185404
+      },
+      "metadata": {
+        "codeBlocks": [],
+        "renderedUserMessage": [
+          {
+            "type": 1,
+            "text": "<attachments>\n<attachment id=\"model.scad\" filePath=\"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/model.scad\">\npart=\"body\";\ngap=0.18;\nif(part==\"body\") difference(){cube([20,20,10]);translate([1,1,1])cube([18,18,10]);}\nelse if(part==\"lid\") translate([0,0,10+gap])cube([20,20,1]);\n</attachment>\n<attachment id=\"verification.json\" filePath=\"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/.scad/verification.json\">\n{\n  \"schemaVersion\": 1,\n  \"units\": \"mm\",\n  \"entry\": \"./model.scad\",\n  \"parts\": [\n    {\n      \"id\": \"body\",\n      \"selector\": {\n        \"type\": \"define\",\n        \"name\": \"part\",\n        \"value\": \"body\"\n      },\n      \"transform\": {\n        \"translate\": [\n          0,\n          0,\n          0\n        ],\n        \"rotate\": [\n          0,\n          0,\n          0\n        ]\n      }\n    },\n    {\n      \"id\": \"lid\",\n      \"selector\": {\n        \"type\": \"define\",\n        \"name\": \"part\",\n        \"value\": \"lid\"\n      },\n      \"transform\": {\n        \"translate\": [\n          0,\n          0,\n          0\n        ],\n        \"rotate\": [\n          0,\n          0,\n          0\n        ]\n      }\n    }\n  ],\n  \"checks\": [\n    {\n      \"id\": \"gap\",\n      \"type\": \"clearance\",\n      \"parts\": [\n        \"body\",\n        \"lid\"\n      ],\n      \"min\": 0.25,\n      \"max\": 0.35\n    },\n    {\n      \"id\": \"body-volume\",\n      \"type\": \"volume\",\n      \"part\": \"body\",\n      \"min\": 1083.99,\n      \"max\": 1084.01\n    },\n    {\n      \"id\": \"body-bounds\",\n      \"type\": \"bounds\",\n      \"part\": \"body\",\n      \"minDimensions\": [\n        19.99999,\n        19.99999,\n        9.99999\n      ],\n      \"maxDimensions\": [\n        20.00001,\n        20.00001,\n        10.00001\n      ]\n    },\n    {\n      \"id\": \"lid-volume\",\n      \"type\": \"volume\",\n      \"part\": \"lid\",\n      \"min\": 399.99,\n      \"max\": 400.01\n    },\n    {\n      \"id\": \"lid-bounds\",\n      \"type\": \"bounds\",\n      \"part\": \"lid\",\n      \"minDimensions\": [\n        19.99999,\n        19.99999,\n        0.99999\n      ],\n      \"maxDimensions\": [\n        20.00001,\n        20.00001,\n        1.00001\n      ]\n    }\n  ]\n}\n</attachment>\n<attachment id=\"SKILL.md\" filePath=\"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/scad-ai-ide/skills/openscad-modeling-lifecycle/SKILL.md\">\n---\nname: openscad-modeling-lifecycle\ndescription: Repair authorized CAD geometry and recheck every required static assembly constraint against an unchanged Manifest baseline.\n---\n\n1. Read parts and checks with `scad_ai_ide_model_listParts`; record manifestDigest and author IDs. Missing declarations require user-authored configuration.\n2. Run `scad_ai_ide_model_checkAssembly` with expectedManifestDigest. Read issue IDs through `scad_ai_ide_model_getIssue`. Distinguish FAIL from incomplete or stale evidence.\n3. Edit only geometry the user authorized. Never automatically modify the Manifest, thresholds, transforms, IDs, required flags or expected results; never remove a part, disable safety prerequisites or repair a mesh to obtain PASS. Do not save user buffers without authorization.\n4. Recheck using the identical expectedManifestDigest, with no pair-only shortcut or threshold override. CONSTRAINT_BASELINE_CHANGED stops repair. Require a new current snapshot, every required check and base-part prerequisite passing, and no incomplete input.\n5. Perform at most three autonomous repair rounds; stop after two consecutive rounds without verifiable progress. Report remaining issues honestly. Report diagnostic, mesh, assembly, image, Agent and platform evidence separately. Historical reportId reads never rerun compilation.\n\nAfter an authorized geometry repair, compare frozen before/after reports through `scad_ai_ide_model_compare`. Keep the original Manifest digest, required constraints, independent protected parts and explicit print profile unchanged. Read current/stale feedback and ask for human surface pointing only when needed; a resolved annotation is not verification PASS.\n</attachment>\n\n</attachments>\n<context>\nThe current date is 2026-11-17.\n</context>\n<editorContext>\nThe user's current file is /var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/model.scad. \n</editorContext>\n<reminderInstructions>\nWhen using the insert_edit_into_file tool, avoid repeating existing code, instead use a line comment with \\`...existing code...\\` to represent regions of unchanged code.\nWhen using the replace_string_in_file tool, include 3-5 lines of unchanged code before and after the string you want to replace, to make it unambiguous which part of the file should be edited.\nIt is much faster to edit using the replace_string_in_file tool. Prefer the replace_string_in_file tool for making edits and only fall back to insert_edit_into_file if it fails.\n</reminderInstructions>\n<userRequest>\nCAD_ACCEPTANCE_RUN=239c9116-3eec-48b3-8d85-c97ad69fc69a\n使用 openscad-modeling-lifecycle Skill，检查临时工程 file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/.scad/verification.json。1 用scad_ai_ide_model_listParts读取parts和checks并记录manifestDigest；2 用scad_ai_ide_model_checkAssembly(uri,expectedManifestDigest)检查，读取失败issue证据；3 只准用原生replace_string_in_file修改 /var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/model.scad 中gap=0.18;为gap=0.30;，允许保存这一个临时SCAD源文件，其他源码保持逐字相同；4 用完全相同的expectedManifestDigest复验全部声明约束，得到新snapshot的PASS；5 对新reportId调用model_measure和model_renderViews(cameras=[\"iso\"],delivery=\"metadata\")。Manifest内容、约束数值、ID、变换和黄金预期绝对不可修改。禁止终端、管理工具和网格修复。最多三轮，两轮无进展即停。最后不超过120字报告结果与reportId/snapshotId和未检查项，然后结束。\n</userRequest>\n"
+          },
+          {
+            "type": 3,
+            "cacheType": "ephemeral"
+          }
+        ],
+        "renderedGlobalContext": [
+          {
+            "type": 1,
+            "text": "<environment_info>\nThe user's current OS is: macOS\n</environment_info>\n<workspace_info>\nI am working in a workspace with the following folders:\n- /var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace \n</workspace_info>\n"
+          },
+          {
+            "type": 3,
+            "cacheType": "ephemeral"
+          }
+        ],
+        "cacheKey": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace",
+        "promptTokens": 0,
+        "outputTokens": 0,
+        "toolCallRounds": [
+          {
+            "response": "\n\n我将按照 openscad-modeling-lifecycle Skill 的步骤执行。首先读取 parts 和 checks。\n\n\n",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_model_listParts",
+                "arguments": "{\"uri\":\"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/.scad/verification.json\",\"section\":\"parts\"}",
+                "id": "call_13ce3ae2__vscode-1794880495360"
+              },
+              {
+                "name": "scad_ai_ide_model_listParts",
+                "arguments": "{\"uri\":\"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/.scad/verification.json\",\"section\":\"checks\"}",
+                "id": "call_245eda86__vscode-1794880495361"
+              }
+            ],
+            "toolInputRetry": 0,
+            "id": "05417fd5-26a8-4adc-b005-d9f30cc4b0b1",
+            "timestamp": 1794880542036,
+            "modelId": "Qwen3.6-35B-A3B-OptiQ-4bit"
+          },
+          {
+            "response": "\n\n已记录 manifestDigest：`c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f`。\n\n- Parts: body, lid\n- Checks: gap (clearance, 0.25-0.35), body-volume (1083.99-1084.01), body-bounds, lid-volume (399.99-400.01), lid-bounds\n\n现在执行 assembly 检查：\n\n",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_model_checkAssembly",
+                "arguments": "{\"uri\":\"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/model.scad\",\"expectedManifestDigest\":\"c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f\",\"quality\":\"verification\",\"reportId\":\"239c9116-3eec-48b3-8d85-c97ad69fc69a\"}",
+                "id": "call_c6260879__vscode-1794880495362"
+              }
+            ],
+            "toolInputRetry": 0,
+            "id": "e1d572e8-e3e1-4d7b-888f-cbe22f9ab708",
+            "timestamp": 1794880582379,
+            "modelId": "Qwen3.6-35B-A3B-OptiQ-4bit"
+          },
+          {
+            "response": "\n\n让我尝试不带 reportId，让它生成新的证据：\n\n",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_model_checkAssembly",
+                "arguments": "{\"uri\":\"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/model.scad\",\"expectedManifestDigest\":\"c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f\",\"quality\":\"verification\"}",
+                "id": "call_63ceb005__vscode-1794880495363"
+              }
+            ],
+            "toolInputRetry": 1,
+            "id": "5bcc2d0d-4093-4f40-80c5-8968460909f5",
+            "timestamp": 1794880592380,
+            "modelId": "Qwen3.6-35B-A3B-OptiQ-4bit"
+          },
+          {
+            "response": "\n\n检查结果显示 gap 约束 FAIL：当前 minDistance=0.18，低于要求的 0.25-0.35 范围。现在修改 gap 值：\n\n",
+            "toolCalls": [
+              {
+                "name": "replace_string_in_file",
+                "arguments": "{\"filePath\":\"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/model.scad\",\"oldString\":\"part=\\\"body\\\";\\ngap=0.18;\",\"newString\":\"part=\\\"body\\\";\\ngap=0.30;\"}",
+                "id": "call_adb22c4c__vscode-1794880495364"
+              }
+            ],
+            "toolInputRetry": 0,
+            "id": "46de11f6-2ea9-4f72-991f-70334c312601",
+            "timestamp": 1794880607700,
+            "modelId": "Qwen3.6-35B-A3B-OptiQ-4bit"
+          },
+          {
+            "response": "\n\n修改完成。现在用相同的 expectedManifestDigest 复验全部约束：\n\n",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_model_checkAssembly",
+                "arguments": "{\"expectedManifestDigest\":\"c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f\",\"quality\":\"verification\",\"uri\":\"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/model.scad\"}",
+                "id": "call_972b58d4__vscode-1794880495365"
+              }
+            ],
+            "toolInputRetry": 0,
+            "id": "fa26a799-4422-429a-aa97-5afb7f440b9a",
+            "timestamp": 1794880618542,
+            "modelId": "Qwen3.6-35B-A3B-OptiQ-4bit"
+          },
+          {
+            "response": "\n\n复验通过！所有7个约束全部PASS，gap clearance从FAIL变为PASS，minDistance=0.30000019。\n\n现在执行第5步，对新reportId调用measure和renderViews：\n\n\n",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_model_measure",
+                "arguments": "{\"reportId\":\"cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49\",\"measurementTypes\":[\"bounds\",\"surfaceArea\",\"signedVolume\",\"physicalVolume\",\"topology\"],\"units\":\"mm\"}",
+                "id": "call_4c9cbaa6__vscode-1794880495366"
+              },
+              {
+                "name": "scad_ai_ide_model_renderViews",
+                "arguments": "{\"reportId\":\"cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49\",\"cameras\":[\"iso\"],\"delivery\":\"metadata\"}",
+                "id": "call_708be76c__vscode-1794880495367"
+              }
+            ],
+            "toolInputRetry": 0,
+            "id": "4c311f52-2875-4f72-be90-d9b2843a1e3d",
+            "timestamp": 1794880634689,
+            "modelId": "Qwen3.6-35B-A3B-OptiQ-4bit"
+          },
+          {
+            "response": "\n\nrenderViews 成功。measure 需要调整参数格式，让我重试：\n\n",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_model_measure",
+                "arguments": "{\"reportId\":\"cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49\",\"units\":\"mm\",\"measurementTypes\":[\"bounds\",\"surfaceArea\",\"signedVolume\",\"physicalVolume\",\"topology\"]}",
+                "id": "call_2fba6345__vscode-1794880495368"
+              }
+            ],
+            "toolInputRetry": 1,
+            "id": "c10e56dd-eba5-4ff7-9894-271afc0d5f19",
+            "timestamp": 1794880643657,
+            "modelId": "Qwen3.6-35B-A3B-OptiQ-4bit"
+          },
+          {
+            "response": "\n\n",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_model_measure",
+                "arguments": "{\"reportId\":\"cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49\",\"units\":\"mm\",\"measurementTypes\":[\"bounds\"]}",
+                "id": "call_824c2082__vscode-1794880495369"
+              }
+            ],
+            "toolInputRetry": 2,
+            "id": "426793c1-5a86-40d4-b5c6-8de1875632fa",
+            "timestamp": 1794880648695,
+            "modelId": "Qwen3.6-35B-A3B-OptiQ-4bit"
+          },
+          {
+            "response": "\n\n",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_model_measure",
+                "arguments": "{\"reportId\":\"cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49\",\"units\":\"mm\"}",
+                "id": "call_3a338e7a__vscode-1794880495370"
+              }
+            ],
+            "toolInputRetry": 3,
+            "id": "028eaa2c-c7d6-4386-b428-9530d55aeb98",
+            "timestamp": 1794880653419,
+            "modelId": "Qwen3.6-35B-A3B-OptiQ-4bit"
+          },
+          {
+            "response": "\n\n",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_model_measure",
+                "arguments": "{\"reportId\":\"cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49\",\"measurementTypes\":[\"bounds\",\"surfaceArea\",\"signedVolume\"],\"units\":\"mm\"}",
+                "id": "call_c60ad065__vscode-1794880495371"
+              }
+            ],
+            "toolInputRetry": 4,
+            "id": "a9f88ccd-9b61-4eb4-9733-8d8d47be394a",
+            "timestamp": 1794880660501,
+            "modelId": "Qwen3.6-35B-A3B-OptiQ-4bit"
+          },
+          {
+            "response": "\n\n",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_model_measure",
+                "arguments": "{\"uri\":\"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/model.scad\",\"reportId\":\"cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49\",\"measurementTypes\":[\"bounds\",\"surfaceArea\",\"signedVolume\"],\"units\":\"mm\"}",
+                "id": "call_37f6076b__vscode-1794880495372"
+              }
+            ],
+            "toolInputRetry": 5,
+            "id": "d8a6a842-3c5e-45a9-a43c-0addfc01330d",
+            "timestamp": 1794880669849,
+            "modelId": "Qwen3.6-35B-A3B-OptiQ-4bit"
+          },
+          {
+            "response": "\n\n",
+            "toolCalls": [
+              {
+                "name": "scad_ai_ide_model_measure",
+                "arguments": "{\"uri\":\"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/model.scad\",\"reportId\":\"cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49\",\"measurementTypes\":[\"bounds\"],\"units\":\"mm\"}",
+                "id": "call_f9f41f3e__vscode-1794880495373"
+              }
+            ],
+            "toolInputRetry": 0,
+            "id": "fe799d82-fd90-40d6-8049-1f1ba77f429a",
+            "timestamp": 1794880677258,
+            "modelId": "Qwen3.6-35B-A3B-OptiQ-4bit"
+          },
+          {
+            "response": "\nThe schema says `must NOT be valid, must NOT be valid, must match exactly one schema in oneOf` which suggests the tool has a oneOf schema that is not being matched. Let me check the schema more carefully - it seems like the tool might have a `projectRoot` field that needs to be set, or perhaps the `uri` and `reportId` are conflicting in a oneOf schema.\n\nLet me try without the `uri` field, or with `projectRoot` instead.\n</parameter>",
+            "toolCalls": [],
+            "toolInputRetry": 1,
+            "id": "af56c9bb-b56d-44ac-9c66-64a8ff9b1393",
+            "timestamp": 1794880682278,
+            "modelId": "Qwen3.6-35B-A3B-OptiQ-4bit"
+          }
+        ],
+        "toolCallResults": {
+          "call_13ce3ae2__vscode-1794880495360": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "{\"ok\":true,\"capabilityId\":\"cad.listParts\",\"data\":{\"manifestUri\":\"file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/.scad/verification.json\",\"manifestDigest\":\"c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f\",\"current\":true,\"status\":\"PASS\",\"issues\":[],\"section\":\"parts\",\"total\":2,\"offset\":0,\"items\":[{\"id\":\"body\",\"selector\":{\"type\":\"define\",\"name\":\"part\",\"value\":\"body\"},\"transform\":{\"translate\":[0,0,0],\"rotate\":[0,0,0]},\"identity\":{\"manifestUri\":\"file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/.scad/verification.json\",\"partId\":\"body\"}},{\"id\":\"lid\",\"selector\":{\"type\":\"define\",\"name\":\"part\",\"value\":\"lid\"},\"transform\":{\"translate\":[0,0,0],\"rotate\":[0,0,0]},\"identity\":{\"manifestUri\":\"file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/.scad/verification.json\",\"partId\":\"lid\"}}],\"nextOffset\":null,\"pairs\":[{\"pairId\":\"48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51\",\"parts\":[\"body\",\"lid\"]}]},\"operation\":{\"id\":\"e29a356b-be93-4a49-9e89-d31e0454eaaa\",\"capabilityId\":\"cad.listParts\",\"status\":\"succeeded\"}}"
+              }
+            ]
+          },
+          "call_245eda86__vscode-1794880495361": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "{\"ok\":true,\"capabilityId\":\"cad.listParts\",\"data\":{\"manifestUri\":\"file:///private/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/.scad/verification.json\",\"manifestDigest\":\"c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f\",\"current\":true,\"status\":\"PASS\",\"issues\":[],\"section\":\"checks\",\"total\":5,\"offset\":0,\"items\":[{\"id\":\"gap\",\"type\":\"clearance\",\"parts\":[\"body\",\"lid\"],\"min\":0.25,\"max\":0.35,\"required\":true,\"allowContact\":false},{\"id\":\"body-volume\",\"type\":\"volume\",\"part\":\"body\",\"min\":1083.99,\"max\":1084.01,\"required\":true},{\"id\":\"body-bounds\",\"type\":\"bounds\",\"part\":\"body\",\"minDimensions\":[19.99999,19.99999,9.99999],\"maxDimensions\":[20.00001,20.00001,10.00001],\"required\":true,\"frame\":\"local\"},{\"id\":\"lid-volume\",\"type\":\"volume\",\"part\":\"lid\",\"min\":399.99,\"max\":400.01,\"required\":true},{\"id\":\"lid-bounds\",\"type\":\"bounds\",\"part\":\"lid\",\"minDimensions\":[19.99999,19.99999,0.99999],\"maxDimensions\":[20.00001,20.00001,1.00001],\"required\":true,\"frame\":\"local\"}],\"nextOffset\":null},\"operation\":{\"id\":\"0e4c4c2b-79af-4ea8-a5b7-1779aed7fbac\",\"capabilityId\":\"cad.listParts\",\"status\":\"succeeded\"}}"
+              }
+            ]
+          },
+          "call_c6260879__vscode-1794880495362": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must NOT be valid, must NOT be valid, must match exactly one schema in oneOf)\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_63ceb005__vscode-1794880495363": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "{\"ok\":true,\"capabilityId\":\"cad.checkAssembly\",\"data\":{\"schemaVersion\":3,\"reportUri\":\"scad-cad-report:/cad-353e5911-8f98-41fa-b88d-420e8cc192f7\",\"reportId\":\"cad-353e5911-8f98-41fa-b88d-420e8cc192f7\",\"snapshotId\":\"7c188b5a812733b1020fb4269dd24c45f32fd246b33d59e4601d7598a32c7f20\",\"manifestDigest\":\"c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f\",\"current\":true,\"executionStatus\":\"SUCCEEDED\",\"overallStatus\":\"FAIL\",\"units\":\"mm\",\"precision\":\"based-on-frozen-exported-mesh\",\"complete\":true,\"checks\":[{\"id\":\"part:body:solid\",\"required\":true,\"status\":\"PASS\",\"issueIds\":[],\"reason\":\"Every declared part must be a non-empty, valid raw solid.\"},{\"id\":\"part:lid:solid\",\"required\":true,\"status\":\"PASS\",\"issueIds\":[],\"reason\":\"Every declared part must be a non-empty, valid raw solid.\"},{\"id\":\"gap\",\"required\":true,\"status\":\"FAIL\",\"issueIds\":[\"e6d670c2dd54893fa728e80ae13c5f55a86737c65b2f47cbbce924871b405f3f\"],\"pairId\":\"48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51\",\"relation\":\"clearanceViolation\"},{\"id\":\"body-volume\",\"required\":true,\"status\":\"PASS\",\"issueIds\":[]},{\"id\":\"body-bounds\",\"required\":true,\"status\":\"PASS\",\"issueIds\":[]},{\"id\":\"lid-volume\",\"required\":true,\"status\":\"PASS\",\"issueIds\":[]},{\"id\":\"lid-bounds\",\"required\":true,\"status\":\"PASS\",\"issueIds\":[]}],\"checkCount\":7,\"issues\":[{\"id\":\"e6d670c2dd54893fa728e80ae13c5f55a86737c65b2f47cbbce924871b405f3f\",\"code\":\"ASSEMBLY_CONSTRAINT_FAILED\",\"title\":\"gap: clearanceViolation\",\"status\":\"FAIL\",\"source\":\"constraints\",\"severity\":\"error\",\"location\":{\"uri\":\"file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/.scad/verification.json\",\"line\":47,\"character\":4,\"confidence\":\"exact\"},\"relatedTrace\":[],\"pairId\":\"48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51\",\"partIds\":[\"body\",\"lid\"],\"pointer\":\"/checks/0\"}],\"issueCount\":1,\"pairs\":[{\"pairId\":\"48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51\",\"parts\":[\"body\",\"lid\"],\"relation\":\"clear\",\"minDistance\":0.18000030517578125,\"distanceBound\":{\"lower\":0.18000030517578125,\"upper\":0.18000030517578125},\"closestPoints\":[[0,0,10],[0,0,10.180000305175781]],\"witnessCoordinateBounds\":[[{\"lower\":0,\"upper\":0},{\"lower\":0,\"upper\":0},{\"lower\":10,\"upper\":10}],[{\"lower\":0,\"upper\":0},{\"lower\":0,\"upper\":0},{\"lower\":10.180000305175781,\"upper\":10.180000305175781}]],\"triangles\":[0,10],\"contained\":false,\"overlapVolume\":null,\"overlapVolumeStatus\":\"notChecked\",\"method\":\"exact-dyadic-bvh-v1\",\"complete\":true,\"errorBound\":0,\"durationMs\":15.243042000001878}],\"pairCount\":1,\"incomplete\":[],\"coverage\":{\"checkedPairs\":[\"48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51\"],\"uncheckedPairCount\":0,\"uncheckedPairs\":[]},\"notChecked\":[\"overlap-volume\",\"motion\",\"analytic-surface-error\",\"thickness\",\"printability\"]},\"operation\":{\"id\":\"b5f8f0bd-5dad-46a7-97c6-dcb69267e9c4\",\"capabilityId\":\"cad.checkAssembly\",\"status\":\"succeeded\"}}"
+              }
+            ]
+          },
+          "call_adb22c4c__vscode-1794880495364": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 23,
+                "value": {
+                  "node": {
+                    "type": 1,
+                    "ctor": 2,
+                    "ctorName": "kk",
+                    "children": [
+                      {
+                        "type": 2,
+                        "priority": 9007199254740991,
+                        "text": "The following files were successfully edited:",
+                        "lineBreakBefore": false
+                      },
+                      {
+                        "type": 2,
+                        "priority": 9007199254740991,
+                        "text": "\n",
+                        "lineBreakBefore": false
+                      },
+                      {
+                        "type": 2,
+                        "priority": 9007199254740991,
+                        "text": "/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/model.scad",
+                        "lineBreakBefore": false
+                      },
+                      {
+                        "type": 2,
+                        "priority": 9007199254740991,
+                        "text": "\n",
+                        "lineBreakBefore": false
+                      }
+                    ],
+                    "props": {},
+                    "references": []
+                  }
+                }
+              }
+            ]
+          },
+          "call_972b58d4__vscode-1794880495365": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "{\"ok\":true,\"capabilityId\":\"cad.checkAssembly\",\"data\":{\"schemaVersion\":3,\"reportUri\":\"scad-cad-report:/cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49\",\"reportId\":\"cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49\",\"snapshotId\":\"32f55500fe07a092469ab8226925fc4d4e85b5c78b7a94965615292566bfe77b\",\"manifestDigest\":\"c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f\",\"current\":true,\"executionStatus\":\"SUCCEEDED\",\"overallStatus\":\"PASS\",\"units\":\"mm\",\"precision\":\"based-on-frozen-exported-mesh\",\"complete\":true,\"checks\":[{\"id\":\"part:body:solid\",\"required\":true,\"status\":\"PASS\",\"issueIds\":[],\"reason\":\"Every declared part must be a non-empty, valid raw solid.\"},{\"id\":\"part:lid:solid\",\"required\":true,\"status\":\"PASS\",\"issueIds\":[],\"reason\":\"Every declared part must be a non-empty, valid raw solid.\"},{\"id\":\"gap\",\"required\":true,\"status\":\"PASS\",\"issueIds\":[],\"pairId\":\"48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51\",\"relation\":\"clear\"},{\"id\":\"body-volume\",\"required\":true,\"status\":\"PASS\",\"issueIds\":[]},{\"id\":\"body-bounds\",\"required\":true,\"status\":\"PASS\",\"issueIds\":[]},{\"id\":\"lid-volume\",\"required\":true,\"status\":\"PASS\",\"issueIds\":[]},{\"id\":\"lid-bounds\",\"required\":true,\"status\":\"PASS\",\"issueIds\":[]}],\"checkCount\":7,\"issues\":[],\"issueCount\":0,\"pairs\":[{\"pairId\":\"48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51\",\"parts\":[\"body\",\"lid\"],\"relation\":\"clear\",\"minDistance\":0.3000001907348633,\"distanceBound\":{\"lower\":0.3000001907348633,\"upper\":0.3000001907348633},\"closestPoints\":[[0,0,10],[0,0,10.300000190734863]],\"witnessCoordinateBounds\":[[{\"lower\":0,\"upper\":0},{\"lower\":0,\"upper\":0},{\"lower\":10,\"upper\":10}],[{\"lower\":0,\"upper\":0},{\"lower\":0,\"upper\":0},{\"lower\":10.300000190734863,\"upper\":10.300000190734863}]],\"triangles\":[0,10],\"contained\":false,\"overlapVolume\":null,\"overlapVolumeStatus\":\"notChecked\",\"method\":\"exact-dyadic-bvh-v1\",\"complete\":true,\"errorBound\":0,\"durationMs\":15.48195799998939}],\"pairCount\":1,\"incomplete\":[],\"coverage\":{\"checkedPairs\":[\"48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51\"],\"uncheckedPairCount\":0,\"uncheckedPairs\":[]},\"notChecked\":[\"overlap-volume\",\"motion\",\"analytic-surface-error\",\"thickness\",\"printability\"]},\"operation\":{\"id\":\"06406000-ee88-4daa-ad20-898592c0f713\",\"capabilityId\":\"cad.checkAssembly\",\"status\":\"succeeded\"}}"
+              }
+            ]
+          },
+          "call_4c9cbaa6__vscode-1794880495366": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must NOT be valid, must NOT be valid, must match exactly one schema in oneOf)\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_708be76c__vscode-1794880495367": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "{\"ok\":true,\"capabilityId\":\"cad.modelRenderViews\",\"data\":{\"reportId\":\"cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49\",\"snapshotId\":\"32f55500fe07a092469ab8226925fc4d4e85b5c78b7a94965615292566bfe77b\",\"current\":true,\"renderStatus\":\"AVAILABLE\",\"frames\":[{\"view\":\"iso\",\"artifact\":{\"id\":\"fdef970958e61eb420c3aca9364825e18fad21bcb1504774fcb051faa0ee7ba3\",\"snapshotId\":\"32f55500fe07a092469ab8226925fc4d4e85b5c78b7a94965615292566bfe77b\",\"kind\":\"image\",\"mimeType\":\"image/png\",\"sha256\":\"9c452d2fb04c045809589b7beaef477730009ed1767331c9da10ce4799ba6c08\",\"bytes\":9978},\"artifactUri\":\"scad-cad-artifact:/fdef970958e61eb420c3aca9364825e18fad21bcb1504774fcb051faa0ee7ba3.png\",\"renderSnapshotId\":\"5db7f34bba103cc5ff6da749b6d424e4f58f1a9a9e72456eb6287e76d4c24f3d\",\"sourceMeshSha256\":\"acdb921d38002870eb2850a51619e34c0e59ba744160c03d7393c407b678f240\",\"renderedMeshSha256\":\"2d9a3b5da7b8738aaafd99d7f8265ec856111441fc10457435309fa08862d5cd\",\"camera\":{\"arguments\":[0,0,0,55,0,25,60],\"projection\":\"orthographic\",\"framing\":\"cli-autocenter-viewall\"},\"imageSize\":[512,512],\"runtime\":{\"identityHash\":\"db0d4d6c61a8d1703ce0ec912653c0a22e05dbd3ed7c952b342bca5e31b39b36\",\"version\":\"2026.11-RC0\"},\"displayOnly\":true,\"coordinateQuantizationError\":0}],\"delivery\":\"metadata\",\"notExamined\":[\"visual-inspection\",\"printability\"],\"partIds\":[\"body\",\"lid\"],\"sourceCoordinateFrame\":\"assembly-world\"},\"operation\":{\"id\":\"41ae4fe0-188f-4411-b6cb-468d4f67b19f\",\"capabilityId\":\"cad.modelRenderViews\",\"status\":\"succeeded\"}}"
+              }
+            ]
+          },
+          "call_2fba6345__vscode-1794880495368": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must NOT be valid, must NOT be valid, must match exactly one schema in oneOf)\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_824c2082__vscode-1794880495369": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must NOT be valid, must NOT be valid, must match exactly one schema in oneOf)\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_3a338e7a__vscode-1794880495370": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must NOT be valid, must NOT be valid, must match exactly one schema in oneOf)\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_c60ad065__vscode-1794880495371": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must NOT be valid, must NOT be valid, must match exactly one schema in oneOf)\nPlease check your input and try again."
+              }
+            ]
+          },
+          "call_37f6076b__vscode-1794880495372": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "{\"ok\":false,\"capabilityId\":\"cad.modelMeasure\",\"error\":{\"code\":\"INVALID_INPUT\",\"message\":\"data must NOT be valid, data must NOT be valid, data must match exactly one schema in oneOf\",\"retryable\":false},\"operation\":null}"
+              }
+            ]
+          },
+          "call_f9f41f3e__vscode-1794880495373": {
+            "$mid": 20,
+            "content": [
+              {
+                "$mid": 21,
+                "value": "ERROR: Your input to the tool was invalid (must NOT be valid, must NOT be valid, must match exactly one schema in oneOf)\nPlease check your input and try again."
+              }
+            ]
+          }
+        },
+        "resolvedModel": "Qwen3.6-35B-A3B-OptiQ-4bit",
+        "modelMessageId": "11c34773-bc8b-4586-ad76-5b15b81941fb",
+        "responseId": "fda3c211-c2a7-4e51-9a0e-08ac59d7f200",
+        "sessionId": "866f757a-9893-4957-8a73-4db0b87a9007",
+        "agentId": "github.copilot.editsAgent"
+      },
+      "details": "Qwen3.6-35B-A3B-OptiQ-4bit"
+    },
+    "snapshot": false,
+    "buffer": "part=\"body\";\ngap=0.30;\nif(part==\"body\") difference(){cube([20,20,10]);translate([1,1,1])cube([18,18,10]);}\nelse if(part==\"lid\") translate([0,0,10+gap])cube([20,20,1]);\n",
+    "dirty": false,
+    "disk": "part=\"body\";\ngap=0.30;\nif(part==\"body\") difference(){cube([20,20,10]);translate([1,1,1])cube([18,18,10]);}\nelse if(part==\"lid\") translate([0,0,10+gap])cube([20,20,1]);\n",
+    "manifestDiskHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "manifestBufferHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+    "bufferHash": "6d8380630c09031dfd4391b2aaf766fa69974d75856b35824e545fd239376d11",
+    "diskHash": "6d8380630c09031dfd4391b2aaf766fa69974d75856b35824e545fd239376d11",
+    "problems": [],
+    "operations": {
+      "total": 5,
+      "offset": 0,
+      "hasMore": false,
+      "nextOffset": null,
+      "operations": [
+        {
+          "id": "41ae4fe0-188f-4411-b6cb-468d4f67b19f",
+          "capabilityId": "cad.modelRenderViews",
+          "status": "succeeded"
+        },
+        {
+          "id": "06406000-ee88-4daa-ad20-898592c0f713",
+          "capabilityId": "cad.checkAssembly",
+          "status": "succeeded"
+        },
+        {
+          "id": "b5f8f0bd-5dad-46a7-97c6-dcb69267e9c4",
+          "capabilityId": "cad.checkAssembly",
+          "status": "succeeded"
+        },
+        {
+          "id": "0e4c4c2b-79af-4ea8-a5b7-1779aed7fbac",
+          "capabilityId": "cad.listParts",
+          "status": "succeeded"
+        },
+        {
+          "id": "e29a356b-be93-4a49-9e89-d31e0454eaaa",
+          "capabilityId": "cad.listParts",
+          "status": "succeeded"
+        }
+      ]
+    }
+  },
+  "approvals": [],
+  "analyses": [
+    {
+      "input": {
+        "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/model.scad",
+        "expectedManifestDigest": "c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f",
+        "quality": "verification"
+      },
+      "data": {
+        "schemaVersion": 3,
+        "reportUri": "scad-cad-report:/cad-353e5911-8f98-41fa-b88d-420e8cc192f7",
+        "reportId": "cad-353e5911-8f98-41fa-b88d-420e8cc192f7",
+        "snapshotId": "7c188b5a812733b1020fb4269dd24c45f32fd246b33d59e4601d7598a32c7f20",
+        "manifestDigest": "c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f",
+        "current": true,
+        "executionStatus": "SUCCEEDED",
+        "overallStatus": "FAIL",
+        "units": "mm",
+        "precision": "based-on-frozen-exported-mesh",
+        "complete": true,
+        "checks": [
+          {
+            "id": "part:body:solid",
+            "required": true,
+            "status": "PASS",
+            "issueIds": [],
+            "reason": "Every declared part must be a non-empty, valid raw solid."
+          },
+          {
+            "id": "part:lid:solid",
+            "required": true,
+            "status": "PASS",
+            "issueIds": [],
+            "reason": "Every declared part must be a non-empty, valid raw solid."
+          },
+          {
+            "id": "gap",
+            "required": true,
+            "status": "FAIL",
+            "issueIds": [
+              "e6d670c2dd54893fa728e80ae13c5f55a86737c65b2f47cbbce924871b405f3f"
+            ],
+            "pairId": "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51",
+            "relation": "clearanceViolation"
+          },
+          {
+            "id": "body-volume",
+            "required": true,
+            "status": "PASS",
+            "issueIds": []
+          },
+          {
+            "id": "body-bounds",
+            "required": true,
+            "status": "PASS",
+            "issueIds": []
+          },
+          {
+            "id": "lid-volume",
+            "required": true,
+            "status": "PASS",
+            "issueIds": []
+          },
+          {
+            "id": "lid-bounds",
+            "required": true,
+            "status": "PASS",
+            "issueIds": []
+          }
+        ],
+        "checkCount": 7,
+        "issues": [
+          {
+            "id": "e6d670c2dd54893fa728e80ae13c5f55a86737c65b2f47cbbce924871b405f3f",
+            "code": "ASSEMBLY_CONSTRAINT_FAILED",
+            "title": "gap: clearanceViolation",
+            "status": "FAIL",
+            "source": "constraints",
+            "severity": "error",
+            "location": {
+              "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/.scad/verification.json",
+              "line": 47,
+              "character": 4,
+              "confidence": "exact"
+            },
+            "relatedTrace": [],
+            "pairId": "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51",
+            "partIds": [
+              "body",
+              "lid"
+            ],
+            "pointer": "/checks/0"
+          }
+        ],
+        "issueCount": 1,
+        "pairs": [
+          {
+            "pairId": "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51",
+            "parts": [
+              "body",
+              "lid"
+            ],
+            "relation": "clear",
+            "minDistance": 0.18000030517578125,
+            "distanceBound": {
+              "lower": 0.18000030517578125,
+              "upper": 0.18000030517578125
+            },
+            "closestPoints": [
+              [
+                0,
+                0,
+                10
+              ],
+              [
+                0,
+                0,
+                10.180000305175781
+              ]
+            ],
+            "witnessCoordinateBounds": [
+              [
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 10,
+                  "upper": 10
+                }
+              ],
+              [
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 10.180000305175781,
+                  "upper": 10.180000305175781
+                }
+              ]
+            ],
+            "triangles": [
+              0,
+              10
+            ],
+            "contained": false,
+            "overlapVolume": null,
+            "overlapVolumeStatus": "notChecked",
+            "method": "exact-dyadic-bvh-v1",
+            "complete": true,
+            "errorBound": 0,
+            "durationMs": 15.243042000001878
+          }
+        ],
+        "pairCount": 1,
+        "incomplete": [],
+        "coverage": {
+          "checkedPairs": [
+            "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51"
+          ],
+          "uncheckedPairCount": 0,
+          "uncheckedPairs": []
+        },
+        "notChecked": [
+          "overlap-volume",
+          "motion",
+          "analytic-surface-error",
+          "thickness",
+          "printability"
+        ]
+      }
+    },
+    {
+      "input": {
+        "expectedManifestDigest": "c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f",
+        "quality": "verification",
+        "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-QrMQn8/workspace/model.scad"
+      },
+      "data": {
+        "schemaVersion": 3,
+        "reportUri": "scad-cad-report:/cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49",
+        "reportId": "cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49",
+        "snapshotId": "32f55500fe07a092469ab8226925fc4d4e85b5c78b7a94965615292566bfe77b",
+        "manifestDigest": "c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f",
+        "current": true,
+        "executionStatus": "SUCCEEDED",
+        "overallStatus": "PASS",
+        "units": "mm",
+        "precision": "based-on-frozen-exported-mesh",
+        "complete": true,
+        "checks": [
+          {
+            "id": "part:body:solid",
+            "required": true,
+            "status": "PASS",
+            "issueIds": [],
+            "reason": "Every declared part must be a non-empty, valid raw solid."
+          },
+          {
+            "id": "part:lid:solid",
+            "required": true,
+            "status": "PASS",
+            "issueIds": [],
+            "reason": "Every declared part must be a non-empty, valid raw solid."
+          },
+          {
+            "id": "gap",
+            "required": true,
+            "status": "PASS",
+            "issueIds": [],
+            "pairId": "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51",
+            "relation": "clear"
+          },
+          {
+            "id": "body-volume",
+            "required": true,
+            "status": "PASS",
+            "issueIds": []
+          },
+          {
+            "id": "body-bounds",
+            "required": true,
+            "status": "PASS",
+            "issueIds": []
+          },
+          {
+            "id": "lid-volume",
+            "required": true,
+            "status": "PASS",
+            "issueIds": []
+          },
+          {
+            "id": "lid-bounds",
+            "required": true,
+            "status": "PASS",
+            "issueIds": []
+          }
+        ],
+        "checkCount": 7,
+        "issues": [],
+        "issueCount": 0,
+        "pairs": [
+          {
+            "pairId": "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51",
+            "parts": [
+              "body",
+              "lid"
+            ],
+            "relation": "clear",
+            "minDistance": 0.3000001907348633,
+            "distanceBound": {
+              "lower": 0.3000001907348633,
+              "upper": 0.3000001907348633
+            },
+            "closestPoints": [
+              [
+                0,
+                0,
+                10
+              ],
+              [
+                0,
+                0,
+                10.300000190734863
+              ]
+            ],
+            "witnessCoordinateBounds": [
+              [
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 10,
+                  "upper": 10
+                }
+              ],
+              [
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 0,
+                  "upper": 0
+                },
+                {
+                  "lower": 10.300000190734863,
+                  "upper": 10.300000190734863
+                }
+              ]
+            ],
+            "triangles": [
+              0,
+              10
+            ],
+            "contained": false,
+            "overlapVolume": null,
+            "overlapVolumeStatus": "notChecked",
+            "method": "exact-dyadic-bvh-v1",
+            "complete": true,
+            "errorBound": 0,
+            "durationMs": 15.48195799998939
+          }
+        ],
+        "pairCount": 1,
+        "incomplete": [],
+        "coverage": {
+          "checkedPairs": [
+            "48fa4797458ac5f5f8b80f56a6fd0e9174befda288ca00c3913af6082e6fec51"
+          ],
+          "uncheckedPairCount": 0,
+          "uncheckedPairs": []
+        },
+        "notChecked": [
+          "overlap-volume",
+          "motion",
+          "analytic-surface-error",
+          "thickness",
+          "printability"
+        ]
+      }
+    }
+  ],
+  "views": {
+    "reportId": "cad-083ed00a-1876-496a-9b3c-de9ef3cb6a49",
+    "snapshotId": "32f55500fe07a092469ab8226925fc4d4e85b5c78b7a94965615292566bfe77b",
+    "current": true,
+    "renderStatus": "AVAILABLE",
+    "frames": [
+      {
+        "view": "iso",
+        "artifact": {
+          "id": "fdef970958e61eb420c3aca9364825e18fad21bcb1504774fcb051faa0ee7ba3",
+          "snapshotId": "32f55500fe07a092469ab8226925fc4d4e85b5c78b7a94965615292566bfe77b",
+          "kind": "image",
+          "mimeType": "image/png",
+          "sha256": "9c452d2fb04c045809589b7beaef477730009ed1767331c9da10ce4799ba6c08",
+          "bytes": 9978
+        },
+        "artifactUri": "scad-cad-artifact:/fdef970958e61eb420c3aca9364825e18fad21bcb1504774fcb051faa0ee7ba3.png",
+        "renderSnapshotId": "5db7f34bba103cc5ff6da749b6d424e4f58f1a9a9e72456eb6287e76d4c24f3d",
+        "sourceMeshSha256": "acdb921d38002870eb2850a51619e34c0e59ba744160c03d7393c407b678f240",
+        "renderedMeshSha256": "2d9a3b5da7b8738aaafd99d7f8265ec856111441fc10457435309fa08862d5cd",
+        "camera": {
+          "arguments": [
+            0,
+            0,
+            0,
+            55,
+            0,
+            25,
+            60
+          ],
+          "projection": "orthographic",
+          "framing": "cli-autocenter-viewall"
+        },
+        "imageSize": [
+          512,
+          512
+        ],
+        "runtime": {
+          "identityHash": "db0d4d6c61a8d1703ce0ec912653c0a22e05dbd3ed7c952b342bca5e31b39b36",
+          "version": "2026.11-RC0"
+        },
+        "displayOnly": true,
+        "coordinateQuantizationError": 0
+      }
+    ],
+    "delivery": "metadata",
+    "notExamined": [
+      "visual-inspection",
+      "printability"
+    ],
+    "partIds": [
+      "body",
+      "lid"
+    ],
+    "sourceCoordinateFrame": "assembly-world"
+  },
+  "manifestHash": "4fecbf03bb280793e0e8cc50943ea7e66fcffe49a6c934d9ab91c7d063f8bdf7",
+  "pass": false,
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'cad-353e5911-8f98-41fa-b88d-420e8cc192f7'\n",
+  "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'cad-353e5911-8f98-41fa-b88d-420e8cc192f7'\n\n    at file:///Users/q/Documents/Code/scad-ai-ide/scripts/test-assembly-native.mjs:197:12",
+  "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+  "scenario": "assembly",
+  "candidateId": "f7e6300dddc12570b591b33942066cace6fa4322e8e5f616fc8d469f3252214f",
+  "candidateUnchanged": true,
+  "budgetMs": 600000,
+  "elapsedMs": 189349,
+  "commandState": {
+    "runId": "239c9116-3eec-48b3-8d85-c97ad69fc69a",
+    "state": "completed",
+    "at": "2026-11-17T01:58:02.318Z"
+  },
+  "formalAttempt": 1,
+  "assessment": {
+    "category": "UNKNOWN_OR_MULTI_FACTOR",
+    "confidence": "unresolved",
+    "backupEligible": false,
+    "evidence": [
+      "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'cad-353e5911-8f98-41fa-b88d-420e8cc192f7'\n"
+    ],
+    "alternatives": [
+      "Product, tool contract, model, provider, host and harness require independent checks"
+    ],
+    "latencyObservation": [
+      {
+        "status": 200,
+        "firstByteMs": 16,
+        "elapsedMs": 19,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 5,
+        "elapsedMs": 5,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 6,
+        "elapsedMs": 6,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 4,
+        "elapsedMs": 4,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 6,
+        "elapsedMs": 7,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 13,
+        "elapsedMs": 131208,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 18,
+        "elapsedMs": 185745
+      },
+      {
+        "status": 200,
+        "firstByteMs": 44,
+        "elapsedMs": 44950,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 45,
+        "elapsedMs": 40054,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 58,
+        "elapsedMs": 9835,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 35,
+        "elapsedMs": 14904,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 51,
+        "elapsedMs": 10707,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 50,
+        "elapsedMs": 15791,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 49,
+        "elapsedMs": 8496,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 52,
+        "elapsedMs": 5004,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 49,
+        "elapsedMs": 4702,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 45,
+        "elapsedMs": 7058,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 49,
+        "elapsedMs": 9321,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 63,
+        "elapsedMs": 7353,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 55,
+        "elapsedMs": 4988,
+        "streamEnded": true
+      }
+    ]
+  }
+}
