@@ -51,3 +51,27 @@ function assess({ pass, manual, exposure = [], rawCalls = [], traces = [], termi
     return { category: 'UNKNOWN_OR_MULTI_FACTOR', confidence: 'unresolved', backupEligible: false, evidence: [error ?? 'scenario incomplete'], alternatives: ['Product, tool contract, model, provider, host and harness require independent checks'], latencyObservation: exposure.map((r) => ({ status: r.status, firstByteMs: r.firstByteMs, elapsedMs: r.elapsedMs, streamEnded: r.streamEnded })) }
 }
 module.exports = { PRIMARY, BACKUP, sha256, selectModel, backupEligible, validateEdit, assess }
+
+// Some native transcript versions intentionally omit user messages. Bind by the
+// actual provider tool-call id + name + parsed arguments from a marked request.
+function transcriptMatches(events, marker, markedCalls, started) {
+    const first = events.find((e) => e.type === 'session.start')
+    if (!first || Date.parse(first.data?.startTime ?? first.timestamp) < started) return false
+    if (JSON.stringify(events).includes(marker)) return true
+    return events
+        .filter((e) => e.type === 'assistant.message')
+        .some((e) =>
+            (e.data?.toolRequests ?? []).some((tool) =>
+                markedCalls.some((raw) => {
+                    if ((tool.toolCallId ?? tool.id) !== raw.id || tool.name !== raw.name || !raw.id) return false
+                    try {
+                        assert.deepEqual(typeof tool.arguments === 'string' ? JSON.parse(tool.arguments) : tool.arguments, JSON.parse(raw.arguments))
+                        return true
+                    } catch {
+                        return false
+                    }
+                }),
+            ),
+        )
+}
+module.exports.transcriptMatches = transcriptMatches

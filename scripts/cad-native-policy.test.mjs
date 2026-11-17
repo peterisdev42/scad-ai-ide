@@ -57,3 +57,16 @@ test('model argument attribution needs raw generation, handler rejection and ter
     assert.equal(assess({ ...evidence, traces: [] }).backupEligible, false)
     assert.equal(assess({ ...evidence, rawCalls: [] }).backupEligible, false)
 })
+test('transcript correlation works without user messages and rejects unrelated sessions', () => {
+    const start = Date.parse('2026-11-17T01:00:00Z')
+    const events = [
+        { type: 'session.start', data: { startTime: '2026-11-17T01:00:01Z' } },
+        { type: 'assistant.message', data: { toolRequests: [{ toolCallId: 'call-1', name: 'model_analyze', arguments: '{"mode":"verify","uri":"file:///fixture"}' }] } },
+    ]
+    const calls = [{ id: 'call-1', name: 'model_analyze', arguments: '{"uri":"file:///fixture","mode":"verify"}' }]
+    assert.equal(policy.transcriptMatches(events, 'marker-not-retained', calls, start), true)
+    assert.equal(policy.transcriptMatches(events, 'marker-not-retained', [], start), false)
+    assert.equal(policy.transcriptMatches(events, 'marker-not-retained', [{ ...calls[0], id: 'call-2' }], start), false)
+    assert.equal(policy.transcriptMatches(events, 'marker-not-retained', [{ ...calls[0], arguments: '{"uri":"file:///other"}' }], start), false)
+    assert.equal(policy.transcriptMatches(events, 'marker-not-retained', calls, start + 5000), false)
+})

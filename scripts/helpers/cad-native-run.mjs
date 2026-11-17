@@ -116,6 +116,7 @@ export async function createNativeRun({ repo, directory, scenario }) {
             const bytes = Buffer.concat(chunks),
                 body = bytes.length ? JSON.parse(bytes) : undefined
             record.model = body?.model
+            record.runMarkerObserved = !!body?.messages && JSON.stringify(body.messages).includes(marker)
             if (body?.model && body.model !== model) throw new Error('MODEL_MISMATCH: provider sent a different model')
             record.tools = body?.tools?.map((t) => ({ name: t.function.name, schemaSha256: sha256(JSON.stringify(t.function.parameters)) }))
             // Store the actual CAD schemas separately; prompts and credentials stay in the native host.
@@ -162,7 +163,15 @@ export async function createNativeRun({ repo, directory, scenario }) {
         const matches = []
         for (const file of files.filter((f) => f.endsWith('.jsonl'))) {
             const raw = await readFile(join(base, file), 'utf8')
-            if (!raw.includes(marker)) continue
+            const parsed = raw.split('\n').flatMap((line) => {
+                try {
+                    return [JSON.parse(line)]
+                } catch {
+                    return []
+                }
+            })
+            const markedCalls = exposure.filter((r) => r.runMarkerObserved).flatMap((r) => r.rawToolCalls ?? [])
+            if (!policy.transcriptMatches(parsed, marker, markedCalls, started)) continue
             matches.push({
                 file,
                 events: raw.split('\n').flatMap((line) => {
@@ -176,7 +185,7 @@ export async function createNativeRun({ repo, directory, scenario }) {
         }
         assert.ok(matches.length <= 1, 'HARNESS_CORRELATION_AMBIGUOUS: run marker occurs in multiple transcripts')
         if (!matches.length) return []
-        await atomicJson(join(directory, 'session-binding.json'), { runId, transcript: matches[0].file, method: 'unique marker in native user request' })
+        await atomicJson(join(directory, 'session-binding.json'), { runId, transcript: matches[0].file, method: 'marked Provider request -> exact tool-call id/name/parsed arguments in native transcript (or retained user marker)' })
         const assistant = matches[0].events.filter((e) => e.type === 'assistant.message')
         await atomicJson(join(directory, 'assistant-messages.json'), assistant)
         return assistant
@@ -213,7 +222,7 @@ export async function createNativeRun({ repo, directory, scenario }) {
         const state = await json(join(directory, 'command-state.json')).catch(() => null)
         assert.ok(state?.state === 'completed' || finalText, 'TERMINAL_UNOBSERVED: a diagnostic/snapshot or HTTP 200 cannot terminate native Chat')
         const correlated = await messages(async (name) => readFile(join(directory, name), 'utf8').catch(() => undefined))
-        assert.ok(correlated.length, 'SESSION_UNCORRELATED: native transcript must contain the exact run marker')
+        assert.ok(correlated.length, 'SESSION_UNCORRELATED: native transcript must bind to the marked Provider request')
         assert.ok(!response?.result?.errorDetails && !response?.error, 'Native terminal contains an error')
     }
     return { requireTerminal, runId, marker, model, candidate, timeoutMs, deadline, exposure, relay, finish, messages, query: (text) => `${marker}\n${text}` }

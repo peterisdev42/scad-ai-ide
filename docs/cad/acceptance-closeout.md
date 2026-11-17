@@ -141,3 +141,10 @@ VS Code 保存事件只公开 reason，不公开调用方。因此时间顺序�
 
 - 首轮真实 CLI 的 CSG 诊断通过，两个 PNG 相关检查失败：`CGLChoosePixelFormat() failed: invalid CoreGraphics connection (10017)`。见 [原日志](evidence/closeout/baseline-2026-11-17T01-11-37-135Z/real-cli.txt)。
 - 同一生产实现、官方 Runtime，在获准桌面图形访问后重跑 **3/3 PASS**。见 [复核](evidence/closeout/baseline-2026-11-17T01-17-40-461Z/real-cli.txt)。分类 `ENVIRONMENT`；本机原因已隔离，不改业务算法，不宣称无图形环境也能渲染。
+
+### CAD-HARNESS-SESSION-03：当前 transcript 不保存用户 marker
+
+- 本批次 P1 推荐模型实际完成首轮 FAIL 诊断，并输出严格允许的 width 0→1 patch；控制器因 transcript 内没有用户提示／marker 而未读取到工具参数，在确认前中止。没有应用编辑，没有保存污染，也没有第二轮复验。
+- 原始结果标记 MANUAL_REQUIRED 但并非 edit 内容越界。原始 result 不改写；[审阅归因](evidence/closeout/native/diagnostics-Qwen3.6-35B-A3B-OptiQ-4bit-14909111-f485-4d1b-82f1-5e91c0d2ec93/assessment-review.json) 用原始 Provider 参数及完整 fixture 校验，分类 `HARNESS_OR_ORACLE`。
+- 修复：关联“带本次 marker 的实际 Provider 请求 → 响应中的 tool-call ID/name/参数 → 原生 transcript 同一调用”；也兼容保留用户 marker 的版本。要求会话开始时间和唯一匹配，仍不按最近 CAD 对话选取。新增无用户消息／错误 ID／参数／时间的回归测试。
+- 本交付不重试 P1；原执行保留，最终 harness 候选的 P1 标 NOT_RUN。不是模型失败，不符合备选模型自动对照条件。P1 两个历史门禁继续开放，后续新批次再安排。
