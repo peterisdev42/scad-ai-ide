@@ -87,7 +87,9 @@ Schema v1 位于随 VSIX 打包的 `resources/schemas/cad-report-v1.schema.json`
 
 ## 后续阶段
 
-Phase 2 再加入原始网格诊断、测量和 CLI 图片；缺陷检查先于 Manifold 修复。Phase 3 加入可选 Manifest、稳定 Parts、装配和不可弱化的约束。Phase 4 加入几何 Diff、空间反馈及明确 profile 下的打印相关检查。Phase 5 的 MCP 必须共享已有领域服务，不能猜测编辑器缓冲区。
+以下保留 Phase 0–1 交付时的分阶段设计：Phase 2 加入原始网格诊断、测量和 CLI 图片；缺陷检查先于 Manifold 修复。Phase 3 加入可选 Manifest、稳定 Parts、装配和不可弱化的约束。Phase 4 加入差异摘要、空间反馈及明确 profile 下的打印相关检查。
+
+2026-11-16 范围更新：Phase 2–4 已有后续代码交付，完整验收状态见[整体进度评估](cad/overall-progress.md)。用户明确取消 Phase 5 MCP：全部能力由 VS Code 插件原生提供给 VS Code 内置 Agent，不建设外部访问接口。MCP 不再列为待办或验收缺口。
 
 本阶段没有把“已有 Manifold/mesh worker”“新增 Tool 数量”或“空 Problems”当作几何能力完成证据。
 
