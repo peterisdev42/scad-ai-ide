@@ -68,6 +68,13 @@ test('AI Panel presents useful capability summaries, editable preferences and co
         assert.deepEqual(await page.evaluate(() => window.actions.at(-1)), { action: 'setAiPreference', key: 'sourceDiagnostics', value: false })
         await page.evaluate(state => window.postMessage({ type: 'aiCapabilities', state }, '*'), snapshot)
         assert.equal(await page.locator('#ai-guidance-enabled').isDisabled(), false)
+        await page.locator('#ai-guidance-enabled').uncheck()
+        assert.deepEqual(await page.evaluate(() => window.actions.at(-1)), { action: 'setAiPreference', key: 'guidanceEnabled', value: false })
+        const guidanceDisabled = structuredClone(snapshot)
+        guidanceDisabled.preferences.guidanceEnabled = false
+        await page.evaluate(state => window.postMessage({ type: 'aiCapabilities', state }, '*'), guidanceDisabled)
+        assert.equal(await page.locator('#ai-guidance-enabled').isChecked(), false)
+        await page.evaluate(state => window.postMessage({ type: 'aiCapabilities', state }, '*'), snapshot)
         await page.locator('#ai-diagnostics-on-save').check()
         assert.deepEqual(await page.evaluate(() => window.actions.at(-1)), { action: 'setAiPreference', key: 'diagnosticsOnSave', value: true })
         const changed = structuredClone(snapshot)
