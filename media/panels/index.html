@@ -98,19 +98,80 @@
                     <div data-local-runtime-options></div>
                 </section>
             </section>
-            <section id="ai" hidden aria-label="AI capabilities">
-                <div class="section-toolbar">
-                    <h2>Agent capabilities <span id="ai-capability-count" class="count"></span></h2>
-                    <button class="text-button" data-action="refreshAiCapabilities">Refresh availability</button>
+            <section id="ai" hidden aria-label="AI capabilities and preferences">
+                <div class="ai-hero">
+                    <div class="section-toolbar">
+                        <h2>Agent integration</h2>
+                        <span id="ai-integration-status" class="badge" role="status" aria-live="polite">Checking…</span>
+                    </div>
+                    <p class="muted">SCAD AI IDE can share its modeling services with compatible VS Code agents. These capabilities are optional; the editor, Preview, Runtime and Libraries also work without AI.</p>
+                    <div class="ai-stat-row" aria-label="Bundled Agent features">
+                        <div><strong id="ai-capability-count">—</strong><span>Agent Tools</span></div>
+                        <div><strong id="ai-skill-count">—</strong><span>Skills</span></div>
+                        <div><strong id="ai-instruction-count">—</strong><span>Instructions</span></div>
+                    </div>
                 </div>
-                <p class="muted">Every contributed tool is listed below, including operations that are currently restricted. Availability reflects extension permissions; a compatible Agent harness and an available model are required separately.</p>
-                <p id="ai-loading" role="status">Loading capability catalog…</p>
-                <div id="ai-capability-groups"></div>
-                <section class="ai-resource-section" aria-labelledby="ai-resources-heading">
-                    <h2 id="ai-resources-heading">Instructions &amp; Skills</h2>
-                    <p class="muted">The instruction guides relevant OpenSCAD requests. Skills provide task-specific workflows; no custom agent selection is required.</p>
-                    <div id="ai-resources"></div>
+                <section class="ai-preferences" aria-labelledby="ai-preferences-title">
+                    <h2 id="ai-preferences-title">Your preferences</h2>
+                    <div class="ai-preference-list">
+                        <label class="ai-preference-row" for="ai-agent-enabled">
+                            <span class="ai-preference-description">
+                                <strong>Enable AI Agent integration</strong>
+                                <small>Expose SCAD AI IDE Agent Tools, Skills and Instructions. This does not control VS Code Copilot or other extensions.</small>
+                            </span>
+                            <input id="ai-agent-enabled" type="checkbox" data-ai-preference="agentEnabled" aria-label="Enable AI Agent integration">
+                        </label>
+                        <label class="ai-preference-row" for="ai-guidance-enabled">
+                            <span class="ai-preference-description">
+                                <strong>Provide Agent guidance</strong>
+                                <small>Contribute the bundled OpenSCAD Skills and Instructions. Agent Tools can remain available without them.</small>
+                            </span>
+                            <input id="ai-guidance-enabled" type="checkbox" data-ai-preference="guidanceEnabled" aria-label="Provide Agent guidance">
+                        </label>
+                    </div>
+                    <h3 class="ai-assistance-heading">Independent editor assistance</h3>
+                    <p class="muted small">The following features do not use an AI model and remain available even with Agent integration disabled.</p>
+                    <div class="ai-preference-list">
+                        <label class="ai-preference-row" for="ai-source-diagnostics">
+                            <span class="ai-preference-description">
+                                <strong>Customizer source diagnostics</strong>
+                                <small>Show static parameter warnings and safe Quick Fixes in VS Code.</small>
+                            </span>
+                            <input id="ai-source-diagnostics" type="checkbox" data-ai-preference="sourceDiagnostics" aria-label="Customizer source diagnostics">
+                        </label>
+                        <label class="ai-preference-row" for="ai-diagnostics-on-save">
+                            <span class="ai-preference-description">
+                                <strong>Run CAD diagnostics on save</strong>
+                                <small>Automatically run OpenSCAD CLI diagnostics when saving SCAD files. Full mesh checks remain explicit.</small>
+                            </span>
+                            <input id="ai-diagnostics-on-save" type="checkbox" data-ai-preference="diagnosticsOnSave" aria-label="Run CAD diagnostics on save">
+                        </label>
+                    </div>
+                    <p class="ai-preference-note muted small">Changes are stored in VS Code Settings. Existing editor/workspace settings can also be changed there.</p>
                 </section>
+                <section class="ai-capabilities-overview" aria-labelledby="ai-capabilities-title">
+                    <h2 id="ai-capabilities-title">What an agent can do</h2>
+                    <p class="muted small">These are extension-provided capabilities, not a guarantee that every model or Agent host can complete every workflow.</p>
+                    <p id="ai-loading" role="status">Loading capability catalog…</p>
+                    <div id="ai-overview-groups" class="ai-overview-grid"></div>
+                </section>
+                <details class="ai-disclosure" id="ai-tool-details">
+                    <summary>All Agent Tools <span id="ai-tool-detail-count" class="count"></span></summary>
+                    <div class="ai-disclosure-body">
+                        <div class="section-toolbar">
+                            <p class="muted small">Availability reflects extension-side prerequisites, not model quality or provider support.</p>
+                            <button class="text-button" data-action="refreshAiCapabilities">Refresh availability</button>
+                        </div>
+                        <div id="ai-capability-groups"></div>
+                    </div>
+                </details>
+                <details class="ai-disclosure" id="ai-resource-details">
+                    <summary>Bundled Skills &amp; Instructions <span id="ai-resource-count" class="count"></span></summary>
+                    <div class="ai-disclosure-body">
+                        <p class="muted small">These guides are used by compatible Agent hosts when integration and guidance are both enabled.</p>
+                        <div id="ai-resources"></div>
+                    </div>
+                </details>
             </section>
             <section id="more" hidden aria-label="More">
                 <div id="panel-github" class="github-access" role="tabpanel" aria-labelledby="tab-github" tabindex="0">
