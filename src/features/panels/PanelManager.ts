@@ -1,4 +1,5 @@
 import { createAiPanelState } from '../agents/CapabilityPresentation'
+import { affectsAiPreferences, updateAiPreference, syncAgentContexts } from '../agents/AgentPreferences'
 import type { DeveloperCacheController } from '../development/DeveloperCacheController'
 import type { LibraryPanelController } from '../libraries/LibraryPanelController'
 import { randomBytes } from 'node:crypto'
@@ -101,6 +102,7 @@ export class PanelManager implements vscode.Disposable {
             vscode.window.onDidChangeActiveColorTheme(() => { if (id === 'more') void panel.webview.postMessage({ type: 'cacheThemeChanged' }) }),
             vscode.workspace.onDidChangeConfiguration((event) => {
                 if (id === 'more' && (event.affectsConfiguration('editor.tokenColorCustomizations') || event.affectsConfiguration('workbench.colorCustomizations') || event.affectsConfiguration('workbench.list') || event.affectsConfiguration('workbench.experimental.modernUI'))) void panel.webview.postMessage({ type: 'cacheThemeChanged' })
+                if (id === 'ai' && affectsAiPreferences(event)) void this.updateAi()
             }),
             panel.onDidChangeViewState(() => {
                 const becameVisible = panel.visible && !visible
@@ -122,7 +124,12 @@ export class PanelManager implements vscode.Disposable {
                         await panel.webview.postMessage({ type: 'githubState', state: this.github.getState() })
                     }
                     if (id === 'ai') {
-                        if (action === 'ready' || action === 'refreshAiCapabilities') await this.updateAi()
+                        if (action === 'setAiPreference') {
+                            const preference = value as { key?: unknown; value?: unknown }
+                            await updateAiPreference(preference.key, preference.value)
+                            await syncAgentContexts()
+                        }
+                        if (action === 'ready' || action === 'refreshAiCapabilities' || action === 'setAiPreference') await this.updateAi()
                         return
                     }
                     if (id === 'libraries' && this.libraries) {
@@ -173,6 +180,7 @@ export class PanelManager implements vscode.Disposable {
                     }
                 } catch (error) {
                     await panel.webview.postMessage({ type: 'error', action, severity: error instanceof UserWarning ? 'warning' : 'error', message: error instanceof Error ? error.message : String(error) })
+                    if (id === 'ai') await this.updateAi()
                 } finally {
                     if (['browse', 'installArchive'].includes(String(action))) {
                         await panel.webview.postMessage({ type: 'actionComplete', action })

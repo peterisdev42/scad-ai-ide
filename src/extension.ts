@@ -3,6 +3,7 @@ import { registerCadVerification } from './features/cad-verification/registerCad
 import { registerCustomizerPresetDiagnostics } from './features/language/CustomizerPresetDiagnostics'
 import { CustomizerSourceDomainService } from './features/sidebar/CustomizerSourceDomainService'
 import { createAiPanelState } from './features/agents/CapabilityPresentation'
+import { affectsAiPreferences, syncAgentContexts } from './features/agents/AgentPreferences'
 import { registerAgentTools } from './features/agents/registerAgentTools'
 import { DeveloperCacheController } from './features/development/DeveloperCacheController'
 import { registerLibraries } from './features/libraries/registerLibraries'
@@ -26,6 +27,11 @@ let language: ReturnType<typeof registerLanguage> | undefined
 export async function activate(context: vscode.ExtensionContext) {
     notifications.reset()
     context.subscriptions.push(notifications)
+    // Apply contribution when-clauses before exposing the native Agent interfaces.
+    await syncAgentContexts()
+    context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(event => {
+        if (affectsAiPreferences(event)) void syncAgentContexts()
+    }))
     const libraries = registerLibraries(context)
     language = registerLanguage(context)
     const github = registerGitHub(context)
