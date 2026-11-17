@@ -244,3 +244,7 @@ VS Code 保存事件只公开 reason，不公开调用方。因此时间顺序�
 - 两次装配报告分别 `cad-77f1a617-096f-4645-9494-de8cc889950a` FAIL 与 `cad-19dc665d-aeca-47d7-bb87-84ef81b9b2a0` PASS；manifestDigest始终 `c04e983d9d0417242c5e59c843c56ca130a418ff0296f3b0669ae96b587c127f`，不同snapshot。getIssue、成功测量与冻结单图均实际调用，源码只改gap，Manifest、ID、变换和约束不改。
 - [原始结果](evidence/closeout/native/assembly-Qwen3.8-27B-4bit-38ecf9ec-35da-4eb2-9288-88ed5c4c8c93/result.json)、同目录实际Schema/原始参数、trace、document-events及会话绑定。约8.8秒开始流响应，首次进度约273秒，首业务调用约287秒；随后也纠正了普通路径→URI。耗时包含本机推理与Provider背景请求，单样本不作通用模型排名。
 - 结论：**装配接口/几何/修复/测量闭环可用，备选在本场完成；推荐模型本场有参数和流程遵循失败**。不能据主模型失败说功能缺失，也不能据备选成功把主模型改成PASS。当前P3 Native结果按模型分开：Qwen3.6 FAIL、Qwen3.8 PASS；P1、人工反馈、Stable焦点和平台门禁仍OPEN。
+
+## 交付
+
+独立草稿 [PR #6](https://github.com/peterisdev42/scad-ai-ide/pull/6)，面向main、依赖#5/#4/#3/#2。请按[相对677dc68的增量](https://github.com/peterisdev42/scad-ai-ide/compare/677dc681965e1d640ecf606f1ed0f60d1fe492a0...codex/cad-acceptance-closeout)审阅本轮，原始证据单独提交。最终生产候选仍为1d82001；后续交付提交只追加文档/证据，实际HEAD见PR。main维持8a3ff1fe，不自动合并或发布。手动夹具已准备，选择CAD Manual Acceptance + oMLX按F5即可逐项记录，未将任何未执行人工条目标为PASS。

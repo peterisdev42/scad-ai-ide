@@ -47,3 +47,5 @@
 收尾草稿PR依赖#5/#4/#3/#2，包含继承提交，按相对677dc68的增量审阅。main本地／远端仍为 `8a3ff1fe394b11aeb7fb323e7319bd365d29abaa`；不自动合并或发布。阶段代码交付、功能自动化、模型、手动、installed和跨平台门禁分别记录，不给没有权重依据的总体百分比。
 
 历史评估以2026-11-16的Phase4记录为基准：当时默认436/3、完整Host56/1/3、installed焦点失败及模型未闭合均真实保留。当前结果来自本次新批次，不覆写过去失败，不将未跑项变成PASS。
+
+本轮交付草稿：[PR #6](https://github.com/peterisdev42/scad-ai-ide/pull/6)，证据提交597cd3e及后续PR链接记录提交；生产候选1d82001保持不变。[收尾增量](https://github.com/peterisdev42/scad-ai-ide/compare/677dc681965e1d640ecf606f1ed0f60d1fe492a0...codex/cad-acceptance-closeout)。

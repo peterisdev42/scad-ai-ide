@@ -546,5 +546,8 @@
     "model": "Qwen3.8-27B-4bit",
     "pass": true,
     "elapsedMs": 586758
-  }
+  },
+  "pullRequest": "https://github.com/peterisdev42/scad-ai-ide/pull/6",
+  "base": "main",
+  "incrementalComparison": "https://github.com/peterisdev42/scad-ai-ide/compare/677dc681965e1d640ecf606f1ed0f60d1fe492a0...codex/cad-acceptance-closeout"
 }
