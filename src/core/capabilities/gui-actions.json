@@ -404,6 +404,9 @@
             "input": {}
           }
         ]
+      },
+      "setAiPreference": {
+        "uiOnly": "User-owned preference; deliberately not Agent-accessible to prevent agents from re-enabling their own access"
       }
     }
   },

@@ -14,9 +14,9 @@ const readText = file => readFileSync(file, 'utf8').replace(/\r\n/g, '\n')
 const catalog = JSON.parse(readFileSync(path.join(root, 'src/core/capabilities/catalog.json')))
 const file = path.join(root, 'package.json')
 const manifest = JSON.parse(readFileSync(file))
-const tools = catalog.map((d) => ({ name: d.toolName, displayName: d.title, modelDescription: d.description, canBeReferencedInPrompt: true, toolReferenceName: d.toolName.replace('scad_ai_ide_', 'scad_'), inputSchema: d.inputSchema }))
-const instructions = ['openscad', 'openscad-customizer'].map((name) => ({ path: `./instructions/${name}.instructions.md` }))
-const skills = ['openscad-runtime', 'openscad-libraries', 'openscad-customizer', 'openscad-customizer-authoring', 'scad-ai-ide-diagnostics', 'openscad-model-debugging', 'openscad-geometry-verification', 'openscad-assembly-design', 'openscad-modeling-lifecycle', 'openscad-design-review', 'openscad-spatial-feedback', 'openscad-printability'].map((name) => ({ path: `./skills/${name}/SKILL.md` }))
+const tools = catalog.map((d) => ({ name: d.toolName, displayName: d.title, modelDescription: d.description, canBeReferencedInPrompt: true, toolReferenceName: d.toolName.replace('scad_ai_ide_', 'scad_'), inputSchema: d.inputSchema, when: 'scadAiAgentEnabled' }))
+const instructions = ['openscad', 'openscad-customizer'].map((name) => ({ path: `./instructions/${name}.instructions.md`, when: 'scadAiAgentEnabled && scadAiGuidanceEnabled' }))
+const skills = ['openscad-runtime', 'openscad-libraries', 'openscad-customizer', 'openscad-customizer-authoring', 'scad-ai-ide-diagnostics', 'openscad-model-debugging', 'openscad-geometry-verification', 'openscad-assembly-design', 'openscad-modeling-lifecycle', 'openscad-design-review', 'openscad-spatial-feedback', 'openscad-printability'].map((name) => ({ path: `./skills/${name}/SKILL.md`, when: 'scadAiAgentEnabled && scadAiGuidanceEnabled' }))
 assert.equal(new Set(tools.map((t) => t.name)).size, tools.length)
 for (const asset of [...instructions, ...skills]) {
     const text = readText(path.join(root, asset.path))
@@ -29,8 +29,8 @@ for (const source of ['AgentToolAdapter.ts', 'registerAgentTools.ts', 'registerC
     assert.doesNotMatch(code, /PanelManager|postMessage|showQuickPick|showOpenDialog|showSaveDialog|showInputBox/, `GUI dependency in ${source}`)
 }
 const resources = [
-    ...instructions.map((resource) => ({ ...resource, kind: 'Instruction' })),
-    ...skills.map((resource) => ({ ...resource, kind: 'Skill' })),
+    ...instructions.map(({ path }) => ({ path, kind: 'Instruction' })),
+    ...skills.map(({ path }) => ({ path, kind: 'Skill' })),
 ].map((resource) => {
     const text = readText(path.join(root, resource.path))
     return { ...resource, name: /^name: (.+)$/m.exec(text)[1], description: /^description: (.+)$/m.exec(text)[1] }

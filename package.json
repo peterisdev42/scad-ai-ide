@@ -362,6 +362,18 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Publish current CAD analysis issues to native Problems."
+                },
+                "scad-ai-ide.agent.enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "scope": "application",
+                    "description": "Expose SCAD AI IDE tools, instructions and skills to compatible VS Code AI agents. Disabling this does not disable regular IDE features or other extensions."
+                },
+                "scad-ai-ide.agent.guidanceEnabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "scope": "application",
+                    "description": "Contribute OpenSCAD Agent Skills and Instructions when SCAD AI IDE Agent integration is enabled. Tool availability is controlled separately by agent.enabled."
                 }
             }
         },
@@ -582,7 +594,8 @@
                         }
                     },
                     "required": []
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_operation_status",
@@ -610,7 +623,8 @@
                         }
                     },
                     "required": []
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_operation_cancel",
@@ -663,7 +677,8 @@
                             ]
                         }
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_runtime_state",
@@ -686,7 +701,8 @@
                         }
                     },
                     "required": []
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_runtime_builds",
@@ -722,7 +738,8 @@
                         }
                     },
                     "required": []
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_runtime_refresh",
@@ -743,7 +760,8 @@
                         }
                     },
                     "required": []
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_runtime_installBuild",
@@ -763,7 +781,8 @@
                     "required": [
                         "id"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_runtime_installArchive",
@@ -784,7 +803,8 @@
                     "required": [
                         "path"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_runtime_addExecutable",
@@ -805,7 +825,8 @@
                     "required": [
                         "path"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_runtime_select",
@@ -826,7 +847,8 @@
                     "required": [
                         "id"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_runtime_remove",
@@ -847,7 +869,8 @@
                     "required": [
                         "id"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_customizer_state",
@@ -860,7 +883,8 @@
                     "additionalProperties": false,
                     "properties": {},
                     "required": []
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_customizer_set",
@@ -917,7 +941,8 @@
                         "revision",
                         "values"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_customizer_reset",
@@ -948,7 +973,8 @@
                         "target",
                         "revision"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_customizer_applyPreset",
@@ -979,7 +1005,8 @@
                         "revision",
                         "name"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_customizer_createPreset",
@@ -1016,7 +1043,8 @@
                         "revision",
                         "name"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_customizer_savePreset",
@@ -1052,7 +1080,8 @@
                         "target",
                         "revision"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_customizer_deletePreset",
@@ -1084,7 +1113,8 @@
                         "revision",
                         "name"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_customizer_importPresets",
@@ -1116,7 +1146,8 @@
                         "revision",
                         "uri"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_customizer_exportPresets",
@@ -1148,7 +1179,8 @@
                         "revision",
                         "uri"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_libraries_search",
@@ -1180,7 +1212,8 @@
                         }
                     },
                     "required": []
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_libraries_refresh",
@@ -1193,7 +1226,8 @@
                     "additionalProperties": false,
                     "properties": {},
                     "required": []
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_libraries_projectState",
@@ -1221,7 +1255,8 @@
                         }
                     },
                     "required": []
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_libraries_globalState",
@@ -1244,7 +1279,8 @@
                         }
                     },
                     "required": []
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_libraries_install",
@@ -1277,7 +1313,8 @@
                         "id",
                         "version"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_libraries_remove",
@@ -1304,7 +1341,8 @@
                         "project",
                         "id"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_libraries_restore",
@@ -1325,7 +1363,8 @@
                     "required": [
                         "project"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_libraries_verify",
@@ -1344,7 +1383,8 @@
                         }
                     },
                     "required": []
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_libraries_repair",
@@ -1365,7 +1405,8 @@
                     "required": [
                         "key"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_libraries_cleanupPlan",
@@ -1391,7 +1432,8 @@
                         }
                     },
                     "required": []
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_libraries_cleanupExecute",
@@ -1412,7 +1454,8 @@
                     "required": [
                         "planId"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_more_githubStatus",
@@ -1425,7 +1468,8 @@
                     "additionalProperties": false,
                     "properties": {},
                     "required": []
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_more_authorizeGitHub",
@@ -1438,7 +1482,8 @@
                     "additionalProperties": false,
                     "properties": {},
                     "required": []
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_development_status",
@@ -1451,7 +1496,8 @@
                     "additionalProperties": false,
                     "properties": {},
                     "required": []
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_development_listCaches",
@@ -1474,7 +1520,8 @@
                         }
                     },
                     "required": []
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_development_inspectCache",
@@ -1495,7 +1542,8 @@
                     "required": [
                         "id"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_development_clearCaches",
@@ -1526,7 +1574,8 @@
                         }
                     },
                     "required": []
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_customizer_sourceAnalyze",
@@ -1555,7 +1604,8 @@
                     "required": [
                         "uri"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_customizer_sourceApply",
@@ -2012,7 +2062,8 @@
                             ]
                         }
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_customizer_sourceValidate",
@@ -2170,7 +2221,8 @@
                     "required": [
                         "uri"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_model_analyze",
@@ -2296,7 +2348,8 @@
                             }
                         }
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_model_getIssue",
@@ -2335,7 +2388,8 @@
                         "reportId",
                         "issueId"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_model_measure",
@@ -2524,7 +2578,8 @@
                             }
                         }
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_model_renderViews",
@@ -2756,7 +2811,8 @@
                             }
                         }
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_model_listParts",
@@ -2832,7 +2888,8 @@
                             }
                         }
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_model_checkAssembly",
@@ -2975,7 +3032,8 @@
                             }
                         }
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_model_compare",
@@ -3086,7 +3144,8 @@
                             }
                         }
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_model_getFeedback",
@@ -3167,7 +3226,8 @@
                             }
                         }
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_model_requestPointing",
@@ -3214,7 +3274,8 @@
                             "remapCandidateId"
                         ]
                     }
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_model_checkPrintability",
@@ -3248,7 +3309,8 @@
                     "required": [
                         "reportId"
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             },
             {
                 "name": "scad_ai_ide_model_manageReview",
@@ -3362,53 +3424,68 @@
                             }
                         }
                     ]
-                }
+                },
+                "when": "scadAiAgentEnabled"
             }
         ],
         "chatInstructions": [
             {
-                "path": "./instructions/openscad.instructions.md"
+                "path": "./instructions/openscad.instructions.md",
+                "when": "scadAiAgentEnabled && scadAiGuidanceEnabled"
             },
             {
-                "path": "./instructions/openscad-customizer.instructions.md"
+                "path": "./instructions/openscad-customizer.instructions.md",
+                "when": "scadAiAgentEnabled && scadAiGuidanceEnabled"
             }
         ],
         "chatSkills": [
             {
-                "path": "./skills/openscad-runtime/SKILL.md"
+                "path": "./skills/openscad-runtime/SKILL.md",
+                "when": "scadAiAgentEnabled && scadAiGuidanceEnabled"
             },
             {
-                "path": "./skills/openscad-libraries/SKILL.md"
+                "path": "./skills/openscad-libraries/SKILL.md",
+                "when": "scadAiAgentEnabled && scadAiGuidanceEnabled"
             },
             {
-                "path": "./skills/openscad-customizer/SKILL.md"
+                "path": "./skills/openscad-customizer/SKILL.md",
+                "when": "scadAiAgentEnabled && scadAiGuidanceEnabled"
             },
             {
-                "path": "./skills/openscad-customizer-authoring/SKILL.md"
+                "path": "./skills/openscad-customizer-authoring/SKILL.md",
+                "when": "scadAiAgentEnabled && scadAiGuidanceEnabled"
             },
             {
-                "path": "./skills/scad-ai-ide-diagnostics/SKILL.md"
+                "path": "./skills/scad-ai-ide-diagnostics/SKILL.md",
+                "when": "scadAiAgentEnabled && scadAiGuidanceEnabled"
             },
             {
-                "path": "./skills/openscad-model-debugging/SKILL.md"
+                "path": "./skills/openscad-model-debugging/SKILL.md",
+                "when": "scadAiAgentEnabled && scadAiGuidanceEnabled"
             },
             {
-                "path": "./skills/openscad-geometry-verification/SKILL.md"
+                "path": "./skills/openscad-geometry-verification/SKILL.md",
+                "when": "scadAiAgentEnabled && scadAiGuidanceEnabled"
             },
             {
-                "path": "./skills/openscad-assembly-design/SKILL.md"
+                "path": "./skills/openscad-assembly-design/SKILL.md",
+                "when": "scadAiAgentEnabled && scadAiGuidanceEnabled"
             },
             {
-                "path": "./skills/openscad-modeling-lifecycle/SKILL.md"
+                "path": "./skills/openscad-modeling-lifecycle/SKILL.md",
+                "when": "scadAiAgentEnabled && scadAiGuidanceEnabled"
             },
             {
-                "path": "./skills/openscad-design-review/SKILL.md"
+                "path": "./skills/openscad-design-review/SKILL.md",
+                "when": "scadAiAgentEnabled && scadAiGuidanceEnabled"
             },
             {
-                "path": "./skills/openscad-spatial-feedback/SKILL.md"
+                "path": "./skills/openscad-spatial-feedback/SKILL.md",
+                "when": "scadAiAgentEnabled && scadAiGuidanceEnabled"
             },
             {
-                "path": "./skills/openscad-printability/SKILL.md"
+                "path": "./skills/openscad-printability/SKILL.md",
+                "when": "scadAiAgentEnabled && scadAiGuidanceEnabled"
             }
         ]
     },

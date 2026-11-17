@@ -48,6 +48,26 @@ suite('Agent capabilities extension host', () => {
         const state = await api.capabilities.invoke('development.status', {}, { actor: 'agent' })
         assert.equal(state.ok, true)
     })
+    test('AI preferences disable Agent calls without disabling manual service commands', async () => {
+        const extension = vscode.extensions.all.find((item) => item.packageJSON.name === 'scad-ai-ide')!
+        const api = await extension.activate() as Awaited<ReturnType<typeof activate>>
+        const configuration = vscode.workspace.getConfiguration('scad-ai-ide')
+        const original = configuration.inspect<boolean>('agent.enabled')?.globalValue
+        try {
+            await configuration.update('agent.enabled', false, vscode.ConfigurationTarget.Global)
+            const discovery = createAiPanelState(api.capabilities.registry)
+            assert.equal(discovery.preferences.agentEnabled, false)
+            assert.equal(discovery.capabilities.length, capabilityCatalog.length)
+            assert.ok(discovery.capabilities.every(item => !item.availability.enabled && item.availability.reasonCode === 'DISABLED_BY_USER'))
+            const blocked = await api.capabilities.invoke('more.githubStatus', {}, { actor: 'agent' })
+            assert.equal(blocked.ok, false)
+            if (!blocked.ok) assert.equal(blocked.error.code, 'DISABLED_BY_USER')
+            const manual = await api.capabilities.invoke('more.githubStatus', {}, { actor: 'command' })
+            assert.equal(manual.ok, true, 'Disabling Agent integration must not disable command and GUI services')
+        } finally {
+            await configuration.update('agent.enabled', original, vscode.ConfigurationTarget.Global)
+        }
+    })
     test('Customizer lost-control Problems link both declarations and clear after an unsaved repair', async () => {
         const waitFor = async (check: () => boolean) => {
             const deadline = Date.now() + 10000

@@ -9,7 +9,7 @@ const actionErrors = { overview: '', installed: '', available: '' }
 const actionSeverities = { overview: 'error', installed: 'error', available: 'error' }
 const actionOrigins = new Map()
 const summaries = {
-    ai: 'Explore the OpenSCAD tools and workflows available to your AI agent.',
+    ai: 'Explore optional AI capabilities and control the assistance you want.',
     bricks: 'Manage reusable OpenSCAD bricks.',
     libraries: 'Manage OpenSCAD libraries and project dependencies.',
     more: 'Configure integrations for SCAD AI IDE.',
