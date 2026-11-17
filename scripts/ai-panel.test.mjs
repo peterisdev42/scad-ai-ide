@@ -5,8 +5,18 @@ import { chromium } from 'playwright'
 
 const root = new URL('../', import.meta.url)
 const catalog = JSON.parse(await readFile(new URL('src/core/capabilities/catalog.json', root)))
+const manifest = JSON.parse(await readFile(new URL('package.json', root)))
 const resources = JSON.parse(await readFile(new URL('src/core/capabilities/resources.json', root)))
 const snapshot = { total: catalog.length, resources, preferences: { agentEnabled: true, guidanceEnabled: true, sourceDiagnostics: true, diagnosticsOnSave: false }, capabilities: catalog.map((entry) => ({ ...entry, availability: { enabled: !entry.id.startsWith('development.') || entry.id === 'development.status', reasonCode: entry.id.startsWith('development.') && entry.id !== 'development.status' ? 'DEVELOPMENT_ONLY' : undefined } })) }
+
+test('Generated native Agent contributions honor the two opt-out context keys', () => {
+    const contribution = manifest.contributes
+    assert.equal(contribution.languageModelTools.length, catalog.length)
+    assert.ok(contribution.languageModelTools.every(tool => tool.when === 'scadAiAgentEnabled'))
+    assert.ok([...contribution.chatSkills, ...contribution.chatInstructions].every(resource => resource.when === 'scadAiAgentEnabled && scadAiGuidanceEnabled'))
+    assert.equal(contribution.configuration.properties['scad-ai-ide.agent.enabled'].default, true)
+    assert.equal(contribution.configuration.properties['scad-ai-ide.agent.guidanceEnabled'].default, true)
+})
 
 test('AI Panel presents useful capability summaries, editable preferences and collapsible technical details', async () => {
     const browser = await chromium.launch({ channel: process.env.SCAD_BROWSER_CHANNEL || undefined })
