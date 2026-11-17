@@ -147,6 +147,23 @@ suite('CAD verification Extension Host', () => {
         assert.ok(canonical.issues.some((i) => i.location?.uri === includeUri.toString()))
         assert.equal(diagnostics(includeUri).filter((d) => d.code === 'SCAD_CLI_ASSERT_FAILED').length, 1, 'Alias reports share the same semantic projection')
     })
+    test('POSIX literal backslash file names never resolve to a different nested model', async function () {
+        if (process.platform === 'win32') {
+            this.skip()
+            return
+        }
+        const file = join(root, 'literal\\name.scad'),
+            uri = vscode.Uri.file(file)
+        await mkdir(join(root, 'literal'), { recursive: true })
+        await writeFile(join(root, 'literal/name.scad'), 'cube(1);')
+        await writeFile(file, 'assert(false,"literal backslash source");cube(1);')
+        const report = await api.cad.analyze({ uri: uri.toString() })
+        assert.equal(report.overallStatus, 'FAIL')
+        assert.equal(report.snapshot.document.uri, uri.toString())
+        assert.ok(report.issues.some((issue) => issue.code === 'SCAD_CLI_ASSERT_FAILED' && issue.location?.uri === uri.toString()))
+        assert.equal(diagnostics(uri).filter((d) => d.code === 'SCAD_CLI_ASSERT_FAILED').length, 1)
+        assert.equal(diagnostics(vscode.Uri.file(join(root, 'literal/name.scad'))).length, 0)
+    })
     test('shared owners deduplicate the same issue and survive unrelated owner cleanup', async () => {
         const file = join(root, 'owners.scad'),
             uri = vscode.Uri.file(file)

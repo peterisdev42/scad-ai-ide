@@ -186,7 +186,7 @@ export class CadWorkspaceService implements vscode.Disposable {
             // keys its editors and Problems by the lexical workspace URI.
             const canonical = await realpath(file)
             const local = relative(await realpath(folder.uri.fsPath), canonical)
-            return vscode.Uri.joinPath(folder.uri, ...local.split(/[\\/]/)).toString()
+            return vscode.Uri.file(join(folder.uri.fsPath, local)).toString()
         } catch {
             return undefined
         }
