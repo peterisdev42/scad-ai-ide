@@ -1,5 +1,7 @@
 # CAD 手动逐项验收单
 
+> 正式验收仅接受 **Copilot harness**；原Local用例仅作历史参考。先完成M11的真实会话/模型前提，未登录时记宿主BLOCKED，不能回退Local。最新自动化阻断见[Copilot验收记录](copilot-harness-acceptance.md)。
+
 所有条目初始为 **NOT_RUN**。本单专门记录必须由真人操作、或当前宿主自动化无法可靠执行的交互，不以自动点击、模拟 adapter 或模型回复代签。用户逐条填结果即可；失败请保留窗口和原始证据，不需要先判断归谁修。
 
 每个子项独立填写 `MANUAL_PASS / FAIL / BLOCKED / NOT_RUN`，不合并为整组 PASS。模型辅助默认 **oMLX / Qwen3.6-35B-A3B-OptiQ-4bit**；备选只有满足 [对照条件](acceptance-closeout.md#统一验收顺序) 才用 Qwen3.8。纯 UI 操作不需要模型。
@@ -11,7 +13,7 @@
 | M03–M07 | 仍需真人点选、确认、动态目录与真正Restricted Mode；当前NOT_RUN |
 | M08 | 原生DataPart的Host类型/回退已有自动化；Provider实际图像可见性与真人观察单独记录 |
 | M09–M10 | 需目标平台/隔离测试环境；当前Windows Unicode缺口、其他未运行项保持原状态 |
-| M11 | 默认Copilot harness兼容性未验；当前真实模型证据只覆盖既有F5 Local路径 |
+| M11 | Copilot正式前提：实际Agent Host身份已验证，登录已恢复且Qwen本地推理已证实；工具发现及Provider观测仍未闭合；禁止Local回退 |
 | M01–M02 | 上一候选两版曾通过；最终候选最低版通过，但Stable又出现3项焦点失败。需真人区分稳定编辑语义与焦点环境波动，当前仍未闭合 |
 
 勾选表示实际执行，不能仅因对应自动用例通过就勾成“真人已验”。

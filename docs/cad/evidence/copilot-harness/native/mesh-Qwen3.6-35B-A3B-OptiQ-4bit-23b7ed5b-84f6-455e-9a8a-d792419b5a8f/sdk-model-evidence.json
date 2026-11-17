@@ -1,0 +1,117 @@
+{
+  "source": "Copilot SDK events.jsonl, only this temporary acceptance session; allowlisted usage fields, no prompts/reasoning/credentials",
+  "sdkSessionId": "dbd757c7-5466-4e98-8f21-c602e20b67ff",
+  "sourceSha256": "4fd68c220af3394586f73330071fb4219d7c2f98acb291ae4dc309f0fb4d9424",
+  "sessionStart": {
+    "sessionId": "dbd757c7-5466-4e98-8f21-c602e20b67ff",
+    "selectedModel": "omlx/Qwen3.6-35B-A3B-OptiQ-4bit",
+    "startTime": "2026-11-17T09:11:15.703Z"
+  },
+  "usage": [
+    {
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "responseModel": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "isByok": true,
+      "byokKind": "local_user",
+      "modelProvider": "other",
+      "providerType": "openai",
+      "availableToolCount": 129,
+      "numToolCalls": 1,
+      "toolCounts": {
+        "skill": 1
+      },
+      "finishReason": "tool_calls",
+      "cost": 0.0
+    },
+    {
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "responseModel": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "isByok": true,
+      "byokKind": "local_user",
+      "modelProvider": "other",
+      "providerType": "openai",
+      "availableToolCount": 129,
+      "numToolCalls": 1,
+      "toolCounts": {
+        "bash": 1
+      },
+      "finishReason": "tool_calls",
+      "cost": 0.0
+    },
+    {
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "responseModel": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "isByok": true,
+      "byokKind": "local_user",
+      "modelProvider": "other",
+      "providerType": "openai",
+      "availableToolCount": 129,
+      "numToolCalls": 1,
+      "toolCounts": {
+        "read_bash": 1
+      },
+      "finishReason": "tool_calls",
+      "cost": 0.0
+    },
+    {
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "responseModel": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "isByok": true,
+      "byokKind": "local_user",
+      "modelProvider": "other",
+      "providerType": "openai",
+      "availableToolCount": 129,
+      "numToolCalls": 1,
+      "toolCounts": {
+        "bash": 1
+      },
+      "finishReason": "tool_calls",
+      "cost": 0.0
+    },
+    {
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "responseModel": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "isByok": true,
+      "byokKind": "local_user",
+      "modelProvider": "other",
+      "providerType": "openai",
+      "availableToolCount": 129,
+      "numToolCalls": 1,
+      "toolCounts": {
+        "ask_user": 1
+      },
+      "finishReason": "tool_calls",
+      "cost": 0.0
+    },
+    {
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "responseModel": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "isByok": true,
+      "byokKind": "local_user",
+      "modelProvider": "other",
+      "providerType": "openai",
+      "availableToolCount": 129,
+      "numToolCalls": 1,
+      "toolCounts": {
+        "ask_user": 1
+      },
+      "finishReason": "tool_calls",
+      "cost": 0.0
+    },
+    {
+      "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "responseModel": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "isByok": true,
+      "byokKind": "local_user",
+      "modelProvider": "other",
+      "providerType": "openai",
+      "availableToolCount": 129,
+      "numToolCalls": 1,
+      "toolCounts": {
+        "ask_user": 1
+      },
+      "finishReason": "tool_calls",
+      "cost": 0.0
+    }
+  ]
+}

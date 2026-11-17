@@ -1,0 +1,641 @@
+{
+  "scope": "Real VS Code Native Agent, existing F5 oMLX provider; single 600s attempt; development bundle, not installed model E2E",
+  "ready": {
+    "vscode": "1.146.0",
+    "extensionPath": "/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/mesh-native-f5-VHafRs/scad-ai-ide",
+    "bundleSha256": "ccd5ae18d4f6739aa16f9420ad19cd8ec89299caab2cba16877601bf90f5edb8",
+    "workspace": [
+      "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/mesh-native-f5-VHafRs/workspace"
+    ],
+    "provider": {
+      "id": "techopolis.omlx-copilot-chat",
+      "version": "0.1.2"
+    },
+    "nativeAgent": {
+      "present": true,
+      "active": true
+    },
+    "chatSettings": {
+      "saveBeforeSend": false,
+      "autoSave": "off"
+    },
+    "tools": [
+      {
+        "name": "copilot_readFile",
+        "description": "Read the contents of a file.\n\nYou must specify the line range you're interested in. Line numbers are 1-indexed. If the file contents returned are insufficient for your task, you may call this tool again to retrieve more content. Prefer reading larger ranges over doing many small reads. Binary files use startLine/endLine as byte offsets."
+      },
+      {
+        "name": "copilot_getErrors",
+        "description": "Get any compile or lint errors in a specific file or across all files. If the user mentions errors or problems in a file, they may be referring to these. Use the tool to see the same errors that the user is seeing. If the user asks you to analyze all errors, or does not specify a file, use this tool to gather errors for all files. Also use this tool after editing a file to validate the change."
+      },
+      {
+        "name": "copilot_replaceString",
+        "description": "This is a tool for making edits in an existing file in the workspace. For moving or renaming files, use run in terminal tool with the 'mv' command instead. For larger edits, split them into smaller edits and call the edit tool multiple times to ensure accuracy. Before editing, always ensure you have the context to understand the file's contents and context. To edit a file, provide: 1) filePath (absolute path), 2) oldString (MUST be the exact literal text to replace including all whitespace, indentation, new"
+      },
+      {
+        "name": "copilot_multiReplaceString",
+        "description": "This tool allows you to apply multiple replace_string_in_file operations in a single call, which is more efficient than calling replace_string_in_file multiple times. It takes an array of replacement operations and applies them sequentially. Each replacement operation has the same parameters as replace_string_in_file: filePath, oldString, newString, and explanation. This tool is ideal when you need to make multiple edits across different files or multiple edits in the same file. The tool will provide a summ"
+      }
+    ],
+    "models": [
+      {
+        "id": "Hy-MT2-7B-4bit",
+        "name": "Hy-MT2-7B-4bit",
+        "vendor": "omlx",
+        "maxInputTokens": 262144
+      },
+      {
+        "id": "Qwen3.6-35B-A3B-OptiQ-4bit",
+        "name": "Qwen3.6-35B-A3B-OptiQ-4bit",
+        "vendor": "omlx",
+        "maxInputTokens": 262144
+      },
+      {
+        "id": "Qwen3.8-27B-4bit",
+        "name": "Qwen3.8-27B-4bit",
+        "vendor": "omlx",
+        "maxInputTokens": 262144
+      }
+    ]
+  },
+  "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
+  "response": {
+    "result": {
+      "timings": {
+        "firstProgress": 8859,
+        "totalElapsed": 40853
+      },
+      "metadata": {
+        "resolvedModel": "gpt-6-luna"
+      }
+    },
+    "snapshot": false,
+    "buffer": "solid model\nfacet normal 0 0 0\nouter loop\nvertex 0 0 0\nvertex 1 0 0\nvertex 1 1 0\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 0 0 0\nvertex 1 1 0\nvertex 0 1 0\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 0 0 1\nvertex 1 1 1\nvertex 1 0 1\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 0 0 1\nvertex 0 1 1\nvertex 1 1 1\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 0 0 0\nvertex 1 0 1\nvertex 1 0 0\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 0 0 0\nvertex 0 0 1\nvertex 1 0 1\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 1 0 0\nvertex 1 1 1\nvertex 1 1 0\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 1 0 0\nvertex 1 0 1\nvertex 1 1 1\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 1 1 0\nvertex 0 1 1\nvertex 0 1 0\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 1 1 0\nvertex 1 1 1\nvertex 0 1 1\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 0 1 0\nvertex 0 0 1\nvertex 0 0 0\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 0 1 0\nvertex 0 1 1\nvertex 0 0 1\nendloop\nendfacet\nendsolid model\n",
+    "dirty": false,
+    "disk": "solid model\nfacet normal 0 0 0\nouter loop\nvertex 0 0 0\nvertex 1 0 0\nvertex 1 1 0\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 0 0 0\nvertex 1 1 0\nvertex 0 1 0\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 0 0 1\nvertex 1 1 1\nvertex 1 0 1\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 0 0 1\nvertex 0 1 1\nvertex 1 1 1\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 0 0 0\nvertex 1 0 1\nvertex 1 0 0\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 0 0 0\nvertex 0 0 1\nvertex 1 0 1\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 1 0 0\nvertex 1 1 1\nvertex 1 1 0\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 1 0 0\nvertex 1 0 1\nvertex 1 1 1\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 1 1 0\nvertex 0 1 1\nvertex 0 1 0\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 1 1 0\nvertex 1 1 1\nvertex 0 1 1\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 0 1 0\nvertex 0 0 1\nvertex 0 0 0\nendloop\nendfacet\nfacet normal 0 0 0\nouter loop\nvertex 0 1 0\nvertex 0 1 1\nvertex 0 0 1\nendloop\nendfacet\nendsolid model\n",
+    "problems": [
+      {
+        "code": "MESH_INVERTED_WINDING",
+        "source": "CAD Mesh",
+        "message": "Model-level issue; location unavailable. Shell orientation does not match its material/cavity nesting.",
+        "line": 0
+      }
+    ],
+    "operations": {
+      "total": 4,
+      "offset": 0,
+      "hasMore": false,
+      "nextOffset": null,
+      "operations": [
+        {
+          "id": "ca4dd59a-24d7-4287-ab21-33c262a8c6f8",
+          "capabilityId": "cad.modelRenderViews",
+          "status": "succeeded"
+        },
+        {
+          "id": "689d566f-8dc7-4bb7-98d8-42a0d3d1bcf0",
+          "capabilityId": "cad.issueDetails",
+          "status": "succeeded"
+        },
+        {
+          "id": "37b038bd-8ed0-4552-ac85-5d23520cfbfc",
+          "capabilityId": "cad.modelMeasure",
+          "status": "succeeded"
+        },
+        {
+          "id": "8663bbe5-37fa-426d-a5e7-f836ed9af061",
+          "capabilityId": "cad.modelAnalyze",
+          "status": "succeeded",
+          "message": "Verifying the frozen raw mesh; no mesh repair is applied."
+        }
+      ]
+    }
+  },
+  "analysis": {
+    "schemaVersion": 2,
+    "reportId": "cad-61130301-555f-454c-9fef-c38772664f36",
+    "snapshotId": "ea8eb5b0c593fc62bcc6dedaf20502b6c5e6832b9658cc8f25ebbe0079091bbd",
+    "current": true,
+    "document": {
+      "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/mesh-native-f5-VHafRs/workspace/model.stl",
+      "sourceSha256": "296420886dcf42bfaa1dfe7b0a9194ac6b671ddf4d02cfe38c56eaa1356d8c5f",
+      "dirty": false,
+      "version": 1
+    },
+    "inputKind": "stl",
+    "executionStatus": "SUCCEEDED",
+    "overallStatus": "FAIL",
+    "complete": true,
+    "units": "modelUnits",
+    "sourceUnit": "undeclared",
+    "quality": {
+      "profile": "verification",
+      "requestedGlobalTessellation": {},
+      "localSettings": "source-controlled"
+    },
+    "precision": "computed-on-decoded-mesh",
+    "checks": [
+      {
+        "id": "mesh-format",
+        "category": "format",
+        "required": true,
+        "status": "PASS",
+        "issueIds": []
+      },
+      {
+        "id": "mesh-topology",
+        "category": "mesh",
+        "required": true,
+        "status": "PASS",
+        "issueIds": []
+      },
+      {
+        "id": "mesh-self-intersection",
+        "category": "mesh",
+        "required": true,
+        "status": "PASS",
+        "issueIds": []
+      },
+      {
+        "id": "mesh-shell-relations",
+        "category": "mesh",
+        "required": true,
+        "status": "FAIL",
+        "issueIds": [
+          "53bc78174b05557c2f736ed0c6ea4607fd4b8c581af4e51990f64733abee6b62"
+        ]
+      },
+      {
+        "id": "raw-mesh-validity",
+        "category": "mesh",
+        "required": true,
+        "status": "FAIL",
+        "issueIds": [
+          "53bc78174b05557c2f736ed0c6ea4607fd4b8c581af4e51990f64733abee6b62"
+        ],
+        "reason": "Raw topology, bounded self-intersection and shell checks; no repair or epsilon welding."
+      },
+      {
+        "id": "physical-volume",
+        "category": "measurement",
+        "required": true,
+        "status": "UNRESOLVED",
+        "issueIds": [],
+        "reason": "SOLID_OR_DOCUMENT_UNION_NOT_PROVEN"
+      }
+    ],
+    "measurements": {
+      "bounds": {
+        "min": [
+          0,
+          0,
+          0
+        ],
+        "max": [
+          1,
+          1,
+          1
+        ],
+        "dimensions": [
+          1,
+          1,
+          1
+        ]
+      },
+      "surfaceArea": {
+        "status": "PASS",
+        "value": 6,
+        "errorEstimate": 5.595524044110789e-14,
+        "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+      },
+      "signedVolume": {
+        "status": "PASS",
+        "value": -1,
+        "errorEstimate": 9.325873406851315e-15,
+        "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+      },
+      "physicalVolume": {
+        "status": "UNRESOLVED",
+        "value": null,
+        "reason": "SOLID_OR_DOCUMENT_UNION_NOT_PROVEN"
+      },
+      "objectCount": 1,
+      "rawVertices": 36,
+      "rawTriangles": 12
+    },
+    "issues": [
+      {
+        "id": "53bc78174b05557c2f736ed0c6ea4607fd4b8c581af4e51990f64733abee6b62",
+        "code": "MESH_INVERTED_WINDING",
+        "status": "FAIL",
+        "title": "Shell orientation does not match its material/cavity nesting.",
+        "location": {
+          "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/mesh-native-f5-VHafRs/workspace/model.stl",
+          "line": 0,
+          "character": 0,
+          "confidence": "fallback"
+        }
+      }
+    ],
+    "issueCount": 1,
+    "issuesTruncated": false,
+    "examined": [
+      "raw-format",
+      "raw-topology",
+      "self-intersection",
+      "shell-relations",
+      "mesh-measurements"
+    ],
+    "notExamined": [
+      "assembly",
+      "constraints",
+      "visual-inspection",
+      "diff",
+      "thickness",
+      "printability",
+      "analytic-surface-error"
+    ],
+    "incomplete": [],
+    "artifacts": [
+      {
+        "id": "e3018f91545f5f4c68c526e62549cd679ee184d72dac773aa81d5b6e02e3c9f2",
+        "snapshotId": "ea8eb5b0c593fc62bcc6dedaf20502b6c5e6832b9658cc8f25ebbe0079091bbd",
+        "kind": "mesh",
+        "mimeType": "model/stl",
+        "sha256": "296420886dcf42bfaa1dfe7b0a9194ac6b671ddf4d02cfe38c56eaa1356d8c5f",
+        "bytes": 1059,
+        "role": "raw"
+      },
+      {
+        "id": "8151ec07ada777ed45e74df1d7105846752a5ce20330dcd5b66cd32cac10f9aa",
+        "snapshotId": "ea8eb5b0c593fc62bcc6dedaf20502b6c5e6832b9658cc8f25ebbe0079091bbd",
+        "kind": "mesh",
+        "mimeType": "model/stl",
+        "sha256": "3fa6f86ac4a430e7ca62b1ed539c1a932930126b9647fc1a4aff15e12df8a98d",
+        "bytes": 684,
+        "role": "render",
+        "derivation": {
+          "inputSha256": "296420886dcf42bfaa1dfe7b0a9194ac6b671ddf4d02cfe38c56eaa1356d8c5f",
+          "numericType": "float32",
+          "maxCoordinateError": 0
+        }
+      },
+      {
+        "id": "2a97620db43829457c585d179b88ae6520ff720a31d06f30e9fa95744b2dc504",
+        "snapshotId": "ea8eb5b0c593fc62bcc6dedaf20502b6c5e6832b9658cc8f25ebbe0079091bbd",
+        "kind": "analysis",
+        "mimeType": "application/json",
+        "sha256": "49bfa2a97e7b6eab67f505cd5a6fb5418bf81b11128ea78a7864b22528435f2d",
+        "bytes": 2042
+      }
+    ],
+    "reportUri": "scad-cad-report:/cad-61130301-555f-454c-9fef-c38772664f36"
+  },
+  "measure": {
+    "reportId": "cad-61130301-555f-454c-9fef-c38772664f36",
+    "snapshotId": "ea8eb5b0c593fc62bcc6dedaf20502b6c5e6832b9658cc8f25ebbe0079091bbd",
+    "current": true,
+    "overallStatus": "FAIL",
+    "units": "modelUnits",
+    "precision": "computed-on-decoded-mesh",
+    "values": {
+      "signedVolume": {
+        "status": "PASS",
+        "value": -1,
+        "errorEstimate": 9.325873406851315e-15,
+        "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+      },
+      "physicalVolume": {
+        "status": "UNRESOLVED",
+        "value": null,
+        "reason": "SOLID_OR_DOCUMENT_UNION_NOT_PROVEN"
+      }
+    },
+    "objects": {
+      "total": 1,
+      "offset": 0,
+      "hasMore": false,
+      "nextOffset": null,
+      "items": [
+        {
+          "instanceId": "stl:0",
+          "objectId": "stl",
+          "status": "FAIL",
+          "values": {
+            "signedVolume": {
+              "status": "PASS",
+              "value": -1,
+              "errorEstimate": 9.325873406851315e-15,
+              "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+            },
+            "physicalVolume": {
+              "status": "UNRESOLVED",
+              "value": null,
+              "reason": "SHELL_ORIENTATION_OR_RELATION_UNRESOLVED"
+            }
+          }
+        }
+      ]
+    },
+    "incomplete": [],
+    "notExamined": [
+      "assembly",
+      "constraints",
+      "visual-inspection",
+      "diff",
+      "thickness",
+      "printability",
+      "analytic-surface-error"
+    ]
+  },
+  "issue": {
+    "reportId": "cad-61130301-555f-454c-9fef-c38772664f36",
+    "snapshotId": "ea8eb5b0c593fc62bcc6dedaf20502b6c5e6832b9658cc8f25ebbe0079091bbd",
+    "current": true,
+    "issue": {
+      "id": "53bc78174b05557c2f736ed0c6ea4607fd4b8c581af4e51990f64733abee6b62",
+      "code": "MESH_INVERTED_WINDING",
+      "status": "FAIL",
+      "title": "Shell orientation does not match its material/cavity nesting.",
+      "severity": "error",
+      "source": "mesh",
+      "location": {
+        "uri": "file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/mesh-native-f5-VHafRs/workspace/model.stl",
+        "line": 0,
+        "character": 0,
+        "confidence": "fallback"
+      },
+      "relatedTrace": [],
+      "evidenceIds": [
+        "e3018f91545f5f4c68c526e62549cd679ee184d72dac773aa81d5b6e02e3c9f2",
+        "8151ec07ada777ed45e74df1d7105846752a5ce20330dcd5b66cd32cac10f9aa",
+        "2a97620db43829457c585d179b88ae6520ff720a31d06f30e9fa95744b2dc504"
+      ],
+      "spatial": {
+        "instanceId": "stl:0",
+        "triangles": [
+          0
+        ],
+        "triangleSamples": [
+          {
+            "triangle": 0,
+            "vertices": [
+              [
+                0,
+                0,
+                0
+              ],
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                1,
+                1,
+                0
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    "evidence": {
+      "text": "{\"code\":\"MESH_INVERTED_WINDING\",\"spatial\":{\"instanceId\":\"stl:0\",\"triangles\":[0],\"triangleSamples\":[{\"triangle\":0,\"vertices\":[[0,0,0],[1,0,0],[1,1,0]]}]}}",
+      "truncated": false
+    },
+    "geometryEvidence": {
+      "coordinateUnits": "modelUnits",
+      "triangleSamples": [
+        {
+          "triangle": 0,
+          "vertices": [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              1,
+              1,
+              0
+            ]
+          ]
+        }
+      ],
+      "nextSampleCursor": null,
+      "samplesTruncated": false,
+      "bounds": {
+        "min": [
+          0,
+          0,
+          0
+        ],
+        "max": [
+          1,
+          1,
+          1
+        ],
+        "dimensions": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "instanceId": "stl:0",
+          "id": "stl:0:c0",
+          "triangles": 12,
+          "signedVolume": {
+            "status": "PASS",
+            "value": -1,
+            "errorEstimate": 1.4210854715202004e-14,
+            "reason": "computed-on-decoded-mesh; roundoff estimate, not an analytic-surface bound"
+          },
+          "parent": null,
+          "depth": 0
+        }
+      ],
+      "nextComponentCursor": null,
+      "instanceId": "stl:0",
+      "triangles": [
+        0
+      ],
+      "nextCursor": null,
+      "artifacts": [
+        {
+          "id": "e3018f91545f5f4c68c526e62549cd679ee184d72dac773aa81d5b6e02e3c9f2",
+          "snapshotId": "ea8eb5b0c593fc62bcc6dedaf20502b6c5e6832b9658cc8f25ebbe0079091bbd",
+          "kind": "mesh",
+          "mimeType": "model/stl",
+          "sha256": "296420886dcf42bfaa1dfe7b0a9194ac6b671ddf4d02cfe38c56eaa1356d8c5f",
+          "bytes": 1059,
+          "role": "raw"
+        },
+        {
+          "id": "8151ec07ada777ed45e74df1d7105846752a5ce20330dcd5b66cd32cac10f9aa",
+          "snapshotId": "ea8eb5b0c593fc62bcc6dedaf20502b6c5e6832b9658cc8f25ebbe0079091bbd",
+          "kind": "mesh",
+          "mimeType": "model/stl",
+          "sha256": "3fa6f86ac4a430e7ca62b1ed539c1a932930126b9647fc1a4aff15e12df8a98d",
+          "bytes": 684,
+          "role": "render",
+          "derivation": {
+            "inputSha256": "296420886dcf42bfaa1dfe7b0a9194ac6b671ddf4d02cfe38c56eaa1356d8c5f",
+            "numericType": "float32",
+            "maxCoordinateError": 0
+          }
+        },
+        {
+          "id": "2a97620db43829457c585d179b88ae6520ff720a31d06f30e9fa95744b2dc504",
+          "snapshotId": "ea8eb5b0c593fc62bcc6dedaf20502b6c5e6832b9658cc8f25ebbe0079091bbd",
+          "kind": "analysis",
+          "mimeType": "application/json",
+          "sha256": "49bfa2a97e7b6eab67f505cd5a6fb5418bf81b11128ea78a7864b22528435f2d",
+          "bytes": 2042
+        }
+      ]
+    }
+  },
+  "views": {
+    "reportId": "cad-61130301-555f-454c-9fef-c38772664f36",
+    "snapshotId": "ea8eb5b0c593fc62bcc6dedaf20502b6c5e6832b9658cc8f25ebbe0079091bbd",
+    "current": true,
+    "renderStatus": "AVAILABLE",
+    "frames": [
+      {
+        "view": "iso",
+        "artifact": {
+          "id": "c00125c00f4a1e711d019a5de6b056af91d48e1f40ec305ad4ae98830f0cc629",
+          "snapshotId": "ea8eb5b0c593fc62bcc6dedaf20502b6c5e6832b9658cc8f25ebbe0079091bbd",
+          "kind": "image",
+          "mimeType": "image/png",
+          "sha256": "ee73ee12b93c684ede4b3fb0d7813ac7863a42573381f86c60a224ed0f74cf4c",
+          "bytes": 8287
+        },
+        "artifactUri": "scad-cad-artifact:/c00125c00f4a1e711d019a5de6b056af91d48e1f40ec305ad4ae98830f0cc629.png",
+        "renderSnapshotId": "07631debb2b947e658e97540c3f783167522bf69f933aa69b052190802ceca34",
+        "sourceMeshSha256": "296420886dcf42bfaa1dfe7b0a9194ac6b671ddf4d02cfe38c56eaa1356d8c5f",
+        "renderedMeshSha256": "3fa6f86ac4a430e7ca62b1ed539c1a932930126b9647fc1a4aff15e12df8a98d",
+        "camera": {
+          "arguments": [
+            0,
+            0,
+            0,
+            55,
+            0,
+            25,
+            3
+          ],
+          "projection": "orthographic",
+          "framing": "cli-autocenter-viewall"
+        },
+        "imageSize": [
+          512,
+          512
+        ],
+        "runtime": {
+          "identityHash": "c1936c68f9bebb2900728408b9a4c86bd7e067f97053d06e29a6ab698d1e3fa6",
+          "version": "2026.11-RC0"
+        },
+        "displayOnly": true,
+        "coordinateQuantizationError": 0
+      }
+    ],
+    "delivery": "metadata",
+    "notExamined": [
+      "visual-inspection",
+      "printability"
+    ]
+  },
+  "pass": false,
+  "error": "AssertionError [ERR_ASSERTION]: Provider must receive every actual CAD tool schema",
+  "stack": "AssertionError [ERR_ASSERTION]: Provider must receive every actual CAD tool schema\n    at file:///Users/q/Documents/Code/scad-ai-ide/scripts/test-mesh-native.mjs:119:12",
+  "runId": "4806bb21-6020-4fb9-b149-25820aba29c1",
+  "scenario": "mesh",
+  "candidateId": "f98a2da1f4cfc2cd2fcb48ae50d21e78254b512e9c1d6f5353c466eb68a7c484",
+  "candidateUnchanged": true,
+  "budgetMs": 600000,
+  "elapsedMs": 44974,
+  "commandState": {
+    "runId": "4806bb21-6020-4fb9-b149-25820aba29c1",
+    "state": "completed",
+    "at": "2026-11-17T09:03:31.527Z"
+  },
+  "formalAttempt": 1,
+  "harness": {
+    "requested": "copilot",
+    "selection": {
+      "requestedHarness": "copilot",
+      "command": "workbench.action.chat.newChat",
+      "sessions": [
+        "agent-host-copilotcli:/untitled-afa3523a-a26e-4ca9-b63d-83cb59356cee"
+      ],
+      "settings": {
+        "defaultToCopilot": true
+      },
+      "observedAt": "2026-11-17T09:02:50.414Z"
+    }
+  },
+  "assessment": {
+    "category": "UNKNOWN_OR_MULTI_FACTOR",
+    "confidence": "unresolved",
+    "backupEligible": false,
+    "evidence": [
+      "AssertionError [ERR_ASSERTION]: Provider must receive every actual CAD tool schema"
+    ],
+    "alternatives": [
+      "Product, tool contract, model, provider, host and harness require independent checks"
+    ],
+    "latencyObservation": [
+      {
+        "status": 200,
+        "firstByteMs": 15,
+        "elapsedMs": 15,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 4,
+        "elapsedMs": 4,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 5,
+        "elapsedMs": 5,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 7,
+        "elapsedMs": 8,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 12,
+        "elapsedMs": 13,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 8,
+        "elapsedMs": 9,
+        "streamEnded": true
+      },
+      {
+        "status": 200,
+        "firstByteMs": 7,
+        "elapsedMs": 7,
+        "streamEnded": true
+      }
+    ]
+  }
+}

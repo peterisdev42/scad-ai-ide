@@ -1,0 +1,14 @@
+{
+  "category": "PROVIDER_OR_HOST",
+  "confidence": "supported",
+  "backupEligible": false,
+  "originalResultUnchanged": true,
+  "actualHarness": "agent-host-copilotcli",
+  "selectedModel": "omlx/Qwen3.6-35B-A3B-OptiQ-4bit",
+  "reason": "Authentication is required to start a session. Please sign in and try again.",
+  "modelChatRequests": 0,
+  "cadToolCalls": 0,
+  "elapsedMs": 7625,
+  "notATimeout": true,
+  "note": "Old generic oracle mentioned 600s but this request ended immediately at native authentication rejection. Native export proves Copilot identity; no Local fallback."
+}

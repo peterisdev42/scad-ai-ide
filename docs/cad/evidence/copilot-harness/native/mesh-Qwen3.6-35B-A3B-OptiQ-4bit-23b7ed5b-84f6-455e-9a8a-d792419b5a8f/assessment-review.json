@@ -1,0 +1,29 @@
+{
+  "pass": false,
+  "supersedes": "No raw evidence overwritten; this review qualifies generic MANUAL_REQUIRED and relay observations",
+  "authentication": "RESOLVED after user login; genuine local BYOK inference observed",
+  "modelConfirmed": true,
+  "harness": "agent-host-copilotcli",
+  "category": "UNKNOWN_OR_MULTI_FACTOR",
+  "confidence": "unresolved",
+  "backupEligible": false,
+  "observed": [
+    "SDK usage confirms Qwen3.6-35B-A3B-OptiQ-4bit / isByok=true / local_user in seven generations",
+    "Model invoked skill, bash, read_bash, bash and ask_user three times; no CAD Dispatcher calls",
+    "Model asked how to handle missing MCP tools; that is a model statement, not proof CAD registration failed",
+    "Native questionCarousel stopped the automatic case at 80.947s; not a 600s timeout",
+    "SDK availableToolCount=129; host warning says model supports 128, one tool omitted",
+    "Loopback relay has no inference record, but SDK proves inference: relay is not authoritative across Agent Host serving windows"
+  ],
+  "unproven": [
+    "Actual tool_search/CAD schemas and ordering delivered to this model",
+    "Which tool was omitted",
+    "Whether missing discovery is caused by model choice, provider truncation, host tool catalog or test scope"
+  ],
+  "next": [
+    "Observe serving-window schemas and effective tool limit without switching to Local",
+    "Support Agent Host serving-window routing in test instrumentation",
+    "Only run backup after evidence satisfies model-specific comparison policy"
+  ],
+  "cadGate": "OPEN / no qualified Copilot local-model business PASS"
+}

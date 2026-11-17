@@ -1,0 +1,15 @@
+[
+  {
+    "runId": "de51c0d5-dd6f-433e-a117-9c85390aec66",
+    "seq": 0,
+    "type": "started",
+    "at": "2026-11-17T08:56:01.554Z",
+    "model": "Qwen3.6-35B-A3B-OptiQ-4bit"
+  },
+  {
+    "runId": "de51c0d5-dd6f-433e-a117-9c85390aec66",
+    "seq": 1,
+    "type": "completed",
+    "at": "2026-11-17T08:56:05.572Z"
+  }
+]

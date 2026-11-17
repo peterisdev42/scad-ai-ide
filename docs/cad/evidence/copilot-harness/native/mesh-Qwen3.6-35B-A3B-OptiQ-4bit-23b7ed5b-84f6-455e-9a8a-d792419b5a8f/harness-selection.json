@@ -1,0 +1,11 @@
+{
+  "requestedHarness": "copilot",
+  "command": "workbench.action.chat.newChat",
+  "sessions": [
+    "agent-host-copilotcli:/untitled-decba79f-c596-4800-bef4-170a1404e5db"
+  ],
+  "settings": {
+    "defaultToCopilot": true
+  },
+  "observedAt": "2026-11-17T09:11:14.934Z"
+}
