@@ -239,7 +239,10 @@ export function registerCapabilities(services: CapabilityServices) {
     for (const definition of capabilityCatalog) {
         if (!handlers[definition.id]) throw new Error(`No binding for ${definition.id}`)
         registry.bind(definition.id, {
-            available: () => {
+            available: (context) => {
+                // Keep direct Agent invocations disabled even if a host cached a Tool.
+                // GUI/command clients continue using the same domain services.
+                if (context.actor === 'agent' && !vscode.workspace.getConfiguration('scad-ai-ide').get<boolean>('agent.enabled', true)) return { enabled: false, reasonCode: 'DISABLED_BY_USER' }
                 if (definition.id.startsWith('cad.')) {
                     if (!cad) return { enabled: false, reasonCode: 'NOT_REGISTERED' }
                     if (!vscode.workspace.isTrusted) return { enabled: false, reasonCode: 'UNTRUSTED_WORKSPACE' }
