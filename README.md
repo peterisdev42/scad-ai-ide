@@ -2,55 +2,53 @@
 
 **OpenSCAD development, made simple in the VS Code you already know.**
 
-**New to OpenSCAD?** Start modeling through an intuitive interface instead of manually managing runtimes, environment variables, and third-party libraries. **Already experienced?** Keep your VS Code setup, Git, terminal, extensions, and AI coding tools—without switching to a separate OpenSCAD IDE.
-
-**You choose how to work.** Build by hand, collaborate with AI, or eventually delegate the whole workflow to an agent. Our long-term design principle is: **every IDE capability offered to people should also be available to AI agents through shared, controlled tools.**
-
 _From code to solid._
+
+SCAD AI IDE is an open-source VS Code extension for editing, previewing, customizing, managing, and verifying OpenSCAD projects. Work directly with your code or use native VS Code AI agents that call the same controlled IDE services.
 
 [Website](https://peterisdev42.github.io/scad-ai-ide/) · [Quick start](#quick-start) · [Documentation](docs/README.md) · [Contributing](CONTRIBUTING.md)
 
-## Features at a glance
+> **Project status — active development.** Core IDE workflows are implemented and can be run from source, but this is **not yet a general-availability release**. There is no official GitHub Release installer or Marketplace distribution. End-to-end Agent, real-host and cross-platform acceptance is still in progress. See [validation and known limitations](#validation-and-known-limitations).
 
-| Feature                         | What you can do                                                                     | Status           |
-| ------------------------------- | ----------------------------------------------------------------------------------- | ---------------- |
-| **OpenSCAD language support**   | Syntax highlighting, completions, diagnostics, navigation, renaming, and formatting | ✅ Available     |
-| **Interactive 3D preview**      | View models in VS Code, switch views, rotate, and zoom                              | ✅ Available     |
-| **Customizer**                  | Adjust parameters using sliders and inputs; save and switch presets                 | ✅ Available     |
-| **Model inspection and export** | Measure, inspect sections, export STL / 3MF, and launch your slicer                 | ✅ Available¹    |
-| **OpenSCAD Runtime**            | Discover, install, switch, and manage OpenSCAD runtimes                             | ✅ Available     |
-| **Libraries**                   | Find libraries, lock and restore project dependencies, and manage a shared cache    | ✅ Available     |
-| **3D preview in Markdown**      | Interactively preview `openscad` / `scad` code blocks in documentation              | ✅ Available     |
-| **Per-part coloring**           | Automatically color separate parts in a multi-part model for easier inspection      | 🧪 Experimental³ |
-| **Fast CSG preview**            | Preview CSG with a separate image-space Preview Exporter                            | 🧪 Experimental² |
-| **AI agent integrations**       | Native Agent Tools/Skills for management, raw mesh verification and frozen PNG; MCP planned | 🚧 Partial |
+## What works today
 
-<sub>¹ Export formats and some inspection tools depend on the runtime and render mode. ² Fast CSG preview currently requires a separately installed Preview Exporter on supported macOS ARM64 setups. ³ Per-part coloring changes only the preview, not source files, presets, or exports; overlapping or complex geometry can be misidentified. **Native Agent Tools and Skills cover management, CLI diagnostics and raw mesh verification. Assembly verification, portable MCP and a fully verified autonomous CAD lifecycle remain planned.**</sub>
+| Area | Implemented capabilities | Readiness |
+| --- | --- | --- |
+| **Language support** | Syntax highlighting, snippets, completions, diagnostics, navigation, rename and formatting via OpenSCAD LSP | Implemented |
+| **Interactive 3D preview** | Rotate, zoom, view navigation, measurement, section inspection and model export | Implemented; some operations depend on the runtime |
+| **Customizer** | Visual parameter controls, overrides, OpenSCAD-compatible presets, source authoring analysis and safe structured editing | Implemented; Agent/model acceptance ongoing |
+| **Runtime Manager** | Discover, install, select and manage OpenSCAD CLI versions | Implemented |
+| **Libraries Manager** | Registry discovery, exact-version project dependencies, lock/restore, shared versioned store and cleanup | Implemented; Windows native-path limitation |
+| **Markdown 3D preview** | Interactive previews for `openscad` / `scad` code blocks | Implemented |
+| **CAD diagnostics** | CLI-backed CSG checks, issue details, shared VS Code Problems and snapshot invalidation | Implemented; end-to-end acceptance ongoing |
+| **Mesh & assembly verification** | Raw STL/3MF checks, measurements, frozen PNG views, declared-part static assembly constraints and report comparison | Implemented; validation ongoing |
+| **Native Agent integration** | 51 VS Code Language Model Tools, 12 Skills and 2 Instructions using shared services and permission gates | Implemented; provider/host/model acceptance ongoing |
+| **Per-part coloring** | Distinct preview colors for separated parts | Experimental; visual-only |
+| **Fast CSG preview** | Image-space CSG rendering through a separate Preview Exporter | Experimental; supported macOS ARM64 setups |
+
+**Implemented** means the feature is present in the source, not that every machine, model and workflow has passed final release acceptance. Bricks is not currently a shipped workflow.
 
 ## Why SCAD AI IDE?
 
-### For beginners: focus on modeling, not configuration
+### Start modeling, not configuring
 
-Like a beginner-friendly development environment, SCAD AI IDE aims to make toolchain setup straightforward. Manage OpenSCAD installations through **Runtime**, project dependencies through **Libraries**, and your design through **Preview** and **Customizer**—without manually setting a system-wide `OPENSCADPATH`.
+Select an OpenSCAD runtime, discover third-party libraries and adjust parameters in VS Code instead of manually assembling a toolchain. The extension injects a **project-scoped `OPENSCADPATH`** when launching its OpenSCAD processes; you do not need to overwrite your global environment.
 
-### For experienced users: keep the tools you know
+### Keep the tools you already use
 
-Stay in VS Code with your own shortcuts, editor settings, Git, terminal, and extensions. Get dedicated OpenSCAD language tooling, modeling views, and project management **without switching between VS Code and the standalone OpenSCAD IDE**.
+Stay with VS Code, Git, your terminal, editor shortcuts and other extensions. Use a first-class OpenSCAD language experience alongside an interactive Preview and Customizer.
 
-### For everyone: your tools, your choice
+### Verify changes instead of trusting a screenshot
 
-Manual design and agent-driven development should share one underlying toolchain. Our goal is to offer controlled access to the same rendering, diagnostics, parameters, runtimes, and dependency operations—whether a person or AI agent initiates them.
+CAD tools can analyze OpenSCAD/CSG diagnostics, inspect raw meshes, measure frozen geometry, check declared static assemblies, compare reports and retain evidence. Reports distinguish `PASS`, `FAIL` and `UNRESOLVED` when the available evidence is insufficient. **A clean CSG check is not proof of a watertight mesh, correct assembly, safe clearances or printability.**
 
-> **Current status:** Core IDE features are implemented. Native Agent Tools and Skills are available for management, CLI diagnostics, mesh measurements and frozen PNG evidence. Assembly verification, MCP and full end-to-end CAD acceptance remain pending.
+### Choose manual or agent-assisted workflows
+
+The same underlying domain services power GUI actions and native VS Code Agent Tools. Tools expose bounded inputs, explicit permissions and snapshot-aware results; writes and destructive operations keep their authorization boundaries. The current Agent integration is **native to VS Code**—an MCP server is **not** part of the current scope.
 
 ## Quick start
 
-SCAD AI IDE is under active development and **does not yet offer an official GitHub Release installer**. For now, you can run it from source.
-
-<details>
-<summary><strong>Run from source (developers)</strong></summary>
-
-You need a VS Code version compatible with [`package.json`](package.json), Node.js 24, npm, and Git. Preparing the language server may also require Rust and Cargo.
+The project is currently **source-first**. You need a compatible VS Code installation (minimum version: **1.140.0**), **Node.js 24**, npm and Git; building the language server from source may additionally require Rust/Cargo and platform build tools.
 
 ```bash
 git clone --recurse-submodules https://github.com/peterisdev42/scad-ai-ide.git
@@ -60,87 +58,64 @@ npm run prepare:lsp
 npm run compile
 ```
 
-Open the repository in VS Code and press **F5** to launch an Extension Development Host.
+Open the repository in VS Code and press **F5** to launch the Extension Development Host. If the language server cannot be prepared from a prebuilt artifact, follow [CONTRIBUTING.md](CONTRIBUTING.md) for build prerequisites.
 
-</details>
+**Your first model:**
 
-**Open your first model:**
+1. In the Extension Development Host, open a trusted workspace with a saved `.scad` file.
+2. Open **Quick Access → Runtime** and select an available OpenSCAD CLI.
+3. Run **SCAD AI IDE: Open as Preview**; rotate or zoom the model.
+4. Use **Customizer** to change parameters, then render or export as supported by that runtime.
+5. Optionally run **Analyze Model Diagnostics** or **Verify Raw CAD Mesh** to inspect evidence separately from the viewport.
 
-1. Create or open a saved `.scad` file in a trusted workspace.
-2. Open **Quick Access → Runtime** to select or install an OpenSCAD runtime.
-3. Run **SCAD AI IDE: Open as Preview**, then rotate and inspect the model.
-4. Adjust parameters in **Customizer**; render or export STL / 3MF when ready.
-
-Switch between source and preview with **macOS `Cmd + Shift + V`** or **Windows / Linux `Ctrl + Shift + V`**.
+Switch between source and preview using **Cmd + Shift + V** on macOS or **Ctrl + Shift + V** on Windows/Linux.
 
 ## Feature details
 
-### Edit, preview, and customize
+### Preview, customization and export
 
-OpenSCAD language support and an interactive 3D viewport bring code editing, model navigation, measurements, and section inspection together. Customizer provides visual parameter controls and OpenSCAD-compatible JSON presets. Parameter overrides do not silently rewrite your source code. Markdown `openscad` / `scad` code blocks can also show interactive 3D models.
+The Preview displays models in the editor, supports navigation, measurement and section inspection, and can export STL/3MF or send supported outputs to a slicer. Available operations depend on the selected CLI and rendering mode. Parameter overrides are applied without silently rewriting the `.scad` source. Customizer also supports native-style presets and source diagnostics/structured edits through explicit operations.
 
-Standard rendering and export use the selected OpenSCAD CLI. The experimental **Color parts separately** toggle helps distinguish parts of an assembly; it only changes preview appearance and may be inaccurate for complex geometry. Experimental fast CSG preview has separate platform and rendering limitations.
+Experimental **Color parts separately** affects only the viewport and can misidentify overlapping/complex geometry. Experimental **Fast CSG preview** needs a separately installed Preview Exporter and currently has platform/geometry limitations. See [Preview integration](docs/preview-integration.md), [Preview Exporter](docs/preview-exporter-architecture.md) and [part-color limitations](docs/part-colors.md).
 
-See the [preview architecture](docs/preview-exporter-architecture.md) and [per-part coloring notes](docs/part-colors.md).
+### Runtime and library dependencies
 
-### Runtime and Libraries: easier, reproducible projects
+**Runtime** discovers and manages OpenSCAD executables. **Libraries** offers Registry, Project and Global views. Project dependency declarations are stored in `.scad/dependencies.json` and exact pins in `.scad/dependencies.lock.json`. Project-local `.scad/lib` mounts entries from a shared, versioned store using links where feasible and an explicit copy fallback. Removing a project dependency does not erase its shared cached version; cleanup rechecks references and requires confirmation.
 
-Runtime discovers, installs, and switches OpenSCAD versions across Windows, macOS, Linux, and supported VS Code remote environments. Libraries is organized into **Registry** (discovery), **Project** (dependencies), and **Global** (shared versioned storage).
+The current dependency manager intentionally supports **exact versions**, not arbitrary version ranges or automatic transitive dependency installation. See [Libraries documentation](docs/library-manager.md).
 
-Projects record exact dependencies in `.scad/dependencies.json` and `.scad/dependencies.lock.json`. Local `.scad/lib` uses directory links, with an explicit copy fallback when required. Removing a project dependency does not automatically delete shared cached versions; global cleanup requires reference checks and confirmation. General version-range resolution and automatic transitive dependency installation are not yet supported.
+### Native Agent Tools, Skills and safety
 
-See the [library manager documentation](docs/library-manager.md).
+The extension contributes **51 native VS Code Language Model Tools**, **12 Skills** and **2 Instructions**. They cover capability discovery/cancellation, Runtime, Customizer, Libraries, safe development status and CAD diagnostics/verification/review. The AI Panel shows capability availability; invoking tools does not require the corresponding management panel to be open.
 
-### AI agents: one IDE, shared capabilities
+Capability availability depends on the **VS Code Agent host and model provider**. Registration and deterministic tests do not establish reliable autonomous-model performance. The real-model CAD acceptance matrix remains open in several areas. See the [tool catalog](docs/agent-capability-catalog.md), [permissions matrix](docs/agent-capability-matrix.md), [Agent verification guide](docs/agent-verification.md) and [CAD progress report](docs/cad/overall-progress.md).
 
-Existing IDE services are exposed through **VS Code Agent Tools and Skills**, with portable MCP planned so people and agents can work with the same capabilities and permission boundaries. You should be able to build manually, collaborate with AI, or delegate tasks while retaining control of the result.
+Customizer Agent source edits use explicit analysis, planning/commit and validation semantics, with revision/Hash protection. CAD tools produce snapshot-bound reports and can use VS Code Problems; standalone raw-mesh checks can work without an OpenSCAD runtime, while SCAD compilation and official PNG rendering require one. Unsaved include/use buffers are not silently saved or injected and may yield `UNRESOLVED`. Read the [Customizer acceptance report](docs/customizer/closeout-report.md), [CAD architecture](docs/cad-verification-architecture.md) and [mesh verification guide](docs/cad-mesh-verification.md).
 
-**Native Agent interfaces are implemented; their functional, real-model and platform gates are recorded separately. MCP remains planned.**
+## Validation and known limitations
+
+The repository contains unit, VS Code Extension Host, browser/UI, native CLI and selected installed-VSIX test suites. They are **different levels of evidence**; a successful unit test or an installed smoke test does not count as a real-model or end-user acceptance pass.
+
+- **Windows Unicode paths:** tests with the current Windows OpenSCAD CLI build fail when source, output or library paths contain certain non-ASCII characters. The issue is reproduced independently of the IDE's link/copy strategy. The underlying upstream-vs-build cause is not yet established. See [Windows investigation](docs/customizer/windows-unicode-closeout.md).
+- **Agent CAD acceptance:** deterministic features are implemented, but strict dirty-buffer workflows, real interactive spatial feedback, some stable-host focus behavior, the default Agent harness and remaining platform/stress tests have not all passed final gates. See [current progress](docs/cad/overall-progress.md) and [manual acceptance](docs/cad/manual-acceptance.md).
+- **Customizer Agent acceptance:** deterministic authoring and safety checks have evidence; some model-driven expression/answer-accuracy scenarios and additional platform combinations remain partial. See [closeout](docs/customizer/closeout-report.md).
+- **Preview/export:** Fast CSG and per-part colors remain experimental; rendering and export support vary by CLI build and mode. Printability screening is **not** a printability certification.
+- **Distribution:** no official Release installer or Marketplace entry exists yet. Cross-platform release readiness has not been signed off.
+
+If a workflow reports `UNRESOLVED` or a tool is unavailable, treat that as a limitation—not as a successful CAD verification.
 
 ## Development and contributing
 
-Feedback and contributions are welcome through [GitHub Issues](https://github.com/peterisdev42/scad-ai-ide/issues). See [CONTRIBUTING.md](CONTRIBUTING.md) for build and testing instructions, and the [documentation index](docs/README.md) for technical details.
+Useful contributor commands:
 
-SCAD AI IDE is licensed under [GPL-3.0](LICENSE). It is an independent community project built on the [OpenSCAD](https://openscad.org/) and [VS Code](https://code.visualstudio.com/) ecosystems, not an official project of either.
+```bash
+npm run check:agents
+npm run check-types
+npm run lint
+npm test
+npm run test:integration
+```
 
-### Agent tools and shared capabilities
+Some integration tests need external binaries, a graphical host or other prerequisites; skips must not be mistaken for passing tests. For the full test matrix and build instructions, see [CONTRIBUTING.md](CONTRIBUTING.md). For local-provider setup, see [Ollama development](docs/ollama-development.md); availability depends on the chosen native VS Code Agent host.
 
-SCAD AI IDE contributes 44 VS Code Language Model Tools for Runtime, Customizer,
-Libraries and snapshot-bound CAD verification, plus two Instructions and seven task Skills.
-GUI, commands and tools share domain services; tools work without opening panels.
-The AI Panel lists every tool in seven category tables with permissions and live
-availability, followed by the bundled Instruction and Skills.
-Customizer changes are per-model overrides and do not edit SCAD source. Project
-library writes use an explicit workspace project and exact versions. Destructive
-operations independently ask for user authorization; Development cache access is
-hard-disabled in normal installations.
-
-See the [capability matrix](docs/agent-capability-matrix.md),
-[exact tool catalog](docs/agent-capability-catalog.md) and
-[verification/manual acceptance](docs/agent-verification.md) for permissions,
-workflows and the remaining model/host validation limits. VS Code extension-tool
-availability depends on the Agent harness; the GUI needs no AI subscription.
-
-For contributors, run `npm run generate:agents` after editing the capability catalog;
-`npm run check:agents` checks the manifest/resources/matrix and
-`npm run test:capabilities` exercises the shared contracts and adapters.
-
-Observed model failures and remaining acceptance cases are maintained in the
-[Agent verification guide](docs/agent-verification.md).
-
-For local LLM development testing, choose **Run Extension + Ollama** in the F5
-launch configuration. It retains `--disable-extensions` and explicitly loads this project plus the
-locally installed `Ollama.ollama` as development extensions. See [Ollama development setup](docs/ollama-development.md)
-for model selection, custom installation paths and the real-host discovery smoke.
-
-### CAD model diagnostics
-
-Run **OpenSCAD: Analyze Model Diagnostics**, or let an Agent use `scad_ai_ide_model_analyze` with an explicit workspace SCAD URI. Preview need not be open. The tool evaluates current root-buffer CSG, returns a versioned report and publishes current Problems. Read a specific issue with `scad_ai_ide_model_getIssue`.
-
-Analysis requires Workspace Trust and a selected official Runtime. Unsaved include/use buffers are not injected: affected checks return `UNRESOLVED`. Source edits, dependency changes and Runtime/parameter changes invalidate old results. Analysis is explicit by default; `scad-ai-ide.verification.onSave` can enable saved-file diagnostics.
-
-CSG `PASS` is not mesh validity, correct assembly clearance, visual review or printability. See [architecture](docs/cad-verification-architecture.md) and [actual acceptance evidence](docs/cad-agent-acceptance.md).
-
-### Raw mesh verification and measurement
-
-Use `scad_ai_ide_model_analyze` with `mode="verify"` for SCAD/CSG Full Render or standalone STL/3MF raw checks. `scad_ai_ide_model_measure` reads snapshot-bound measurements; `scad_ai_ide_model_renderViews` generates official CLI PNG from frozen geometry. Standalone mesh checks need no Runtime; SCAD and PNG do. Raw meshes are never repaired. Physical volume requires solid proof; ambiguous and unsupported cases return `UNRESOLVED`. See [usage and limits](docs/cad-mesh-verification.md) and [Phase 2 acceptance](docs/cad/phase2-acceptance.md).
+Questions, bug reports and contributions are welcome via [GitHub Issues](https://github.com/peterisdev42/scad-ai-ide/issues). SCAD AI IDE is [GPL-3.0 licensed](LICENSE) and is an independent community project, not an official OpenSCAD, VS Code or Microsoft product.
