@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#f7f9fc">
-  <meta name="description" content="OpenSCAD made approachable in the VS Code you already know. Manage runtimes and libraries, edit, preview and customize models, with shared AI agent tools planned.">
+  <meta name="description" content="SCAD AI IDE brings OpenSCAD editing, 3D preview, Customizer, runtimes, libraries, CAD verification and native VS Code Agent Tools into one workspace. Source-first development preview.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="SCAD AI IDE">
   <meta property="og:title" content="SCAD AI IDE — The OpenSCAD development environment">
-  <meta property="og:description" content="Stay in VS Code. Skip manual OpenSCAD setup. Build your way—from your first model to advanced projects, with AI agent integrations planned.">
+  <meta property="og:description" content="Edit, preview, customize and verify OpenSCAD in VS Code. Native Agent Tools are implemented; the project is still in development and validation.">
   <meta property="og:url" content="https://peterisdev42.github.io/scad-ai-ide/">
   <meta name="twitter:card" content="summary">
   <link rel="canonical" href="https://peterisdev42.github.io/scad-ai-ide/">
@@ -43,6 +43,7 @@
         <a href="#features">Features</a>
         <a href="#workflow">Workflow</a>
         <a href="#agents">AI &amp; agents</a>
+        <a href="#status">Project status</a>
         <a href="#open-source">Open source</a>
       </nav>
       <div class="nav-actions">
@@ -74,7 +75,7 @@
             <a class="button button-primary" href="https://github.com/peterisdev42/scad-ai-ide#quick-start" target="_blank" rel="noopener noreferrer">Run from source <span aria-hidden="true">↗</span></a>
             <a class="button button-quiet" href="#features">Explore features <span aria-hidden="true">↓</span></a>
           </div>
-          <div class="hero-note"><span class="note-line"></span> Development version <span class="note-divider">·</span> Windows <span class="note-divider">/</span> macOS <span class="note-divider">/</span> Linux</div>
+          <div class="hero-note"><span class="note-line"></span> Source-first development preview <span class="note-divider">·</span> Cross-platform validation in progress</div>
         </div>
 
         <div class="ide-display" aria-label="Illustration of SCAD AI IDE: OpenSCAD code alongside a 3D preview">
@@ -180,7 +181,7 @@
         <div class="section-heading">
           <span class="eyebrow">FEATURES AT A GLANCE</span>
           <h2>Your OpenSCAD tools.<br><span class="muted-text">All in one place.</span></h2>
-          <p>From your first model to a complex project, work in the editor you know. Core features are available today; experimental capabilities and future AI integrations are clearly marked.</p>
+          <p>From your first model to mesh and assembly checks, use the editor you know. Native Agent interfaces are implemented; full model and platform acceptance remains in progress.</p>
         </div>
         <div class="feature-grid">
           <article class="feature-card">
@@ -226,6 +227,24 @@
             <span class="feature-meta">AVAILABLE · DOCUMENTATION</span>
           </article>
           <article class="feature-card">
+            <span class="feature-icon">⊞</span>
+            <h3>CAD diagnostics</h3>
+            <p>Analyze OpenSCAD/CSG with the official CLI, inspect issue details, and see current findings in VS Code Problems.</p>
+            <span class="feature-meta">IMPLEMENTED · ACCEPTANCE ONGOING</span>
+          </article>
+          <article class="feature-card">
+            <span class="feature-icon">◎</span>
+            <h3>Mesh, assembly and review</h3>
+            <p>Inspect STL/3MF geometry, measure frozen evidence, check declared static assemblies and compare reports. Not printability certification.</p>
+            <span class="feature-meta">IMPLEMENTED · ACCEPTANCE ONGOING</span>
+          </article>
+          <article class="feature-card">
+            <span class="feature-icon">✦</span>
+            <h3>Native VS Code Agent tools</h3>
+            <p>51 registered tools, 12 Skills and 2 Instructions reuse shared IDE services. Provider and end-to-end validation is ongoing.</p>
+            <span class="feature-meta">IMPLEMENTED · HOST-DEPENDENT</span>
+          </article>
+          <article class="feature-card">
             <span class="feature-icon">◐</span>
             <h3>Per-part coloring</h3>
             <p>Make multi-part assemblies easier to inspect with distinct preview colors. Visual-only, with known geometry limitations.</p>
@@ -253,7 +272,7 @@
           <div class="workflow-step"><span class="step-number">01</span><div><h3>Stay in VS Code</h3><p>No new standalone modeling IDE or unfamiliar development workflow.</p></div><span class="step-mark">⌘</span></div>
           <div class="workflow-step"><span class="step-number">02</span><div><h3>Let the IDE manage setup</h3><p>Choose an OpenSCAD runtime and install project libraries through the GUI.</p></div><span class="step-mark">▤</span></div>
           <div class="workflow-step"><span class="step-number">03</span><div><h3>Design and inspect</h3><p>Edit code, preview in 3D, tune parameters, and export your result.</p></div><span class="step-mark">◇</span></div>
-          <div class="workflow-step"><span class="step-number">04</span><div><h3>Work your way</h3><p>Build by hand today, with shared tools for agent workflows planned.</p></div><span class="step-mark">↗</span></div>
+          <div class="workflow-step"><span class="step-number">04</span><div><h3>Verify and collaborate</h3><p>Inspect CAD reports yourself or use native Agent Tools, with explicit safety gates and honest evidence limits.</p></div><span class="step-mark">↗</span></div>
         </div>
       </div>
     </section>
@@ -263,16 +282,49 @@
         <div class="agent-copy">
           <span class="eyebrow eyebrow-soft">YOUR TOOLS. YOUR CHOICE.</span>
           <h2>Build it yourself.<br><span>Or work with an agent.</span></h2>
-          <p>Our goal: every IDE capability you use should also be accessible to AI agents through shared, controlled interfaces. Edit manually, collaborate, or delegate—without giving up control. Agent integrations are not available yet.</p>
-          <div class="agent-tags"><span>Agent Tools <i>Planned</i></span><span>MCP <i>Planned</i></span><span>Skills <i>Planned</i></span></div>
-          <a class="agent-link" href="https://github.com/peterisdev42/scad-ai-ide/blob/main/README.md#ai-agents-one-ide-shared-capabilities" target="_blank" rel="noopener noreferrer">Read about the roadmap <span aria-hidden="true">↗</span></a>
+          <p>51 native VS Code Agent Tools are already registered, with 12 task Skills and 2 Instructions. The tools reuse IDE services for setup, Customizer, diagnostics, mesh checks and review, while preserving permissions and snapshot boundaries. Provider compatibility and complete autonomous CAD workflows are still under acceptance.</p>
+          <div class="agent-tags"><span>51 Tools <i>Registered</i></span><span>12 Skills <i>Bundled</i></span><span>2 Instructions <i>Bundled</i></span></div>
+          <a class="agent-link" href="https://github.com/peterisdev42/scad-ai-ide/blob/main/README.md#ai-agents-one-ide-shared-capabilities" target="_blank" rel="noopener noreferrer">See the capabilities and limits <span aria-hidden="true">↗</span></a>
         </div>
-        <div class="agent-diagram" aria-label="IDE tools currently available to people, with AI agent interfaces planned">
-          <div class="diagram-users"><div><span class="diagram-symbol">⌘</span>Developer <small>available now</small></div><div><span class="diagram-symbol">✦</span>AI agent <small>planned</small></div></div>
+        <div class="agent-diagram" aria-label="IDE services shared by developers and registered native VS Code Agent Tools; host support varies">
+          <div class="diagram-users"><div><span class="diagram-symbol">⌘</span>Developer <small>available now</small></div><div><span class="diagram-symbol">✦</span>AI agent <small>native tools available*</small></div></div>
           <div class="diagram-connect"><i></i><i></i></div>
           <div class="diagram-core"><span>SCAD AI IDE</span><strong>One shared toolchain</strong><div class="diagram-chips"><span>Code</span><span>Preview</span><span>Runtime</span><span>Libraries</span></div></div>
           <div class="diagram-connection"></div>
           <div class="diagram-engine">OpenSCAD engine</div>
+          <p class="diagram-footnote">*Tool availability depends on the VS Code Agent host and provider.</p>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="section section-status" id="status">
+      <div class="container status-layout">
+        <div class="status-intro">
+          <span class="eyebrow">TRANSPARENT PROJECT STATUS</span>
+          <h2>Built and testable.<br><span class="muted-text">Still being validated.</span></h2>
+          <p>SCAD AI IDE is an active, source-first project—not a general-availability release. Core IDE and native Agent interfaces exist, but final host, model and platform acceptance is not complete.</p>
+          <a class="text-link" href="https://github.com/peterisdev42/scad-ai-ide/blob/main/docs/cad/overall-progress.md" target="_blank" rel="noopener noreferrer">Read CAD acceptance progress <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="status-cards">
+          <article class="status-card">
+            <h3>Available from source</h3>
+            <p>Runtime, Libraries, Preview, Customizer, language support, diagnostics and native Agent Tools can be exercised in the Extension Development Host.</p>
+          </article>
+          <article class="status-card">
+            <h3>Validation in progress</h3>
+            <p>Complete model-driven CAD workflows, real interaction and default Agent host compatibility still have open acceptance cases.</p>
+          </article>
+          <article class="status-card">
+            <h3>Cross-platform limitation</h3>
+            <p>The tested Windows native OpenSCAD CLI has reproducible failures with some Unicode source, output and library paths. A full cross-platform release is not signed off.</p>
+            <a href="https://github.com/peterisdev42/scad-ai-ide/blob/main/docs/customizer/windows-unicode-closeout.md" target="_blank" rel="noopener noreferrer">See investigation <span aria-hidden="true">↗</span></a>
+          </article>
+          <article class="status-card">
+            <h3>No official installer yet</h3>
+            <p>There is currently no published GitHub Release installer or Marketplace listing. Start from source and follow the setup guide.</p>
+            <a href="https://github.com/peterisdev42/scad-ai-ide#quick-start" target="_blank" rel="noopener noreferrer">Quick start <span aria-hidden="true">↗</span></a>
+          </article>
         </div>
       </div>
     </section>
@@ -294,7 +346,7 @@
 
     <section class="bottom-cta">
       <div class="container bottom-inner">
-        <div><h2>Start in the editor<br>you already know.</h2><p>From your first model to your own OpenSCAD workflow.</p></div>
+        <div><h2>Start in the editor<br>you already know.</h2><p>Run the development version from source; no official installer has been released yet.</p></div>
         <a class="button button-white" href="https://github.com/peterisdev42/scad-ai-ide#quick-start" target="_blank" rel="noopener noreferrer">Run from source <span aria-hidden="true">↗</span></a>
       </div>
     </section>

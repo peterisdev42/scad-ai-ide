@@ -16,9 +16,11 @@
 - [Phase 2 网格与测量](cad-mesh-verification.md)：原始 STL/3MF、测量、冻结 PNG、预算和验收边界。
 - [CAD 验证架构](cad-verification-architecture.md)：无 Preview 的 CLI 诊断、快照、共享 Problems 和边界。
 - [CAD 验收记录](cad-agent-acceptance.md)：实际命令、Host/CLI/Native Agent 证据与未完成 Gate。
+- [CAD P0–P4 总体进度](cad/overall-progress.md)：最终候选、模型和主机验收边界；MCP 不属于当前交付范围。
+- [CAD 手动验收](cad/manual-acceptance.md)：真实交互、工作区、信任和跨平台的待验项目。
 
 - [共享能力与权限矩阵](agent-capability-matrix.md)：四模块服务、GUI/Agent 边界和安全约束。
-- [完整工具目录](agent-capability-catalog.md)：由能力 Registry 生成的 44 项工具清单。
+- [完整工具目录](agent-capability-catalog.md)：由能力 Registry 生成的 51 项原生 VS Code Agent Tool 清单。
 - [Agent 验证指南](agent-verification.md)：自动化入口、真实模型验收方法、已知失败和未验环境。
 - [Ollama 开发测试](ollama-development.md)：F5 扩展白名单、本地模型连接与宿主 smoke。
 

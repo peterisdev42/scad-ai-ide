@@ -193,6 +193,16 @@ h1 { font-size: clamp(70px, 7vw, 110px); line-height: .99; font-weight: 760; let
 .diagram-chips span { padding: 6px 9px; border: 1px solid #536887; border-radius: 6px; color: #bdcdea; font-size: 9px; }
 .diagram-connection { width: 1px; height: 29px; background: #526987; }
 .diagram-engine { padding: 11px 40px; border: 1px solid #3d516d; border-radius: 8px; background: #1b293d; color: #b0c3e0; font-size: 12px; }
+.diagram-footnote { margin: 14px 0 0; color: #8ea0ba; font-size: 10px; line-height: 1.5; text-align: center; }
+.section-status { padding: 5px 0 110px; }
+.status-layout { display: grid; grid-template-columns: minmax(0,.88fr) minmax(0,1.12fr); gap: clamp(36px,5vw,90px); align-items: start; }
+.status-intro p { max-width: 430px; color: var(--text-muted); line-height: 1.85; font-size: 15px; margin-bottom: 23px; }
+.status-cards { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+.status-card { min-width: 0; background: var(--surface); border: 1px solid var(--border); padding: 23px; border-radius: 15px; }
+.status-card h3 { font-size: 16px; letter-spacing: -.03em; margin-bottom: 10px; }
+.status-card p { font-size: 12px; line-height: 1.75; color: var(--text-muted); margin-bottom: 0; }
+.status-card a { display: inline-flex; margin-top: 14px; font-size: 11px; font-weight: 700; color: var(--accent); }
+.status-card a:hover { text-decoration: underline; }
 .section-open { padding: 105px 0 125px; }
 .open-layout { display: grid; grid-template-columns: 1.2fr .8fr; gap: 80px; align-items: center; }
 .open-layout p { margin-bottom: 27px; }
@@ -237,6 +247,7 @@ h1 { font-size: clamp(70px, 7vw, 110px); line-height: .99; font-weight: 760; let
   .agent-panel { grid-template-columns: 1fr; }
   .agent-diagram { max-width: 540px; width: 100%; margin: 15px auto 0; }
   .open-layout { gap: 30px; }
+  .status-layout { grid-template-columns: 1fr; gap: 30px; }
 }
 @media (max-width: 680px) {
   :root { --header-height: 66px; }
@@ -284,6 +295,9 @@ h1 { font-size: clamp(70px, 7vw, 110px); line-height: .99; font-weight: 760; let
   .agent-panel { padding: 32px 23px; gap: 15px; border-radius: 18px; }
   .agent-copy h2 { font-size: 40px; }
   .diagram-users { gap: 10px; }
+  .section-status { padding: 0 0 76px; }
+  .status-cards { grid-template-columns: 1fr; gap: 11px; }
+  .status-card { padding: 22px; }
   .section-open { padding: 76px 0; }
   .open-layout { grid-template-columns: 1fr; }
   .open-mark { padding-top: 25px; }
