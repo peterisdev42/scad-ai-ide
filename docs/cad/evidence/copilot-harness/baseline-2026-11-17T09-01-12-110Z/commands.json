@@ -1,0 +1,93 @@
+[
+  {
+    "name": "harness",
+    "command": [
+      "/Users/q/.local/share/vite-plus/js_runtime/node/26.13.1/bin/node",
+      "--test",
+      "scripts/cad-native-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 72,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/copilot-harness/baseline-2026-11-17T09-01-12-110Z/harness.txt"
+  },
+  {
+    "name": "default",
+    "command": [
+      "npm",
+      "test"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 9911,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/copilot-harness/baseline-2026-11-17T09-01-12-110Z/default.txt"
+  },
+  {
+    "name": "real-cli",
+    "command": [
+      "/Users/q/.local/share/vite-plus/js_runtime/node/26.13.1/bin/node",
+      "--import",
+      "tsx",
+      "--test",
+      "src/test/cad/real.acceptance.ts",
+      "src/test/mesh/real.acceptance.ts",
+      "src/test/assembly/real.acceptance.ts"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 519,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/copilot-harness/baseline-2026-11-17T09-01-12-110Z/real-cli.txt"
+  },
+  {
+    "name": "manifest",
+    "command": [
+      "npm",
+      "run",
+      "test:agents:manifest"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 524,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/copilot-harness/baseline-2026-11-17T09-01-12-110Z/manifest.txt"
+  },
+  {
+    "name": "view",
+    "command": [
+      "npm",
+      "run",
+      "test:review:view"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 819,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/copilot-harness/baseline-2026-11-17T09-01-12-110Z/view.txt"
+  },
+  {
+    "name": "gpu",
+    "command": [
+      "npm",
+      "run",
+      "test:review:gpu"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 912,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/copilot-harness/baseline-2026-11-17T09-01-12-110Z/gpu.txt"
+  },
+  {
+    "name": "package",
+    "command": [
+      "npm",
+      "run",
+      "package"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 4321,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/copilot-harness/baseline-2026-11-17T09-01-12-110Z/package.txt"
+  },
+  {
+    "name": "cad-host",
+    "command": [
+      "/Users/q/.local/share/vite-plus/js_runtime/node/26.13.1/bin/node",
+      "scripts/test-review-host.mjs",
+      "stable"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 7394,
+    "log": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/copilot-harness/baseline-2026-11-17T09-01-12-110Z/cad-host.txt"
+  }
+]

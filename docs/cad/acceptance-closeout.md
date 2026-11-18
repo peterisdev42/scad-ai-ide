@@ -1,5 +1,7 @@
 # Agent-Native CAD 未闭合问题与验收收尾
 
+> 当前Agent验收必须使用Copilot harness / Agent Host，禁止Local回退。本文历史Local结果保留但不继承为Copilot PASS；最新入口、实际身份与最新阻断见[迁移记录](copilot-harness-acceptance.md)。
+
 日期：2026-11-17。批准基线 `677dc681965e1d640ecf606f1ed0f60d1fe492a0`；实施分支 `codex/cad-acceptance-closeout`，承接 [PR #5](https://github.com/peterisdev42/scad-ai-ide/pull/5) 及 #4/#3/#2。本文是当前问题台账，历史记录不覆写；实际运行绑定见 [closeout 证据](evidence/closeout/)。原始需求与阶段边界见 [整体评估](overall-progress.md)。
 
 Phase 5 MCP 已取消。全部业务能力只由 VS Code 插件向 VS Code 内置 Agent 提供。不新增外部 CAD 服务、公开端口、MCP 或工具。测试期间的本机模型转发仅用于观察既有 oMLX 请求，结束即停止。
@@ -22,7 +24,7 @@ Phase 5 MCP 已取消。全部业务能力只由 VS Code 插件向 VS Code 内�
 ## 统一验收顺序
 
 1. `npm run test:cad:closeout -- baseline`：测试 harness、自有领域用例、真实官方 CLI、资源清单、冻结视图、生产构建，再用原生工具跑 CAD Host 专项。记录逐命令退出码和日志。该层不使用模型。
-2. 冻结源码、harness、资源与构建 Hash。`docs/cad/evidence/closeout/baseline.json` 必须 PASS 且与当前候选内容完全匹配，才允许真实 Agent；文档更新不改变候选身份。
+2. 冻结源码、harness、资源与构建 Hash。`docs/cad/evidence/copilot-harness/baseline.json` 必须 PASS 且与当前候选内容完全匹配，才允许真实 Agent；文档更新不改变候选身份。
 3. 逐场执行 `npm run test:cad:closeout -- native diagnostics|mesh|assembly|comparison`。推荐模型仅用 **Qwen3.6-35B-A3B-OptiQ-4bit**，oMLX Provider 来自既有 **Run Extension + oMLX**。模型缺失明确失败，不选列表第一项或静默换模型。
 4. 每候选／场景／模型最多一个正式尝试，预算 **600 秒**，包含启动、确认和推理；收集退出证据及清理单独记时。原子排他 reservation 防止不慎重复。历史 240 秒尝试保留为当时结果，本次是明确获准的新验收批次。开发定向测试不是签署，修改后必须重新冻结相关证据。
 5. **Qwen3.8-27B-4bit** 仅在同一候选确定性层 PASS、主模型有明确参数／规划／延迟证据时最多对照一次。设置 `SCAD_AGENT_MODEL` 和 `SCAD_NATIVE_BACKUP_OF=<主模型result.json>`。缺少支持证据不跑对照；原主模型失败不被覆盖，备选 PASS 仅证明备选流程。单纯超时不自动获得“模型能力不足”标签或对照资格。

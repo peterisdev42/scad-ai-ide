@@ -1,0 +1,36 @@
+{
+  "harness": {
+    "requestedHarness": "copilot",
+    "command": "workbench.action.chat.newChat",
+    "sessions": [
+      "agent-host-copilotcli:/untitled-7103bccb-73a6-4daf-95cc-f7aba0a360ef"
+    ],
+    "settings": {
+      "defaultToCopilot": true
+    },
+    "observedAt": "2026-11-17T08:53:04.811Z"
+  },
+  "vscode": "1.146.0",
+  "models": [
+    {
+      "id": "auto",
+      "vendor": "copilotcli",
+      "name": "Auto"
+    },
+    {
+      "id": "Hy-MT2-7B-4bit",
+      "vendor": "omlx",
+      "name": "Hy-MT2-7B-4bit"
+    },
+    {
+      "id": "Qwen3.6-35B-A3B-OptiQ-4bit",
+      "vendor": "omlx",
+      "name": "Qwen3.6-35B-A3B-OptiQ-4bit"
+    },
+    {
+      "id": "Qwen3.8-27B-4bit",
+      "vendor": "omlx",
+      "name": "Qwen3.8-27B-4bit"
+    }
+  ]
+}

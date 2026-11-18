@@ -83,7 +83,7 @@ export async function createNativeRun({ repo, directory, scenario }) {
         const primary = await json(process.env.SCAD_NATIVE_BACKUP_OF)
         assert.ok(policy.backupEligible(primary, baseline, candidate.id, scenario), 'BACKUP_INELIGIBLE: same scenario/candidate and supported model-specific failure required')
     }
-    const evidenceRoot = join(repo, 'docs/cad/evidence/closeout')
+    const evidenceRoot = join(repo, 'docs/cad/evidence/copilot-harness')
     const attemptRoot = join(evidenceRoot, 'attempts', candidate.id)
     await mkdir(attemptRoot, { recursive: true })
     const reservation = await open(join(attemptRoot, `${scenario}-${model}.json`), 'wx', 0o600)
@@ -156,39 +156,12 @@ export async function createNativeRun({ repo, directory, scenario }) {
     })
     await new Promise((resolve) => relay.listen(0, '127.0.0.1', resolve))
     async function messages(read) {
-        const storage = JSON.parse((await read('observer-storage.json')) ?? '{}').storageUri
-        if (!storage) return []
-        const base = join(dirname(storage), 'GitHub.copilot-chat/transcripts')
-        const files = await readdir(base, { recursive: true }).catch(() => [])
-        const matches = []
-        for (const file of files.filter((f) => f.endsWith('.jsonl'))) {
-            const raw = await readFile(join(base, file), 'utf8')
-            const parsed = raw.split('\n').flatMap((line) => {
-                try {
-                    return [JSON.parse(line)]
-                } catch {
-                    return []
-                }
-            })
-            const markedCalls = exposure.filter((r) => r.runMarkerObserved).flatMap((r) => r.rawToolCalls ?? [])
-            if (!policy.transcriptMatches(parsed, marker, markedCalls, started)) continue
-            matches.push({
-                file,
-                events: raw.split('\n').flatMap((line) => {
-                    try {
-                        return [JSON.parse(line)]
-                    } catch {
-                        return []
-                    }
-                }),
-            })
+        const exported = await json(join(directory, 'copilot-chat-export.json')).catch(() => null)
+        if (exported) {
+            const request = policy.copilotRequest(exported, marker)
+            await atomicJson(join(directory, 'session-binding.json'), { runId, harness: 'copilot', agentId: request.agent.id, modelId: request.modelId, requestId: request.requestId, method: 'run marker in actual exported Agent Host request' })
         }
-        assert.ok(matches.length <= 1, 'HARNESS_CORRELATION_AMBIGUOUS: run marker occurs in multiple transcripts')
-        if (!matches.length) return []
-        await atomicJson(join(directory, 'session-binding.json'), { runId, transcript: matches[0].file, method: 'marked Provider request -> exact tool-call id/name/parsed arguments in native transcript (or retained user marker)' })
-        const assistant = matches[0].events.filter((e) => e.type === 'assistant.message')
-        await atomicJson(join(directory, 'assistant-messages.json'), assistant)
-        return assistant
+        return exposure.filter((r) => r.runMarkerObserved).flatMap((r) => (r.rawToolCalls ?? []).map((t) => ({ type: 'assistant.message', data: { toolRequests: [{ name: t.name, arguments: t.arguments, toolCallId: t.id }] } })))
     }
     async function finish(result) {
         clearTimeout(timer)
@@ -197,7 +170,11 @@ export async function createNativeRun({ repo, directory, scenario }) {
         await new Promise((resolve) => relay.close(resolve))
         await persist()
         const observed = await json(join(directory, 'command-state.json')).catch(() => null)
-        await messages(async (name) => readFile(join(directory, name), 'utf8').catch(() => undefined))
+        try {
+            await messages()
+        } catch (error) {
+            result = { ...result, pass: false, error: String(error) }
+        }
         const traces = await json(join(directory, 'tool-traces.json')).catch(() => [])
         const after = await fingerprint(repo)
         result = { ...result, runId, scenario, model, candidateId: candidate.id, candidateUnchanged: after.id === candidate.id, budgetMs: timeoutMs, elapsedMs: Date.now() - started, commandState: observed, formalAttempt: 1 }
@@ -205,12 +182,25 @@ export async function createNativeRun({ repo, directory, scenario }) {
             result.pass = false
             result.error = 'CANDIDATE_CHANGED_DURING_RUN'
         }
-        result.assessment = policy.assess({ ...result, traces, exposure, rawCalls: exposure.flatMap((r) => r.rawToolCalls ?? []), terminal: observed?.state === 'completed' || !!result.finalText })
+        result.harness = { requested: 'copilot', selection: await json(join(directory, 'harness-selection.json')).catch(() => null) }
+        try {
+            policy.assertResolvedModel(result.response?.result?.metadata?.resolvedModel, model)
+        } catch (error) {
+            result.pass = false
+            result.error = String(error)
+            result.routingMismatch = true
+        }
+        const hostError = result.response?.result?.errorDetails?.message ?? result.response?.error
+        if (hostError) {
+            result.pass = false
+            result.error = 'NATIVE_HOST_ERROR: ' + hostError
+        }
+        result.assessment = policy.assess({ ...result, hostError: result.routingMismatch ? result.error : hostError, traces, exposure, rawCalls: exposure.flatMap((r) => r.rawToolCalls ?? []), terminal: observed?.state === 'completed' || !!result.finalText })
         await atomicJson(join(directory, 'result.json'), result)
         const archive = join(evidenceRoot, 'native', `${scenario}-${model}-${runId}`)
         await mkdir(archive, { recursive: true })
         for (const name of await readdir(directory)) {
-            if (/^(candidate|result|ready|tool-traces|tool-exposure|document-events|command-state|session-binding|assistant-messages|native-config|request-input|approvals|approval-ack|human-needed|deterministic|observed-on-exit|pending-confirmation|schemas-.*)\.json$/.test(name)) {
+            if (/^(harness-selection|copilot-chat-export|candidate|result|ready|tool-traces|tool-exposure|document-events|command-state|session-binding|assistant-messages|native-config|request-input|approvals|approval-ack|human-needed|deterministic|observed-on-exit|pending-confirmation|schemas-.*)\.json$/.test(name)) {
                 await writeFile(join(archive, name), await readFile(join(directory, name)), { mode: 0o600 })
             }
         }
@@ -221,8 +211,13 @@ export async function createNativeRun({ repo, directory, scenario }) {
     async function requireTerminal(response, finalText) {
         const state = await json(join(directory, 'command-state.json')).catch(() => null)
         assert.ok(state?.state === 'completed' || finalText, 'TERMINAL_UNOBSERVED: a diagnostic/snapshot or HTTP 200 cannot terminate native Chat')
-        const correlated = await messages(async (name) => readFile(join(directory, name), 'utf8').catch(() => undefined))
-        assert.ok(correlated.length, 'SESSION_UNCORRELATED: native transcript must bind to the marked Provider request')
+        policy.assertResolvedModel(response?.result?.metadata?.resolvedModel, model)
+        policy.copilotRequest(await json(join(directory, 'copilot-chat-export.json')), marker)
+        await messages()
+        assert.ok(
+            exposure.some((r) => r.runMarkerObserved && r.model === model && r.streamEnded),
+            'MODEL_UNCONFIRMED: no completed marked Provider request for the exact selected model',
+        )
         assert.ok(!response?.result?.errorDetails && !response?.error, 'Native terminal contains an error')
     }
     return { requireTerminal, runId, marker, model, candidate, timeoutMs, deadline, exposure, relay, finish, messages, query: (text) => `${marker}\n${text}` }

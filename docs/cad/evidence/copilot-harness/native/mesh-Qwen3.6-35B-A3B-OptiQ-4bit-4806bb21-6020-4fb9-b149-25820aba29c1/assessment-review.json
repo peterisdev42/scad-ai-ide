@@ -1,0 +1,15 @@
+{
+  "category": "HARNESS_OR_ORACLE",
+  "confidence": "supported",
+  "pass": false,
+  "backupEligible": false,
+  "actualHarness": "agent-host-copilotcli",
+  "requestedModel": "omlx/Qwen3.6-35B-A3B-OptiQ-4bit",
+  "actualResolvedModel": "gpt-6-luna",
+  "providerChatRequests": 0,
+  "cadBusinessCalls": 4,
+  "cadBusinessFlow": "All four handlers succeeded; does not validate requested local model",
+  "cause": "Programmatic modelSelector selected legacy provider metadata instead of the separate Agent Host BYOK model entry; frontend modelId alone is not execution proof",
+  "originalResultUnchanged": true,
+  "next": "Select vendor agent-host-copilotcli with id omlx/Qwen... and require actual resolved model/Provider evidence; no cloud fallback accepted"
+}

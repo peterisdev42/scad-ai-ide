@@ -1,0 +1,17 @@
+✔ model selection never falls back to an unrelated or backup model silently (0.630167ms)
+✔ backup requires supported attribution and the identical candidate/scenario (0.084875ms)
+✔ fixture approval validates full buffer, unchanged disk, path, unique replacement and baseline hash (0.664292ms)
+✔ whole-source gap replacement is the only assembly edit in the allowlist (0.084834ms)
+✔ stream collector reconstructs fragmented raw tool arguments and separates HTTP from stream end (0.3585ms)
+✔ timeouts and HTTP 200 alone remain unknown, human waits and auth get independent categories (0.105708ms)
+✔ model argument attribution needs raw generation, handler rejection and terminal evidence together (0.117292ms)
+✔ transcript correlation works without user messages and rejects unrelated sessions (0.180875ms)
+✔ Copilot acceptance requires the actual Agent Host identity and matching request marker (0.188041ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 48.039834

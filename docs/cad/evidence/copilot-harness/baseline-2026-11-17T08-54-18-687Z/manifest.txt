@@ -1,0 +1,14 @@
+
+> scad-ai-ide@0.0.1 test:agents:manifest
+> node --test scripts/agent-manifest.test.mjs
+
+✔ Agent assets and generated contract verification tolerate LF checkouts and still reject stale content (194.463458ms)
+✔ Agent assets and generated contract verification tolerate CRLF checkouts and still reject stale content (194.795208ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 422.7845

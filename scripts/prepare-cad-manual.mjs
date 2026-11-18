@@ -28,5 +28,5 @@ for (const [name, content] of Object.entries(files)) await writeFile(join(direct
 const candidate = await fingerprint(repo)
 await atomicJson(join(directory, 'fixture.json'), { id, created: new Date().toISOString(), candidateId: candidate.id, projectA: a, projectB: b, hashes: Object.fromEntries(Object.entries(files).map(([name, value]) => [name, sha256(value)])), scope: 'Temporary manual fixtures only; no automatic acceptance, confirmation, save or surface submission' })
 const workspace = join(base, 'current/manual.code-workspace')
-await atomicJson(workspace, { folders: [{ path: a }], settings: { 'chat.saveBeforeSend': false, 'files.autoSave': 'off', 'scad-ai-ide.languageServer.enabled': false } })
+await atomicJson(workspace, { folders: [{ path: a }], settings: { 'chat.saveBeforeSend': false, 'chat.defaultToCopilotHarness': true, 'chat.temporaryDefaultToLocalHarness': false, 'files.autoSave': 'off', 'scad-ai-ide.languageServer.enabled': false } })
 console.log(JSON.stringify({ directory, workspace, checklist: resolve('docs/cad/manual-acceptance.md'), launch: 'CAD Manual Acceptance + oMLX' }, null, 2))
