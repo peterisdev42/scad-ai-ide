@@ -8,9 +8,9 @@ import * as vm from 'node:vm'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { CustomizerService } from '../core/customizer/CustomizerService'
 import { CapabilityError } from '../core/capabilities/CapabilityTypes'
-import { CapabilityRegistry, capabilityCatalog } from '../core/capabilities/CapabilityRegistry'
+import { FeatureRegistry, featureCatalog, toolFeatures } from '../ai/runtime/FeatureRegistry'
+import { defaultPreferences, testDispatcher } from './FeatureTestSupport'
 import guiActions from '../core/capabilities/gui-actions.json'
-import { CapabilityDispatcher } from '../core/capabilities/CapabilityDispatcher'
 import type * as vscode from 'vscode'
 
 function guiInput(group: string, action: string, capability: string): Record<string, unknown> {
@@ -129,19 +129,17 @@ test('Workspace paths reject outside files and canonical symlink escapes; allow 
 })
 
 test('LM adapter registers side-effect confirmation and bridges cancellation to structured failures', async () => {
-    const registry = new CapabilityRegistry()
-    registry.bind('runtime.remove', { available: () => ({ enabled: true }), invoke: (_, ctx) => { assert.equal(ctx.actor, 'agent'); throw new CapabilityError('CANCELLED', 'Human declined') } })
-    const dispatcher = new CapabilityDispatcher(registry)
-    const { AgentToolAdapter } = load<typeof import('../features/agents/AgentToolAdapter')>('../features/agents/AgentToolAdapter.js', {
+    const dispatcher = testDispatcher((_, ctx) => { assert.equal(ctx.actor, 'agent'); throw new CapabilityError('CANCELLED', 'Human declined') })
+    const { ToolHostAdapter } = load<typeof import('../ai/runtime/ToolHostAdapter')>('../ai/runtime/ToolHostAdapter.js', {
         LanguageModelToolResult: class { constructor(readonly content: unknown[]) {} },
         LanguageModelTextPart: class { constructor(readonly value: string) {} },
     })
-    const sourceAdapter = new AgentToolAdapter(capabilityCatalog.find((d) => d.id === 'customizer.sourceApply')!, dispatcher)
+    const sourceAdapter = new ToolHostAdapter(toolFeatures.find((d) => d.tool.capabilityId === 'customizer.sourceApply')!, dispatcher)
     assert.equal(sourceAdapter.prepareInvocation({ input: { mode: 'plan', uri: 'file:///workspace/model.scad' } }).confirmationMessages, undefined)
     assert.ok(sourceAdapter.prepareInvocation({ input: { mode: 'commit', planId: 'opaque' } }).confirmationMessages)
-    const pointingAdapter=new AgentToolAdapter(capabilityCatalog.find(d=>d.id==='cad.requestPointing')!,dispatcher)
+    const pointingAdapter=new ToolHostAdapter(toolFeatures.find(d=>d.tool.capabilityId==='cad.requestPointing')!,dispatcher)
     assert.ok(pointingAdapter.prepareInvocation({input:{reportId:'cad-00000000-0000-0000-0000-000000000000'}}).confirmationMessages,'Read classification cannot bypass human interaction')
-    const adapter = new AgentToolAdapter(capabilityCatalog.find((d) => d.id === 'runtime.remove')!, dispatcher)
+    const adapter = new ToolHostAdapter(toolFeatures.find((d) => d.tool.capabilityId === 'runtime.remove')!, dispatcher)
     assert.match(String(adapter.prepareInvocation({ input: { id: 'managed-runtime' } }).confirmationMessages?.message), /managed-runtime/)
     const result = await adapter.invoke({ input: { id: 'managed-runtime' }, toolInvocationToken: undefined } as vscode.LanguageModelToolInvocationOptions<Record<string, unknown>>, { onCancellationRequested: () => disposable, isCancellationRequested: false } as unknown as vscode.CancellationToken)
     const output = JSON.parse((result.content[0] as vscode.LanguageModelTextPart).value)
@@ -200,7 +198,7 @@ test('Library GUI and Agent share exact-version transactions, explicit projects,
     } finally { controller.dispose(); await f.cleanup() }
 })
 
-import type { CapabilityServices } from '../features/agents/registerCapabilities'
+import type { ToolServices } from '../ai/contracts/ToolServices'
 
 test('all catalog handlers execute without panels and preserve exact service arguments and safe outputs', async () => {
     const calls: Array<{ name: string; input?: unknown }> = []
@@ -216,12 +214,12 @@ test('all catalog handlers execute without panels and preserve exact service arg
         customizer: { isBusy: () => false, snapshot: () => ({ target: 'file:///workspace/model.scad', revision: 1 }), setValues: record('setValues'), reset: record('reset'), preset: record('preset') },
         github: { refresh: record('github.refresh'), connect: record('github.connect'), getState: () => ({ mode: 'anonymous', busy: false, message: 'Authentication unavailable: Bearer hidden-value', accessToken: 'must-not-leak' }) },
         development: { isBusy: () => false, enabled: true, listSafe: record('listSafe'), inspectSafe: record('inspectSafe'), clearSafe: record('clearSafe') },
-    } as unknown as CapabilityServices
+    } as unknown as ToolServices
     const hostWorkspace = { isTrusted: true }
-    const module = load<typeof import('../features/agents/registerCapabilities')>('../features/agents/registerCapabilities.js', { Uri, workspace: hostWorkspace }, {
-        '/CapabilityRegistry': { CapabilityRegistry, capabilityCatalog }, '/CapabilityDispatcher': { CapabilityDispatcher }, '/CapabilityTypes': { CapabilityError },
+    const module = load<typeof import('../ai/runtime/createToolRuntime')>('../ai/runtime/createToolRuntime.js', { Uri }, {
+        '/CapabilityTypes': { CapabilityError },
     })
-    const capabilities = module.registerCapabilities(services)
+    const capabilities = module.createToolRuntime(new FeatureRegistry(featureCatalog), services, defaultPreferences, () => hostWorkspace.isTrusted)
     try {
         const inputs: Record<string, Record<string, unknown>> = {
             'cad.compare':{baselineReportId:'cad-00000000-0000-0000-0000-000000000000',targetReportId:'cad-00000000-0000-0000-0000-000000000000'}, 'cad.getFeedback':{uri:'file:///workspace/model.stl'}, 'cad.requestPointing':{reportId:'cad-00000000-0000-0000-0000-000000000000',prompt:'Point at the surface.'}, 'cad.checkPrintability':{reportId:'cad-00000000-0000-0000-0000-000000000000',profileUri:'file:///workspace/.scad/print-profile.json'}, 'cad.manageReview':{action:'retainBaseline',reportId:'cad-00000000-0000-0000-0000-000000000000'},
@@ -232,12 +230,12 @@ test('all catalog handlers execute without panels and preserve exact service arg
             'libraries.install': { project: '/workspace', id: 'fixture', version: 'v1' }, 'libraries.remove': { project: '/workspace', id: 'fixture' }, 'libraries.restore': { project: '/workspace' }, 'libraries.projectState': { project: '/workspace' }, 'libraries.repair': { key: 'cache' }, 'libraries.cleanupExecute': { planId: 'plan' },
             'development.inspectCache': { id: 'cache' }, 'development.clearCaches': { all: true },
         }
-        for (const definition of capabilityCatalog) {
-            let input = inputs[definition.id] ?? {}
-            if (definition.service.startsWith('CustomizerDomainService.preset:')) input = { target: 'file:///workspace/model.scad', revision: 1, ...(['customizer.importPresets', 'customizer.exportPresets'].includes(definition.id) ? { uri: Uri.file(path.join(os.tmpdir(), 'scad-handler-preset.json')).toString() } : { name: 'Preset' }) }
-            if (definition.id === 'operation.cancel') input = { id: (capabilities.dispatcher.operations.status() as { operations: Array<{ id: string }> }).operations[0].id }
-            const result = await capabilities.dispatcher.invoke(definition.id, input, { actor: 'agent' })
-            assert.equal(result.ok, true, `${definition.id}: ${JSON.stringify(result)}`)
+        for (const { tool: definition } of toolFeatures) {
+            let input = inputs[definition.capabilityId] ?? {}
+            if (definition.service.startsWith('CustomizerDomainService.preset:')) input = { target: 'file:///workspace/model.scad', revision: 1, ...(['customizer.importPresets', 'customizer.exportPresets'].includes(definition.capabilityId) ? { uri: Uri.file(path.join(os.tmpdir(), 'scad-handler-preset.json')).toString() } : { name: 'Preset' }) }
+            if (definition.capabilityId === 'operation.cancel') input = { id: (capabilities.dispatcher.operations.status() as { operations: Array<{ id: string }> }).operations[0].id }
+            const result = await capabilities.dispatcher.invoke(definition.capabilityId, input, { actor: 'agent' })
+            assert.equal(result.ok, true, `${definition.capabilityId}: ${JSON.stringify(result)}`)
             assert.doesNotMatch(JSON.stringify(result), /must-not-leak|accessToken|hidden-value/)
         }
         runtimeState.activeId = 'runtime'
@@ -306,7 +304,7 @@ test('all catalog handlers execute without panels and preserve exact service arg
         assert.ok(calls.some((call) => call.name === 'installArchivePath' && call.input === '/host/archive.zip'))
         hostWorkspace.isTrusted = false
         for (const id of ['cad.modelAnalyze', 'cad.issueDetails', 'cad.modelMeasure', 'cad.modelRenderViews', 'cad.listParts', 'cad.checkAssembly']) {
-            assert.equal(capabilityCatalog.find(d => d.id === id)?.risk, 'read')
+            assert.equal(toolFeatures.find(d => d.tool.capabilityId === id)?.tool.risk, 'read')
             const blocked = await capabilities.dispatcher.invoke(id, inputs[id], { actor: 'agent' })
             assert.equal(blocked.ok, false, 'Read-only CAD still requires Workspace Trust')
             if (!blocked.ok) assert.equal(blocked.error.code, 'UNTRUSTED_WORKSPACE')
@@ -421,17 +419,16 @@ test('source plan/commit reads unsaved buffers, never writes disk and consumes p
         assert.equal(analysis.parameters[0].description, 'Unsaved')
         const plan = await f.plan()
         assert.equal(f.applied, 0)
-        assert.equal(plan.continuation.tool, capabilityCatalog.find(definition => definition.id === 'customizer.sourceApply')!.toolName)
+        assert.equal(plan.continuation.tool, toolFeatures.find(definition => definition.tool.capabilityId === 'customizer.sourceApply')!.tool.name)
         assert.equal(plan.continuation.requiresReview, true)
         assert.deepEqual(JSON.parse(JSON.stringify(plan.continuation.input)), { mode: 'commit', planId: plan.planId })
-        const registry = new CapabilityRegistry()
-        registry.bind('customizer.sourceApply', { available: () => ({ enabled: true }), invoke: (input, context) => f.domain.apply(input, context) })
-        const handler = registry.resolve('customizer.sourceApply', plan.continuation.input, { actor: 'agent' })
+        const registry: FeatureRegistry = new FeatureRegistry(featureCatalog)
+        registry.validate('customizer.sourceApply', plan.continuation.input)
         for (const extra of [{ requiresReview: false }, { approved: true }, { skipConfirmation: true }]) {
-            assert.throws(() => registry.resolve('customizer.sourceApply', { ...plan.continuation.input, ...extra }, { actor: 'agent' }), (error: unknown) => (error as CapabilityError).code === 'INVALID_INPUT')
+            assert.throws(() => registry.validate('customizer.sourceApply', { ...plan.continuation.input, ...extra }), (error: unknown) => (error as CapabilityError).code === 'INVALID_INPUT')
         }
         assert.equal(f.applied, 0, 'Review metadata neither authorizes nor automatically commits')
-        const committed = await handler.invoke(plan.continuation.input, { actor: 'agent' }) as { semanticPass: boolean; savedToDisk: boolean }
+        const committed = await f.domain.apply(plan.continuation.input, { actor: 'agent' }) as { semanticPass: boolean; savedToDisk: boolean }
         assert.equal(committed.semanticPass, true)
         assert.equal(committed.savedToDisk, false)
         assert.equal('continuation' in committed, false, 'Commit results cannot offer another continuation')
@@ -462,14 +459,12 @@ test('source CAS rejects version, hash-only changes, closed targets, expiry, tru
 test('source continuation retains native review and cancellation, and failed plans expose no continuation', async () => {
     const f = await sourceFixture()
     try {
-        const registry = new CapabilityRegistry()
-        registry.bind('customizer.sourceApply', { available: () => ({ enabled: true }), invoke: (input, context) => f.domain.apply(input, context) })
-        const dispatcher = new CapabilityDispatcher(registry)
-        const { AgentToolAdapter } = load<typeof import('../features/agents/AgentToolAdapter')>('../features/agents/AgentToolAdapter.js', {
+        const dispatcher = testDispatcher((input, context) => f.domain.apply(input, context))
+        const { ToolHostAdapter } = load<typeof import('../ai/runtime/ToolHostAdapter')>('../ai/runtime/ToolHostAdapter.js', {
             LanguageModelToolResult: class { constructor(readonly content: unknown[]) {} },
             LanguageModelTextPart: class { constructor(readonly value: string) {} },
         })
-        const adapter = new AgentToolAdapter(capabilityCatalog.find(definition => definition.id === 'customizer.sourceApply')!, dispatcher)
+        const adapter = new ToolHostAdapter(toolFeatures.find(definition => definition.tool.capabilityId === 'customizer.sourceApply')!, dispatcher)
         const plan = await f.plan()
         assert.ok(adapter.prepareInvocation({ input: plan.continuation.input }).confirmationMessages, 'requiresReview is advisory; the actual adapter still requires user confirmation')
         const cancelled = await adapter.invoke({ input: plan.continuation.input, toolInvocationToken: undefined } as vscode.LanguageModelToolInvocationOptions<Record<string, unknown>>, { isCancellationRequested: true, onCancellationRequested: () => disposable } as unknown as vscode.CancellationToken)
@@ -626,8 +621,8 @@ test('Runtime Agent lifecycle forces catalog refresh, downloads/probes a real ar
             assert.equal(url, build.downloadUrl); downloads++
             return new Response(bytes)
         }, { output: { appendLine() {} }, status: { text: '', tooltip: '' }, withProgress: async (_options, task) => task({ report() {} }, { isCancellationRequested: false, onCancellationRequested: () => disposable } as unknown as vscode.CancellationToken) })
-    const adapter = load<typeof import('../features/agents/registerCapabilities')>('../features/agents/registerCapabilities.js', host, { '/CapabilityRegistry': { CapabilityRegistry, capabilityCatalog }, '/CapabilityDispatcher': { CapabilityDispatcher }, '/CapabilityTypes': { CapabilityError } })
-    const bound = adapter.registerCapabilities({ runtime, libraries: { onDidChange: () => disposable, isBusy: () => false }, customizer: { isBusy: () => false }, development: { enabled: false } } as unknown as CapabilityServices)
+    const adapter = load<typeof import('../ai/runtime/createToolRuntime')>('../ai/runtime/createToolRuntime.js', host, { '/CapabilityTypes': { CapabilityError } })
+    const bound = adapter.createToolRuntime(new FeatureRegistry(featureCatalog), { runtime, libraries: { onDidChange: () => disposable, isBusy: () => false }, customizer: { isBusy: () => false }, development: { enabled: false } } as unknown as ToolServices, defaultPreferences, () => host.workspace.isTrusted)
     const call = (id: string, input: object = {}) => bound.dispatcher.invoke(id, input, { actor: 'agent' })
     try {
         assert.equal((await call('runtime.state')).ok, true)
@@ -777,20 +772,100 @@ test('source plan preview accepts bounded metadata and rejects output above 32 K
 
 test('mesh image adapter emits native image parts only on explicit inline request and falls back without API',async()=>{
     const render={reportId:'r',snapshotId:'s',current:true,renderStatus:'AVAILABLE',frames:[],delivery:'metadata',notExamined:[]}
-    const registry=new CapabilityRegistry();registry.bind('cad.modelRenderViews',{available:()=>({enabled:true}),invoke:()=>structuredClone(render)})
-    const dispatcher=new CapabilityDispatcher(registry),definition=capabilityCatalog.find(d=>d.id==='cad.modelRenderViews')!
+    const dispatcher=testDispatcher(()=>structuredClone(render)),definition=toolFeatures.find(d=>d.tool.capabilityId==='cad.modelRenderViews')!
     const api={LanguageModelToolResult:class{constructor(readonly content:unknown[]){}},LanguageModelTextPart:class{constructor(readonly value:string){}},LanguageModelDataPart:{image:(bytes:Uint8Array,mime:string)=>({bytes,mime})}}
-    const {AgentToolAdapter}=load<typeof import('../features/agents/AgentToolAdapter')>('../features/agents/AgentToolAdapter.js',api)
-    let loads=0;const adapter=new AgentToolAdapter(definition,dispatcher,async()=>{loads++;return[{bytes:new Uint8Array([1,2,3]),mime:'image/png'}]})
+    const {ToolHostAdapter}=load<typeof import('../ai/runtime/ToolHostAdapter')>('../ai/runtime/ToolHostAdapter.js',api)
+    let loads=0;const adapter=new ToolHostAdapter(definition,dispatcher,async()=>{loads++;return[{bytes:new Uint8Array([1,2,3]),mime:'image/png'}]})
     const token={onCancellationRequested:()=>disposable,isCancellationRequested:false} as unknown as vscode.CancellationToken
     const invoke=(delivery:'metadata'|'inline')=>adapter.invoke({input:{reportId:'r',delivery},toolInvocationToken:undefined} as vscode.LanguageModelToolInvocationOptions<Record<string,unknown>>,token)
     assert.equal((await invoke('metadata')).content.length,1);assert.equal(loads,0)
     const inline=await invoke('inline');assert.equal(inline.content.length,2);assert.equal(JSON.parse((inline.content[0] as vscode.LanguageModelTextPart).value).data.delivery,'inline')
     let parts=0
     api.LanguageModelDataPart.image=(bytes,mime)=>{if(++parts===2)throw new Error('fixture unsupported image');return{bytes,mime}}
-    const partialAdapter=new AgentToolAdapter(definition,dispatcher,async()=>[{bytes:new Uint8Array([1]),mime:'image/png'},{bytes:new Uint8Array([2]),mime:'image/png'}])
+    const partialAdapter=new ToolHostAdapter(definition,dispatcher,async()=>[{bytes:new Uint8Array([1]),mime:'image/png'},{bytes:new Uint8Array([2]),mime:'image/png'}])
     const partial=await partialAdapter.invoke({input:{reportId:'r',delivery:'inline'},toolInvocationToken:undefined} as vscode.LanguageModelToolInvocationOptions<Record<string,unknown>>,token)
     assert.equal(partial.content.length,1);assert.equal(JSON.parse((partial.content[0] as vscode.LanguageModelTextPart).value).data.delivery,'metadata')
     delete (api as {LanguageModelDataPart?:unknown}).LanguageModelDataPart
     const fallback=await invoke('inline');assert.equal(fallback.content.length,1);assert.equal(JSON.parse((fallback.content[0] as vscode.LanguageModelTextPart).value).data.deliveryReason,'IMAGE_API_UNAVAILABLE')
+})
+
+test('settings adapter rejects forged input, preserves workspace editor overrides and reads back failed writes', async () => {
+    const user = new Map<string, unknown>([['agent.enabled', false]])
+    const workspace = new Map<string, unknown>([['agent.enabled', true], ['verification.onSave', 'off']])
+    const writes: Array<[string, unknown, number]> = []
+    let fail = false
+    const host = {
+        ConfigurationTarget: { Global: 1, Workspace: 2 },
+        workspace: { getConfiguration: () => ({
+            inspect: (key: string) => ({ globalValue: user.get(key), workspaceValue: workspace.get(key) }),
+            get: (key: string) => workspace.get(key) ?? user.get(key),
+            update: async (key: string, value: unknown, target: number) => {
+                if (fail) throw new Error('settings are read-only')
+                writes.push([key, value, target])
+                ;(target === 1 ? user : workspace).set(key, value)
+            },
+        }) },
+    }
+    const { FeaturePreferences } = load<typeof import('../ai/runtime/FeaturePreferences')>('../ai/runtime/FeaturePreferences.js', host)
+    const preferences = new FeaturePreferences(new FeatureRegistry(featureCatalog))
+    assert.equal(preferences.read().agentEnabled, false)
+    await assert.rejects(preferences.update({ action: 'ai.setFeatureEnabled', featureId: 'tool.unknown.id', enabled: true }), /Invalid/)
+    await assert.rejects(preferences.update({ action: 'ai.setSettingEnabled', featureId: 'setting.editor.onSave', value: 'arbitrary' }), /Invalid/)
+    await assert.rejects(preferences.update({ action: 'ai.setIntegrationEnabled', controlId: 'agentEnabled', enabled: 'false' }), /Invalid/)
+    assert.deepEqual(writes, [])
+    await preferences.update({ action: 'ai.setGroupEnabled', groupId: 'runtime', enabled: false })
+    await preferences.update({ action: 'ai.setSettingEnabled', featureId: 'setting.editor.onSave', value: 'diagnostics' })
+    assert.deepEqual(writes, [['agent.groups.runtime.enabled', false, 1], ['verification.onSave', 'diagnostics', 2]])
+    assert.equal(preferences.read().features['tool.runtime.state'], true)
+    fail = true
+    await assert.rejects(preferences.update({ action: 'ai.setGroupEnabled', groupId: 'runtime', enabled: true }), /read-only/)
+    assert.equal(preferences.read().groups.runtime, false)
+    fail = false
+    await preferences.update({ action: 'ai.setGroupEnabled', groupId: 'runtime', enabled: true })
+    assert.equal(preferences.read().groups.runtime, true)
+})
+
+test('feature activation registers each Tool exactly once and releases registrations and state subscriptions', async () => {
+    const registrations = new Map<string, { dispose(): void }>()
+    const subscriptions: vscode.Disposable[] = []
+    const changes = new Emitter()
+    let subscriptionsAlive = 0
+    const onDidChange = (listener: () => void) => {
+        subscriptionsAlive++
+        const subscription = changes.event(listener)
+        return { dispose() { subscriptionsAlive--; subscription.dispose() } }
+    }
+    const host = {
+        EventEmitter: Emitter,
+        workspace: {
+            isTrusted: true,
+            getConfiguration: () => ({ inspect: () => undefined, get: () => undefined }),
+            onDidChangeConfiguration: onDidChange, onDidGrantWorkspaceTrust: onDidChange,
+        },
+        window: { createOutputChannel: () => ({ ...disposable, appendLine() {} }) },
+        lm: {
+            registerTool: (name: string, adapter: { dispose(): void }) => {
+                assert.equal(registrations.has(name), false)
+                registrations.set(name, adapter)
+                return { dispose: () => registrations.delete(name) }
+            },
+        },
+    }
+    const { activateFeatures } = load<typeof import('../ai/runtime/FeatureHostRuntime')>('../ai/runtime/FeatureHostRuntime.js', host)
+    const services = {
+        runtime: { onDidChange, getState: () => ({}) },
+        libraries: { onDidChange, isBusy: () => false },
+        customizer: { onDidChange, isBusy: () => false },
+        development: { onDidChange, enabled: false },
+    } as unknown as ToolServices
+    const { dispatcher, state } = activateFeatures({ subscriptions } as unknown as vscode.ExtensionContext, services)
+    assert.deepEqual([...registrations.keys()], toolFeatures.map(({ tool }) => tool.name))
+    assert.ok(subscriptionsAlive > 0)
+    const before = state.snapshot().revision
+    assert.equal(state.snapshot().revision, before)
+    subscriptions.forEach(subscription => subscription.dispose())
+    assert.equal(registrations.size, 0)
+    assert.equal(subscriptionsAlive, 0)
+    const result = await dispatcher.invoke('runtime.state', {}, { actor: 'agent' })
+    assert.equal(result.ok ? 'AVAILABLE' : result.error.code, 'DISPOSED')
 })

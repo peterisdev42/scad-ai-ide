@@ -1,6 +1,6 @@
 # Agent integration verification
 
-The [capability matrix](agent-capability-matrix.md) describes shared services, permissions and GUI boundaries. The generated [catalog](agent-capability-catalog.md) lists all 40 tools. Verification has three distinct levels: service contracts, real VS Code registration/GUI behavior, and actual model-driven workflows. Success at one level does not establish the next.
+The [capability matrix](agent-capability-matrix.md) describes shared services, permissions and GUI boundaries. The generated [catalog](agent-capability-catalog.md) lists all published tools. Verification has three distinct levels: service contracts, real VS Code registration/GUI behavior, and actual model-driven workflows. Success at one level does not establish the next.
 
 ## Automated checks
 

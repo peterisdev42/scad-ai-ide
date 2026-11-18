@@ -1,97 +1,122 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFile, mkdir } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import { chromium } from 'playwright'
 
 const root = new URL('../', import.meta.url)
-const catalog = JSON.parse(await readFile(new URL('src/core/capabilities/catalog.json', root)))
-const manifest = JSON.parse(await readFile(new URL('package.json', root)))
-const resources = JSON.parse(await readFile(new URL('src/core/capabilities/resources.json', root)))
-const snapshot = { total: catalog.length, resources, preferences: { agentEnabled: true, guidanceEnabled: true, sourceDiagnostics: true, diagnosticsOnSave: false }, capabilities: catalog.map((entry) => ({ ...entry, availability: { enabled: !entry.id.startsWith('development.') || entry.id === 'development.status', reasonCode: entry.id.startsWith('development.') && entry.id !== 'development.status' ? 'DEVELOPMENT_ONLY' : undefined } })) }
+const generated = new URL('src/ai/generated/', root)
+const catalog = JSON.parse(await readFile(new URL('feature-catalog.generated.json', generated)))
+const layout = JSON.parse(await readFile(new URL('ai-panel-layout.generated.json', generated)))
+for (const feature of catalog.features) feature.configurable = feature.control.userConfigurable
+const pick = id => catalog.features.find(feature => feature.id === id)
+const fixture = {
+    schemaVersion: 1,
+    revision: 1,
+    state: Object.fromEntries(catalog.features.map(feature => [feature.id, {
+        userPreferenceEnabled: feature.control.enabledByDefault,
+        effectiveEnabled: feature.control.enabledByDefault,
+        reasonCode: 'AVAILABLE',
+        reasonDetail: '',
+    }])),
+    preferences: {
+        agentEnabled: true, guidanceEnabled: true,
+        groups: Object.fromEntries(catalog.groups.filter(group => group.control).map(group => [group.id, true])),
+        features: {},
+        editorAssistance: Object.fromEntries(catalog.features.flatMap(feature => feature.setting ? [[feature.id, feature.setting.default]] : [])),
+    },
+}
 
-test('Generated native Agent contributions honor the two opt-out context keys', () => {
-    const contribution = manifest.contributes
-    assert.equal(contribution.languageModelTools.length, catalog.length)
-    assert.ok(contribution.languageModelTools.every(tool => tool.when === 'scadAiAgentEnabled'))
-    assert.ok([...contribution.chatSkills, ...contribution.chatInstructions].every(resource => resource.when === 'scadAiAgentEnabled && scadAiGuidanceEnabled'))
-    assert.equal(contribution.configuration.properties['scad-ai-ide.agent.enabled'].default, true)
-    assert.equal(contribution.configuration.properties['scad-ai-ide.agent.guidanceEnabled'].default, true)
-})
-
-test('AI Panel presents useful capability summaries, editable preferences and collapsible technical details', async () => {
+test('AI Panel renders all metadata, safely edits preferences and retains focus during live updates', async () => {
     const browser = await chromium.launch({ channel: process.env.SCAD_BROWSER_CHANNEL || undefined })
     try {
-        const page = await browser.newPage({ viewport: { width: 1280, height: 960 } })
+        const page = await browser.newPage({ viewport: { width: 1000, height: 960 } })
         const errors = []
-        page.on('pageerror', (error) => errors.push(error.message))
-        const html = (await readFile(new URL('media/panels/index.html', root), 'utf8')).replace(/<meta http-equiv="Content-Security-Policy"[^>]+>/, '').replace(/<script[^>]*><\/script>/g, '').replace(/<link[^>]+>/g, '').replaceAll('{{title}}', 'AI').replaceAll('{{page}}', 'ai')
-        await page.setContent(html)
-        await page.evaluate(() => {
-            window.actions = []
-            window.acquireVsCodeApi = () => ({ getState: () => ({}), setState() {}, postMessage: (action) => window.actions.push(action) })
+        page.on('pageerror', error => errors.push(error.message))
+        const mount = {
+            csp: "'self'", nonce: 'feature-test-nonce', page: 'ai', title: 'AI',
+            style: '/main.css', scrollbarStyle: '/scrollbar.css', scrollbarScript: '/scrollbar.js',
+            script: '/main.js', aiScript: '/ai.js', librariesScript: '/libraries.js',
+        }
+        const html = (await readFile(new URL('media/panels/index.html', root), 'utf8')).replace(/\{\{(\w+)\}\}/g, (_, key) => mount[key])
+        const theme = ':root { --vscode-font-family: system-ui; --vscode-font-size: 13px; --vscode-font-weight: 400; --vscode-foreground: #ccc; --vscode-editor-background: #1f1f1f; --vscode-editorWidget-background:#252526; --vscode-descriptionForeground:#aaa; --vscode-panel-border:#444; --vscode-focusBorder:#007fd4; --vscode-textCodeBlock-background:#333; }'
+        await page.route('https://feature-panel.test/**', async route => {
+            const name = new URL(route.request().url()).pathname
+            if (name === '/') return route.fulfill({ contentType: 'text/html', body: html })
+            if (name === '/scrollbar.js' || name === '/scrollbar.css') return route.fulfill({ contentType: name.endsWith('.js') ? 'text/javascript' : 'text/css', body: '' })
+            const body = await readFile(new URL('media/panels' + name, root), 'utf8')
+            return route.fulfill({ contentType: name.endsWith('.js') ? 'text/javascript' : 'text/css', body: name.endsWith('.css') ? theme + body : body })
         })
-        await page.addStyleTag({ content: ':root { --vscode-font-family: system-ui; --vscode-font-size: 13px; --vscode-font-weight: 400; --vscode-foreground: #ccc; --vscode-editor-background: #1f1f1f; --vscode-editorWidget-background:#252526; --vscode-descriptionForeground:#aaa; --vscode-panel-border:#444; --vscode-focusBorder:#007fd4; --vscode-textCodeBlock-background:#333; }' })
-        await page.addStyleTag({ path: new URL('media/panels/main.css', root).pathname })
-        await page.addScriptTag({ path: new URL('media/panels/main.js', root).pathname })
-        await page.evaluate((state) => window.postMessage({ type: 'aiCapabilities', state }, '*'), snapshot)
-        await page.addScriptTag({ path: new URL('media/panels/ai.js', root).pathname })
-        assert.equal(await page.locator('#placeholder').isVisible(), false)
-        assert.equal(await page.locator('.ai-overview-card').count(), 4)
-        assert.equal(await page.locator('#ai-tool-details').evaluate(node => node.open), false)
-        assert.equal(await page.locator('#ai-resource-details').evaluate(node => node.open), false)
-        assert.equal(await page.locator('#ai-skill-count').textContent(), String(resources.filter(r => r.kind === 'Skill').length))
-        assert.equal(await page.locator('#ai-agent-enabled').isChecked(), true)
-        assert.equal(await page.locator('#ai-diagnostics-on-save').isChecked(), false)
-        await page.locator('#ai-tool-details > summary').click()
-        await page.locator('#ai-resource-details > summary').click()
-        assert.equal(await page.locator('#ai-capability-groups table').count(), 7)
-        assert.equal(await page.locator('[data-capability-id]').count(), catalog.length)
-        assert.deepEqual((await page.locator('[data-capability-id]').evaluateAll((rows) => rows.map((row) => row.dataset.capabilityId))).sort(), catalog.map((entry) => entry.id).sort())
-        for (const entry of catalog) assert.equal(await page.locator(`[data-capability-id="${entry.id}"] code`).textContent(), entry.toolName)
-        assert.equal(await page.locator('#ai-resources tbody tr').count(), resources.length)
-        assert.match(await page.locator('[data-capability-id="cad.modelAnalyze"]').textContent(), /scad_ai_ide_model_analyze/)
-        assert.match(await page.locator('[data-capability-id="cad.issueDetails"]').textContent(), /scad_ai_ide_model_getIssue/)
-        assert.match(await page.locator('[data-capability-id="development.clearCaches"]').textContent(), /Restricted.*Development mode required/)
-        assert.match(await page.locator('[data-capability-id="runtime.remove"]').textContent(), /Human confirmation/)
-        await page.getByRole('button', { name: 'Refresh availability' }).click()
-        assert.equal(await page.evaluate(() => window.actions.at(-1).action), 'refreshAiCapabilities')
-        await page.locator('#ai-agent-enabled').uncheck()
-        assert.deepEqual(await page.evaluate(() => window.actions.at(-1)), { action: 'setAiPreference', key: 'agentEnabled', value: false })
-        const agentDisabled = structuredClone(snapshot)
-        agentDisabled.preferences.agentEnabled = false
-        agentDisabled.capabilities.forEach(entry => { entry.availability = { enabled: false, reasonCode: 'DISABLED_BY_USER' } })
-        await page.evaluate(state => window.postMessage({ type: 'aiCapabilities', state }, '*'), agentDisabled)
-        assert.equal(await page.locator('#ai-integration-status').textContent(), 'Disabled by you')
-        assert.equal(await page.locator('#ai-guidance-enabled').isDisabled(), true)
-        assert.match(await page.locator('[data-capability-id="runtime.state"]').textContent(), /Agent integration disabled/)
-        await page.locator('#ai-source-diagnostics').uncheck()
-        assert.deepEqual(await page.evaluate(() => window.actions.at(-1)), { action: 'setAiPreference', key: 'sourceDiagnostics', value: false })
-        await page.evaluate(state => window.postMessage({ type: 'aiCapabilities', state }, '*'), snapshot)
-        assert.equal(await page.locator('#ai-guidance-enabled').isDisabled(), false)
-        await page.locator('#ai-guidance-enabled').uncheck()
-        assert.deepEqual(await page.evaluate(() => window.actions.at(-1)), { action: 'setAiPreference', key: 'guidanceEnabled', value: false })
-        const guidanceDisabled = structuredClone(snapshot)
-        guidanceDisabled.preferences.guidanceEnabled = false
-        await page.evaluate(state => window.postMessage({ type: 'aiCapabilities', state }, '*'), guidanceDisabled)
-        assert.equal(await page.locator('#ai-guidance-enabled').isChecked(), false)
-        await page.evaluate(state => window.postMessage({ type: 'aiCapabilities', state }, '*'), snapshot)
-        await page.locator('#ai-diagnostics-on-save').check()
-        assert.deepEqual(await page.evaluate(() => window.actions.at(-1)), { action: 'setAiPreference', key: 'diagnosticsOnSave', value: true })
-        const changed = structuredClone(snapshot)
-        changed.capabilities[0].description = '<img src=x onerror=alert(1)>'
-        changed.capabilities.find((entry) => entry.id === 'runtime.select').availability = { enabled: false, reasonCode: 'BUSY' }
-        await page.evaluate((state) => window.postMessage({ type: 'aiCapabilities', state }, '*'), changed)
-        await page.getByText('Operation in progress', { exact: true }).waitFor()
+        await page.addInitScript(() => {
+            window.actions = []
+            window.acquireVsCodeApi = () => ({ getState: () => ({}), setState() {}, postMessage: action => window.actions.push(action) })
+        })
+        await page.goto('https://feature-panel.test/')
+        const csp = await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute('content')
+        assert.match(csp, /default-src 'none';.*script-src 'nonce-feature-test-nonce'/)
+        await page.evaluate(() => {
+            const script = document.createElement('script')
+            script.textContent = 'window.untrustedScriptRan = true'
+            document.head.append(script)
+        })
+        assert.equal(await page.evaluate(() => window.untrustedScriptRan), undefined)
+        const send = (state, staticData = {}) => page.evaluate(data => window.postMessage({ type: 'ai.snapshot', ...data }, '*'), { state, ...staticData })
+        const lastAction = () => page.evaluate(() => window.actions.at(-1))
+        const hostile = '<img src=x onerror=alert(1)>'
+        const unsafeCatalog = structuredClone(catalog)
+        unsafeCatalog.features[0].display.summary = hostile
+        await send(fixture, { catalog: unsafeCatalog, layout })
+        await page.getByRole('heading', { name: 'Integration' }).waitFor()
+        const row = id => page.locator(`[data-feature-id="${id}"]`)
+        assert.equal(await page.locator('[data-feature-id]').count(), catalog.features.length)
+        assert.match(await row(catalog.features[0].id).textContent(), /<img src=x/)
         assert.equal(await page.locator('#ai img').count(), 0)
-        assert.match(await page.locator('[data-capability-id="capabilities.discover"]').textContent(), /<img src=x/)
-        await page.evaluate((state) => window.postMessage({ type: 'aiCapabilities', state }, '*'), snapshot)
-        await mkdir(new URL('.build/', root), { recursive: true })
-        await page.screenshot({ path: new URL('.build/ai-capabilities-panel.png', root).pathname })
+        assert.equal(await page.locator('#ai-content .ai-overview-card').count(), 4)
+        assert.equal(await page.locator('.ai-disclosure[open]').count(), 0)
+        assert.equal(await page.locator('#ai-content .ai-disclosure').count(), 9)
+        for (const feature of catalog.features) {
+            if (feature.tool || feature.resource) assert.equal(await row(feature.id).locator('code').textContent(), feature.tool?.name ?? feature.resource.path)
+        }
+        const integration = page.getByRole('checkbox', { name: catalog.controls.agentEnabled.label })
+        await integration.focus()
+        await integration.press('Space')
+        assert.deepEqual(await lastAction(), { action: 'ai.setIntegrationEnabled', controlId: 'agentEnabled', enabled: false })
+        assert.equal(await integration.isChecked(), true, 'Pending write retains last acknowledged value')
+        await page.evaluate(() => window.postMessage({ type: 'error', action: 'ai.setIntegrationEnabled', message: 'Settings write failed' }, '*'))
+        await page.locator('#action-error').filter({ hasText: 'Settings write failed' }).waitFor()
+        assert.equal(await integration.isChecked(), true)
+        const disabled = structuredClone(fixture)
+        disabled.revision = 2
+        disabled.preferences.agentEnabled = false
+        const id = 'tool.runtime.state'
+        Object.assign(disabled.state[id], { reasonCode: 'DISABLED_GLOBAL', effectiveEnabled: false })
+        await send(disabled)
+        await page.waitForFunction(() => !document.activeElement.checked)
+        assert.equal(await integration.evaluate(node => document.activeElement === node), true)
+        await send(fixture) // Lower revision cannot overwrite live state.
+        const runtime = catalog.groups.find(group => group.id === 'runtime')
+        await page.locator('summary').filter({ hasText: /^Runtime$/ }).click()
+        const group = page.getByRole('checkbox', { name: 'Enable ' + runtime.label, exact: true })
+        await group.press('Space')
+        assert.deepEqual(await lastAction(), { action: 'ai.setGroupEnabled', groupId: 'runtime', enabled: false })
+        const item = row(id).getByRole('checkbox', { name: pick(id).display.label })
+        await item.press('Space')
+        assert.deepEqual(await lastAction(), { action: 'ai.setFeatureEnabled', featureId: id, enabled: false })
+        assert.match(await row(id).textContent(), /Agent integration is disabled/)
+        assert.equal(await integration.isChecked(), false)
+        const state = structuredClone(disabled)
+        state.revision = 3
+        state.preferences.groups.runtime = false
+        Object.assign(state.state[id], { reasonCode: 'DISABLED_GROUP', effectiveEnabled: false, reasonDetail: hostile, userPreferenceEnabled: false })
+        await send(state)
+        await row(id).getByText('Group is disabled', { exact: true }).waitFor()
+        assert.equal(await item.evaluate(node => document.activeElement === node), true)
+        assert.equal(await row(id).locator('img').count(), 0)
+        assert.match(await group.locator('../../..').textContent(), /selected · \d+ available/)
+        const select = page.getByRole('combobox', { name: pick('setting.editor.onSave').display.label })
+        await select.selectOption('diagnostics')
+        assert.deepEqual(await lastAction(), { action: 'ai.setSettingEnabled', featureId: 'setting.editor.onSave', value: 'diagnostics' })
         await page.setViewportSize({ width: 360, height: 780 })
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true)
-        assert.equal(await page.locator('[data-capability-id]').count(), catalog.length)
-        assert.ok(await page.locator('.ai-table-scroll').first().evaluate((node) => node.scrollWidth > node.clientWidth))
-        assert.equal(await page.locator('.ai-overview-grid').evaluate(node => node.scrollWidth <= node.clientWidth), true)
         assert.deepEqual(errors, [])
     } finally { await browser.close() }
 })

@@ -1,5 +1,5 @@
-import { createAiPanelState } from '../agents/CapabilityPresentation'
-import { affectsAiPreferences, updateAiPreference, syncAgentContexts } from '../agents/AgentPreferences'
+import type { AiPanelSnapshot } from '../../ai/contracts/FeatureState'
+import type { FeatureStateService } from '../../ai/runtime/FeatureStateService'
 import type { DeveloperCacheController } from '../development/DeveloperCacheController'
 import type { LibraryPanelController } from '../libraries/LibraryPanelController'
 import { randomBytes } from 'node:crypto'
@@ -15,6 +15,7 @@ type RuntimeFeature = ReturnType<typeof registerRuntime>
 export class PanelManager implements vscode.Disposable {
     private readonly panels = new Map<PageId, vscode.WebviewPanel>()
     private readonly changed: vscode.Disposable
+    private readonly aiChanged: vscode.Disposable
     private readonly githubChanged: vscode.Disposable
     private developmentChanged?: vscode.Disposable
     private librariesChanged?: vscode.Disposable
@@ -25,21 +26,19 @@ export class PanelManager implements vscode.Disposable {
         private readonly extensionUri: vscode.Uri,
         private readonly runtime: RuntimeFeature,
         private readonly github: ReturnType<typeof registerGitHub>,
-        private readonly libraries?: LibraryPanelController,
-        private readonly development?: DeveloperCacheController,
-        private readonly getAiState = () => createAiPanelState(),
+        private readonly libraries: LibraryPanelController | undefined,
+        private readonly development: DeveloperCacheController | undefined,
+        private readonly ai: FeatureStateService,
     ) {
+        this.aiChanged = ai.onDidChange(snapshot => { void this.updateAi(false, snapshot) })
         this.developmentChanged = development?.onDidChange(() => {
-            void this.updateAi()
             const panel = this.panels.get('more')
             if (panel && development.enabled) void development.getState().then((state) => panel.webview.postMessage({ type: 'developmentState', state }))
         })
         this.librariesChanged = libraries?.onDidChange(() => {
             void this.updateLibraries()
-            void this.updateAi()
         })
         this.changed = runtime.onDidChange(() => {
-            void this.updateAi()
             const panel = this.panels.get('runtime')
             if (panel) {
                 void panel.webview.postMessage({ type: 'runtimeState', state: runtime.getState() })
@@ -52,9 +51,9 @@ export class PanelManager implements vscode.Disposable {
         })
     }
 
-    private async updateAi() {
+    private async updateAi(includeCatalog = false, state?: AiPanelSnapshot) {
         const panel = this.panels.get('ai')
-        if (panel) await panel.webview.postMessage({ type: 'aiCapabilities', state: this.getAiState() })
+        if (panel) await panel.webview.postMessage({ type: 'ai.snapshot', state: state ?? this.ai.snapshot(), ...(includeCatalog ? this.ai.staticData : undefined) })
     }
 
     private async updateLibraries() {
@@ -102,7 +101,6 @@ export class PanelManager implements vscode.Disposable {
             vscode.window.onDidChangeActiveColorTheme(() => { if (id === 'more') void panel.webview.postMessage({ type: 'cacheThemeChanged' }) }),
             vscode.workspace.onDidChangeConfiguration((event) => {
                 if (id === 'more' && (event.affectsConfiguration('editor.tokenColorCustomizations') || event.affectsConfiguration('workbench.colorCustomizations') || event.affectsConfiguration('workbench.list') || event.affectsConfiguration('workbench.experimental.modernUI'))) void panel.webview.postMessage({ type: 'cacheThemeChanged' })
-                if (id === 'ai' && affectsAiPreferences(event)) void this.updateAi()
             }),
             panel.onDidChangeViewState(() => {
                 const becameVisible = panel.visible && !visible
@@ -124,12 +122,11 @@ export class PanelManager implements vscode.Disposable {
                         await panel.webview.postMessage({ type: 'githubState', state: this.github.getState() })
                     }
                     if (id === 'ai') {
-                        if (action === 'setAiPreference') {
-                            const preference = value as { key?: unknown; value?: unknown }
-                            await updateAiPreference(preference.key, preference.value)
-                            await syncAgentContexts()
+                        if (action === 'ready') await this.updateAi(true)
+                        else {
+                            await this.ai.update(value)
+                            await this.updateAi()
                         }
-                        if (action === 'ready' || action === 'refreshAiCapabilities' || action === 'setAiPreference') await this.updateAi()
                         return
                     }
                     if (id === 'libraries' && this.libraries) {
@@ -187,7 +184,6 @@ export class PanelManager implements vscode.Disposable {
                     }
                 }
             }),
-            vscode.workspace.onDidGrantWorkspaceTrust(() => { if (id === 'ai') void this.updateAi() }),
             panel.onDidDispose(() => {
                 if (id === 'runtime') {
                     this.runtimeReady = false
@@ -228,6 +224,7 @@ export class PanelManager implements vscode.Disposable {
         this.librariesChanged?.dispose()
         this.changed.dispose()
         this.githubChanged.dispose()
+        this.aiChanged.dispose()
         for (const panel of [...this.panels.values()]) {
             panel.dispose()
         }

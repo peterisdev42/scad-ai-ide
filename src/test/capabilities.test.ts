@@ -1,29 +1,26 @@
 import { test } from 'node:test'
 import * as assert from 'node:assert/strict'
-import { CapabilityError, type CapabilityContext, type CapabilityHandler } from '../core/capabilities/CapabilityTypes'
+import { CapabilityError, type CapabilityContext } from '../core/capabilities/CapabilityTypes'
 
 test('capability contract preserves caller, cancellation and explicit failure identity', async () => {
     const abort = new AbortController()
     const context: CapabilityContext = { actor: 'agent', signal: abort.signal }
-    const handler: CapabilityHandler = {
-        available: () => ({ enabled: true }),
-        invoke: (_, ctx) => {
-            assert.equal(ctx.actor, 'agent')
-            assert.equal(ctx.signal, abort.signal)
-            throw new CapabilityError('STALE_STATE', 'Read the target again.', true)
-        },
+    const handler = (_: unknown, ctx: CapabilityContext) => {
+        assert.equal(ctx.actor, 'agent')
+        assert.equal(ctx.signal, abort.signal)
+        throw new CapabilityError('STALE_STATE', 'Read the target again.', true)
     }
-    await assert.rejects(async () => handler.invoke({}, context), (e: unknown) => e instanceof CapabilityError && e.code === 'STALE_STATE' && e.retryable)
+    await assert.rejects(async () => handler({}, context), (e: unknown) => e instanceof CapabilityError && e.code === 'STALE_STATE' && e.retryable)
 })
 
-import { capabilityCatalog, CapabilityRegistry } from '../core/capabilities/CapabilityRegistry'
-import { CapabilityDispatcher } from '../core/capabilities/CapabilityDispatcher'
+import { toolFeatures, FeatureRegistry, featureCatalog } from '../ai/runtime/FeatureRegistry'
+import { testDispatcher as dispatcher } from './FeatureTestSupport'
 import { safePreview } from '../core/capabilities/SafeOutput'
 import legacySourceApplySchema from './fixtures/customizer-source-apply-schema-v1.json'
 import Ajv from 'ajv'
 
 test('Source Apply exposes object properties to model clients without changing the accepted input contract', () => {
-    const schema = capabilityCatalog.find(entry => entry.id === 'customizer.sourceApply')!.inputSchema as { type?: string; properties?: Record<string, unknown> }
+    const schema = toolFeatures.find(entry => entry.tool.capabilityId === 'customizer.sourceApply')!.tool.inputSchema as { type?: string; properties?: Record<string, unknown> }
     assert.equal(schema.type, 'object')
     assert.deepEqual(Object.keys(schema.properties ?? {}).sort(), ['edits', 'identity', 'mode', 'planId', 'uri'])
     const ajv = new Ajv({ strict: true })
@@ -51,19 +48,9 @@ test('Source Apply exposes object properties to model clients without changing t
     for (const input of inputs) assert.equal(after(input), before(input), JSON.stringify(input))
 })
 
-function dispatcher(invoke: CapabilityHandler['invoke'] = (input) => input) {
-    const registry = new CapabilityRegistry()
-    for (const d of capabilityCatalog) registry.bind(d.id, { available: () => ({ enabled: true }), invoke })
-    registry.assertComplete()
-    return new CapabilityDispatcher(registry)
-}
-
-test('all catalog schemas compile strictly, completeness and duplicate bindings are enforced', () => {
-    const registry = new CapabilityRegistry()
-    assert.throws(() => registry.assertComplete(), /Missing/)
-    registry.bind('runtime.state', { available: () => ({ enabled: true }), invoke: () => ({}) })
-    assert.throws(() => registry.bind('runtime.state', { available: () => ({ enabled: true }), invoke: () => ({}) }), /duplicate/)
-    assert.equal(new Set(capabilityCatalog.map((d) => d.toolName)).size, capabilityCatalog.length)
+test('all feature tool schemas compile strictly and preserve unique names', () => {
+    assert.doesNotThrow(() => new FeatureRegistry(featureCatalog))
+    assert.equal(new Set(toolFeatures.map(({ tool }) => tool.name)).size, toolFeatures.length)
 })
 
 test('schemas reject forged approval, unknown fields, missing targets, invalid enums and excessive reads', async () => {
@@ -83,10 +70,9 @@ test('schemas reject forged approval, unknown fields, missing targets, invalid e
 })
 
 test('dispatcher denies unavailable handlers even when invoked directly and preserves failed terminal state', async () => {
-    const registry = new CapabilityRegistry()
     let calls = 0
-    registry.bind('development.listCaches', { available: () => ({ enabled: false, reasonCode: 'DEVELOPMENT_ONLY' }), invoke: () => calls++ })
-    const result = await new CapabilityDispatcher(registry).invoke('development.listCaches', {}, { actor: 'agent' })
+    const d = dispatcher(() => calls++, undefined, { trusted: () => true, availability: () => ({ enabled: false, reasonCode: 'DEVELOPMENT_ONLY' }) })
+    const result = await d.invoke('development.listCaches', {}, { actor: 'agent' })
     assert.equal(result.ok, false)
     assert.equal(calls, 0)
     const failed = await dispatcher(() => { throw new CapabilityError('TARGET_CHANGED', 'Read again.', true) }).invoke('runtime.state', {}, { actor: 'agent' })
@@ -151,4 +137,40 @@ test('cancellation accepts exactly an Agent operation ID or a supported GUI doma
         assert.equal(result.ok, false)
         if (!result.ok) assert.equal(result.error.code, 'INVALID_INPUT')
     }
+})
+
+test('policy reports independent preference, dependency, Trust and availability gates', async () => {
+    const { FeaturePolicyEngine } = await import('../ai/runtime/FeaturePolicyEngine.js')
+    const { defaultPreferences } = await import('./FeatureTestSupport.js')
+    const target = toolFeatures.find(feature => feature.tool.capabilityId === 'runtime.state')!
+    const dependency = toolFeatures.find(feature => feature.tool.capabilityId === 'cad.modelAnalyze')!
+    const guidance = featureCatalog.features.find(feature => feature.kind === 'skill')!
+    const registry = new FeatureRegistry({ ...featureCatalog, features: featureCatalog.features.map(feature =>
+        feature.id === target.id || feature.id === guidance.id ? { ...feature, dependencies: { allOf: [dependency.id] } } : feature) })
+    const preferences = defaultPreferences()
+    let trusted = false
+    let busy = false
+    const policy = new FeaturePolicyEngine(registry, () => preferences, {
+        trusted: () => trusted,
+        availability: feature => feature.id === target.id && busy ? { enabled: false, reasonCode: 'BUSY' } : { enabled: true },
+    })
+    assert.equal(policy.snapshot().state[dependency.id].reasonCode, 'UNTRUSTED_WORKSPACE')
+    assert.equal(policy.snapshot().state[target.id].reasonCode, 'DISABLED_DEPENDENCY')
+    assert.equal(policy.snapshot().state[target.id].environmentAvailable, true)
+    trusted = true
+    preferences.features[dependency.id] = false
+    assert.equal(policy.snapshot().state[guidance.id].reasonCode, 'DISABLED_DEPENDENCY')
+    preferences.guidanceEnabled = false
+    assert.equal(policy.snapshot().state[guidance.id].reasonCode, 'DISABLED_GUIDANCE')
+    preferences.features[dependency.id] = true
+    busy = true
+    assert.equal(policy.snapshot().state[target.id].reasonCode, 'BUSY')
+    busy = false
+    preferences.groups[target.group] = false
+    assert.equal(policy.snapshot().state[target.id].reasonCode, 'DISABLED_GROUP')
+    assert.equal(policy.snapshot().state[target.id].userPreferenceEnabled, true)
+    preferences.agentEnabled = false
+    assert.equal(policy.snapshot().state[target.id].reasonCode, 'DISABLED_GLOBAL')
+    assert.doesNotThrow(() => policy.assertCanInvokeTool(target.tool.capabilityId, 'command'))
+    assert.equal(policy.snapshot().state['setting.editor.sourceDiagnostics'].effectiveEnabled, true)
 })

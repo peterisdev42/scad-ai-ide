@@ -1,5 +1,4 @@
 export type Actor = 'gui' | 'agent' | 'command'
-export type CapabilityRisk = 'read' | 'change' | 'destructive' | 'privileged'
 export interface CapabilityContext {
     actor: Actor
     signal?: AbortSignal
@@ -9,22 +8,7 @@ export interface CapabilityContext {
 export class CapabilityError extends Error {
     constructor(readonly code: string, message: string, readonly retryable = false) { super(message) }
 }
-export interface CapabilityDefinition {
-    id: string
-    toolName: string
-    title: string
-    description: string
-    requiresInteraction?: boolean
-    risk: CapabilityRisk
-    inputSchema: object
-    service: string
-    gui: string
-}
 export interface Availability { enabled: boolean; reasonCode?: string; detail?: string }
-export interface CapabilityHandler {
-    available(context: CapabilityContext): Availability
-    invoke(input: Record<string, unknown>, context: CapabilityContext): Promise<unknown> | unknown
-}
 export interface OperationStatus {
     id: string
     capabilityId: string

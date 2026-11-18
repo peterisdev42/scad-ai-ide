@@ -61,6 +61,7 @@ export class CustomizerDomainService implements vscode.Disposable {
         if (this.busy) throw new CapabilityError('BUSY', 'A preset operation is already running.', true)
         if (!this.service.analysisStatus.complete && action !== 'import') throw new CapabilityError('SOURCE_UNSUPPORTED', 'Source analysis is incomplete; finish the source before using presets.')
         this.busy = true
+        this.changed.fire()
         try {
             if (context.actor === 'agent' && action !== 'select') {
                 if (!vscode.workspace.isTrusted) throw new CapabilityError('UNTRUSTED_WORKSPACE', 'Trust the workspace to write preset files.')
@@ -77,7 +78,10 @@ export class CustomizerDomainService implements vscode.Disposable {
             this.revision++
             this.publish()
             return this.snapshot()
-        } finally { this.busy = false }
+        } finally {
+            this.busy = false
+            if (!this.disposed) this.changed.fire()
+        }
     }
     loadTarget(): void {
         if (this.disposed) return

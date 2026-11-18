@@ -393,21 +393,18 @@
             }
           }
         ]
-      },
-      "refreshAiCapabilities": {
-        "capabilities": [
-          "capabilities.discover"
-        ],
-        "examples": [
-          {
-            "capability": "capabilities.discover",
-            "input": {}
-          }
-        ]
-      },
-      "setAiPreference": {
-        "uiOnly": "User-owned preference; deliberately not Agent-accessible to prevent agents from re-enabling their own access"
       }
+    }
+  },
+  {
+    "group": "AI Panel preferences",
+    "source": "src/ai/runtime/FeaturePreferences.ts",
+    "pattern": "case '(ai\\.[A-Za-z]+)'",
+    "actions": {
+      "ai.setIntegrationEnabled": { "uiOnly": "User-owned VS Code preference" },
+      "ai.setGroupEnabled": { "uiOnly": "User-owned VS Code preference" },
+      "ai.setFeatureEnabled": { "uiOnly": "User-owned VS Code preference" },
+      "ai.setSettingEnabled": { "uiOnly": "User-owned VS Code preference" }
     }
   },
   {

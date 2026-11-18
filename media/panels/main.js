@@ -1,7 +1,6 @@
 const vscode = acquireVsCodeApi()
 const page = document.body.dataset.page
 const get = (id) => document.getElementById(id)
-let aiState
 let librariesState
 let runtimeState
 let pendingLocalAction
@@ -459,10 +458,6 @@ window.addEventListener('message', (event) => {
         selectMoreTab(developmentEnabled && saved === 'development' ? 'development' : 'github')
     }
     if (event.data?.type === 'developmentState' && page === 'more' && developmentEnabled) renderCaches(event.data.state)
-    if (event.data?.type === 'aiCapabilities' && page === 'ai') {
-        aiState = event.data.state
-        globalThis.ScadAiPanel?.render(aiState)
-    }
     if (event.data?.type === 'librariesState') librariesState = event.data.state
     if (event.data?.type === 'runtimeTab' && page === 'runtime') {
         selectTab(event.data.tab, true)
@@ -534,4 +529,4 @@ get('runtime-tabs').addEventListener('keydown', (event) => {
     const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length
     selectTab(tabs[next].dataset.tab, true)
 })
-vscode.postMessage({ action: 'ready', ...(page === 'libraries' ? { tab: ['registry', 'global', 'project'].includes(vscode.getState()?.libraryTab) ? vscode.getState().libraryTab : 'registry' } : {}) })
+if (page !== 'ai') vscode.postMessage({ action: 'ready', ...(page === 'libraries' ? { tab: ['registry', 'global', 'project'].includes(vscode.getState()?.libraryTab) ? vscode.getState().libraryTab : 'registry' } : {}) })

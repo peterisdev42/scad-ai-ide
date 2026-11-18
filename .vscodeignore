@@ -4,6 +4,7 @@
 out/**
 node_modules/**
 src/**
+!src/ai/generated/*.json
 .gitignore
 esbuild.js
 **/tsconfig.json
