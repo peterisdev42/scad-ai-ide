@@ -2,7 +2,7 @@ import * as vscode from 'vscode'
 import { randomUUID } from 'node:crypto'
 import { assertWorkspacePath } from '../../platform/WorkspacePaths'
 import { CapabilityError, type CapabilityContext } from '../../core/capabilities/CapabilityTypes'
-import capabilityCatalog from '../../core/capabilities/catalog.json'
+import { toolFeatures } from '../../ai/runtime/FeatureRegistry'
 import { analyzeCustomizerSource, SOURCE_LIMIT } from '../../core/customizer/CustomizerSourceAnalyzer'
 import { planCustomizerEdits } from '../../core/customizer/CustomizerSourceEditor'
 import { validateCustomizerSource } from '../../core/customizer/CustomizerSourceValidator'
@@ -11,7 +11,7 @@ import type { SourceDocumentIdentity, SourceEditIntent, SourceExpectation } from
 export { documentIdentity as sourceIdentity } from '../../platform/CustomizerDocumentTransaction'
 import { documentIdentity as sourceIdentity, assertDocumentIdentity, applyCustomizerBufferEdits } from '../../platform/CustomizerDocumentTransaction'
 type Plan = ReturnType<typeof planCustomizerEdits> & { identity: SourceDocumentIdentity; expires: number }
-const sourceApplyToolName = capabilityCatalog.find(definition => definition.id === 'customizer.sourceApply')!.toolName
+const sourceApplyToolName = toolFeatures.find(({ tool }) => tool.capabilityId === 'customizer.sourceApply')!.tool.name
 
 /** Explicit buffer access, workspace boundaries and single-use source CAS, independent of Overrides. */
 export class CustomizerSourceDomainService implements vscode.Disposable {

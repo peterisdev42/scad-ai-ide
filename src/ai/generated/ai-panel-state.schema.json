@@ -1,0 +1,761 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://scad-ai-ide.invalid/schema/ai-panel-state",
+    "type": "object",
+    "properties": {
+        "schemaVersion": {
+            "const": 1
+        },
+        "revision": {
+            "type": "integer",
+            "minimum": 0
+        },
+        "state": {
+            "type": "object",
+            "properties": {
+                "tool.capabilities.discover": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.operation.status": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.operation.cancel": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.runtime.state": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.runtime.builds": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.runtime.refresh": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.runtime.installBuild": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.runtime.installArchive": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.runtime.addExecutable": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.runtime.select": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.runtime.remove": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.customizer.state": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.customizer.set": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.customizer.reset": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.customizer.applyPreset": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.customizer.createPreset": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.customizer.savePreset": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.customizer.deletePreset": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.customizer.importPresets": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.customizer.exportPresets": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.libraries.search": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.libraries.refresh": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.libraries.projectState": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.libraries.globalState": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.libraries.install": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.libraries.remove": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.libraries.restore": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.libraries.verify": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.libraries.repair": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.libraries.cleanupPlan": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.libraries.cleanupExecute": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.more.githubStatus": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.more.authorizeGitHub": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.development.status": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.development.listCaches": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.development.inspectCache": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.development.clearCaches": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.customizer.sourceAnalyze": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.customizer.sourceApply": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.customizer.sourceValidate": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.cad.modelAnalyze": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.cad.issueDetails": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.cad.modelMeasure": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.cad.modelRenderViews": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.cad.listParts": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.cad.checkAssembly": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.cad.compare": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.cad.getFeedback": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.cad.requestPointing": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.cad.checkPrintability": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "tool.cad.manageReview": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "instruction.discovery.openscad": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "instruction.customizer.openscad-customizer": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "skill.runtime.openscad-runtime": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "skill.libraries.openscad-libraries": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "skill.customizer.openscad-customizer": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "skill.customizer.openscad-customizer-authoring": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "skill.development.scad-ai-ide-diagnostics": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "skill.cad.openscad-model-debugging": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "skill.cad.openscad-geometry-verification": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "skill.cad.openscad-assembly-design": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "skill.cad.openscad-modeling-lifecycle": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "skill.cad.openscad-design-review": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "skill.cad.openscad-spatial-feedback": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "skill.cad.openscad-printability": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "setting.editor.onSave": {
+                    "$ref": "#/definitions/runtime"
+                },
+                "setting.editor.sourceDiagnostics": {
+                    "$ref": "#/definitions/runtime"
+                }
+            },
+            "required": [
+                "tool.capabilities.discover",
+                "tool.operation.status",
+                "tool.operation.cancel",
+                "tool.runtime.state",
+                "tool.runtime.builds",
+                "tool.runtime.refresh",
+                "tool.runtime.installBuild",
+                "tool.runtime.installArchive",
+                "tool.runtime.addExecutable",
+                "tool.runtime.select",
+                "tool.runtime.remove",
+                "tool.customizer.state",
+                "tool.customizer.set",
+                "tool.customizer.reset",
+                "tool.customizer.applyPreset",
+                "tool.customizer.createPreset",
+                "tool.customizer.savePreset",
+                "tool.customizer.deletePreset",
+                "tool.customizer.importPresets",
+                "tool.customizer.exportPresets",
+                "tool.libraries.search",
+                "tool.libraries.refresh",
+                "tool.libraries.projectState",
+                "tool.libraries.globalState",
+                "tool.libraries.install",
+                "tool.libraries.remove",
+                "tool.libraries.restore",
+                "tool.libraries.verify",
+                "tool.libraries.repair",
+                "tool.libraries.cleanupPlan",
+                "tool.libraries.cleanupExecute",
+                "tool.more.githubStatus",
+                "tool.more.authorizeGitHub",
+                "tool.development.status",
+                "tool.development.listCaches",
+                "tool.development.inspectCache",
+                "tool.development.clearCaches",
+                "tool.customizer.sourceAnalyze",
+                "tool.customizer.sourceApply",
+                "tool.customizer.sourceValidate",
+                "tool.cad.modelAnalyze",
+                "tool.cad.issueDetails",
+                "tool.cad.modelMeasure",
+                "tool.cad.modelRenderViews",
+                "tool.cad.listParts",
+                "tool.cad.checkAssembly",
+                "tool.cad.compare",
+                "tool.cad.getFeedback",
+                "tool.cad.requestPointing",
+                "tool.cad.checkPrintability",
+                "tool.cad.manageReview",
+                "instruction.discovery.openscad",
+                "instruction.customizer.openscad-customizer",
+                "skill.runtime.openscad-runtime",
+                "skill.libraries.openscad-libraries",
+                "skill.customizer.openscad-customizer",
+                "skill.customizer.openscad-customizer-authoring",
+                "skill.development.scad-ai-ide-diagnostics",
+                "skill.cad.openscad-model-debugging",
+                "skill.cad.openscad-geometry-verification",
+                "skill.cad.openscad-assembly-design",
+                "skill.cad.openscad-modeling-lifecycle",
+                "skill.cad.openscad-design-review",
+                "skill.cad.openscad-spatial-feedback",
+                "skill.cad.openscad-printability",
+                "setting.editor.onSave",
+                "setting.editor.sourceDiagnostics"
+            ],
+            "additionalProperties": false
+        },
+        "preferences": {
+            "type": "object",
+            "properties": {
+                "agentEnabled": {
+                    "type": "boolean"
+                },
+                "guidanceEnabled": {
+                    "type": "boolean"
+                },
+                "groups": {
+                    "type": "object",
+                    "properties": {
+                        "cad": {
+                            "type": "boolean"
+                        },
+                        "runtime": {
+                            "type": "boolean"
+                        },
+                        "customizer": {
+                            "type": "boolean"
+                        },
+                        "libraries": {
+                            "type": "boolean"
+                        },
+                        "github": {
+                            "type": "boolean"
+                        },
+                        "development": {
+                            "type": "boolean"
+                        },
+                        "discovery": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "cad",
+                        "runtime",
+                        "customizer",
+                        "libraries",
+                        "github",
+                        "development",
+                        "discovery"
+                    ],
+                    "additionalProperties": false
+                },
+                "features": {
+                    "type": "object",
+                    "properties": {
+                        "tool.capabilities.discover": {
+                            "type": "boolean"
+                        },
+                        "tool.operation.status": {
+                            "type": "boolean"
+                        },
+                        "tool.operation.cancel": {
+                            "type": "boolean"
+                        },
+                        "tool.runtime.state": {
+                            "type": "boolean"
+                        },
+                        "tool.runtime.builds": {
+                            "type": "boolean"
+                        },
+                        "tool.runtime.refresh": {
+                            "type": "boolean"
+                        },
+                        "tool.runtime.installBuild": {
+                            "type": "boolean"
+                        },
+                        "tool.runtime.installArchive": {
+                            "type": "boolean"
+                        },
+                        "tool.runtime.addExecutable": {
+                            "type": "boolean"
+                        },
+                        "tool.runtime.select": {
+                            "type": "boolean"
+                        },
+                        "tool.runtime.remove": {
+                            "type": "boolean"
+                        },
+                        "tool.customizer.state": {
+                            "type": "boolean"
+                        },
+                        "tool.customizer.set": {
+                            "type": "boolean"
+                        },
+                        "tool.customizer.reset": {
+                            "type": "boolean"
+                        },
+                        "tool.customizer.applyPreset": {
+                            "type": "boolean"
+                        },
+                        "tool.customizer.createPreset": {
+                            "type": "boolean"
+                        },
+                        "tool.customizer.savePreset": {
+                            "type": "boolean"
+                        },
+                        "tool.customizer.deletePreset": {
+                            "type": "boolean"
+                        },
+                        "tool.customizer.importPresets": {
+                            "type": "boolean"
+                        },
+                        "tool.customizer.exportPresets": {
+                            "type": "boolean"
+                        },
+                        "tool.libraries.search": {
+                            "type": "boolean"
+                        },
+                        "tool.libraries.refresh": {
+                            "type": "boolean"
+                        },
+                        "tool.libraries.projectState": {
+                            "type": "boolean"
+                        },
+                        "tool.libraries.globalState": {
+                            "type": "boolean"
+                        },
+                        "tool.libraries.install": {
+                            "type": "boolean"
+                        },
+                        "tool.libraries.remove": {
+                            "type": "boolean"
+                        },
+                        "tool.libraries.restore": {
+                            "type": "boolean"
+                        },
+                        "tool.libraries.verify": {
+                            "type": "boolean"
+                        },
+                        "tool.libraries.repair": {
+                            "type": "boolean"
+                        },
+                        "tool.libraries.cleanupPlan": {
+                            "type": "boolean"
+                        },
+                        "tool.libraries.cleanupExecute": {
+                            "type": "boolean"
+                        },
+                        "tool.more.githubStatus": {
+                            "type": "boolean"
+                        },
+                        "tool.more.authorizeGitHub": {
+                            "type": "boolean"
+                        },
+                        "tool.development.status": {
+                            "type": "boolean"
+                        },
+                        "tool.development.listCaches": {
+                            "type": "boolean"
+                        },
+                        "tool.development.inspectCache": {
+                            "type": "boolean"
+                        },
+                        "tool.development.clearCaches": {
+                            "type": "boolean"
+                        },
+                        "tool.customizer.sourceAnalyze": {
+                            "type": "boolean"
+                        },
+                        "tool.customizer.sourceApply": {
+                            "type": "boolean"
+                        },
+                        "tool.customizer.sourceValidate": {
+                            "type": "boolean"
+                        },
+                        "tool.cad.modelAnalyze": {
+                            "type": "boolean"
+                        },
+                        "tool.cad.issueDetails": {
+                            "type": "boolean"
+                        },
+                        "tool.cad.modelMeasure": {
+                            "type": "boolean"
+                        },
+                        "tool.cad.modelRenderViews": {
+                            "type": "boolean"
+                        },
+                        "tool.cad.listParts": {
+                            "type": "boolean"
+                        },
+                        "tool.cad.checkAssembly": {
+                            "type": "boolean"
+                        },
+                        "tool.cad.compare": {
+                            "type": "boolean"
+                        },
+                        "tool.cad.getFeedback": {
+                            "type": "boolean"
+                        },
+                        "tool.cad.requestPointing": {
+                            "type": "boolean"
+                        },
+                        "tool.cad.checkPrintability": {
+                            "type": "boolean"
+                        },
+                        "tool.cad.manageReview": {
+                            "type": "boolean"
+                        },
+                        "instruction.discovery.openscad": {
+                            "type": "boolean"
+                        },
+                        "instruction.customizer.openscad-customizer": {
+                            "type": "boolean"
+                        },
+                        "skill.runtime.openscad-runtime": {
+                            "type": "boolean"
+                        },
+                        "skill.libraries.openscad-libraries": {
+                            "type": "boolean"
+                        },
+                        "skill.customizer.openscad-customizer": {
+                            "type": "boolean"
+                        },
+                        "skill.customizer.openscad-customizer-authoring": {
+                            "type": "boolean"
+                        },
+                        "skill.development.scad-ai-ide-diagnostics": {
+                            "type": "boolean"
+                        },
+                        "skill.cad.openscad-model-debugging": {
+                            "type": "boolean"
+                        },
+                        "skill.cad.openscad-geometry-verification": {
+                            "type": "boolean"
+                        },
+                        "skill.cad.openscad-assembly-design": {
+                            "type": "boolean"
+                        },
+                        "skill.cad.openscad-modeling-lifecycle": {
+                            "type": "boolean"
+                        },
+                        "skill.cad.openscad-design-review": {
+                            "type": "boolean"
+                        },
+                        "skill.cad.openscad-spatial-feedback": {
+                            "type": "boolean"
+                        },
+                        "skill.cad.openscad-printability": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "tool.capabilities.discover",
+                        "tool.operation.status",
+                        "tool.operation.cancel",
+                        "tool.runtime.state",
+                        "tool.runtime.builds",
+                        "tool.runtime.refresh",
+                        "tool.runtime.installBuild",
+                        "tool.runtime.installArchive",
+                        "tool.runtime.addExecutable",
+                        "tool.runtime.select",
+                        "tool.runtime.remove",
+                        "tool.customizer.state",
+                        "tool.customizer.set",
+                        "tool.customizer.reset",
+                        "tool.customizer.applyPreset",
+                        "tool.customizer.createPreset",
+                        "tool.customizer.savePreset",
+                        "tool.customizer.deletePreset",
+                        "tool.customizer.importPresets",
+                        "tool.customizer.exportPresets",
+                        "tool.libraries.search",
+                        "tool.libraries.refresh",
+                        "tool.libraries.projectState",
+                        "tool.libraries.globalState",
+                        "tool.libraries.install",
+                        "tool.libraries.remove",
+                        "tool.libraries.restore",
+                        "tool.libraries.verify",
+                        "tool.libraries.repair",
+                        "tool.libraries.cleanupPlan",
+                        "tool.libraries.cleanupExecute",
+                        "tool.more.githubStatus",
+                        "tool.more.authorizeGitHub",
+                        "tool.development.status",
+                        "tool.development.listCaches",
+                        "tool.development.inspectCache",
+                        "tool.development.clearCaches",
+                        "tool.customizer.sourceAnalyze",
+                        "tool.customizer.sourceApply",
+                        "tool.customizer.sourceValidate",
+                        "tool.cad.modelAnalyze",
+                        "tool.cad.issueDetails",
+                        "tool.cad.modelMeasure",
+                        "tool.cad.modelRenderViews",
+                        "tool.cad.listParts",
+                        "tool.cad.checkAssembly",
+                        "tool.cad.compare",
+                        "tool.cad.getFeedback",
+                        "tool.cad.requestPointing",
+                        "tool.cad.checkPrintability",
+                        "tool.cad.manageReview",
+                        "instruction.discovery.openscad",
+                        "instruction.customizer.openscad-customizer",
+                        "skill.runtime.openscad-runtime",
+                        "skill.libraries.openscad-libraries",
+                        "skill.customizer.openscad-customizer",
+                        "skill.customizer.openscad-customizer-authoring",
+                        "skill.development.scad-ai-ide-diagnostics",
+                        "skill.cad.openscad-model-debugging",
+                        "skill.cad.openscad-geometry-verification",
+                        "skill.cad.openscad-assembly-design",
+                        "skill.cad.openscad-modeling-lifecycle",
+                        "skill.cad.openscad-design-review",
+                        "skill.cad.openscad-spatial-feedback",
+                        "skill.cad.openscad-printability"
+                    ],
+                    "additionalProperties": false
+                },
+                "editorAssistance": {
+                    "type": "object",
+                    "properties": {
+                        "setting.editor.onSave": {
+                            "type": "string",
+                            "enum": [
+                                "off",
+                                "diagnostics"
+                            ]
+                        },
+                        "setting.editor.sourceDiagnostics": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "setting.editor.onSave",
+                        "setting.editor.sourceDiagnostics"
+                    ],
+                    "additionalProperties": false
+                }
+            },
+            "required": [
+                "agentEnabled",
+                "guidanceEnabled",
+                "groups",
+                "features",
+                "editorAssistance"
+            ],
+            "additionalProperties": false
+        }
+    },
+    "required": [
+        "schemaVersion",
+        "revision",
+        "state",
+        "preferences"
+    ],
+    "additionalProperties": false,
+    "definitions": {
+        "runtime": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "enum": [
+                        "tool.capabilities.discover",
+                        "tool.operation.status",
+                        "tool.operation.cancel",
+                        "tool.runtime.state",
+                        "tool.runtime.builds",
+                        "tool.runtime.refresh",
+                        "tool.runtime.installBuild",
+                        "tool.runtime.installArchive",
+                        "tool.runtime.addExecutable",
+                        "tool.runtime.select",
+                        "tool.runtime.remove",
+                        "tool.customizer.state",
+                        "tool.customizer.set",
+                        "tool.customizer.reset",
+                        "tool.customizer.applyPreset",
+                        "tool.customizer.createPreset",
+                        "tool.customizer.savePreset",
+                        "tool.customizer.deletePreset",
+                        "tool.customizer.importPresets",
+                        "tool.customizer.exportPresets",
+                        "tool.libraries.search",
+                        "tool.libraries.refresh",
+                        "tool.libraries.projectState",
+                        "tool.libraries.globalState",
+                        "tool.libraries.install",
+                        "tool.libraries.remove",
+                        "tool.libraries.restore",
+                        "tool.libraries.verify",
+                        "tool.libraries.repair",
+                        "tool.libraries.cleanupPlan",
+                        "tool.libraries.cleanupExecute",
+                        "tool.more.githubStatus",
+                        "tool.more.authorizeGitHub",
+                        "tool.development.status",
+                        "tool.development.listCaches",
+                        "tool.development.inspectCache",
+                        "tool.development.clearCaches",
+                        "tool.customizer.sourceAnalyze",
+                        "tool.customizer.sourceApply",
+                        "tool.customizer.sourceValidate",
+                        "tool.cad.modelAnalyze",
+                        "tool.cad.issueDetails",
+                        "tool.cad.modelMeasure",
+                        "tool.cad.modelRenderViews",
+                        "tool.cad.listParts",
+                        "tool.cad.checkAssembly",
+                        "tool.cad.compare",
+                        "tool.cad.getFeedback",
+                        "tool.cad.requestPointing",
+                        "tool.cad.checkPrintability",
+                        "tool.cad.manageReview",
+                        "instruction.discovery.openscad",
+                        "instruction.customizer.openscad-customizer",
+                        "skill.runtime.openscad-runtime",
+                        "skill.libraries.openscad-libraries",
+                        "skill.customizer.openscad-customizer",
+                        "skill.customizer.openscad-customizer-authoring",
+                        "skill.development.scad-ai-ide-diagnostics",
+                        "skill.cad.openscad-model-debugging",
+                        "skill.cad.openscad-geometry-verification",
+                        "skill.cad.openscad-assembly-design",
+                        "skill.cad.openscad-modeling-lifecycle",
+                        "skill.cad.openscad-design-review",
+                        "skill.cad.openscad-spatial-feedback",
+                        "skill.cad.openscad-printability",
+                        "setting.editor.onSave",
+                        "setting.editor.sourceDiagnostics"
+                    ]
+                },
+                "userPreferenceEnabled": {
+                    "type": "boolean"
+                },
+                "groupPreferenceEnabled": {
+                    "type": "boolean"
+                },
+                "userEnabled": {
+                    "type": "boolean"
+                },
+                "dependenciesEnabled": {
+                    "type": "boolean"
+                },
+                "environmentAvailable": {
+                    "type": "boolean"
+                },
+                "effectiveEnabled": {
+                    "type": "boolean"
+                },
+                "reasonCode": {
+                    "type": "string"
+                },
+                "reasonDetail": {
+                    "type": "string"
+                },
+                "hostStatus": {
+                    "enum": [
+                        "extension-controlled",
+                        "external-host-state-unknown"
+                    ]
+                }
+            },
+            "required": [
+                "id",
+                "userPreferenceEnabled",
+                "groupPreferenceEnabled",
+                "userEnabled",
+                "dependenciesEnabled",
+                "environmentAvailable",
+                "effectiveEnabled",
+                "reasonCode",
+                "reasonDetail",
+                "hostStatus"
+            ],
+            "additionalProperties": false
+        }
+    }
+}

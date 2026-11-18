@@ -14,9 +14,9 @@ import * as os from 'node:os'
 import * as path from 'node:path'
 import * as vscode from 'vscode'
 import type { activate } from '../extension'
-import { createAiPanelState } from '../features/agents/CapabilityPresentation'
-import resources from '../core/capabilities/resources.json'
-import { capabilityCatalog } from '../core/capabilities/CapabilityRegistry'
+import { Ajv } from 'ajv'
+import snapshotSchema from '../ai/generated/ai-panel-state.schema.json'
+import { toolFeatures, featureCatalog } from '../ai/runtime/FeatureRegistry'
 
 suite('Agent capabilities extension host', () => {
     test('installed manifest, registered LM tools and bundled resources agree without open panels', async () => {
@@ -25,8 +25,8 @@ suite('Agent capabilities extension host', () => {
         assert.equal(api.panels.getPanel('runtime'), undefined)
         assert.equal(api.panels.getPanel('libraries'), undefined)
         const contributed = extension.packageJSON.contributes.languageModelTools as Array<{ name: string }>
-        assert.deepEqual(contributed.map((t) => t.name).sort(), capabilityCatalog.map((d) => d.toolName).sort())
-        for (const definition of capabilityCatalog) assert.ok(vscode.lm.tools.some((tool) => tool.name === definition.toolName), `LM tool missing: ${definition.toolName}`)
+        assert.deepEqual(contributed.map((t) => t.name).sort(), toolFeatures.map(({ tool }) => tool.name).sort())
+        for (const { tool: definition } of toolFeatures) assert.ok(vscode.lm.tools.some((tool) => tool.name === definition.name), `LM tool missing: ${definition.name}`)
         for (const resource of [...extension.packageJSON.contributes.chatInstructions, ...extension.packageJSON.contributes.chatSkills]) {
             assert.ok((await vscode.workspace.fs.readFile(vscode.Uri.joinPath(extension.extensionUri, resource.path))).length > 0)
         }
@@ -55,17 +55,59 @@ suite('Agent capabilities extension host', () => {
         const original = configuration.inspect<boolean>('agent.enabled')?.globalValue
         try {
             await configuration.update('agent.enabled', false, vscode.ConfigurationTarget.Global)
-            const discovery = createAiPanelState(api.capabilities.registry)
+            const discovery = api.aiState.snapshot()
             assert.equal(discovery.preferences.agentEnabled, false)
-            assert.equal(discovery.capabilities.length, capabilityCatalog.length)
-            assert.ok(discovery.capabilities.every(item => !item.availability.enabled && item.availability.reasonCode === 'DISABLED_BY_USER'))
+            assert.ok(toolFeatures.every(({ id }) => !discovery.state[id].effectiveEnabled && discovery.state[id].reasonCode === 'DISABLED_GLOBAL'))
             const blocked = await api.capabilities.invoke('more.githubStatus', {}, { actor: 'agent' })
             assert.equal(blocked.ok, false)
-            if (!blocked.ok) assert.equal(blocked.error.code, 'DISABLED_BY_USER')
+            if (!blocked.ok) assert.equal(blocked.error.code, 'DISABLED_GLOBAL')
             const manual = await api.capabilities.invoke('more.githubStatus', {}, { actor: 'command' })
             assert.equal(manual.ok, true, 'Disabling Agent integration must not disable command and GUI services')
         } finally {
             await configuration.update('agent.enabled', original, vscode.ConfigurationTarget.Global)
+        }
+    })
+    test('live feature and group gates reject calls from cached native Tool handles', async () => {
+        const extension = vscode.extensions.all.find((item) => item.packageJSON.name === 'scad-ai-ide')!
+        const api = await extension.activate() as Awaited<ReturnType<typeof activate>>
+        const feature = toolFeatures.find(entry => entry.tool.capabilityId === 'more.githubStatus')!
+        const group = featureCatalog.groups.find(entry => entry.id === feature.group)!
+        const configuration = vscode.workspace.getConfiguration('scad-ai-ide')
+        const keys = [feature.configKey!, group.control!.key, featureCatalog.controls.guidanceEnabled.key].map(key => key.slice('scad-ai-ide.'.length))
+        const original = keys.map(key => configuration.inspect<boolean>(key)?.globalValue)
+        const cached = vscode.lm.tools.find(tool => tool.name === feature.tool.name)!
+        assert.ok(cached)
+        const invokeCached = async () => {
+            const result = await vscode.lm.invokeTool(cached.name, { input: {}, toolInvocationToken: undefined })
+            return JSON.parse((result.content[0] as vscode.LanguageModelTextPart).value)
+        }
+        const getState = () => api.aiState.snapshot().state[feature.id]
+        try {
+            await assert.rejects(api.aiState.update({ action: 'ai.setFeatureEnabled', featureId: feature.id, enabled: true, key: 'editor.fontSize' }), /Invalid/)
+            await assert.rejects(api.aiState.update({ action: 'ai.setGroupEnabled', groupId: '__proto__', enabled: true }), /Invalid/)
+            await api.aiState.update({ action: 'ai.setFeatureEnabled', featureId: feature.id, enabled: false })
+            assert.equal(getState().reasonCode, 'DISABLED_FEATURE')
+            const before = api.capabilities.operations.status()
+            assert.equal((await invokeCached()).error?.code, 'DISABLED_FEATURE')
+            const rejected = await api.capabilities.invoke(feature.tool.capabilityId, {}, { actor: 'agent' })
+            assert.equal(rejected.ok ? 'AVAILABLE' : rejected.error.code, 'DISABLED_FEATURE')
+            assert.deepEqual(api.capabilities.operations.status(), before)
+
+            await api.aiState.update({ action: 'ai.setGroupEnabled', groupId: group.id, enabled: false })
+            assert.equal(getState().reasonCode, 'DISABLED_GROUP')
+            await api.aiState.update({ action: 'ai.setGroupEnabled', groupId: group.id, enabled: true })
+            assert.equal(getState().userPreferenceEnabled, false)
+            await configuration.update(keys[0], true, vscode.ConfigurationTarget.Global)
+            assert.equal((await invokeCached()).ok, true)
+            await configuration.update(keys[2], false, vscode.ConfigurationTarget.Global)
+            assert.equal(getState().reasonCode, 'AVAILABLE')
+            const guidance = featureCatalog.features.filter(item => item.kind === 'skill' || item.kind === 'instruction')
+            const snapshot = api.aiState.snapshot()
+            assert.ok(guidance.every(item => snapshot.state[item.id].reasonCode === 'DISABLED_GUIDANCE'))
+            const validate = new Ajv({ strict: true }).compile(snapshotSchema)
+            assert.equal(validate(snapshot), true, JSON.stringify(validate.errors))
+        } finally {
+            for (const [index, key] of keys.entries()) await configuration.update(key, original[index], vscode.ConfigurationTarget.Global)
         }
     })
     test('Customizer lost-control Problems link both declarations and clear after an unsaved repair', async () => {
@@ -309,16 +351,18 @@ suite('Agent capabilities extension host', () => {
         const extension = vscode.extensions.all.find((item) => item.packageJSON.name === 'scad-ai-ide')!
         const api = await extension.activate() as Awaited<ReturnType<typeof activate>>
         const before = api.capabilities.operations.status()
-        const snapshot = createAiPanelState(api.capabilities.registry)
-        assert.equal(snapshot.total, capabilityCatalog.length)
-        assert.deepEqual(snapshot.capabilities.map((entry) => entry.toolName).sort(), capabilityCatalog.map((entry) => entry.toolName).sort())
-        assert.equal(snapshot.resources.filter((entry) => entry.kind === 'Skill').length, resources.filter((r) => r.kind === 'Skill').length)
-        assert.equal(snapshot.resources.filter((entry) => entry.kind === 'Instruction').length, resources.filter((r) => r.kind === 'Instruction').length)
+        const snapshot = api.aiState.snapshot()
+        assert.equal(Object.keys(snapshot.state).length, featureCatalog.features.length)
+        const { catalog } = api.aiState.staticData
+        assert.deepEqual(catalog.features.flatMap(feature => feature.tool?.name ?? []).sort(), toolFeatures.map(feature => feature.tool.name).sort())
+        for (const kind of ['skill', 'instruction']) {
+            assert.deepEqual(catalog.features.filter(feature => feature.kind === kind).map(feature => feature.id), featureCatalog.features.filter(feature => feature.kind === kind).map(feature => feature.id))
+        }
         assert.deepEqual(api.capabilities.operations.status(), before)
         await vscode.commands.executeCommand('scad-ai.ai.open')
         try {
             const html = api.panels.getPanel('ai')!.webview.html
-            assert.match(html, /id="ai-capability-groups"/)
+            assert.match(html, /id="ai-content"/)
             assert.match(html, /panels\/ai\.js/)
             assert.ok(!html.includes('{{'))
         } finally { api.panels.getPanel('ai')?.dispose() }
@@ -588,7 +632,7 @@ suite('Agent capabilities extension host', () => {
             assert.equal(planResult.ok, true)
             if (!planResult.ok) return
             const plan = planResult.data as { planId: string; continuation: { tool: string; input: { mode: 'commit'; planId: string }; requiresReview: boolean } }
-            assert.equal(plan.continuation.tool, capabilityCatalog.find(definition => definition.id === 'customizer.sourceApply')!.toolName)
+            assert.equal(plan.continuation.tool, toolFeatures.find(definition => definition.tool.capabilityId === 'customizer.sourceApply')!.tool.name)
             assert.ok(vscode.lm.tools.some(tool => tool.name === plan.continuation.tool))
             assert.deepEqual(plan.continuation.input, { mode: 'commit', planId: plan.planId })
             assert.equal(plan.continuation.requiresReview, true)
@@ -932,4 +976,32 @@ suite('Agent capabilities extension host', () => {
         })
     }
 
+})
+
+suite('Restricted workspace capability policy', () => {
+    test('native Agent requests enforce Workspace Trust independently of application settings', async function () {
+        if (process.env.SCAD_TEST_RESTRICTED_FIXTURE !== '1') { this.skip(); return }
+        assert.equal(vscode.workspace.isTrusted, false)
+        const extension = vscode.extensions.all.find(item => item.packageJSON.name === 'scad-ai-ide')!
+        const api = await extension.activate() as Awaited<ReturnType<typeof activate>>
+        const tool = toolFeatures.find(feature => feature.tool.capabilityId === 'cad.modelAnalyze')!
+        const snapshot = api.aiState.snapshot()
+        assert.equal(snapshot.state[tool.id].reasonCode, 'UNTRUSTED_WORKSPACE')
+        assert.equal(snapshot.state[tool.id].userEnabled, true)
+        const input = { uri: vscode.Uri.joinPath(vscode.workspace.workspaceFolders![0].uri, 'model.scad').toString() }
+        const denied = await vscode.lm.invokeTool(tool.tool.name, { input, toolInvocationToken: undefined })
+        assert.equal(JSON.parse((denied.content[0] as vscode.LanguageModelTextPart).value).error.code, 'UNTRUSTED_WORKSPACE')
+        const allowed = await vscode.lm.invokeTool('scad_ai_ide_runtime_state', { input: {}, toolInvocationToken: undefined })
+        assert.equal(JSON.parse((allowed.content[0] as vscode.LanguageModelTextPart).value).ok, true)
+        const config = vscode.workspace.getConfiguration('scad-ai-ide')
+        const original = config.inspect<boolean>('agent.enabled')?.globalValue
+        try {
+            await config.update('agent.enabled', false, vscode.ConfigurationTarget.Global)
+            assert.equal(api.aiState.snapshot().preferences.agentEnabled, false, 'Workspace true cannot override application false')
+            const blocked = await vscode.lm.invokeTool('scad_ai_ide_runtime_state', { input: {}, toolInvocationToken: undefined })
+            assert.equal(JSON.parse((blocked.content[0] as vscode.LanguageModelTextPart).value).error.code, 'DISABLED_GLOBAL')
+        } finally {
+            await config.update('agent.enabled', original, vscode.ConfigurationTarget.Global)
+        }
+    })
 })

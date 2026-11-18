@@ -48,3 +48,15 @@ jobs:
             - run: npm run test:customizer
             - run: npm run test:agents:ui
             - run: npm run test:libraries:ui
+    extension-host:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '24'
+                  cache: npm
+            - run: npm ci
+            - run: npm run compile-tests
+            - run: npm run compile
+            - run: xvfb-run -a npm run test:agents:host

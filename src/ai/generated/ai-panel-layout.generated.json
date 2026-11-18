@@ -1,0 +1,76 @@
+{
+    "schemaVersion": 1,
+    "kinds": {
+        "tool": {
+            "label": "Tools"
+        },
+        "skill": {
+            "label": "Skills"
+        },
+        "instruction": {
+            "label": "Instructions"
+        },
+        "prompt": {
+            "label": "Prompts"
+        },
+        "chatAgent": {
+            "label": "Custom agents"
+        },
+        "setting": {
+            "label": "Editor settings"
+        }
+    },
+    "sections": [
+        {
+            "label": "Integration",
+            "widget": "Switch",
+            "source": "controls"
+        },
+        {
+            "label": "Overview",
+            "widget": "ReadOnlyInfo",
+            "source": "overview"
+        },
+        {
+            "label": "Capabilities",
+            "widget": "GroupSwitch",
+            "source": "groups"
+        },
+        {
+            "label": "Resources",
+            "widget": "Switch",
+            "source": "resources",
+            "description": "VS Code controls new loads of bundled guidance. Content already included in a conversation remains in its context."
+        },
+        {
+            "label": "Independent editor assistance",
+            "widget": "EnumSelect",
+            "source": "settings",
+            "description": "These settings apply independently of Agent integration."
+        }
+    ],
+    "reasons": {
+        "AVAILABLE": "Available",
+        "DISABLED_GLOBAL": "Agent integration is disabled",
+        "DISABLED_GUIDANCE": "Agent guidance is disabled",
+        "DISABLED_GROUP": "Group is disabled",
+        "DISABLED_FEATURE": "Feature is disabled",
+        "DISABLED_DEPENDENCY": "A required feature is disabled or unavailable",
+        "UNTRUSTED_WORKSPACE": "Workspace trust required",
+        "DEVELOPMENT_ONLY": "Development mode required",
+        "BUSY": "Operation in progress",
+        "NOT_REGISTERED": "Service unavailable",
+        "RUNTIME_UNAVAILABLE": "Select an OpenSCAD runtime",
+        "DISABLED": "CAD verification disabled in settings",
+        "INTERACTION_UNAVAILABLE": "Human spatial interaction required",
+        "STALE_SNAPSHOT": "Verify current inputs before requesting feedback",
+        "UNAVAILABLE": "Unavailable",
+        "DISPOSED": "Extension session ended"
+    },
+    "risks": {
+        "read": "Read only",
+        "change": "Changes state",
+        "destructive": "Destructive operation",
+        "privileged": "Privileged operation"
+    }
+}

@@ -537,6 +537,9 @@ test('panel navigation shares GitHub guidance and opens requested Runtime tabs b
             getState: () => state,
             refresh: async () => {},
         } as unknown as ReturnType<typeof import('../features/github/registerGitHub').registerGitHub>,
+        undefined,
+        undefined,
+        { onDidChange: () => disposable, snapshot: () => ({}), staticData: {} } as unknown as ConstructorParameters<typeof sandbox.exports.PanelManager>[5],
     )
     await manager.open('runtime', 'available')
     assert.equal(

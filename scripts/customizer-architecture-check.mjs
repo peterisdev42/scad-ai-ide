@@ -1,11 +1,11 @@
 import { execFileSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import assert from 'node:assert/strict'
 import ts from 'typescript'
 
 const baseline = '4463d61046d962a3f5afa5ace49b21f37e6cc4a6'
-const files = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', 'src'], { encoding: 'utf8' }).trim().split('\n').filter(file => file.endsWith('.ts') && !file.endsWith('.d.ts'))
+const files = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', 'src'], { encoding: 'utf8' }).trim().split('\n').filter(file => file.endsWith('.ts') && !file.endsWith('.d.ts') && existsSync(file))
 const graph = new Map()
 const core = files.filter(file => file.startsWith('src/core/customizer/'))
 for (const file of files) {

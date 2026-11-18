@@ -86,7 +86,7 @@ The current dependency manager intentionally supports **exact versions**, not ar
 
 ### Native Agent Tools, Skills and safety
 
-The extension contributes **51 native VS Code Language Model Tools**, **12 Skills** and **2 Instructions**. They cover capability discovery/cancellation, Runtime, Customizer, Libraries, safe development status and CAD diagnostics/verification/review. The AI Panel shows capability availability; invoking tools does not require the corresponding management panel to be open.
+The extension contributes **51 native VS Code Language Model Tools**, **12 Skills** and **2 Instructions**. They cover capability discovery/cancellation, Runtime, Customizer, Libraries, safe development status and CAD diagnostics/verification/review. The AI Panel controls integration, groups and individual features and reports live availability. Tools can run while their management panels are closed. See the [feature architecture and declaration examples](docs/ai-feature-architecture.md).
 
 Capability availability depends on the **VS Code Agent host and model provider**. Registration and deterministic tests do not establish reliable autonomous-model performance. The real-model CAD acceptance matrix remains open in several areas. See the [tool catalog](docs/agent-capability-catalog.md), [permissions matrix](docs/agent-capability-matrix.md), [Agent verification guide](docs/agent-verification.md) and [CAD progress report](docs/cad/overall-progress.md).
 

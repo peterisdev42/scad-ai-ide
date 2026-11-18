@@ -1,162 +1,163 @@
-// Metadata-only presentation. This panel never calls an Agent Tool or reads CAD data.
 if (page === 'ai') {
-    const toolGroups = [
-        { label: 'CAD verification', prefixes: ['cad.'] },
-        { label: 'Runtime', prefixes: ['runtime.'] },
-        { label: 'Customizer', prefixes: ['customizer.'] },
-        { label: 'Libraries', prefixes: ['libraries.'] },
-        { label: 'GitHub', prefixes: ['more.'] },
-        { label: 'Development diagnostics', prefixes: ['development.'] },
-        { label: 'Discovery & operations', prefixes: ['capabilities.', 'operation.'] },
-    ]
-    const overviewGroups = [
-        { title: 'Design and customize', prefixes: ['customizer.'], description: 'Inspect parameters, manage presets and plan controlled Customizer source edits.' },
-        { title: 'Verify geometry', prefixes: ['cad.'], description: 'Analyze CSG, inspect STL/3MF, measure evidence, check assemblies and review results.' },
-        { title: 'Manage the toolchain', prefixes: ['runtime.', 'libraries.'], description: 'Find OpenSCAD runtimes, install libraries and restore project dependencies.' },
-        { title: 'Coordinate safely', prefixes: ['capabilities.', 'operation.', 'more.', 'development.'], description: 'Discover available operations, inspect status and use permission-gated utilities.' },
-    ]
-    const riskLabels = { read: 'Read only', change: 'Changes state', destructive: 'Human confirmation', privileged: 'Development only' }
-    const reasonLabels = {
-        DEVELOPMENT_ONLY: 'Development mode required',
-        UNTRUSTED_WORKSPACE: 'Workspace trust required',
-        BUSY: 'Operation in progress',
-        NOT_REGISTERED: 'Tools not registered',
-        RUNTIME_UNAVAILABLE: 'Select an OpenSCAD runtime',
-        DISABLED: 'CAD verification disabled in settings',
-        DISABLED_BY_USER: 'Agent integration disabled',
-        INTERACTION_UNAVAILABLE: 'Human spatial interaction required',
-        STALE_SNAPSHOT: 'Verify current inputs before requesting feedback',
-        DISPOSED: 'Extension session ended',
-    }
-    const preferenceInputs = {
-        agentEnabled: get('ai-agent-enabled'),
-        guidanceEnabled: get('ai-guidance-enabled'),
-        sourceDiagnostics: get('ai-source-diagnostics'),
-        diagnosticsOnSave: get('ai-diagnostics-on-save'),
-    }
+    let revision = 0
+    let newest
+    let repaint
 
-    function table(labels, name) {
-        const wrapper = element('div', undefined, 'ai-table-scroll')
-        wrapper.tabIndex = 0
-        wrapper.setAttribute('role', 'region')
-        wrapper.setAttribute('aria-label', name)
-        const grid = element('table', undefined, 'ai-table')
-        grid.setAttribute('aria-label', name)
-        const header = element('thead')
-        const row = element('tr')
-        for (const label of labels) {
-            const cell = element('th', label)
-            cell.scope = 'col'
-            row.append(cell)
-        }
-        header.append(row)
-        const body = element('tbody')
-        grid.append(header, body)
-        wrapper.append(grid)
-        return { wrapper, body }
-    }
+    function build(catalog, layout) {
+        const updates = []
+        const controls = Object.entries(catalog.controls)
+        const sectionContent = document.createDocumentFragment()
+        const groupById = new Map(catalog.groups.map(group => [group.id, group]))
+        const features = catalog.features.toSorted((a, b) => a.display.order - b.display.order || a.id.localeCompare(b.id))
+        const byId = new Map(features.map(feature => [feature.id, feature]))
+        const byGroup = new Map(catalog.groups.map(group => [group.id, features.filter(feature => feature.group === group.id && !feature.setting)]))
 
-    function renderPreferences(preferences) {
-        const effective = {
-            agentEnabled: true,
-            guidanceEnabled: true,
-            sourceDiagnostics: true,
-            diagnosticsOnSave: false,
-            ...preferences,
-        }
-        for (const [key, input] of Object.entries(preferenceInputs)) {
-            input.checked = effective[key] === true
-            input.disabled = key === 'guidanceEnabled' && !effective.agentEnabled
-        }
-        const status = get('ai-integration-status')
-        status.textContent = effective.agentEnabled ? 'Enabled' : 'Disabled by you'
-        status.className = effective.agentEnabled ? 'badge success' : 'badge'
-    }
-
-    function renderOverview(state) {
-        const grid = document.createDocumentFragment()
-        const capabilities = state.capabilities ?? []
-        for (const group of overviewGroups) {
-            const count = capabilities.filter(entry => group.prefixes.some(prefix => entry.id.startsWith(prefix))).length
-            if (!count) continue
-            const card = element('article', undefined, 'ai-overview-card')
-            card.append(element('strong', group.title), element('p', group.description))
-            card.append(element('span', `${count} Agent Tools`, 'muted small'))
-            grid.append(card)
-        }
-        get('ai-overview-groups').replaceChildren(grid)
-    }
-
-    function renderTools(state) {
-        const sections = document.createDocumentFragment()
-        const assigned = new Set()
-        const categories = [...toolGroups, { label: 'Other capabilities', prefixes: [] }]
-        for (const group of categories) {
-            const capabilities = state.capabilities.filter(entry => group.prefixes.length
-                ? group.prefixes.some(prefix => entry.id.startsWith(prefix))
-                : !assigned.has(entry.id))
-            if (!capabilities.length) continue
-            const section = element('section', undefined, 'ai-capability-group')
-            section.append(element('h3', `${group.label} (${capabilities.length})`))
-            const { wrapper, body } = table(['Capability', 'What it does', 'Agent tool', 'Permission', 'Availability'], `${group.label} capabilities`)
-            for (const capability of capabilities) {
-                assigned.add(capability.id)
-                const row = element('tr')
-                row.dataset.capabilityId = capability.id
-                const title = element('th', capability.title)
-                title.scope = 'row'
-                const description = element('td', capability.description)
-                const tool = element('td')
-                tool.append(element('code', capability.toolName))
-                const policy = element('td', riskLabels[capability.risk] ?? capability.risk)
-                const availability = element('td')
-                availability.append(element('span', capability.availability.enabled ? 'Available' : 'Restricted',
-                    capability.availability.enabled ? 'badge success' : 'badge'))
-                if (capability.availability.detail) availability.append(element('p', capability.availability.detail, 'small muted'))
-                if (!capability.availability.enabled) {
-                    availability.append(element('p', reasonLabels[capability.availability.reasonCode] ?? capability.availability.reasonCode ?? 'Unavailable', 'small muted'))
+        function control(label, description, read, request, choices) {
+            const row = element('label', undefined, 'ai-preference-row')
+            const text = element('span', undefined, 'ai-preference-description')
+            text.append(element('strong', label))
+            if (description) text.append(element('small', description))
+            const input = element(choices ? 'select' : 'input')
+            input.setAttribute('aria-label', label)
+            if (choices) {
+                for (const choice of choices) {
+                    const option = element('option', choice)
+                    option.value = choice
+                    input.append(option)
                 }
-                row.append(title, description, tool, policy, availability)
-                body.append(row)
+            } else input.type = 'checkbox'
+            let confirmed
+            const apply = () => {
+                if (choices) input.value = confirmed
+                else input.checked = confirmed === true
             }
-            section.append(wrapper)
-            sections.append(section)
+            updates.push(state => {
+                confirmed = read(state)
+                apply()
+            })
+            input.addEventListener('change', () => {
+                const next = choices ? input.value : input.checked
+                get('action-error').hidden = true
+                apply()
+                vscode.postMessage(request(next))
+            })
+            row.append(text, input)
+            return row
         }
-        get('ai-capability-groups').replaceChildren(sections)
-    }
 
-    function renderResources(state) {
-        const { wrapper, body } = table(['Type', 'Name', 'When to use it'], 'Agent instructions and skills')
-        for (const resource of state.resources ?? []) {
-            const row = element('tr')
-            const name = element('th', resource.name)
-            name.scope = 'row'
-            row.append(element('td', resource.kind), name, element('td', resource.description))
-            body.append(row)
+        function rowFor(feature) {
+            const { id, display, tool, setting, resource } = feature
+            const row = element('li', undefined, 'ai-feature-row')
+            row.dataset.featureId = id
+            const title = element('div', undefined, 'ai-feature-title')
+            if (feature.configurable) {
+                title.append(control(display.label, display.summary,
+                    state => setting ? state.preferences.editorAssistance[id] : state.state[id].userPreferenceEnabled,
+                    value => setting ? { action: 'ai.setSettingEnabled', featureId: id, value } : { action: 'ai.setFeatureEnabled', featureId: id, enabled: value },
+                    setting?.enum))
+            } else {
+                title.append(element('strong', display.label), element('p', display.summary))
+            }
+            row.append(title)
+            const status = element('span', undefined, 'badge')
+            const detail = element('p', undefined, 'muted small')
+            row.append(status, detail)
+            if (tool || resource) {
+                const metadata = element('details', undefined, 'ai-feature-metadata')
+                metadata.append(element('summary', 'Details'))
+                metadata.append(element('code', tool?.name ?? resource.path))
+                if (tool) metadata.append(element('p', layout.risks[tool.risk] ?? tool.risk, 'muted small'))
+                const related = feature.dependencies?.recommends ?? []
+                if (related.length) metadata.append(element('p', 'Related features: ' + related.map(id => byId.get(id)?.display.label ?? id).join(', '), 'muted small'))
+                const required = feature.dependencies?.allOf ?? []
+                if (required.length) metadata.append(element('p', 'Required features: ' + required.map(id => byId.get(id)?.display.label ?? id).join(', '), 'muted small'))
+                row.append(metadata)
+            }
+            updates.push(({ state }) => {
+                const current = state[id]
+                status.textContent = layout.reasons[current.reasonCode] ?? current.reasonCode
+                status.classList.toggle('success', current.effectiveEnabled)
+                detail.textContent = current.reasonDetail
+                detail.hidden = !current.reasonDetail
+            })
+            return row
         }
-        get('ai-resources').replaceChildren(wrapper)
-    }
 
-    function render(state) {
+        function list(entries) {
+            const rows = element('ul', undefined, 'ai-feature-list')
+            rows.append(...entries.map(rowFor))
+            return rows
+        }
+
+        const renderers = {
+            controls(section) {
+                for (const [id, metadata] of controls) {
+                    section.append(control(metadata.label, metadata.description,
+                        state => state.preferences[id], enabled => ({ action: 'ai.setIntegrationEnabled', controlId: id, enabled })))
+                }
+            },
+            overview(section) {
+                const counts = element('ul', undefined, 'ai-overview-grid ai-feature-list')
+                for (const [kind, { label }] of Object.entries(layout.kinds)) {
+                    const count = features.filter(feature => feature.kind === kind).length
+                    if (count) counts.append(element('li', `${label} · ${count}`, 'ai-overview-card'))
+                }
+                section.append(counts)
+            },
+            groups(section) {
+                for (const [id, entries] of byGroup) {
+                    const group = groupById.get(id)
+                    if (!group.control) continue
+                    const available = element('p', undefined, 'muted small')
+                    updates.push(state => {
+                        const selected = entries.filter(feature => state.state[feature.id].userPreferenceEnabled).length
+                        const enabled = entries.filter(feature => state.state[feature.id].effectiveEnabled).length
+                        available.textContent = `${selected}/${entries.length} selected · ${enabled} available`
+                    })
+                    const details = element('details', undefined, 'ai-disclosure')
+                    details.append(element('summary', group.label))
+                    details.append(control('Enable ' + group.label, group.control.description,
+                        state => state.preferences.groups[id], enabled => ({ action: 'ai.setGroupEnabled', groupId: id, enabled })))
+                    details.append(available)
+                    const tools = entries.filter(feature => feature.tool)
+                    if (tools.length) details.append(list(tools))
+                    section.append(details)
+                }
+            },
+            resources(section) {
+                for (const [kind, { label }] of Object.entries(layout.kinds)) {
+                    const entries = features.filter(feature => feature.resource && feature.kind === kind)
+                    if (!entries.length) continue
+                    const details = element('details', undefined, 'ai-disclosure')
+                    details.append(element('summary', `${label} (${entries.length})`), list(entries))
+                    section.append(details)
+                }
+            },
+            settings(section) { section.append(list(features.filter(feature => feature.setting))) },
+        }
+
+        for (const descriptor of layout.sections) {
+            const section = element('section', undefined, 'ai-section')
+            const heading = element('h2', descriptor.label)
+            heading.id = 'ai-heading-' + descriptor.source
+            section.setAttribute('aria-labelledby', heading.id)
+            section.append(heading)
+            if (descriptor.description) section.append(element('p', descriptor.description, 'muted small'))
+            renderers[descriptor.source](section)
+            sectionContent.append(section)
+        }
+        get('ai-content').replaceChildren(sectionContent)
         get('ai-loading').hidden = true
-        const resources = state.resources ?? []
-        get('ai-capability-count').textContent = String(state.total)
-        get('ai-tool-detail-count').textContent = String(state.total)
-        get('ai-skill-count').textContent = String(resources.filter(resource => resource.kind === 'Skill').length)
-        get('ai-instruction-count').textContent = String(resources.filter(resource => resource.kind === 'Instruction').length)
-        get('ai-resource-count').textContent = String(resources.length)
-        renderPreferences(state.preferences)
-        renderOverview(state)
-        renderTools(state)
-        renderResources(state)
+        return state => updates.forEach(update => update(state))
     }
 
-    for (const [key, input] of Object.entries(preferenceInputs)) {
-        input.addEventListener('change', () => {
-            input.disabled = true
-            vscode.postMessage({ action: 'setAiPreference', key, value: input.checked })
-        })
-    }
-    globalThis.ScadAiPanel = { render }
-    if (aiState) render(aiState)
+    window.addEventListener('message', ({ data }) => {
+        if (data?.type !== 'ai.snapshot' || data.state.schemaVersion !== 1) return
+        if (!repaint && data.catalog && data.layout?.schemaVersion === 1) repaint = build(data.catalog, data.layout)
+        if (!newest || data.state.revision > newest.revision) newest = data.state
+        if (!repaint || newest.revision <= revision) return
+        revision = newest.revision
+        repaint(newest)
+    })
+    vscode.postMessage({ action: 'ready' })
 }
