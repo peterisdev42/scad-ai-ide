@@ -29,7 +29,8 @@ function validateEdit({ scenario, toolId, file, expectedFile, before, baseline, 
     return { beforeHash: sha256(before), afterHash: sha256(before.replace(...pair)), diskHash: sha256(disk) }
 }
 // Evidence is deliberately insufficient by default. HTTP 200, a timeout, or two failures never prove a model or product defect.
-function assess({ pass, manual, exposure = [], rawCalls = [], traces = [], terminal, error }) {
+function assess({ pass, manual, exposure = [], rawCalls = [], traces = [], terminal, error, hostError }) {
+    if (hostError) return { category: 'PROVIDER_OR_HOST', confidence: 'supported', backupEligible: false, evidence: [hostError] }
     if (pass) return { category: 'NONE', confidence: 'observed', backupEligible: false, evidence: ['strict scenario oracle'] }
     if (manual) return { category: 'MANUAL_REQUIRED', confidence: 'observed', backupEligible: false, evidence: [manual] }
     if (exposure.some((r) => [401, 403].includes(r.status))) return { category: 'PROVIDER_OR_HOST', confidence: 'supported', backupEligible: false, evidence: ['Provider HTTP authentication rejection'] }
@@ -75,3 +76,16 @@ function transcriptMatches(events, marker, markedCalls, started) {
         )
 }
 module.exports.transcriptMatches = transcriptMatches
+
+function copilotRequest(exported, marker) {
+    const request = exported?.requests?.findLast((r) => r.message?.text?.includes(marker))
+    assert.ok(request, 'COPILOT_SESSION_UNCORRELATED: exported native request lacks the run marker')
+    assert.equal(request.agent?.id, 'agent-host-copilotcli', 'COPILOT_HARNESS_MISMATCH: Local or unknown agent cannot pass Copilot acceptance')
+    return request
+}
+module.exports.copilotRequest = copilotRequest
+
+function assertResolvedModel(resolved, expected) {
+    if (resolved !== undefined) assert.ok([expected, 'omlx/' + expected, 'agent-host-copilotcli:omlx/' + expected].includes(resolved), 'MODEL_ROUTING_MISMATCH: actual resolved model ' + resolved + ' differs from ' + expected)
+}
+module.exports.assertResolvedModel = assertResolvedModel

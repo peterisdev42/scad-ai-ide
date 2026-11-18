@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { atomicJson, fingerprint, PRIMARY } from './helpers/cad-native-run.mjs'
 import assert from 'node:assert/strict'
 const repo = fileURLToPath(new URL('../', import.meta.url))
-const evidence = resolve(repo, 'docs/cad/evidence/closeout')
+const evidence = resolve(repo, 'docs/cad/evidence/copilot-harness')
 const runtime = process.env.SCAD_OPENSCAD_EXECUTABLE ?? '/Users/q/Library/Application Support/Code/User/globalStorage/undefined_publisher.scad-ai-ide/runtimes/darwin-arm64/700816722/bin/openscad'
 const code = process.env.SCAD_VSCODE_EXECUTABLE ?? '/Applications/Visual Studio Code.app/Contents/MacOS/Code'
 const env = { ...process.env, SCAD_OPENSCAD_EXECUTABLE: runtime, SCAD_TEST_OPENSCAD: runtime, SCAD_VSCODE_EXECUTABLE: code }

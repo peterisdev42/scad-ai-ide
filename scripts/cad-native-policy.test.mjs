@@ -70,3 +70,19 @@ test('transcript correlation works without user messages and rejects unrelated s
     assert.equal(policy.transcriptMatches(events, 'marker-not-retained', [{ ...calls[0], arguments: '{"uri":"file:///other"}' }], start), false)
     assert.equal(policy.transcriptMatches(events, 'marker-not-retained', calls, start + 5000), false)
 })
+test('Copilot acceptance requires the actual Agent Host identity and matching request marker', () => {
+    const request = { message: { text: 'CAD_ACCEPTANCE_RUN=test\nverify' }, agent: { id: 'agent-host-copilotcli' } }
+    assert.equal(policy.copilotRequest({ requests: [request] }, 'CAD_ACCEPTANCE_RUN=test'), request)
+    for (const id of ['github.copilot.editsAgent', 'local', 'copilotcli', undefined]) assert.throws(() => policy.copilotRequest({ requests: [{ ...request, agent: { id } }] }, 'CAD_ACCEPTANCE_RUN=test'), /HARNESS_MISMATCH/)
+    assert.throws(() => policy.copilotRequest({ requests: [request] }, 'another-run'), /UNCORRELATED/)
+})
+test('native Copilot authentication rejection is a host block, never a model-capability failure', () => {
+    const r = policy.assess({ pass: false, hostError: 'Authentication is required to start a session. Please sign in and try again.', exposure: [{ path: '/v1/models', status: 200 }] })
+    assert.equal(r.category, 'PROVIDER_OR_HOST')
+    assert.equal(r.backupEligible, false)
+})
+test('a displayed Qwen selection cannot validate an actually resolved cloud model', () => {
+    policy.assertResolvedModel('omlx/' + policy.PRIMARY, policy.PRIMARY)
+    policy.assertResolvedModel(policy.PRIMARY, policy.PRIMARY)
+    assert.throws(() => policy.assertResolvedModel('gpt-6-luna', policy.PRIMARY), /MODEL_ROUTING_MISMATCH/)
+})

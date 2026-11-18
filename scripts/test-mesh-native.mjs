@@ -35,8 +35,9 @@ await cp(staged.omlxExtension, providerExtension, { recursive: true })
 
 const run = await createNativeRun({ repo, directory, scenario: 'mesh' })
 const { relay, exposure } = run
-await writeFile(join(workspace, '.vscode/settings.json'), JSON.stringify({ 'chat.saveBeforeSend': false, 'files.autoSave': 'off', 'scad-ai-ide.languageServer.enabled': false, 'scad-ai-ide.openscadPath': process.env.SCAD_OPENSCAD_EXECUTABLE, 'omlx.baseUrl': `http://127.0.0.1:${relay.address().port}/v1`, 'omlx.requestTimeoutMs': run.timeoutMs }))
+await writeFile(join(workspace, '.vscode/settings.json'), JSON.stringify({ 'chat.saveBeforeSend': false, 'chat.defaultToCopilotHarness': true, 'chat.temporaryDefaultToLocalHarness': false, 'files.autoSave': 'off', 'scad-ai-ide.languageServer.enabled': false, 'scad-ai-ide.openscadPath': process.env.SCAD_OPENSCAD_EXECUTABLE, 'omlx.baseUrl': `http://127.0.0.1:${relay.address().port}/v1`, 'omlx.requestTimeoutMs': run.timeoutMs }))
 await cp(join(repo, 'scripts/fixtures/cad-native-agent.cjs'), join(observer, 'observer.cjs'))
+await cp(join(repo, 'scripts/fixtures/cad-copilot-session.cjs'), join(observer, 'cad-copilot-session.cjs'))
 await cp(join(repo, 'scripts/fixtures/cad-native-observation.cjs'), join(observer, 'cad-native-observation.cjs'))
 await cp(join(repo, 'scripts/helpers/cad-native-policy.cjs'), join(observer, 'cad-native-policy.cjs'))
 await writeFile(join(directory, 'native-config.json'), JSON.stringify({ runId: run.runId, scenario: 'mesh', baselineSource: source, file, ideExtension, dirtySetup: false, skill: 'skills/openscad-geometry-verification/SKILL.md' }))
