@@ -46,6 +46,9 @@ export class FeaturePreferences {
             let target = vscode.ConfigurationTarget.Global
             let value: boolean | string
             switch (mutation.action) {
+                case 'ai.applyPreferencePreset':
+                    await this.applyPreset(mutation.preset)
+                    return
                 case 'ai.setIntegrationEnabled':
                     key = this.registry.catalog.controls[mutation.controlId].key
                     value = mutation.enabled
@@ -69,6 +72,57 @@ export class FeaturePreferences {
         })
         this.pending = task.catch(() => undefined)
         return task
+    }
+
+    private async applyPreset(preset: 'defaults' | 'off') {
+        const { controls, groups, features } = this.registry.catalog
+        const restore = preset === 'defaults'
+        const groupControls = groups.flatMap((group) => group.control ?? [])
+        // Disable integration first. Restore it after its individual preferences.
+        const rootControls = restore ? [controls.guidanceEnabled, ...groupControls] : [...Object.values(controls), ...groupControls]
+        const changes = [
+            ...rootControls.map(({ key, default: value }) => ({ key, value: restore ? value : false, editor: false })),
+            ...features.flatMap((feature) => {
+                if (!feature.configKey) return []
+                if (feature.kind !== 'setting') return [{ key: feature.configKey, value: restore && feature.control.enabledByDefault, editor: false }]
+                const setting = feature.setting
+                return [{ key: feature.configKey, value: restore ? setting.default : setting.type === 'boolean' ? false : setting.offValue, editor: true }]
+            }),
+            ...(restore ? [{ key: controls.agentEnabled.key, value: controls.agentEnabled.default, editor: false }] : []),
+        ]
+        const saved = this.read()
+        const current = new Map<string, boolean | string>([[controls.agentEnabled.key, saved.agentEnabled], [controls.guidanceEnabled.key, saved.guidanceEnabled], ...groups.flatMap((group) => (group.control ? [[group.control.key, saved.groups[group.id]] as const] : [])), ...features.flatMap((feature) => (feature.configKey ? [[feature.configKey, feature.kind === 'setting' ? saved.editorAssistance[feature.id] : saved.features[feature.id]] as const] : []))])
+        const rollback: Array<() => Promise<void>> = []
+        try {
+            for (const { key, value, editor } of changes) {
+                if (current.get(key) === value) continue
+                const field = relative(key)
+                const configuration = vscode.workspace.getConfiguration(namespace)
+                const inspection = configuration.inspect<boolean | string>(field)
+                const workspace = editor && inspection?.workspaceValue !== undefined
+                const target = workspace ? vscode.ConfigurationTarget.Workspace : vscode.ConfigurationTarget.Global
+                const previous = workspace ? inspection.workspaceValue : inspection?.globalValue
+                await configuration.update(field, value, target)
+                rollback.push(async () => {
+                    const config = vscode.workspace.getConfiguration(namespace)
+                    const stored = config.inspect<boolean | string>(field)
+                    if ((workspace ? stored?.workspaceValue : stored?.globalValue) === value) {
+                        await config.update(field, previous, target)
+                    }
+                })
+            }
+        } catch (error) {
+            let rollbackFailed = false
+            for (const undo of rollback.reverse()) {
+                try {
+                    await undo()
+                } catch {
+                    rollbackFailed = true
+                }
+            }
+            if (rollbackFailed) throw new Error(`Bulk update failed and some settings could not be restored. Review the current values. ${String(error)}`)
+            throw error
+        }
     }
 
     affects(event: vscode.ConfigurationChangeEvent) {

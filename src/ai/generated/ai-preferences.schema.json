@@ -29,6 +29,25 @@
             "type": "object",
             "properties": {
                 "action": {
+                    "const": "ai.applyPreferencePreset"
+                },
+                "preset": {
+                    "enum": [
+                        "defaults",
+                        "off"
+                    ]
+                }
+            },
+            "required": [
+                "action",
+                "preset"
+            ],
+            "additionalProperties": false
+        },
+        {
+            "type": "object",
+            "properties": {
+                "action": {
                     "const": "ai.setGroupEnabled"
                 },
                 "groupId": {
