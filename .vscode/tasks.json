@@ -73,32 +73,30 @@
             }
         },
         {
-            "type": "npm",
-            "script": "watch-tests",
-            "problemMatcher": "$tsc-watch",
-            "isBackground": true,
-            "presentation": {
-                "reveal": "never",
-                "group": "watchers"
-            },
-            "group": "build"
-        },
-        {
-            "label": "tasks: watch-tests",
-            "dependsOn": ["npm: watch", "npm: watch-tests"],
-            "problemMatcher": []
-        },
-        {
-            "label": "omlx: prepare",
+            "label": "codex: prepare",
             "type": "process",
             "command": "node",
-            "args": ["${workspaceFolder}/scripts/prepare-omlx-dev.mjs"],
+            "args": ["${workspaceFolder}/scripts/prepare-codex-dev.mjs"],
             "problemMatcher": []
         },
         {
-            "label": "watch + oMLX",
-            "dependsOn": ["omlx: prepare", "watch"],
+            "label": "watch + Codex",
+            "dependsOn": ["codex: prepare", "watch"],
             "dependsOrder": "sequence",
+            "problemMatcher": []
+        },
+        {
+            "label": "launch Codex Extension Host",
+            "type": "process",
+            "command": "node",
+            "args": ["${workspaceFolder}/scripts/run-codex-dev.mjs", "9236"],
+            "options": {
+                "env": {
+                    "CODEX_HOME": "${env:HOME}/.codex-personal",
+                    "SCAD_VSCODE_EXECUTABLE": "${execPath}"
+                }
+            },
+            "dependsOn": ["watch + Codex"],
             "problemMatcher": []
         }
     ]

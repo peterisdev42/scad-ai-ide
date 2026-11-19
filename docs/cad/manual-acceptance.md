@@ -20,13 +20,22 @@
 
 ## 一次准备
 
-1. 在本分支完成自动 baseline 后执行 `npm run prepare:cad:manual`。终端输出临时目录、fixture.json、workspace 和 launch 名称。旧目录保留；每次准备生成新目录，不覆盖历史。源码均在 `.build/cad-manual/<时间>/`。
-2. 原仓库窗口 Debug 下拉选择 **CAD Manual Acceptance + oMLX**，按 F5。此配置使用当前冻结构建，不自动 watch/重建。未准备 fixture 时不启动。要验收 VSIX 安装，应另在隔离测试配置中安装本轮 VSIX，并打开同一临时 workspace，明确记录是 development 还是 installed。
+1. 在本分支完成自动 baseline 后执行 `npm run prepare:cad:manual`。终端输出临时目录、fixture.json、workspace 和 `launchArgs`。旧目录保留；每次准备生成新目录，不覆盖历史。源码均在 `.build/cad-manual/<时间>/`。
+2. 在仓库根目录运行 `npm run prepare:omlx-dev`，再执行下方命令打开夹具。该命令使用当前冻结构建。要验收 VSIX 安装，应另在隔离测试配置中安装本轮 VSIX，并打开同一临时 workspace，明确记录是 development 还是 installed。
 3. 记录 VS Code 版本、extension/VSIX Hash、Provider 版本、模型准确 ID，以及 fixture.json 中 candidateId 和源/Manifest/profile Hash。最低支持版和当次 Stable 分别填，不能跨版本代签。
 4. 除 M07，确认是受信任临时工作区；Save Before Send=false、Auto Save=off。选择已有官方 Runtime。关闭 Preview 后开始无 Panel 用例。不要向记录中粘贴 API key。
 5. 手动记录放 `docs/cad/evidence/closeout/manual/<case>-<时间>/`：截图、原生 Chat 导出、真实报告 JSON/ID、Hash、操作步骤和观察结果。最少保存下方模板，不伪造机器事件。临时文件允许按各项目指定范围修改；Manifest/约束/profile 默认逐字不动。
 
-运行自动 `native feedback` 若遇确认会立即记录 MANUAL_REQUIRED，停止自动批次和模型转发，窗口仅保留供检查，**该自动会话不承诺可直接续跑**。手动验收从本 F5 配置的新会话开始；不要把已取消／过期请求当成继续成功。请求 TTL 保持产品规则；过期后由真人明确新发起并登记新 requestId。
+运行自动 `native feedback` 若遇确认会立即记录 MANUAL_REQUIRED，停止自动批次和模型转发，窗口仅保留供检查，**该自动会话不承诺可直接续跑**。手动验收从手动夹具窗口的新会话开始；不要把已取消／过期请求当成继续成功。请求 TTL 保持产品规则；过期后由真人明确新发起并登记新 requestId。
+
+从仓库根目录启动：
+
+```bash
+code --new-window \
+  --extensionDevelopmentPath="$PWD" \
+  --extensionDevelopmentPath="$PWD/.build/omlx-dev/extensions/techopolis.omlx-copilot-chat" \
+  --disable-extensions "$PWD/.build/cad-manual/current/manual.code-workspace"
+```
 
 ## 结果模板（每个子项复制一次）
 
