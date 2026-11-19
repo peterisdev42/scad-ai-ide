@@ -121,6 +121,8 @@ Run `npm run test:agents:manifest`, `npm run test:capabilities`, `npm run test:a
 
 The Agent integration toggle applies globally. Guidance adds a second gate for Skills and Instructions. Group switches retain all item values. Every invocation checks the live item, group, dependency, trust and environment policy before the handler starts. Ordinary GUI and commands keep their own domain rules. Editor assistance uses the existing VS Code Settings scopes and operates independently of Agent preferences.
 
+The Integration section offers **Restore defaults** and **Turn all off** across Agent and editor assistance preferences. Restore uses each declaration’s default. For example, diagnostics on save returns to `off`.
+
 The Panel separates saved intent from effective availability. Pending writes retain the last confirmed values, and failed writes surface the host error. Config changes, trust grants and domain changes update the existing DOM without removing focus or expanding collapsed groups.
 
 VS Code's `vscode.lm.tools` exposes registered tool metadata even when Chat candidate discovery filters a tool out by its `when` clause. Cached names still hit the same runtime gate. Guidance contributions control new loads. Guidance already present in a conversation remains there.

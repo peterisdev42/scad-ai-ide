@@ -404,7 +404,8 @@
       "ai.setIntegrationEnabled": { "uiOnly": "User-owned VS Code preference" },
       "ai.setGroupEnabled": { "uiOnly": "User-owned VS Code preference" },
       "ai.setFeatureEnabled": { "uiOnly": "User-owned VS Code preference" },
-      "ai.setSettingEnabled": { "uiOnly": "User-owned VS Code preference" }
+      "ai.setSettingEnabled": { "uiOnly": "User-owned VS Code preference" },
+      "ai.applyPreferencePreset": { "uiOnly": "Bulk update of user-owned VS Code preferences" }
     }
   },
   {

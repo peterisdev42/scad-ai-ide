@@ -161,7 +161,7 @@ export function projectPanel(catalog) {
     })
     const mutation = (action, more) => object({ action: { const: action }, ...more })
     const writableFeatures = features.filter((feature) => feature.configKey)
-    const mutations = [mutation('ai.setIntegrationEnabled', { controlId: { enum: Object.keys(controls) }, enabled: boolean })]
+    const mutations = [mutation('ai.setIntegrationEnabled', { controlId: { enum: Object.keys(controls) }, enabled: boolean }), mutation('ai.applyPreferencePreset', { preset: { enum: ['defaults', 'off'] } })]
     if (groups.length) mutations.push(mutation('ai.setGroupEnabled', { groupId: { enum: groups.map((group) => group.id) }, enabled: boolean }))
     if (writableFeatures.length) mutations.push(mutation('ai.setFeatureEnabled', { featureId: { enum: writableFeatures.map((feature) => feature.id) }, enabled: boolean }))
     for (const feature of settings.filter((feature) => feature.configKey)) {

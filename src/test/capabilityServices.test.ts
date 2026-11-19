@@ -793,16 +793,18 @@ test('settings adapter rejects forged input, preserves workspace editor override
     const user = new Map<string, unknown>([['agent.enabled', false]])
     const workspace = new Map<string, unknown>([['agent.enabled', true], ['verification.onSave', 'off']])
     const writes: Array<[string, unknown, number]> = []
-    let fail = false
+    let failureKey: string | undefined
     const host = {
         ConfigurationTarget: { Global: 1, Workspace: 2 },
         workspace: { getConfiguration: () => ({
             inspect: (key: string) => ({ globalValue: user.get(key), workspaceValue: workspace.get(key) }),
             get: (key: string) => workspace.get(key) ?? user.get(key),
             update: async (key: string, value: unknown, target: number) => {
-                if (fail) throw new Error('settings are read-only')
+                if (key === failureKey) throw new Error('settings are read-only')
                 writes.push([key, value, target])
-                ;(target === 1 ? user : workspace).set(key, value)
+                const store = target === 1 ? user : workspace
+                if (value === undefined) store.delete(key)
+                else store.set(key, value)
             },
         }) },
     }
@@ -817,12 +819,39 @@ test('settings adapter rejects forged input, preserves workspace editor override
     await preferences.update({ action: 'ai.setSettingEnabled', featureId: 'setting.editor.onSave', value: 'diagnostics' })
     assert.deepEqual(writes, [['agent.groups.runtime.enabled', false, 1], ['verification.onSave', 'diagnostics', 2]])
     assert.equal(preferences.read().features['tool.runtime.state'], true)
-    fail = true
+    failureKey = 'agent.groups.runtime.enabled'
     await assert.rejects(preferences.update({ action: 'ai.setGroupEnabled', groupId: 'runtime', enabled: true }), /read-only/)
     assert.equal(preferences.read().groups.runtime, false)
-    fail = false
+    failureKey = undefined
     await preferences.update({ action: 'ai.setGroupEnabled', groupId: 'runtime', enabled: true })
     assert.equal(preferences.read().groups.runtime, true)
+
+    await assert.rejects(preferences.update({ action: 'ai.applyPreferencePreset', preset: 'allOn' }), /Invalid/)
+    await assert.rejects(preferences.update({ action: 'ai.applyPreferencePreset', preset: 'off', key: 'editor.fontSize' }), /Invalid/)
+    const before = preferences.read()
+    failureKey = 'verification.onSave'
+    await assert.rejects(preferences.update({ action: 'ai.applyPreferencePreset', preset: 'off' }), /read-only/)
+    assert.deepEqual(preferences.read(), before, 'Bulk write rolls back previously written settings')
+    failureKey = undefined
+    await preferences.update({ action: 'ai.applyPreferencePreset', preset: 'off' })
+    const off = preferences.read()
+    assert.equal(off.agentEnabled, false)
+    assert.equal(off.guidanceEnabled, false)
+    assert.ok(Object.values(off.groups).every(value => value === false))
+    assert.ok(Object.values(off.features).every(value => value === false))
+    assert.equal(off.editorAssistance['setting.editor.sourceDiagnostics'], false)
+    assert.equal(workspace.get('verification.onSave'), 'off')
+    await preferences.update({ action: 'ai.applyPreferencePreset', preset: 'defaults' })
+    const restored = preferences.read()
+    assert.equal(restored.agentEnabled, true)
+    assert.equal(restored.guidanceEnabled, true)
+    assert.ok(Object.values(restored.groups).every(Boolean))
+    assert.ok(Object.values(restored.features).every(Boolean))
+    assert.equal(restored.editorAssistance['setting.editor.sourceDiagnostics'], true)
+    assert.equal(workspace.get('verification.onSave'), 'off', 'Restore applies the declared default rather than enabling every editor setting')
+    const completed = writes.length
+    await preferences.update({ action: 'ai.applyPreferencePreset', preset: 'defaults' })
+    assert.equal(writes.length, completed, 'Applying the same preset again does not write settings')
 })
 
 test('feature activation registers each Tool exactly once and releases registrations and state subscriptions', async () => {

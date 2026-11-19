@@ -179,7 +179,7 @@ export class PanelManager implements vscode.Disposable {
                     await panel.webview.postMessage({ type: 'error', action, severity: error instanceof UserWarning ? 'warning' : 'error', message: error instanceof Error ? error.message : String(error) })
                     if (id === 'ai') await this.updateAi()
                 } finally {
-                    if (['browse', 'installArchive'].includes(String(action))) {
+                    if (['browse', 'installArchive'].includes(String(action)) || (id === 'ai' && action === 'ai.applyPreferencePreset')) {
                         await panel.webview.postMessage({ type: 'actionComplete', action })
                     }
                 }

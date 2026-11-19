@@ -2,6 +2,7 @@ if (page === 'ai') {
     let revision = 0
     let newest
     let repaint
+    let finishPreset
 
     function build(catalog, layout) {
         const updates = []
@@ -91,6 +92,28 @@ if (page === 'ai') {
 
         const renderers = {
             controls(section) {
+                const actions = element('div', undefined, 'ai-preset-actions')
+                const buttons = []
+                const progress = element('span', undefined, 'muted small')
+                progress.setAttribute('role', 'status')
+                for (const [preset, label] of [['defaults', 'Restore defaults'], ['off', 'Turn all off']]) {
+                    const button = element('button', label)
+                    button.type = 'button'
+                    button.addEventListener('click', () => {
+                        get('action-error').hidden = true
+                        for (const item of buttons) item.disabled = true
+                        progress.textContent = 'Updating settings…'
+                        vscode.postMessage({ action: 'ai.applyPreferencePreset', preset })
+                    })
+                    buttons.push(button)
+                    actions.append(button)
+                }
+                finishPreset = () => {
+                    for (const button of buttons) button.disabled = false
+                    progress.textContent = ''
+                }
+                actions.append(progress)
+                section.append(actions)
                 for (const [id, metadata] of controls) {
                     section.append(control(metadata.label, metadata.description,
                         state => state.preferences[id], enabled => ({ action: 'ai.setIntegrationEnabled', controlId: id, enabled })))
@@ -152,6 +175,7 @@ if (page === 'ai') {
     }
 
     window.addEventListener('message', ({ data }) => {
+        if (data?.type === 'actionComplete' && data.action === 'ai.applyPreferencePreset') finishPreset?.()
         if (data?.type !== 'ai.snapshot' || data.state.schemaVersion !== 1) return
         if (!repaint && data.catalog && data.layout?.schemaVersion === 1) repaint = build(data.catalog, data.layout)
         if (!newest || data.state.revision > newest.revision) newest = data.state

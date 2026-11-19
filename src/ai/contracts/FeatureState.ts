@@ -35,4 +35,4 @@ export interface AiPanelSnapshot {
     preferences: FeaturePreferencesSnapshot
 }
 
-export type AiPreferenceMutation = { action: 'ai.setIntegrationEnabled'; controlId: keyof FeatureCatalog['controls']; enabled: boolean } | { action: 'ai.setGroupEnabled'; groupId: GroupId; enabled: boolean } | { action: 'ai.setFeatureEnabled'; featureId: FeatureId; enabled: boolean } | { action: 'ai.setSettingEnabled'; featureId: FeatureId; value: boolean | string }
+export type AiPreferenceMutation = { action: 'ai.applyPreferencePreset'; preset: 'defaults' | 'off' } | { action: 'ai.setIntegrationEnabled'; controlId: keyof FeatureCatalog['controls']; enabled: boolean } | { action: 'ai.setGroupEnabled'; groupId: GroupId; enabled: boolean } | { action: 'ai.setFeatureEnabled'; featureId: FeatureId; enabled: boolean } | { action: 'ai.setSettingEnabled'; featureId: FeatureId; value: boolean | string }
