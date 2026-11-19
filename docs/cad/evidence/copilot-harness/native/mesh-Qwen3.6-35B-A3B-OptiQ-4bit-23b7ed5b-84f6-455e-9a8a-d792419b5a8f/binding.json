@@ -1,8 +1,0 @@
-{
-  "runId": "23b7ed5b-84f6-455e-9a8a-d792419b5a8f",
-  "candidateId": "09eee693f16f3f96024f78e1ef3cd9570debf8a72287235ae37cbec48baa542a",
-  "directory": "/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/mesh-native-f5-HZyf17",
-  "scenario": "mesh",
-  "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
-  "baseline": "docs/cad/evidence/copilot-harness/baseline.json"
-}

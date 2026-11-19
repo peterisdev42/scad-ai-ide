@@ -1,8 +1,0 @@
-{
-  "runId": "1e6034a7-078c-4e71-80c2-61409eea8f8e",
-  "candidateId": "f7e6300dddc12570b591b33942066cace6fa4322e8e5f616fc8d469f3252214f",
-  "directory": "/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-bUUonj",
-  "scenario": "comparison",
-  "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
-  "baseline": "docs/cad/evidence/closeout/baseline.json"
-}

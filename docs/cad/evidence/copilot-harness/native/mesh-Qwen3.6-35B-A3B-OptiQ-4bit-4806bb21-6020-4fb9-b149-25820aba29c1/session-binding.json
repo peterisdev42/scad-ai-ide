@@ -1,8 +1,0 @@
-{
-  "runId": "4806bb21-6020-4fb9-b149-25820aba29c1",
-  "harness": "copilot",
-  "agentId": "agent-host-copilotcli",
-  "modelId": "omlx/Qwen3.6-35B-A3B-OptiQ-4bit",
-  "requestId": "request_7dec91e1-db7f-4e7e-bd89-d3ab41f777b4",
-  "method": "run marker in actual exported Agent Host request"
-}

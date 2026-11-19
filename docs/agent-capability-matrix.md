@@ -1,5 +1,7 @@
 # Agent shared capabilities and permissions
 
+> 说明：下文的历史验收链接指向清理前的不可变 Git 提交；它们不代表当前版本已通过验收。
+
 GUI, commands and Agent tools use the same domain services. The generated [tool catalog](agent-capability-catalog.md) lists each registered operation and its owner.
 
 | Module     | Observed business operations                                                                                                                                                                       | Shared owner                                                    | Safety boundaries                                                                                             |
@@ -73,4 +75,4 @@ Runtime equivalents: selected and installed CLI inventory (`runtime.state`), onl
 
 ## CAD diagnostic increment
 
-`cad.modelAnalyze` and `cad.issueDetails` extend the original 40 management tools without changing their schemas. Both commands and tools share the CAD domain/CLI path and the existing source Problems collection. CLI execution independently requires Workspace Trust even though analysis is read-only. The scope is CSG diagnostics; mesh/assembly/visual/printability checks remain unexamined. See [CAD architecture](cad-verification-architecture.md) and [acceptance](cad-agent-acceptance.md).
+`cad.modelAnalyze` and `cad.issueDetails` extend the original 40 management tools without changing their schemas. Both commands and tools share the CAD domain/CLI path and the existing source Problems collection. CLI execution independently requires Workspace Trust even though analysis is read-only. The scope is CSG diagnostics; mesh/assembly/visual/printability checks remain unexamined. See [CAD architecture](cad-verification-architecture.md) and [acceptance](https://github.com/peterisdev42/scad-ai-ide/blob/9b4fcd3301defa86a10f311f2a52fc42e7767878/docs/cad-agent-acceptance.md).

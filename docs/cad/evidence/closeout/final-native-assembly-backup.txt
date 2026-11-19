@@ -1,3 +1,0 @@
-Phase 3 Native evidence: /var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-dYr8oF
-{"pass":true,"assessment":{"category":"NONE","confidence":"observed","backupEligible":false,"evidence":["strict scenario oracle"]},"evidence":"/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/native/assembly-Qwen3.8-27B-4bit-38ecf9ec-35da-4eb2-9288-88ed5c4c8c93"}
-{"pass":true,"evidence":"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/assembly-native-f5-dYr8oF","attempts":1}

@@ -1,31 +1,32 @@
 # 文档索引
 
-这里维护与当前代码对应的使用说明、架构边界和验证方法。产品功能见 [README](../README.md)，环境准备、目录职责和构建发布见 [开发说明](../CONTRIBUTING.md)。
+这里保留与当前 SCAD AI IDE 实现相关的使用说明、设计约定和验收入口。产品概览见 [README](../README.md)，开发与发布见 [CONTRIBUTING](../CONTRIBUTING.md)。
 
-## 功能与架构
+## 使用与运行
 
-- [Preview Exporter 与 Goldfeather](preview-exporter-architecture.md)：两条渲染路径、协议、安装、性能记录和限制。
-- [Preview 集成](preview-integration.md)：宿主生命周期、Customizer、Markdown、构建与回归入口。
-- [按零件着色](part-colors.md)：使用方式、按需辅助数据、缓存和准确性边界。
-- [第三方依赖库管理](library-manager.md)：Registry 布局、精确版本、锁文件、安装恢复与清理。
-- [开发模式缓存管理](development-caches.md)：缓存范围、内容展示、清理和开发模式约束。
-- [通知约定](notifications.md)：共享通知入口、聚合、恢复和用户确认。
+- [Preview 集成](preview-integration.md)：模型预览、Webview、Markdown 和测试入口。
+- [Preview Exporter](preview-exporter-architecture.md)：Full Render、实验性快速预览及其限制。
+- [Preview Problems 生命周期](preview/problems-lifecycle-navigation.md)：诊断归属与源码导航。
+- [按零件着色](part-colors.md)：实验性视觉功能及边界。
+- [库管理](library-manager.md)：依赖解析、版本锁定、安装与清理。
+- [开发缓存](development-caches.md)：开发模式的缓存观察与管理。
+- [通知规范](notifications.md)：统一的通知和错误处理接口。
 
-## Agent 验证
+## 架构
 
-- [Phase 2 网格与测量](cad-mesh-verification.md)：原始 STL/3MF、测量、冻结 PNG、预算和验收边界。
-- [CAD 验证架构](cad-verification-architecture.md)：无 Preview 的 CLI 诊断、快照、共享 Problems 和边界。
-- [CAD 初始验收记录](cad-agent-acceptance.md)：Phase 0–1 的历史 Host、CLI 与 Agent 验收证据。
-- [CAD P0–P4 总体进度](cad/overall-progress.md)：最终候选、模型和主机验收边界；MCP 不属于当前交付范围。
-- [CAD 手动验收](cad/manual-acceptance.md)：真实交互、工作区、信任和跨平台的待验项目。
+- [Customizer ADR](customizer-architecture-adr.md) 与 [源码编辑](customizer-source-authoring.md)。
+- [CAD 验证架构](cad-verification-architecture.md)、[原始网格与测量](cad-mesh-verification.md)。
+- [CAD Phase 2 / Mesh](cad/phase2-architecture.md)、[Phase 3 / Assembly](cad/phase3-architecture.md)、[Phase 4 / Frozen Review](cad/phase4-architecture.md)。
+- [AI 功能声明](ai-feature-architecture.md)、[Agent 能力与授权](agent-capability-matrix.md)、[GUI/Agent 一致性](gui-agent-parity.md)。
 
-- [共享能力与权限矩阵](agent-capability-matrix.md)：四模块服务、GUI/Agent 边界和安全约束。
-- [完整工具目录](agent-capability-catalog.md)：由能力 Registry 生成的 52 项原生 VS Code Agent Tool 清单。
-- [Codex 原生 Agent 验收 SPEC](agent-codex-acceptance-spec.md)：GPT-6.2 Sol 与授权备选 GPT-6.1 Sol（均为 Low）、16 个原生场景和取证要求。
-- [Agent 验证指南](agent-verification.md)：自动化入口、真实模型验收方法、已知失败和未验环境。
-- [Copilot harness 复验记录](cad/copilot-harness-acceptance.md)：实际会话身份、本地模型路由和未闭合的工具发现问题。
-- [Customizer 收尾结果](customizer/closeout-report.md)：已执行验证、历史证据及未闭合项目。
+## 验证与未闭合项目
 
-[Preview 手动双向同步](../scripts/preview-sync/README.md) 单独维护源码映射、基线与冲突处理。
+- [Agent 工具目录](agent-capability-catalog.md)（自动生成）、[验证指南](agent-verification.md) 与 [Codex 验收 SPEC](agent-codex-acceptance-spec.md)。
+- [CAD 总体状态](cad/overall-progress.md)、[收尾问题](cad/acceptance-closeout.md)、[覆盖矩阵](cad/closeout-coverage.md) 与 [手动验收清单](cad/manual-acceptance.md)。
+- [Customizer 收尾状态](customizer/closeout-report.md) 和 [Windows Unicode 已知限制](customizer/windows-unicode-closeout.md)。
 
-测试日志、截图与性能采样输出到 `.build/` 或临时目录；它们记录对应运行的结果，不作为现行能力说明。
+## 历史资料
+
+过期阶段报告、测试日志、截图、JSON 快照及大型验收证据已从当前工作树移除，以免与最新功能状态混淆。需要审计时，可在 [清理前的 Git 提交](https://github.com/peterisdev42/scad-ai-ide/tree/9b4fcd3301defa86a10f311f2a52fc42e7767878/docs) 查看；保留文档内涉及历史证据的链接也指向该不可变提交。
+
+新测试输出应写入 `.build/` 或 CI Artifacts，不应再次把原始验收产物提交到 `docs/`。

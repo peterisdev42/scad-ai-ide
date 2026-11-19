@@ -1,8 +1,0 @@
-{
-  "bundleSha256": "c63418d9e781991a415002e1b9a86a7a00cd73e06d669a597bf35d8fa96b7314",
-  "matchesFinalBundle": true,
-  "businessSubflow": "PASS",
-  "fullInstalled": "FAIL: native focus wait timeout at fixture line140",
-  "exitCode": 1,
-  "realAgent": "NOT_APPLICABLE; installed smoke invokes tools directly"
-}

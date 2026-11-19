@@ -1,9 +1,0 @@
-{
-  "checkedAt": "2026-11-17T01:47:22.238Z",
-  "url": "https://code.visualstudio.com/updates",
-  "redirect": "https://code.visualstudio.com/updates/v1_146",
-  "releaseDate": "2026-11-11",
-  "stable": "1.146.0",
-  "minimum": "1.140.0",
-  "source": "Official updates page; version API endpoint unavailable in web tool"
-}

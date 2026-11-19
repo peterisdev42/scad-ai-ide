@@ -1,9 +1,0 @@
-{
-  "source": "width=0;\nassert(width>0,\"width must be positive\");\ncube(width);\n",
-  "query": "CAD_ACCEPTANCE_RUN=14909111-f485-4d1b-82f1-5e91c0d2ec93\n请使用扩展提供的 openscad-model-debugging Skill。目标 file:///var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/cad-native-f5-vZBRfK/workspace/model.scad。修复这个模型的断言错误：先调用 scad_ai_ide_model_analyze（只填uri和mode，不填可选projectRoot）读取Problems，再只用原生 replace_string_in_file 将width=0;替换成width=1;，保留assert本身和cube(width)，不要删除或降低约束，不保存文件。修改后必须再次调用同一分析工具，明确报告新的reportId和snapshotId、CSG诊断状态以及未检查的网格/装配/可打印性。禁止使用终端、SourceApply、安装或管理工具。复验通过后用不超过80字简要回复（另列reportId和snapshotId），立即结束，不要继续探索。",
-  "workspace": "/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/cad-native-f5-vZBRfK/workspace",
-  "executable": "/Applications/Visual Studio Code.app/Contents/MacOS/Code",
-  "profile": "Existing F5 development profile; provider SecretStorage unchanged",
-  "autoSave": "off",
-  "saveBeforeSend": false
-}
