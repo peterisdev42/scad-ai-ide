@@ -1,5 +1,7 @@
 # Raw mesh verification and measurement (Phase 2)
 
+> 说明：下文的历史验收链接指向清理前的不可变 Git 提交；它们不代表当前版本已通过验收。
+
 Use **SCAD AI IDE: Verify Raw CAD Mesh**, **Measure CAD Mesh** or **Render Frozen CAD Mesh Views** on a workspace SCAD, CSG, STL or 3MF document. Analysis is explicit. Root SCAD/CSG buffers are evaluated without saving; standalone mesh inputs use disk bytes and report dirty text buffers as `DIRTY_MESH_BUFFER_NOT_EVALUATED`. Workspace Trust is required throughout.
 
 Standalone STL/3MF verification works without OpenSCAD. SCAD Full Render and PNG need the selected official Runtime. Preview does not need to be open. PNG environment availability is separate from geometry validity.
@@ -34,4 +36,4 @@ Read execution status separately from overall check status. `ok:true` means a re
 
 Default limits: CLI/Worker concurrency one each; CLI timeout 120 seconds, Worker 60 seconds; pending work 32; raw bytes 128 MiB, decompressed ZIP 256 MiB; one million unique topology vertices and 500,000 triangles; five million candidate tests; V8 Worker heap 512 MiB and explicit array budget 256 MiB (not an OS RSS limit); artifacts 512 MiB/128 source snapshots/30 minutes. Sessions are workspace-isolated. Reports expire on restart; active operations lease artifacts against eviction.
 
-Assembly identities, clearance constraints, geometry diff, spatial picking, thickness and printability are outside Phase 2. Read the [actual acceptance ledger](cad/phase2-acceptance.md), [architecture](cad/phase2-architecture.md) and unchanged [P1 follow-ups](cad-gate-p1-followup.md) before treating any gate as complete.
+Assembly identities, clearance constraints, geometry diff, spatial picking, thickness and printability are outside Phase 2. Read the [actual acceptance ledger](https://github.com/peterisdev42/scad-ai-ide/blob/9b4fcd3301defa86a10f311f2a52fc42e7767878/docs/cad/phase2-acceptance.md), [architecture](cad/phase2-architecture.md) and unchanged [P1 follow-ups](https://github.com/peterisdev42/scad-ai-ide/blob/9b4fcd3301defa86a10f311f2a52fc42e7767878/docs/cad-gate-p1-followup.md) before treating any gate as complete.

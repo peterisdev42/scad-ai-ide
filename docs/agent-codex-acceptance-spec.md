@@ -1,5 +1,7 @@
 # Codex 原生 Agent 验收 SPEC
 
+> 说明：下文的历史验收链接指向清理前的不可变 Git 提交；它们不代表当前版本已通过验收。
+
 VS Code Codex Agent Host 优先使用 `gpt-6.2-sol`。会话模型目录缺少该模型时，使用 `gpt-6.1-sol`。两者推理等级均为 `Low`，证据按实际模型登记。本轮包含 16 个主场景。旧候选和旧模型的结果保留在各自的历史台账。本轮状态见[运行记录](#本轮运行记录)。
 
 ## 候选与宿主
@@ -38,7 +40,7 @@ VS Code Codex Agent Host 优先使用 `gpt-6.2-sol`。会话模型目录缺少�
 | Libraries | 在隔离项目安装明确版本，核对 manifest、lock commit 和挂载，使用实际版本键校验和恢复。清理计划需确认，取消或过期保持资源。 |
 | More / Dev | 核对真实认证状态与授权 UI，按权限执行脱敏检查及受确认的隔离缓存清理。Production 对 Dev 工具的拒绝独立记录。 |
 
-CAD 判定沿用[收尾条目](cad/acceptance-closeout.md#未闭合项目台账)与[覆盖映射](cad/closeout-coverage.md)。Customizer 指令、夹具和精确断言见 [SPEC v2 §9.3、§11.2](customizer/spec-v2.md)和[原始测试取证](customizer/evidence/closeout-20261111/native-cases.json)。MODEL06 用 Host 核验 stale/replay，MODEL09 汇总实际终态和回答准确性。管理工作流使用 [Agent 验证指南](agent-verification.md#real-model-verification)的业务断言，并记录实际触发的 Skill 与 Instruction。
+CAD 判定沿用[收尾条目](cad/acceptance-closeout.md#未闭合项目台账)与[覆盖映射](cad/closeout-coverage.md)。Customizer 指令、夹具和精确断言见 [SPEC v2 §9.3、§11.2](https://github.com/peterisdev42/scad-ai-ide/blob/9b4fcd3301defa86a10f311f2a52fc42e7767878/docs/customizer/spec-v2.md)和[原始测试取证](https://github.com/peterisdev42/scad-ai-ide/blob/9b4fcd3301defa86a10f311f2a52fc42e7767878/docs/customizer/evidence/closeout-20261111/native-cases.json)。MODEL06 用 Host 核验 stale/replay，MODEL09 汇总实际终态和回答准确性。管理工作流使用 [Agent 验证指南](agent-verification.md#real-model-verification)的业务断言，并记录实际触发的 Skill 与 Instruction。
 
 ## 记录与判定
 

@@ -1,6 +1,8 @@
 # Agent-Native CAD 整体进度
 
-> 当前入口为 [Codex 原生 Agent 验收 SPEC](../agent-codex-acceptance-spec.md)。下文保留 2026-11-17 各候选的历史表现，旧迁移取证见 [Copilot 验收记录](copilot-harness-acceptance.md)。
+> 说明：下文的历史验收链接指向清理前的不可变 Git 提交；它们不代表当前版本已通过验收。
+
+> 当前入口为 [Codex 原生 Agent 验收 SPEC](../agent-codex-acceptance-spec.md)。下文保留 2026-11-17 各候选的历史表现，旧迁移取证见 [Copilot 验收记录](https://github.com/peterisdev42/scad-ai-ide/blob/9b4fcd3301defa86a10f311f2a52fc42e7767878/docs/cad/copilot-harness-acceptance.md)。
 
 更新：2026-11-17。当前收尾分支 `codex/cad-acceptance-closeout`，继承 `677dc68`（Phase 4 PR #5）；产品修复 `d3586cc`，最终验收代码／harness HEAD `1d82001`。验收候选按全部源码、harness及生产资产内容Hash冻结，文档提交不改变候选。
 
@@ -32,7 +34,7 @@
 - 最终Qwen3.6网格、比较两场PASS；装配几何修复PASS，但严格流程FAIL（漏证据步骤/测量参数错误），一次Qwen3.8同候选对照严格流程PASS（约587秒），不覆盖主模型FAIL。上一候选三个Qwen3.6场景PASS保留但不移用。P1早一次106秒执行被harness错误阻断，最终候选未重试/未PASS。
 - 真人空间反馈、真实未信任窗口、动态目录、多平台、完整容量/断电/压力未运行的项目逐项记录；Windows Unicode继续 `KNOWN_PLATFORM_GAP`。
 
-[机器交付与退出码](evidence/closeout/delivery.json) · [生产包绑定](evidence/closeout/archive-binding-final.json) · [详细未闭合台账](acceptance-closeout.md) · [手动验收单](manual-acceptance.md) · [D/S覆盖映射](closeout-coverage.md)。
+[机器交付与退出码](https://github.com/peterisdev42/scad-ai-ide/blob/9b4fcd3301defa86a10f311f2a52fc42e7767878/docs/cad/evidence/closeout/delivery.json) · [生产包绑定](https://github.com/peterisdev42/scad-ai-ide/blob/9b4fcd3301defa86a10f311f2a52fc42e7767878/docs/cad/evidence/closeout/archive-binding-final.json) · [详细未闭合台账](acceptance-closeout.md) · [手动验收单](manual-acceptance.md) · [D/S覆盖映射](closeout-coverage.md)。
 
 ## 模型与功能归因
 
