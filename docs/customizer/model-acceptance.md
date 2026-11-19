@@ -31,19 +31,9 @@ MODEL-02的旧观察脚本等待transcript落盘而超时，但原生UI已有带
 
 没有为模型容错接受任意命令、未知字段、错误URI、字符串version或虚构planId。没有削弱workspace/trust/version/SHA/TTL/一次性提交，也没有将失败验证过滤成成功。当前证据不能证明模型大小、上下文长度或schema是失败的唯一原因。
 
-## 复现入口
+## 历史结果边界
 
-复现本页的历史 Customizer 场景时，先按 [进度](../customizer-progress.md) 构建候选 VSIX，再运行 `npm run prepare:ollama-dev` 生成 `.build/ollama-dev/host.json`。本机 Ollama 提供指定模型。隔离测试命令示例：
-
-```sh
-SCAD_AGENT_MODEL='qwen3.5:2b-mlx' \
-SCAD_AGENT_SCENARIO=author \
-SCAD_AGENT_APPROVE_FIXTURE_WRITES=1 \
-SCAD_VSCODE_EXECUTABLE='/absolute/path/to/Visual Studio Code.app/Contents/MacOS/Code' \
-node scripts/customizer-native-agent.mjs
-```
-
-`SCAD_AGENT_SCENARIO`支持author、tail、expression、failure；返回的原始目录可以用 `node scripts/customizer-native-evidence.mjs <run-directory> <evidence-directory>` 归档脱敏证据。脚本exit0仅说明观察完成，必须逐项核对实际任务与最终源码，不能直接标模型PASS。
+这批本地模型驱动已退役。下文保留实际执行结果和原始证据。当前验证入口见 [Agent 验证指南](../agent-verification.md)。
 
 本次模型四场景没有完整PASS。整个SPEC目标仍active。三平台CI和指定Source/Editor服务的真实Host三份heap快照已有后续证据；Windows真实Library Unicode include失败，Remote、完整pinned Qt及更广renderer/GPU内存仍未完成；精确pinned Linux HEADLESS CLI另已完整构建并运行41+10探针；官方2026.11.06 Desktop已有后续12项Qt+echo通过证据。模型结果没有被这些独立证据替代。
 

@@ -1,10 +1,10 @@
 # CAD 手动逐项验收单
 
-> 正式验收仅接受 **Copilot harness**；原Local用例仅作历史参考。先完成M11的真实会话/模型前提，未登录时记宿主BLOCKED，不能回退Local。最新自动化阻断见[Copilot验收记录](copilot-harness-acceptance.md)。
+> 使用 VS Code 内置 **Copilot harness** 进行真实 Agent 验收。先完成 M11，记录实际选择的模型和会话。
 
 所有条目初始为 **NOT_RUN**。本单专门记录必须由真人操作、或当前宿主自动化无法可靠执行的交互，不以自动点击、模拟 adapter 或模型回复代签。用户逐条填结果即可；失败请保留窗口和原始证据，不需要先判断归谁修。
 
-每个子项独立填写 `MANUAL_PASS / FAIL / BLOCKED / NOT_RUN`，不合并为整组 PASS。模型辅助默认 **oMLX / Qwen3.6-35B-A3B-OptiQ-4bit**；备选只有满足 [对照条件](acceptance-closeout.md#统一验收顺序) 才用 Qwen3.8。纯 UI 操作不需要模型。
+每个子项独立填写 `MANUAL_PASS / FAIL / BLOCKED / NOT_RUN`，不合并为整组 PASS。需要模型时，在 Copilot 会话中选择可用且支持工具调用的模型。纯 UI 操作不需要模型。
 
 ## 当前优先级
 
@@ -13,7 +13,7 @@
 | M03–M07 | 仍需真人点选、确认、动态目录与真正Restricted Mode；当前NOT_RUN |
 | M08 | 原生DataPart的Host类型/回退已有自动化；Provider实际图像可见性与真人观察单独记录 |
 | M09–M10 | 需目标平台/隔离测试环境；当前Windows Unicode缺口、其他未运行项保持原状态 |
-| M11 | Copilot正式前提：实际Agent Host身份已验证，登录已恢复且Qwen本地推理已证实；工具发现及Provider观测仍未闭合；禁止Local回退 |
+| M11 | 记录实际 Copilot 会话、模型和工具可见性 |
 | M01–M02 | 上一候选两版曾通过；最终候选最低版通过，但Stable又出现3项焦点失败。需真人区分稳定编辑语义与焦点环境波动，当前仍未闭合 |
 
 勾选表示实际执行，不能仅因对应自动用例通过就勾成“真人已验”。
@@ -21,20 +21,17 @@
 ## 一次准备
 
 1. 在本分支完成自动 baseline 后执行 `npm run prepare:cad:manual`。终端输出临时目录、fixture.json、workspace 和 `launchArgs`。旧目录保留；每次准备生成新目录，不覆盖历史。源码均在 `.build/cad-manual/<时间>/`。
-2. 在仓库根目录运行 `npm run prepare:omlx-dev`，再执行下方命令打开夹具。该命令使用当前冻结构建。要验收 VSIX 安装，应另在隔离测试配置中安装本轮 VSIX，并打开同一临时 workspace，明确记录是 development 还是 installed。
+2. 在仓库根目录执行下方命令打开夹具。该命令使用当前冻结构建。要验收 VSIX 安装，应另在隔离测试配置中安装本轮 VSIX，并打开同一临时 workspace，明确记录是 development 还是 installed。
 3. 记录 VS Code 版本、extension/VSIX Hash、Provider 版本、模型准确 ID，以及 fixture.json 中 candidateId 和源/Manifest/profile Hash。最低支持版和当次 Stable 分别填，不能跨版本代签。
 4. 除 M07，确认是受信任临时工作区；Save Before Send=false、Auto Save=off。选择已有官方 Runtime。关闭 Preview 后开始无 Panel 用例。不要向记录中粘贴 API key。
 5. 手动记录放 `docs/cad/evidence/closeout/manual/<case>-<时间>/`：截图、原生 Chat 导出、真实报告 JSON/ID、Hash、操作步骤和观察结果。最少保存下方模板，不伪造机器事件。临时文件允许按各项目指定范围修改；Manifest/约束/profile 默认逐字不动。
-
-运行自动 `native feedback` 若遇确认会立即记录 MANUAL_REQUIRED，停止自动批次和模型转发，窗口仅保留供检查，**该自动会话不承诺可直接续跑**。手动验收从手动夹具窗口的新会话开始；不要把已取消／过期请求当成继续成功。请求 TTL 保持产品规则；过期后由真人明确新发起并登记新 requestId。
 
 从仓库根目录启动：
 
 ```bash
 code --new-window \
   --extensionDevelopmentPath="$PWD" \
-  --extensionDevelopmentPath="$PWD/.build/omlx-dev/extensions/techopolis.omlx-copilot-chat" \
-  --disable-extensions "$PWD/.build/cad-manual/current/manual.code-workspace"
+  "$PWD/.build/cad-manual/current/manual.code-workspace"
 ```
 
 ## 结果模板（每个子项复制一次）
@@ -84,7 +81,7 @@ related issue / next action:
 
 目的：CAD-P4-AGENT-02，真实空间反馈；模型只辅助，手动动作由操作者完成。
 
-1. 使用新的 project-a/model.scad，确保 hole=2，Manifest/profile Hash 等于 fixture.json；不打开 Preview。在内置 Agent 选推荐模型，要求 `model_listParts(uri=verification.json)` 与 `model_checkAssembly(uri,expectedManifestDigest)`。保存当前 PASS 报告和基准 digest；这不是人工写报告。
+1. 使用新的 project-a/model.scad，确保 hole=2，Manifest/profile Hash 等于 fixture.json；不打开 Preview。在内置 Agent 选定模型，要求 `model_listParts(uri=verification.json)` 与 `model_checkAssembly(uri,expectedManifestDigest)`。保存当前 PASS 报告和基准 digest；这不是人工写报告。
 2. 要求 `model_getFeedback(reportId)`，再 `model_requestPointing(reportId,prompt="在 body 孔口表面点击并填写将孔半径从2改为3",ttl=180)`。在原生确认 UI 阅读并由真人批准。
 3. 在冻结 CAD Evidence 视图点击 **body 实体孔口表面**，观察空间标记，填写文字，再亲手点“保存并发送位置”。截图同时包含目标与文本；不运行脚本坐标/浏览器自动化，不把在 Chat 说“同意”当提交。
 4. 收到真实 ACCEPTED 后，若模型提出原生编辑，真人检查完整 patch 并仅允许临时 model.scad 的 `hole=2;`→`hole=3;`，可保存。Manifest/profile/parts/transform/其他源码不改。此编辑不在自动 allowlist 中。
@@ -144,7 +141,7 @@ related issue / next action:
 - [ ] **M08b inline**：明确请求inline；核对原生Tool结果是 `LanguageModelDataPart.image` 或有原因的metadata回退，不把base64塞JSON。能看到图像≠模型支持视觉推理。
 - [ ] **M08c 限制/不可用**：无PNG渲染环境／API不支持／超过载荷预算时，明确回退原因；已有几何事实仍有效，图片不替代验证。无法构造该环境时记 NOT_RUN。
 
-若本地Qwen不支持图像，按Provider/模型能力边界记录：原生工具图像交付与模型理解分开，不将模型不能看图报告为网格失败。
+若所选模型不支持图像，按Provider/模型能力边界记录：原生工具图像交付与模型理解分开，不将模型不能看图报告为网格失败。
 
 ## M09：Windows 原生 Unicode（发布阻断）
 
@@ -167,11 +164,9 @@ related issue / next action:
 
 没有目标环境时保持NOT_RUN，不计作本地模型失败或插件功能缺失。完成一个平台不自动勾选其他平台。
 
-## M11：默认 Copilot harness / Agent Host 与 oMLX 的可见性
+## M11：默认 Copilot harness / Agent Host 的模型与工具可见性
 
-本批次模型场景用的是既有 F5 的内置 Local harness，具体选择见各session证据。VS Code 1.146 [官方更新说明](https://code.visualstudio.com/updates/v1_146)计划在2027年2月移除Local；此项是新默认路径的兼容性证据，不撤销当前F5场景结果。
-
-- [ ] M11a 在临时窗口选择 **Copilot** harness（明确区别Local），查看oMLX推荐模型是否出现；记录准确模型ID、Provider和harness，缺失就记BLOCKED/兼容性待定位，不臆称CAD Tool未实现。
+- [ ] M11a 在临时窗口选择 **Copilot** harness，记录实际模型 ID、Provider 和会话类型，检查 SCAD 工具是否可见。环境不可用时记录 BLOCKED 及具体停点。
 - [ ] M11b 若可用，在无Preview下请求网格验证→测量→问题→单图，保存实际工具Schema/结果、报告和snapshot。人工补调必须标assisted；未完成就原样记停点。
 - [ ] M11c 临时SCAD中按既有允许范围做固定基准装配修复；原生编辑确认由真人审阅，不扩大Manifest权限。
 
