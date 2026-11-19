@@ -33,7 +33,7 @@ MODEL-02的旧观察脚本等待transcript落盘而超时，但原生UI已有带
 
 ## 复现入口
 
-先按 [进度](../customizer-progress.md) 构建候选VSIX，并准备官方Ollama扩展路径对应的 `.build/ollama-dev/host.json`；本机Ollama提供指定模型。隔离测试命令示例：
+复现本页的历史 Customizer 场景时，先按 [进度](../customizer-progress.md) 构建候选 VSIX，再运行 `npm run prepare:ollama-dev` 生成 `.build/ollama-dev/host.json`。本机 Ollama 提供指定模型。隔离测试命令示例：
 
 ```sh
 SCAD_AGENT_MODEL='qwen3.5:2b-mlx' \

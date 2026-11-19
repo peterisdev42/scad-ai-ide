@@ -3970,7 +3970,6 @@
         "test:agents:installed": "node scripts/test-agent-installed.mjs",
         "test:agents:ui": "node --test scripts/ai-panel.test.mjs",
         "prepare:ollama-dev": "node scripts/prepare-ollama-dev.mjs",
-        "test:ollama-dev": "node scripts/test-ollama-dev.mjs",
         "test:customizer:source": "npm run compile-tests && node --test out/test/customizerSource*.test.js",
         "test:customizer:compatibility": "npm run compile-tests && node --test out/test/customizerCompatibility.acceptance.js",
         "check:customizer:architecture": "node scripts/customizer-architecture-check.mjs",

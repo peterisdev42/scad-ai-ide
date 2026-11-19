@@ -17,7 +17,7 @@ npm run test:integration
 npm run package
 ```
 
-- `check:agents` checks catalog, manifest schemas, registrations, GUI classifications, generated resources, two Instructions and five Skills.
+- `check:agents` checks catalog, manifest schemas, registrations, GUI classifications, generated resources, the published Instructions and Skills.
 - Capability suites cover all handler bindings, explicit identities, atomic validation, stale targets, trust/path guards, cancellation, redaction, Development-only access and service-side confirmations.
 - Browser tests cover Customizer, Runtime, Libraries, More and AI Panel. Host tests check actual `vscode.lm.tools` and `vscode.lm.invokeTool`, shared state and CLI arguments without requiring panels.
 - Installed Production smoke must reject Development cache access even when directly invoked. VSIX inspection checks shipped runtime assets, Instruction and Skills.
@@ -33,7 +33,7 @@ The last recorded macOS arm64 verification on 2026-11-06 passed 266 unit tests (
 
 ## Real model verification
 
-Use an explicit test workspace and a tool-calling model provider in ordinary Agent mode. [Ollama setup](ollama-development.md) describes the tested local-provider path. Inspect the available SCAD tools and bundled Instruction/Skills before sending prompts; tool discovery alone is insufficient. The picker uses reference names `scad_*`, while registered API names are `scad_ai_ide_*`.
+Use an explicit test workspace and a tool-calling model provider in Agent mode. For current CAD scenarios, use Copilot Agent Host and prepare the oMLX workspace as described in the [CAD manual checklist](cad/manual-acceptance.md). The Ollama run below records an earlier native Agent session. Inspect the available SCAD tools and bundled Instruction/Skills before sending prompts; tool discovery alone is insufficient. The picker uses reference names `scad_*`, while registered API names are `scad_ai_ide_*`.
 
 | Workflow                                                                     | Required observations                                                                                                                                                                                                                                                          |
 | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

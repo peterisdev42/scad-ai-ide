@@ -116,6 +116,6 @@ npm test
 npm run test:integration
 ```
 
-Some integration tests need external binaries, a graphical host or other prerequisites; skips must not be mistaken for passing tests. For the full test matrix and build instructions, see [CONTRIBUTING.md](CONTRIBUTING.md). For local-provider setup, see [Ollama development](docs/ollama-development.md); availability depends on the chosen native VS Code Agent host.
+Some integration tests need external binaries, a graphical host or other prerequisites; skips must not be mistaken for passing tests. For the full test matrix and build instructions, see [CONTRIBUTING.md](CONTRIBUTING.md). For the current VS Code debug launch and local CAD acceptance setup, see [development setup](CONTRIBUTING.md#准备环境) and the [CAD manual checklist](docs/cad/manual-acceptance.md).
 
 Questions, bug reports and contributions are welcome via [GitHub Issues](https://github.com/peterisdev42/scad-ai-ide/issues). SCAD AI IDE is [GPL-3.0 licensed](LICENSE) and is an independent community project, not an official OpenSCAD, VS Code or Microsoft product.
