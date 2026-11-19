@@ -51,3 +51,7 @@ Thumbs.db
 
 # Browser automation session artifacts
 /.playwright-cli/
+
+# Test evidence belongs in .build/ or CI artifacts, not documentation
+/docs/**/evidence/
+/docs/customizer/*.json
