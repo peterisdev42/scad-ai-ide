@@ -16,6 +16,7 @@
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="apple-touch-icon" href="./assets/cheese.png">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./workbench.css">
   <script>
     try {
       const saved = localStorage.getItem("scad-theme");
@@ -27,6 +28,7 @@
     }
   </script>
   <script src="./main.js" defer></script>
+  <script src="./workbench.js" defer></script>
   <title>SCAD AI IDE — From code to solid</title>
 </head>
 <body>
@@ -70,99 +72,130 @@
           <p class="hero-lead">OpenSCAD, without leaving the VS Code you already know.</p>
           <p class="hero-detail">New to OpenSCAD? Skip the manual setup. Already experienced? Keep your Git, terminal, extensions, and familiar workflow. Your tools, your choice.</p>
           <div class="hero-ctas">
-            <a class="button button-primary" href="https://github.com/peterisdev42/scad-ai-ide#quick-start" target="_blank" rel="noopener noreferrer">Run from source <span aria-hidden="true">↗</span></a>
-            <a class="button button-quiet" href="#features">Explore features <span aria-hidden="true">↓</span></a>
+            <a class="button button-primary" href="https://github.com/peterisdev42/scad-ai-ide#quick-start" target="_blank" rel="noopener noreferrer"><span>Run from source</span><span aria-hidden="true">↗</span></a>
+            <a class="button button-quiet" href="#features"><span>Explore features</span><span aria-hidden="true">↓</span></a>
           </div>
-          <div class="hero-note"><span class="note-line"></span> Source-first development preview <span class="note-divider">·</span> Cross-platform validation in progress</div>
+          <div class="hero-note" aria-label="Project development status">
+            <span class="hero-note-item"><span class="hero-note-dot" aria-hidden="true"></span>Development preview</span>
+            <span class="hero-note-item">Cross-platform validation ongoing</span>
+          </div>
         </div>
 
-        <div class="ide-display" aria-label="Illustration of SCAD AI IDE: OpenSCAD code alongside a 3D preview">
-          <div class="ide-glow" aria-hidden="true"></div>
-          <div class="ide-window">
-            <div class="window-titlebar">
-              <div class="window-traffic" aria-hidden="true"><i></i><i></i><i></i></div>
-              <span class="window-name">SCAD AI IDE <span class="window-divider">/</span> bracket.scad</span>
-              <span class="window-actions" aria-hidden="true">⌘ &nbsp; ◻ &nbsp; ⋯</span>
+
+        <div class="vsc-demo-wrap">
+          <div class="vsc-demo-heading"><span>LIVE UI DEMO</span><span>Visual simulation · no code is executed</span></div>
+          <div class="vsc-demo" data-vsc-demo data-vsc-file="bracket" data-vsc-view="solid" data-mobile-pane="preview" aria-label="Interactive simulated VS Code workspace">
+            <div class="vsc-titlebar">
+              <div class="vsc-traffic" aria-hidden="true"><i></i><i></i><i></i></div>
+              <span class="vsc-title">scad-project — Visual Studio Code</span>
+              <div class="vsc-title-search" aria-hidden="true"><svg  aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="6"/><path d="m14.6 14.6 5.4 5.4"/></svg> scad-project</div>
+              <span class="vsc-title-options" aria-hidden="true">— □ ×</span>
             </div>
-            <div class="ide-workspace">
-              <div class="activity-rail" aria-hidden="true">
-                <span class="rail-active">▤</span><span>⌕</span><span>◇</span><span>⊞</span><span class="rail-bottom">⚙</span>
+            <div class="vsc-workspace">
+              <div class="vsc-activitybar" aria-label="Simulated activity bar">
+                <button type="button" class="vsc-activity-btn is-active" data-vsc-action="explorer" aria-pressed="true" aria-label="Toggle Explorer panel" title="Explorer"><svg  aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="12" height="15" rx="1"/><path d="M8 7h12v14H8"/></svg></button>
+                <button type="button" class="vsc-activity-btn" data-vsc-action="search" aria-label="Show simulated search" title="Search"><svg  aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="6"/><path d="m14.6 14.6 5.4 5.4"/></svg></button>
+                <button type="button" class="vsc-activity-btn vsc-cheese-btn" data-vsc-action="preview" aria-label="Focus CAD preview" title="SCAD AI IDE"><img src="./assets/cheese.png" alt="" width="25" height="25"></button>
               </div>
-              <div class="code-pane">
-                <div class="pane-tab"><span class="file-dot"></span> bracket.scad <span class="tab-close">×</span></div>
-                <div class="file-path">src <span>/</span> bracket.scad</div>
-                <div class="source-code" aria-hidden="true">
-                  <div><b>01</b><span class="syntax-comment">// Parametric mounting bracket</span></div>
-                  <div><b>02</b><span class="syntax-key">width</span> = <span class="syntax-number">64</span>;</div>
-                  <div><b>03</b><span class="syntax-key">depth</span> = <span class="syntax-number">42</span>;</div>
-                  <div><b>04</b><span class="syntax-key">thickness</span> = <span class="syntax-number">5</span>;</div>
-                  <div><b>05</b><span class="syntax-key">hole_d</span> = <span class="syntax-number">5</span>;</div>
-                  <div><b>06</b></div>
-                  <div><b>07</b><span class="syntax-purple">difference</span>() {</div>
-                  <div><b>08</b> &nbsp;<span class="syntax-purple">cube</span>([width, depth,</div>
-                  <div><b>09</b> &nbsp;&nbsp;thickness], <span class="syntax-key">center</span>=<span class="syntax-bool">true</span>);</div>
-                  <div><b>10</b> &nbsp;<span class="syntax-purple">for</span> (x = [-<span class="syntax-number">1</span>, <span class="syntax-number">1</span>],</div>
-                  <div><b>11</b> &nbsp;&nbsp;&nbsp;y = [-<span class="syntax-number">1</span>, <span class="syntax-number">1</span>])</div>
-                  <div><b>12</b> &nbsp;&nbsp;<span class="syntax-purple">translate</span>([x*<span class="syntax-number">24</span>,</div>
-                  <div><b>13</b> &nbsp;&nbsp;&nbsp;y*<span class="syntax-number">14</span>, <span class="syntax-number">0</span>])</div>
-                  <div><b>14</b> &nbsp;&nbsp;<span class="syntax-purple">cylinder</span>(h=<span class="syntax-number">16</span>,</div>
-                  <div><b>15</b> &nbsp;&nbsp;&nbsp;d=hole_d, <span class="syntax-key">center</span>=<span class="syntax-bool">true</span>);</div>
-                  <div><b>16</b>}</div>
-                  <div><b>17</b><span class="cursor-line">&nbsp;</span></div>
+              <aside class="vsc-explorer" aria-label="Simulated project Explorer">
+                <div class="vsc-explorer-head">EXPLORER <span aria-hidden="true">···</span></div>
+                <div class="vsc-folder-head">⌄ <span>SCAD-PROJECT</span></div>
+                <div class="vsc-file-group">
+                  <button type="button" class="vsc-tree-file is-active" data-vsc-open="bracket" aria-pressed="true"><span class="vsc-scad-glyph">S</span>bracket.scad</button>
+                  <button type="button" class="vsc-tree-file" data-vsc-open="washer" aria-pressed="false"><span class="vsc-scad-glyph">S</span>washer.scad</button>
                 </div>
-                <div class="code-status"><span>◈ OpenSCAD</span><span>Ln 17, Col 1</span></div>
-              </div>
-              <div class="viewport-pane">
-                <div class="viewport-top"><span>Preview</span><span class="viewport-controls">◈ &nbsp; ⤢ &nbsp; ⋯</span></div>
-                <div class="model-stage">
-                  <svg class="cad-graphic" aria-hidden="true" viewBox="0 0 530 420" role="img">
-                    <defs>
-                      <linearGradient id="plate-top" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#b7cce8"/><stop offset=".52" stop-color="#91add5"/><stop offset="1" stop-color="#7297c8"/></linearGradient>
-                      <linearGradient id="plate-side" x1="0" x2="1"><stop stop-color="#486a99"/><stop offset="1" stop-color="#6e91be"/></linearGradient>
-                      <linearGradient id="block-top" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#cde3f8"/><stop offset="1" stop-color="#a1bce1"/></linearGradient>
-                      <mask id="plate-holes">
-                        <rect x="0" y="0" width="530" height="420" fill="white"/>
-                        <ellipse cx="182" cy="220" rx="16" ry="8" fill="black" transform="rotate(-20 182 220)"/>
-                        <ellipse cx="309" cy="163" rx="16" ry="8" fill="black" transform="rotate(-20 309 163)"/>
-                        <ellipse cx="261" cy="289" rx="16" ry="8" fill="black" transform="rotate(-20 261 289)"/>
-                        <ellipse cx="390" cy="224" rx="16" ry="8" fill="black" transform="rotate(-20 390 224)"/>
-                      </mask>
-                    </defs>
-                    <g class="grid-lines" fill="none" stroke="#647d9d" opacity=".15" stroke-width="1">
-                      <path d="M-30 265 268 113 550 256M-40 291 268 134 550 280M-40 319 268 162 550 308M-40 345 268 190 550 335M-40 369 268 217 550 360M-40 393 268 242 550 385"/>
-                      <path d="M35 192 325 342M82 170 375 320M132 142 425 292M179 119 472 271M224 99 516 250"/>
-                    </g>
-                    <ellipse cx="274" cy="316" rx="183" ry="48" fill="#193452" opacity=".16"/>
-                    <path d="M94 217 259 134 440 221 274 309 274 334 440 246 440 221 259 134 94 217Z" fill="#476791"/>
-                    <path d="M94 217 274 309 274 334 94 243Z" fill="#567da9"/>
-                    <path d="M274 309 440 221 440 246 274 334Z" fill="url(#plate-side)"/>
-                    <path d="M94 217 259 134 440 221 274 309Z" fill="url(#plate-top)" mask="url(#plate-holes)" stroke="#d1e3f5" stroke-width="1.7" stroke-linejoin="round"/>
-                    <g fill="#3d5e8f" opacity=".9">
-                      <ellipse cx="182" cy="224" rx="16" ry="8" transform="rotate(-20 182 224)"/>
-                      <ellipse cx="309" cy="167" rx="16" ry="8" transform="rotate(-20 309 167)"/>
-                      <ellipse cx="261" cy="293" rx="16" ry="8" transform="rotate(-20 261 293)"/>
-                      <ellipse cx="390" cy="228" rx="16" ry="8" transform="rotate(-20 390 228)"/>
-                    </g>
-                    <path d="M218 178 267 153 322 181 272 207 272 255 218 230Z" fill="#7d9ec9" />
-                    <path d="M272 207 322 181 322 228 272 255Z" fill="#587aa9"/>
-                    <path d="M218 178 267 153 322 181 272 207Z" fill="url(#block-top)" stroke="#dbebfa" stroke-width="1.5"/>
-                    <path d="M218 178 272 207v48l-54-25Z" fill="#8eabd2"/>
-                    <path d="M272 207v48l50-27v-47Z" fill="#6183b1"/>
-                    <ellipse cx="272" cy="181" rx="11" ry="5.5" fill="#7799c4" transform="rotate(-20 272 181)" />
-                    <path d="M385 231h65v-37" fill="none" stroke="#8ba9cb" stroke-width="1.1" stroke-dasharray="4 4"/>
-                    <circle cx="385" cy="231" r="3.3" fill="#b6d5f5"/>
-                    <path d="M108 234 84 248v44" fill="none" stroke="#8ba9cb" stroke-width="1.1" stroke-dasharray="4 4"/>
-                    <circle cx="108" cy="234" r="3.3" fill="#b6d5f5"/>
-                  </svg>
-                  <span class="model-caption model-caption-top">Ø 5 mm <span class="caption-point"></span></span>
-                  <span class="model-caption model-caption-bottom">64 × 42 × 5 mm</span>
-                  <div class="axis-indicator" aria-hidden="true"><span class="axis-z">Z</span><span class="axis-y">Y</span><span class="axis-x">X</span></div>
+                <div class="vsc-folder-muted"><svg  aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h6l2 2h8v12H4z"/></svg> <span>.scad</span></div>
+                <div class="vsc-folder-muted vsc-indent">◇ <span>libraries</span></div>
+              </aside>
+              <div class="vsc-main-panels">
+                <div class="vsc-mobile-switch" role="group" aria-label="Demo panel">
+                  <button type="button" data-vsc-pane="code" aria-pressed="false">Code</button>
+                  <button type="button" data-vsc-pane="preview" aria-pressed="true">3D Preview</button>
                 </div>
-                <div class="preview-footer"><span><i></i> Preview ready</span><span>Perspective · Solid</span></div>
+                <section class="vsc-editor" aria-label="Simulated OpenSCAD source editor">
+                  <div class="vsc-tabs" role="tablist" aria-label="Open files">
+                    <button type="button" role="tab" class="vsc-tab is-active" data-vsc-open="bracket" aria-selected="true"><span class="vsc-scad-glyph">S</span>bracket.scad</button>
+                    <button type="button" role="tab" class="vsc-tab" data-vsc-open="washer" aria-selected="false"><span class="vsc-scad-glyph">S</span>washer.scad</button>
+                  </div>
+                  <div class="vsc-breadcrumbs">scad-project <span>›</span> <span data-vsc-file-label>bracket.scad</span></div>
+                  <div class="vsc-code-scroll" aria-label="Read-only demonstration code">
+                    <ol class="vsc-code-lines" data-vsc-code="bracket"><li><span><span class="vsc-syn-comment">// Parametric mounting bracket</span></span></li>
+<li><span><span class="vsc-syn-var">width</span> = <span class="vsc-syn-number">64</span>;</span></li>
+<li><span><span class="vsc-syn-var">depth</span> = <span class="vsc-syn-number">42</span>;</span></li>
+<li><span><span class="vsc-syn-var">thickness</span> = <span class="vsc-syn-number">5</span>;</span></li>
+<li><span><span class="vsc-syn-var">hole_d</span> = <span class="vsc-syn-number">5</span>;</span></li>
+<li><span> </span></li>
+<li><span><span class="vsc-syn-func">difference</span>() {</span></li>
+<li><span>  <span class="vsc-syn-func">cube</span>([width, depth, thickness],</span></li>
+<li><span>    center = <span class="vsc-syn-bool">true</span>);</span></li>
+<li><span>  <span class="vsc-syn-key">for</span> (x = [-<span class="vsc-syn-number">1</span>, <span class="vsc-syn-number">1</span>], y = [-<span class="vsc-syn-number">1</span>, <span class="vsc-syn-number">1</span>])</span></li>
+<li><span>    <span class="vsc-syn-func">translate</span>([x*<span class="vsc-syn-number">24</span>, y*<span class="vsc-syn-number">14</span>, <span class="vsc-syn-number">0</span>])</span></li>
+<li><span>      <span class="vsc-syn-func">cylinder</span>(h=<span class="vsc-syn-number">16</span>, d=hole_d,</span></li>
+<li><span>        center=<span class="vsc-syn-bool">true</span>);</span></li>
+<li><span>}</span></li></ol>
+                    <ol class="vsc-code-lines" data-vsc-code="washer" hidden><li><span><span class="vsc-syn-comment">// Parametric spacer / washer</span></span></li>
+<li><span><span class="vsc-syn-var">outer_d</span> = <span class="vsc-syn-number">34</span>;</span></li>
+<li><span><span class="vsc-syn-var">inner_d</span> = <span class="vsc-syn-number">14</span>;</span></li>
+<li><span><span class="vsc-syn-var">height</span> = <span class="vsc-syn-number">8</span>;</span></li>
+<li><span><span class="vsc-syn-var">$fn</span> = <span class="vsc-syn-number">96</span>;</span></li>
+<li><span> </span></li>
+<li><span><span class="vsc-syn-func">difference</span>() {</span></li>
+<li><span>  <span class="vsc-syn-func">cylinder</span>(h=height, d=outer_d,</span></li>
+<li><span>    center=<span class="vsc-syn-bool">true</span>);</span></li>
+<li><span>  <span class="vsc-syn-func">cylinder</span>(h=height + <span class="vsc-syn-number">2</span>,</span></li>
+<li><span>    d=inner_d, center=<span class="vsc-syn-bool">true</span>);</span></li>
+<li><span>}</span></li></ol>
+                  </div>
+                </section>
+                <section class="vsc-preview" aria-label="Simulated CAD preview">
+                  <div class="vsc-preview-toolbar">
+                    <span class="vsc-preview-title"><svg  aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg> <span>SCAD AI IDE: Preview</span></span>
+                    <div class="vsc-preview-actions">
+                      <button type="button" data-vsc-action="render" title="Simulate render" aria-label="Simulate render"><svg  aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m7 4 13 8-13 8z"/></svg></button>
+                      <button type="button" data-vsc-action="wireframe" title="Toggle wireframe" aria-label="Toggle wireframe" aria-pressed="false"><svg  aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5v10l-9 5-9-5V7zm0 10 9-5m-9 5L3 7m9 5v10"/></svg></button>
+                      <button type="button" data-vsc-action="reset" title="Reset preview" aria-label="Reset preview"><svg  aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11a9 9 0 1 1 2.5 6.3"/><path d="M3 4v7h7"/></svg></button>
+                    </div>
+                  </div>
+                  <div class="vsc-model-stage" data-vsc-stage aria-label="Drag to rotate the model representation">
+                    <svg class="vsc-cad-svg" viewBox="0 0 360 280" role="img" aria-label="CAD model preview, schematic visualization">
+                      <defs>
+                        <pattern id="vsc-stage-grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#647082" stroke-width=".5" opacity=".22"/></pattern>
+                        <linearGradient id="vsc-model-top" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#c2d0dd"/><stop offset="1" stop-color="#839aaf"/></linearGradient>
+                      </defs>
+                      <rect width="360" height="280" fill="url(#vsc-stage-grid)"/>
+                      <path d="M0 196 180 99 360 197M0 222l180-97 180 98M0 247l180-96 180 97" fill="none" stroke="#4c6074" opacity=".24"/>
+                      <g class="vsc-geometry" data-vsc-shape="bracket">
+                        <path d="M43 130 175 58l149 76-136 78-145-80Z" fill="url(#vsc-model-top)" stroke="#cad4de" stroke-width="1.5"/>
+                        <path d="M43 130 188 212v20L43 151Z" fill="#657e95" stroke="#9eb3c4" stroke-width=".8"/>
+                        <path d="m188 212 136-78v20l-136 78Z" fill="#4f657c" stroke="#8da2b4" stroke-width=".8"/>
+                        <g fill="#3f546a" stroke="#b5c7d7" stroke-width="1.2">
+                          <ellipse cx="110" cy="128" rx="13" ry="7" transform="rotate(-23 110 128)"/>
+                          <ellipse cx="223" cy="97" rx="13" ry="7" transform="rotate(-23 223 97)"/>
+                          <ellipse cx="143" cy="187" rx="13" ry="7" transform="rotate(-23 143 187)"/>
+                          <ellipse cx="264" cy="154" rx="13" ry="7" transform="rotate(-23 264 154)"/>
+                        </g>
+                        <path d="M153 115 189 94l41 20-39 22Z" fill="#d3e0ea" stroke="#e4ebf1" stroke-width="1"/>
+                        <path d="m153 115 38 21v39l-38-21Z" fill="#88a2bb"/>
+                        <path d="m191 136 39-22v39l-39 22Z" fill="#607e99"/>
+                      </g>
+                      <g class="vsc-geometry" data-vsc-shape="washer" hidden>
+                        <path d="M83 154a95 51 0 1 0 190 0v28a95 51 0 1 1-190 0Z" fill="#71899f" stroke="#a7bed1"/>
+                        <ellipse cx="178" cy="154" rx="95" ry="51" fill="#a4bbce" stroke="#d6e3ef" stroke-width="2"/>
+                        <ellipse cx="178" cy="154" rx="41" ry="24" fill="#364658" stroke="#c5d7e6" stroke-width="2"/>
+                        <path d="M137 154v25a41 24 0 0 0 82 0v-25" fill="#4d647a" stroke="#8fa7b9" stroke-width="1"/>
+                        <ellipse cx="178" cy="179" rx="41" ry="24" fill="#37495b" opacity=".62"/>
+                      </g>
+                    </svg>
+                    <div class="vsc-viewport-indicator" aria-hidden="true"><span class="vsc-axis-z">Z</span><span class="vsc-axis-x">X</span><span class="vsc-axis-y">Y</span></div>
+                    <span class="vsc-stage-hint">Drag to orbit · Illustrative model</span>
+                  </div>
+                  <div class="vsc-preview-footer"><span data-vsc-status role="status" aria-live="polite">Preview ready</span><span data-vsc-display-mode>Perspective · Solid</span></div>
+                </section>
               </div>
             </div>
+            <div class="vsc-statusbar"><span>⑂ main</span><span>OpenSCAD</span><span class="vsc-status-right" data-vsc-active-file>bracket.scad</span><span>UTF-8</span></div>
           </div>
-          <div class="floating-stat"><span class="floating-icon">◈</span><div><strong>Keep your tools. Skip the setup.</strong><small>One integrated workspace</small></div></div>
+          <p class="vsc-demo-caption">Simulated VS Code interface. Switch files, change preview mode, or drag the model to explore. No OpenSCAD runtime or editor is embedded.</p>
         </div>
       </div>
     </section>

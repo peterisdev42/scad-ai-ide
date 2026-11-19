@@ -33,7 +33,12 @@ jobs:
           test -s site/index.html
           test -s site/styles.css
           test -s site/main.js
+          test -s site/workbench.js
+          test -s site/workbench.css
+          test -s site/assets/cheese.png
           test -s site/favicon.svg
+          node --check site/main.js
+          node --check site/workbench.js
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload website
