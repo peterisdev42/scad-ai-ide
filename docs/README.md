@@ -11,7 +11,7 @@
 - [开发模式缓存管理](development-caches.md)：缓存范围、内容展示、清理和开发模式约束。
 - [通知约定](notifications.md)：共享通知入口、聚合、恢复和用户确认。
 
-## Agent 与本地模型
+## Agent 验证
 
 - [Phase 2 网格与测量](cad-mesh-verification.md)：原始 STL/3MF、测量、冻结 PNG、预算和验收边界。
 - [CAD 验证架构](cad-verification-architecture.md)：无 Preview 的 CLI 诊断、快照、共享 Problems 和边界。
@@ -20,7 +20,8 @@
 - [CAD 手动验收](cad/manual-acceptance.md)：真实交互、工作区、信任和跨平台的待验项目。
 
 - [共享能力与权限矩阵](agent-capability-matrix.md)：四模块服务、GUI/Agent 边界和安全约束。
-- [完整工具目录](agent-capability-catalog.md)：由能力 Registry 生成的 51 项原生 VS Code Agent Tool 清单。
+- [完整工具目录](agent-capability-catalog.md)：由能力 Registry 生成的 52 项原生 VS Code Agent Tool 清单。
+- [Codex 原生 Agent 验收 SPEC](agent-codex-acceptance-spec.md)：GPT-6.2 Sol 与授权备选 GPT-6.1 Sol（均为 Low）、16 个原生场景和取证要求。
 - [Agent 验证指南](agent-verification.md)：自动化入口、真实模型验收方法、已知失败和未验环境。
 - [Copilot harness 复验记录](cad/copilot-harness-acceptance.md)：实际会话身份、本地模型路由和未闭合的工具发现问题。
 - [Customizer 收尾结果](customizer/closeout-report.md)：已执行验证、历史证据及未闭合项目。

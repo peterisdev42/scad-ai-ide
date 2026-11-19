@@ -1,3 +1,4 @@
+import { CadBufferEditService } from '../features/cad-verification/CadBufferEditService'
 import { PreviewProblems } from '../features/preview/extension/services/PreviewProblems'
 import * as assert from 'node:assert/strict'
 import { readFile, writeFile, mkdir, rm, realpath, symlink } from 'node:fs/promises'
@@ -75,7 +76,27 @@ suite('CAD verification Extension Host', () => {
         const actions = await vscode.commands.executeCommand<vscode.CodeAction[]>('vscode.executeCodeActionProvider', uri, diagnostics(uri)[0].range)
         const navigation = actions?.find((a) => a.command?.command === 'scad-ai-ide.preview.openProblemSource')?.command
         assert.ok(navigation)
-        await replace('cube(3);')
+        const input = {
+            mode: 'plan', uri: uri.toString(),
+            identity: { version: failed.data.document.version, sha256: failed.data.document.sourceSha256 },
+            oldText: 'assert(false, "dirty assertion"); cube(1);', newText: 'cube(3);',
+        }
+        const nativePlan = await vscode.lm.invokeTool('scad_ai_ide_model_editBuffer', { input, toolInvocationToken: undefined })
+        const planned = JSON.parse((nativePlan.content[0] as vscode.LanguageModelTextPart).value)
+        assert.equal(planned.ok, true, JSON.stringify(planned))
+        assert.equal(planned.data.preview[0].before, input.oldText)
+        const fixture = new CadBufferEditService(Date.now, async () => true)
+        try {
+            const plan = await fixture.apply(input)
+            assert.ok(plan.continuation)
+            const committed = await fixture.apply(plan.continuation.input)
+            assert.ok(committed.applied && committed.diskUnchanged)
+            assert.equal(document.getText(), '// dirty line\ncube(3);')
+            assert.equal(document.isDirty, true)
+            assert.equal(await readFile(file, 'utf8'), 'cube(1);')
+        } finally {
+            fixture.dispose()
+        }
         await wait(() => diagnostics(uri).length === 0, 'Buffer edits must invalidate old Problems')
         assert.equal(await vscode.commands.executeCommand(navigation.command, ...navigation.arguments!), false, 'Stale navigation must be rejected')
         const stale = await analyzeTool(uri, failed.data.snapshotId)

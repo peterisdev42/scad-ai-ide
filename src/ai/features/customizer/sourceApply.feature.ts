@@ -401,10 +401,7 @@ export default defineTool({
         risk: 'change',
         service: 'CustomizerSourceDomainService.apply',
         gui: 'Problems / Quick Fix',
-        confirmationException: {
-            field: 'mode',
-            value: 'plan',
-        },
+        serviceConfirmation: true,
         availability: 'customizerIdle',
         binding: {
             module: 'src/ai/handlers/customizer.ts',

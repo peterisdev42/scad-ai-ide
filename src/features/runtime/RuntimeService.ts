@@ -435,13 +435,15 @@ export function createRuntimeService(context: vscode.ExtensionContext, manager: 
             const replacesActive = previous?.installPath && installed.some((entry) => entry.directories.includes(previous.installPath!))
             await runInstallation(build.release, id, async (options) => {
                 if (JSON.stringify(builds.find((entry) => entry.id === id)) !== JSON.stringify(build)) throw new CapabilityError('STALE_STATE', 'Build catalog changed. Refresh and choose the exact build again.', true)
-                const executable = await installRuntimeBuild(runtimesRoot, system!, build, { ...options, onRemoved: () => refresh(true) })
-                // An offline import can move from a content-hash directory to an asset
-                // directory during reinstall. Keep its active selection pointing at the replacement.
-                if (replacesActive && manager.active?.id === previous.id && previous.command.executable !== executable) {
-                    await saveCommand({ ...previous.command, executable })
-                }
-                return executable
+                return installRuntimeBuild(runtimesRoot, system!, build, {
+                    ...options,
+                    onPublished: async (executable) => {
+                        // Switch the configured path before the previous offline import is removed.
+                        if (replacesActive && manager.active?.id === previous.id && previous.command.executable !== executable) {
+                            await saveCommand({ ...previous.command, executable })
+                        }
+                    },
+                })
             }, signal)
         },
         onDidChange: changed.event,

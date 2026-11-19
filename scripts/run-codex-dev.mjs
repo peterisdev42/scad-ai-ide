@@ -1,15 +1,20 @@
 import { spawn } from 'node:child_process'
-import { existsSync } from 'node:fs'
+import { existsSync, statSync } from 'node:fs'
 import { createServer } from 'node:net'
 import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { setTimeout } from 'node:timers/promises'
 
-const workspace = fileURLToPath(new URL('../', import.meta.url))
-const root = path.join(workspace, '.build', 'codex-dev')
+const extension = fileURLToPath(new URL('../', import.meta.url))
+const root = path.join(extension, '.build', 'codex-dev')
 const port = Number(process.argv[2])
 if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error('Specify a local Extension Host debugger port.')
+const workspace = process.argv[3] === undefined ? extension : path.resolve(process.argv[3])
+const target = statSync(workspace, { throwIfNoEntry: false })
+if (!target?.isDirectory() && !(target?.isFile() && path.extname(workspace) === '.code-workspace')) {
+    throw new Error(`Expected an existing folder or .code-workspace file: ${workspace}`)
+}
 
 const listener = createServer()
 await new Promise((resolve, reject) => {
@@ -29,7 +34,7 @@ const child = spawn(executable, [
     '--new-window', workspace,
     `--user-data-dir=${path.join(root, 'user-data')}`,
     `--extensions-dir=${path.join(root, 'installed')}`,
-    `--extensionDevelopmentPath=${workspace}`,
+    `--extensionDevelopmentPath=${extension}`,
     `--extensionDevelopmentPath=${path.join(root, 'extensions', 'openai.chatgpt')}`,
     '--disable-extensions', '--disable-extension=github.copilot-chat',
     `--inspect-extensions=${port}`,

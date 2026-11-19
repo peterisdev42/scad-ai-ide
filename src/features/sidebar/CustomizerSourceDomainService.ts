@@ -7,15 +7,17 @@ import { analyzeCustomizerSource, SOURCE_LIMIT } from '../../core/customizer/Cus
 import { planCustomizerEdits } from '../../core/customizer/CustomizerSourceEditor'
 import { validateCustomizerSource } from '../../core/customizer/CustomizerSourceValidator'
 import type { SourceDocumentIdentity, SourceEditIntent, SourceExpectation } from '../../core/customizer/CustomizerSourceTypes'
+import { copyBufferEditPreview, previewBufferEdit, requireBufferEditApproval, showBufferEditConfirmation, type BufferEditPreview, type ConfirmBufferEdit } from '../../platform/BufferEditConfirmation'
 
 export { documentIdentity as sourceIdentity } from '../../platform/CustomizerDocumentTransaction'
 import { documentIdentity as sourceIdentity, assertDocumentIdentity, applyCustomizerBufferEdits } from '../../platform/CustomizerDocumentTransaction'
-type Plan = ReturnType<typeof planCustomizerEdits> & { identity: SourceDocumentIdentity; expires: number }
+type Plan = ReturnType<typeof planCustomizerEdits> & { identity: SourceDocumentIdentity; expires: number; preview: BufferEditPreview[] }
 const sourceApplyToolName = toolFeatures.find(({ tool }) => tool.capabilityId === 'customizer.sourceApply')!.tool.name
 
 /** Explicit buffer access, workspace boundaries and single-use source CAS, independent of Overrides. */
 export class CustomizerSourceDomainService implements vscode.Disposable {
-    constructor(private readonly now: () => number = Date.now) {}
+    constructor(private readonly now: () => number = Date.now, private readonly confirm: ConfirmBufferEdit = showBufferEditConfirmation) {}
+    private disposed = false
     private readonly cache = new Map<string, { key: string; analysis: ReturnType<typeof analyzeCustomizerSource> }>()
     private readonly changed = vscode.workspace.onDidChangeTextDocument((event) => this.cache.delete(event.document.uri.toString()))
     private readonly plans = new Map<string, Plan>()
@@ -37,7 +39,10 @@ export class CustomizerSourceDomainService implements vscode.Disposable {
         if (Buffer.byteLength(document.getText(), 'utf8') > SOURCE_LIMIT) throw new CapabilityError('LIMIT_EXCEEDED', 'Source exceeds 1 MiB.')
         return document
     }
-    private trust() { if (!vscode.workspace.isTrusted) throw new CapabilityError('UNTRUSTED_WORKSPACE', 'Source editing requires Workspace Trust.') }
+    private trust() {
+        if (this.disposed) throw new CapabilityError('DISPOSED', 'Extension session ended.')
+        if (!vscode.workspace.isTrusted) throw new CapabilityError('UNTRUSTED_WORKSPACE', 'Source editing requires Workspace Trust.')
+    }
     private cancel(context?: CapabilityContext) { if (context?.signal?.aborted) throw new CapabilityError('CANCELLED', 'Source operation cancelled.') }
     private check(document: vscode.TextDocument, identity: SourceDocumentIdentity) {
         assertDocumentIdentity(document, identity)
@@ -68,11 +73,11 @@ export class CustomizerSourceDomainService implements vscode.Disposable {
             this.check(document, { uri: String(input.uri), ...input.identity as Omit<SourceDocumentIdentity, 'uri'> })
             if (this.plans.size >= 32) throw new CapabilityError('LIMIT_EXCEEDED', 'Too many pending plans; wait for expiry.')
             const planned = planCustomizerEdits(document.getText(), input.edits as SourceEditIntent[])
-            const preview = planned.edits.map((edit) => ({ range: { start: document.positionAt(edit.start), end: document.positionAt(edit.end) }, before: document.getText().slice(edit.start, edit.end), after: edit.text }))
+            const preview = planned.edits.map((edit) => previewBufferEdit(document, edit))
             if (Buffer.byteLength(JSON.stringify(preview), 'utf8') > 32768) throw new CapabilityError('LIMIT_EXCEEDED', 'Plan preview exceeds 32 KiB; use a smaller batch.')
             const planId = randomUUID()
-            this.plans.set(planId, { ...planned, identity, expires: this.now() + 120000 })
-            return { planId, identity, summary: `Update Customizer source: ${planned.changedParameters.join(', ')}`, preview, validation: { ...planned.validation, pass: planned.validation.semanticPass }, expiresInSeconds: 120,
+            this.plans.set(planId, { ...planned, identity, preview, expires: this.now() + 120000 })
+            return { planId, identity: { ...identity }, summary: `Update Customizer source: ${planned.changedParameters.join(', ')}`, preview: preview.map(copyBufferEditPreview), validation: { ...planned.validation, pass: planned.validation.semanticPass }, expiresInSeconds: 120,
                 continuation: { tool: sourceApplyToolName, input: { mode: 'commit' as const, planId }, requiresReview: true as const } }
         }
         if (input.mode !== 'commit') throw new CapabilityError('INVALID_INPUT', 'Use plan or commit.')
@@ -81,10 +86,17 @@ export class CustomizerSourceDomainService implements vscode.Disposable {
         if (!plan || plan.expires <= this.now()) throw new CapabilityError('PLAN_EXPIRED', 'Plan expired or already consumed. Analyze and plan again.')
         const document = await this.document(plan.identity.uri)
         this.trust(); this.cancel(context); this.check(document, plan.identity)
-        const { actual } = await applyCustomizerBufferEdits(document, plan.identity, plan.edits, () => { this.trust(); this.cancel(context) })
+        context?.report?.('Waiting for source edit confirmation.')
+        await requireBufferEditApproval(this.confirm, document.uri, plan.preview, context?.signal)
+        const current = await this.document(plan.identity.uri)
+        if (current !== document) throw new CapabilityError('TARGET_CHANGED', 'Source document was closed or replaced.')
+        const { actual } = await applyCustomizerBufferEdits(document, plan.identity, plan.edits, () => {
+            this.trust(); this.cancel(context)
+            if (plan.expires <= this.now()) throw new CapabilityError('PLAN_EXPIRED', 'Plan expired during confirmation. Analyze and plan again.')
+        })
         const validated = validateCustomizerSource(actual, plan.expectations)
         const postValidation = { ...validated, pass: validated.semanticPass }
         return { applied: true, identity: sourceIdentity(document), changedParameters: plan.changedParameters, postValidation, semanticPass: postValidation.semanticPass && actual === plan.source && !document.isClosed, ...(!postValidation.semanticPass || actual !== plan.source || document.isClosed ? { error: { code: 'POSTCONDITION_FAILED', message: 'Buffer differs from the planned result. Inspect current source and use Undo if needed.' } } : {}), savedToDisk: false }
     }
-    dispose() { this.plans.clear(); this.cache.clear(); this.closed.dispose(); this.changed.dispose() }
+    dispose() { this.disposed = true; this.plans.clear(); this.cache.clear(); this.closed.dispose(); this.changed.dispose() }
 }
