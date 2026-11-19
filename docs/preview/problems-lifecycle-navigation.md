@@ -1,5 +1,7 @@
 # Preview Problems 生命周期与源码导航
 
+> 历史验收证据已移出当前工作树，下文链接指向清理前的 Git 提交。
+
 2026-11-11。修复用户报告的两个问题：切换 Text 会清空 Preview 编译诊断；默认关联 Preview 时，Problems 的资源打开无法显示文本行列。原始模型测试没有恢复，用户文件和编辑器偏好没有修改。
 
 ## 实现
@@ -39,4 +41,4 @@
 
 NOT RUN：原生 Problems 普通行鼠标点击的 UI 自动化；完整 Host 全套；跨平台/Remote；关闭文件的所有外部修改情形；真实模型读取；新 VSIX 打包与安装。原有失败和未执行项目没有因本项变更转为通过。F5 调试宿主需重启以加载新的扩展代码。
 
-[验证证据与哈希](evidence/lifecycle-navigation-2026-11-11/manifest.json)。
+[验证证据与哈希](https://github.com/peterisdev42/scad-ai-ide/blob/9b4fcd3301defa86a10f311f2a52fc42e7767878/docs/preview/evidence/lifecycle-navigation-2026-11-11/manifest.json)。
