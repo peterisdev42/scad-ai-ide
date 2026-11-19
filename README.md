@@ -1,5 +1,7 @@
 # SCAD AI IDE
 
+<img src="resources/icon.png" alt="SCAD AI IDE cheese logo" width="76" height="76">
+
 **OpenSCAD development, made simple in the VS Code you already know.**
 
 _From code to solid._
