@@ -25,7 +25,7 @@ Phase 5 MCP 已取消。全部业务能力只由 VS Code 插件向 VS Code 内�
 
 1. `npm run test:cad:closeout -- baseline`：测试 harness、自有领域用例、真实官方 CLI、资源清单、冻结视图、生产构建，再用原生工具跑 CAD Host 专项。记录逐命令退出码和日志。该层不使用模型。
 2. 冻结源码、harness、资源与构建 Hash。`docs/cad/evidence/copilot-harness/baseline.json` 必须 PASS 且与当前候选内容完全匹配，才允许真实 Agent；文档更新不改变候选身份。
-3. 逐场执行 `npm run test:cad:closeout -- native diagnostics|mesh|assembly|comparison`。推荐模型仅用 **Qwen3.6-35B-A3B-OptiQ-4bit**，oMLX Provider 来自既有 **Run Extension + oMLX**。模型缺失明确失败，不选列表第一项或静默换模型。
+3. 逐场执行 `npm run test:cad:closeout -- native diagnostics|mesh|assembly|comparison`。推荐模型仅用 **Qwen3.6-35B-A3B-OptiQ-4bit**，oMLX Provider 由 `npm run prepare:omlx-dev` 准备。模型缺失明确失败，不选列表第一项或静默换模型。
 4. 每候选／场景／模型最多一个正式尝试，预算 **600 秒**，包含启动、确认和推理；收集退出证据及清理单独记时。原子排他 reservation 防止不慎重复。历史 240 秒尝试保留为当时结果，本次是明确获准的新验收批次。开发定向测试不是签署，修改后必须重新冻结相关证据。
 5. **Qwen3.8-27B-4bit** 仅在同一候选确定性层 PASS、主模型有明确参数／规划／延迟证据时最多对照一次。设置 `SCAD_AGENT_MODEL` 和 `SCAD_NATIVE_BACKUP_OF=<主模型result.json>`。缺少支持证据不跑对照；原主模型失败不被覆盖，备选 PASS 仅证明备选流程。单纯超时不自动获得“模型能力不足”标签或对照资格。
 6. 真人定位、拒绝、焦点、实际不信任窗口及平台操作按独立手动清单执行。自动场景发现非允许确认即标 `MANUAL_REQUIRED`，不得假装模型仍在推理；手动交互不纳入自动超时，也不自动延长产品 TTL。
@@ -249,4 +249,4 @@ VS Code 保存事件只公开 reason，不公开调用方。因此时间顺序�
 
 ## 交付
 
-独立草稿 [PR #6](https://github.com/peterisdev42/scad-ai-ide/pull/6)，面向main、依赖#5/#4/#3/#2。请按[相对677dc68的增量](https://github.com/peterisdev42/scad-ai-ide/compare/677dc681965e1d640ecf606f1ed0f60d1fe492a0...codex/cad-acceptance-closeout)审阅本轮，原始证据单独提交。最终生产候选仍为1d82001；后续交付提交只追加文档/证据，实际HEAD见PR。main维持8a3ff1fe，不自动合并或发布。手动夹具已准备，选择CAD Manual Acceptance + oMLX按F5即可逐项记录，未将任何未执行人工条目标为PASS。
+独立草稿 [PR #6](https://github.com/peterisdev42/scad-ai-ide/pull/6)，面向main、依赖#5/#4/#3/#2。请按[相对677dc68的增量](https://github.com/peterisdev42/scad-ai-ide/compare/677dc681965e1d640ecf606f1ed0f60d1fe492a0...codex/cad-acceptance-closeout)审阅本轮，原始证据单独提交。最终生产候选仍为1d82001；后续交付提交只追加文档/证据，实际HEAD见PR。main维持8a3ff1fe，不自动合并或发布。手动夹具已准备，按[手动验收单](manual-acceptance.md#一次准备)启动夹具窗口后即可逐项记录，未将任何未执行人工条目标为PASS。
