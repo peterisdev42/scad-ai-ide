@@ -1,1 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#C5C5C5" stroke-width="1.5" stroke-linejoin="round" d="m12 2 9 5v10l-9 5-9-5V7zm0 10 9-5M12 12 3 7m9 5v10"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <title>SCAD AI IDE — Cheese (Activity Bar)</title>
+  <g fill="none" stroke="#C5C5C5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2.7 12.7 12.1 2.7c.4-.4.9-.5 1.5-.2l6.7 3.9c.6.3.9.8.9 1.5v9.8c0 .5-.3.9-.8 1.1L4.5 22c-1 .2-1.8-.3-1.8-1.3v-8Z"/>
+    <path d="M2.8 12.9 21.0 7.6"/>
+    <ellipse cx="12.2" cy="7.2" rx="1.95" ry="1.0" transform="rotate(-17 12.2 7.2)"/>
+    <circle cx="7.1" cy="17.3" r="1.6"/>
+    <ellipse cx="15.0" cy="14.9" rx="2.3" ry="2.65" transform="rotate(16 15 14.9)"/>
+    <circle cx="19.1" cy="10.9" r=".65"/>
+  </g>
+</svg>
