@@ -21,6 +21,7 @@ import { cadExecution, type ExecutionRequest } from '../../platform/openscad/Cad
 import type { registerRuntime } from '../runtime/registerRuntime'
 import { PreviewSourceProblems } from '../preview/extension/services/PreviewSourceProblems'
 import { canPreviewSource } from '../preview/extension/services/previewEligibility'
+import { CadBufferEditService } from './CadBufferEditService'
 
 const within = (root: string, file: string) => {
     const part = relative(root, file)
@@ -51,6 +52,7 @@ interface PreviewExecutionContext {
 
 /** Extension Host adapter; no panel or active-editor state is needed for tools. */
 export class CadWorkspaceService implements vscode.Disposable {
+    readonly bufferEdits = new CadBufferEditService()
     review?: ReviewWorkspaceService
     assembly?: AssemblyWorkspaceService
     geometry?: MeshWorkspaceService
@@ -497,6 +499,7 @@ export class CadWorkspaceService implements vscode.Disposable {
     }
     dispose() {
         this.disposed = true
+        this.bufferEdits.dispose()
         for (const controller of this.requestControllers) controller.abort()
         this.requestControllers.clear()
         for (const [file, listener] of this.watched) unwatchFile(file, listener)

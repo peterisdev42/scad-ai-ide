@@ -131,6 +131,7 @@
                         "tool.cad.requestPointing",
                         "tool.cad.checkPrintability",
                         "tool.cad.manageReview",
+                        "tool.cad.modelEditBuffer",
                         "instruction.discovery.openscad",
                         "instruction.customizer.openscad-customizer",
                         "skill.runtime.openscad-runtime",

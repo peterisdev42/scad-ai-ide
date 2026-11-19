@@ -118,18 +118,12 @@ test('installation verifies, extracts, probes and discovers all managed versions
         assert.ok(result.runtimes.every((runtime) => runtime.source !== 'managed' || runtime.installPath))
         const sentinel = path.join(path.dirname(path.dirname(first)), 'old-installation-marker')
         await writeFile(sentinel, 'remove during reinstall')
-        let removed = false
         let downloaded = false
         assert.equal(
             await installRuntimeBuild(f.storage, system, build, {
-                onRemoved: async () => {
-                    removed = true
-                    assert.deepEqual(await managedRuntimePaths(f.storage, system), [second])
-                },
                 request: async (url, options) => {
-                    assert.ok(removed)
                     downloaded = true
-                    await assert.rejects(readFile(sentinel))
+                    assert.equal(await readFile(sentinel, 'utf8'), 'remove during reinstall')
                     return f.request(url, options)
                 },
             }),
@@ -390,7 +384,7 @@ test('Available installation detection reads asset directories and imported rele
     }
 })
 
-test('reinstall removes matching offline imports before downloading and preserves other versions and the original ZIP', async () => {
+test('reinstall preserves matching offline imports until the replacement is ready and preserves other versions and the original ZIP', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'scad-reinstall-'))
     const windows: RuntimeSystem = { platform: 'win32', architecture: 'x64', name: 'Windows', version: '' }
     try {
@@ -410,30 +404,23 @@ test('reinstall removes matching offline imports before downloading and preserve
         const other = path.join(managedDirectory(storage, windows), '999')
         await mkdir(other)
         await writeFile(path.join(other, 'keep'), 'other version')
-        let removed = false
         const executable = await installRuntimeBuild(storage, windows, release, {
             check,
-            onRemoved: async () => {
-                removed = true
-                await assert.rejects(readFile(local))
-                assert.deepEqual(await installedRuntimeBuilds(storage, windows, [release]), [])
-            },
             request: async () => {
-                assert.ok(removed)
-                await assert.rejects(readFile(local))
+                assert.equal(await readFile(local, 'utf8'), 'test executable')
                 return new Response(Buffer.from(bytes))
             },
         })
-        assert.ok(removed)
+        await assert.rejects(readFile(local))
         assert.equal(path.basename(path.dirname(path.dirname(executable))), String(release.id))
         assert.deepEqual(await readFile(source), Buffer.from(bytes))
         assert.equal(await readFile(path.join(other, 'keep'), 'utf8'), 'other version')
         const status = await installedRuntimeBuilds(storage, windows, [release])
         assert.deepEqual(status[0].directories, [path.dirname(path.dirname(executable))])
-        // Failure after removal must not retain an old runtime or a partial new install.
         await assert.rejects(installRuntimeBuild(storage, windows, release, { request: async () => new Response('', { status: 503 }) }), /HTTP 503/)
-        assert.deepEqual(await installedRuntimeBuilds(storage, windows, [release]), [])
-        assert.deepEqual(await readdir(managedDirectory(storage, windows)), ['999'])
+        assert.deepEqual(await installedRuntimeBuilds(storage, windows, [release]), status)
+        assert.equal(await readFile(executable, 'utf8'), 'test executable')
+        assert.deepEqual((await readdir(managedDirectory(storage, windows))).sort(), ['999', String(release.id)].sort())
     } finally {
         await rm(root, { recursive: true, force: true })
     }

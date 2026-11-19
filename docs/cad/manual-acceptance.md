@@ -1,10 +1,10 @@
 # CAD 手动逐项验收单
 
-> 使用 VS Code 内置 **Copilot harness** 进行真实 Agent 验收。先完成 M11，记录实际选择的模型和会话。
+> 按 [Codex 原生 Agent 验收 SPEC](../agent-codex-acceptance-spec.md) 优先使用 **GPT-6.2 Sol（Low）**，目录缺少时使用 **GPT-6.1 Sol（Low）**。先完成 M11a，记录实际模型、等级和会话。
 
 所有条目初始为 **NOT_RUN**。本单专门记录必须由真人操作、或当前宿主自动化无法可靠执行的交互，不以自动点击、模拟 adapter 或模型回复代签。用户逐条填结果即可；失败请保留窗口和原始证据，不需要先判断归谁修。
 
-每个子项独立填写 `MANUAL_PASS / FAIL / BLOCKED / NOT_RUN`，不合并为整组 PASS。需要模型时，在 Copilot 会话中选择可用且支持工具调用的模型。纯 UI 操作不需要模型。
+每个子项独立填写 `MANUAL_PASS / FAIL / BLOCKED / NOT_RUN`，不合并为整组 PASS。需要模型时使用指定的 Codex 会话。纯 UI 操作不需要模型。
 
 ## 当前优先级
 
@@ -13,8 +13,8 @@
 | M03–M07 | 仍需真人点选、确认、动态目录与真正Restricted Mode；当前NOT_RUN |
 | M08 | 原生DataPart的Host类型/回退已有自动化；Provider实际图像可见性与真人观察单独记录 |
 | M09–M10 | 需目标平台/隔离测试环境；当前Windows Unicode缺口、其他未运行项保持原状态 |
-| M11 | 记录实际 Copilot 会话、模型和工具可见性 |
-| M01–M02 | 上一候选两版曾通过；最终候选最低版通过，但Stable又出现3项焦点失败。需真人区分稳定编辑语义与焦点环境波动，当前仍未闭合 |
+| M11 | 在 VS Code 1.146.0 使用 GPT-6.1 Sol（Low）完成只读探测、网格和装配。其他宿主的手动签署仍待验证。见 [Codex 运行记录](../agent-codex-acceptance-spec.md#本轮运行记录)。 |
+| M01–M02 | 本轮最低版与 Stable 均有 3 项窗口焦点失败。需真人核对键盘交互。 |
 
 勾选表示实际执行，不能仅因对应自动用例通过就勾成“真人已验”。
 
@@ -29,9 +29,8 @@
 从仓库根目录启动：
 
 ```bash
-code --new-window \
-  --extensionDevelopmentPath="$PWD" \
-  "$PWD/.build/cad-manual/current/manual.code-workspace"
+node scripts/prepare-codex-dev.mjs
+node scripts/run-codex-dev.mjs 9236 .build/cad-manual/current/manual.code-workspace
 ```
 
 ## 结果模板（每个子项复制一次）
@@ -164,9 +163,9 @@ related issue / next action:
 
 没有目标环境时保持NOT_RUN，不计作本地模型失败或插件功能缺失。完成一个平台不自动勾选其他平台。
 
-## M11：默认 Copilot harness / Agent Host 的模型与工具可见性
+## M11：Codex Agent Host 的模型与工具可见性
 
-- [ ] M11a 在临时窗口选择 **Copilot** harness，记录实际模型 ID、Provider 和会话类型，检查 SCAD 工具是否可见。环境不可用时记录 BLOCKED 及具体停点。
+- [ ] M11a 按 SPEC 在临时窗口选择 **Codex**，记录会话类型、实际模型 ID 和推理等级，并执行只读工具探测。环境不可用时记录 BLOCKED 及具体停点。
 - [ ] M11b 若可用，在无Preview下请求网格验证→测量→问题→单图，保存实际工具Schema/结果、报告和snapshot。人工补调必须标assisted；未完成就原样记停点。
 - [ ] M11c 临时SCAD中按既有允许范围做固定基准装配修复；原生编辑确认由真人审阅，不扩大Manifest权限。
 

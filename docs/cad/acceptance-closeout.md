@@ -25,7 +25,7 @@ Phase 5 MCP 已取消。全部业务能力只由 VS Code 插件向 VS Code 内�
 
 1. 设置 `SCAD_OPENSCAD_EXECUTABLE`，执行 `npm run test:cad:closeout -- baseline`。验证默认测试、真实 CLI、资源清单、冻结视图、生产构建及 CAD Host 专项。按需用 `SCAD_VSCODE_EXECUTABLE` 指定宿主。
 2. 查看 `.build/cad-closeout/baseline.json`，记录候选 Hash 与每条命令的结果。
-3. 在 [手动夹具](manual-acceptance.md) 中使用 VS Code 内置 Copilot。记录模型、工具与报告身份、编辑前后证据和实际终态。真人审阅工具及编辑确认。未执行的场景填写 NOT_RUN。
+3. 按 [Codex 原生 Agent 验收 SPEC](../agent-codex-acceptance-spec.md) 选择 GPT-6.2 Sol（Low）或授权备选 GPT-6.1 Sol（Low），从 [手动夹具](manual-acceptance.md) 启动。记录模型、工具与报告身份、编辑前后证据和实际终态。真人审阅工具及编辑确认。
 4. 在同一生产 VSIX 上分别记录最低支持版、Stable、installed 与目标平台结果。
 
 ## 必须保留的证据

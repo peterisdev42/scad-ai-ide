@@ -162,7 +162,7 @@ export interface InstallOptions {
     progress?: (value: InstallProgress) => void
     request?: GitHubRequest
     check?: typeof probe
-    onRemoved?: () => Promise<void>
+    onPublished?: (executable: string) => Promise<void>
 }
 
 interface ArchiveSource {
@@ -225,9 +225,6 @@ async function installPackage(root: string, system: RuntimeSystem, source: Archi
         } catch {
             return false
         }
-    }
-    if (source.key && (await isUsable(source.key))) {
-        return path.join(directory, source.key, 'bin', executableName)
     }
     const staging = await mkdtemp(path.join(directory, '.install-'))
     let preserveBackup = false
@@ -308,20 +305,8 @@ export async function installRuntimeBuild(root: string, system: RuntimeSystem, b
     }
     options.signal?.throwIfAborted()
     const installed = await installedRuntimeBuilds(root, system, [build])
-    const directories = new Set([path.join(managedDirectory(root, system), String(build.id)), ...installed.flatMap((entry) => entry.directories)])
-    if (installed.length) {
-        options.progress?.({ buildId: build.id, message: 'Removing existing runtime…' })
-    }
-    for (const directory of directories) {
-        options.signal?.throwIfAborted()
-        await rm(directory, { recursive: true, force: true })
-    }
-    if (installed.length) {
-        await options.onRemoved?.()
-    }
-    options.signal?.throwIfAborted()
     const request = options.request ?? anonymousGitHubRequest
-    return installPackage(
+    const executable = await installPackage(
         root,
         system,
         {
@@ -352,6 +337,14 @@ export async function installRuntimeBuild(root: string, system: RuntimeSystem, b
         },
         options,
     )
+    // The previous installation remains usable until the new package passes
+    // the probe at its final path. The package transaction handles a same-path replacement.
+    await options.onPublished?.(executable)
+    const destination = path.dirname(path.dirname(executable))
+    const aliases = new Set(installed.flatMap(entry => entry.directories))
+    aliases.delete(destination)
+    for (const alias of aliases) await rm(alias, { recursive: true, force: true })
+    return executable
 }
 
 export async function installRuntimeArchive(root: string, system: RuntimeSystem, sourceFile: string, options: InstallOptions = {}): Promise<string> {
