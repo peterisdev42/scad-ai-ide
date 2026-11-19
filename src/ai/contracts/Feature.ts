@@ -24,7 +24,7 @@ export interface ToolFeature extends FeatureBase {
         risk: FeatureRisk
         requiresInteraction?: boolean
         safetyReview?: string
-        confirmationException?: { field: string; value: string }
+        serviceConfirmation?: true
         resultFormat?: 'inlineViews'
         availability?: 'cad' | 'cadReport' | 'pointing' | 'runtimeIdle' | 'librariesIdle' | 'customizerIdle' | 'development' | 'developmentIdle'
         service: string

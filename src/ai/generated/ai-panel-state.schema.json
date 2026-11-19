@@ -166,6 +166,9 @@
                 "tool.cad.manageReview": {
                     "$ref": "#/definitions/runtime"
                 },
+                "tool.cad.modelEditBuffer": {
+                    "$ref": "#/definitions/runtime"
+                },
                 "instruction.discovery.openscad": {
                     "$ref": "#/definitions/runtime"
                 },
@@ -267,6 +270,7 @@
                 "tool.cad.requestPointing",
                 "tool.cad.checkPrintability",
                 "tool.cad.manageReview",
+                "tool.cad.modelEditBuffer",
                 "instruction.discovery.openscad",
                 "instruction.customizer.openscad-customizer",
                 "skill.runtime.openscad-runtime",
@@ -487,6 +491,9 @@
                         "tool.cad.manageReview": {
                             "type": "boolean"
                         },
+                        "tool.cad.modelEditBuffer": {
+                            "type": "boolean"
+                        },
                         "instruction.discovery.openscad": {
                             "type": "boolean"
                         },
@@ -582,6 +589,7 @@
                         "tool.cad.requestPointing",
                         "tool.cad.checkPrintability",
                         "tool.cad.manageReview",
+                        "tool.cad.modelEditBuffer",
                         "instruction.discovery.openscad",
                         "instruction.customizer.openscad-customizer",
                         "skill.runtime.openscad-runtime",
@@ -694,6 +702,7 @@
                         "tool.cad.requestPointing",
                         "tool.cad.checkPrintability",
                         "tool.cad.manageReview",
+                        "tool.cad.modelEditBuffer",
                         "instruction.discovery.openscad",
                         "instruction.customizer.openscad-customizer",
                         "skill.runtime.openscad-runtime",

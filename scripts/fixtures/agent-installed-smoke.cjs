@@ -117,10 +117,16 @@ exports.run = async () => {
     assert.deepEqual(planned.data.continuation.input, { mode: 'commit', planId: planned.data.planId })
     assert.equal(planned.data.continuation.requiresReview, true)
     assert.equal(sourceDocument.isDirty, false, 'Plan continuation does not auto-execute')
-    const committed = await api.capabilities.invoke('customizer.sourceApply', planned.data.continuation.input, { actor: 'agent' })
-    assert.equal(committed.ok, true, JSON.stringify(committed))
-    assert.equal(committed.data.semanticPass, true)
-    assert.equal(committed.data.savedToDisk, false)
+    const abort = new AbortController()
+    const cancelled = await api.capabilities.invoke('customizer.sourceApply', planned.data.continuation.input, {
+        actor: 'agent', signal: abort.signal, report: () => abort.abort(),
+    })
+    assert.equal(cancelled.ok, false, JSON.stringify(cancelled))
+    assert.equal(cancelled.error.code, 'CANCELLED')
+    assert.equal(sourceDocument.isDirty, false)
+    const editorFixture = new vscode.WorkspaceEdit()
+    editorFixture.insert(sourceUri, new vscode.Position(0, sourceDocument.lineAt(0).text.length), ' // [10:5:100]')
+    assert.equal(await vscode.workspace.applyEdit(editorFixture), true)
     assert.equal(sourceDocument.isDirty, true)
     const validation = await vscode.lm.invokeTool('scad_ai_ide_customizer_sourceValidate', { input: { uri: sourceUri.toString(), expectations: [{ name: 'width', widget: 'slider', range: { min: 10, max: 100, step: 5 } }] }, toolInvocationToken: undefined })
     const validated = JSON.parse(validation.content[0].value)
@@ -148,7 +154,7 @@ exports.run = async () => {
     assert.equal(reused.ok, false)
     assert.equal(reused.error.code, 'PLAN_EXPIRED')
     assert.doesNotMatch(Buffer.from(await vscode.workspace.fs.readFile(sourceUri)).toString(), /\[10:5:100\]/)
-    const sourceAuthoring = { analyzed, unmet, planned, committed, validated, singleUseRejected: true, unsavedSource: sourceDocument.getText(), diskUnchanged: true }
+    const sourceAuthoring = { analyzed, unmet, planned, cancelled, validated, editOrigin: 'editor fixture for Undo/Redo', singleUseRejected: true, unsavedSource: sourceDocument.getText(), diskUnchanged: true }
     await vscode.commands.executeCommand('workbench.action.revertAndCloseActiveEditor')
     await vscode.workspace.fs.delete(sourceUri)
     const overrideUri = vscode.Uri.joinPath(folder.uri, 'override.scad')

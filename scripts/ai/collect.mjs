@@ -90,11 +90,7 @@ export function collect(root) {
             assert.ok(tool.resultFormat === undefined || tool.resultFormat === 'inlineViews', `Invalid result format: ${id}`)
             if (['destructive', 'privileged'].includes(tool.risk)) assert.ok(tool.safetyReview?.trim(), `Missing safety review for ${id}`)
             assert.equal(tool.inputSchema?.type, 'object', `Expected object input schema for ${id}`)
-            if (tool.confirmationException) {
-                const { field, value } = tool.confirmationException
-                const values = tool.inputSchema.properties?.[field]?.enum
-                assert.ok(tool.risk === 'change' && !tool.requiresInteraction && typeof value === 'string' && values?.includes(value), `Invalid confirmation exception: ${id}`)
-            }
+            assert.ok(tool.serviceConfirmation === undefined || (tool.serviceConfirmation === true && tool.risk === 'change' && !tool.requiresInteraction), `Invalid service confirmation: ${id}`)
             try {
                 validators.set(tool.capabilityId, ajv.compile(tool.inputSchema))
             } catch (error) {

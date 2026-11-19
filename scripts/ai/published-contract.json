@@ -50,7 +50,8 @@
         "cad.getFeedback": "d29a6019af7957c53cf7c701af8a2b7220c5168b10c058774f291d2c32264b0b",
         "cad.requestPointing": "5c917f38d9ae990bdc2b477dfeef45528215637fdb27c885ce1b88305679abad",
         "cad.checkPrintability": "43713a72b35b623018331dadc7f7c34123f968cd8b5311ffc76d8987269eff8a",
-        "cad.manageReview": "ef42df395d57bfc23aecd91b94746c7f0726232a15eeaa33961532c1534d0c53"
+        "cad.manageReview": "ef42df395d57bfc23aecd91b94746c7f0726232a15eeaa33961532c1534d0c53",
+        "cad.modelEditBuffer": "432ad3517bfaad0a101bf0f564cfda9661320a97220853e984e54b5a8df5733d"
     },
     "resources": {
         "./instructions/openscad.instructions.md": "0da129683c24de54a25d76159855168fddd34a945371d11f42fc45b02d6d2f76",
@@ -60,7 +61,7 @@
         "./skills/openscad-customizer/SKILL.md": "b9964734fe8fc24132e276638184ce50681fb03592149dfb588bcaf2da461869",
         "./skills/openscad-customizer-authoring/SKILL.md": "118de547e188e460a2c365ad5bffb80c13db989d48f6f7ef58677a10a34c2df8",
         "./skills/scad-ai-ide-diagnostics/SKILL.md": "53c30da8ec32bfdcbf48f61c9e8d7e4e830eefc0228f1e1c00a80a6c6a0b246a",
-        "./skills/openscad-model-debugging/SKILL.md": "dd2b83a8a2058321d9bc006e98237c9cd875831656f3b58175acc43b62cc2f89",
+        "./skills/openscad-model-debugging/SKILL.md": "1ba318ada72384694cc62fe8dd088a4b994c1d421db47ffefa62ec567ede719f",
         "./skills/openscad-geometry-verification/SKILL.md": "07ebed0e1257962bfaadb84ee17ee9de036620cf0be3aa5bbe5a09500b24e2aa",
         "./skills/openscad-assembly-design/SKILL.md": "5c6dc9e885a0a28a71b602498a2288fa7ea6778756be46f6bb495b219dfe3f0d",
         "./skills/openscad-modeling-lifecycle/SKILL.md": "2874fed008701fc4d3e6159b362ce995541234ed214e14878eebe42b797ab571",

@@ -1,6 +1,6 @@
 # Agent-Native CAD 整体进度
 
-> 当前验收标准已改为Copilot harness。下文2026-11-17早期F5模型结果均为Local历史证据，不能用于当前Copilot Agent Gate。迁移实现及真实认证阻断见[Copilot验收记录](copilot-harness-acceptance.md)。
+> 当前入口为 [Codex 原生 Agent 验收 SPEC](../agent-codex-acceptance-spec.md)。下文保留 2026-11-17 各候选的历史表现，旧迁移取证见 [Copilot 验收记录](copilot-harness-acceptance.md)。
 
 更新：2026-11-17。当前收尾分支 `codex/cad-acceptance-closeout`，继承 `677dc68`（Phase 4 PR #5）；产品修复 `d3586cc`，最终验收代码／harness HEAD `1d82001`。验收候选按全部源码、harness及生产资产内容Hash冻结，文档提交不改变候选。
 

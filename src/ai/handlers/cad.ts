@@ -16,6 +16,11 @@ export const modelAnalyzeHandler: ToolHandler = async (input, ctx, { cad }) => {
     return reportSummary(report)
 }
 
+export const modelEditBufferHandler: ToolHandler = (input, context, { cad }) => {
+    if (!cad) throw new CapabilityError('UNAVAILABLE', 'CAD workspace service is unavailable.')
+    return cad.bufferEdits.apply(input, context.signal)
+}
+
 export const issueDetailsHandler: ToolHandler = async (input, _context, { cad }) => {
     const result = await cad!.issueDetails(String(input.reportId), String(input.issueId), input.includeEvidence === true, Number(input.cursor ?? 0), Number(input.limit ?? 100))
     return cad!.review?.has?.(String(input.reportId)) ? boundedReviewSummary(result) : result

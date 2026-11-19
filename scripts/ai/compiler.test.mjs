@@ -16,7 +16,7 @@ const catalogFile = generated + 'feature-catalog.generated.json'
 const baseline = JSON.parse(readText(path.join(root, 'scripts/ai/published-contract.json')))
 const hash = (text) => createHash('sha256').update(text).digest('hex')
 
-test('published 51/12/2 contracts match frozen names, schemas, risk, Markdown and settings', () => {
+test('published 52/12/2 contracts match frozen names, schemas, risk, Markdown and settings', () => {
     const output = compile(root)
     checkOutputs(root, output, false)
     const { features } = JSON.parse(output[catalogFile])

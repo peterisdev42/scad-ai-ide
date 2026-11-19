@@ -33,7 +33,7 @@ MODEL-02的旧观察脚本等待transcript落盘而超时，但原生UI已有带
 
 ## 历史结果边界
 
-这批本地模型驱动已退役。下文保留实际执行结果和原始证据。当前验证入口见 [Agent 验证指南](../agent-verification.md)。
+这批本地模型驱动已退役。下文保留实际执行结果和原始证据。当前验证入口见 [Codex 原生 Agent 验收 SPEC](../agent-codex-acceptance-spec.md)。
 
 本次模型四场景没有完整PASS。整个SPEC目标仍active。三平台CI和指定Source/Editor服务的真实Host三份heap快照已有后续证据；Windows真实Library Unicode include失败，Remote、完整pinned Qt及更广renderer/GPU内存仍未完成；精确pinned Linux HEADLESS CLI另已完整构建并运行41+10探针；官方2026.11.06 Desktop已有后续12项Qt+echo通过证据。模型结果没有被这些独立证据替代。
 

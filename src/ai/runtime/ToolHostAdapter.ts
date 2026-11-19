@@ -11,8 +11,7 @@ export class ToolHostAdapter implements vscode.LanguageModelTool<Record<string, 
     prepareInvocation(options: vscode.LanguageModelToolInvocationPrepareOptions<Record<string, unknown>>): vscode.PreparedToolInvocation {
         const target = String(options.input.target ?? options.input.project ?? options.input.id ?? options.input.planId ?? options.input.path ?? options.input.uri ?? options.input.scope ?? '')
         const { tool, display } = this.definition
-        const exception = tool.confirmationException
-        const confirmation = tool.requiresInteraction || (tool.risk !== 'read' && (!exception || options.input[exception.field] !== exception.value))
+        const confirmation = tool.requiresInteraction || (tool.risk !== 'read' && !tool.serviceConfirmation)
         return {
             invocationMessage: `${display.label}${target ? `: ${target}` : ''}`,
             confirmationMessages: confirmation ? { title: display.label, message: `${tool.modelDescription}\nTarget: ${target || 'See operation arguments'}` } : undefined,

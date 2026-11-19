@@ -136,7 +136,7 @@ test('LM adapter registers side-effect confirmation and bridges cancellation to 
     })
     const sourceAdapter = new ToolHostAdapter(toolFeatures.find((d) => d.tool.capabilityId === 'customizer.sourceApply')!, dispatcher)
     assert.equal(sourceAdapter.prepareInvocation({ input: { mode: 'plan', uri: 'file:///workspace/model.scad' } }).confirmationMessages, undefined)
-    assert.ok(sourceAdapter.prepareInvocation({ input: { mode: 'commit', planId: 'opaque' } }).confirmationMessages)
+    assert.equal(sourceAdapter.prepareInvocation({ input: { mode: 'commit', planId: 'opaque' } }).confirmationMessages, undefined)
     const pointingAdapter=new ToolHostAdapter(toolFeatures.find(d=>d.tool.capabilityId==='cad.requestPointing')!,dispatcher)
     assert.ok(pointingAdapter.prepareInvocation({input:{reportId:'cad-00000000-0000-0000-0000-000000000000'}}).confirmationMessages,'Read classification cannot bypass human interaction')
     const adapter = new ToolHostAdapter(toolFeatures.find((d) => d.tool.capabilityId === 'runtime.remove')!, dispatcher)
@@ -207,7 +207,7 @@ test('all catalog handlers execute without panels and preserve exact service arg
     let libraryAbort: AbortController | undefined
     const runtimeState = { recommendedBuildId: 1, installedBuildIds: [1], activeId: 'runtime', runtimes: [{ id: 'runtime', version: 'test', command: { executable: '/installed/openscad', argsPrefix: [] as string[] }, source: 'managed' }], builds: [{ id: 1, channel: 'Stable' }], busy: false, buildsLoaded: true, message: '' }
     const services = {
-        cad: { review:{views:{},compare:record('cad.compare'),getFeedback:record('cad.getFeedback'),requestPointing:record('cad.requestPointing'),print:record('cad.checkPrintability'),manage:record('cad.manageReview'),measure:record('cad.modelMeasure'),renderViews:record('cad.modelRenderViews')}, assembly: {list:record('cad.listParts'),check:record('cad.checkAssembly'),core:{has:()=>false}}, geometry: {core:{has:()=>false}, availability: () => ({ enabled: true }), measure:record('cad.modelMeasure'), renderViews:record('cad.modelRenderViews') }, availability: () => ({ enabled: true }), analyze: async () => ({ schemaVersion: 1, reportId: 'fixture', snapshot: { id: 'hash', document: { uri: 'file:///workspace/model.scad' }, project: { rootUri: 'file:///workspace' }, runtime: {}, complete: true }, checks: [], issues: [], incomplete: [], examined: [], notExamined: [], artifacts: [], metrics: {} }), issueDetails: record('cad.issueDetails') },
+        cad: { bufferEdits: { apply: record('cad.modelEditBuffer') }, review:{views:{},compare:record('cad.compare'),getFeedback:record('cad.getFeedback'),requestPointing:record('cad.requestPointing'),print:record('cad.checkPrintability'),manage:record('cad.manageReview'),measure:record('cad.modelMeasure'),renderViews:record('cad.modelRenderViews')}, assembly: {list:record('cad.listParts'),check:record('cad.checkAssembly'),core:{has:()=>false}}, geometry: {core:{has:()=>false}, availability: () => ({ enabled: true }), measure:record('cad.modelMeasure'), renderViews:record('cad.modelRenderViews') }, availability: () => ({ enabled: true }), analyze: async () => ({ schemaVersion: 1, reportId: 'fixture', snapshot: { id: 'hash', document: { uri: 'file:///workspace/model.scad' }, project: { rootUri: 'file:///workspace' }, runtime: {}, complete: true }, checks: [], issues: [], incomplete: [], examined: [], notExamined: [], artifacts: [], metrics: {} }), issueDetails: record('cad.issueDetails') },
         runtime: { cancel: () => { if (!runtimeAbort) return false; runtimeAbort.abort(); return true }, refreshInstalled: record('refreshInstalled'), onDidChange: () => disposable, getState: () => runtimeState, getActiveRuntime: () => runtimeState.runtimes.find((r) => r.id === runtimeState.activeId), whenReady: async () => {}, loadBuilds: record('loadBuilds'), refresh: record('refresh'), installBuild: record('installBuild'), installArchivePath: record('installArchivePath'), addExecutable: record('addExecutable'), select: record('select'), deleteRuntime: async (id: string) => { calls.push({ name: 'deleteRuntime', input: id }); runtimeState.runtimes = runtimeState.runtimes.filter((r) => r.id !== id); runtimeState.activeId = '' } },
         libraries: { activity: () => ({ busy: !!libraryAbort, cancellable: !!libraryAbort, message: libraryAbort ? 'Installing from GUI' : '', error: '', trusted: true }), search: record('search', []), cancel: () => { if (!libraryAbort) return false; libraryAbort.abort(); return true }, isBusy: () => false, onDidChange: () => disposable, getState: async () => ({ registry: [], global: [], globalIssues: [], registryLoaded: true }), projects: async () => ['/workspace'], projectState: record('projectState', { dependencies: [] }), loadRegistry: record('loadRegistry'), execute: record('library.execute'), planCleanup: record('planCleanup', { id: 'plan' }), executeCleanup: record('executeCleanup', { removed: 1 }), manager: { registry: { search: record('search', []), getLibrary: record('getLibrary', { id: 'fixture', versions: [] }) } } },
         customizerSource: { analyze: record('sourceAnalyze'), apply: record('sourceApply'), validate: record('sourceValidate') },
@@ -223,6 +223,7 @@ test('all catalog handlers execute without panels and preserve exact service arg
     try {
         const inputs: Record<string, Record<string, unknown>> = {
             'cad.compare':{baselineReportId:'cad-00000000-0000-0000-0000-000000000000',targetReportId:'cad-00000000-0000-0000-0000-000000000000'}, 'cad.getFeedback':{uri:'file:///workspace/model.stl'}, 'cad.requestPointing':{reportId:'cad-00000000-0000-0000-0000-000000000000',prompt:'Point at the surface.'}, 'cad.checkPrintability':{reportId:'cad-00000000-0000-0000-0000-000000000000',profileUri:'file:///workspace/.scad/print-profile.json'}, 'cad.manageReview':{action:'retainBaseline',reportId:'cad-00000000-0000-0000-0000-000000000000'},
+            'cad.modelEditBuffer': { mode: 'commit', planId: 'plan' },
             'cad.listParts':{uri:'file:///workspace/.scad/verification.json'}, 'cad.checkAssembly':{uri:'file:///workspace/.scad/verification.json'}, 'cad.modelMeasure': {uri:'file:///workspace/model.stl'}, 'cad.modelRenderViews': {uri:'file:///workspace/model.stl'}, 'cad.modelAnalyze': { uri: 'file:///workspace/model.scad' }, 'cad.issueDetails': { reportId: 'fixture', issueId: 'a'.repeat(64) },
             'runtime.installBuild': { id: 1 }, 'runtime.installArchive': { path: '/host/archive.zip' }, 'runtime.addExecutable': { path: '/host/openscad' }, 'runtime.select': { id: 'runtime' }, 'runtime.remove': { id: 'runtime' },
             'customizer.sourceAnalyze': { uri: 'file:///workspace/model.scad' }, 'customizer.sourceValidate': { uri: 'file:///workspace/model.scad' }, 'customizer.sourceApply': { mode: 'commit', planId: 'plan' },
@@ -374,7 +375,7 @@ async function sourceFixture() {
     const document = {
         uri: Uri.file(file), version: 1, isClosed: false, isDirty: false,
         getText: () => text,
-        positionAt: (offset: number) => ({ offset }),
+        positionAt: (offset: number) => ({ offset, line: 0, character: offset }),
     }
     class Range { constructor(readonly start: { offset: number }, readonly end: { offset: number }) {} }
     class WorkspaceEdit {
@@ -384,10 +385,14 @@ async function sourceFixture() {
     const close = new Emitter()
     let reject = false, interfere = false
     let applied = 0
-    const api = { Uri, Range, WorkspaceEdit, workspace: {
+    let autoSave = 'off'
+    let confirm = async () => true
+    const api = { Uri, Range, WorkspaceEdit, EndOfLine: { CRLF: 2 }, workspace: {
         isTrusted: true, workspaceFolders: [{ uri: Uri.file(root) }],
         getWorkspaceFolder: (uri: Uri) => uri.fsPath.startsWith(root + path.sep) ? { uri: Uri.file(root) } : undefined,
         onDidCloseTextDocument: close.event, onDidChangeTextDocument: () => disposable,
+        textDocuments: [document], getConfiguration: () => ({ get: () => autoSave }),
+        fs: { readFile: async () => readFileSync(file) },
         openTextDocument: async () => document,
         applyEdit: async (edit: WorkspaceEdit) => {
             if (reject) return false
@@ -402,13 +407,15 @@ async function sourceFixture() {
         },
     } }
     const module = load<typeof import('../features/sidebar/CustomizerSourceDomainService')>('../features/sidebar/CustomizerSourceDomainService.js', api, { '/CapabilityTypes': { CapabilityError } })
-    const domain = new module.CustomizerSourceDomainService(() => now)
+    const domain = new module.CustomizerSourceDomainService(() => now, () => confirm())
+    const cadModule = load<typeof import('../features/cad-verification/CadBufferEditService')>('../features/cad-verification/CadBufferEditService.js', api, { '/CapabilityTypes': { CapabilityError } })
+    const cad = new cadModule.CadBufferEditService(() => now, () => confirm())
     const uri = document.uri.toString()
     const plan = async () => {
         const { identity } = await domain.analyze(uri)
         return domain.apply({ mode: 'plan', uri, identity: { version: identity.version, sha256: identity.sha256 }, edits: [{ kind: 'annotateExisting', name: 'width', widget: 'slider', range: { min: 10, max: 100, step: 5 } }] }) as Promise<{ planId: string; continuation: { tool: string; input: { mode: 'commit'; planId: string }; requiresReview: true } }>
     }
-    return { root, file, uri, domain, document, api, plan, get text() { return text }, get applied() { return applied }, change(value: string, version = true) { text = value; if (version) document.version++ }, expire() { now += 120001 }, reject() { reject = true }, interfere() { interfere = true }, close() { document.isClosed = true; close.fire(document) }, async dispose() { domain.dispose(); await rm(root, { recursive: true, force: true }) } }
+    return { root, file, uri, domain, cad, document, api, plan, setConfirm(callback: () => Promise<boolean>) { confirm = callback }, setAutoSave(value: string) { autoSave = value }, get text() { return text }, get applied() { return applied }, change(value: string, version = true) { text = value; if (version) document.version++ }, expire() { now += 120001 }, reject() { reject = true }, interfere() { interfere = true }, close() { document.isClosed = true; close.fire(document) }, async dispose() { cad.dispose(); domain.dispose(); await rm(root, { recursive: true, force: true }) } }
 }
 
 test('source plan/commit reads unsaved buffers, never writes disk and consumes plans once', async () => {
@@ -456,6 +463,71 @@ test('source CAS rejects version, hash-only changes, closed targets, expiry, tru
         } finally { await f.dispose() }
     }
 })
+test('source commit requires a service decision and a live document after the prompt', async () => {
+    for (const scenario of ['skip', 'cancel', 'expire', 'stale', 'trust'] as const) {
+        const f = await sourceFixture()
+        try {
+            const plan = await f.plan()
+            const abort = new AbortController()
+            let resolve!: (approved: boolean) => void
+            let shown!: () => void
+            const pendingPrompt = new Promise<void>(ready => { shown = ready })
+            f.setConfirm(() => new Promise(ready => { resolve = ready; shown() }))
+            const commit = f.domain.apply(plan.continuation.input, { actor: 'agent', signal: abort.signal })
+            await pendingPrompt
+            assert.equal(f.applied, 0)
+            await assert.rejects(f.domain.apply(plan.continuation.input), { code: 'PLAN_EXPIRED' })
+            if (scenario === 'cancel') abort.abort()
+            if (scenario === 'expire') f.expire()
+            if (scenario === 'stale') f.change('width=57;\n')
+            if (scenario === 'trust') f.api.workspace.isTrusted = false
+            if (scenario !== 'cancel') resolve(scenario !== 'skip')
+            await assert.rejects(commit, { code: { skip: 'CANCELLED', cancel: 'CANCELLED', expire: 'PLAN_EXPIRED', stale: 'STALE_SOURCE', trust: 'UNTRUSTED_WORKSPACE' }[scenario] })
+            if (scenario === 'cancel') resolve(true)
+            assert.equal(f.applied, 0)
+            assert.equal(readFileSync(f.file, 'utf8'), 'width=40;\n')
+        } finally { await f.dispose() }
+    }
+})
+test('CAD buffer plan and commit allow only a confirmed unique replacement in a dirty document', async () => {
+    const f = await sourceFixture()
+    try {
+        f.change('width=0;\ncube(width);\n')
+        const planInput = {
+            mode: 'plan', uri: f.uri, identity: (await f.domain.analyze(f.uri)).identity,
+            oldText: 'width=0;', newText: 'width=1;',
+        }
+        await assert.rejects(f.cad.apply(planInput), { code: 'TARGET_CHANGED' })
+        f.document.isDirty = true
+        await assert.rejects(f.cad.apply({ ...planInput, oldText: '' }), { code: 'INVALID_INPUT' })
+        await assert.rejects(f.cad.apply({ ...planInput, oldText: 'width' }), { code: 'TEXT_MATCH_NOT_UNIQUE' })
+        const duplicate = await f.cad.apply(planInput)
+        assert.ok(duplicate.continuation)
+        f.setAutoSave('onFocusChange')
+        await assert.rejects(f.cad.apply(duplicate.continuation.input), { code: 'AUTO_SAVE_ENABLED' })
+        f.setAutoSave('off')
+        const skipped = await f.cad.apply(planInput)
+        assert.ok(skipped.continuation)
+        f.setConfirm(async () => false)
+        await assert.rejects(f.cad.apply(skipped.continuation.input), { code: 'CANCELLED' })
+        await assert.rejects(f.cad.apply(skipped.continuation.input), { code: 'PLAN_EXPIRED' })
+        const stale = await f.cad.apply(planInput)
+        assert.ok(stale.continuation)
+        f.setConfirm(async () => { f.change('width=4;\ncube(width);\n'); return true })
+        await assert.rejects(f.cad.apply(stale.continuation.input), { code: 'STALE_SOURCE' })
+        assert.equal(f.applied, 0)
+        f.change('width=0;\ncube(width);\n')
+        f.setConfirm(async () => true)
+        const plan = await f.cad.apply({ ...planInput, identity: (await f.domain.analyze(f.uri)).identity })
+        assert.ok(plan.continuation && plan.preview)
+        assert.equal(plan.preview[0].before, 'width=0;')
+        const applied = await f.cad.apply(plan.continuation.input)
+        assert.ok('diskUnchanged' in applied && applied.diskUnchanged)
+        assert.equal(f.applied, 1)
+        assert.equal(f.text, 'width=1;\ncube(width);\n')
+        assert.equal(readFileSync(f.file, 'utf8'), 'width=40;\n')
+    } finally { await f.dispose() }
+})
 test('source continuation retains native review and cancellation, and failed plans expose no continuation', async () => {
     const f = await sourceFixture()
     try {
@@ -466,7 +538,7 @@ test('source continuation retains native review and cancellation, and failed pla
         })
         const adapter = new ToolHostAdapter(toolFeatures.find(definition => definition.tool.capabilityId === 'customizer.sourceApply')!, dispatcher)
         const plan = await f.plan()
-        assert.ok(adapter.prepareInvocation({ input: plan.continuation.input }).confirmationMessages, 'requiresReview is advisory; the actual adapter still requires user confirmation')
+        assert.equal(adapter.prepareInvocation({ input: plan.continuation.input }).confirmationMessages, undefined, 'The service owns the approval prompt')
         const cancelled = await adapter.invoke({ input: plan.continuation.input, toolInvocationToken: undefined } as vscode.LanguageModelToolInvocationOptions<Record<string, unknown>>, { isCancellationRequested: true, onCancellationRequested: () => disposable } as unknown as vscode.CancellationToken)
         const cancellation = JSON.parse((cancelled.content[0] as vscode.LanguageModelTextPart).value)
         assert.equal(cancellation.error.code, 'CANCELLED')
@@ -601,6 +673,7 @@ test('Runtime Agent lifecycle forces catalog refresh, downloads/probes a real ar
     await tar.c({ cwd: path.join(root, 'source'), file: archive, gzip: true }, [packageName])
     const bytes = await readFile(archive)
     const build = { id: 12345, release: '2026.11.TEST', tag: 'openscad-2026.11.TEST', channel: 'Test' as const, prerelease: true, publishedAt: '', name: `openscad-cli-${process.platform === 'darwin' ? 'macos' : 'linux'}-${process.arch}.tar.gz`, size: bytes.length, downloadUrl: 'https://fixture.test/archive', checksumUrl: 'https://fixture.test/checksum' }
+    const unavailableBuild = { ...build, id: 12346, downloadUrl: 'https://fixture.test/unavailable-archive' }
     let catalogReads = 0, downloads = 0, approve = false
     const config = new Map<string, unknown>()
     const state = new Map<string, unknown>()
@@ -612,12 +685,18 @@ test('Runtime Agent lifecycle forces catalog refresh, downloads/probes a real ar
     const module = load<typeof import('../features/runtime/RuntimeService')>('../features/runtime/RuntimeService.js', host, {
         '/CapabilityTypes': { CapabilityError },
         '/notifications': { notifications: { runtimeAvailable() {}, runtimeUnavailable() {} }, confirmCapabilityAction: async () => approve },
-        '/releases': { ...releaseFunctions, detectRuntimeSystem: async () => ({ platform: process.platform, architecture: process.arch, name: '', version: '' }), fetchRuntimeBuilds: async () => { catalogReads++; return [build] }, fetchLatestRuntimeTag: async () => build.tag },
+        '/releases': { ...releaseFunctions, detectRuntimeSystem: async () => ({ platform: process.platform, architecture: process.arch, name: '', version: '' }), fetchRuntimeBuilds: async () => { catalogReads++; return [build, unavailableBuild] }, fetchLatestRuntimeTag: async () => build.tag },
     })
     const manager = new RuntimeManager((options) => discover({ ...options, env: { PATH: '' }, home: root }, { collect: async () => ({ candidates: [], diagnostics: [] }) }))
+    let onDownload: (() => void) | undefined
     const runtime = module.createRuntimeService({ globalStorageUri: Uri.file(path.join(root, 'storage')), subscriptions, globalState: { get: (key: string) => state.get(key), update: async (key: string, value: unknown) => { state.set(key, value) } } } as unknown as vscode.ExtensionContext,
-        manager, async (url) => {
+        manager, async (url, options) => {
             if (url.endsWith('/checksum')) return new Response(`${createHash('sha256').update(bytes).digest('hex')}  ${build.name}\n`)
+            if (url === unavailableBuild.downloadUrl) {
+                onDownload?.()
+                if (options?.signal?.aborted) throw new DOMException('Cancelled during download', 'AbortError')
+                throw new Error('Offline fixture')
+            }
             assert.equal(url, build.downloadUrl); downloads++
             return new Response(bytes)
         }, { output: { appendLine() {} }, status: { text: '', tooltip: '' }, withProgress: async (_options, task) => task({ report() {} }, { isCancellationRequested: false, onCancellationRequested: () => disposable } as unknown as vscode.CancellationToken) })
@@ -641,6 +720,17 @@ test('Runtime Agent lifecycle forces catalog refresh, downloads/probes a real ar
         assert.match(await readFile(candidate.command.executable, 'utf8'), /OpenSCAD version/)
         assert.equal((await call('runtime.select', { id: candidate.id })).ok, true)
         assert.equal(runtime.getActiveRuntime()?.command.executable, candidate.command.executable)
+        const installedBeforeFailure = runtime.getState().installedBuildIds
+        const abort = new AbortController()
+        onDownload = () => abort.abort()
+        const cancelled = await bound.dispatcher.invoke('runtime.installBuild', { id: unavailableBuild.id }, { actor: 'agent', signal: abort.signal })
+        assert.ok(!cancelled.ok && cancelled.error.code === 'CANCELLED', JSON.stringify(cancelled))
+        onDownload = undefined
+        const offline = await call('runtime.installBuild', { id: unavailableBuild.id })
+        assert.ok(!offline.ok && offline.error.code === 'INSTALL_FAILED', JSON.stringify(offline))
+        assert.deepEqual(runtime.getState().installedBuildIds, installedBeforeFailure)
+        assert.match(await readFile(candidate.command.executable, 'utf8'), /OpenSCAD version/)
+        assert.equal(runtime.getActiveRuntime()?.id, candidate.id)
         const refused = await call('runtime.remove', { id: candidate.id })
         assert.equal(refused.ok, false)
         if (!refused.ok) assert.equal(refused.error.code, 'CANCELLED')
@@ -651,6 +741,15 @@ test('Runtime Agent lifecycle forces catalog refresh, downloads/probes a real ar
         await assert.rejects(readFile(candidate.command.executable), /ENOENT/)
         assert.equal(runtime.getState().runtimes.length, 0)
         assert.equal(runtime.getActiveRuntime(), undefined)
+        const unmanaged = path.join(source, 'openscad')
+        assert.ok((await call('runtime.addExecutable', { path: unmanaged })).ok)
+        const externalRuntime = runtime.getActiveRuntime()
+        assert.ok(externalRuntime && !externalRuntime.installPath)
+        const protectedRuntime = await call('runtime.remove', { id: externalRuntime.id })
+        assert.ok(!protectedRuntime.ok)
+        assert.match(protectedRuntime.error.message, /Only extension-managed/)
+        assert.equal(runtime.getActiveRuntime()?.id, externalRuntime.id)
+        assert.match(await readFile(unmanaged, 'utf8'), /OpenSCAD version/)
     } finally { bound.dispose(); subscriptions.forEach((s) => s.dispose()); await rm(root, { recursive: true, force: true }) }
 })
 
