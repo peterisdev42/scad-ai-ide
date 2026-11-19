@@ -1,6 +1,6 @@
 import { mkdir, writeFile, readFile } from 'node:fs/promises'
 import { resolve, join } from 'node:path'
-import { sha256, atomicJson, fingerprint } from './helpers/cad-native-run.mjs'
+import { sha256, atomicJson, fingerprint } from './helpers/cad-evidence.mjs'
 const repo = resolve('.'),
     base = resolve('.build/cad-manual'),
     id = new Date().toISOString().replaceAll(/[:.]/g, '-')
@@ -28,5 +28,5 @@ for (const [name, content] of Object.entries(files)) await writeFile(join(direct
 const candidate = await fingerprint(repo)
 await atomicJson(join(directory, 'fixture.json'), { id, created: new Date().toISOString(), candidateId: candidate.id, projectA: a, projectB: b, hashes: Object.fromEntries(Object.entries(files).map(([name, value]) => [name, sha256(value)])), scope: 'Temporary manual fixtures only; no automatic acceptance, confirmation, save or surface submission' })
 const workspace = join(base, 'current/manual.code-workspace')
-await atomicJson(workspace, { folders: [{ path: a }], settings: { 'chat.saveBeforeSend': false, 'chat.defaultToCopilotHarness': true, 'chat.temporaryDefaultToLocalHarness': false, 'files.autoSave': 'off', 'scad-ai-ide.languageServer.enabled': false } })
-console.log(JSON.stringify({ directory, workspace, checklist: resolve('docs/cad/manual-acceptance.md'), launchArgs: ['--new-window', `--extensionDevelopmentPath=${repo}`, `--extensionDevelopmentPath=${join(repo, '.build/omlx-dev/extensions/techopolis.omlx-copilot-chat')}`, '--disable-extensions', workspace] }, null, 2))
+await atomicJson(workspace, { folders: [{ path: a }], settings: { 'chat.saveBeforeSend': false, 'chat.defaultToCopilotHarness': true, 'files.autoSave': 'off', 'scad-ai-ide.languageServer.enabled': false } })
+console.log(JSON.stringify({ directory, workspace, checklist: resolve('docs/cad/manual-acceptance.md'), launchArgs: ['--new-window', `--extensionDevelopmentPath=${repo}`, workspace] }, null, 2))

@@ -88,4 +88,4 @@ docs/                    现行功能、架构、安全边界与验证指南
 
 按 [AI 能力架构指南](docs/ai-feature-architecture.md) 添加类型化能力声明。在 `src/core/capabilities/gui-actions.json` 为每个 GUI 业务动作提供 capability 和符合其输入 schema 的 examples，运行 `npm run generate:agents` 更新 [生成的对等表](docs/gui-agent-parity.md)。`check:agents` 拒绝未分类 GUI 动作、无 Agent 参数契约、无效 schema 和过期生成物。业务测试还必须验证实际服务调用与后置状态；模型能否正确发现/选择工具必须单独验收。GUI 发起的任务也必须可以经共享服务取消。删除、授权、Workspace Trust、受管目录限制与缓存脱敏规则在两种入口保持一致。
 
-CAD 诊断开发需在功能分支进行，`npm run check:cad:branch` 验证分支。使用 `test:cad:unit`、`test:cad:real` 和 `test:cad:host` 验证诊断服务、真实官方 CLI 和隔离的 Extension Host。真实模型验收按 [CAD 收尾台账](docs/cad/acceptance-closeout.md#统一验收顺序) 运行 `test:cad:closeout`，手动验收按 [CAD 清单](docs/cad/manual-acceptance.md) 准备 oMLX 并启动临时夹具。
+CAD 诊断开发需在功能分支进行，`npm run check:cad:branch` 验证分支。使用 `test:cad:unit`、`test:cad:real` 和 `test:cad:host` 验证诊断服务、真实官方 CLI 和隔离的 Extension Host。按 [CAD 收尾台账](docs/cad/acceptance-closeout.md#统一验收顺序) 运行 `test:cad:closeout -- baseline`。真实模型与人工交互使用 [CAD 手动验收清单](docs/cad/manual-acceptance.md)。

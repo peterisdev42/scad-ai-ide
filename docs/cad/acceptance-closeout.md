@@ -1,10 +1,10 @@
 # Agent-Native CAD 未闭合问题与验收收尾
 
-> 当前Agent验收必须使用Copilot harness / Agent Host，禁止Local回退。本文历史Local结果保留但不继承为Copilot PASS；最新入口、实际身份与最新阻断见[迁移记录](copilot-harness-acceptance.md)。
+> 当前验收按下方顺序执行。旧模型驱动已退役，历史结果及 [Copilot 复验记录](copilot-harness-acceptance.md) 用于追溯各候选的实际表现。
 
 日期：2026-11-17。批准基线 `677dc681965e1d640ecf606f1ed0f60d1fe492a0`；实施分支 `codex/cad-acceptance-closeout`，承接 [PR #5](https://github.com/peterisdev42/scad-ai-ide/pull/5) 及 #4/#3/#2。本文是当前问题台账，历史记录不覆写；实际运行绑定见 [closeout 证据](evidence/closeout/)。原始需求与阶段边界见 [整体评估](overall-progress.md)。
 
-Phase 5 MCP 已取消。全部业务能力只由 VS Code 插件向 VS Code 内置 Agent 提供。不新增外部 CAD 服务、公开端口、MCP 或工具。测试期间的本机模型转发仅用于观察既有 oMLX 请求，结束即停止。
+Phase 5 MCP 已取消。全部业务能力只由 VS Code 插件向 VS Code 内置 Agent 提供。不新增外部 CAD 服务、公开端口、MCP 或工具。
 
 ## 交付与判定规则
 
@@ -23,15 +23,10 @@ Phase 5 MCP 已取消。全部业务能力只由 VS Code 插件向 VS Code 内�
 
 ## 统一验收顺序
 
-1. `npm run test:cad:closeout -- baseline`：测试 harness、自有领域用例、真实官方 CLI、资源清单、冻结视图、生产构建，再用原生工具跑 CAD Host 专项。记录逐命令退出码和日志。该层不使用模型。
-2. 冻结源码、harness、资源与构建 Hash。`docs/cad/evidence/copilot-harness/baseline.json` 必须 PASS 且与当前候选内容完全匹配，才允许真实 Agent；文档更新不改变候选身份。
-3. 逐场执行 `npm run test:cad:closeout -- native diagnostics|mesh|assembly|comparison`。推荐模型仅用 **Qwen3.6-35B-A3B-OptiQ-4bit**，oMLX Provider 由 `npm run prepare:omlx-dev` 准备。模型缺失明确失败，不选列表第一项或静默换模型。
-4. 每候选／场景／模型最多一个正式尝试，预算 **600 秒**，包含启动、确认和推理；收集退出证据及清理单独记时。原子排他 reservation 防止不慎重复。历史 240 秒尝试保留为当时结果，本次是明确获准的新验收批次。开发定向测试不是签署，修改后必须重新冻结相关证据。
-5. **Qwen3.8-27B-4bit** 仅在同一候选确定性层 PASS、主模型有明确参数／规划／延迟证据时最多对照一次。设置 `SCAD_AGENT_MODEL` 和 `SCAD_NATIVE_BACKUP_OF=<主模型result.json>`。缺少支持证据不跑对照；原主模型失败不被覆盖，备选 PASS 仅证明备选流程。单纯超时不自动获得“模型能力不足”标签或对照资格。
-6. 真人定位、拒绝、焦点、实际不信任窗口及平台操作按独立手动清单执行。自动场景发现非允许确认即标 `MANUAL_REQUIRED`，不得假装模型仍在推理；手动交互不纳入自动超时，也不自动延长产品 TTL。
-7. 在同一生产 VSIX 上记录完整最低／Stable Host 与 installed；焦点或平台缺口继续登记。通过草稿 PR 审阅，不修改 main、不自动合并发布。
-
-测试控制器仅可确认 **临时 fixture** 的 `width=0; → width=1;`、`gap=0.18; → gap=0.30;`。控制器和 observer 两端均检查唯一替换、完整前后内容、规范路径、buffer/disk Hash、Manifest Hash 和一次限制。其他编辑（含反馈用例 hole=2→3）、工具确认和 UI 提交一律人工。产品工具没有新增 permission bypass。
+1. 设置 `SCAD_OPENSCAD_EXECUTABLE`，执行 `npm run test:cad:closeout -- baseline`。验证默认测试、真实 CLI、资源清单、冻结视图、生产构建及 CAD Host 专项。按需用 `SCAD_VSCODE_EXECUTABLE` 指定宿主。
+2. 查看 `.build/cad-closeout/baseline.json`，记录候选 Hash 与每条命令的结果。
+3. 在 [手动夹具](manual-acceptance.md) 中使用 VS Code 内置 Copilot。记录模型、工具与报告身份、编辑前后证据和实际终态。真人审阅工具及编辑确认。未执行的场景填写 NOT_RUN。
+4. 在同一生产 VSIX 上分别记录最低支持版、Stable、installed 与目标平台结果。
 
 ## 必须保留的证据
 
