@@ -53,7 +53,7 @@ node scripts/test-agent-installed.mjs .build/scad-ai-ide-agent-cad.vsix
 
 完整 Host 可使用 `.vscode-test.mjs` 的 `SCAD_TEST_WORKSPACE`、`SCAD_TEST_USER_DATA` 指向预先建立的隔离目录；仅受控临时工作区设置 `SCAD_TEST_TRUSTED_FIXTURE=1`。真实 Preview/Markdown 还需 `SCAD_TEST_OPENSCAD` 和 `SCAD_PREVIEW_EXPORTER`。原有原生输入/Undo 测试需要测试窗口获得系统焦点，不能同时运行多个争夺焦点的 GUI 验收。
 
-真实 Agent 使用 `node scripts/test-cad-native.mjs`，复用 F5 的 oMLX Provider 和 SecretStorage；不会提取凭据。Native Local Chat 接受附加的实际 debugging Skill，调用真实工具并通过原生编辑工具修复。本次用户明确授权的临时 fixture 编辑仅 `width=0;` → `width=1;`，保留 assert/cube、不保存。测试控制器验证完整 buffer 的唯一差异后点击原生确认；`SCAD_NATIVE_FIXTURE_EDIT_APPROVED=width-0-to-1` 只是记录这次先前人工授权的测试标记，不属于产品权限机制，不能当成未授权会话的自动批准。其他编辑和 SourceApply 不在本次授权内。
+历史运行使用当时的 oMLX 原生 Agent 驱动。当前入口见 [CAD 手动验收](cad/manual-acceptance.md)。Native Local Chat 接受附加的实际 debugging Skill，调用真实工具并通过原生编辑工具修复。本次用户明确授权的临时 fixture 编辑仅 `width=0;` → `width=1;`，保留 assert/cube、不保存。测试控制器验证完整 buffer 的唯一差异后点击原生确认；`SCAD_NATIVE_FIXTURE_EDIT_APPROVED=width-0-to-1` 只是记录这次先前人工授权的测试标记，不属于产品权限机制，不能当成未授权会话的自动批准。其他编辑和 SourceApply 不在本次授权内。
 
 Provider 实际收到的工具 Schema 名称/Hash、原生 transcript、Dispatcher 调用、Problems、buffer/disk Hash 与最终回复分别采集。`chat.saveBeforeSend=false`、`files.autoSave=off`。测试不打开 Preview、不构造模型回复、不由控制器代替模型调用分析工具。Native 开发宿主与 Production installed VSIX 验收分别报告。
 

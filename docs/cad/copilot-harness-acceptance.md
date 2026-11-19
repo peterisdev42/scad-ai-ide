@@ -1,5 +1,7 @@
 # Copilot harness 验收迁移与复验记录
 
+> 历史复验记录。本文涉及的本地模型驱动已退役。当前入口见 [CAD 手动验收](manual-acceptance.md)。
+
 更新：2026-11-17。正式 Agent 验收使用 **VS Code Copilot harness / Agent Host**。Local harness 历史结果保留，不继承为当前 PASS。main 基线 `44e126a`；迁移分支 `codex/copilot-harness-acceptance`，最近执行候选 `a6e41e7`。未修改 main，未构建外部 CAD MCP。
 
 ## 实施内容
@@ -42,10 +44,10 @@
 
 以上源码核对来自本机匹配的 VS Code builder 源码及 staged oMLX 插件，未修改它们。未更改用户全局设置或关闭其窗口。没有把另一模型的成功或模型自述当成当前 CAD Gate 通过。
 
-## 门禁与后续
+## 当时的门禁结果
 
 当前候选确定性 baseline：默认、类型、lint、资源、真实 CLI 三项、view/GPU 通过；CAD 专项 Host **22 PASS / 1 PENDING**。harness 策略测试 **11 PASS**。具体命令及退出码见 [baseline](evidence/copilot-harness/baseline.json)。这不是完整 Host、installed 或平台复验。
 
 **Copilot 本地模型 Agent Gate 仍 OPEN。** mesh 已正式尝试但未闭合；diagnostics、assembly、comparison 在本候选下 NOT_RUN。历史 Local PASS 不迁移。其他手动交互与 Windows Unicode 状态保持不变。
 
-继续顺序：先解决 serving-window 的真实 Schema 观测和工具目录完整性，再冻结候选并进行有界 mesh 尝试；证据支持后才作模型对照，然后执行 dirty diagnostics、固定 Manifest 装配及比较流程。手动项目在 [独立清单](manual-acceptance.md) 的 M11 先记录真实 Copilot 会话和模型，随后逐条执行其余交互。不得为了验收添加外部 CAD 服务。
+当前场景与记录方式见 [CAD 手动验收](manual-acceptance.md)。
