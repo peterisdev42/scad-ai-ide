@@ -1,6 +1,8 @@
 # Customizer Phase 0.5 目标架构与迁移 ADR
 
-日期 2026-11-09。基准及 feature ledger 见 [Phase 0](customizer-audit.md)。以下决定在实现前形成；用户已原则批准方案 B，当前适用的输入与安全边界以末尾“用户审阅后修订”为准。
+> 说明：下文的历史验收链接指向清理前的不可变 Git 提交；它们不代表当前版本已通过验收。
+
+日期 2026-11-09。基准及 feature ledger 见 [Phase 0](https://github.com/peterisdev42/scad-ai-ide/blob/9b4fcd3301defa86a10f311f2a52fc42e7767878/docs/customizer-audit.md)。以下决定在实现前形成；用户已原则批准方案 B，当前适用的输入与安全边界以末尾“用户审阅后修订”为准。
 
 ## 总体方案比较
 
@@ -271,7 +273,7 @@ ADR11实施与当前验证：成功plan返回continuation，tool由同一catalog
 
 ## ADR12：参数被区域外覆盖的可见性诊断（2026-11-10，用户批准）
 
-用户报告 rpi.scad 的两套参数分别位于首个代码块之前和之后，导致 Sidebar 为空且没有诊断。选择对丢失控件给出 Warning，关联前后声明；全部控件丢失时明确空状态原因并允许跳转。合法 SCAD 赋值不判为语法错误，不改变现有参数发现规则，不自动删除源码；显式参数可见性要求仍作为独立契约校验。增加有界的 visibility 诊断和领域状态投影，GUI 与 Agent 使用同一分析；跳转属于只读展示动作，沿用 target/revision 校验。详细边界、真实 Host/浏览器证据及尚未执行范围见[修复验收](customizer/parameter-override-fix.md)。原始全量目标继续暂停。
+用户报告 rpi.scad 的两套参数分别位于首个代码块之前和之后，导致 Sidebar 为空且没有诊断。选择对丢失控件给出 Warning，关联前后声明；全部控件丢失时明确空状态原因并允许跳转。合法 SCAD 赋值不判为语法错误，不改变现有参数发现规则，不自动删除源码；显式参数可见性要求仍作为独立契约校验。增加有界的 visibility 诊断和领域状态投影，GUI 与 Agent 使用同一分析；跳转属于只读展示动作，沿用 target/revision 校验。详细边界、真实 Host/浏览器证据及尚未执行范围见[修复验收](https://github.com/peterisdev42/scad-ai-ide/blob/9b4fcd3301defa86a10f311f2a52fc42e7767878/docs/customizer/parameter-override-fix.md)。原始全量目标继续暂停。
 
 ## ADR13（2026-11-11）— 固定上游字符串 brace 截止语义
 

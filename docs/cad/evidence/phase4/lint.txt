@@ -1,2 +1,0 @@
-npm notice run scad-ai-ide@0.0.1 lint
-npm notice run eslint src --fix

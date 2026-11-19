@@ -1,5 +1,7 @@
 # Agent integration verification
 
+> 说明：下文的历史验收链接指向清理前的不可变 Git 提交；它们不代表当前版本已通过验收。
+
 The [capability matrix](agent-capability-matrix.md) describes shared services, permissions and GUI boundaries. The generated [catalog](agent-capability-catalog.md) lists all published tools. Verification has three distinct levels: service contracts, real VS Code registration/GUI behavior, and actual model-driven workflows. Success at one level does not establish the next.
 
 ## Automated checks
@@ -110,4 +112,4 @@ Trailing-comment regression (2026-11-09): `assembly_id=0; // [0:22] IDs in Assem
 
 ## Phase 2 evidence (2026-11-13)
 
-See [Phase 2 acceptance](cad/phase2-acceptance.md) and its immutable evidence index for the current mesh/measurement implementation. The final product code passed 396 default cases (three existing skips), 23 mesh-specific cases and 51 Host cases on each of VS Code 1.140.0 and Stable 1.146.0. This does not close the real Agent or installed gates: the single earlier-candidate oMLX scenario omitted the requested camera, and the final full Production smoke failed to acquire native focus after its geometry slice completed. P1 and Windows follow-ups remain open. Older results above retain their original historical scope.
+See [Phase 2 acceptance](https://github.com/peterisdev42/scad-ai-ide/blob/9b4fcd3301defa86a10f311f2a52fc42e7767878/docs/cad/phase2-acceptance.md) and its immutable evidence index for the current mesh/measurement implementation. The final product code passed 396 default cases (three existing skips), 23 mesh-specific cases and 51 Host cases on each of VS Code 1.140.0 and Stable 1.146.0. This does not close the real Agent or installed gates: the single earlier-candidate oMLX scenario omitted the requested camera, and the final full Production smoke failed to acquire native focus after its geometry slice completed. P1 and Windows follow-ups remain open. Older results above retain their original historical scope.

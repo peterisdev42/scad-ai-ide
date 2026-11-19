@@ -1,6 +1,8 @@
 # Customizer source authoring
 
-Historical implementation baseline: `4c92043e8b8ac9414f4135de053852bade2581db` and the 2026-11-06 Customizer Agent Authoring SPEC. Current 2026-11-09 architecture and acceptance supersede the historical verification below; see [ADR](customizer-architecture-adr.md), [acceptance](customizer-acceptance.md) and [progress](customizer-progress.md). The code is implemented; the SPEC's full real-model and cross-platform acceptance gate is **not yet complete**. Optional Hooks remain deferred.
+> 说明：下文涉及的历史验收证据已移出工作树；对应链接指向清理前的 Git 提交，不代表当前版本的验收状态。
+
+Historical implementation baseline: `4c92043e8b8ac9414f4135de053852bade2581db` and the 2026-11-06 Customizer Agent Authoring SPEC. Current 2026-11-09 architecture and acceptance supersede the historical verification below; see [ADR](customizer-architecture-adr.md), [acceptance](https://github.com/peterisdev42/scad-ai-ide/blob/9b4fcd3301defa86a10f311f2a52fc42e7767878/docs/customizer-acceptance.md) and [progress](https://github.com/peterisdev42/scad-ai-ide/blob/9b4fcd3301defa86a10f311f2a52fc42e7767878/docs/customizer-progress.md). The code is implemented; the SPEC's full real-model and cross-platform acceptance gate is **not yet complete**. Optional Hooks remain deferred.
 
 ## User workflow
 

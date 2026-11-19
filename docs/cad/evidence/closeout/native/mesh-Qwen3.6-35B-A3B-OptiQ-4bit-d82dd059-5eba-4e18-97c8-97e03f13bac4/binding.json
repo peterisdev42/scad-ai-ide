@@ -1,8 +1,0 @@
-{
-  "runId": "d82dd059-5eba-4e18-97c8-97e03f13bac4",
-  "candidateId": "d88e72bced4562c562877f2273cc8dbdfafd55c92157461d0626fd7a349b119d",
-  "directory": "/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/mesh-native-f5-s69Os9",
-  "scenario": "mesh",
-  "model": "Qwen3.6-35B-A3B-OptiQ-4bit",
-  "baseline": "docs/cad/evidence/closeout/baseline.json"
-}

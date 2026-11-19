@@ -1,12 +1,14 @@
 # Windows Unicode 原生 CLI：两轮复现与暂缓修复
 
+> 说明：下文涉及的历史验收证据已移出工作树；对应链接指向清理前的 Git 提交，不代表当前版本的验收状态。
+
 2026-11-11。状态：**FAIL；本轮跳过继续猜测性修复**。Windows 发布门禁仍未通过，没有删除原集成测试，也没有修改外部 CLI Builder 仓库。
 
 实际 Windows runner：`windows-2025`，image `win25-vs2026 / 20261103.298.1`。两轮均使用经过 archive SHA256 校验的 OpenSCAD `2026.11-RC0`，可执行文件 SHA256 `d1c8cc1b86a8b08794429892d1247221831e19f00911560496abed5b5d010a01`。
 
 - [第一轮](https://github.com/peterisdev42/scad-ai-ide/actions/runs/43001611736)：21 个诊断探针，11 PASS / 10 FAIL。
 - [第二轮](https://github.com/peterisdev42/scad-ai-ide/actions/runs/43002292201)：相同 21 个结果与退出码；不是重新解释一次运行。
-- [第一轮原始报告](evidence/closeout-20261111/windows-run1-environment.json)、[第二轮原始报告](evidence/closeout-20261111/windows-run2-environment.json)。两个完整 Library workflow 均为 macOS/Linux 成功、Windows 失败。
+- [第一轮原始报告](https://github.com/peterisdev42/scad-ai-ide/blob/9b4fcd3301defa86a10f311f2a52fc42e7767878/docs/customizer/evidence/closeout-20261111/windows-run1-environment.json)、[第二轮原始报告](https://github.com/peterisdev42/scad-ai-ide/blob/9b4fcd3301defa86a10f311f2a52fc42e7767878/docs/customizer/evidence/closeout-20261111/windows-run2-environment.json)。两个完整 Library workflow 均为 macOS/Linux 成功、Windows 失败。
 
 | 单一改变 | 实测 |
 |---|---|

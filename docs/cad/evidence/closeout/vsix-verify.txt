@@ -1,1 +1,0 @@
-VSIX PASS: 51 tools, 2 Instructions, 12 Skills and bundled extension entry + AI Panel assets.

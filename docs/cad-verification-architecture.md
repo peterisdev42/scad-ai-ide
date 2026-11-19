@@ -1,5 +1,7 @@
 # CAD 验证架构：Phase 0–1
 
+> 说明：下文的历史验收链接指向清理前的不可变 Git 提交；它们不代表当前版本已通过验收。
+
 本实现基线为 `8a3ff1fe394b11aeb7fb323e7319bd365d29abaa`，对应 SPEC v1.2。当前只交付 CLI/CSG 诊断和快照治理；Full Render 网格合法性、几何测量、装配、公差、图片、Diff、空间反馈和 MCP 尚未实现。`PASS` 的适用范围必须结合 `checks` 和 `notExamined` 阅读。
 
 ## 边界与复用决策
@@ -40,7 +42,7 @@ sequenceDiagram
 
 基线 `registerPreview` 拥有源码 Problems，`PreviewProblems` 持有视图错误；现由 extension 注册层提供同一源码 collection，视图 owner 生命周期继续独立。Library 的 OPENSCADPATH 来自 `LibraryEnvironment`，有效参数来自 Customizer，Agent 仍经 catalog → Dispatcher → Adapter。没有将 LSP 或 Customizer 自有诊断 collection 合并进 CLI collection。
 
-实施前已知通过项为 check:agents、check-types 和 11 项诊断测试；这不是完整 Host、真实 Agent 或跨平台通过声明。本分支重新执行的完整回归、真实 CLI、Host/模型及未通过项统一见 [验收记录](cad-agent-acceptance.md)。公共接口分别位于 core 的 types、VerificationHost/Service、ReportStore、SharedTasks 和现有 PreviewSourceProblems；Schema v1 与纯契约测试在实现早期建立，后续增加 Host 适配，不引入 vscode 到 domain。
+实施前已知通过项为 check:agents、check-types 和 11 项诊断测试；这不是完整 Host、真实 Agent 或跨平台通过声明。本分支重新执行的完整回归、真实 CLI、Host/模型及未通过项统一见 [验收记录](https://github.com/peterisdev42/scad-ai-ide/blob/9b4fcd3301defa86a10f311f2a52fc42e7767878/docs/cad-agent-acceptance.md)。公共接口分别位于 core 的 types、VerificationHost/Service、ReportStore、SharedTasks 和现有 PreviewSourceProblems；Schema v1 与纯契约测试在实现早期建立，后续增加 Host 适配，不引入 vscode 到 domain。
 
 ## ADR：身份和新旧结果
 
@@ -99,4 +101,4 @@ Schema v1 位于随 VSIX 打包的 `resources/schemas/cad-report-v1.schema.json`
 
 `project.dependencyResolutionHash` 独立记录根/已知依赖中 literal include/use 的潜在目标，包含尚不存在的高优先级候选；同时监听这些路径。所选依赖仍使用内容 Hash，候选路径的存在、身份及文件 stamp 用来检测解析命名空间变化。首次发现嵌套依赖可以扩展解析指纹，不误当作 Library 环境变化。源路径统一真实目录形式，跳过注释和字符串中的伪引用，候选最多 2048。根文件 symlink 沿用既有路径策略拒绝；无法证明依赖文件级 symlink 的相对解析上下文时返回 UNRESOLVED；目录别名下的 dirty 根仍受支持。前后执行设置统一为 PreviewExecutionContext。
 
-复审与本轮证据见 [Phase 0–1 修复后审查](cad-phase01-review-2026-11-13.md)。历史报告保留原始失败，本轮结果不回填为过去的 PASS。
+复审与本轮证据见 [Phase 0–1 修复后审查](https://github.com/peterisdev42/scad-ai-ide/blob/9b4fcd3301defa86a10f311f2a52fc42e7767878/docs/cad-phase01-review-2026-11-13.md)。历史报告保留原始失败，本轮结果不回填为过去的 PASS。
