@@ -1,6 +1,0 @@
-{
-  "directory": "/Users/q/Documents/Code/scad-ai-ide/.build/cad-manual/2026-11-17T02-07-29-846Z",
-  "workspace": "/Users/q/Documents/Code/scad-ai-ide/.build/cad-manual/current/manual.code-workspace",
-  "checklist": "/Users/q/Documents/Code/scad-ai-ide/docs/cad/manual-acceptance.md",
-  "launch": "CAD Manual Acceptance + oMLX"
-}

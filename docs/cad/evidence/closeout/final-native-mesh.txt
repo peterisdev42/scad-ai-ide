@@ -1,3 +1,0 @@
-Phase 2 Native evidence: /var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/mesh-native-f5-8UglG0
-{"pass":true,"assessment":{"category":"NONE","confidence":"observed","backupEligible":false,"evidence":["strict scenario oracle"]},"evidence":"/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/native/mesh-Qwen3.6-35B-A3B-OptiQ-4bit-15e56d46-ded6-4a82-851d-0e89b687b258"}
-{"pass":true,"evidence":"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/mesh-native-f5-8UglG0","attempts":1}

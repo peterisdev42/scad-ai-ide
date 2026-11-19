@@ -1,2 +1,0 @@
-Incompatible processor. This Qt build requires the following features:
-    neon

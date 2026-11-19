@@ -1,3 +1,0 @@
-Phase 4 Native comparison evidence: /var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-bUUonj
-{"pass":true,"assessment":{"category":"NONE","confidence":"observed","backupEligible":false,"evidence":["strict scenario oracle"]},"evidence":"/Users/q/Documents/Code/scad-ai-ide/docs/cad/evidence/closeout/native/comparison-Qwen3.6-35B-A3B-OptiQ-4bit-1e6034a7-078c-4e71-80c2-61409eea8f8e"}
-{"pass":true,"evidence":"/var/folders/gn/gthdgmcs12b2fxjlnfq3d36w0000gn/T/review-comparison-f5-bUUonj","attempts":1}
