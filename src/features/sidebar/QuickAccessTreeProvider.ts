@@ -15,10 +15,10 @@ export class QuickAccessTreeProvider implements vscode.TreeDataProvider<vscode.T
     getChildren(parent?: vscode.TreeItem): vscode.TreeItem[] {
         if (parent) return []
         return quickAccess.map((page) => {
-                const item = new vscode.TreeItem(page.title)
-                item.id = page.id
-                item.command = { command: page.command, title: page.title }
-                return item
-            })
+            const item = new vscode.TreeItem(page.title)
+            item.id = page.id
+            item.command = { command: page.command, title: page.title }
+            return item
+        })
     }
 }
