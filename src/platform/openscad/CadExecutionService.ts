@@ -213,8 +213,10 @@ export class CadExecutionService {
             const renderingStarted = performance.now()
             const result = await this.process(request.command, args, { cwd: dirname(request.path), env: request.env, source: request.source, signal, timeoutMs: request.timeoutMs ?? 120000, onStderr: request.onStderr })
             timings.meshExportMs = performance.now() - renderingStarted
-            const emptyOutput = /^\s*Current top level object is empty\.\s*$/m.test(result.stderr) && !/^\s*(?:ERROR:|Parser error:)/im.test(result.stderr)
-            const diagnostics = normalizeCliDiagnostics(result.stderr, emptyOutput || result.status === 'TIMED_OUT' || result.status === 'CANCELLED' ? 0 : result.code)
+            // Some CLI builds write model diagnostics to stdout when the source is read from stdin.
+            const log = `${result.stderr}\n[stdout]\n${result.stdout}`
+            const emptyOutput = /^\s*Current top level object is empty\.\s*$/m.test(log) && !/^\s*(?:ERROR:|Parser error:)/im.test(log)
+            const diagnostics = normalizeCliDiagnostics(log, emptyOutput || result.status === 'TIMED_OUT' || result.status === 'CANCELLED' ? 0 : result.code)
             let status = result.status
             if (status === 'SUCCEEDED' && diagnostics.some((d) => d.severity === 'error')) status = 'FAILED'
             const empty = emptyOutput && !diagnostics.some((d) => d.severity === 'error')
@@ -250,7 +252,7 @@ export class CadExecutionService {
                 dependenciesComplete = false
             }
             timings.dependenciesMs = performance.now() - dependenciesStarted
-            completed = { timings, status, exitCode: result.code, content, diagnostics, dependencies, dependenciesComplete, log: `${result.stderr}\n[stdout]\n${result.stdout}`.slice(0, 262144), truncated: result.truncated, elapsedMs: performance.now() - started, empty }
+            completed = { timings, status, exitCode: result.code, content, diagnostics, dependencies, dependenciesComplete, log: log.slice(0, 262144), truncated: result.truncated, elapsedMs: performance.now() - started, empty }
             return completed
         } finally {
             const cleanupStarted = performance.now()

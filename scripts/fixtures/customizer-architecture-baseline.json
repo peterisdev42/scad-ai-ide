@@ -1,0 +1,35 @@
+{
+    "sourceCommit": "4463d61046d962a3f5afa5ace49b21f37e6cc4a6",
+    "fileCount": 7,
+    "nonemptyLines": 812,
+    "files": [
+        {
+            "path": "src/core/customizer/CustomizerParser.ts",
+            "nonemptyLines": 293
+        },
+        {
+            "path": "src/core/customizer/CustomizerPresets.ts",
+            "nonemptyLines": 42
+        },
+        {
+            "path": "src/core/customizer/CustomizerService.ts",
+            "nonemptyLines": 133
+        },
+        {
+            "path": "src/core/customizer/CustomizerSourceAnalyzer.ts",
+            "nonemptyLines": 97
+        },
+        {
+            "path": "src/core/customizer/CustomizerSourceEditor.ts",
+            "nonemptyLines": 152
+        },
+        {
+            "path": "src/core/customizer/CustomizerSourceTypes.ts",
+            "nonemptyLines": 43
+        },
+        {
+            "path": "src/core/customizer/CustomizerSourceValidator.ts",
+            "nonemptyLines": 52
+        }
+    ]
+}

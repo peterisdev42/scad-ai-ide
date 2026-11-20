@@ -13,19 +13,19 @@ jobs:
         runs-on: ${{ matrix.os }}
         steps:
             - uses: actions/checkout@v4
-              with:
-                  # The architecture gate compares against the fixed audit SHA.
-                  fetch-depth: 0
             - uses: actions/setup-node@v4
               with:
                   node-version: '24'
                   cache: npm
             - run: npm ci
+            - name: Release contracts and recovery tests
+              run: npm run test:release
             - run: npm run test:agents:manifest
             - run: npm run check:agents
             - run: npm run check-types
             - run: npm run lint
             - run: npm run check:customizer:architecture
+            - run: node --test scripts/customizer-architecture-check.test.mjs
             - run: npm run test:customizer:compatibility
             - run: node --test out/test/customizer.test.js
             - run: npm run test:customizer:source

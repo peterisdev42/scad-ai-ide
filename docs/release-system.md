@@ -18,11 +18,11 @@
 ## 确定并预留版本
 
 ~~~sh
-npm run --silent release:version:status -- --json
+npm run --silent release:version:status -- --publisher "$SCAD_PUBLISHER" --json
 npm run --silent release:version:resolve -- --channel preview --change fix --json
 ~~~
 
-使用两个商店中已确认的相同发布者和命名空间。将已确认的发布者传给 `--publisher`，或使用仓库已有的正式配置。缺少配置时状态命令返回 `configurationMissing`。`--offline <file>` 可读取包含 `gitTags`、`vscode`、`openvsx` 三个数组的测试夹具，市场条目采用 `{version,target,preRelease}`。夹具创建的草案携带 `offlineMock`，空数组可用于练习首次发布。
+由维护者确认 VS Code Marketplace Publisher 与 Open VSX Namespace 是同一个实际可用的标识，再将该标识传给 `--publisher` 或写入 `package.json`。GitHub 所有者名称不能代替市场身份。缺少配置时，状态命令返回 `configurationMissing`、配置指引和退出码 2。任一远端历史查询不完整时，状态命令返回退出码 3，版本预留保持阻断。`--offline <file>` 可读取包含 `gitTags`、`vscode`、`openvsx` 三个数组的测试夹具，市场条目采用 `{version,target,preRelease}`。夹具创建的草案携带 `offlineMock`，空数组可用于练习首次发布。
 
 Preview 使用奇数 Minor，Stable 使用偶数 Minor，首轮分别从 `0.1.0` 和 `0.2.0` 开始。Preview 用 `--cycle continue` 增加 Patch。用 `--cycle promote --approve` 将经批准的 Preview 提升到下一偶数 Minor，或用 `--cycle next --approve` 从 Stable 开启下一 Preview。Stable 修复使用 `--cycle hotfix --base <stable-version>`，并将 `--maintenance-ref` 指向维护分支完整引用，例如 `refs/heads/release/0.2`。源码须在该 Stable Tag 之后并在维护分支可达。Major 切换使用 `--cycle major --major <number> --approve`。更高的 Stable 发布后，VS Code 可能将 Preview 用户升级到 Stable。 [VS Code 发布规范](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)
 
@@ -70,18 +70,28 @@ npm run release:reconcile -- --plan releases/0.1.0/release-plan.json \
 
 默认 dry-run 校验本地交接，`--query` 或 `release:reconcile` 查询两个商店。经明确授权的 `--apply` 需要 `--confirm-release <release-id>`、已配置的发布者、匹配远端 Tag 的冻结 Plan、完整静态验证和每目标运行证据。可重复传入 `--smoke <runtime.json>` 补充各主机报告。VSCE 和 OVSX 分别从环境读取 `VSCE_PAT` 和 `OVSX_PAT`，并先执行各自的 `verify-pat`。发布工具传输已经验证的 VSIX。 [VSCE 发布说明](https://code.visualstudio.com/api/working-with-extensions/publishing-extension) · [Open VSX CLI](https://github.com/eclipse-openvsx/openvsx/blob/main/cli/README.md)
 
-`--market` 选择 `vscode|openvsx|all`，`--target` 可缩小本次上传范围。整体状态仍覆盖两个市场和 Plan 的全部目标。遇到部分发布时保留 Plan、Manifest、原 VSIX 与状态。对账用商店可下载的包与本地 SHA-256 比较。若商店返回改签或重包后的字节、工件不可获取或元数据不完整，需人工核实，工具会阻止继续写入。若已确认上传的版本从市场消失，状态会保留历史上传证据并阻止自动重传。已匹配工件会跳过，缺失项由授权的重跑补发。上传超时会先复查，本次进程最多提交一次。
+`--market` 选择 `vscode|openvsx|all`，`--target` 可缩小本次上传范围。整体状态覆盖两个市场和 Plan 的全部目标。遇到部分发布时保留 Plan、Manifest、原 VSIX 与发布状态。每次上传前先将尝试写入状态。任何曾开始上传的目标再次查无版本时都会阻断，未确认结果为 `upload-outcome-unconfirmed`，已获上传响应或曾匹配字节为 `remote-version-disappeared`。查询失败、下载失败及字节或通道冲突同样阻断。只有从未尝试上传且市场确认缺失的目标可由获授权的重跑提交；已有匹配工件直接跳过。
+
+`release:reconcile` 只读核对，输出 `manualReviewRequired`，其中包含 release ID、市场、目标、原 VSIX SHA-256、历史尝试次数和最后状态。人工核对市场后台及 API、原始上传日志和包哈希。市场包可下载后重跑对账，匹配会显示 `present-matching`，获授权的后续运行会写入 `verified`。长期不可见且市场管理员确认从未接收时，任何单项目恢复都需另行审计与授权，保留原状态记录。
 
 | 退出码 | 说明 |
 | --- | --- |
 | 0 | 操作成功 |
 | 2 | 参数、契约或用户配置错误 |
 | 3 | 远端、网络或身份状态无法确认 |
-| 4 | 版本、预留或工件冲突 |
+| 4 | 版本、预留或工件冲突，或历史上传结果尚待核实 |
 | 5 | 构建、存储或本地验证失败 |
 | 6 | 上传未完成或仅部分完成 |
 
 用 `npm run --silent <script> -- --json` 获取单个 JSON 对象。构建与运行日志写入 stderr，可在 shell 中单独重定向。用 `npm run test:release` 执行离线回归。
+
+## 正式发布前检查
+
+- 确认双市场身份归属，用只读状态查询确认 Git 和两个市场的历史均完整。凭据通过环境变量或系统凭据存储注入。
+- 确认三系统 CI 及 Windows 原生 Library/CAD 门禁通过。Windows RC0 的复现、证据与上报入口见 [Windows Unicode 排障](customizer/windows-unicode-closeout.md)。
+- 使用同一份冻结 Plan 和 Artifact Manifest 核验四份原始 VSIX。对每个目标收集 Manifest 和 VSIX 哈希一致的运行报告，确认 LSP CLI、stdio、VSIX 安装和 Extension Host 激活全部通过。
+- 在计划支持的最低系统上核验 Linux glibc、Windows MSVC Runtime 与 macOS 系统版本。尚无对应运行报告的目标仍待验收。
+- 审阅 dry-run 的八项市场操作和只读对账。有人工核实项时先按上文处理。取得明确授权后再进行实际预留或上传。
 
 ## 首轮实现验证
 

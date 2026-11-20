@@ -51,13 +51,14 @@ async function reconcile(plan, manifest, providers) {
 
 const checkedCell = (cell, remote, version) => {
     const uploadedOnce = cell.uploadedOnce || remote.status === 'present-matching'
-    if (remote.status === 'missing' && uploadedOnce) {
-        return { ...cell, status: 'blocked', lastErrorCode: 'remote-version-disappeared',
+    if (remote.status === 'missing' && (uploadedOnce || cell.attempts > 0)) {
+        return { ...cell, status: 'blocked', remoteVersion: null,
+            lastErrorCode: uploadedOnce ? 'remote-version-disappeared' : 'upload-outcome-unconfirmed',
             remoteMetadataVerified: false, bytesVerified: false }
     }
     const status = ({
         'present-matching': 'verified', 'present-unverifiable': 'blocked',
-        conflict: 'blocked', unknown: 'unknown', missing: cell.attempts ? 'failed' : 'pending',
+        conflict: 'blocked', unknown: 'unknown', missing: 'pending',
     })[remote.status]
     return { ...cell, status, uploadedOnce, remoteVersion: remote.remoteMetadataVerified ? version : null,
         lastErrorCode: ['verified', 'pending'].includes(status) ? null : remote.status,
@@ -109,8 +110,6 @@ function selectedCells(plan, options) {
     return requestedMarkets.flatMap(market => requestedTargets.map(target => ({ market, target })))
 }
 
-const acceptable = result => ['missing', 'present-matching'].includes(result.status)
-
 export async function publishRelease(plan, manifest, manifestPath, options, dependencies) {
     const selected = selectedCells(plan, options)
     const { providers, verifyReservation, pause = delay } = dependencies
@@ -123,14 +122,27 @@ export async function publishRelease(plan, manifest, manifestPath, options, depe
     const statePath = join(directory, 'publish-state.json')
     if (!options.apply) {
         const remote = options.query ? await reconcile(plan, manifest, providers) : undefined
-        if (remote && existsSync(statePath)) {
-            requireRelease(lstatSync(statePath).isFile(), 'Unsafe publish-state path', 4)
-            const previous = readJson(statePath)
-            checkExistingState(previous, newState(plan, manifest), plan)
+        const manualReviewRequired = []
+        if (remote) {
+            const expected = newState(plan, manifest)
+            const hasState = existsSync(statePath)
+            requireRelease(!hasState || lstatSync(statePath).isFile(), 'Unsafe publish-state path', 4)
+            const previous = hasState ? readJson(statePath) : expected
+            checkExistingState(previous, expected, plan)
             for (const market of markets) {
-                for (const target of plan.targets) {
-                    if (remote[market][target].status === 'missing' && previous.targets[market][target].uploadedOnce) {
-                        remote[market][target] = { ...report('conflict'), reason: 'remote-version-disappeared' }
+                for (const { target, sha256: artifactSha256 } of manifest.artifacts) {
+                    const observation = remote[market][target]
+                    const cell = previous.targets[market][target]
+                    const checked = checkedCell(cell, observation, plan.version)
+                    if (observation.status === 'missing' && checked.status === 'blocked') {
+                        remote[market][target] = { ...report('blocked'), reason: checked.lastErrorCode }
+                    }
+                    if (checked.status === 'blocked' || (checked.status === 'unknown' && (cell.attempts > 0 || cell.uploadedOnce))) {
+                        manualReviewRequired.push({
+                            releaseId: plan.releaseId, market, target, artifactSha256, attempts: cell.attempts,
+                            lastStatus: cell.status, reason: checked.lastErrorCode,
+                            guidance: 'Check market publishing history and API, original upload logs, and the original VSIX SHA-256. Run reconcile again when the original package is visible.',
+                        })
                     }
                 }
             }
@@ -139,9 +151,9 @@ export async function publishRelease(plan, manifest, manifestPath, options, depe
             status: remote?.[item.market][item.target].status ?? 'local-verified' }))
         const statuses = remote ? Object.values(remote).flatMap(Object.values).map(item => item.status) : []
         const code = statuses.includes('unknown') ? 3 :
-            statuses.some(status => ['conflict', 'present-unverifiable'].includes(status)) ? 4 : 0
+            statuses.some(status => ['blocked', 'conflict', 'present-unverifiable'].includes(status)) ? 4 : 0
         return { dryRun: true, releaseId: plan.releaseId, planSha256: digest(plan), artifactsSha256: digest(manifest),
-            ...(plan.status && { planStatus: plan.status }), actions, ...(remote && { remote }), code }
+            ...(plan.status && { planStatus: plan.status }), actions, ...(remote && { remote, manualReviewRequired }), code }
     }
 
     verifyRuntime(manifest, options.smoke)
@@ -173,11 +185,9 @@ export async function publishRelease(plan, manifest, manifestPath, options, depe
             }
         }
         save()
-        const results = Object.values(remote).flatMap(Object.values)
-        const disappeared = Object.values(state.targets).flatMap(Object.values)
-            .some(cell => cell.lastErrorCode === 'remote-version-disappeared')
-        if (disappeared || results.some(item => !acceptable(item))) {
-            return { state, statePath, code: results.some(item => item.status === 'unknown') ? 3 : 4 }
+        const statuses = Object.values(state.targets).flatMap(Object.values).map(cell => cell.status)
+        if (statuses.includes('unknown') || statuses.includes('blocked')) {
+            return { state, statePath, code: statuses.includes('unknown') ? 3 : 4 }
         }
         snapshotRoot = mkdtempSync(join(directory, '.publish-bytes-'))
         for (const { market, target } of selected) {
@@ -189,7 +199,7 @@ export async function publishRelease(plan, manifest, manifestPath, options, depe
             cells[target] = checkedCell(cells[target], current, plan.version)
             save()
             if (current.status === 'present-matching') continue
-            if (current.status !== 'missing' || cells[target].status === 'blocked') {
+            if (cells[target].status !== 'pending' || cells[target].attempts !== 0) {
                 return { state, statePath, code: current.status === 'unknown' ? 3 : 4 }
             }
             const bytes = readVsix(join(directory, artifact.file))
@@ -202,13 +212,15 @@ export async function publishRelease(plan, manifest, manifestPath, options, depe
             try {
                 await provider.upload(staged)
                 acknowledged = true
-                cells[target].status = 'uploaded'
-                cells[target].uploadedOnce = true
-                save()
             } catch {
                 // A failed response might follow a successful remote write.
             } finally {
                 rmSync(staged, { force: true })
+            }
+            if (acknowledged) {
+                cells[target].status = 'uploaded'
+                cells[target].uploadedOnce = true
+                save()
             }
             let result
             for (let attempt = 0; attempt < 3; attempt++) {

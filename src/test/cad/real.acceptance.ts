@@ -18,7 +18,11 @@ test('real official CLI diagnostics: dirty root, dependency paths, assert, parse
         await writeFile(include, 'module part(){cube(2);}')
         const request = { command: { executable, argsPrefix: [] }, path, env: process.env, parameters: { $preview: false }, format: 'csg' as const }
         const good = await service.execute({ ...request, source: 'include <part.scad>\npart();' })
-        assert.equal(good.status, 'SUCCEEDED', good.log)
+        assert.equal(good.status, 'SUCCEEDED', JSON.stringify({
+            exitCode: good.exitCode,
+            diagnostics: good.diagnostics.map(({ code }) => code),
+            log: good.log.replaceAll(root, '<fixture>').replaceAll(executable, '<openscad>').slice(0, 2048),
+        }))
         assert.equal(good.dependenciesComplete, true, good.log)
         assert.ok(good.dependencies.includes(await realpath(include)), JSON.stringify(good.dependencies))
         const assertion = await service.execute({ ...request, source: 'assert(false, "fixture assertion");cube(1);' })
