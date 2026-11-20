@@ -4038,7 +4038,7 @@
         ]
     },
     "scripts": {
-        "vscode:prepublish": "npm run build:lsp && npm run package",
+        "vscode:prepublish": "node scripts/release/prepublish.mjs",
         "compile": "npm run check:agents && npm run check-types && npm run lint && node esbuild.js",
         "watch": "npm-run-all -p watch:*",
         "watch:esbuild": "node esbuild.js --watch",
@@ -4096,7 +4096,17 @@
         "test:review:view": "node --import tsx --test scripts/review-view.test.mjs",
         "test:cad:closeout": "node scripts/test-cad-closeout.mjs",
         "prepare:cad:manual": "node scripts/prepare-cad-manual.mjs",
-        "test:agents:host": "node scripts/ai/test-host.mjs"
+        "test:agents:host": "node scripts/ai/test-host.mjs",
+        "release:version:status": "node scripts/release/cli.mjs version status",
+        "release:version:resolve": "node scripts/release/cli.mjs version resolve",
+        "release:version:plan": "node scripts/release/cli.mjs version plan",
+        "release:version:reserve": "node scripts/release/cli.mjs version reserve",
+        "release:version:verify": "node scripts/release/cli.mjs version verify",
+        "release:build": "node scripts/release/cli.mjs build",
+        "release:verify": "node scripts/release/cli.mjs verify",
+        "release:publish": "node scripts/release/cli.mjs publish",
+        "release:reconcile": "node scripts/release/cli.mjs reconcile",
+        "test:release": "node --test scripts/release/test/*.test.mjs"
     },
     "devDependencies": {
         "@types/markdown-it": "^14.2.0",
@@ -4110,12 +4120,14 @@
         "@types/yauzl": "^3.4.0",
         "@vscode/test-cli": "^0.0.15",
         "@vscode/test-electron": "^3.0.0",
+        "@vscode/vsce": "4.1.1",
         "esbuild": "^0.28.1",
         "eslint": "^10.5.0",
         "eslint-config-prettier": "^10.1.8",
         "markdown-it": "^14.3.3",
         "monaco-editor": "0.57.0",
         "npm-run-all": "^4.1.5",
+        "ovsx": "1.4.0",
         "playwright": "1.61.1",
         "prettier": "^3.9.10",
         "tsx": "^4.21.0",

@@ -3,42 +3,24 @@ import assert from 'node:assert/strict'
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync, globSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
 import { buildSync } from 'esbuild'
-import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { Ajv } from 'ajv'
 import { compile, checkOutputs } from './compiler.mjs'
 import { readText } from './collect.mjs'
+import { assertPublishedContract } from './assert-published-contract.mjs'
 
 const root = fileURLToPath(new URL('../../', import.meta.url))
 const generated = 'src/ai/generated/'
 const catalogFile = generated + 'feature-catalog.generated.json'
 const baseline = JSON.parse(readText(path.join(root, 'scripts/ai/published-contract.json')))
-const hash = (text) => createHash('sha256').update(text).digest('hex')
 
 test('published 52/12/2 contracts match frozen names, schemas, risk, Markdown and settings', () => {
     const output = compile(root)
     checkOutputs(root, output, false)
     const { features } = JSON.parse(output[catalogFile])
     const manifest = JSON.parse(output['package.json']).contributes
-    const tools = features.filter((feature) => feature.kind === 'tool')
-    assert.deepEqual(
-        Object.fromEntries(
-            tools.map(({ tool, display }) => {
-                const c = manifest.languageModelTools.find((entry) => entry.name === tool.name)
-                assert.equal(c.displayName, display.label)
-                assert.equal(c.canBeReferencedInPrompt, true)
-                const contract = { id: tool.capabilityId, risk: tool.risk, requiresInteraction: tool.requiresInteraction ?? false, name: c.name, displayName: c.displayName, referenceName: c.toolReferenceName, modelDescription: c.modelDescription, inputSchema: c.inputSchema }
-                return [tool.capabilityId, hash(JSON.stringify(contract, null, 4))]
-            }),
-        ),
-        baseline.tools,
-    )
-    assert.deepEqual(Object.fromEntries([...manifest.chatSkills, ...manifest.chatInstructions].map((resource) => [resource.path, hash(readText(path.join(root, resource.path)))])), baseline.resources)
-    assert.equal(manifest.chatSkills.length, 12)
-    assert.equal(manifest.chatInstructions.length, 2)
-    const config = Object.assign({}, ...manifest.configuration.map((section) => section.properties))
-    for (const [key, definition] of Object.entries(baseline.settings)) assert.deepEqual(config[key], definition, key)
+    assertPublishedContract(features, manifest, file => readText(path.join(root, file)))
     const ajv = new Ajv({ strict: true })
     for (const file of ['ai-panel-state.schema.json', 'ai-preferences.schema.json']) assert.doesNotThrow(() => ajv.compile(JSON.parse(output[generated + file])))
 })
