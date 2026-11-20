@@ -55,3 +55,7 @@ Thumbs.db
 # Test evidence belongs in .build/ or CI artifacts, not documentation
 /docs/**/evidence/
 /docs/customizer/*.json
+
+# Local release handoff files and disposable staging
+/releases/
+/.release-work/

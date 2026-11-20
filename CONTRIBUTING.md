@@ -79,7 +79,7 @@ docs/                    现行功能、架构、安全边界与验证指南
 
 不要修改第三方源码或重新初始化同步基线来消除差异。Preview 同步必须显式运行 `npm run preview:sync -- status`、`to-ide` 或 `to-preview`；完整边界与冲突处理见 [同步说明](scripts/preview-sync/README.md)。删除同步树里的文件会保留为待同步差异，不应手工更新基线来隐藏它。
 
-正式 VSIX 打包会调用 `vscode:prepublish`，构建当前平台的原生 LSP。需要按目标平台构建与验证；本机打出的二进制不是跨平台通用产物。检查 `.vscodeignore` 时保留 LICENSE、原始第三方声明、Webview 资源、WASM、worker 和 `server/<platform>-<arch>/`。
+常规 VSIX 打包通过 `vscode:prepublish` 构建宿主 LSP。正式发布通过冻结 Plan 和 `npm run release:build` 分平台构建、暂存并验包。版本管理、双市场命令和恢复步骤见 [发布手册](docs/release-system.md)。检查 `.vscodeignore` 时保留 LICENSE、原始第三方声明、Webview、WASM、worker 和 `server/<platform>-<arch>/`。
 
 
 ## GUI 与 Agent 业务能力对等

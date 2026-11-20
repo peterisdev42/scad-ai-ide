@@ -45,3 +45,16 @@ docs/cad/phase2-acceptance.md
 
 # Phase 4 acceptance points to repository-only traces.
 docs/cad/phase4-acceptance.md
+
+# Release engineering and repository-only website
+.agents/**
+site/**
+releases/**
+.release-work/**
+docs/release-system.md
+docs/specs/**
+**/.env
+**/.env.*
+**/.git
+**/.git/**
+**/.npmrc
