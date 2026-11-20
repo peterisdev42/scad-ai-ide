@@ -1,7 +1,7 @@
 import {
     appendFileSync, chmodSync, copyFileSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync,
 } from 'node:fs'
-import { dirname, join, resolve } from 'node:path'
+import { dirname, join, relative as pathRelative, resolve } from 'node:path'
 import { artifactFilename, digest, validateArtifacts, validatePlan } from '../common/schema.mjs'
 import { assertCommit, git, publishFile, readJson, requireRelease, run, runNpm, sha256, writeJson } from '../common/io.mjs'
 import { hostTarget, lspPath, targets } from '../common/target-matrix.mjs'
@@ -64,7 +64,7 @@ export function initializeStage(root, stage, plan) {
         const destination = join(stage, relative)
         let local = false
         try {
-            local = git(source, ['rev-parse', '--show-toplevel'], 5) === realpathSync(source) &&
+            local = pathRelative(git(source, ['rev-parse', '--show-toplevel'], 5), realpathSync(source)) === '' &&
                 git(source, ['cat-file', '-t', match[1]], 5) === 'commit'
         } catch {
             // A fresh clone can initialize from the source commit's .gitmodules.
@@ -177,6 +177,7 @@ export async function verifyRelease(root, plan, manifest, manifestPath, options)
             targets: [{ target: item.target, sha256: item.sha256, ...validation }] })
         return { ...result, validation, code: Object.values(validation).includes('fail') ? 5 : 0 }
     } finally {
-        rmSync(scratch, { recursive: true, force: true })
+        // Windows can retain a handle briefly after the smoke processes exit.
+        rmSync(scratch, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 })
     }
 }

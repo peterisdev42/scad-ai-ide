@@ -55,3 +55,9 @@ try {
 ```
 
 这是一份本地 issue 草稿；没有代用户发送上游 issue。恢复条件：独立 build 对照、Unicode source/library/output 全部通过，再跑 Library 几何版本切换及两个真实 Windows 完整 PASS。当前不能宣布 W-PASS。
+
+## 2026-11-20 发布修复复核
+
+从 [Library Manager 运行 44660825850](https://github.com/peterisdev42/scad-ai-ide/actions/runs/44660825850) 复核 Windows 工件。Runner 为 Windows x64 `10.0.26100`，镜像 `win25-vs2026 / 20261116.315.1`，Node `24.22.3`，CLI 版本和执行文件 SHA-256 与上文一致。无 include 的 ASCII 基线及仅更换 cwd 的用例均生成宽 10 的 STL。Unicode 源、输出和库根各自失败。ASCII Junction 和复制均通过，Unicode 项目使用复制或 Junction 均未产出几何。该运行中 Library 门禁失败，真实 CAD 在首个 Unicode 脏缓冲区用例返回 `FAILED`。
+
+[main 运行 44669006427](https://github.com/peterisdev42/scad-ai-ide/actions/runs/44669006427) 的 Windows Library 和探针步骤被 TypeScript 错误提前阻断，始终执行的 CAD 门禁仍在同一断言失败。修复后需在 Windows Runner 上重跑探针并分别检查两个原生门禁。可用上面的最小复现向 [OpenSCAD CLI Builder](https://github.com/peterisdev42/openscad-cli-builder/issues) 提交同源独立构建对照，区分发布包与上游路径处理。

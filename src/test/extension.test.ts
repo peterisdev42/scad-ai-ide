@@ -32,7 +32,7 @@ suite('SCAD AI IDE integration', () => {
         )
         assert.deepEqual(
             items.map((item) => item.command?.command),
-            quickAccess.filter((page) => page.id !== 'bricks').map((page) => page.command),
+            quickAccess.map((page) => page.command),
         )
         for (const item of items) {
             assert.equal(item.iconPath, undefined)

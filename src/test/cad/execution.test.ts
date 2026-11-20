@@ -17,6 +17,7 @@ const args=process.argv.slice(2); if(args.includes('--help')){console.log(' -o o
 const get=flag=>args[args.indexOf(flag)+1];let text=args.at(-1)==='-'?readFileSync(0,'utf8'):readFileSync(args.at(-1),'utf8');
 if(text==='sleep'){console.error('[started]');await new Promise(r=>setTimeout(r,30000))};
 if(text==='zeroerror')console.error('ERROR: Assertion false failed in file -, line 2');
+if(text==='zeroerror-stdout')console.log('ERROR: Assertion false failed in file <stdin>, line 2');
 if(text==='flood'){process.stdout.write('x'.repeat(200000));console.error('ERROR: middle failure');process.stderr.write('x'.repeat(200000))}
 writeFileSync(get('-o'),'cube(1);'); if(args.includes('-d'))writeFileSync(get('-d'),get('-o')+': '+${JSON.stringify(source)}.replaceAll(' ','\\\\ '));
 `,
@@ -42,10 +43,12 @@ test('CLI execution uses frozen stdin, literal argument arrays and Unicode worki
         assert.equal(first.content.toString(), 'cube(1);')
         assert.equal(await readFile(f.request.path, 'utf8'), 'cube(1);')
         await assert.rejects(f.service.execute({ ...f.request, parameters: { 'x; touch injected': 1 } }), /Invalid OpenSCAD parameter/)
-        const error = await f.service.execute({ ...f.request, source: 'zeroerror' })
-        assert.equal(error.exitCode, 0)
-        assert.equal(error.status, 'FAILED')
-        assert.equal(error.diagnostics[0].code, 'SCAD_CLI_ASSERT_FAILED')
+        for (const source of ['zeroerror', 'zeroerror-stdout']) {
+            const error = await f.service.execute({ ...f.request, source })
+            assert.equal(error.exitCode, 0)
+            assert.equal(error.status, 'FAILED')
+            assert.equal(error.diagnostics[0].code, 'SCAD_CLI_ASSERT_FAILED')
+        }
     } finally {
         await f.cleanup()
     }

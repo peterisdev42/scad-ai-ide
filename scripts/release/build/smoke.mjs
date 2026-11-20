@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process'
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { arch, release, platform } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { attempt, run } from '../common/io.mjs'
@@ -50,7 +50,15 @@ export async function stdioSmoke(executable) {
 
 function vsixSmoke(root, vscode, vsix, plan, target) {
     const executable = resolve(vscode)
-    const app = platform() === 'darwin' ? resolve(dirname(executable), '../Resources/app') : resolve(dirname(executable), 'resources/app')
+    const installation = dirname(executable)
+    const app = platform() === 'darwin' ? resolve(installation, '../Resources/app') : resolve(installation, 'resources/app')
+    let cli = join(app, 'out/cli.js')
+    if (platform() === 'win32' && !existsSync(cli)) {
+        // Current Windows archives place resources in a versioned directory.
+        const launcher = readFileSync(join(installation, 'bin/code.cmd'), 'utf8')
+        const versionedDir = /"%~dp0\.\.\\([a-f0-9]{10,40})\\resources\\app\\out\\cli\.js"/i.exec(launcher)?.[1]
+        if (versionedDir) cli = join(installation, versionedDir, 'resources/app/out/cli.js')
+    }
     const profile = join(root, 'profile')
     const shared = join(root, 'shared')
     const extensions = join(root, 'extensions')
@@ -63,7 +71,7 @@ function vsixSmoke(root, vscode, vsix, plan, target) {
         'update.mode': 'none', 'extensions.autoUpdate': false, 'extensions.autoCheckUpdates': false, 'telemetry.telemetryLevel': 'off',
     }))
     const args = ['--user-data-dir', profile, '--shared-data-dir', shared, '--extensions-dir', extensions]
-    run(executable, [join(app, 'out/cli.js'), ...args, '--install-extension', vsix, '--force'], {
+    run(executable, [cli, ...args, '--install-extension', vsix, '--force'], {
         env: { ...process.env, ELECTRON_RUN_AS_NODE: '1' }, log: true, timeout: 120_000,
     })
     writeFileSync(join(harness, 'package.json'), JSON.stringify({

@@ -5,7 +5,23 @@ import assert from 'node:assert/strict'
 import ts from 'typescript'
 
 const baseline = '4463d61046d962a3f5afa5ace49b21f37e6cc4a6'
-const files = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', 'src'], { encoding: 'utf8' }).trim().split('\n').filter(file => file.endsWith('.ts') && !file.endsWith('.d.ts') && existsSync(file))
+// Capture this fixture from git ls-tree and git show at the fixed audit commit.
+const before = JSON.parse(readFileSync(new URL('./fixtures/customizer-architecture-baseline.json', import.meta.url), 'utf8'))
+assert.equal(before?.sourceCommit, baseline, 'Unexpected Customizer baseline source commit')
+assert.ok(Array.isArray(before.files) && before.files.length > 0, 'Missing Customizer baseline files')
+assert.equal(before.fileCount, before.files.length, 'Customizer baseline file count mismatch')
+const baselinePaths = new Set()
+let baselineLines = 0
+for (const file of before.files) {
+    assert.match(file?.path ?? '', /^src\/core\/customizer\/(?:[\w-]+\/)*[\w-]+\.ts$/)
+    assert.ok(!baselinePaths.has(file.path), `Duplicate Customizer baseline path: ${file.path}`)
+    assert.ok(Number.isSafeInteger(file.nonemptyLines) && file.nonemptyLines >= 0, `Invalid baseline line count: ${file.path}`)
+    baselinePaths.add(file.path)
+    baselineLines += file.nonemptyLines
+}
+assert.equal(before.nonemptyLines, baselineLines, 'Customizer baseline line count mismatch')
+
+const files = execFileSync('git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard', 'src'], { encoding: 'utf8' }).split('\0').filter(file => file.endsWith('.ts') && !file.endsWith('.d.ts') && existsSync(file))
 const graph = new Map()
 const core = files.filter(file => file.startsWith('src/core/customizer/'))
 for (const file of files) {
@@ -40,12 +56,11 @@ function visit(file, parents = []) {
 }
 for (const file of core) visit(file)
 const count = text => text.split('\n').filter(line => line.trim()).length
-const before = execFileSync('git', ['ls-tree', '-r', '--name-only', baseline, 'src/core/customizer'], { encoding: 'utf8' }).trim().split('\n').filter(Boolean)
 const summary = {
     baseline,
-    coreFilesBefore: before.length,
+    coreFilesBefore: before.fileCount,
     coreFilesAfter: core.length,
-    nonemptyLinesBefore: before.reduce((total, file) => total + count(execFileSync('git', ['show', `${baseline}:${file}`], { encoding: 'utf8' })), 0),
+    nonemptyLinesBefore: before.nonemptyLines,
     nonemptyLinesAfter: core.reduce((total, file) => total + count(readFileSync(file, 'utf8')), 0),
     coreRuntimeImportCycles: 0,
     coreHostDependencies: 0,

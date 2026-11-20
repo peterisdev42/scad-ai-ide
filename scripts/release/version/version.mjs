@@ -58,7 +58,9 @@ export async function versionStatus(root, options, deps = {}) {
             occupied.error = 'git-history-unavailable'
         }
     }
-    return { repository, extension, configurationMissing, offlineMock: Boolean(options.offline), histories, git: occupied,
+    return { repository, extension, configurationMissing,
+        ...(configurationMissing && { configurationHint: 'Verify the VS Code Marketplace publisher and Open VSX namespace, then pass --publisher <verified-publisher> or configure package.json.' }),
+        offlineMock: Boolean(options.offline), histories, git: occupied,
         ...inventory(histories, occupied) }
 }
 

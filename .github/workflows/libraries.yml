@@ -61,16 +61,18 @@ jobs:
             - run: npm run check-types
             - run: npm run lint
             - run: npm run compile-tests
+            - name: Diagnose Windows Unicode library environment
+              if: runner.os == 'Windows'
+              shell: bash
+              run: |
+                  mkdir -p .build
+                  node scripts/customizer-windows-environment-probe.mjs "$SCAD_OPENSCAD_EXECUTABLE" .build/customizer-windows-environment.json
             - name: Check native Customizer parity
               shell: bash
               run: |
                   mkdir -p .build
                   node scripts/customizer-native-audit.mjs "$SCAD_OPENSCAD_EXECUTABLE" .build/customizer-native.json --strict
                   node scripts/customizer-native-import-audit.mjs "$SCAD_OPENSCAD_EXECUTABLE" .build/customizer-native-import.json
-            - name: Diagnose Windows Unicode library environment
-              if: runner.os == 'Windows'
-              shell: bash
-              run: node scripts/customizer-windows-environment-probe.mjs "$SCAD_OPENSCAD_EXECUTABLE" .build/customizer-windows-environment.json
             - name: Run required native library gate
               shell: bash
               run: npm run test:libraries 2>&1 | tee .build/library-tests.log
