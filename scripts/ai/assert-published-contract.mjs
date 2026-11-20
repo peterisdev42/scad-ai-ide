@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
+import { isDeepStrictEqual } from 'node:util'
 
 const baseline = JSON.parse(readFileSync(new URL('./published-contract.json', import.meta.url)))
 const hash = text => createHash('sha256').update(text).digest('hex')
@@ -17,7 +18,10 @@ export function assertPublishedContract(features, contributes, readResource) {
             name: contribution.name, displayName: contribution.displayName, referenceName: contribution.toolReferenceName,
             modelDescription: contribution.modelDescription, inputSchema: contribution.inputSchema,
         }
-        return [tool.capabilityId, hash(JSON.stringify(contract, null, 4))]
+        // The manifest uses an equivalent object schema to deny extra properties.
+        const serialized = JSON.stringify(contract, (key, value) =>
+            key === 'additionalProperties' && isDeepStrictEqual(value, { not: {} }) ? false : value, 4)
+        return [tool.capabilityId, hash(serialized)]
     }))
     assert.deepEqual(actualTools, baseline.tools)
     const resources = [...contributes.chatSkills, ...contributes.chatInstructions]

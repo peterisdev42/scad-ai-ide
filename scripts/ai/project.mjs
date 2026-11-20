@@ -51,6 +51,9 @@ export function compileWhen(feature, catalog, byId) {
 
 function toolContribution(feature) {
     const { tool, display } = feature
+    // VS Code's tool parameter schema requires an object for additionalProperties.
+    const inputSchema = JSON.parse(JSON.stringify(tool.inputSchema, (key, value) =>
+        key === 'additionalProperties' && value === false ? { not: {} } : value))
     return {
         name: tool.name,
         displayName: display.label,
@@ -59,7 +62,7 @@ function toolContribution(feature) {
         canBeReferencedInPrompt: true,
         toolReferenceName: tool.referenceName,
         ...(display.icon && { icon: '$(' + display.icon + ')' }),
-        inputSchema: tool.inputSchema,
+        inputSchema,
     }
 }
 
