@@ -84,6 +84,10 @@ test('adding and removing declarations projects Tool, Skill, Instruction, Prompt
         const manifest = JSON.parse(output['package.json']).contributes
         const c = manifest.languageModelTools.find((entry) => entry.name === fixtureTool.tool.name)
         assert.match(c.when, /config\.scad-ai-ide\.agent\.features\.tool\.discovery\.compilerFixture\.enabled/)
+        assert.deepEqual(c.inputSchema.additionalProperties, { not: {} })
+        const validateInput = new Ajv({ strict: true }).compile(c.inputSchema)
+        assert.ok(validateInput({}))
+        assert.equal(validateInput({ unexpected: true }), false)
         for (const [kind, file, contribution] of assets) {
             const resource = manifest[contribution].find((entry) => entry.path === './' + file)
             assert.ok(resource.when.includes(c.when.split(' && ').at(-1)), kind + ' must inherit hard dependency gate')

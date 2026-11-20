@@ -20,8 +20,7 @@
         "Other"
     ],
     "activationEvents": [
-        "onStartupFinished",
-        "onLanguage:openscad"
+        "onStartupFinished"
     ],
     "main": "./dist/extension.js",
     "contributes": {
@@ -836,12 +835,14 @@
             "scad-ai-ide": [
                 {
                     "id": "scad-ai.quickAccess",
-                    "name": "Quick Access"
+                    "name": "Quick Access",
+                    "icon": "resources/scad.svg"
                 },
                 {
                     "type": "webview",
                     "id": "scad-ai.customizer",
-                    "name": "Customizer"
+                    "name": "Customizer",
+                    "icon": "resources/scad.svg"
                 }
             ]
         },
@@ -1027,7 +1028,9 @@
                 "toolReferenceName": "scad_capabilities_discover",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "offset": {
                             "type": "integer",
@@ -1051,7 +1054,9 @@
                 "toolReferenceName": "scad_operation_status",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "id": {
                             "type": "string",
@@ -1080,7 +1085,9 @@
                 "toolReferenceName": "scad_operation_cancel",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "id": {
                             "type": "string",
@@ -1134,7 +1141,9 @@
                 "toolReferenceName": "scad_runtime_state",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "offset": {
                             "type": "integer",
@@ -1158,7 +1167,9 @@
                 "toolReferenceName": "scad_runtime_builds",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "refresh": {
                             "type": "boolean"
@@ -1195,7 +1206,9 @@
                 "toolReferenceName": "scad_runtime_refresh",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "mode": {
                             "type": "string",
@@ -1217,7 +1230,9 @@
                 "toolReferenceName": "scad_runtime_installBuild",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "id": {
                             "type": "integer",
@@ -1238,7 +1253,9 @@
                 "toolReferenceName": "scad_runtime_installArchive",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "path": {
                             "type": "string",
@@ -1260,7 +1277,9 @@
                 "toolReferenceName": "scad_runtime_addExecutable",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "path": {
                             "type": "string",
@@ -1282,7 +1301,9 @@
                 "toolReferenceName": "scad_runtime_select",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "id": {
                             "type": "string",
@@ -1304,7 +1325,9 @@
                 "toolReferenceName": "scad_runtime_remove",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "id": {
                             "type": "string",
@@ -1326,7 +1349,9 @@
                 "toolReferenceName": "scad_customizer_state",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {},
                     "required": []
                 },
@@ -1340,7 +1365,9 @@
                 "toolReferenceName": "scad_customizer_set",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "target": {
                             "type": "string",
@@ -1398,7 +1425,9 @@
                 "toolReferenceName": "scad_customizer_reset",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "target": {
                             "type": "string",
@@ -1430,7 +1459,9 @@
                 "toolReferenceName": "scad_customizer_applyPreset",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "target": {
                             "type": "string",
@@ -1462,7 +1493,9 @@
                 "toolReferenceName": "scad_customizer_createPreset",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "target": {
                             "type": "string",
@@ -1500,7 +1533,9 @@
                 "toolReferenceName": "scad_customizer_savePreset",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "target": {
                             "type": "string",
@@ -1537,7 +1572,9 @@
                 "toolReferenceName": "scad_customizer_deletePreset",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "target": {
                             "type": "string",
@@ -1570,7 +1607,9 @@
                 "toolReferenceName": "scad_customizer_importPresets",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "target": {
                             "type": "string",
@@ -1603,7 +1642,9 @@
                 "toolReferenceName": "scad_customizer_exportPresets",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "target": {
                             "type": "string",
@@ -1636,7 +1677,9 @@
                 "toolReferenceName": "scad_libraries_search",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "query": {
                             "type": "string",
@@ -1669,7 +1712,9 @@
                 "toolReferenceName": "scad_libraries_refresh",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {},
                     "required": []
                 },
@@ -1683,7 +1728,9 @@
                 "toolReferenceName": "scad_libraries_projectState",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "project": {
                             "type": "string",
@@ -1712,7 +1759,9 @@
                 "toolReferenceName": "scad_libraries_globalState",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "offset": {
                             "type": "integer",
@@ -1736,7 +1785,9 @@
                 "toolReferenceName": "scad_libraries_install",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "project": {
                             "type": "string",
@@ -1770,7 +1821,9 @@
                 "toolReferenceName": "scad_libraries_remove",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "project": {
                             "type": "string",
@@ -1798,7 +1851,9 @@
                 "toolReferenceName": "scad_libraries_restore",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "project": {
                             "type": "string",
@@ -1820,7 +1875,9 @@
                 "toolReferenceName": "scad_libraries_verify",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "key": {
                             "type": "string",
@@ -1840,7 +1897,9 @@
                 "toolReferenceName": "scad_libraries_repair",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "key": {
                             "type": "string",
@@ -1862,7 +1921,9 @@
                 "toolReferenceName": "scad_libraries_cleanupPlan",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "key": {
                             "type": "string",
@@ -1889,7 +1950,9 @@
                 "toolReferenceName": "scad_libraries_cleanupExecute",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "planId": {
                             "type": "string",
@@ -1911,7 +1974,9 @@
                 "toolReferenceName": "scad_more_githubStatus",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {},
                     "required": []
                 },
@@ -1925,7 +1990,9 @@
                 "toolReferenceName": "scad_more_authorizeGitHub",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {},
                     "required": []
                 },
@@ -1939,7 +2006,9 @@
                 "toolReferenceName": "scad_development_status",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {},
                     "required": []
                 },
@@ -1953,7 +2022,9 @@
                 "toolReferenceName": "scad_development_listCaches",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "offset": {
                             "type": "integer",
@@ -1977,7 +2048,9 @@
                 "toolReferenceName": "scad_development_inspectCache",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "id": {
                             "type": "string",
@@ -1999,7 +2072,9 @@
                 "toolReferenceName": "scad_development_clearCaches",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "id": {
                             "type": "string",
@@ -2031,7 +2106,9 @@
                 "toolReferenceName": "scad_customizer_sourceAnalyze",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "uri": {
                             "type": "string",
@@ -2061,7 +2138,9 @@
                 "toolReferenceName": "scad_customizer_sourceApply",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "mode": {
                             "type": "string",
@@ -2078,7 +2157,9 @@
                         },
                         "identity": {
                             "type": "object",
-                            "additionalProperties": false,
+                            "additionalProperties": {
+                                "not": {}
+                            },
                             "properties": {
                                 "version": {
                                     "type": "integer",
@@ -2103,7 +2184,9 @@
                                 "oneOf": [
                                     {
                                         "type": "object",
-                                        "additionalProperties": false,
+                                        "additionalProperties": {
+                                            "not": {}
+                                        },
                                         "properties": {
                                             "kind": {
                                                 "const": "annotateExisting"
@@ -2135,7 +2218,9 @@
                                             },
                                             "range": {
                                                 "type": "object",
-                                                "additionalProperties": false,
+                                                "additionalProperties": {
+                                                    "not": {}
+                                                },
                                                 "properties": {
                                                     "min": {
                                                         "type": "number"
@@ -2159,7 +2244,9 @@
                                                 "maxItems": 100,
                                                 "items": {
                                                     "type": "object",
-                                                    "additionalProperties": false,
+                                                    "additionalProperties": {
+                                                        "not": {}
+                                                    },
                                                     "properties": {
                                                         "value": {
                                                             "oneOf": [
@@ -2201,7 +2288,9 @@
                                     },
                                     {
                                         "type": "object",
-                                        "additionalProperties": false,
+                                        "additionalProperties": {
+                                            "not": {}
+                                        },
                                         "properties": {
                                             "kind": {
                                                 "const": "insertLiteralParameter"
@@ -2233,7 +2322,9 @@
                                             },
                                             "range": {
                                                 "type": "object",
-                                                "additionalProperties": false,
+                                                "additionalProperties": {
+                                                    "not": {}
+                                                },
                                                 "properties": {
                                                     "min": {
                                                         "type": "number"
@@ -2257,7 +2348,9 @@
                                                 "maxItems": 100,
                                                 "items": {
                                                     "type": "object",
-                                                    "additionalProperties": false,
+                                                    "additionalProperties": {
+                                                        "not": {}
+                                                    },
                                                     "properties": {
                                                         "value": {
                                                             "oneOf": [
@@ -2322,7 +2415,9 @@
                                     },
                                     {
                                         "type": "object",
-                                        "additionalProperties": false,
+                                        "additionalProperties": {
+                                            "not": {}
+                                        },
                                         "properties": {
                                             "kind": {
                                                 "const": "changeWidget"
@@ -2354,7 +2449,9 @@
                                             },
                                             "range": {
                                                 "type": "object",
-                                                "additionalProperties": false,
+                                                "additionalProperties": {
+                                                    "not": {}
+                                                },
                                                 "properties": {
                                                     "min": {
                                                         "type": "number"
@@ -2378,7 +2475,9 @@
                                                 "maxItems": 100,
                                                 "items": {
                                                     "type": "object",
-                                                    "additionalProperties": false,
+                                                    "additionalProperties": {
+                                                        "not": {}
+                                                    },
                                                     "properties": {
                                                         "value": {
                                                             "oneOf": [
@@ -2420,7 +2519,9 @@
                                     },
                                     {
                                         "type": "object",
-                                        "additionalProperties": false,
+                                        "additionalProperties": {
+                                            "not": {}
+                                        },
                                         "properties": {
                                             "kind": {
                                                 "const": "moveGroup"
@@ -2444,7 +2545,9 @@
                                     },
                                     {
                                         "type": "object",
-                                        "additionalProperties": false,
+                                        "additionalProperties": {
+                                            "not": {}
+                                        },
                                         "properties": {
                                             "kind": {
                                                 "const": "hideParameter"
@@ -2477,7 +2580,9 @@
                     "oneOf": [
                         {
                             "type": "object",
-                            "additionalProperties": false,
+                            "additionalProperties": {
+                                "not": {}
+                            },
                             "properties": {
                                 "mode": {
                                     "const": "plan"
@@ -2495,7 +2600,9 @@
                         },
                         {
                             "type": "object",
-                            "additionalProperties": false,
+                            "additionalProperties": {
+                                "not": {}
+                            },
                             "properties": {
                                 "mode": {
                                     "const": "commit"
@@ -2519,7 +2626,9 @@
                 "toolReferenceName": "scad_customizer_sourceValidate",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "uri": {
                             "type": "string",
@@ -2531,7 +2640,9 @@
                             "maxItems": 100,
                             "items": {
                                 "type": "object",
-                                "additionalProperties": false,
+                                "additionalProperties": {
+                                    "not": {}
+                                },
                                 "properties": {
                                     "name": {
                                         "type": "string",
@@ -2560,7 +2671,9 @@
                                     },
                                     "range": {
                                         "type": "object",
-                                        "additionalProperties": false,
+                                        "additionalProperties": {
+                                            "not": {}
+                                        },
                                         "properties": {
                                             "min": {
                                                 "type": "number"
@@ -2584,7 +2697,9 @@
                                         "maxItems": 100,
                                         "items": {
                                             "type": "object",
-                                            "additionalProperties": false,
+                                            "additionalProperties": {
+                                                "not": {}
+                                            },
                                             "properties": {
                                                 "value": {
                                                     "oneOf": [
@@ -2678,7 +2793,9 @@
                 "toolReferenceName": "scad_model_analyze",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "uri": {
                             "type": "string",
@@ -2719,7 +2836,9 @@
                         },
                         "tessellation": {
                             "type": "object",
-                            "additionalProperties": false,
+                            "additionalProperties": {
+                                "not": {}
+                            },
                             "properties": {
                                 "fn": {
                                     "type": "integer",
@@ -2805,7 +2924,9 @@
                 "toolReferenceName": "scad_model_getIssue",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "reportId": {
                             "type": "string",
@@ -2845,7 +2966,9 @@
                 "toolReferenceName": "scad_model_measure",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "uri": {
                             "type": "string",
@@ -2883,7 +3006,9 @@
                         },
                         "tessellation": {
                             "type": "object",
-                            "additionalProperties": false,
+                            "additionalProperties": {
+                                "not": {}
+                            },
                             "properties": {
                                 "fn": {
                                     "type": "integer",
@@ -3035,7 +3160,9 @@
                 "toolReferenceName": "scad_model_renderViews",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "uri": {
                             "type": "string",
@@ -3073,7 +3200,9 @@
                         },
                         "tessellation": {
                             "type": "object",
-                            "additionalProperties": false,
+                            "additionalProperties": {
+                                "not": {}
+                            },
                             "properties": {
                                 "fn": {
                                     "type": "integer",
@@ -3108,7 +3237,9 @@
                                     },
                                     {
                                         "type": "object",
-                                        "additionalProperties": false,
+                                        "additionalProperties": {
+                                            "not": {}
+                                        },
                                         "required": [
                                             "eye",
                                             "target"
@@ -3268,7 +3399,9 @@
                 "toolReferenceName": "scad_model_listParts",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "uri": {
                             "type": "string",
@@ -3345,7 +3478,9 @@
                 "toolReferenceName": "scad_model_checkAssembly",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "uri": {
                             "type": "string",
@@ -3381,7 +3516,9 @@
                         },
                         "tessellation": {
                             "type": "object",
-                            "additionalProperties": false,
+                            "additionalProperties": {
+                                "not": {}
+                            },
                             "properties": {
                                 "fn": {
                                     "type": "integer",
@@ -3489,7 +3626,9 @@
                 "toolReferenceName": "scad_model_compare",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "reportId": {
                             "type": "string",
@@ -3601,7 +3740,9 @@
                 "toolReferenceName": "scad_model_getFeedback",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "uri": {
                             "type": "string",
@@ -3683,7 +3824,9 @@
                 "toolReferenceName": "scad_model_requestPointing",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "reportId": {
                             "type": "string",
@@ -3731,7 +3874,9 @@
                 "toolReferenceName": "scad_model_checkPrintability",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "reportId": {
                             "type": "string",
@@ -3766,7 +3911,9 @@
                 "toolReferenceName": "scad_model_manageReview",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "action": {
                             "enum": [
@@ -3881,7 +4028,9 @@
                 "toolReferenceName": "scad_model_editBuffer",
                 "inputSchema": {
                     "type": "object",
-                    "additionalProperties": false,
+                    "additionalProperties": {
+                        "not": {}
+                    },
                     "properties": {
                         "mode": {
                             "type": "string",
@@ -3897,7 +4046,9 @@
                         },
                         "identity": {
                             "type": "object",
-                            "additionalProperties": false,
+                            "additionalProperties": {
+                                "not": {}
+                            },
                             "properties": {
                                 "version": {
                                     "type": "integer",
@@ -3934,7 +4085,9 @@
                     "oneOf": [
                         {
                             "type": "object",
-                            "additionalProperties": false,
+                            "additionalProperties": {
+                                "not": {}
+                            },
                             "properties": {
                                 "mode": {
                                     "const": "plan"
@@ -3954,7 +4107,9 @@
                         },
                         {
                             "type": "object",
-                            "additionalProperties": false,
+                            "additionalProperties": {
+                                "not": {}
+                            },
                             "properties": {
                                 "mode": {
                                     "const": "commit"
