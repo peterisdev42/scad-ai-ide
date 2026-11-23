@@ -39,10 +39,20 @@ jobs:
           test -s site/assets/cheese.scad
           test -s site/demo.test.mjs
           test -s site/assets/cheese.png
+          test -s site/content.css
+          test -s site/sitemap.xml
+          test -s site/llms.txt
+          test -s site/for-beginners/index.html
+          test -s site/for-ai-agents/index.html
+          test -s site/why-scad-ai-ide/index.html
+          test -s site/getting-started/index.html
           test -s site/favicon.svg
           node --check site/main.js
           node --check site/workbench.js
-          node --test site/demo.test.mjs
+          node --check site/build-og.mjs
+          node --check site/seo.test.mjs
+          node site/build-og.mjs
+          node --test site/demo.test.mjs site/seo.test.mjs
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload website
