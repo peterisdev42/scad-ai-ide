@@ -1,6 +1,8 @@
 import Ajv from 'ajv'
 import { readFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { pathToFileURL } from 'node:url'
 const reportSchema = JSON.parse(readFileSync(join(process.cwd(), 'resources/schemas/cad-report-v1.schema.json'), 'utf8'))
 import assert from 'node:assert/strict'
 import test from 'node:test'
@@ -12,9 +14,34 @@ import { SharedTasks } from '../../core/cad/SharedTasks'
 import { CadVerificationService } from '../../core/cad/CadVerificationService'
 import type { CadExecutionResult, CadInputs, CheckStatus, VerificationCheck } from '../../core/cad/types'
 
+const workspace = join(tmpdir(), 'cad contract workspace')
+const modelPath = join(workspace, 'model.scad')
+const modelUri = pathToFileURL(modelPath).href
+const libraryPath = join(workspace, 'lib.scad')
+const cliPath = join(workspace, 'openscad')
 const check = (status: CheckStatus, required = true): VerificationCheck => ({ id: status, category: 'compile', status, required, issueIds: [] })
 function inputs(text = 'cube(1);', dependencyPaths: string[] = [], dirty = false): CadInputs {
-    return { path: '/workspace/model.scad', text, command: { executable: '/cli', argsPrefix: [] }, env: {}, parameters: {}, hasGeometry: true, snapshot: identifySnapshot({ schemaVersion: 1, document: { uri: 'file:///workspace/model.scad', sourceSha256: digest(text), dirty: false, version: 1 }, project: { rootUri: 'file:///workspace', libraryEnvironmentHash: 'lib' }, dependencies: dependencyPaths.map((path) => ({ uri: `file://${path}`, sha256: digest(path), status: 'resolved', dirty })), runtime: { executable: '/cli', version: 'test', identityHash: 'cli', capabilityHash: 'help', hostPlatform: 'test' }, parameters: { overrides: {}, digest: digest({}) }, evaluation: { mode: 'csg', sourceTransport: 'stdin', exportFormat: 'csg', settingsHash: 'settings' }, constraintsDigest: 'none', kernelVersion: 'diagnostics-v1', complete: !dirty, unresolvedInputs: dirty ? ['DIRTY_DEPENDENCY_NOT_EVALUATED'] : [] }) }
+    return {
+        path: modelPath,
+        text,
+        command: { executable: cliPath, argsPrefix: [] },
+        env: {},
+        parameters: {},
+        hasGeometry: true,
+        snapshot: identifySnapshot({
+            schemaVersion: 1,
+            document: { uri: modelUri, sourceSha256: digest(text), dirty: false, version: 1 },
+            project: { rootUri: pathToFileURL(workspace).href, libraryEnvironmentHash: 'lib' },
+            dependencies: dependencyPaths.map((path) => ({ uri: pathToFileURL(path).href, sha256: digest(path), status: 'resolved', dirty })),
+            runtime: { executable: cliPath, version: 'test', identityHash: 'cli', capabilityHash: 'help', hostPlatform: 'test' },
+            parameters: { overrides: {}, digest: digest({}) },
+            evaluation: { mode: 'csg', sourceTransport: 'stdin', exportFormat: 'csg', settingsHash: 'settings' },
+            constraintsDigest: 'none',
+            kernelVersion: 'diagnostics-v1',
+            complete: !dirty,
+            unresolvedInputs: dirty ? ['DIRTY_DEPENDENCY_NOT_EVALUATED'] : [],
+        }),
+    }
 }
 const result = (overrides: Partial<CadExecutionResult> = {}): CadExecutionResult => ({ status: 'SUCCEEDED', exitCode: 0, content: Buffer.from('cube(1);'), dependencies: [], dependenciesComplete: true, log: '', truncated: false, diagnostics: [], elapsedMs: 1, empty: false, ...overrides })
 
@@ -33,11 +60,11 @@ test('snapshot identities include actual inputs and ignore host-only version/dir
     assert.equal(digest({ a: 1, b: [2, 3] }), digest({ b: [2, 3], a: 1 }))
     assert.equal(first.id, identifySnapshot({ ...first, document: { ...first.document, version: 99, dirty: true } }).id)
     for (const modified of [
-        { ...first, project: { ...first.project, rootUri: 'file:///other' } },
+        { ...first, project: { ...first.project, rootUri: pathToFileURL(join(workspace, 'other')).href } },
         { ...first, runtime: { ...first.runtime, identityHash: 'new' } },
         { ...first, constraintsDigest: 'changed' },
         { ...first, parameters: { overrides: { width: 2 }, digest: 'changed' } },
-        { ...first, dependencies: [{ uri: 'file:///lib.scad', status: 'resolved' as const, sha256: 'hash', dirty: false }] },
+        { ...first, dependencies: [{ uri: pathToFileURL(libraryPath).href, status: 'resolved' as const, sha256: 'hash', dirty: false }] },
     ])
         assert.notEqual(first.id, identifySnapshot(modified).id)
 })
@@ -97,19 +124,19 @@ test('analysis discovers dependencies then reexecutes against their content snap
         capture: async (_uri, deps) => inputs('cube(1);', deps),
         execute: async () => {
             calls++
-            return result({ dependencies: ['/workspace/lib.scad'] })
+            return result({ dependencies: [libraryPath] })
         },
         locate: async () => undefined,
     })
     try {
-        const first = await service.analyze({ uri: 'file:///workspace/model.scad' })
+        const first = await service.analyze({ uri: modelUri })
         const validate = new Ajv({ strict: true }).compile(reportSchema)
         assert.equal(validate(first), true, JSON.stringify(validate.errors))
         assert.equal(validate({ ...first, overallStatus: 'UNKNOWN' }), false)
         assert.equal(calls, 2)
         assert.equal(first.overallStatus, 'PASS')
         assert.equal(first.snapshot.dependencies.length, 1)
-        const again = await service.analyze({ uri: 'file:///workspace/model.scad' })
+        const again = await service.analyze({ uri: modelUri })
         assert.equal(again.reportId, first.reportId)
         assert.equal(calls, 2)
         assert.ok(Object.isFrozen(first.snapshot.document))
@@ -124,9 +151,9 @@ test('analysis discovers dependencies then reexecutes against their content snap
 })
 test('dirty include, missing dependencies and truncated evidence never produce PASS', async () => {
     for (const scenario of ['dirty', 'missing', 'truncated'] as const) {
-        const service = new CadVerificationService({ capture: async (_uri, deps) => inputs('cube(1);', deps, scenario === 'dirty' && !!deps.length), execute: async () => result({ dependencies: ['/workspace/lib.scad'], dependenciesComplete: scenario !== 'missing', truncated: scenario === 'truncated' }), locate: async () => undefined })
+        const service = new CadVerificationService({ capture: async (_uri, deps) => inputs('cube(1);', deps, scenario === 'dirty' && !!deps.length), execute: async () => result({ dependencies: [libraryPath], dependenciesComplete: scenario !== 'missing', truncated: scenario === 'truncated' }), locate: async () => undefined })
         try {
-            const report = await service.analyze({ uri: 'file:///workspace/model.scad' })
+            const report = await service.analyze({ uri: modelUri })
             assert.equal(report.overallStatus, 'UNRESOLVED', scenario)
         } finally {
             service.dispose()
@@ -145,11 +172,11 @@ test('old completion and expectedSnapshot mismatch cannot certify current source
         locate: async () => undefined,
     })
     try {
-        await assert.rejects(service.analyze({ uri: 'file:///workspace/model.scad', expectedSnapshotId: 'wrong' }), /Expected snapshot/)
-        const pending = service.analyze({ uri: 'file:///workspace/model.scad' })
+        await assert.rejects(service.analyze({ uri: modelUri, expectedSnapshotId: 'wrong' }), /Expected snapshot/)
+        const pending = service.analyze({ uri: modelUri })
         for (let i = 0; i < 10 && !release; i++) await Promise.resolve()
         source = 'cube(2);'
-        service.invalidate('file:///workspace/model.scad')
+        service.invalidate(modelUri)
         release(result())
         await assert.rejects(pending, /historical/)
     } finally {
@@ -159,7 +186,7 @@ test('old completion and expectedSnapshot mismatch cannot certify current source
 test('exit-zero ERROR is FAIL, ordinary warnings stay warnings, unsafe locations fall back', async () => {
     const service = new CadVerificationService({ capture: async () => inputs(), execute: async () => result({ status: 'FAILED', diagnostics: [{ code: 'SCAD_CLI_ASSERT_FAILED', message: 'assertion failed', severity: 'error', trace: [], file: '/private/unknown.scad', line: 9 }] }), locate: async () => undefined })
     try {
-        const report = await service.analyze({ uri: 'file:///workspace/model.scad' })
+        const report = await service.analyze({ uri: modelUri })
         assert.equal(report.overallStatus, 'FAIL')
         assert.equal(report.issues[0].location?.confidence, 'fallback')
         assert.equal(report.issues[0].location?.line, 0)
@@ -180,7 +207,7 @@ test('twenty simultaneous consumers of the same snapshot perform one evaluation'
         locate: async () => undefined,
     })
     try {
-        const reports = await Promise.all(Array.from({ length: 20 }, () => service.analyze({ uri: 'file:///workspace/model.scad' })))
+        const reports = await Promise.all(Array.from({ length: 20 }, () => service.analyze({ uri: modelUri })))
         assert.equal(calls, 1)
         assert.equal(new Set(reports.map((r) => r.reportId)).size, 1)
     } finally {
@@ -189,9 +216,9 @@ test('twenty simultaneous consumers of the same snapshot perform one evaluation'
 })
 test('changing a dependency graph on its second evaluation remains unresolved', async () => {
     let calls = 0
-    const service = new CadVerificationService({ capture: async (_uri, deps) => inputs('cube(1);', deps), execute: async () => result({ dependencies: [++calls === 1 ? '/workspace/a.scad' : '/workspace/b.scad'] }), locate: async () => undefined })
+    const service = new CadVerificationService({ capture: async (_uri, deps) => inputs('cube(1);', deps), execute: async () => result({ dependencies: [join(workspace, ++calls === 1 ? 'a.scad' : 'b.scad')] }), locate: async () => undefined })
     try {
-        const report = await service.analyze({ uri: 'file:///workspace/model.scad' })
+        const report = await service.analyze({ uri: modelUri })
         assert.equal(report.overallStatus, 'UNRESOLVED')
         assert.ok(report.incomplete.includes('DEPENDENCIES_CHANGED_DURING_ANALYSIS'))
         assert.equal(calls, 2)
@@ -202,7 +229,7 @@ test('changing a dependency graph on its second evaluation remains unresolved', 
 test('content changed and restored during execution cannot enter the green cache', async () => {
     let stamp = 'before'
     const service = new CadVerificationService({
-        capture: async () => ({ ...inputs(), fileStamps: { '/workspace/lib.scad': stamp } }),
+        capture: async () => ({ ...inputs(), fileStamps: { [libraryPath]: stamp } }),
         execute: async () => {
             stamp = 'after'
             return result()
@@ -210,7 +237,7 @@ test('content changed and restored during execution cannot enter the green cache
         locate: async () => undefined,
     })
     try {
-        await assert.rejects(service.analyze({ uri: 'file:///workspace/model.scad' }), /historical/)
+        await assert.rejects(service.analyze({ uri: modelUri }), /historical/)
         assert.equal(service.reports.all().length, 0)
     } finally {
         service.dispose()
@@ -266,11 +293,11 @@ test('new incomplete evidence cannot reuse a cached PASS, even after invalidatio
         locate: async () => undefined,
     })
     try {
-        const good = await service.analyze({ uri: 'file:///workspace/model.scad' })
+        const good = await service.analyze({ uri: modelUri })
         incomplete = true
         service.invalidate()
         assert.equal(await service.isCurrent(good), false)
-        const partial = await service.analyze({ uri: 'file:///workspace/model.scad' })
+        const partial = await service.analyze({ uri: modelUri })
         assert.equal(partial.snapshot.id, good.snapshot.id)
         assert.equal(partial.overallStatus, 'UNRESOLVED')
         assert.notEqual(partial.reportId, good.reportId)
@@ -284,7 +311,7 @@ test('new incomplete evidence cannot reuse a cached PASS, even after invalidatio
 test('CLI-derived unresolved evidence can remain current without matching input completeness', async () => {
     const service = new CadVerificationService({ capture: async () => inputs(), execute: async () => result({ diagnostics: normalizeCliDiagnostics("WARNING: Ignoring unknown module 'missing'", 0) }), locate: async () => undefined })
     try {
-        const report = await service.analyze({ uri: 'file:///workspace/model.scad' })
+        const report = await service.analyze({ uri: modelUri })
         assert.equal(report.overallStatus, 'UNRESOLVED')
         assert.equal(await service.isCurrent(report), true)
     } finally {
@@ -295,19 +322,27 @@ test('CLI-derived unresolved evidence can remain current without matching input 
 // Alias spellings can originate independently in the CLI dependency file and ERROR text.
 test('CLI canonical and editor alias dependency paths freeze one input and remain current', async () => {
     let calls = 0
+    const canonicalPath = join(tmpdir(), 'cad contract canonical', 'part #1.scad')
+    const aliasPath = join(workspace, 'part #1.scad')
+    const aliasUri = pathToFileURL(aliasPath).href
+    const locations = new Map([[modelPath, modelUri], [canonicalPath, aliasUri], [aliasPath, aliasUri]])
     const service = new CadVerificationService({
-        capture: async (_uri, deps) => inputs('include <part.scad>', deps),
-        locate: async (path) => `file://${path.replace('/private/workspace/', '/workspace/')}`,
+        capture: async (_uri, deps) => inputs('include <part #1.scad>', deps),
+        locate: async (path) => locations.get(path),
         execute: async () => {
             calls++
-            return result({ dependencies: ['/private/workspace/part.scad'], diagnostics: [{ code: 'SCAD_CLI_ASSERT_FAILED', message: 'assertion', severity: 'error', file: '/private/workspace/part.scad', line: 0, trace: [] }] })
+            return result({ dependencies: [canonicalPath], diagnostics: [{ code: 'SCAD_CLI_ASSERT_FAILED', message: 'assertion', severity: 'error', file: aliasPath, line: 0, trace: [] }] })
         },
     })
-    const report = await service.analyze({ uri: 'file:///workspace/model.scad' })
-    assert.equal(calls, 2)
-    assert.deepEqual(service.knownDependencies('file:///workspace/model.scad'), ['/workspace/part.scad'])
-    assert.equal(report.snapshot.dependencies.length, 1)
-    assert.equal(report.issues[0].location?.uri, 'file:///workspace/part.scad')
-    assert.equal(await service.isCurrent(report), true)
-    service.dispose()
+    try {
+        const report = await service.analyze({ uri: modelUri })
+        assert.equal(calls, 2)
+        assert.deepEqual(service.knownDependencies(modelUri), [aliasPath])
+        assert.deepEqual(report.snapshot.dependencies.map((dependency) => dependency.uri), [aliasUri])
+        assert.ok(Object.isFrozen(report.snapshot.dependencies[0]))
+        assert.equal(report.issues[0].location?.uri, aliasUri)
+        assert.equal(await service.isCurrent(report), true)
+    } finally {
+        service.dispose()
+    }
 })
