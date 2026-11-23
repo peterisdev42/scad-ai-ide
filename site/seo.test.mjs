@@ -94,7 +94,7 @@ test('Source-backed product facts stay aligned with generated native Agent catal
   assert.ok(readme.includes(n+' native VS Code Language Model Tools'));
   assert.ok(pages[0].html.includes(n+' native VS Code Language Model Tools'));
   assert.ok(pages[0].html.includes(n+' Tools'));
-  assert.doesNotMatch(pages[0].html,/\\b51 (?:registered|Tools|native)/i,'no stale tool-count claims in the homepage');
+  assert.doesNotMatch(pages[0].html,/\b51 (?:registered|Tools|native)/i,'no stale tool-count claims in the homepage');
   for(const claim of claims.claims){
     assert.ok(claim.id&&claim.claim&&claim.status&&claim.evidence?.length);
     assert.ok(claim.qualifications?.length&&claim.lastReviewed);
