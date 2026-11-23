@@ -1,0 +1,3 @@
+# Golden mesh tests compare checked-out bytes and SHA-256 digests.
+src/test/mesh/golden/**/*.stl -text
+src/test/mesh/golden/**/*.3mf -text
