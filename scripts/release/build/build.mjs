@@ -1,9 +1,9 @@
 import {
     appendFileSync, chmodSync, copyFileSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync,
 } from 'node:fs'
-import { dirname, join, relative as pathRelative, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { artifactFilename, digest, validateArtifacts, validatePlan } from '../common/schema.mjs'
-import { assertCommit, git, publishFile, readJson, requireRelease, run, runNpm, sha256, writeJson } from '../common/io.mjs'
+import { assertCommit, git, GitCommandError, publishFile, readJson, requireRelease, run, runNpm, sha256, writeJson } from '../common/io.mjs'
 import { hostTarget, lspPath, targets } from '../common/target-matrix.mjs'
 import { releaseExcludes } from './assets.mjs'
 import { verifyBinary } from './binary.mjs'
@@ -62,16 +62,35 @@ export function initializeStage(root, stage, plan) {
         requireRelease(match, `Missing frozen gitlink: ${relative}`, 5)
         const source = join(root, relative)
         const destination = join(stage, relative)
-        let local = false
+        let localSource
+        let localStatus = 'local checkout unavailable'
         try {
-            local = pathRelative(git(source, ['rev-parse', '--show-toplevel'], 5), realpathSync(source)) === '' &&
-                git(source, ['cat-file', '-t', match[1]], 5) === 'commit'
+            const prefix = git(source, ['rev-parse', '--show-prefix'], 5)
+            localStatus = 'local repository root differs from submodule directory'
+            // Git reports an empty prefix at its worktree root. An uninitialized submodule
+            // resolves to the parent repository and reports a nonempty prefix.
+            if (prefix === '') {
+                localStatus = 'frozen commit unavailable locally'
+                if (git(source, ['cat-file', '-t', match[1]], 5) === 'commit') {
+                    // Keep Git's spelling of the path when using it as a submodule URL.
+                    localSource = git(source, ['rev-parse', '--show-toplevel'], 5)
+                    localStatus = 'using local checkout'
+                }
+            }
         } catch {
             // A fresh clone can initialize from the source commit's .gitmodules.
         }
-        const overrides = local ? ['-c', 'protocol.file.allow=always', '-c', `submodule.${relative}.url=${source}`] : []
-        git(stage, [...overrides, 'submodule', 'update', '--init', '--', relative], 5)
-        requireRelease(git(destination, ['rev-parse', 'HEAD'], 5) === match[1], 'Staging submodule gitlink mismatch', 5)
+        try {
+            if (localSource) git(stage, ['config', '--local', `submodule.${relative}.url`, localSource], 5)
+            const overrides = localSource ? ['-c', 'protocol.file.allow=always'] : []
+            git(stage, [...overrides, 'submodule', 'update', '--init', '--', relative], 5)
+        } catch (error) {
+            if (error instanceof GitCommandError) {
+                error.message = `Cannot initialize frozen submodule ${relative}: ${error.message} (${localStatus})`
+            }
+            throw error
+        }
+        requireRelease(git(destination, ['rev-parse', 'HEAD'], 5) === match[1], `Staging submodule gitlink mismatch: ${relative}`, 5)
         identities[relative] = match[1]
     }
     return identities

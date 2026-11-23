@@ -61,3 +61,44 @@ try {
 从 [Library Manager 运行 44660825850](https://github.com/peterisdev42/scad-ai-ide/actions/runs/44660825850) 复核 Windows 工件。Runner 为 Windows x64 `10.0.26100`，镜像 `win25-vs2026 / 20261116.315.1`，Node `24.22.3`，CLI 版本和执行文件 SHA-256 与上文一致。无 include 的 ASCII 基线及仅更换 cwd 的用例均生成宽 10 的 STL。Unicode 源、输出和库根各自失败。ASCII Junction 和复制均通过，Unicode 项目使用复制或 Junction 均未产出几何。该运行中 Library 门禁失败，真实 CAD 在首个 Unicode 脏缓冲区用例返回 `FAILED`。
 
 [main 运行 44669006427](https://github.com/peterisdev42/scad-ai-ide/actions/runs/44669006427) 的 Windows Library 和探针步骤被 TypeScript 错误提前阻断，始终执行的 CAD 门禁仍在同一断言失败。修复后需在 Windows Runner 上重跑探针并分别检查两个原生门禁。可用上面的最小复现向 [OpenSCAD CLI Builder](https://github.com/peterisdev42/openscad-cli-builder/issues) 提交同源独立构建对照，区分发布包与上游路径处理。
+
+## 2026-11-23 发布收尾复核
+
+重新读取 `main@0d73b32` 的 Windows x64 原始工件。Runner 镜像 `win25-vs2026 / 20261103.298.1`，OpenSCAD `2026.11-RC0`，可执行文件 SHA-256 为 `d1c8cc1b86a8b08794429892d1247221831e19f00911560496abed5b5d010a01`。探针 11 通过、10 失败，`test:libraries` 26 通过、1 失败、2 条件未运行，`test:cad:real` 1 失败。以上是该 CI 运行的真实证据。[Library Manager Windows 工件](https://github.com/peterisdev42/scad-ai-ide/actions/runs/44696437510/artifacts/14610304177)
+
+| 变量 | 原生结果 |
+| --- | --- |
+| ASCII source、output、cwd，无 include | 退出 0，STL 宽度 10 |
+| 仅 Unicode source | 退出 `3221226505`，无 STL |
+| 仅 Unicode output | 退出 1，CLI 报输出目录不存在，无 STL |
+| 仅 Unicode cwd | 退出 0，STL 宽度 10 |
+| Unicode / 非 BMP 库根 | 退出 1，CLI 找不到已存在的 include |
+| ASCII 实体库、Junction、copy、symlink | 退出 0，STL 宽度 10 |
+| Unicode 项目，实体库或 Junction，绝对或相对搜索路径 | 退出 `3221226505`，无 STL |
+
+历史 Windows 11 x64 来宾曾用 PowerShell 直调复现同一退出值，显示为有符号整数 `-1073740791`。可在无 IDE 的 PowerShell 会话用以下命令对同一二进制复测。`$root` 需位于实际可写的 ASCII 路径，供对照组控制变量。
+
+```powershell
+$exe = (Resolve-Path $env:SCAD_OPENSCAD_EXECUTABLE).Path
+$root = Join-Path $env:TEMP ('scad-unicode-' + [guid]::NewGuid().ToString('N'))
+if ($root -match '[^\x00-\x7F]') { throw 'Use an ASCII test directory for the control' }
+$null = New-Item -ItemType Directory -Path (Join-Path $root '项目 A') -Force
+Push-Location $root
+try {
+    Set-Content -LiteralPath 'ascii.scad' -Value 'cube(10);' -Encoding ascii
+    Set-Content -LiteralPath '项目 A/cube.scad' -Value 'cube(10);' -Encoding ascii
+    Get-FileHash $exe -Algorithm SHA256
+    & $exe --version
+    foreach ($case in @('ascii.scad', '项目 A/cube.scad')) {
+        $out = Join-Path $root ('result-' + [guid]::NewGuid().ToString('N') + '.stl')
+        & $exe --export-format asciistl -o $out (Join-Path $root $case)
+        $exit = $LASTEXITCODE
+        [pscustomobject]@{ Source = $case; ExitCode = $exit; StlCreated = Test-Path $out }
+    }
+} finally {
+    Pop-Location
+    Remove-Item -LiteralPath $root -Recurse -Force
+}
+```
+
+CLI 构建维护者可先用同源提交制作独立 Windows x64 构建并运行上述对照。若仅 RC0 发行包失败，比较两者依赖和构建配置。若两者都失败，检查从宽字符命令行和 `OPENSCADPATH` 到文件打开、库搜索和输出目录判定的路径传递，并用实际包含中文、空格和非 BMP 字符的目录做回归。候选包需通过矩阵的 Unicode source、output、library 和项目链接目标，再使用候选包重跑真实 `test:libraries` 和 `test:cad:real`。发布门禁以这两个原生用例的成功为准。[OpenSCAD CLI Builder 修复入口](https://github.com/peterisdev42/openscad-cli-builder/issues)

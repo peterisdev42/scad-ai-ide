@@ -15,6 +15,13 @@ import { box, stl } from '../mesh/fixtures'
 import { digest } from '../../core/cad/snapshot'
 import Ajv from 'ajv'
 import schema from '../../../resources/schemas/cad-report-v3.schema.json'
+
+function deferred<T>() {
+    let resolve!: (value: T) => void
+    const promise = new Promise<T>((finish) => { resolve = finish })
+    return { promise, resolve }
+}
+
 function capture(id: string, selector?: string): MeshCapture {
     const hash = digest([id, selector])
     return {
@@ -55,8 +62,8 @@ async function setup() {
             checks: [{ id: 'gap', type: 'clearance', parts: ['a', 'b'], min: 0.25, max: 0.35 }],
         }),
         stamp = '1',
-        calls = 0,
-        delay = 0
+        calls = 0
+    let gate: { started: ReturnType<typeof deferred<AbortSignal>>; proceed: ReturnType<typeof deferred<void>> } | undefined
     const meshes = new MeshVerificationService(
         {
             capture: async (input) => capture(input.uri.includes('/a.') ? 'a' : 'b'),
@@ -93,8 +100,13 @@ async function setup() {
         current: (r) => meshes.current(r),
         analyze: async (parts, pairs, signal) => {
             calls++
-            await new Promise((r) => setTimeout(r, delay))
-            signal.throwIfAborted()
+            const pending = gate
+            gate = undefined
+            if (pending) {
+                pending.started.resolve(signal)
+                // A worker can return after cancellation. The service must discard that result.
+                await pending.proceed.promise
+            }
             return analyzeAssembly(parts, pairs)
         },
         schedule: (task, signal) => assemblyQueue.run(task, signal),
@@ -105,7 +117,10 @@ async function setup() {
         store,
         setContent: (v: string) => (content = v),
         setStamp: (v: string) => (stamp = v),
-        setDelay: (v: number) => (delay = v),
+        pauseAnalysis: () => {
+            gate = { started: deferred<AbortSignal>(), proceed: deferred<void>() }
+            return { started: gate.started.promise, resume: gate.proceed.resolve }
+        },
         calls: () => calls,
         close: async () => {
             service.dispose()
@@ -136,49 +151,76 @@ test('v3 schema, immutable evidence, cache, historical read and baseline precond
         await s.close()
     }
 })
-test('independent cancellation preserves another waiter; last cancellation never caches PASS', async () => {
+test('cancelling one waiter preserves the shared analysis for the other waiter', { timeout: 15_000 }, async () => {
     const s = await setup()
+    const analysis = s.pauseAnalysis()
     try {
-        s.setDelay(35)
         const c = new AbortController(),
             a = s.service.check({ uri: 'file:///workspace/.scad/verification.json' }, c.signal),
             b = s.service.check({ uri: 'file:///workspace/.scad/verification.json' })
-        await new Promise((r) => setTimeout(r, 10))
+        const signal = await analysis.started
         c.abort()
         await assert.rejects(a, /cancel|abort/i)
+        assert.equal(signal.aborted, false)
+        analysis.resume()
         assert.equal((await b).overallStatus, 'PASS')
         assert.equal(s.calls(), 1)
     } finally {
+        analysis.resume()
         await s.close()
     }
+})
+
+test('cancelling the last waiter discards late analysis and allows an immediate retry', { timeout: 15_000 }, async () => {
     const q = await setup()
+    const analysis = q.pauseAnalysis()
     try {
-        q.setDelay(50)
         const c = new AbortController(),
             p = q.service.check({ uri: 'file:///workspace/.scad/verification.json' }, c.signal)
-        await new Promise((r) => setTimeout(r, 10))
+        const signal = await analysis.started
         c.abort()
         await assert.rejects(p, /cancel|abort/i)
-        await new Promise((r) => setTimeout(r, 60))
-        assert.equal((await q.service.check({ uri: 'file:///workspace/.scad/verification.json' })).overallStatus, 'PASS')
+        assert.equal(signal.aborted, true)
+        const retry = q.service.check({ uri: 'file:///workspace/.scad/verification.json' })
+        analysis.resume()
+        const report = await retry
+        assert.equal(report.overallStatus, 'PASS')
         assert.equal(q.calls(), 2)
+        assert.deepEqual(q.service.all().map((item) => item.reportId), [report.reportId])
     } finally {
+        analysis.resume()
         await q.close()
     }
 })
-test('input stamp race and active invalidation prevent publication', async () => {
+test('a changed input stamp prevents publication of completed analysis', { timeout: 15_000 }, async () => {
     const s = await setup()
+    const changed = s.pauseAnalysis()
     try {
-        s.setDelay(40)
         const p = s.service.check({ uri: 'file:///workspace/.scad/verification.json' })
-        await new Promise((r) => setTimeout(r, 15))
+        await changed.started
         s.setStamp('2')
+        changed.resume()
         await assert.rejects(p, /changed/i)
-        const q = s.service.check({ uri: 'file:///workspace/.scad/verification.json' })
-        await new Promise((r) => setTimeout(r, 15))
-        s.service.invalidate()
-        await assert.rejects(q, /abort|cancel/i)
+        assert.deepEqual(s.service.all(), [])
     } finally {
+        changed.resume()
+        await s.close()
+    }
+})
+
+test('active invalidation aborts the analysis and prevents publication', { timeout: 15_000 }, async () => {
+    const s = await setup()
+    const analysis = s.pauseAnalysis()
+    try {
+        const p = s.service.check({ uri: 'file:///workspace/.scad/verification.json' })
+        const signal = await analysis.started
+        s.service.invalidate()
+        assert.equal(signal.aborted, true)
+        analysis.resume()
+        await assert.rejects(p, /abort|cancel/i)
+        assert.deepEqual(s.service.all(), [])
+    } finally {
+        analysis.resume()
         await s.close()
     }
 })

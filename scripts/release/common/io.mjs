@@ -64,16 +64,61 @@ export function publishFile(temp, destination) {
     }
 }
 
-export function run(program, args, { cwd, env = process.env, log = false, code = 5, timeout = 0 } = {}) {
-    const result = spawnSync(program, args, { cwd, env, timeout, encoding: 'utf8',
+function spawnCommand(program, args, { cwd, env = process.env, log = false, timeout = 0 }) {
+    return spawnSync(program, args, { cwd, env, timeout, encoding: 'utf8',
         stdio: ['ignore', log ? 2 : 'pipe', log ? 2 : 'pipe'], maxBuffer: 16 * 1024 * 1024, windowsHide: true })
+}
+
+export function run(program, args, { code = 5, ...options } = {}) {
+    const result = spawnCommand(program, args, options)
     requireRelease(result.status === 0, `${program} failed${result.error?.code ? ` (${result.error.code})` : ` (exit ${result.status ?? result.signal})`}`, code)
     return result.stdout ?? ''
 }
 
+// Git can echo credentials, repository paths and arbitrary remote or helper output.
+// Emit only recognized diagnostics with fixed placeholders for untrusted values.
+const gitDiagnostics = [
+    [/^fatal: transport '(file|https|http|ssh|git)' not allowed$/, (_, protocol) => `fatal: transport '${protocol}' not allowed`],
+    [/^fatal: transport .+ not allowed$/, 'fatal: transport <redacted> not allowed'],
+    [/^fatal: repository .+ does not exist$/, 'fatal: repository <redacted> does not exist'],
+    [/^fatal: .+ does not appear to be a git repository$/, 'fatal: <redacted> does not appear to be a git repository'],
+    [/^fatal: not a git repository(?:: .+| \(or any of the parent directories\): .+)?$/, 'fatal: not a git repository'],
+    [/^fatal: clone of .+ into submodule path .+ failed$/, 'fatal: clone into submodule path failed'],
+    [/^fatal: (?:could not|cannot) chdir to .+$/, 'fatal: could not enter directory <redacted>'],
+    [/^fatal: detected dubious ownership in repository at .+$/, 'fatal: detected dubious ownership in repository'],
+    [/^fatal: No url found for submodule path .+ in .gitmodules$/, 'fatal: no URL found for submodule path in .gitmodules'],
+    [/^fatal: Unable to find current revision in submodule path .+$/, 'fatal: unable to find current revision in submodule'],
+    [/^fatal: Fetched in submodule path .+, but it did not contain .+$/, 'fatal: fetched submodule did not contain the requested revision'],
+    [/^(?:fatal|error): .+: (Filename too long|Permission denied|No such file or directory|Invalid argument)$/, (_, reason) => `git: ${reason}`],
+    [/^error: could not lock config file .+$/, 'error: could not lock config file <redacted>'],
+    [/^fatal: could not read Username for .+$/, 'fatal: could not read remote username'],
+    [/^fatal: Authentication failed for .+$/, 'fatal: authentication failed'],
+]
+
+function safeGitStderr(stderr) {
+    const sanitized = new Set()
+    for (const line of (stderr ?? '').split(/\r?\n/)) {
+        if (!line.trim()) continue
+        const rule = gitDiagnostics.find(([pattern]) => pattern.test(line))
+        sanitized.add(rule ? line.replace(rule[0], rule[1]) : '<redacted Git stderr>')
+    }
+    return [...sanitized].join('\n')
+}
+
+export class GitCommandError extends ReleaseError {
+    constructor(code, result) {
+        const stderr = safeGitStderr(result.stderr)
+        const failure = result.error?.code ?? (result.status === null ? result.signal : `exit ${result.status}`)
+        super(code, `git failed (${failure})${stderr ? ': ' + stderr.replaceAll('\n', ' | ') : ''}`)
+        this.git = { exitCode: result.status, signal: result.signal, spawnError: result.error?.code ?? null, stderr }
+    }
+}
+
 export function gitRaw(cwd, args, code = 3) {
-    return run('git', args, { cwd, code, timeout: 60_000,
-        env: { ...process.env, GIT_TERMINAL_PROMPT: '0', GIT_NO_REPLACE_OBJECTS: '1' } })
+    const result = spawnCommand('git', args, { cwd, timeout: 60_000,
+        env: { ...process.env, LC_ALL: 'C', GIT_TERMINAL_PROMPT: '0', GIT_NO_REPLACE_OBJECTS: '1' } })
+    if (result.status !== 0) throw new GitCommandError(code, result)
+    return result.stdout ?? ''
 }
 
 export const git = (cwd, args, code) => gitRaw(cwd, args, code).trim()

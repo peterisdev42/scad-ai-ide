@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync, realpathSync } from 'node:fs'
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync, realpathSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { test } from 'node:test'
@@ -7,7 +7,7 @@ import { strToU8, strFromU8 } from 'fflate'
 import { cargoBuildArgs, initializeStage } from '../build/build.mjs'
 import { releaseAssets } from '../build/assets.mjs'
 import { verifyVsix } from '../build/verify.mjs'
-import { attempt, git, sha256, writeJson } from '../common/io.mjs'
+import { attempt, git, GitCommandError, sha256, writeJson } from '../common/io.mjs'
 import { digest } from '../common/schema.mjs'
 import { hostTarget, lspPath, targetNames, targets } from '../common/target-matrix.mjs'
 import { prepublish } from '../prepublish.mjs'
@@ -96,7 +96,7 @@ test('VSIX integrity rejects unsafe paths, symlinks, excess sizes and corrupted 
     }
 })
 
-test('detached staging freezes source and submodules even when the workspace advances', t => {
+function stagingFixture(t) {
     const root = temp(t)
     function createRepo(name) {
         const dir = join(root, name)
@@ -105,7 +105,7 @@ test('detached staging freezes source and submodules even when the workspace adv
         git(dir, ['config', 'user.email', 'test@example.invalid'])
         return dir
     }
-    const snapshot = createRepo('worktree')
+    const snapshot = createRepo('worktree with spaces')
     const dependencies = createRepo('dependency')
     const marker = 'marker.txt'
     for (const repo of [snapshot, dependencies]) {
@@ -114,20 +114,104 @@ test('detached staging freezes source and submodules even when the workspace adv
         git(repo, ['commit', '--quiet', '-m', 'initial'])
     }
     const relative = ['openscad', 'openscad-LSP', 'vscode-openscad-preview'].map(name => 'sources/' + name)
+    const dependencyUrl = git(dependencies, ['rev-parse', '--show-toplevel'])
     for (const path of relative) {
-        git(snapshot, ['-c', 'protocol.file.allow=always', 'submodule', 'add', '--quiet', '--', dependencies, path])
+        git(snapshot, ['-c', 'protocol.file.allow=always', 'submodule', 'add', '--quiet', '--', dependencyUrl, path])
     }
+    return { root, snapshot, relative, marker }
+}
+
+test('detached staging uses initialized local submodules and freezes the recorded gitlinks', t => {
+    const { root, snapshot, relative, marker } = stagingFixture(t)
+    const untracked = 'untracked.txt'
+    for (const path of relative) {
+        // Prove staging uses the local override, even if the configured origin is unavailable.
+        git(snapshot, ['config', '-f', '.gitmodules', `submodule.${path}.url`, '../unavailable'])
+    }
+    git(snapshot, ['add', '.gitmodules'])
     git(snapshot, ['commit', '--quiet', '-m', 'freeze submodules'])
     const frozen = git(snapshot, ['rev-parse', 'HEAD'])
-    const submodule = git(dependencies, ['rev-parse', 'HEAD'])
+    const submodule = git(join(snapshot, relative[0]), ['rev-parse', 'HEAD'])
+    for (const path of relative) {
+        const checkout = join(snapshot, path)
+        writeFileSync(join(checkout, marker), 'newer dependency')
+        git(checkout, ['-c', 'user.name=Release Test', '-c', 'user.email=test@example.invalid',
+            'commit', '--quiet', '-am', 'advance dependency'])
+        writeFileSync(join(checkout, marker), 'uncommitted dependency')
+        writeFileSync(join(checkout, untracked), 'untracked dependency file')
+    }
     writeFileSync(join(snapshot, marker), 'newer')
     git(snapshot, ['commit', '--quiet', '-am', 'advance'])
     writeFileSync(join(snapshot, marker), 'unsaved workspace changes')
+    writeFileSync(join(snapshot, untracked), 'untracked workspace file')
     const stage = join(root, 'stage')
     mkdirSync(stage)
     assert.deepEqual(initializeStage(snapshot, stage, fixturePlan({ sourceCommit: frozen })),
         Object.fromEntries(relative.map(path => [path, submodule])))
     assert.equal(readFileSync(join(stage, marker), 'utf8'), 'original')
+    assert.equal(existsSync(join(stage, untracked)), false)
     assert.equal(readFileSync(join(snapshot, marker), 'utf8'), 'unsaved workspace changes')
     assert.notEqual(git(snapshot, ['rev-parse', 'HEAD']), frozen)
+    for (const path of relative) {
+        const source = join(snapshot, path)
+        const destination = join(stage, path)
+        assert.equal(git(stage, ['config', '--local', `submodule.${path}.url`]), git(source, ['rev-parse', '--show-toplevel']))
+        assert.equal(git(destination, ['rev-parse', 'HEAD']), submodule)
+        assert.equal(readFileSync(join(destination, marker), 'utf8'), 'original')
+        assert.equal(existsSync(join(destination, untracked)), false)
+        assert.equal(readFileSync(join(source, marker), 'utf8'), 'uncommitted dependency')
+    }
+})
+
+test('staging uses frozen .gitmodules for an uninitialized source and fails closed when it cannot fetch', t => {
+    const { root, snapshot, relative } = stagingFixture(t)
+    const [missing] = relative
+    git(snapshot, ['commit', '--quiet', '-m', 'freeze submodules'])
+    const plan = fixturePlan({ sourceCommit: git(snapshot, ['rev-parse', 'HEAD']) })
+    const submodule = git(join(snapshot, relative[0]), ['rev-parse', 'HEAD'])
+    git(snapshot, ['submodule', 'deinit', '--all'])
+    assert.equal(git(join(snapshot, missing), ['rev-parse', '--show-prefix']), `${missing}/`)
+    // Advance the workspace to an invalid origin. Staging the earlier plan must still
+    // fetch from the working origin recorded in that plan's .gitmodules.
+    git(snapshot, ['config', '-f', '.gitmodules', `submodule.${missing}.url`, '../unavailable'])
+    git(snapshot, ['commit', '--quiet', '-am', 'unavailable submodule origin'])
+    const stage = join(root, 'stage')
+    mkdirSync(stage)
+    const allowProtocol = process.env.GIT_ALLOW_PROTOCOL
+    try {
+        // Only this fixture permits file transport for .gitmodules URLs.
+        process.env.GIT_ALLOW_PROTOCOL = 'file'
+        assert.deepEqual(initializeStage(snapshot, stage, plan), Object.fromEntries(relative.map(path => [path, submodule])))
+
+        const badStage = join(root, 'bad-stage')
+        mkdirSync(badStage)
+        assert.throws(() => initializeStage(snapshot, badStage, fixturePlan({ sourceCommit: git(snapshot, ['rev-parse', 'HEAD']) })),
+            error => {
+                assert.ok(error instanceof GitCommandError)
+                assert.equal(error.code, 5)
+                assert.match(error.message, /^Cannot initialize frozen submodule sources\/openscad:/)
+                assert.ok(error.git.exitCode > 0)
+                assert.match(error.git.stderr, /repository|submodule path/)
+                assert.doesNotMatch(error.git.stderr, /unavailable|scad-release-build-test-/)
+                return true
+            })
+    } finally {
+        if (allowProtocol === undefined) delete process.env.GIT_ALLOW_PROTOCOL
+        else process.env.GIT_ALLOW_PROTOCOL = allowProtocol
+    }
+})
+
+test('Git failure details keep actionable stderr without emitting credentials or remote text', () => {
+    const url = 'https://fixture-user:fixture-token@fixture.invalid/private?key=fixture-key'
+    const error = new GitCommandError(5, { status: 128, signal: null, stderr: [
+        `fatal: Authentication failed for '${url}'`,
+        `remote: fixture-token ${url}`,
+        "fatal: transport 'file' not allowed",
+        "fatal: clone of 'D:/private project' into submodule path 'D:/private staging' failed",
+    ].join('\r\n') })
+    assert.deepEqual(error.git, { exitCode: 128, signal: null, spawnError: null, stderr: [
+        'fatal: authentication failed', '<redacted Git stderr>', "fatal: transport 'file' not allowed",
+        'fatal: clone into submodule path failed',
+    ].join('\n') })
+    assert.doesNotMatch(`${error.message}\n${JSON.stringify(error.git)}`, /fixture-|private project|private staging/)
 })

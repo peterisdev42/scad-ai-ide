@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'node:url'
 import { parseArgs } from 'node:util'
 import { buildRelease, verifyRelease } from './build/build.mjs'
-import { readJson, ReleaseError, requireRelease } from './common/io.mjs'
+import { GitCommandError, readJson, ReleaseError, requireRelease } from './common/io.mjs'
 import { orderedTargets, validatePlan } from './common/schema.mjs'
 import { publishRelease } from './publish/publish.mjs'
 import { providers } from './publish/providers.mjs'
@@ -107,6 +107,7 @@ try {
 } catch (error) {
     const code = error instanceof ReleaseError ? error.code : 5
     const output = { error: error instanceof ReleaseError ? error.message : 'Local release operation failed', code }
+    if (error instanceof GitCommandError) output.git = error.git
     console.log(JSON.stringify(output))
     process.exitCode = code
 }
