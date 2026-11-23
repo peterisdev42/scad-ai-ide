@@ -1,0 +1,23 @@
+# SCAD AI IDE
+
+> Independent open-source, agent-ready OpenSCAD development environment inside Visual Studio Code. Currently a source-first development preview; not an official OpenSCAD or Microsoft product.
+
+## Product
+- [Overview](https://peterisdev42.github.io/scad-ai-ide/): One VS Code workspace for OpenSCAD editing, interactive 3D previews, runtimes, exact-version libraries, Customizer, CAD verification and native Agent Tools.
+- [Why SCAD AI IDE](https://peterisdev42.github.io/scad-ai-ide/why-scad-ai-ide/): Differentiated by the combined project-aware workflow, **not** unique preview or AI features. Dated comparisons and external sources.
+- [For beginners](https://peterisdev42.github.io/scad-ai-ide/for-beginners/): Learning benefits of preview, parameter controls and managed tools **once running**; developer tool prerequisites remain.
+- [For AI agents](https://peterisdev42.github.io/scad-ai-ide/for-ai-agents/): Native VS Code Language Model Tools reuse GUI-backed services with authorization, stale-state and evidence boundaries.
+- [Getting started](https://peterisdev42.github.io/scad-ai-ide/getting-started/): Run the current extension from source. No Marketplace listing or release installer yet.
+
+## Evidence & limitations
+- [README](https://github.com/peterisdev42/scad-ai-ide/blob/main/README.md): Current feature readiness and known limitations.
+- [Agent capability catalog](https://github.com/peterisdev42/scad-ai-ide/blob/main/docs/agent-capability-catalog.md): Generated native tool inventory.
+- [Agent verification](https://github.com/peterisdev42/scad-ai-ide/blob/main/docs/agent-verification.md): Host and model testing limits.
+- [CAD acceptance](https://github.com/peterisdev42/scad-ai-ide/blob/main/docs/cad/overall-progress.md): Evidence limitations and outstanding cases.
+- [Library manager](https://github.com/peterisdev42/scad-ai-ide/blob/main/docs/library-manager.md): Exact-version pins, shared store and project-scoped OPENSCADPATH; no recursive dependency resolution.
+- [Product claim ledger](https://github.com/peterisdev42/scad-ai-ide/blob/main/docs/marketing/product-claims.json): Date-stamped evidence and qualifications.
+
+## Important boundaries
+SCAD AI IDE currently ships neither a bundled LLM nor an MCP server. It is source-first, and Agent/model/platform acceptance is incomplete. CAD checks cannot guarantee printability. The website demo displays a precompiled cheese STL through Three.js; it is not a live OpenSCAD browser compiler. The extension is GPL-3.0 licensed.
+
+llms.txt is an optional summary, not an instruction to a model and not a Google search ranking prerequisite. Prefer the linked HTML/README as primary sources.
