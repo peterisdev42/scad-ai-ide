@@ -35,10 +35,14 @@ jobs:
           test -s site/main.js
           test -s site/workbench.js
           test -s site/workbench.css
+          test -s site/assets/cheese.stl
+          test -s site/assets/cheese.scad
+          test -s site/demo.test.mjs
           test -s site/assets/cheese.png
           test -s site/favicon.svg
           node --check site/main.js
           node --check site/workbench.js
+          node --test site/demo.test.mjs
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload website
