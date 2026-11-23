@@ -1,0 +1,31 @@
+name: Validate Pages demo
+
+on:
+  pull_request:
+    paths:
+      - 'site/**'
+      - '.github/workflows/pages.yml'
+      - '.github/workflows/site-demo-check.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check static website
+        run: |
+          test -s site/index.html
+          test -s site/styles.css
+          test -s site/workbench.css
+          test -s site/workbench.js
+          test -s site/assets/cheese.stl
+          test -s site/assets/cheese.scad
+          node --check site/main.js
+          node --check site/workbench.js
+          node --test site/demo.test.mjs
