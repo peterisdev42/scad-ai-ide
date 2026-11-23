@@ -1,0 +1,31 @@
+name: Validate product website
+
+on:
+  pull_request:
+    paths:
+      - 'site/**'
+      - 'README.md'
+      - 'docs/marketing/**'
+      - 'docs/agent-capability-catalog.md'
+      - 'package.json'
+      - '.github/workflows/pages-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate site and generated social asset
+        run: |
+          node --check site/main.js
+          node --check site/workbench.js
+          node --check site/build-og.mjs
+          node --check site/seo.test.mjs
+          node site/build-og.mjs
+          node --test site/demo.test.mjs site/seo.test.mjs
