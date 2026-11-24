@@ -27,3 +27,5 @@ Generated bundles live in `site/demo/generated/` and are built on every Pages ru
 - [CodinGame VS Code API](https://github.com/CodinGame/monaco-vscode-api) — a genuine browser workbench candidate for a separate full-screen playground, not required by the landing page.
 - [VS Code web extensions](https://code.visualstudio.com/api/extension-guides/web-extensions) — browser extensions cannot run desktop native processes.
 - [Cursor](https://cursor.com/) — product demo interaction reference, not an assertion about its underlying implementation.
+
+PR CI builds the actual bundles and runs a Playwright Chromium smoke test under `/scad-ai-ide/`. It waits for the real renderer's `frameReady`, switches to Monaco, switches back without remounting, and saves screenshots. Desktop VS Code comparison, Safari/Firefox, and touch/GPU visual acceptance remain manual checks.

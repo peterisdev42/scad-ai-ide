@@ -41,3 +41,14 @@ jobs:
           node --check site/seo.test.mjs
           node site/build-og.mjs
           node --test site/demo.test.mjs site/seo.test.mjs
+      - name: Install Chromium for browser validation
+        run: npx playwright install --with-deps chromium
+      - name: Smoke test actual WebView and editor switching
+        run: node --test site/demo/browser.test.mjs
+      - name: Upload workbench screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-demo-screenshots
+          path: site-demo-*.png
+          if-no-files-found: ignore
