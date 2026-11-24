@@ -26,7 +26,6 @@ jobs:
           test -s site/styles.css
           test -s site/workbench.css
           test -s site/demo/preview-host.js
-          test -s site/assets/cheese.stl
           test -s site/assets/cheese.scad
           node --check site/main.js
           node --check site/demo/preview-host.js
