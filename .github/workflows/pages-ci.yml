@@ -35,6 +35,8 @@ jobs:
         run: npm ci --ignore-scripts
       - name: Install isolated Workbench dependencies
         run: npm install --prefix tools/pages-workbench --ignore-scripts --no-audit --no-fund
+      - name: Install OpenSCAD for source preview generation
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends openscad
       - name: Bundle actual Preview and Code-OSS Workbench
         run: node site/build-demo.mjs
       - name: Validate site and generated social asset

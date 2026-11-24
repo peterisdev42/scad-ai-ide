@@ -8,7 +8,7 @@ import { chromium } from 'playwright'
 import test from 'node:test'
 const site=fileURLToPath(new URL('../',import.meta.url))
 const prefix='/scad-ai-ide/'
-const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.stl':'application/octet-stream','.scad':'text/plain','.png':'image/png','.svg':'image/svg+xml','.ttf':'font/ttf','.woff':'font/woff','.woff2':'font/woff2','.json':'application/json','.wasm':'application/wasm','.mjs':'text/javascript','.map':'application/json','.webmanifest':'application/manifest+json'}
+const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.3mf':'application/vnd.ms-package.3dmanufacturing-3dmodel+xml','.scad':'text/plain','.png':'image/png','.svg':'image/svg+xml','.ttf':'font/ttf','.woff':'font/woff','.woff2':'font/woff2','.json':'application/json','.wasm':'application/wasm','.mjs':'text/javascript','.map':'application/json','.webmanifest':'application/manifest+json'}
 test('native Workbench draws the actual Preview and reopens the same source file', {timeout:180000}, async ()=>{
     const server=createServer(async(req,res)=>{
         try{
@@ -27,20 +27,32 @@ test('native Workbench draws the actual Preview and reopens the same source file
         const page=await browser.newPage({viewport:{width:1440,height:1000}})
         const errors=[]
         page.on('pageerror',e=>errors.push(String(e)))
+        await page.addInitScript(()=>{if(window===window.top)localStorage.setItem('scad-theme','light')})
         await page.goto('http://127.0.0.1:'+server.address().port+prefix)
         await page.locator('iframe[data-vsc-demo]').scrollIntoViewIfNeeded()
         const frame=page.frameLocator('iframe[data-vsc-demo]')
         await frame.locator('#workbench[data-workbench-ready="true"]').waitFor({timeout:90000})
         assert.ok(await frame.locator('.monaco-workbench').count(),'real Workbench exists')
-        await frame.getByText('cheese.stl',{exact:true}).first().waitFor({timeout:20000})
+        await frame.getByText('cheese.scad',{exact:true}).first().waitFor({timeout:20000})
+        assert.equal(await frame.getByText('cheese.stl',{exact:true}).count(),0)
         const preview=frame.frameLocator('iframe[title="SCAD AI IDE Preview"]')
         await preview.locator('#preview-root[data-preview-state="ready"]').waitFor({timeout:70000})
         assert.ok(await preview.locator('scad-app scad-preview canvas').count(),'actual Stage canvas exists')
-        await page.locator('iframe[data-vsc-demo]').screenshot({path:'site-demo-desktop.png'})
+        await frame.locator('#workbench[data-demo-theme="light"]').waitFor()
+        await preview.locator('body.vscode-light').waitFor()
+        await page.locator('iframe[data-vsc-demo]').screenshot({path:'site-demo-light.png'})
+        await page.locator('[data-theme-toggle]').click()
+        await frame.locator('#workbench[data-demo-theme="dark"]').waitFor({timeout:20000})
+        await preview.locator('body.vscode-dark').waitFor({timeout:20000})
+        await page.locator('iframe[data-vsc-demo]').screenshot({path:'site-demo-dark.png'})
+        await page.locator('[data-theme-toggle]').click()
+        await frame.locator('#workbench[data-demo-theme="light"]').waitFor({timeout:20000})
+        await preview.locator('body.vscode-light').waitFor({timeout:20000})
+
         const action=label=>frame.locator('[aria-label="'+label+'"],[title="'+label+'"]').filter({visible:true}).first()
         await action('Reopen as source file').click()
         await frame.locator('.monaco-editor .view-lines').first().waitFor({timeout:20000})
-        assert.match(await frame.locator('.monaco-editor .view-lines').first().innerText(),/import\("cheese\.stl"\)/)
+        assert.match(await frame.locator('.monaco-editor .view-lines').first().innerText(),/length\s*=\s*90/)
         await page.locator('iframe[data-vsc-demo]').screenshot({path:'site-demo-source.png'})
         await action('Open as Preview').click()
         await preview.locator('#preview-root[data-preview-state="ready"]').waitFor({timeout:70000})

@@ -55,7 +55,7 @@
     },
     {
       "id": "website-demo",
-      "claim": "The website demo is implemented using the Code-OSS Workbench and the extension's actual Preview WebView with a bundled STL cheese mesh.",
+      "claim": "The website demo uses the Code-OSS Workbench and the actual Preview WebView to display geometry compiled from the self-contained cheese.scad source and follows the website theme.",
       "status": "implemented_acceptance_ongoing",
       "audience": "all",
       "evidence": [
@@ -64,12 +64,11 @@
         "site/demo/preview-host.js",
         "site/demo/preview.ts",
         "site/build-demo.mjs",
-        "site/assets/cheese.scad",
-        "site/assets/cheese.stl"
+        "site/assets/cheese.scad"
       ],
       "qualifications": [
-        "The Workbench build succeeds; browser interaction and visual parity still require acceptance testing before release.",
-        "The demo is not the full desktop extension and does not run an OpenSCAD compiler."
+        "The SCAD source is compiled to internal 3MF geometry at build time; the browser does not execute OpenSCAD.",
+        "Browser interaction and light/dark visual parity require acceptance testing. The demo is not the full desktop extension."
       ],
       "lastReviewed": "2026-11-24"
     },
