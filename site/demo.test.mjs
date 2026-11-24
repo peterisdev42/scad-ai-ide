@@ -1,39 +1,38 @@
-import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import test from 'node:test';
+import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import test from 'node:test'
+const read = path => readFileSync(new URL(path, import.meta.url),'utf8')
 
-test('Pages cheese STL is a complete binary triangle mesh', () => {
-  const data = readFileSync(new URL('./assets/cheese.stl', import.meta.url));
-  assert.ok(data.byteLength > 84, 'binary STL has 80-byte header and count');
-  const count = data.readUInt32LE(80);
-  assert.ok(count > 1000, 'the cheese model contains real triangle geometry');
-  assert.equal(data.byteLength, 84 + count * 50, 'triangle count matches byte length');
-  for (let offset = 84; offset < data.length; offset += 50) {
-    for (let i = 0; i < 12; i++) {
-      assert.ok(Number.isFinite(data.readFloatLE(offset + 4 * i)), 'all triangle coordinates and normals are finite');
-    }
-  }
-});
-
-test('Pages renders a real STL, without pretending to run OpenSCAD', () => {
-  const html = readFileSync(new URL('./index.html', import.meta.url), 'utf8');
-  const js = readFileSync(new URL('./workbench.js', import.meta.url), 'utf8');
-  const scad = readFileSync(new URL('./assets/cheese.scad', import.meta.url), 'utf8');
-  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
-  const threeVersion = pkg.dependencies?.three ?? pkg.devDependencies?.three;
-  assert.ok(threeVersion, 'Three.js dependency exists');
-  assert.ok(html.includes('three@' + threeVersion + '/build/three.module.js'), 'website Three.js version matches the extension');
-  assert.match(html, /data-vsc-canvas/);
-  assert.match(html, /data-vsc-action="measure"/);
-  assert.match(html, /data-vsc-action="wireframe"/);
-  assert.match(html, /data-vsc-action="perspective"/);
-  assert.match(html, /data-vsc-action="orthographic"/);
-  assert.match(html, /does not run|not running|not execute|not embedded|precompiled/i);
-  assert.match(js, /STLLoader/);
-  assert.match(js, /TrackballControls/);
-  assert.match(js, /geometry\.attributes\.position\.count/);
-  assert.doesNotMatch(js, /vsc-geometry|SVGElement|Simulate render/);
-  assert.ok(scad.includes('import("cheese.stl");'), 'SCAD example imports the bundled STL');
-  assert.match(html, /Preview: cheese\.stl/);
-  assert.ok(html.includes('"cheese.stl"</span>'), 'read-only source displays the same STL import');
-});
+test('Pages cheese STL is the supplied complete binary triangle mesh',()=>{
+    const data=readFileSync(new URL('./assets/cheese.stl',import.meta.url))
+    assert.equal(data.readUInt32LE(80),14988)
+    assert.equal(data.length,84+14988*50)
+    assert.equal(createHash('sha256').update(data).digest('hex'),'304270810217609cbdb3cca048dcc8fba44f0c6f1c63cb4184476ad62fbfb955')
+    for(let offset=84;offset<data.length;offset+=50)for(let i=0;i<12;i++)assert.ok(Number.isFinite(data.readFloatLE(offset+4*i)))
+})
+test('One editor group switches between real source and shared preview',()=>{
+    const homepage=read('./index.html'), shell=read('./demo/index.html'), js=read('./workbench.js'), adapter=read('./demo/preview.ts'), editor=read('./demo/editor.ts'), build=read('./build-demo.mjs')
+    assert.match(homepage,/<iframe[^>]+src="\.\/demo\/index\.html"/)
+    assert.match(homepage,/not a full VS Code host/)
+    assert.match(homepage,/Bundled STL/i)
+    assert.match(shell,/class="editor-group"/)
+    assert.equal((shell.match(/class="editor-tab"/g)||[]).length,1)
+    assert.match(shell,/data-pane="source"[^>]+hidden/)
+    assert.match(shell,/data-reopen/)
+    assert.match(js,/previewPane.hidden=mode !== 'preview'/)
+    assert.match(js,/sourcePane.hidden=mode !== 'source'/)
+    assert.match(adapter,/src\/features\/preview\/webview\/components\/App/)
+    assert.match(adapter,/src\/features\/preview\/webview\/services\/Bridge/)
+    assert.match(adapter,/new App\(\)/)
+    assert.match(adapter,/app.bridge=bridge/)
+    assert.match(adapter,/format:ModelFormat.STL/)
+    assert.match(adapter,/case 'frameReady'/)
+    assert.doesNotMatch(js,/STLLoader|TrackballControls|WebGLRenderer/)
+    assert.doesNotMatch(homepage,/cdn\.jsdelivr\.net\/npm\/three/)
+    assert.match(editor,/monaco.editor.create\(/)
+    assert.match(editor,/readOnly:true/)
+    assert.match(build,/tsconfig.webview.json/)
+    assert.match(build,/node_modules\/monaco-editor/)
+    assert.match(read('./assets/cheese.scad'),/import\("cheese\.stl"\)/)
+})

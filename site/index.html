@@ -34,10 +34,7 @@
     }
   </script>
   <script src="./main.js" defer></script>
-  <script type="importmap">
-    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/"}}
-  </script>
-  <script type="module" src="./workbench.js"></script>
+<script type="module" src="./workbench.js"></script>
   <title>SCAD AI IDE — OpenSCAD Development in Visual Studio Code</title>
   <script type="application/ld+json">
     {"@context":"https://schema.org","@graph":[
@@ -99,77 +96,9 @@
 
 
         <div class="vsc-demo-wrap" id="demo">
-          <div class="vsc-demo-heading"><span>INTERACTIVE 3D DEMO</span><span>Real Three.js + bundled STL · OpenSCAD is not running</span></div>
-          <div class="vsc-demo vsc-realtime" data-vsc-demo data-mobile-pane="preview" aria-label="Interactive SCAD AI IDE demonstration in a VS Code-style workbench">
-            <div class="vsc-titlebar">
-              <div class="vsc-traffic" aria-hidden="true"><i></i><i></i><i></i></div>
-              <span class="vsc-title">cheese-demo — Visual Studio Code</span>
-              <div class="vsc-title-search" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="10" r="6"/><path d="m14.6 14.6 5.4 5.4"/></svg>
-                cheese-demo
-              </div>
-              <span class="vsc-title-options" aria-hidden="true">— □ ×</span>
-            </div>
-            <div class="vsc-workspace">
-              <div class="vsc-activitybar" aria-label="Visual Studio Code activity bar">
-                <span class="vsc-activity-btn is-active" title="Explorer" aria-label="Explorer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="3" width="12" height="15" rx="1"/><path d="M8 7h12v14H8"/></svg></span>
-                <span class="vsc-activity-btn" title="Search" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="10" r="6"/><path d="m14.6 14.6 5.4 5.4"/></svg></span>
-                <span class="vsc-activity-btn vsc-cheese-btn" title="SCAD AI IDE"><img src="./assets/cheese.png" width="25" height="25" alt="SCAD AI IDE"></span>
-              </div>
-              <aside class="vsc-explorer" aria-label="Demo project Explorer">
-                <div class="vsc-explorer-head">EXPLORER <span aria-hidden="true">···</span></div>
-                <div class="vsc-folder-head">⌄ <span>CHEESE-DEMO</span></div>
-                <div class="vsc-file-group">
-                  <div class="vsc-tree-file is-active"><span class="vsc-scad-glyph">S</span>cheese.scad</div>
-                  <div class="vsc-tree-file"><span class="vsc-stl-glyph">◇</span>cheese.stl</div>
-                </div>
-              </aside>
-              <div class="vsc-main-panels">
-                <div class="vsc-mobile-switch" role="group" aria-label="Demo panel selector">
-                  <button type="button" data-vsc-pane="code" aria-pressed="false">Source</button>
-                  <button type="button" data-vsc-pane="preview" aria-pressed="true">3D Preview</button>
-                </div>
-                <section class="vsc-editor" aria-label="OpenSCAD demo source">
-                  <div class="vsc-tabs"><span class="vsc-tab is-active"><span class="vsc-scad-glyph">S</span>cheese.scad <span class="vsc-tab-close">×</span></span></div>
-                  <div class="vsc-breadcrumbs">cheese-demo <span>›</span> cheese.scad</div>
-                  <div class="vsc-code-scroll" aria-label="Read-only OpenSCAD model source">
-                    <ol class="vsc-code-lines">
-<li><span><span class="vsc-syn-comment">// SCAD AI IDE website demo — import the bundled STL mesh.</span></span></li>
-<li><span><span class="vsc-syn-comment">// Keep cheese.stl in the same directory as this file.</span></span></li>
-<li><span><span class="vsc-syn-func">import</span>(<span class="vsc-syn-string">"cheese.stl"</span>);</span></li>
-</ol>
-                  </div>
-                  <div class="vsc-editor-foot"><a href="./assets/cheese.scad" download="cheese.scad">Download .scad import example</a></div>
-                </section>
-                <section class="vsc-preview" aria-label="Real Three.js STL viewport">
-                  <div class="vsc-tabs vsc-preview-tabs"><span class="vsc-tab is-active"><span class="vsc-preview-glyph">◇</span> Preview: cheese.stl <span class="vsc-tab-close">×</span></span></div>
-                  <div class="vsc-model-stage" data-vsc-stage tabindex="0" aria-label="3D cheese model: drag to orbit, scroll to zoom">
-                    <div class="vsc-canvas" data-vsc-canvas></div>
-                    <div class="vsc-canvas-tools-left" role="group" aria-label="Preview tools">
-                      <button type="button" data-vsc-action="select" aria-pressed="true" title="Orbit / Select" aria-label="Orbit and select" class="is-selected">⌖</button>
-                      <button type="button" data-vsc-action="measure" aria-pressed="false" title="Measure between two surface points" aria-label="Measure two points">⌁</button>
-                      <label class="vsc-color-control" title="Change model color" aria-label="Change model color">●<input type="color" data-vsc-color value="#f9d72c" aria-label="Model color"></label>
-                    </div>
-                    <div class="vsc-canvas-options" role="group" aria-label="Preview viewing options">
-                      <button type="button" data-vsc-action="reset" aria-label="Reset view" title="Reset view">⟲</button>
-                      <span class="vsc-opt-separator"></span>
-                      <button type="button" data-vsc-action="perspective" aria-pressed="true" title="Perspective camera">3D</button>
-                      <button type="button" data-vsc-action="orthographic" aria-pressed="false" title="Orthographic camera">2D</button>
-                      <span class="vsc-opt-separator"></span>
-                      <button type="button" data-vsc-action="grid" aria-pressed="true" title="Toggle grid" aria-label="Toggle grid">▦</button>
-                      <button type="button" data-vsc-action="wireframe" aria-pressed="false" title="Toggle wireframe" aria-label="Toggle wireframe">◇</button>
-                    </div>
-                    <div class="vsc-load-message" data-vsc-loading role="status">Loading real STL model…</div>
-                    <div class="vsc-axes" data-vsc-axes aria-hidden="true"><span class="vsc-axis-z">Z</span><span class="vsc-axis-x">X</span><span class="vsc-axis-y">Y</span></div>
-                    <div class="vsc-stage-hint">Drag to orbit · Scroll to zoom · Double click to reset</div>
-                  </div>
-                  <div class="vsc-preview-footer"><span data-vsc-status role="status" aria-live="polite">Initializing Three.js…</span><span data-vsc-display-mode>Perspective · Solid</span></div>
-                </section>
-              </div>
-            </div>
-            <div class="vsc-statusbar"><span>⑂ main</span><span>OpenSCAD</span><span class="vsc-status-right">cheese.scad</span><span>UTF-8</span><a href="./assets/cheese.stl" download="cheese.stl" title="Download the demo mesh">↓ STL</a></div>
-          </div>
-          <p class="vsc-demo-caption">Interactive 3D mesh powered by Three.js, using a bundled STL file. The VS Code frame is a visual recreation; it is not an embedded VS Code editor. The example SCAD file imports this same STL; the browser does not execute OpenSCAD code. <a href="./assets/cheese.stl" download="cheese.stl">Download the model</a> to try it locally.</p>
+          <div class="vsc-demo-heading"><span>INTERACTIVE 3D DEMO</span><span>Actual SCAD AI IDE preview · Bundled STL · No browser compiler</span></div>
+          <iframe class="vsc-demo-frame" data-vsc-demo src="./demo/index.html" title="Interactive SCAD AI IDE preview and source editor" loading="lazy"></iframe>
+          <p class="vsc-demo-caption">Try the same Preview WebView used by SCAD AI IDE. Switch between the read-only Monaco source editor and the 3D view using the editor title action. The surrounding workbench is a Dark Modern-style recreation, not a full VS Code host. OpenSCAD, native clipping and external tools are not running. <a href="./assets/cheese.stl" download="cheese.stl">Download STL</a> · <a href="./assets/cheese.scad" download="cheese.scad">Download SCAD example</a>.</p>
         </div>
       </div>
     </section>
