@@ -86,7 +86,7 @@ test('Source-backed product facts stay aligned with generated native Agent catal
   const readme=readFileSync(join(root,'README.md'),'utf8');
   const n=pkg.contributes.languageModelTools.length;
   assert.equal(n,claims.agentToolCounts.tools);
-  assert.equal(n,52,'revisit all marketing copy and ledger when native tool inventory changes');
+  assert.equal(n,53,'revisit all marketing copy and ledger when native tool inventory changes');
   assert.equal(pkg.contributes.chatSkills.length,claims.agentToolCounts.skills);
   assert.equal(pkg.contributes.chatInstructions.length,claims.agentToolCounts.instructions);
   const count=catalog.split('\n').filter(x=>/^\| [a-z][^|]* \|/.test(x)).length;
@@ -94,7 +94,7 @@ test('Source-backed product facts stay aligned with generated native Agent catal
   assert.ok(readme.includes(n+' native VS Code Language Model Tools'));
   assert.ok(pages[0].html.includes(n+' native VS Code Language Model Tools'));
   assert.ok(pages[0].html.includes(n+' Tools'));
-  assert.doesNotMatch(pages[0].html,/\b51 (?:registered|Tools|native)/i,'no stale tool-count claims in the homepage');
+  assert.doesNotMatch(pages[0].html,/\b(?:51|52) (?:registered|Tools|native)/i,'no stale tool-count claims in the homepage');
   for(const claim of claims.claims){
     assert.ok(claim.id&&claim.claim&&claim.status&&claim.evidence?.length);
     assert.ok(claim.qualifications?.length&&claim.lastReviewed);

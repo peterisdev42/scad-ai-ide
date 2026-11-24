@@ -73,9 +73,19 @@ Full Render 的模型外观参考 Apple RealityKit / macOS Preview 的中性产�
 
 背景、网格与纯色打印板继续由 VS Code 主题变量驱动，打印板保持无光照、无阴影的平面显示。模型选色及 3MF 原有材质保留；不再用文字的 3:1 对比度要求强制把浅色主题的模型压成深灰。
 
-## STL / 3MF 文件与交互速率
+## 导出文件的默认预览
 
-SCAD 保留可编辑的 CustomTextEditorProvider；STL 与 3MF 使用独立的 CustomReadonlyEditorProvider，直接通过工作区文件服务传递原始二进制数据，不创建 TextDocument，不依赖 OpenSCAD Runtime。两种预览复用同一 Webview、相机、主题、测量、颜色与场景保存逻辑。编辑器标题入口、Open With、命令与 Cmd/Ctrl+Shift+V 都覆盖三种扩展名（不区分大小写），切换替换当前标签；原始文件保留原字节。磁盘变更会刷新模型，关闭文件时清理 watcher 和未完成的读取。原生模型的导出/发送切片器保留其原始格式，不暗中转换。
+资源管理器默认按导出文件的内容选用查看器。`.scad` 默认进入源码编辑器，可用 Cmd/Ctrl+Shift+V 切换到交互预览。
+
+| 格式 | 默认查看器 |
+| --- | --- |
+| CSG、NEF3 | 交互式三维预览，需要可信工作区和具备对应格式支持的 OpenSCAD Runtime |
+| ASCII / 二进制 STL、3MF、OFF、OBJ、VRML (`.wrl`)、AMF、POV-Ray (`.pov`) | 交互式三维预览，直接加载文件 |
+| DXF、NEFDBG、PDF | Drawing Preview。DXF 显示轮廓，NEFDBG 显示 OpenSCAD 导出的 SVG 调试图，PDF 支持翻页 |
+| PNG、SVG | VS Code 图像预览 |
+| AST、ECHO、TERM、PARAM | VS Code 文本查看，AST 使用 OpenSCAD 语法，PARAM 使用 JSON 语法 |
+
+扩展名不区分大小写。`.asciistl` 和 `.binstl` 与 `.stl` 共用三维查看器。3D 预览复用相机、测量、颜色和场景保存。磁盘变更会刷新预览，关闭时清理监听和未完成的 NEF3 渲染。导出已有网格的副本时保留原始字节。DXF 和 POV-Ray 支持 OpenSCAD 写出的图形子集。
 
 缩放与原生触摸平移的 Rate 均设为 1；中键、右键及修饰键拖动统一使用屏幕像素 1:1 平移。颜色重置使用与其他工具一致的 16px SVG 图标。打印板从主题变量取色，在 Oklab 中对浅色主题反转亮度方向，再压缩到 L=0.40–0.46 的深灰范围（中性色约 #48–#58）；保留低饱和度主题色调，网格线使用高 0.13 的感知亮度；其余视口继续遵循当前主题。
 

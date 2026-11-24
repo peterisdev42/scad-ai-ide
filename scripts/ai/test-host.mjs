@@ -28,7 +28,7 @@ for (const fixture of fixtures) {
         )
         writeFileSync(path.join(workspace, '.vscode/settings.json'), JSON.stringify({ 'scad-ai-ide.agent.enabled': true }))
         writeFileSync(path.join(workspace, 'model.scad'), 'cube(1);\n')
-        const grep = fixture === 'trusted' ? 'installed manifest, registered LM tools|AI preferences disable Agent calls|live feature and group gates|AI Panel metadata' : 'Restricted workspace capability policy'
+        const grep = fixture === 'trusted' ? 'installed manifest, registered LM tools|Agent model preview link|OpenSCAD export files open in Preview|AI preferences disable Agent calls|live feature and group gates|AI Panel metadata' : 'Restricted workspace capability policy'
         // test-electron always adds --disable-workspace-trust. Launch the same
         // Mocha extension runner directly so the restricted fixture is genuine.
         const result = spawnSync(executable, [workspace, '--no-sandbox', '--disable-gpu-sandbox', '--disable-extensions', '--disable-updates', '--skip-welcome', '--skip-release-notes', '--user-data-dir', profile, '--extensions-dir', path.join(directory, 'extensions'), ...(fixture === 'trusted' ? ['--disable-workspace-trust'] : []), `--extensionDevelopmentPath=${root}`, `--extensionTestsPath=${runner}`], {

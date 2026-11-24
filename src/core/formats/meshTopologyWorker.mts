@@ -6,20 +6,22 @@ import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js'
 import { ThreeMFLoader } from 'three/examples/jsm/loaders/3MFLoader.js'
 import { DOMParser } from 'linkedom'
 import { threeMfMillimeterScale } from './threeMf.js'
+import { parseExportMesh } from './exportMesh.mjs'
+import type { MeshFormat } from '../../features/preview/shared/types/ModelFormat.js'
 import type { ClipPlane, GeometryData } from '../preview/types.js'
 // XML parsing is isolated to this disposable worker, never the extension host.
 Object.assign(globalThis, { DOMParser })
 const module = await Module({ locateFile: () => fileURLToPath(new URL('./manifold.wasm', import.meta.url)) })
 module.setup()
-parentPort!.once('message', (request: { content: string; format: 'stl' | '3mf'; planes: ClipPlane[] }) => {
+parentPort!.once('message', (request: { content: string; format: `${MeshFormat}`; planes: ClipPlane[] }) => {
     try {
         const bytes = Buffer.from(request.content, 'base64'),
             buffer = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
             meshes: Mesh<BufferGeometry>[] = []
         if (request.format === 'stl') meshes.push(new Mesh(new STLLoader().parse(buffer), new MeshBasicMaterial()))
         else {
-            const group = new ThreeMFLoader().parse(buffer)
-            group.scale.multiplyScalar(threeMfMillimeterScale(bytes))
+            const group = request.format === '3mf' ? new ThreeMFLoader().parse(buffer) : parseExportMesh(request.format, buffer)
+            if (request.format === '3mf') group.scale.multiplyScalar(threeMfMillimeterScale(bytes))
             group.updateMatrixWorld(true)
             group.traverse((o) => {
                 if (o instanceof Mesh) meshes.push(o)
@@ -35,9 +37,10 @@ parentPort!.once('message', (request: { content: string; format: 'stl' | '3mf'; 
             const material = Array.isArray(mesh.material) ? mesh.material[0] : mesh.material
             const base = 'color' in material && material.color instanceof Color ? material.color : new Color(1, 1, 1)
             const colors = geometry.getAttribute('color'),
-                defaultColor = request.format === 'stl' || ['f9d72c', '9dcb51'].includes(base.getHexString())
+                themeFlags = geometry.getAttribute('scadDefaultColor'),
+                defaultColor = request.format === 'stl' || material.userData.previewThemeColor === 'additive' || ['f9d72c', '9dcb51'].includes(base.getHexString())
             for (let v = 0; v < position.count; v++) {
-                values.set([position.getX(v), position.getY(v), position.getZ(v), colors ? colors.getX(v) : base.r, colors ? colors.getY(v) : base.g, colors ? colors.getZ(v) : base.b, material.opacity, defaultColor && !colors ? 1 : 0], v * 8)
+                values.set([position.getX(v), position.getY(v), position.getZ(v), colors ? colors.getX(v) : base.r, colors ? colors.getY(v) : base.g, colors ? colors.getZ(v) : base.b, material.opacity, themeFlags?.getX(v) ?? Number(defaultColor && !colors)], v * 8)
             }
             const input = new module.Mesh({ numProp: 8, vertProperties: values, triVerts: indices })
             input.merge()

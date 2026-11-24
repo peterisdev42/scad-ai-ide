@@ -6,7 +6,7 @@ import type { PreviewSession } from './PreviewSession'
 import { validPreviewTimings, type PreviewTimings } from '../../../../core/preview/performance'
 import type { PreviewBackend } from '../../shared/types/PreviewBackend'
 
-/** A binary mesh stays byte-for-byte intact and never passes through a TextDocument or CLI. */
+/** A mesh stays byte-for-byte intact. NEF3 needs a separate rendered copy. */
 export class MeshPreviewDocument implements CustomDocument, PreviewSession {
     readonly currentParameters: ScadParameter[] = []
     readonly currentOverrides = {}
@@ -29,6 +29,7 @@ export class MeshPreviewDocument implements CustomDocument, PreviewSession {
     private readonly subscriptions: Disposable[]
     private generation = 0
     private disposed = false
+    private renderController?: AbortController
     get documentUri() {
         return this.uri
     }
@@ -36,6 +37,7 @@ export class MeshPreviewDocument implements CustomDocument, PreviewSession {
     constructor(
         readonly uri: Uri,
         readonly sourceFormat: ModelFormat,
+        private readonly renderNef3?: (signal: AbortSignal) => Promise<Buffer>,
     ) {
         const watcher = workspace.createFileSystemWatcher(new RelativePattern(dirname(uri.fsPath), basename(uri.fsPath)))
         const refresh = () => {
@@ -47,18 +49,24 @@ export class MeshPreviewDocument implements CustomDocument, PreviewSession {
     async refreshRender(): Promise<void> {
         if (this.disposed) return
         const generation = ++this.generation
+        this.renderController?.abort()
+        const controller = this.renderNef3 ? new AbortController() : undefined
+        this.renderController = controller
         this.requestStarted = performance.now()
         this.renderBackend = { kind: 'mesh', source: 'mesh-file', timings: {} }
         this.backendChanged.fire(this.renderBackend)
         this.started.fire()
         try {
-            const buffer = await this.exportFormat(this.sourceFormat)
+            const buffer = controller ? await this.renderNef3!(controller.signal) : await this.exportFormat(this.sourceFormat)
             if (!this.disposed && generation === this.generation) {
-                this.acceptPerformance({ meshReadMs: performance.now() - this.requestStarted })
-                this.completed.fire({ buffer, format: this.sourceFormat })
+                const elapsed = performance.now() - this.requestStarted
+                this.acceptPerformance(controller ? { meshExportMs: elapsed } : { meshReadMs: elapsed })
+                this.completed.fire({ buffer, format: controller ? ModelFormat.STL : this.sourceFormat })
             }
         } catch (error) {
             if (!this.disposed && generation === this.generation) this.error.fire(error instanceof Error ? error : new Error(String(error)))
+        } finally {
+            if (this.renderController === controller) this.renderController = undefined
         }
     }
 
@@ -84,6 +92,7 @@ export class MeshPreviewDocument implements CustomDocument, PreviewSession {
         if (this.disposed) return
         this.disposed = true
         this.generation++
+        this.renderController?.abort()
         for (const disposable of [...this.subscriptions, this.started, this.completed, this.error, this.parameters, this.log, this.backendChanged]) disposable.dispose()
     }
 }

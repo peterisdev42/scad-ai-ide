@@ -38,6 +38,18 @@ export class ScadClient {
         this.controllers.delete(key)
         this.tickets.delete(key)
     }
+    static async renderNef3(path: string, signal: AbortSignal): Promise<Buffer> {
+        if (!workspace.isTrusted) throw new Error('Trust this workspace to preview NEF3 with OpenSCAD.')
+        const command = await this.resolveCommand?.()
+        if (!command) throw new RuntimeUnavailableError()
+        const env = await libraryEnvironment.getEnvironment(path)
+        signal.throwIfAborted()
+        if (!workspace.isTrusted) throw new Error('Trust this workspace to preview NEF3 with OpenSCAD.')
+        const result = await cadExecution.execute({ command, path, source: `import(${JSON.stringify(path)});`, format: 'stl', parameters: {}, env, signal })
+        signal.throwIfAborted()
+        if (result.status !== 'SUCCEEDED' || result.empty) throw new Error(`OpenSCAD could not read the NEF3 geometry.\n${result.log}`)
+        return result.content
+    }
     static async render(scadPath: string, parameters: Record<string, string | number | boolean | number[]> = {}, format: ModelFormat | 'csg' = ModelFormat.STL, onStderr?: (chunk: string) => void, key = scadPath, onDependencies?: (dependencies: FileDependency[]) => void, signal?: AbortSignal, onTimings?: (timings: PreviewTimings) => void): Promise<Buffer> {
         this.cancelRender(key)
         const ticket = Symbol(key),

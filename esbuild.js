@@ -53,6 +53,7 @@ async function main() {
     // Full STL/3MF clipping only. Fast Preview never loads this worker or WASM.
     await fs.copyFile('node_modules/manifold-3d/manifold.wasm', 'dist/manifold.wasm')
     await fs.copyFile('node_modules/vscode-oniguruma/release/onig.wasm', 'dist/onig.wasm')
+    await fs.copyFile('node_modules/pdfjs-dist/build/pdf.worker.min.mjs', 'dist/pdf.worker.mjs')
     await fs.mkdir('dist/codicons', { recursive: true })
     for (const file of ['codicon.css', 'codicon.ttf']) {
         await fs.copyFile(`node_modules/@vscode/codicons/dist/${file}`, `dist/codicons/${file}`)
@@ -149,14 +150,25 @@ async function main() {
         loader: { '.stl': 'binary', '.glsl': 'text' },
         plugins: [esbuildProblemMatcherPlugin],
     })
+    const pdfPreview = await esbuild.context({
+        entryPoints: ['src/features/preview/webview/export-pdf.ts'],
+        bundle: true,
+        format: 'esm',
+        platform: 'browser',
+        outfile: 'dist/export-pdf.js',
+        minify: production,
+        sourcemap: !production,
+        legalComments: 'linked',
+        plugins: [esbuildProblemMatcherPlugin],
+    })
     if (watch) {
-        await Promise.all([ctx.watch(), webview.watch(), customizer.watch(), panelScrollbar.watch(), meshTopology.watch(), meshVerification.watch(), assemblyVerification.watch(), reviewGeometry.watch(), reviewView.watch(), markdownPreview.watch(), markdownOwned.watch()])
+        await Promise.all([ctx.watch(), webview.watch(), customizer.watch(), panelScrollbar.watch(), meshTopology.watch(), meshVerification.watch(), assemblyVerification.watch(), reviewGeometry.watch(), reviewView.watch(), markdownPreview.watch(), markdownOwned.watch(), pdfPreview.watch()])
     } else {
         try {
-            await Promise.all([ctx.rebuild(), webview.rebuild(), customizer.rebuild(), panelScrollbar.rebuild(), meshTopology.rebuild(), meshVerification.rebuild(), assemblyVerification.rebuild(), reviewGeometry.rebuild(), reviewView.rebuild(), markdownPreview.rebuild(), markdownOwned.rebuild()])
+            await Promise.all([ctx.rebuild(), webview.rebuild(), customizer.rebuild(), panelScrollbar.rebuild(), meshTopology.rebuild(), meshVerification.rebuild(), assemblyVerification.rebuild(), reviewGeometry.rebuild(), reviewView.rebuild(), markdownPreview.rebuild(), markdownOwned.rebuild(), pdfPreview.rebuild()])
             await fs.writeFile('dist/bundled-packages.json', JSON.stringify([...bundledPackages].sort(), null, 2) + '\n')
         } finally {
-            await Promise.all([ctx.dispose(), webview.dispose(), customizer.dispose(), panelScrollbar.dispose(), meshTopology.dispose(), meshVerification.dispose(), assemblyVerification.dispose(), reviewGeometry.dispose(), reviewView.dispose(), markdownPreview.dispose(), markdownOwned.dispose()])
+            await Promise.all([ctx.dispose(), webview.dispose(), customizer.dispose(), panelScrollbar.dispose(), meshTopology.dispose(), meshVerification.dispose(), assemblyVerification.dispose(), reviewGeometry.dispose(), reviewView.dispose(), markdownPreview.dispose(), markdownOwned.dispose(), pdfPreview.dispose()])
         }
     }
 }

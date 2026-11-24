@@ -5,7 +5,7 @@
   "canonical": "https://peterisdev42.github.io/scad-ai-ide/",
   "editor": "human-reviewed public claim ledger; see evidence before publishing revisions",
   "agentToolCounts": {
-    "tools": 52,
+    "tools": 53,
     "skills": 12,
     "instructions": 2
   },
@@ -129,7 +129,7 @@
     },
     {
       "id": "native-agents",
-      "claim": "52 native VS Code Language Model Tools, 12 Skills and 2 Instructions are registered.",
+      "claim": "53 native VS Code Language Model Tools, 12 Skills and 2 Instructions are registered.",
       "status": "implemented_acceptance_ongoing",
       "audience": "all",
       "evidence": [

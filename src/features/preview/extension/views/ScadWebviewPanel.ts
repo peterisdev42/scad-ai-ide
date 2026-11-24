@@ -121,6 +121,7 @@ export class ScadWebviewPanel {
                             const controller = (this.topologyController = new AbortController())
                             try {
                                 if (model.format === ModelFormat.PreviewScene || model.format === ModelFormat.Evidence) throw new Error('Image-based preview has no final edge/vertex topology. Use Full Render.')
+                                if (model.format === ModelFormat.Nef3) return
                                 const geometry = await queryMeshTopology(model.base64Data, model.format, controller.signal, message.planes)
                                 if (!controller.signal.aborted && this.lastRender === model) this.postMessage({ type: 'topology', modelVersion: message.modelVersion, geometry })
                             } catch (error) {
@@ -411,19 +412,20 @@ export class ScadWebviewPanel {
     }
 
     private async exportModel() {
+        const sourceFormat = this.session.sourceFormat
         const format = await window.showQuickPick(
-            [
+            sourceFormat ? [{ value: sourceFormat, label: sourceFormat.toUpperCase(), description: 'Save a copy of the original model.' }] : [
                 {
                     value: ModelFormat.ThreeMF,
                     label: '3MF',
-                    description: this.session.sourceFormat ? 'Save a copy of the original 3MF model.' : 'Supports colors but requires OpenSCAD Nightly.',
+                    description: 'Supports colors but requires OpenSCAD Nightly.',
                 },
                 {
                     value: ModelFormat.STL,
                     label: 'STL',
                     description: 'Universally supported.',
                 },
-            ].filter((option) => !this.session.sourceFormat || option.value === this.session.sourceFormat),
+            ],
             {
                 title: 'Select Export Format',
             },
@@ -438,7 +440,8 @@ export class ScadWebviewPanel {
         const activeSetName = this.session.activeSetName
         const appendix = activeSetName ? ` - ${activeSetName.replace(/[^a-z0-9 _-]/gi, '_')}` : ''
 
-        const defaultUri = Uri.file(this.session.documentUri.fsPath.replace(/\.(?:scad|csg|stl|3mf)$/i, `${appendix}.${format.value}`))
+        const sourcePath = this.session.documentUri.fsPath
+        const defaultUri = Uri.file(sourcePath.slice(0, sourcePath.length - path.extname(sourcePath).length) + `${appendix}.${format.value}`)
 
         const filters = {
             [format.label]: [format.value],

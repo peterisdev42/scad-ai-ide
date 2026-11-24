@@ -8,9 +8,11 @@ import type { registerGitHub } from '../../features/github/registerGitHub'
 import type { CapabilityContext } from '../../core/capabilities/CapabilityTypes'
 import type { OperationTracker } from '../../core/capabilities/OperationTracker'
 import type { FeaturePolicyEngine } from '../runtime/FeaturePolicyEngine'
+import type { createPreviewLinks } from '../../features/preview/PreviewLinks'
 
 export interface ToolServices {
     cad?: CadWorkspaceService
+    previewLinks: ReturnType<typeof createPreviewLinks>
     runtime: ReturnType<typeof createRuntimeService>
     libraries: LibraryService
     customizerSource: CustomizerSourceDomainService

@@ -10,6 +10,7 @@ import { notifications } from './platform/notifications'
 import { registerGitHub } from './features/github/registerGitHub'
 import * as vscode from 'vscode'
 import { registerPreview } from './features/preview/registerPreview'
+import { createPreviewLinks, previewLinkPath } from './features/preview/PreviewLinks'
 import { RuntimeManager } from './core/runtime/RuntimeManager'
 import { CustomizerService } from './core/customizer/CustomizerService'
 import { discover } from './platform/runtime/discovery'
@@ -35,14 +36,18 @@ export async function activate(context: vscode.ExtensionContext) {
     const cad = registerCadVerification(context, runtime, customizer)
     const preview = registerPreview(context, runtime, customizer, customizerView.domain, cad.problems)
     registerOwnedMarkdownPreview(context, runtime)
-    const { ready: markdownReady, ...markdown } = registerMarkdown(context, runtime)
+    const { ready: markdownReady, handleModeUri, ...markdown } = registerMarkdown(context, runtime)
+    const previewLinks = createPreviewLinks(context.extension.id)
+    context.subscriptions.push(vscode.window.registerUriHandler({
+        handleUri: (uri) => uri.path.startsWith(`${previewLinkPath}/`) ? previewLinks.open(uri) : handleModeUri(uri),
+    }))
     const development = new DeveloperCacheController(context, async (key) => {
         if (key.startsWith('runtime.catalog.') || /runtime-catalog-.*\.json$/.test(key)) await runtime.clearCatalogCache()
         if (key.startsWith('libraries.registry.') || key.replaceAll('\\', '/').startsWith('libraries/v1/cache/')) await libraries.clearRegistryCache()
     })
     const customizerSource = new CustomizerSourceDomainService()
     context.subscriptions.push(customizerSource)
-    const features = activateFeatures(context, { runtime: runtime.service, libraries, customizer: customizerView.domain, customizerSource, github, development, cad })
+    const features = activateFeatures(context, { runtime: runtime.service, libraries, customizer: customizerView.domain, customizerSource, github, development, cad, previewLinks })
     context.subscriptions.push(development)
     const capabilities = features.dispatcher
     registerReviewCommands(context,cad.review!,capabilities)

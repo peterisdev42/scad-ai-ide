@@ -21,6 +21,7 @@ function mockPreview(initialRuntime?: Runtime) {
             if (id === 'vscode')
                 return {
                     Uri: { joinPath: () => ({ fsPath: '/dist/mesh-topology-worker.mjs' }) },
+                    EventEmitter: class { event = () => disposable; fire() {}; dispose() {} },
                     window: { registerCustomEditorProvider: () => disposable },
                     workspace: { onDidChangeConfiguration: () => disposable },
                 }
@@ -38,6 +39,7 @@ function mockPreview(initialRuntime?: Runtime) {
                 }
             if (id.endsWith('/ScadClient')) return { ScadClient: { configure() {}, outputChannel: disposable } }
             if (id.endsWith('/MeshPreviewEditorProvider')) return { MeshPreviewEditorProvider: class {} }
+            if (id.endsWith('/DrawingPreviewEditorProvider')) return { DrawingPreviewEditorProvider: class {} }
             if (id.endsWith('/previewFile')) return { meshPreviewEditorViewType: 'mesh' }
             if (id.endsWith('/ScadPreviewEditorProvider')) return { ScadPreviewEditorProvider: class {} }
             if (id.endsWith('/showPanel')) return { registerShowPanelCommand: () => disposable, previewEditorViewType: 'preview' }

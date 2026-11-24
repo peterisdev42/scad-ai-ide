@@ -51,10 +51,11 @@
         "cad.requestPointing": "5c917f38d9ae990bdc2b477dfeef45528215637fdb27c885ce1b88305679abad",
         "cad.checkPrintability": "43713a72b35b623018331dadc7f7c34123f968cd8b5311ffc76d8987269eff8a",
         "cad.manageReview": "ef42df395d57bfc23aecd91b94746c7f0726232a15eeaa33961532c1534d0c53",
-        "cad.modelEditBuffer": "432ad3517bfaad0a101bf0f564cfda9661320a97220853e984e54b5a8df5733d"
+        "cad.modelEditBuffer": "432ad3517bfaad0a101bf0f564cfda9661320a97220853e984e54b5a8df5733d",
+        "cad.modelPreviewLink": "d4be586ddbe2a6a38fc5acd5d28eb1b935196e181c65278365a4dcc70f76498f"
     },
     "resources": {
-        "./instructions/openscad.instructions.md": "0da129683c24de54a25d76159855168fddd34a945371d11f42fc45b02d6d2f76",
+        "./instructions/openscad.instructions.md": "0c556a075366b4ec7f25daa68710ee04e592faec0419d892947bea089b3158d2",
         "./instructions/openscad-customizer.instructions.md": "f4b5106933eab3cf06eb890104f26d699a308beda46942e01636bea3a5995f09",
         "./skills/openscad-runtime/SKILL.md": "c4fffba616d9a16c76986c44fa8e706a0c8d68ec68219a65e63907ff466ab8d0",
         "./skills/openscad-libraries/SKILL.md": "4375443259b56f2cdf2bff5d656ed1276d761943db04de8752aa05be0af958d2",

@@ -1,5 +1,5 @@
 import { commands, Disposable, TabInputCustom, TabInputText, window } from 'vscode'
-import { isPreviewEditor, meshFormat, meshPreviewEditorViewType, previewEditorViewType } from '../services/previewFile'
+import { isPreviewEditor, previewViewType } from '../services/previewFile'
 export { previewEditorViewType } from '../services/previewFile'
 
 /** Use the same editor replacement command as the built-in Markdown preview. */
@@ -11,9 +11,8 @@ export function registerShowPanelCommand(): Disposable {
             // A binary editor has a tab URI but no active TextEditor.
             const uri = input instanceof TabInputText || input instanceof TabInputCustom ? input.uri : document?.uri
             if (uri?.scheme !== 'file') return
-            const format = meshFormat(uri.path)
-            if (!format && !/\.(scad|csg)$/i.test(uri.path) && document?.languageId !== 'openscad') return
-            await commands.executeCommand('reopenActiveEditorWith', format ? meshPreviewEditorViewType : previewEditorViewType)
+            const viewType = previewViewType(uri.path, document?.languageId)
+            if (viewType) await commands.executeCommand('reopenActiveEditorWith', viewType)
         }),
         commands.registerCommand('scad-ai-ide.showSource', async () => {
             const input = window.tabGroups.activeTabGroup.activeTab?.input

@@ -208,7 +208,7 @@ class OwnedMarkdownPreview implements vscode.Disposable {
         record.controller?.abort()
         const controller = (record.controller = new AbortController())
         try {
-            if (record.model.format === 'csgp' || record.model.format === 'verification-evidence') throw new Error('Image-based preview has no final edge/vertex topology. Use Full Render.')
+            if (record.model.format !== 'stl' && record.model.format !== '3mf') throw new Error('Image-based preview has no final edge/vertex topology. Use Full Render.')
             const geometry = await queryMeshTopology(record.model.content, record.model.format, controller.signal, message.planes)
             if (!this.disposed && !controller.signal.aborted && this.records.get(message.blockId!) === record) void this.panel.webview.postMessage({ type: 'ownedTopology', blockId: message.blockId, modelVersion: record.version, requestId: message.requestId, geometry })
         } catch (error) {

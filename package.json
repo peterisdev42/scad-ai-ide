@@ -20,7 +20,8 @@
         "Other"
     ],
     "activationEvents": [
-        "onStartupFinished"
+        "onStartupFinished",
+        "onUri"
     ],
     "main": "./dist/extension.js",
     "contributes": {
@@ -721,6 +722,12 @@
                         "scope": "application",
                         "description": "Enable Plan or apply a CAD buffer edit for the SCAD AI IDE Agent."
                     },
+                    "scad-ai-ide.agent.features.tool.cad.modelPreviewLink.enabled": {
+                        "type": "boolean",
+                        "default": true,
+                        "scope": "application",
+                        "description": "Enable Get interactive OpenSCAD model preview link for the SCAD AI IDE Agent."
+                    },
                     "scad-ai-ide.agent.features.instruction.discovery.openscad.enabled": {
                         "type": "boolean",
                         "default": true,
@@ -850,15 +857,15 @@
             "commandPalette": [
                 {
                     "command": "scad-ai-ide.showPreview",
-                    "when": "resourceScheme == file && resourceFilename =~ /\\.(scad|csg|stl|3mf)$/i && activeCustomEditorId != 'scad-ai-ide.preview.editor' && activeCustomEditorId != 'scad-ai-ide.preview.mesh'"
+                    "when": "resourceScheme == file && resourceFilename =~ /\\.(scad|csg|stl|asciistl|binstl|3mf|off|obj|wrl|amf|pov|nef3|dxf|nefdbg|pdf)$/i && activeCustomEditorId != 'scad-ai-ide.preview.editor' && activeCustomEditorId != 'scad-ai-ide.preview.csg' && activeCustomEditorId != 'scad-ai-ide.preview.mesh' && activeCustomEditorId != 'scad-ai-ide.preview.drawing'"
                 },
                 {
                     "command": "scad-ai-ide.showSource",
-                    "when": "(activeCustomEditorId == 'scad-ai-ide.preview.editor' || activeCustomEditorId == 'scad-ai-ide.preview.mesh')"
+                    "when": "(activeCustomEditorId == 'scad-ai-ide.preview.editor' || activeCustomEditorId == 'scad-ai-ide.preview.csg' || activeCustomEditorId == 'scad-ai-ide.preview.mesh' || activeCustomEditorId == 'scad-ai-ide.preview.drawing')"
                 },
                 {
                     "command": "scad-ai-ide.togglePreview",
-                    "when": "(resourceScheme == file && resourceFilename =~ /\\.(scad|csg|stl|3mf)$/i) || (activeCustomEditorId == 'scad-ai-ide.preview.editor' || activeCustomEditorId == 'scad-ai-ide.preview.mesh')"
+                    "when": "(resourceScheme == file && resourceFilename =~ /\\.(scad|csg|stl|asciistl|binstl|3mf|off|obj|wrl|amf|pov|nef3|dxf|nefdbg|pdf)$/i) || (activeCustomEditorId == 'scad-ai-ide.preview.editor' || activeCustomEditorId == 'scad-ai-ide.preview.csg' || activeCustomEditorId == 'scad-ai-ide.preview.mesh' || activeCustomEditorId == 'scad-ai-ide.preview.drawing')"
                 },
                 {
                     "command": "scad-ai-ide.customizer.resetAll",
@@ -881,12 +888,12 @@
                 {
                     "command": "scad-ai-ide.showPreview",
                     "group": "navigation@2",
-                    "when": "resourceScheme == file && resourceFilename =~ /\\.(scad|csg|stl|3mf)$/i && activeCustomEditorId != 'scad-ai-ide.preview.editor' && activeCustomEditorId != 'scad-ai-ide.preview.mesh'"
+                    "when": "resourceScheme == file && resourceFilename =~ /\\.(scad|csg|stl|asciistl|binstl|3mf|off|obj|wrl|amf|pov|nef3|dxf|nefdbg|pdf)$/i && activeCustomEditorId != 'scad-ai-ide.preview.editor' && activeCustomEditorId != 'scad-ai-ide.preview.csg' && activeCustomEditorId != 'scad-ai-ide.preview.mesh' && activeCustomEditorId != 'scad-ai-ide.preview.drawing'"
                 },
                 {
                     "command": "scad-ai-ide.showSource",
                     "group": "navigation@2",
-                    "when": "(activeCustomEditorId == 'scad-ai-ide.preview.editor' || activeCustomEditorId == 'scad-ai-ide.preview.mesh')"
+                    "when": "(activeCustomEditorId == 'scad-ai-ide.preview.editor' || activeCustomEditorId == 'scad-ai-ide.preview.csg' || activeCustomEditorId == 'scad-ai-ide.preview.mesh' || activeCustomEditorId == 'scad-ai-ide.preview.drawing')"
                 },
                 {
                     "command": "scad-ai-ide.markdown.openPreview",
@@ -921,13 +928,20 @@
                 ],
                 "extensions": [
                     ".scad",
-                    ".csg"
+                    ".csg",
+                    ".ast"
                 ],
                 "configuration": "./language-configuration.json",
                 "icon": {
                     "light": "./resources/openscad.svg",
                     "dark": "./resources/openscad.svg"
                 }
+            },
+            {
+                "id": "json",
+                "extensions": [
+                    ".param"
+                ]
             }
         ],
         "grammars": [
@@ -964,7 +978,7 @@
                 "command": "scad-ai-ide.togglePreview",
                 "key": "ctrl+shift+v",
                 "mac": "cmd+shift+v",
-                "when": "(resourceScheme == file && resourceFilename =~ /\\.(scad|csg|stl|3mf)$/i) || (activeCustomEditorId == 'scad-ai-ide.preview.editor' || activeCustomEditorId == 'scad-ai-ide.preview.mesh')"
+                "when": "(resourceScheme == file && resourceFilename =~ /\\.(scad|csg|stl|asciistl|binstl|3mf|off|obj|wrl|amf|pov|nef3|dxf|nefdbg|pdf)$/i) || (activeCustomEditorId == 'scad-ai-ide.preview.editor' || activeCustomEditorId == 'scad-ai-ide.preview.csg' || activeCustomEditorId == 'scad-ai-ide.preview.mesh' || activeCustomEditorId == 'scad-ai-ide.preview.drawing')"
             }
         ],
         "customEditors": [
@@ -974,12 +988,19 @@
                 "selector": [
                     {
                         "filenamePattern": "*.[sS][cC][aA][dD]"
-                    },
+                    }
+                ],
+                "priority": "option"
+            },
+            {
+                "viewType": "scad-ai-ide.preview.csg",
+                "displayName": "OpenSCAD Preview",
+                "selector": [
                     {
                         "filenamePattern": "*.[cC][sS][gG]"
                     }
                 ],
-                "priority": "option"
+                "priority": "default"
             },
             {
                 "viewType": "scad-ai-ide.preview.mesh",
@@ -989,10 +1010,50 @@
                         "filenamePattern": "*.[sS][tT][lL]"
                     },
                     {
+                        "filenamePattern": "*.[aA][sS][cC][iI][iI][sS][tT][lL]"
+                    },
+                    {
+                        "filenamePattern": "*.[bB][iI][nN][sS][tT][lL]"
+                    },
+                    {
                         "filenamePattern": "*.3[mM][fF]"
+                    },
+                    {
+                        "filenamePattern": "*.[oO][fF][fF]"
+                    },
+                    {
+                        "filenamePattern": "*.[oO][bB][jJ]"
+                    },
+                    {
+                        "filenamePattern": "*.[wW][rR][lL]"
+                    },
+                    {
+                        "filenamePattern": "*.[aA][mM][fF]"
+                    },
+                    {
+                        "filenamePattern": "*.[pP][oO][vV]"
+                    },
+                    {
+                        "filenamePattern": "*.[nN][eE][fF]3"
                     }
                 ],
-                "priority": "option"
+                "priority": "default"
+            },
+            {
+                "viewType": "scad-ai-ide.preview.drawing",
+                "displayName": "Drawing Preview",
+                "selector": [
+                    {
+                        "filenamePattern": "*.[dD][xX][fF]"
+                    },
+                    {
+                        "filenamePattern": "*.[nN][eE][fF][dD][bB][gG]"
+                    },
+                    {
+                        "filenamePattern": "*.[pP][dD][fF]"
+                    }
+                ],
+                "priority": "default"
             }
         ],
         "jsonValidation": [
@@ -4124,6 +4185,30 @@
                     ]
                 },
                 "when": "config.scad-ai-ide.agent.enabled && config.scad-ai-ide.agent.groups.cad.enabled && config.scad-ai-ide.agent.features.tool.cad.modelEditBuffer.enabled && isWorkspaceTrusted"
+            },
+            {
+                "name": "scad_ai_ide_model_previewLink",
+                "displayName": "Get interactive OpenSCAD model preview link",
+                "modelDescription": "Use after creating or editing a .scad model and whenever offering an interactive model preview in chat. Supply the existing workspace .scad file URI. Include the returned markdownLink in your answer as a clickable link. Localize the label as needed and copy the URL exactly. The editor opens when the user clicks. Label any PNG links as rendered images.",
+                "canBeReferencedInPrompt": true,
+                "toolReferenceName": "scad_model_previewLink",
+                "inputSchema": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "not": {}
+                    },
+                    "properties": {
+                        "uri": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4096
+                        }
+                    },
+                    "required": [
+                        "uri"
+                    ]
+                },
+                "when": "config.scad-ai-ide.agent.enabled && config.scad-ai-ide.agent.groups.cad.enabled && config.scad-ai-ide.agent.features.tool.cad.modelPreviewLink.enabled && isWorkspaceTrusted"
             }
         ],
         "chatInstructions": [
@@ -4308,6 +4393,7 @@
         "linkedom": "0.18.12",
         "lit": "^3.3.2",
         "manifold-3d": "^3.5.4",
+        "pdfjs-dist": "6.5.438",
         "pngjs": "7.0.0",
         "proper-lockfile": "^4.1.2",
         "robust-predicates": "3.0.2",

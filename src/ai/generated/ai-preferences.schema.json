@@ -132,6 +132,7 @@
                         "tool.cad.checkPrintability",
                         "tool.cad.manageReview",
                         "tool.cad.modelEditBuffer",
+                        "tool.cad.modelPreviewLink",
                         "instruction.discovery.openscad",
                         "instruction.customizer.openscad-customizer",
                         "skill.runtime.openscad-runtime",

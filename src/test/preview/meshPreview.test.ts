@@ -45,6 +45,7 @@ function fixture(format: ModelFormat) {
         performance,
         require: (id: string) => {
             if (id.endsWith('/preview/performance')) return { validPreviewTimings }
+            if (id.endsWith('/types/ModelFormat')) return { ModelFormat }
             if (id === 'node:path') return { basename: (path: string) => path.split('/').at(-1), dirname: () => '/models' }
             if (id === 'vscode') return { EventEmitter: Emitter, RelativePattern: class {}, workspace: { fs: { readFile: () => read() }, createFileSystemWatcher: () => watcher } }
             throw new Error(`Mesh preview must not depend on a Runtime or text editor: ${id}`)
@@ -131,7 +132,7 @@ test('Older or disposed mesh reads cannot overwrite newer results, and read erro
     assert.equal(models.length, 1)
 })
 
-test('Source, binary editors and both preview types share toggle commands', async () => {
+test('Source and export editors share toggle commands', async () => {
     class TabInputText {
         constructor(readonly uri: unknown) {}
     }
@@ -171,11 +172,23 @@ test('Source, binary editors and both preview types share toggle commands', asyn
         },
     })
     module.exports.registerShowPanelCommand()
-    for (const extension of ['scad', 'stl', 'STL', '3mf', '3MF']) {
+    const types = new Map([
+        ['scad', previewFiles.previewEditorViewType],
+        ['CSG', previewFiles.csgPreviewEditorViewType],
+        ...['stl', 'STL', '3mf', '3MF', 'binstl', 'asciistl', 'obj', 'OFF', 'AMF', 'wrl', 'pov', 'NEF3'].map((ext) => [ext, previewFiles.meshPreviewEditorViewType] as const),
+        ...['dxf', 'nefdbg', 'PDF'].map((ext) => [ext, previewFiles.drawingPreviewEditorViewType] as const),
+    ])
+    const { contributes } = JSON.parse(readFileSync(new URL('../../../package.json', import.meta.url), 'utf8'))
+    for (const [extension, type] of types) {
+        const editor = contributes.customEditors.find((entry: { viewType: string }) => entry.viewType === type)
+        assert.equal(editor.priority, extension === 'scad' ? 'option' : 'default')
+        assert.ok(editor.selector.some(({ filenamePattern }: { filenamePattern: string }) => {
+            const suffix = filenamePattern.slice(2)
+            return new RegExp(`^${suffix}$`).test(extension)
+        }), `Default editor must match .${extension}`)
         const uri = { path: `/models/model.${extension}`, scheme: 'file' }
         window.tabGroups.activeTabGroup.activeTab.input = new TabInputText(uri)
         await handlers.get('scad-ai-ide.togglePreview')!()
-        const type = extension === 'scad' ? previewFiles.previewEditorViewType : previewFiles.meshPreviewEditorViewType
         assert.equal(reopens.at(-1), type)
         window.tabGroups.activeTabGroup.activeTab.input = new TabInputCustom(uri, type)
         await handlers.get('scad-ai-ide.togglePreview')!()

@@ -24,7 +24,7 @@ SCAD AI IDE brings OpenSCAD language tooling, interactive 3D preview, runtime an
 | **Markdown 3D preview** | Interactive previews for `openscad` / `scad` code blocks | Implemented |
 | **CAD diagnostics** | CLI-backed CSG checks, issue details, shared VS Code Problems and snapshot invalidation | Implemented; end-to-end acceptance ongoing |
 | **Mesh & assembly verification** | Raw STL/3MF checks, measurements, frozen PNG views, declared-part static assembly constraints and report comparison | Implemented; validation ongoing |
-| **Native Agent integration** | 52 VS Code Language Model Tools, 12 Skills and 2 Instructions using shared services and permission gates | Implemented; provider/host/model acceptance ongoing |
+| **Native Agent integration** | 53 VS Code Language Model Tools, 12 Skills and 2 Instructions using shared services and permission gates | Implemented; provider/host/model acceptance ongoing |
 | **Per-part coloring** | Distinct preview colors for separated parts | Experimental; visual-only |
 | **Fast CSG preview** | Image-space CSG rendering through a separate Preview Exporter | Experimental; supported macOS ARM64 setups |
 
@@ -88,7 +88,7 @@ The current dependency manager intentionally supports **exact versions**, not ar
 
 ### Native Agent Tools, Skills and safety
 
-The extension contributes **52 native VS Code Language Model Tools**, **12 Skills** and **2 Instructions**. They cover capability discovery/cancellation, Runtime, Customizer, Libraries, safe development status and CAD diagnostics/verification/review. The AI Panel controls integration, groups and individual features and reports live availability. Tools can run while their management panels are closed. See the [feature architecture and declaration examples](docs/ai-feature-architecture.md).
+The extension contributes **53 native VS Code Language Model Tools**, **12 Skills** and **2 Instructions**. They cover capability discovery/cancellation, Runtime, Customizer, Libraries, safe development status and CAD diagnostics/verification/review. A model preview link in chat opens its `.scad` file in the interactive OpenSCAD Preview editor. The AI Panel controls integration, groups and individual features and reports live availability. Tools can run while their management panels are closed. See the [feature architecture and declaration examples](docs/ai-feature-architecture.md).
 
 Capability availability depends on the **VS Code Agent host and model provider**. Registration and deterministic tests do not establish reliable autonomous-model performance. The real-model CAD acceptance matrix remains open in several areas. See the [tool catalog](docs/agent-capability-catalog.md), [permissions matrix](docs/agent-capability-matrix.md), [Agent verification guide](docs/agent-verification.md) and [CAD progress report](docs/cad/overall-progress.md).
 

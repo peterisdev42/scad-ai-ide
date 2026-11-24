@@ -37,6 +37,7 @@ export async function run() {
             cli,
             `#!/bin/sh
 if [ "$1" = "--fixture-prefix" ] && [ "$2" = "--version" ]; then echo "OpenSCAD version 2026.10.TEST"; exit 0; fi
+if [ "$1" = "--fixture-prefix" ] && [ "$2" = "--help" ]; then echo 'OpenSCAD -o output --export-format format'; exit 0; fi
 /bin/cat > '${trace}'
 /bin/pwd > '${trace}.cwd'
 for arg in "$@"; do /usr/bin/printf '%s\\n' "$arg"; done > '${trace}.args.'$$
@@ -126,7 +127,7 @@ done
         await shared.saveParameterSet('Wide')
         shared.updateParameterValue('width', 3)
         shared.updateParameterValue('size', [8, 10])
-        shared.applyParameterSet('Wide')
+        await shared.applyParameterSet('Wide')
         assert.equal(shared.currentOverrides.width, 9)
         assert.deepEqual(shared.currentOverrides.size, [6, 10])
         assert.deepEqual(api.customizer.getOverrides(uri.toString()).size, [6, 10])
@@ -196,11 +197,14 @@ done
         const csgSession = api.preview.getOrCreateSession(csgDocument)
         const csgResults: { buffer: Buffer; format: ModelFormat }[] = []
         const csgSubscription = csgSession.onRenderCompleted((result) => csgResults.push(result))
-        csgSession.refreshRender()
+        csgSession.setPreviewMode('preview')
         await waitFor(() => csgResults.some((result) => result.format === ModelFormat.PreviewScene))
-        await vscode.window.showTextDocument(csgDocument)
-        await vscode.commands.executeCommand('scad-ai-ide.togglePreview')
-        await waitFor(() => vscode.window.tabGroups.activeTabGroup.activeTab?.input instanceof vscode.TabInputCustom)
+        csgSession.setPreviewMode('render')
+        await vscode.commands.executeCommand('vscode.open', csgUri)
+        await waitFor(() => {
+            const input = vscode.window.tabGroups.activeTabGroup.activeTab?.input
+            return input instanceof vscode.TabInputCustom && input.viewType === 'scad-ai-ide.preview.csg' && input.uri.toString() === csgUri.toString()
+        })
         await vscode.commands.executeCommand('scad-ai-ide.togglePreview')
         await waitFor(() => vscode.window.activeTextEditor?.document === csgDocument)
         assert.equal(await readFile(csgUri.fsPath, 'utf8'), csgSource)
@@ -245,13 +249,16 @@ done
                 assert.equal(vscode.window.tabGroups.activeTabGroup.tabs.length, tabCount)
             }
             await vscode.commands.executeCommand('workbench.action.closeActiveEditor')
-            await vscode.commands.executeCommand('vscode.openWith', meshUri, 'scad-ai-ide.preview.mesh')
-            await waitFor(() => vscode.window.tabGroups.activeTabGroup.activeTab?.input instanceof vscode.TabInputCustom)
+            await vscode.commands.executeCommand('vscode.open', meshUri)
+            await waitFor(() => {
+                const input = vscode.window.tabGroups.activeTabGroup.activeTab?.input
+                return input instanceof vscode.TabInputCustom && input.viewType === 'scad-ai-ide.preview.mesh' && input.uri.toString() === meshUri.toString()
+            })
             assert.deepEqual(await readFile(meshUri.fsPath), Buffer.from(bytes), 'Preview must never modify mesh bytes')
             await vscode.commands.executeCommand('workbench.action.closeActiveEditor')
         }
         await assert.rejects(readFile(trace), { code: 'ENOENT' }, 'Native mesh previews must not invoke OpenSCAD')
-        console.log('PASS: ASCII STL, binary STL and 3MF share tab replacement, repeated toggles and Open With without invoking the CLI')
+        console.log('PASS: ASCII STL, binary STL and 3MF open in Preview by default, support repeated tab replacement and never invoke the CLI')
         console.log('PASS: tab replacement, repeated toggles, dirty text, CLI stdin/cwd/prefix, Open With, shared Customizer, presets and export')
     } catch (error) {
         for (const file of [trace, trace + '.cwd', trace + '.args']) {

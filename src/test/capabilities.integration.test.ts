@@ -49,6 +49,79 @@ suite('Agent capabilities extension host', () => {
         const state = await api.capabilities.invoke('development.status', {}, { actor: 'agent' })
         assert.equal(state.ok, true)
     })
+    test('Agent model preview link opens the target SCAD in OpenSCAD Preview', async function () {
+        const folder = vscode.workspace.workspaceFolders?.[0]
+        if (!folder || !vscode.workspace.isTrusted) { this.skip(); return }
+        const extension = vscode.extensions.all.find(item => item.packageJSON.name === 'scad-ai-ide')!
+        await extension.activate()
+        const directory = await mkdtemp(path.join(folder.uri.fsPath, 'preview-link-'))
+        const outside = await mkdtemp(path.join(os.tmpdir(), 'outside-preview-link-'))
+        const model = vscode.Uri.file(path.join(directory, '奶酪 #50% (iso).scad'))
+        const png = vscode.Uri.file(path.join(directory, 'iso.png'))
+        const outsideModel = vscode.Uri.file(path.join(outside, 'model.scad'))
+        const invoke = async (uri: vscode.Uri) => {
+            const result = await vscode.lm.invokeTool('scad_ai_ide_model_previewLink', { input: { uri: uri.toString() }, toolInvocationToken: undefined })
+            return JSON.parse((result.content[0] as vscode.LanguageModelTextPart).value)
+        }
+        try {
+            await writeFile(model.fsPath, 'cube(1);\n')
+            await writeFile(outsideModel.fsPath, 'cube(2);\n')
+            await vscode.workspace.fs.copy(vscode.Uri.joinPath(extension.extensionUri, 'resources', 'icon.png'), png)
+            await vscode.commands.executeCommand('vscode.open', png)
+            assert.equal((vscode.window.tabGroups.activeTabGroup.activeTab?.input as vscode.TabInputCustom).uri.toString(), png.toString())
+            assert.equal((await invoke(png)).error.code, 'INVALID_URI')
+            assert.equal((await invoke(outsideModel)).error.code, 'INVALID_PROJECT')
+            assert.equal((await invoke(vscode.Uri.file(path.join(directory, 'missing.scad')))).error.code, 'FILE_NOT_FOUND')
+
+            const output = await invoke(model)
+            assert.equal(output.ok, true, JSON.stringify(output))
+            assert.equal(output.data.uri, model.toString())
+            const href = /^\[View model preview\]\(([^)]+)\)$/.exec(output.data.markdownLink)?.[1]
+            assert.ok(href)
+            const link = vscode.Uri.parse(href, true)
+            assert.equal(link.scheme, vscode.env.uriScheme)
+            assert.equal(link.authority, extension.id)
+
+            await vscode.commands.executeCommand('vscode.open', link)
+            const deadline = Date.now() + 10000
+            for (;;) {
+                const input = vscode.window.tabGroups.activeTabGroup.activeTab?.input
+                if (input instanceof vscode.TabInputCustom && input.viewType === 'scad-ai-ide.preview.editor' && input.uri.toString() === model.toString()) break
+                assert.ok(Date.now() < deadline, 'The chat link did not open the target SCAD preview')
+                await new Promise(resolve => setTimeout(resolve, 50))
+            }
+        } finally {
+            const fixtures = vscode.window.tabGroups.all.flatMap(group => group.tabs).filter(tab => tab.input instanceof vscode.TabInputCustom && [model.toString(), png.toString()].includes(tab.input.uri.toString()))
+            await vscode.window.tabGroups.close(fixtures)
+            await rm(directory, { recursive: true, force: true })
+            await rm(outside, { recursive: true, force: true })
+        }
+    })
+    test('OpenSCAD export files open in Preview by default', async () => {
+        const root = await mkdtemp(path.join(os.tmpdir(), 'export-default-editor-'))
+        const extension = vscode.extensions.all.find(item => item.packageJSON.name === 'scad-ai-ide')!
+        await extension.activate()
+        const files = [
+            ['model.STL', 'mesh', 'solid empty\nendsolid empty\n'],
+            ['model.3MF', 'mesh', await readFile(vscode.Uri.joinPath(extension.extensionUri, 'src/test/mesh/golden/inch.3mf').fsPath)],
+            ['model.CSG', 'csg', 'cube();\n'],
+            ['model.DXF', 'drawing', '0\nSECTION\n2\nENTITIES\n0\nLINE\n10\n0\n20\n0\n11\n1\n21\n1\n0\nENDSEC\n0\nEOF\n'],
+        ] as const
+        try {
+            for (const [name, viewType, bytes] of files) {
+                const uri = vscode.Uri.file(path.join(root, name))
+                await writeFile(uri.fsPath, bytes)
+                await vscode.commands.executeCommand('vscode.open', uri)
+                const input = vscode.window.tabGroups.activeTabGroup.activeTab?.input
+                assert.ok(input instanceof vscode.TabInputCustom, `${name} must open in a custom editor`)
+                assert.equal(input.viewType, `scad-ai-ide.preview.${viewType}`)
+                assert.equal(input.uri.toString(), uri.toString())
+                await vscode.commands.executeCommand('workbench.action.closeActiveEditor')
+            }
+        } finally {
+            await rm(root, { recursive: true, force: true })
+        }
+    })
     test('AI preferences disable Agent calls without disabling manual service commands', async () => {
         const extension = vscode.extensions.all.find((item) => item.packageJSON.name === 'scad-ai-ide')!
         const api = await extension.activate() as Awaited<ReturnType<typeof activate>>

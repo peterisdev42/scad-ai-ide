@@ -11,48 +11,49 @@ import { manageReviewHandler as tool6 } from '../handlers/cad'
 import { modelAnalyzeHandler as tool7 } from '../handlers/cad'
 import { modelEditBufferHandler as tool8 } from '../handlers/cad'
 import { modelMeasureHandler as tool9 } from '../handlers/cad'
-import { modelRenderViewsHandler as tool10 } from '../handlers/cad'
-import { requestPointingHandler as tool11 } from '../handlers/cad'
-import { applyPresetHandler as tool12 } from '../handlers/customizer'
-import { createPresetHandler as tool13 } from '../handlers/customizer'
-import { deletePresetHandler as tool14 } from '../handlers/customizer'
-import { exportPresetsHandler as tool15 } from '../handlers/customizer'
-import { importPresetsHandler as tool16 } from '../handlers/customizer'
-import { resetHandler as tool17 } from '../handlers/customizer'
-import { savePresetHandler as tool18 } from '../handlers/customizer'
-import { setHandler as tool19 } from '../handlers/customizer'
-import { sourceAnalyzeHandler as tool20 } from '../handlers/customizer'
-import { sourceApplyHandler as tool21 } from '../handlers/customizer'
-import { sourceValidateHandler as tool22 } from '../handlers/customizer'
-import { stateHandler as tool23 } from '../handlers/customizer'
-import { clearCachesHandler as tool24 } from '../handlers/development'
-import { inspectCacheHandler as tool25 } from '../handlers/development'
-import { listCachesHandler as tool26 } from '../handlers/development'
-import { statusHandler as tool27 } from '../handlers/development'
-import { cancelHandler as tool28 } from '../handlers/discovery'
-import { discoverHandler as tool29 } from '../handlers/discovery'
-import { statusHandler as tool30 } from '../handlers/discovery'
-import { authorizeGitHubHandler as tool31 } from '../handlers/github'
-import { githubStatusHandler as tool32 } from '../handlers/github'
-import { cleanupExecuteHandler as tool33 } from '../handlers/libraries'
-import { cleanupPlanHandler as tool34 } from '../handlers/libraries'
-import { globalStateHandler as tool35 } from '../handlers/libraries'
-import { installHandler as tool36 } from '../handlers/libraries'
-import { projectStateHandler as tool37 } from '../handlers/libraries'
-import { refreshHandler as tool38 } from '../handlers/libraries'
-import { removeHandler as tool39 } from '../handlers/libraries'
-import { repairHandler as tool40 } from '../handlers/libraries'
-import { restoreHandler as tool41 } from '../handlers/libraries'
-import { searchHandler as tool42 } from '../handlers/libraries'
-import { verifyHandler as tool43 } from '../handlers/libraries'
-import { addExecutableHandler as tool44 } from '../handlers/runtime'
-import { buildsHandler as tool45 } from '../handlers/runtime'
-import { installArchiveHandler as tool46 } from '../handlers/runtime'
-import { installBuildHandler as tool47 } from '../handlers/runtime'
-import { refreshHandler as tool48 } from '../handlers/runtime'
-import { removeHandler as tool49 } from '../handlers/runtime'
-import { selectHandler as tool50 } from '../handlers/runtime'
-import { stateHandler as tool51 } from '../handlers/runtime'
+import { modelPreviewLinkHandler as tool10 } from '../handlers/cad'
+import { modelRenderViewsHandler as tool11 } from '../handlers/cad'
+import { requestPointingHandler as tool12 } from '../handlers/cad'
+import { applyPresetHandler as tool13 } from '../handlers/customizer'
+import { createPresetHandler as tool14 } from '../handlers/customizer'
+import { deletePresetHandler as tool15 } from '../handlers/customizer'
+import { exportPresetsHandler as tool16 } from '../handlers/customizer'
+import { importPresetsHandler as tool17 } from '../handlers/customizer'
+import { resetHandler as tool18 } from '../handlers/customizer'
+import { savePresetHandler as tool19 } from '../handlers/customizer'
+import { setHandler as tool20 } from '../handlers/customizer'
+import { sourceAnalyzeHandler as tool21 } from '../handlers/customizer'
+import { sourceApplyHandler as tool22 } from '../handlers/customizer'
+import { sourceValidateHandler as tool23 } from '../handlers/customizer'
+import { stateHandler as tool24 } from '../handlers/customizer'
+import { clearCachesHandler as tool25 } from '../handlers/development'
+import { inspectCacheHandler as tool26 } from '../handlers/development'
+import { listCachesHandler as tool27 } from '../handlers/development'
+import { statusHandler as tool28 } from '../handlers/development'
+import { cancelHandler as tool29 } from '../handlers/discovery'
+import { discoverHandler as tool30 } from '../handlers/discovery'
+import { statusHandler as tool31 } from '../handlers/discovery'
+import { authorizeGitHubHandler as tool32 } from '../handlers/github'
+import { githubStatusHandler as tool33 } from '../handlers/github'
+import { cleanupExecuteHandler as tool34 } from '../handlers/libraries'
+import { cleanupPlanHandler as tool35 } from '../handlers/libraries'
+import { globalStateHandler as tool36 } from '../handlers/libraries'
+import { installHandler as tool37 } from '../handlers/libraries'
+import { projectStateHandler as tool38 } from '../handlers/libraries'
+import { refreshHandler as tool39 } from '../handlers/libraries'
+import { removeHandler as tool40 } from '../handlers/libraries'
+import { repairHandler as tool41 } from '../handlers/libraries'
+import { restoreHandler as tool42 } from '../handlers/libraries'
+import { searchHandler as tool43 } from '../handlers/libraries'
+import { verifyHandler as tool44 } from '../handlers/libraries'
+import { addExecutableHandler as tool45 } from '../handlers/runtime'
+import { buildsHandler as tool46 } from '../handlers/runtime'
+import { installArchiveHandler as tool47 } from '../handlers/runtime'
+import { installBuildHandler as tool48 } from '../handlers/runtime'
+import { refreshHandler as tool49 } from '../handlers/runtime'
+import { removeHandler as tool50 } from '../handlers/runtime'
+import { selectHandler as tool51 } from '../handlers/runtime'
+import { stateHandler as tool52 } from '../handlers/runtime'
 
 export const toolBindings = {
     'cad.checkAssembly': tool0,
@@ -65,46 +66,47 @@ export const toolBindings = {
     'cad.modelAnalyze': tool7,
     'cad.modelEditBuffer': tool8,
     'cad.modelMeasure': tool9,
-    'cad.modelRenderViews': tool10,
-    'cad.requestPointing': tool11,
-    'customizer.applyPreset': tool12,
-    'customizer.createPreset': tool13,
-    'customizer.deletePreset': tool14,
-    'customizer.exportPresets': tool15,
-    'customizer.importPresets': tool16,
-    'customizer.reset': tool17,
-    'customizer.savePreset': tool18,
-    'customizer.set': tool19,
-    'customizer.sourceAnalyze': tool20,
-    'customizer.sourceApply': tool21,
-    'customizer.sourceValidate': tool22,
-    'customizer.state': tool23,
-    'development.clearCaches': tool24,
-    'development.inspectCache': tool25,
-    'development.listCaches': tool26,
-    'development.status': tool27,
-    'operation.cancel': tool28,
-    'capabilities.discover': tool29,
-    'operation.status': tool30,
-    'more.authorizeGitHub': tool31,
-    'more.githubStatus': tool32,
-    'libraries.cleanupExecute': tool33,
-    'libraries.cleanupPlan': tool34,
-    'libraries.globalState': tool35,
-    'libraries.install': tool36,
-    'libraries.projectState': tool37,
-    'libraries.refresh': tool38,
-    'libraries.remove': tool39,
-    'libraries.repair': tool40,
-    'libraries.restore': tool41,
-    'libraries.search': tool42,
-    'libraries.verify': tool43,
-    'runtime.addExecutable': tool44,
-    'runtime.builds': tool45,
-    'runtime.installArchive': tool46,
-    'runtime.installBuild': tool47,
-    'runtime.refresh': tool48,
-    'runtime.remove': tool49,
-    'runtime.select': tool50,
-    'runtime.state': tool51,
+    'cad.modelPreviewLink': tool10,
+    'cad.modelRenderViews': tool11,
+    'cad.requestPointing': tool12,
+    'customizer.applyPreset': tool13,
+    'customizer.createPreset': tool14,
+    'customizer.deletePreset': tool15,
+    'customizer.exportPresets': tool16,
+    'customizer.importPresets': tool17,
+    'customizer.reset': tool18,
+    'customizer.savePreset': tool19,
+    'customizer.set': tool20,
+    'customizer.sourceAnalyze': tool21,
+    'customizer.sourceApply': tool22,
+    'customizer.sourceValidate': tool23,
+    'customizer.state': tool24,
+    'development.clearCaches': tool25,
+    'development.inspectCache': tool26,
+    'development.listCaches': tool27,
+    'development.status': tool28,
+    'operation.cancel': tool29,
+    'capabilities.discover': tool30,
+    'operation.status': tool31,
+    'more.authorizeGitHub': tool32,
+    'more.githubStatus': tool33,
+    'libraries.cleanupExecute': tool34,
+    'libraries.cleanupPlan': tool35,
+    'libraries.globalState': tool36,
+    'libraries.install': tool37,
+    'libraries.projectState': tool38,
+    'libraries.refresh': tool39,
+    'libraries.remove': tool40,
+    'libraries.repair': tool41,
+    'libraries.restore': tool42,
+    'libraries.search': tool43,
+    'libraries.verify': tool44,
+    'runtime.addExecutable': tool45,
+    'runtime.builds': tool46,
+    'runtime.installArchive': tool47,
+    'runtime.installBuild': tool48,
+    'runtime.refresh': tool49,
+    'runtime.remove': tool50,
+    'runtime.select': tool51,
+    'runtime.state': tool52,
 } satisfies Record<CapabilityId, ToolHandler>

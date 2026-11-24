@@ -161,7 +161,6 @@ export class ScadSession {
         private readonly customizer: CustomizerService,
         private readonly domain?: CustomizerDomainService,
     ) {
-        if (/\.csg$/i.test(this.documentUri.path)) this.selectedPreviewMode = 'preview'
         this.scadRenderer = new ScadRenderer({
             onBackendChange: (backend) => {
                 this.renderBackend = backend

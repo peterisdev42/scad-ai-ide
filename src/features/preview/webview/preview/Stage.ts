@@ -8,6 +8,7 @@ import type { PreviewScene } from '../../../../core/preview/types'
 import { beginGpuValidation } from './passes/GpuValidation'
 import { ModelRepresentation } from './models/ModelRepresentation'
 import { threeMfMillimeterScale } from '../../../../core/formats/threeMf'
+import { isExportMeshFormat, parseExportMesh } from '../../../../core/formats/exportMesh.mjs'
 import { Box3, BufferGeometry, BufferAttribute, DoubleSide, Color, FogExp2, Line, LineBasicMaterial, SphereGeometry, Group, Mesh, MeshStandardMaterial, Object3D, PCFShadowMap, Plane, Raycaster, Scene, Vector2, Vector3 } from 'three'
 import { WebGPURenderer } from 'three/webgpu'
 
@@ -436,7 +437,7 @@ export class Stage {
                 this.disposeModelGroup(nextGroup)
                 throw new Error(`Failed to parse 3MF: ${String(e)}`)
             }
-        } else if (!cachedCandidate) {
+        } else if (!cachedCandidate && format === ModelFormat.STL) {
             const loader = new STLLoader()
             try {
                 const parseStarted = performance.now()
@@ -457,6 +458,24 @@ export class Stage {
             } catch (e) {
                 this.disposeModelGroup(nextGroup)
                 throw new Error(`Failed to parse STL: ${String(e)}`)
+            }
+        } else if (!cachedCandidate && isExportMeshFormat(format)) {
+            const parseStarted = performance.now()
+            try {
+                const group = parseExportMesh(format, bytes.buffer)
+                nextGroup.add(group)
+                let hasMesh = false
+                group.traverse((child) => {
+                    if (!(child instanceof Mesh) || !child.geometry.getAttribute('position')?.count) return
+                    hasMesh = true
+                    if (!child.geometry.getAttribute('normal')) child.geometry.computeVertexNormals()
+                })
+                if (!hasMesh) throw new Error('The file contains no mesh faces.')
+                modelContext.reportPerformance?.({ meshParseMs: performance.now() - parseStarted })
+                if (this.viewOptions) this.materialManager.applyToGroup(nextGroup, this.viewOptions)
+            } catch (error) {
+                this.disposeModelGroup(nextGroup)
+                throw new Error(`Failed to parse ${format.toUpperCase()}: ${String(error)}`)
             }
         }
 

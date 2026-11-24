@@ -42,18 +42,15 @@ export function registerMarkdown(context: vscode.ExtensionContext, runtime: Retu
         return record
     }
     const modeFor = (record: ModeRecord): PreviewMode => record.mode ?? vscode.workspace.getConfiguration(section).get<PreviewMode>('renderMode', 'render')
-    const handler = vscode.window.registerUriHandler?.({
-        handleUri(uri) {
-            if (disposed || uri.path !== '/markdown-mode' || !vscode.workspace.isTrusted) return
-            const values = new URLSearchParams(uri.query),
-                record = tokens.get(values.get('token') ?? ''),
-                mode = values.get('mode')
-            if (!record || (mode !== 'preview' && mode !== 'render')) return
-            record.mode = mode
-            refresh()
-        },
-    })
-    if (handler) context.subscriptions.push(handler)
+    const handleModeUri = (uri: vscode.Uri) => {
+        if (disposed || uri.path !== '/markdown-mode' || !vscode.workspace.isTrusted) return
+        const values = new URLSearchParams(uri.query),
+            record = tokens.get(values.get('token') ?? ''),
+            mode = values.get('mode')
+        if (!record || (mode !== 'preview' && mode !== 'render')) return
+        record.mode = mode
+        refresh()
+    }
 
     const highlighter = new ScadHighlighter()
     const initialized = highlighter.initialize(join(context.extensionPath, 'dist', 'onig.wasm'))
@@ -148,6 +145,7 @@ export function registerMarkdown(context: vscode.ExtensionContext, runtime: Retu
     )
 
     return {
+        handleModeUri,
         ready,
         extendMarkdownIt(md: MarkdownIt): MarkdownIt {
             const originalHighlight = md.options.highlight
