@@ -26,6 +26,7 @@ import { ModelContext } from '../contexts/ModelContext'
 import { ObjectProperties } from '../contexts/SelectedObjectContext'
 import { SceneObjectType } from '../contexts/SceneContext'
 import { Environment, RenderMode, ViewOptionsContext } from '../contexts/ViewOptionsContext'
+import { DEFAULT_CAMERA_ID } from '../data/defaultScene'
 import { XRayPass } from './passes/XRayPass'
 import { AmbientLightRig } from './rigs/AmbientLightRig'
 import { CameraRig, type CameraViewState } from './rigs/CameraRig'
@@ -58,6 +59,7 @@ const MODEL_CLIP_RENDER_ORDER = 15
 // Snap translation to 1mm, rotate to 5° — applied when Ctrl is held.
 const TRANSLATION_SNAP = 1
 const ROTATION_SNAP = Math.PI / 36
+const INITIAL_VIEW_DIRECTION = new Vector3(-1, -1, 1) // Cube Left · Front · Top
 
 export class Stage {
     private container: HTMLElement
@@ -197,9 +199,10 @@ export class Stage {
         this.renderer.domElement.addEventListener('pointermove', this.handlePointerMove, true)
 
         // 3. Rigs — default camera created here; App.ts registers it as a scene object
-        const defaultCamera = this.createCameraRig('camera-default')
+        const defaultCamera = this.createCameraRig(DEFAULT_CAMERA_ID)
         this.activeCameraRig = defaultCamera
         defaultCamera.setIsActiveCamera(true)
+        defaultCamera.orientTo(INITIAL_VIEW_DIRECTION, 0)
         this.environmentRig = new EnvironmentManager(Environment.None, this.theme)
         this.scene.add(this.environmentRig.group)
         this.materialManager = new MaterialManager()
@@ -585,7 +588,7 @@ export class Stage {
     private fitInitialModelIfReady(): void {
         if (!this.fitInitialModel || new Box3().setFromObject(this.modelGroup).isEmpty()) return
         this.fitInitialModel = false
-        this.resetView(0, new Vector3(-1, -1, 1))
+        this.resetView(0, INITIAL_VIEW_DIRECTION)
     }
 
     public resetView(duration = 420, direction?: Vector3): void {
@@ -800,12 +803,14 @@ export class Stage {
     }
 
     /**
-     * Returns a snapshot of every handle's current properties, keyed by id.
+     * Returns the current scene properties, keyed by handle id.
      * Used by App to build the persisted scene snapshot.
      */
     public serializeProperties(): Map<string, ObjectProperties> {
         const out = new Map<string, ObjectProperties>()
         for (const [id, handle] of this.handles) {
+            // A recreated webview still needs to fit the model if it has not arrived yet.
+            if (this.fitInitialModel && handle === this.activeCameraRig) continue
             out.set(id, handle.getProperties())
         }
         return out

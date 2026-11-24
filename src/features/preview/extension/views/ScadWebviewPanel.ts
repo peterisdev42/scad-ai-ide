@@ -23,6 +23,7 @@ export class ScadWebviewPanel {
     private readonly panel: WebviewPanel
     private disposables: Disposable[] = []
     private isWebviewReady: boolean = false
+    private sceneSnapshot?: unknown
     private disposed = false
     private previewMessage: { type: 'emptyModel' | 'renderError' | 'previewIssue'; message: string } | undefined
     private lastRender: { base64Data: string; format: ModelFormat; modelVersion: number } | undefined
@@ -168,6 +169,7 @@ export class ScadWebviewPanel {
                             await this.sendToSlicer()
                             return
                         case 'persistScene':
+                            this.sceneSnapshot = message.snapshot
                             await this.workspaceState.update(this.sceneStateKey, message.snapshot)
                             return
                         case 'error':
@@ -366,11 +368,10 @@ export class ScadWebviewPanel {
 
     private pushInitialState() {
         this.pushPreviewMode()
-        // Send the persisted scene snapshot first so the webview can hydrate
-        // before any other state arrives. `null` means "no saved scene" — the
-        // webview falls back to its built-in default scene.
-        const snapshot = this.workspaceState.get<unknown>(this.sceneStateKey, null)
-        this.postMessage({ type: 'loadScene', snapshot })
+        // A new panel starts at the default camera. A recreated webview in
+        // an existing panel can resume the view from that panel's snapshot.
+        const snapshot = this.sceneSnapshot ?? this.workspaceState.get<unknown>(this.sceneStateKey, null)
+        this.postMessage({ type: 'loadScene', snapshot, resetCamera: this.sceneSnapshot === undefined })
 
         // Send initial parameters
         const params = this.session.currentParameters

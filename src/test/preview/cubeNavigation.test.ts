@@ -123,6 +123,7 @@ test('An edge selection interrupts an unfinished corner animation and stays at t
 
 test('Initial Top–Left–Front fit keeps tall and wide models in frame in both projections', () => {
     const state = fixture()
+    const corner = regions.find((region) => region.label === 'Left · Front · Top')!
     try {
         for (const mode of [CameraMode.Perspective, CameraMode.Orthographic]) {
             state.rig.setMode(mode)
@@ -136,6 +137,7 @@ test('Initial Top–Left–Front fit keeps tall and wide models in frame in both
                     const bounds = new Box3(min, min.clone().add(size))
                     state.rig.resetView(bounds, 0, new Vector3(-1, -1, 1))
                     const camera = state.rig.activeCamera
+                    const initialOrientation = camera.quaternion.clone()
                     const center = bounds.getCenter(new Vector3())
                     assert.ok(
                         camera.position
@@ -149,6 +151,9 @@ test('Initial Top–Left–Front fit keeps tall and wide models in frame in both
                         const point = new Vector3(index & 1 ? bounds.max.x : bounds.min.x, index & 2 ? bounds.max.y : bounds.min.y, index & 4 ? bounds.max.z : bounds.min.z).project(camera)
                         assert.ok(Math.abs(point.x) < 1 && Math.abs(point.y) < 1 && Math.abs(point.z) <= 1, 'The complete model must fit')
                     }
+                    state.rig.resetView(bounds, 0)
+                    state.rig.orientTo(corner.direction, 0)
+                    assert.ok(initialOrientation.angleTo(camera.quaternion) < 1e-7, 'Initial orientation matches Reset View followed by the Cube corner')
                 }
             }
         }

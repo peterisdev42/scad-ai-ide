@@ -1,13 +1,17 @@
 import { SceneObjectDescriptor } from '../contexts/SceneContext'
 
+export const DEFAULT_CAMERA_ID = 'camera-default'
+
+export const defaultCamera: SceneObjectDescriptor = {
+    id: DEFAULT_CAMERA_ID,
+    type: 'camera',
+    name: 'Camera 1',
+    visible: true,
+    active: true,
+}
+
 export const defaultScene: SceneObjectDescriptor[] = [
-    {
-        id: 'camera-default',
-        type: 'camera',
-        name: 'Camera 1',
-        visible: true,
-        active: true,
-    },
+    defaultCamera,
     {
         id: 'ambient-light-default',
         type: 'ambient-light',

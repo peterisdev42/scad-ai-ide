@@ -10,6 +10,7 @@ import { EmptyModelError } from '../../features/preview/extension/services/previ
 import { ModelFormat } from '../../features/preview/shared/types/ModelFormat'
 import type { ScadWebviewPanel } from '../../features/preview/extension/views/ScadWebviewPanel'
 import type { ExtensionToWebviewMessage } from '../../features/preview/shared/types/ExtensionToWebviewMessage'
+import type { WebviewToExtensionMessage } from '../../features/preview/shared/types/WebviewToExtensionMessage'
 
 const parserError = new Error("OpenSCAD exited with code 1\nERROR: Parser error: syntax error in file cube(20).scad, line 2\nCan't parse file '/models/cube(20).scad'!\n")
 
@@ -21,14 +22,14 @@ test('syntax diagnostics retain the file and line without CLI output noise', () 
     }
 })
 
-function panelFixture(render: (...args: unknown[]) => Promise<Buffer> = async () => Buffer.from('color([1,0,0,1]){cube(size=1);}'), mode: 'render' | 'preview' = 'render') {
+function panelFixture(render: (...args: unknown[]) => Promise<Buffer> = async () => Buffer.from('color([1,0,0,1]){cube(size=1);}'), mode: 'render' | 'preview' = 'render', workspaceState = new Map<string, unknown>()) {
     const messages: ExtensionToWebviewMessage[] = []
     const notices: Error[] = []
     const problems = new Map<string, unknown>()
     let disposedProblems = false
     const timings: unknown[] = [],
         frames: unknown[] = []
-    let ready!: (message: { type: 'ready' }) => void
+    let ready!: (message: WebviewToExtensionMessage) => Promise<void>
     let start!: () => void
     let complete!: (result: { buffer: Buffer; format: ModelFormat }) => void
     let fail!: (error: Error) => void
@@ -84,9 +85,33 @@ function panelFixture(render: (...args: unknown[]) => Promise<Buffer> = async ()
         onParametersChanged: () => disposable,
         onLog: () => disposable,
     }
-    const view = new module.exports.ScadWebviewPanel(panel as never, '/extension' as never, session as never, { get: () => null } as never, {} as never)
+    const view = new module.exports.ScadWebviewPanel(panel as never, '/extension' as never, session as never, {
+        get: (key: string, fallback: unknown) => workspaceState.get(key) ?? fallback,
+        update: async (key: string, value: unknown) => {
+            workspaceState.set(key, value)
+        },
+    } as never, {} as never)
     return { view, problems, disposedProblems: () => disposedProblems, messages, notices, timings, frames, receive: (message: unknown) => ready(message as never), ready: () => ready({ type: 'ready' }), start: () => start(), complete: () => complete({ buffer: Buffer.from('model'), format: ModelFormat.STL }), fail: (error: Error) => fail(error) }
 }
+
+test('a new Preview panel starts at the default camera even when the same file has a saved view', async () => {
+    const workspaceState = new Map<string, unknown>()
+    const original = panelFixture(undefined, 'render', workspaceState)
+    await original.ready()
+    const saved = { version: 1, activeCameraId: 'camera-custom', objects: [] }
+    await original.receive({ type: 'persistScene', snapshot: saved })
+
+    await original.ready()
+    const restored = original.messages.findLast((message) => message.type === 'loadScene')
+    assert.equal(restored?.snapshot, saved)
+    assert.equal(restored?.resetCamera, false)
+
+    const reopened = panelFixture(undefined, 'render', workspaceState)
+    await reopened.ready()
+    const initial = reopened.messages.find((message) => message.type === 'loadScene')
+    assert.equal(initial?.snapshot, saved)
+    assert.equal(initial?.resetCamera, true)
+})
 
 test('syntax failures replace stale models with a persistent centered message and recover after a successful render', () => {
     const mock = panelFixture()

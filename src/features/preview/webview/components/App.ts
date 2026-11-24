@@ -12,7 +12,7 @@ import { ObjectProperties, SelectedObjectContext, selectedObjectContext } from '
 import { CameraMode, Environment, BuildPlateOrigin, RenderMode, ViewOptionsContext, viewOptionsContext } from '../contexts/ViewOptionsContext'
 import { LogController } from '../controllers/LogController'
 import { bridge, type Bridge } from '../services/Bridge'
-import { defaultScene } from '../data/defaultScene'
+import { DEFAULT_CAMERA_ID, defaultCamera, defaultScene } from '../data/defaultScene'
 import { sceneObjectMeta } from '../data/sceneObjectMeta'
 import './aside/SidePanel'
 import './atoms/SplitLayout'
@@ -167,7 +167,7 @@ export class App extends LitElement {
     sceneContextValue: SceneContext = {
         objects: defaultScene,
         selectedId: null,
-        activeCameraId: 'camera-default',
+        activeCameraId: DEFAULT_CAMERA_ID,
         addObject: (type: SceneObjectType) => {
             const id = `${type}-${Date.now()}`
 
@@ -456,22 +456,26 @@ export class App extends LitElement {
                 }
                 break
             case 'loadScene':
-                this.applySceneSnapshot(message.snapshot)
+                this.applySceneSnapshot(message.snapshot, message.resetCamera)
                 break
         }
     }
 
-    private applySceneSnapshot(snapshot: unknown) {
+    private applySceneSnapshot(snapshot: unknown, resetCamera = false) {
         const parsed = this.parseSnapshot(snapshot)
         if (parsed) {
             const color = parsed.modelColor
             this.viewSettingsContext.set('modelColor', typeof color === 'string' && /^#[0-9a-f]{6}$/i.test(color) ? color : null)
-            const { properties, ...rest } = this.deconstructSnapshot(parsed)
+            const { properties, objects, activeCameraId } = this.deconstructSnapshot(parsed)
+            if (resetCamera) {
+                properties.delete(DEFAULT_CAMERA_ID)
+                if (!objects.some((object) => object.id === DEFAULT_CAMERA_ID)) objects.unshift(defaultCamera)
+            }
             this.pendingProperties = properties
             this.sceneContextValue = {
                 ...this.sceneContextValue,
-                objects: rest.objects,
-                activeCameraId: rest.activeCameraId,
+                objects,
+                activeCameraId: resetCamera ? DEFAULT_CAMERA_ID : activeCameraId,
             }
         }
         this.sceneLoaded = true
