@@ -62,6 +62,7 @@ test('Sitemap lists only the existing canonical public pages', () => {
 
 test('Internal HTML links and local downloads resolve under the GitHub Pages project prefix', () => {
   for(const page of pages){
+    assert.doesNotMatch(page.html,/cheese\.stl/i,page.route+' must not reference the removed demo asset');
     const hrefs=getTags(page.html,/<a\b[^>]*\bhref="([^"]+)"/g);
     for(const href of hrefs){
       if(/^(mailto:|https?:\/\/|tel:|data:)/i.test(href)&&!href.startsWith(BASE))continue;
