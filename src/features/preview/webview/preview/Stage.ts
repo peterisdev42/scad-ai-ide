@@ -39,6 +39,7 @@ import { buildPlateResetBounds } from './managers/BuildPlateLayout'
 import { fitDirectionalShadow } from './managers/Lighting'
 import { createStudioEnvironment, studioSurface } from './managers/StudioAppearance'
 import { MaterialManager } from './managers/MaterialManager'
+import { prepareThreeMfAppearance } from './managers/ThreeMfAppearance'
 import { ToolManager } from './managers/ToolManager'
 import { CrossSectionRig } from './rigs/CrossSectionRig'
 import { EnvironmentManager } from './managers/EnvironmentManager'
@@ -419,22 +420,14 @@ export class Stage {
                 modelContext.reportPerformance?.({ meshParseMs: performance.now() - parseStarted })
                 const resourcesStarted = performance.now()
                 group.scale.multiplyScalar(threeMfMillimeterScale(bytes))
-                group.traverse((child) => {
-                    if (child instanceof Mesh) {
-                        const materials = Array.isArray(child.material) ? child.material : [child.material]
-                        materials.forEach((mat) => {
-                            if (mat.color) {
-                                const hex = mat.color.getHexString().toLowerCase()
-                                if (hex === 'f9d72c') mat.userData.previewThemeColor = 'additive'
-                                else if (hex === '9dcb51') mat.userData.previewThemeColor = 'subtractive'
-                                if (mat.userData.previewThemeColor) Object.assign(mat, studioSurface)
-                            }
-                        })
-                        if (!child.geometry.attributes.normal) child.geometry.computeVertexNormals()
-                        if (this.viewOptions) this.materialManager.applyToGroup(group, this.viewOptions)
-                    }
-                })
+                // Attach before material preparation so the existing error path
+                // owns all parsed resources if preparation fails.
                 nextGroup.add(group)
+                prepareThreeMfAppearance(group)
+                group.traverse((child) => {
+                    if (child instanceof Mesh && !child.geometry.attributes.normal) child.geometry.computeVertexNormals()
+                })
+                if (this.viewOptions) this.materialManager.applyToGroup(group, this.viewOptions)
                 modelContext.reportPerformance?.({ resourcePreparationMs: performance.now() - resourcesStarted })
             } catch (e) {
                 this.disposeModelGroup(nextGroup)
