@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'site/**'
+      - 'docs/marketing/product-claims.json'
       - 'tools/pages-workbench/**'
       - 'syntaxes/openscad.tmLanguage.json'
       - 'src/features/preview/**'
