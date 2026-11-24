@@ -29,7 +29,6 @@ const root=document.getElementById('workbench')!
 const boot=document.getElementById('boot')!
 const folder=vscode.Uri.file('/cheese-demo')
 const source=vscode.Uri.joinPath(folder,'cheese.scad')
-const mesh=vscode.Uri.joinPath(folder,'cheese.stl')
 const previewId='scad-ai-ide.demo.preview'
 const asset=(name:string)=>new URL('../../../assets/'+name,window.location.href)
 const previewUrl=new URL('../../preview.html',window.location.href)
@@ -75,10 +74,10 @@ class PreviewPane extends SimpleEditorPane {
   }
 }
 registerEditorPane(previewId,'OpenSCAD Preview',PreviewPane,[PreviewInput])
-for(const glob of ['*.scad','*.stl']){
+{ const glob='*.scad'
   registerEditor(glob,{
     id:previewId,label:'OpenSCAD Preview',
-    priority:{editor:glob==='*.stl'?RegisteredEditorPriority.default:RegisteredEditorPriority.option,
+    priority:{editor:RegisteredEditorPriority.option,
       diff:RegisteredEditorPriority.option,merge:RegisteredEditorPriority.option}
   },{singlePerResource:true},{
     async createEditorInput(input){return {editor:new PreviewInput(input.resource)}}
@@ -103,12 +102,11 @@ const extension=registerExtension({
 extension.registerFileUrl('./openscad.tmLanguage.json',new URL('../../syntaxes/openscad.tmLanguage.json',import.meta.url).href,'application/json')
 
 async function start(){
-  const [scad,stl]=await Promise.all(['cheese.scad','cheese.stl'].map(async name=>{
-    const r=await fetch(asset(name));if(!r.ok)throw new Error('Failed to load '+name);return new Uint8Array(await r.arrayBuffer())
-  }))
+  const response=await fetch(asset('cheese.scad'))
+  if(!response.ok)throw new Error('Failed to load cheese.scad')
+  const scad=new Uint8Array(await response.arrayBuffer())
   const fs=new RegisteredFileSystemProvider(false)
   fs.registerFile(new RegisteredReadOnlyFile(source,async()=>scad,scad.length))
-  fs.registerFile(new RegisteredReadOnlyFile(mesh,async()=>stl,stl.length))
   registerFileSystemOverlay(1,fs)
   await initUserConfiguration(JSON.stringify({
     'workbench.colorTheme':'Dark Modern','workbench.iconTheme':'vs-seti',

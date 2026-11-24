@@ -17,7 +17,7 @@ export function mountPreview(root: HTMLElement, modelUrl: URL, status: (text: st
     const app = new App()
     app.setAttribute('embedded','')
     app.modelContext = { ...app.modelContext, exportEnabled: false }
-    let backend: PreviewBackend = { kind:'mesh', source:'mesh-file', reason:'Bundled STL; no OpenSCAD compiler in this demo.' }
+    let backend: PreviewBackend = { kind:'mesh', reason:'Built from cheese.scad at Pages build time; no browser compiler.' }
     let active = true, disposed = false
     let snapshot: SceneSnapshot | null = null
     const controller = new AbortController()
@@ -30,16 +30,20 @@ export function mountPreview(root: HTMLElement, modelUrl: URL, status: (text: st
                 queueMicrotask(async () => {
                     if (disposed) return
                     bridge.receive({type:'loadScene',snapshot})
+                    // Stable OpenSCAD 3MF may omit color; use the source's default color.
+                    const metadata=await fetch(new URL('./cheese-preview.json',modelUrl)).then(r=>{if(!r.ok)throw new Error('Preview metadata unavailable');return r.json()}).catch(()=>null)
+                    if(disposed)return
+                    if(typeof metadata?.color==='string'&&/^#[0-9a-f]{6}$/i.test(metadata.color))app.viewSettingsContext.set('modelColor',metadata.color)
                     bridge.receive({type:'previewBackend',backend})
                     bridge.receive({type:'updateParameters',parameters:[],parameterSets:{},activeSetName:undefined,overrides:{}})
-                    bridge.receive({type:'loadingState',loading:true,message:'Loading bundled STL…'})
+                    bridge.receive({type:'loadingState',loading:true,message:'Loading cheese.scad preview…'})
                     root.dataset.previewState='loading'
                     try {
                         const response = await fetch(modelUrl,{signal:controller.signal})
-                        if (!response.ok) throw new Error('STL request failed: '+response.status)
+                        if (!response.ok) throw new Error('SCAD preview request failed: '+response.status)
                         const bytes = new Uint8Array(await response.arrayBuffer())
                         if (disposed) return
-                        bridge.receive({type:'update',format:ModelFormat.STL,content:base64(bytes),modelVersion:1,csgPartsAvailable:false})
+                        bridge.receive({type:'update',format:ModelFormat.ThreeMF,content:base64(bytes),modelVersion:1,csgPartsAvailable:false})
                     } catch(error) {
                         if (disposed) return
                         root.dataset.previewState='error'
@@ -56,18 +60,18 @@ export function mountPreview(root: HTMLElement, modelUrl: URL, status: (text: st
                 bridge.receive({type:'previewBackend',backend})
                 root.dataset.previewState='ready'
                 root.dataset.graphics=message.graphics
-                status(message.graphics==='webgpu'?'WebGPU · STL':'WebGL2 · STL')
+                status(message.graphics==='webgpu'?'WebGPU · SCAD':'WebGL2 · SCAD')
                 break
             case 'persistScene':
                 snapshot=message.snapshot as SceneSnapshot
                 break
             case 'queryTopology':
-                // Unclipped STL topology is computed inside ModelRepresentation. Native
+                // Unclipped mesh topology is computed inside ModelRepresentation. Native
                 // clipped topology needs the extension host and must not be fabricated.
                 bridge.receive({type:'topology',modelVersion:message.modelVersion,error:'Exact clipped topology requires the desktop extension.'})
                 break
             case 'exportModel':
-                { const link=document.createElement('a');link.href=modelUrl.href;link.download='cheese.stl';link.click() }
+                { const link=document.createElement('a');link.href=modelUrl.href;link.download='cheese.3mf';link.click() }
                 break
             case 'error':
                 root.dataset.previewState='error'

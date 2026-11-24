@@ -1,6 +1,6 @@
 import { mountPreview } from './generated/preview.js'
 const root=document.querySelector('#preview-root')
-const view=mountPreview(root,new URL('../assets/cheese.stl',import.meta.url),text=>{root.dataset.status=text})
+const view=mountPreview(root,new URL('./generated/cheese.3mf',import.meta.url),text=>{root.dataset.status=text})
 let visible=true
 function update(){view.setActive(visible&&!document.hidden)}
 document.addEventListener('visibilitychange',update)
