@@ -38,6 +38,30 @@ test('native Workbench draws the actual Preview and reopens the same source file
         const preview=frame.frameLocator('iframe[title="SCAD AI IDE Preview"]')
         await preview.locator('#preview-root[data-preview-state="ready"]').waitFor({timeout:70000})
         assert.ok(await preview.locator('scad-app scad-preview canvas').count(),'actual Stage canvas exists')
+        // Inert must block real pointer/focus interaction, not remove the
+        // native rail or disable the neighboring Explorer and editor.
+        const activityBar=frame.locator('.part.activitybar')
+        await activityBar.waitFor({state:'visible'})
+        assert.equal(await activityBar.evaluate(node=>node.inert),true)
+        const sidebar=frame.locator('.part.sidebar')
+        await sidebar.waitFor({state:'visible'})
+        const sidebarTitle=await sidebar.locator('.title').first().innerText()
+        const items=activityBar.locator('.action-item').filter({visible:true})
+        assert.ok(await items.count()>0,'native activity icons remain visible')
+        for(const item of await items.all()){
+            const bounds=await item.boundingBox()
+            if(!bounds||bounds.width===0||bounds.height===0)continue
+            await page.mouse.click(bounds.x+bounds.width/2,bounds.y+bounds.height/2)
+        }
+        assert.ok(await sidebar.isVisible(),'activity clicks cannot hide Explorer')
+        assert.equal(await sidebar.locator('.title').first().innerText(),sidebarTitle)
+        assert.equal(await activityBar.evaluate(node=>{
+            const target=node.querySelector('[tabindex],button,a')
+            target?.focus()
+            return node.contains(document.activeElement)
+        }),false,'activity controls cannot receive focus')
+        await preview.locator('#preview-root[data-preview-state="ready"]').waitFor()
+
         // Verify the actual model, not just the existence of a canvas.
         const materials=await preview.locator('scad-app scad-preview').evaluate(element=>{
             const result=[]
