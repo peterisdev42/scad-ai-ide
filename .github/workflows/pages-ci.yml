@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - 'site/**'
+      - 'tools/pages-workbench/**'
+      - 'syntaxes/openscad.tmLanguage.json'
       - 'src/features/preview/**'
       - 'src/core/**'
       - 'package-lock.json'
@@ -31,12 +33,14 @@ jobs:
           cache: npm
       - name: Install locked build dependencies
         run: npm ci --ignore-scripts
-      - name: Bundle actual Preview and Monaco
+      - name: Install isolated Workbench dependencies
+        run: npm install --prefix tools/pages-workbench --ignore-scripts --no-audit --no-fund
+      - name: Bundle actual Preview and Code-OSS Workbench
         run: node site/build-demo.mjs
       - name: Validate site and generated social asset
         run: |
           node --check site/main.js
-          node --check site/workbench.js
+          node --check site/demo/preview-host.js
           node --check site/build-og.mjs
           node --check site/seo.test.mjs
           node site/build-og.mjs
@@ -45,6 +49,13 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Smoke test actual WebView and editor switching
         run: node --test site/demo/browser.test.mjs
+      - name: Upload generated Workbench dependency lock
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pages-workbench-lock
+          path: tools/pages-workbench/package-lock.json
+          if-no-files-found: ignore
       - name: Upload workbench screenshots
         if: always()
         uses: actions/upload-artifact@v4

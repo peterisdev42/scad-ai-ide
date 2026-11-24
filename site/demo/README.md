@@ -1,31 +1,18 @@
-# Interactive website workbench
+# Native Workbench product demo
 
-This is a **single editor group** inside an isolated same-origin iframe, not a full VS Code instance. Dark Modern palette and Codicons mirror VS Code's classic workbench; Monaco is the actual editor core. The source view is read-only with a small Monarch tokenizer (not the desktop TextMate grammar or language server).
+The outer iframe runs the actual Code-OSS classic Workbench via CodinGame Monaco VS Code API 38.1.3. No handwritten activity bar, Explorer, editor tabs or status bar. It opens a read-only virtual cheese-demo folder and registers the shared Preview as a native custom editor pane via CodinGame's registerEditorPane/registerEditor API. A tiny local extension contributes the real OpenSCAD TextMate grammar and editor-title commands. The Preview is mounted in an isolated same-origin iframe so its WebView CSS and GPU lifecycle do not interfere with Workbench CSS. It uses the existing App, Bridge, Stage, Toolbar and Options. No native OpenSCAD compiler, LSP, AI, terminal backend or external tools. The native pane is not the desktop CustomTextEditorProvider; this avoids the nested VS Code webview service-worker/origin requirements on GitHub Pages. Switching replaces the editor and remounts Preview. Browser and OS chrome can differ from desktop VS Code.
 
-The 3D view imports the extension's actual `App` and `Bridge`, including the underlying Stage, widgets, toolbar, options and panels. It feeds the supplied STL through the existing message contract. The Browser adapter owns only asset loading and supported host actions. It intentionally does not pretend to run OpenSCAD, native clipped topology, slicer, CLI, library management or AI. Local mesh measurement uses the real renderer. Switching editor modes retains the same mounted Preview, pauses it while hidden, and lays out Monaco on return.
-
-## Build / review
-
-From the repository root:
+Build from the repository root:
 ```sh
 npm ci --ignore-scripts
+npm install --prefix tools/pages-workbench --ignore-scripts --no-audit --no-fund
 node site/build-demo.mjs
 node site/build-og.mjs
 node --test site/demo.test.mjs site/seo.test.mjs
-python3 -m http.server 8000 --directory site
+npx playwright install chromium
+node --test site/demo/browser.test.mjs
 ```
 
-Open http://localhost:8000/ (not file://). On desktop compare the Dark Modern workbench against the extension in VS Code. Click the editor title action to reopen the same SCAD file as text or preview; click cheese.stl in Explorer for the actual mesh view. Check browser GPU initialization, orbit, zoom, camera projection, wireframe, grid, measurement, tooltips and side panel, narrow width, switching and page visibility.
+The Workbench dependencies are isolated from the desktop extension. Direct package versions are pinned; first CI generates the separate lockfile as an artifact for subsequent check-in. Production output lives in site/demo/generated; no node_modules are published. Vite uses relative URLs for the project Pages prefix. The browser test checks actual Workbench, actual renderer first frame, native editor title actions, source contents and return to Preview. Review screenshots for desktop/mobile fidelity before merge. The preview-only fallback is available on boot failure and is not a mock Workbench.
 
-Generated bundles live in `site/demo/generated/` and are built on every Pages run from the same locked dependencies as the extension. They are not committed. No CDN at runtime.
-
-## Research / possible next step
-
-- [VS Code UI](https://code.visualstudio.com/docs/editing/getting-started/userinterface)
-- [Dark Modern theme](https://github.com/microsoft/vscode/blob/main/extensions/theme-defaults/themes/dark_modern.json)
-- [Monaco](https://github.com/microsoft/monaco-editor)
-- [CodinGame VS Code API](https://github.com/CodinGame/monaco-vscode-api) — a genuine browser workbench candidate for a separate full-screen playground, not required by the landing page.
-- [VS Code web extensions](https://code.visualstudio.com/api/extension-guides/web-extensions) — browser extensions cannot run desktop native processes.
-- [Cursor](https://cursor.com/) — product demo interaction reference, not an assertion about its underlying implementation.
-
-PR CI builds the actual bundles and runs a Playwright Chromium smoke test under `/scad-ai-ide/`. It waits for the real renderer's `frameReady`, switches to Monaco, switches back without remounting, and saves screenshots. Desktop VS Code comparison, Safari/Firefox, and touch/GPU visual acceptance remain manual checks.
+API reference: https://github.com/CodinGame/monaco-vscode-api/tree/v38.1.3/demo/src

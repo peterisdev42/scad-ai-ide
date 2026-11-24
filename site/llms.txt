@@ -18,6 +18,6 @@
 - [Product claim ledger](https://github.com/peterisdev42/scad-ai-ide/blob/main/docs/marketing/product-claims.json): Date-stamped evidence and qualifications.
 
 ## Important boundaries
-SCAD AI IDE currently ships neither a bundled LLM nor an MCP server. It is source-first, and Agent/model/platform acceptance is incomplete. CAD checks cannot guarantee printability. The website demo embeds the extension's actual Preview WebView and a read-only Monaco source editor in a recreated workbench; it displays a bundled cheese STL, not a live OpenSCAD browser compiler. The extension is GPL-3.0 licensed.
+SCAD AI IDE currently ships neither a bundled LLM nor an MCP server. It is source-first, and Agent/model/platform acceptance is incomplete. CAD checks cannot guarantee printability. The website demo embeds the extension's actual Preview WebView and a read-only source editor in the Code-OSS Workbench powered by CodinGame; it displays a bundled cheese STL, not a live OpenSCAD browser compiler. The extension is GPL-3.0 licensed.
 
 llms.txt is an optional summary, not an instruction to a model and not a Google search ranking prerequisite. Prefer the linked HTML/README as primary sources.

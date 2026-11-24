@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - 'site/**'
+      - 'tools/pages-workbench/**'
+      - 'syntaxes/openscad.tmLanguage.json'
       - '.github/workflows/pages.yml'
       - '.github/workflows/site-demo-check.yml'
 
@@ -23,9 +25,9 @@ jobs:
           test -s site/index.html
           test -s site/styles.css
           test -s site/workbench.css
-          test -s site/workbench.js
+          test -s site/demo/preview-host.js
           test -s site/assets/cheese.stl
           test -s site/assets/cheese.scad
           node --check site/main.js
-          node --check site/workbench.js
+          node --check site/demo/preview-host.js
           node --test site/demo.test.mjs

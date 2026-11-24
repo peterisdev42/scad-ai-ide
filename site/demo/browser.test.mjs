@@ -8,8 +8,8 @@ import { chromium } from 'playwright'
 import test from 'node:test'
 const site=fileURLToPath(new URL('../',import.meta.url))
 const prefix='/scad-ai-ide/'
-const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.stl':'application/octet-stream','.scad':'text/plain','.png':'image/png','.svg':'image/svg+xml','.ttf':'font/ttf','.woff':'font/woff','.woff2':'font/woff2','.json':'application/json'}
-test('actual Preview draws a frame and reopens the same file as Monaco source', {timeout:120000}, async ()=>{
+const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.stl':'application/octet-stream','.scad':'text/plain','.png':'image/png','.svg':'image/svg+xml','.ttf':'font/ttf','.woff':'font/woff','.woff2':'font/woff2','.json':'application/json','.wasm':'application/wasm','.mjs':'text/javascript','.map':'application/json','.webmanifest':'application/manifest+json'}
+test('native Workbench draws the actual Preview and reopens the same source file', {timeout:180000}, async ()=>{
     const server=createServer(async(req,res)=>{
         try{
             const pathname=new URL(req.url,'http://localhost').pathname
@@ -30,25 +30,25 @@ test('actual Preview draws a frame and reopens the same file as Monaco source', 
         await page.goto('http://127.0.0.1:'+server.address().port+prefix)
         await page.locator('iframe[data-vsc-demo]').scrollIntoViewIfNeeded()
         const frame=page.frameLocator('iframe[data-vsc-demo]')
-        await frame.locator('#preview-root[data-preview-state="ready"]').waitFor({timeout:70000})
-        assert.ok(await frame.locator('scad-app scad-preview canvas').count(),'actual Stage canvas exists')
-        const host=frame.locator('scad-app')
-        await host.evaluate(el=>el.dataset.retained='yes')
-        await frame.getByRole('button',{name:'Reopen as source file',exact:true}).click()
-        await frame.locator('#text-editor .monaco-editor').waitFor({timeout:20000})
-        assert.ok(await frame.locator('[data-pane="source"]').isVisible())
-        assert.ok(!await frame.locator('[data-pane="preview"]').isVisible())
-        assert.match(await frame.locator('#text-editor .view-lines').innerText(),/import\("cheese\.stl"\)/)
-        await frame.getByRole('button',{name:'Open as Preview',exact:true}).click()
-        assert.ok(await frame.locator('[data-pane="preview"]').isVisible())
-        assert.ok(!await frame.locator('[data-pane="source"]').isVisible())
-        assert.equal(await host.getAttribute('data-retained'),'yes','same preview instance is retained')
-        assert.deepEqual(errors,[])
+        await frame.locator('#workbench[data-workbench-ready="true"]').waitFor({timeout:90000})
+        assert.ok(await frame.locator('.monaco-workbench').count(),'real Workbench exists')
+        await frame.getByText('cheese.stl',{exact:true}).first().waitFor({timeout:20000})
+        const preview=frame.frameLocator('iframe[title="SCAD AI IDE Preview"]')
+        await preview.locator('#preview-root[data-preview-state="ready"]').waitFor({timeout:70000})
+        assert.ok(await preview.locator('scad-app scad-preview canvas').count(),'actual Stage canvas exists')
         await page.locator('iframe[data-vsc-demo]').screenshot({path:'site-demo-desktop.png'})
+        const action=label=>frame.locator('[aria-label="'+label+'"],[title="'+label+'"]').filter({visible:true}).first()
+        await action('Reopen as source file').click()
+        await frame.locator('.monaco-editor .view-lines').first().waitFor({timeout:20000})
+        assert.match(await frame.locator('.monaco-editor .view-lines').first().innerText(),/import\("cheese\.stl"\)/)
+        await page.locator('iframe[data-vsc-demo]').screenshot({path:'site-demo-source.png'})
+        await action('Open as Preview').click()
+        await preview.locator('#preview-root[data-preview-state="ready"]').waitFor({timeout:70000})
+        assert.ok(await preview.locator('scad-app scad-preview canvas').count())
         await page.setViewportSize({width:390,height:844})
         await page.locator('iframe[data-vsc-demo]').scrollIntoViewIfNeeded()
-        assert.ok(await frame.locator('[data-pane="preview"]').isVisible())
         await page.locator('iframe[data-vsc-demo]').screenshot({path:'site-demo-mobile.png'})
+        assert.deepEqual(errors,[])
     }finally{
         await browser?.close()
         await new Promise(r=>server.close(r))

@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'site/**'
+      - 'tools/pages-workbench/**'
+      - 'syntaxes/openscad.tmLanguage.json'
       - 'src/features/preview/**'
       - 'src/core/**'
       - 'package.json'
@@ -39,14 +41,16 @@ jobs:
           cache: npm
       - name: Install locked build dependencies
         run: npm ci --ignore-scripts
-      - name: Bundle actual Preview and Monaco
+      - name: Install isolated Workbench dependencies
+        run: npm install --prefix tools/pages-workbench --ignore-scripts --no-audit --no-fund
+      - name: Bundle actual Preview and Code-OSS Workbench
         run: node site/build-demo.mjs
       - name: Verify site
         run: |
           test -s site/index.html
           test -s site/styles.css
           test -s site/main.js
-          test -s site/workbench.js
+          test -s site/demo/preview-host.js
           test -s site/workbench.css
           test -s site/assets/cheese.stl
           test -s site/assets/cheese.scad
@@ -61,7 +65,7 @@ jobs:
           test -s site/getting-started/index.html
           test -s site/favicon.svg
           node --check site/main.js
-          node --check site/workbench.js
+          node --check site/demo/preview-host.js
           node --check site/build-og.mjs
           node --check site/seo.test.mjs
           node site/build-og.mjs
