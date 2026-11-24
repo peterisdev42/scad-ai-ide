@@ -108,7 +108,7 @@ test('GEO content exposes limitations in plain HTML, without requiring script ex
   assert.match(pages[0].html,/<section class="section section-faq"/);
   assert.equal((pages[0].html.match(/<details>/g)||[]).length,8);
   assert.match(pages[0].html,/bundled STL/i);
-  assert.match(pages[0].html,/data-vsc-canvas/);
+  assert.match(pages[0].html,/<iframe[^>]+data-vsc-demo[^>]+src="\.\/demo\/index\.html"/);
   assert.match(pages[2].html,/MCP server/);
   assert.match(pages[2].html,/UNRESOLVED/);
   assert.match(pages[3].html,/not exhaustive|not exhaustive|not.*head-to-head/i);

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>SCAD AI IDE interactive workbench</title>
+<link rel="stylesheet" href="./generated/codicons/codicon.css" id="vscode-codicon-stylesheet">
+<link rel="stylesheet" href="./theme.css">
+<link rel="stylesheet" href="./shell.css">
+<script type="module" src="../workbench.js"></script>
+</head>
+<body class="vscode-dark" data-vscode-theme-kind="vscode-dark" data-vscode-theme-id="Default Dark Modern">
+<div class="workbench" data-mode="preview" data-explorer="open">
+  <header class="titlebar">
+    <div class="traffic" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="command-center" aria-label="Demo workspace"><i class="codicon codicon-search" aria-hidden="true"></i> cheese-demo</div>
+    <button class="action layout-action" type="button" data-toggle-explorer title="Toggle Primary Side Bar" aria-label="Toggle Primary Side Bar" aria-pressed="true"><i class="codicon codicon-layout-sidebar-left" aria-hidden="true"></i></button>
+  </header>
+  <div class="workspace">
+    <nav class="activitybar" aria-label="Activity Bar">
+      <button class="activity active" type="button" data-toggle-explorer aria-label="Explorer" title="Explorer" aria-pressed="true"><i class="codicon codicon-files" aria-hidden="true"></i></button>
+      <span class="activity inactive" title="Search is not available in the demo"><i class="codicon codicon-search" aria-hidden="true"></i></span>
+      <span class="activity inactive" title="Source Control is not available in the demo"><i class="codicon codicon-source-control" aria-hidden="true"></i></span>
+      <span class="activity inactive" title="Run and Debug is not available in the demo"><i class="codicon codicon-debug-alt" aria-hidden="true"></i></span>
+      <span class="activity inactive" title="Extensions are not available in the demo"><i class="codicon codicon-extensions" aria-hidden="true"></i></span>
+      <span class="activity spacer" aria-hidden="true"></span>
+      <span class="activity inactive" title="Accounts"><i class="codicon codicon-account" aria-hidden="true"></i></span>
+      <span class="activity inactive" title="Manage"><i class="codicon codicon-settings-gear" aria-hidden="true"></i></span>
+    </nav>
+    <aside class="explorer" aria-label="Explorer">
+      <div class="explorer-title">EXPLORER <i class="codicon codicon-ellipsis" aria-hidden="true"></i></div>
+      <div class="project-title"><i class="codicon codicon-chevron-down" aria-hidden="true"></i> CHEESE-DEMO</div>
+      <button class="file selected" type="button" data-open="source"><i class="codicon codicon-file-code scad-file-icon" aria-hidden="true"></i> cheese.scad</button>
+      <button class="file" type="button" data-open="mesh"><i class="codicon codicon-file-binary mesh-file-icon" aria-hidden="true"></i> cheese.stl</button>
+    </aside>
+    <main class="editor-group" aria-label="Editor group">
+      <div class="editor-title">
+        <div class="editor-tab" aria-label="Active editor"><i class="codicon codicon-file-code scad-file-icon" data-tab-icon aria-hidden="true"></i><span data-tab-name>cheese.scad</span></div>
+        <div class="editor-actions">
+          <button type="button" class="action" data-reopen title="Reopen as source file" aria-label="Reopen as source file"><i class="codicon codicon-file-code" data-reopen-icon aria-hidden="true"></i></button>
+        </div>
+      </div>
+      <div class="breadcrumbs" data-breadcrumbs hidden><i class="codicon codicon-file-code scad-file-icon" aria-hidden="true"></i> cheese.scad</div>
+      <section class="pane" data-pane="source" aria-label="OpenSCAD source" hidden>
+        <div id="text-editor" class="surface"><p class="loading">Loading Monaco Editor…</p></div>
+      </section>
+      <section class="pane" data-pane="preview" aria-label="SCAD AI IDE Preview">
+        <div id="preview-root" class="surface" data-preview-state="idle"><p class="loading">Loading SCAD AI IDE Preview…</p></div>
+      </section>
+    </main>
+  </div>
+  <footer class="statusbar"><span><i class="codicon codicon-source-control" aria-hidden="true"></i> main</span><span>SCAD AI IDE</span><span data-demo-status role="status" aria-live="polite"></span><span class="status-right" data-status-language>OpenSCAD</span><span>UTF-8</span></footer>
+</div>
+<noscript>JavaScript is required for the interactive preview. <a href="../assets/cheese.stl">Download STL</a>.</noscript>
+</body>
+</html>
