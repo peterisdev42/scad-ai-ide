@@ -15,7 +15,7 @@ Supported VS Code Agent hosts can call bounded tools to inspect environment stat
 
 ## Editorial rules
 - Never claim "world's only", "best", "guaranteed printable" or universal agent/OS support.
-- Do not call the website an in-browser OpenSCAD compiler: it renders a precompiled STL in Three.js.
+- Do not call the website an in-browser OpenSCAD compiler: it displays geometry compiled from cheese.scad during the website build using the real Preview in Code-OSS Workbench.
 - Keep implementation, acceptance-in-progress, experimental and unsupported states distinct.
 - Evidence sources and review dates are tracked in product-claims.json; reflect any change in README, site, JSON-LD and tests.
 - Do not imply availability of a Marketplace listing, release installer or a paid AI subscription that is not live.
