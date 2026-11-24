@@ -17,6 +17,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
   pages: write
   id-token: write
@@ -75,9 +76,44 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload website
+        id: upload
         uses: actions/upload-pages-artifact@v4
         with:
           path: site
+      # Upload finalization can precede artifact-list visibility. Gate deployment
+      # on this run's exact artifact, not just any artifact with the same name.
+      - name: Wait for Pages artifact availability
+        timeout-minutes: 3
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact_id }}
+        run: |
+          if [[ ! "$ARTIFACT_ID" =~ ^[0-9]+$ ]]; then
+            echo "::error::Pages upload did not return a valid artifact ID."
+            exit 1
+          fi
+
+          for attempt in {1..12}; do
+            if artifacts=$(gh api --method GET \
+              "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts" \
+              -f name=github-pages -f per_page=100) &&
+              jq -e --arg id "$ARTIFACT_ID" '
+                [.artifacts[] | select(.name == "github-pages" and .expired == false)]
+                | length == 1 and (.[0].id | tostring) == $id
+              ' <<< "$artifacts" > /dev/null; then
+              echo "Pages artifact $ARTIFACT_ID is visible (attempt $attempt/12)."
+              # deploy-pages uses a separate internal artifact listing service.
+              sleep 5
+              exit 0
+            fi
+
+            echo "Pages artifact $ARTIFACT_ID is not ready (attempt $attempt/12)."
+            if (( attempt < 12 )); then sleep 5; fi
+          done
+
+          echo "::error::Pages artifact $ARTIFACT_ID did not become uniquely visible in this workflow run."
+          exit 1
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
