@@ -33,6 +33,7 @@ test('One editor group switches between real source and shared preview',()=>{
     assert.match(editor,/monaco.editor.create\(/)
     assert.match(editor,/readOnly:true/)
     assert.match(build,/tsconfig.webview.json/)
-    assert.match(build,/node_modules\/monaco-editor/)
+    assert.match(build,/site\/demo\/editor-worker\.ts/)
+    assert.match(editor,/monaco-editor\/editor/)
     assert.match(read('./assets/cheese.scad'),/import\("cheese\.stl"\)/)
 })
