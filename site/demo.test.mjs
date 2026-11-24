@@ -33,6 +33,7 @@ test('Pages renders a real STL, without pretending to run OpenSCAD', () => {
   assert.match(js, /TrackballControls/);
   assert.match(js, /geometry\.attributes\.position\.count/);
   assert.doesNotMatch(js, /vsc-geometry|SVGElement|Simulate render/);
-  assert.match(scad, /difference\(\)/);
-  assert.match(scad, /sphere\(r/);
+  assert.ok(scad.includes('import("cheese.stl");'), 'SCAD example imports the bundled STL');
+  assert.match(html, /Preview: cheese\.stl/);
+  assert.ok(html.includes('"cheese.stl"</span>'), 'read-only source displays the same STL import');
 });

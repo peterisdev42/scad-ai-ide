@@ -107,7 +107,7 @@ test('GEO content exposes limitations in plain HTML, without requiring script ex
   for(const phrase of ['OpenSCAD','VS Code','source-first','Customizer','Agent','Windows','preview'])assert.ok(all.toLowerCase().includes(phrase.toLowerCase()));
   assert.match(pages[0].html,/<section class="section section-faq"/);
   assert.equal((pages[0].html.match(/<details>/g)||[]).length,8);
-  assert.match(pages[0].html,/precompiled STL/i);
+  assert.match(pages[0].html,/bundled STL/i);
   assert.match(pages[0].html,/data-vsc-canvas/);
   assert.match(pages[2].html,/MCP server/);
   assert.match(pages[2].html,/UNRESOLVED/);
