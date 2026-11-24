@@ -2,8 +2,8 @@ html,body { width:100%;height:100%;margin:0;overflow:hidden; }
 body { font:var(--vscode-font-size)/1.4 var(--vscode-font-family);color:var(--vscode-foreground);background:var(--vscode-editor-background); }
 [hidden] { display:none !important; }
 .workbench { display:flex;flex-direction:column;width:100%;height:100%;overflow:hidden; }
-.workbench button { font:inherit;color:inherit;border:0;background:transparent;cursor:pointer;padding:0; }
-.workbench button:focus-visible { outline:1px solid var(--vscode-focusBorder);outline-offset:-1px; }
+:where(.titlebar,.activitybar,.explorer,.editor-actions) button { font:inherit;color:inherit;border:0;background:transparent;cursor:pointer;padding:0; }
+:where(.titlebar,.activitybar,.explorer,.editor-actions) button:focus-visible { outline:1px solid var(--vscode-focusBorder);outline-offset:-1px; }
 .titlebar { flex:0 0 35px;display:grid;grid-template-columns:1fr minmax(120px,460px) 1fr;align-items:center;gap:12px;padding:0 12px;box-sizing:border-box;background:var(--vscode-titleBar-activeBackground);border-bottom:1px solid var(--vscode-panel-border); }
 .traffic { display:flex;gap:8px; }
 .traffic i { width:12px;height:12px;border-radius:50%;background:#ff5f57; }

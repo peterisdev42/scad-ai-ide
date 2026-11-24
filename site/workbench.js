@@ -21,7 +21,8 @@ if (workbench) {
     if (preview || previewLoad) return;
     previewLoad = import('./demo/generated/preview.js').then(module => {
       if (mode !== 'preview') return;
-      preview = module.mountPreview(previewRoot, stlUrl, setStatus);
+      preview = module.mountPreview(previewRoot, stlUrl, text => { if (mode === 'preview') setStatus(text); });
+      updateActivity();
     }).catch(error => { previewRoot.dataset.previewState='error';fail(previewRoot,error); }).finally(() => { previewLoad = undefined; });
   };
   const loadSource = () => {

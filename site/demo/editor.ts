@@ -1,4 +1,5 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js'
+import 'monaco-editor/esm/vs/editor/editor.all.js'
 
 // Standalone Monaco uses the real VS Code editor core; the website intentionally
 // does not start an extension host or claim to provide the desktop LSP.
