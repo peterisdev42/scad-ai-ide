@@ -55,19 +55,23 @@
     },
     {
       "id": "website-demo",
-      "claim": "The public website demonstrates a precompiled STL cheese mesh in a Three.js viewer.",
-      "status": "verified_and_released",
+      "claim": "The website demo is implemented using the Code-OSS Workbench and the extension's actual Preview WebView with a bundled STL cheese mesh.",
+      "status": "implemented_acceptance_ongoing",
       "audience": "all",
       "evidence": [
         "site/index.html",
-        "site/workbench.js",
+        "tools/pages-workbench/main.ts",
+        "site/demo/preview-host.js",
+        "site/demo/preview.ts",
+        "site/build-demo.mjs",
         "site/assets/cheese.scad",
         "site/assets/cheese.stl"
       ],
       "qualifications": [
-        "The website does not embed VS Code or run an OpenSCAD compiler."
+        "The Workbench build succeeds; browser interaction and visual parity still require acceptance testing before release.",
+        "The demo is not the full desktop extension and does not run an OpenSCAD compiler."
       ],
-      "lastReviewed": "2026-11-23"
+      "lastReviewed": "2026-11-24"
     },
     {
       "id": "runtime",
