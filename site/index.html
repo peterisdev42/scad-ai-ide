@@ -99,7 +99,7 @@
 
 
         <div class="vsc-demo-wrap" id="demo">
-          <div class="vsc-demo-heading"><span>INTERACTIVE 3D DEMO</span><span>Real Three.js + precompiled STL · OpenSCAD is not running</span></div>
+          <div class="vsc-demo-heading"><span>INTERACTIVE 3D DEMO</span><span>Real Three.js + bundled STL · OpenSCAD is not running</span></div>
           <div class="vsc-demo vsc-realtime" data-vsc-demo data-mobile-pane="preview" aria-label="Interactive SCAD AI IDE demonstration in a VS Code-style workbench">
             <div class="vsc-titlebar">
               <div class="vsc-traffic" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -121,8 +121,7 @@
                 <div class="vsc-folder-head">⌄ <span>CHEESE-DEMO</span></div>
                 <div class="vsc-file-group">
                   <div class="vsc-tree-file is-active"><span class="vsc-scad-glyph">S</span>cheese.scad</div>
-                  <div class="vsc-folder-muted">⌄ <span>assets</span></div>
-                  <div class="vsc-tree-file vsc-indent"><span class="vsc-stl-glyph">◇</span>cheese.stl</div>
+                  <div class="vsc-tree-file"><span class="vsc-stl-glyph">◇</span>cheese.stl</div>
                 </div>
               </aside>
               <div class="vsc-main-panels">
@@ -135,41 +134,15 @@
                   <div class="vsc-breadcrumbs">cheese-demo <span>›</span> cheese.scad</div>
                   <div class="vsc-code-scroll" aria-label="Read-only OpenSCAD model source">
                     <ol class="vsc-code-lines">
-<li><span><span class="vsc-syn-comment">// SCAD AI IDE website demo — precompiled to cheese.stl for the browser.</span></span></li>
-<li><span><span class="vsc-syn-comment">// Browser preview loads the STL; it does not execute OpenSCAD code.</span></span></li>
-<li><span><span class="vsc-syn-var">$fn</span> = <span class="vsc-syn-number">28</span>;</span></li>
-<li><span> </span></li>
-<li><span><span class="vsc-syn-key">module</span> <span class="vsc-syn-func">wedge</span>() {</span></li>
-<li><span>  <span class="vsc-syn-func">polyhedron</span>(</span></li>
-<li><span>    points = [</span></li>
-<li><span>      [-<span class="vsc-syn-number">34</span>, -<span class="vsc-syn-number">27</span>, <span class="vsc-syn-number">0</span>], [<span class="vsc-syn-number">38</span>, -<span class="vsc-syn-number">27</span>, <span class="vsc-syn-number">0</span>], [-<span class="vsc-syn-number">34</span>, <span class="vsc-syn-number">29</span>, <span class="vsc-syn-number">0</span>],</span></li>
-<li><span>      [-<span class="vsc-syn-number">34</span>, -<span class="vsc-syn-number">27</span>, <span class="vsc-syn-number">36</span>], [<span class="vsc-syn-number">38</span>, -<span class="vsc-syn-number">27</span>, <span class="vsc-syn-number">7</span>], [-<span class="vsc-syn-number">34</span>, <span class="vsc-syn-number">29</span>, <span class="vsc-syn-number">36</span>]</span></li>
-<li><span>    ],</span></li>
-<li><span>    faces = [</span></li>
-<li><span>      [<span class="vsc-syn-number">0</span>, <span class="vsc-syn-number">2</span>, <span class="vsc-syn-number">1</span>], [<span class="vsc-syn-number">3</span>, <span class="vsc-syn-number">4</span>, <span class="vsc-syn-number">5</span>],</span></li>
-<li><span>      [<span class="vsc-syn-number">0</span>, <span class="vsc-syn-number">1</span>, <span class="vsc-syn-number">4</span>], [<span class="vsc-syn-number">0</span>, <span class="vsc-syn-number">4</span>, <span class="vsc-syn-number">3</span>],</span></li>
-<li><span>      [<span class="vsc-syn-number">1</span>, <span class="vsc-syn-number">2</span>, <span class="vsc-syn-number">5</span>], [<span class="vsc-syn-number">1</span>, <span class="vsc-syn-number">5</span>, <span class="vsc-syn-number">4</span>],</span></li>
-<li><span>      [<span class="vsc-syn-number">2</span>, <span class="vsc-syn-number">0</span>, <span class="vsc-syn-number">3</span>], [<span class="vsc-syn-number">2</span>, <span class="vsc-syn-number">3</span>, <span class="vsc-syn-number">5</span>]</span></li>
-<li><span>    ]</span></li>
-<li><span>  );</span></li>
-<li><span>}</span></li>
-<li><span> </span></li>
-<li><span><span class="vsc-syn-func">difference</span>() {</span></li>
-<li><span>  <span class="vsc-syn-func">wedge</span>();</span></li>
-<li><span>  <span class="vsc-syn-func">translate</span>([-<span class="vsc-syn-number">19</span>, -<span class="vsc-syn-number">29</span>, <span class="vsc-syn-number">14</span>]) <span class="vsc-syn-func">sphere</span>(r = <span class="vsc-syn-number">9</span>);</span></li>
-<li><span>  <span class="vsc-syn-func">translate</span>([<span class="vsc-syn-number">13</span>, -<span class="vsc-syn-number">29</span>, <span class="vsc-syn-number">11</span>]) <span class="vsc-syn-func">sphere</span>(r = <span class="vsc-syn-number">5.6</span>);</span></li>
-<li><span>  <span class="vsc-syn-func">translate</span>([-<span class="vsc-syn-number">5</span>, -<span class="vsc-syn-number">28</span>, <span class="vsc-syn-number">25</span>]) <span class="vsc-syn-func">sphere</span>(r = <span class="vsc-syn-number">4</span>);</span></li>
-<li><span>  <span class="vsc-syn-func">translate</span>([-<span class="vsc-syn-number">36</span>, <span class="vsc-syn-number">11</span>, <span class="vsc-syn-number">14</span>]) <span class="vsc-syn-func">sphere</span>(r = <span class="vsc-syn-number">8</span>);</span></li>
-<li><span>  <span class="vsc-syn-func">translate</span>([-<span class="vsc-syn-number">35</span>, -<span class="vsc-syn-number">14</span>, <span class="vsc-syn-number">29</span>]) <span class="vsc-syn-func">sphere</span>(r = <span class="vsc-syn-number">4.3</span>);</span></li>
-<li><span>  <span class="vsc-syn-func">translate</span>([-<span class="vsc-syn-number">20</span>, <span class="vsc-syn-number">0</span>, <span class="vsc-syn-number">37</span>]) <span class="vsc-syn-func">sphere</span>(r = <span class="vsc-syn-number">8.5</span>);</span></li>
-<li><span>  <span class="vsc-syn-func">translate</span>([<span class="vsc-syn-number">7</span>, -<span class="vsc-syn-number">10</span>, <span class="vsc-syn-number">22</span>]) <span class="vsc-syn-func">sphere</span>(r = <span class="vsc-syn-number">5</span>);</span></li>
-<li><span>}</span></li>
+<li><span><span class="vsc-syn-comment">// SCAD AI IDE website demo — import the bundled STL mesh.</span></span></li>
+<li><span><span class="vsc-syn-comment">// Keep cheese.stl in the same directory as this file.</span></span></li>
+<li><span><span class="vsc-syn-func">import</span>(<span class="vsc-syn-string">"cheese.stl"</span>);</span></li>
 </ol>
                   </div>
-                  <div class="vsc-editor-foot"><a href="./assets/cheese.scad" download="cheese.scad">Download full .scad source</a></div>
+                  <div class="vsc-editor-foot"><a href="./assets/cheese.scad" download="cheese.scad">Download .scad import example</a></div>
                 </section>
                 <section class="vsc-preview" aria-label="Real Three.js STL viewport">
-                  <div class="vsc-tabs vsc-preview-tabs"><span class="vsc-tab is-active"><span class="vsc-preview-glyph">◇</span> Preview: cheese.scad <span class="vsc-tab-close">×</span></span></div>
+                  <div class="vsc-tabs vsc-preview-tabs"><span class="vsc-tab is-active"><span class="vsc-preview-glyph">◇</span> Preview: cheese.stl <span class="vsc-tab-close">×</span></span></div>
                   <div class="vsc-model-stage" data-vsc-stage tabindex="0" aria-label="3D cheese model: drag to orbit, scroll to zoom">
                     <div class="vsc-canvas" data-vsc-canvas></div>
                     <div class="vsc-canvas-tools-left" role="group" aria-label="Preview tools">
@@ -196,7 +169,7 @@
             </div>
             <div class="vsc-statusbar"><span>⑂ main</span><span>OpenSCAD</span><span class="vsc-status-right">cheese.scad</span><span>UTF-8</span><a href="./assets/cheese.stl" download="cheese.stl" title="Download the demo mesh">↓ STL</a></div>
           </div>
-          <p class="vsc-demo-caption">Interactive 3D mesh powered by Three.js, using a bundled STL file. The VS Code frame is a visual recreation; it is not an embedded VS Code editor. OpenSCAD code is precompiled offline. <a href="./assets/cheese.stl" download="cheese.stl">Download the model</a> to try it locally.</p>
+          <p class="vsc-demo-caption">Interactive 3D mesh powered by Three.js, using a bundled STL file. The VS Code frame is a visual recreation; it is not an embedded VS Code editor. The example SCAD file imports this same STL; the browser does not execute OpenSCAD code. <a href="./assets/cheese.stl" download="cheese.stl">Download the model</a> to try it locally.</p>
         </div>
       </div>
     </section>
