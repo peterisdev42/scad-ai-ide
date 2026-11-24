@@ -2,6 +2,40 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { PerspectiveCamera, OrthographicCamera, Raycaster, Vector2 } from 'three'
 import { previewFixture } from './helpers/prepared-preview-fixture.mjs'
+
+test('first Preview view fits actual CSG geometry when the viewport becomes visible', { timeout: 30000 }, async () => {
+    const fixture = await previewFixture()
+    try {
+        const page = await fixture.browser.newPage()
+        await page.goto(fixture.url)
+        await page.waitForFunction(() => typeof window.setup === 'function')
+        const scene = await fixture.scene('difference')
+        const result = await page.evaluate(async (base64Data) => {
+            const root = document.getElementById('root')
+            root.style.display = 'none'
+            await window.setup(true)
+            const stage = window.stage
+            await stage.loadModelData({ format: 'csgp', base64Data, modelVersion: 1 })
+            root.style.display = 'block'
+            stage.resize(root.clientWidth, root.clientHeight)
+
+            const rig = stage.activeCameraRig
+            const initial = rig.captureView()
+            const bounds = stage.modelRepresentation.framingBounds(stage.modelGroup)
+            stage.resetView(0)
+            rig.orientTo(rig.getPerspectiveCamera().position.clone().set(-1, -1, 1), 0)
+            return { initial, manual: rig.captureView(), min: bounds.min.toArray(), max: bounds.max.toArray() }
+        }, Buffer.from(JSON.stringify(scene)).toString('base64'))
+        assert.deepEqual(result.min, [-10, -10, -10])
+        assert.deepEqual(result.max, [10, 10, 10])
+        assert.deepEqual(result.initial.target, result.manual.target)
+        assert.ok(result.initial.position.every((axis, i) => Math.abs(axis - result.manual.position[i]) < 1e-7))
+        assert.ok(result.initial.up.every((axis, i) => Math.abs(axis - result.manual.up[i]) < 1e-7))
+    } finally {
+        await fixture.close()
+    }
+})
+
 test('exporter products produce real Boolean holes on WebGPU and WebGL2', { timeout: 180000 }, async () => {
     const fixture = await previewFixture()
     try {

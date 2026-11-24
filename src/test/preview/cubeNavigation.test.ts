@@ -127,7 +127,7 @@ test('Initial Top–Left–Front fit keeps tall and wide models in frame in both
     try {
         for (const mode of [CameraMode.Perspective, CameraMode.Orthographic]) {
             state.rig.setMode(mode)
-            for (const size of [new Vector3(10, 15, 900), new Vector3(800, 20, 20), new Vector3(0.1, 0.1, 0.1)]) {
+            for (const size of [new Vector3(20, 20, 20), new Vector3(10, 15, 900), new Vector3(800, 20, 20), new Vector3(0.1, 0.1, 0.1)]) {
                 for (const [width, height] of [
                     [800, 600],
                     [400, 900],
@@ -139,6 +139,7 @@ test('Initial Top–Left–Front fit keeps tall and wide models in frame in both
                     const camera = state.rig.activeCamera
                     const initialOrientation = camera.quaternion.clone()
                     const center = bounds.getCenter(new Vector3())
+                    const initialDistance = camera.position.distanceTo(center)
                     assert.ok(
                         camera.position
                             .clone()
@@ -154,6 +155,9 @@ test('Initial Top–Left–Front fit keeps tall and wide models in frame in both
                     state.rig.resetView(bounds, 0)
                     state.rig.orientTo(corner.direction, 0)
                     assert.ok(initialOrientation.angleTo(camera.quaternion) < 1e-7, 'Initial orientation matches Reset View followed by the Cube corner')
+                    const resetDistance = camera.position.distanceTo(center)
+                    if (size.x === 20) assert.ok(Math.abs(initialDistance - resetDistance) < 1e-9, 'A cube retains the Reset View zoom')
+                    if (size.z === 900) assert.ok(initialDistance > resetDistance, 'A tall model zooms out only as needed to fit')
                 }
             }
         }

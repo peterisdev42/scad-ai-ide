@@ -342,6 +342,7 @@ export class Stage {
             if (h instanceof CrossSectionRig) h.resize(width, height)
             if (h instanceof MeasurementRig) h.setResolution(size)
         })
+        this.fitInitialModelIfReady()
         this.renderFrame()
     }
 
@@ -579,13 +580,22 @@ export class Stage {
     }
 
     private fitInitialModelIfReady(): void {
-        if (!this.fitInitialModel || new Box3().setFromObject(this.modelGroup).isEmpty()) return
+        if (!this.fitInitialModel || !this.modelRepresentation) return
+        const { clientWidth, clientHeight } = this.container
+        const size = this.renderer.getSize(new Vector2())
+        if (!clientWidth || !clientHeight || size.x !== clientWidth || size.y !== clientHeight) return
+        const modelBounds = this.modelRepresentation.framingBounds(this.modelGroup)
+        if (modelBounds.isEmpty()) return
         this.fitInitialModel = false
-        this.resetView(0, INITIAL_VIEW_DIRECTION)
+        this.frameView(modelBounds, 0, INITIAL_VIEW_DIRECTION)
     }
 
-    public resetView(duration = 420, direction?: Vector3): void {
-        const modelBounds = new Box3().setFromObject(this.modelGroup)
+    public resetView(duration = 420): void {
+        const modelBounds = this.modelRepresentation?.framingBounds(this.modelGroup) ?? new Box3()
+        this.frameView(modelBounds, duration)
+    }
+
+    private frameView(modelBounds: Box3, duration: number, direction?: Vector3): void {
         const bounds = this.viewOptions?.is('environment', Environment.BuildPlate) ? buildPlateResetBounds(modelBounds, this.viewOptions.get('buildPlateOrigin')) : modelBounds
         this.activeCameraRig.resetView(bounds, duration, direction)
         if (this.selectedId === this.activeCameraRig.id) this.onPropertiesChange?.(this.activeCameraRig.getProperties())

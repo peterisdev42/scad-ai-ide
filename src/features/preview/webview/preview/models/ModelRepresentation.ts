@@ -102,6 +102,30 @@ export class ModelRepresentation implements PreviewModelRepresentation {
         return { modelVersion: this.modelVersion, value: this.imageCsg ? this.imageCsg.pick(raycaster) : raycaster.intersectObjects(this.roots, true).filter((hit) => !hit.object.userData.previewOverlay) }
     }
 
+    /** Bound visible CSG products by intersecting their positive operands. */
+    framingBounds(group: Group): Box3 {
+        if (!this.imageCsg) return new Box3().setFromObject(group)
+
+        const scene = this.imageCsg.scene
+        const bounds = new Box3()
+        const product = new Box3()
+        const operand = new Box3()
+        for (const terms of [scene.products, scene.highlights, scene.backgrounds]) {
+            for (const { intersections } of terms) {
+                product.makeEmpty()
+                for (const [index, { id }] of intersections.entries()) {
+                    const { min, max } = scene.instances[id].bounds
+                    operand.min.fromArray(min)
+                    operand.max.fromArray(max)
+                    if (index === 0) product.copy(operand)
+                    else product.intersect(operand)
+                }
+                bounds.union(product)
+            }
+        }
+        return bounds.translate(this.imageCsg.root.position)
+    }
+
     async queryTopology(planes: ClipPlane[] = [], signal?: AbortSignal) {
         this.check()
         signal?.throwIfAborted()

@@ -202,7 +202,7 @@ export class CameraRig extends Rig {
         if (duration <= 0) this.update()
     }
 
-    /** Center the complete model and restore the canonical Top (+Z, screen-up +Y) view. */
+    /** Use the Top reset distance, expanding it if the requested view would crop the model. */
     public resetView(bounds: Box3, duration = 420, direction = new Vector3(0, 0, 1)): void {
         this.orientationTransition = undefined
         this.resetTransition = undefined
@@ -212,15 +212,22 @@ export class CameraRig extends Rig {
         const up = cubeViewUp(normal)
         const right = up.clone().cross(normal).normalize()
         const rotation = new Quaternion().setFromRotationMatrix(new Matrix4().makeBasis(right, up, normal))
-        // Fit the bounding box in the requested camera frame, including tall models.
-        const projectedHalf = (axis: Vector3) => Math.abs(axis.x) * half.x + Math.abs(axis.y) * half.y + Math.abs(axis.z) * half.z
-        const halfWidth = projectedHalf(right),
-            halfUp = projectedHalf(up),
-            halfDepth = projectedHalf(normal)
         const tangent = Math.tan(MathUtils.degToRad(this.persCamera.fov / 2))
-        // Keep margin on both screen axes, including portrait-shaped viewports.
-        const halfHeight = Math.max(halfUp, halfWidth / this.persCamera.aspect, 0.01) * 2
-        const distance = this.activeCamera === this.orthCamera ? Math.max(halfHeight / tangent, halfDepth + this.persCamera.near * 2) : halfDepth + Math.max(halfHeight / tangent, this.persCamera.near * 2)
+        const aspect = this.persCamera.aspect
+        const near = this.persCamera.near * 2
+        const orthographic = this.activeCamera === this.orthCamera
+        const topDistance = (Math.max(half.y, half.x / aspect, 0.01) * 2) / tangent
+        let distance = orthographic ? Math.max(topDistance, half.z + near) : half.z + Math.max(topDistance, near)
+        let halfDepth = 0
+        for (let index = 0; index < 8; index++) {
+            const corner = new Vector3(index & 1 ? half.x : -half.x, index & 2 ? half.y : -half.y, index & 4 ? half.z : -half.z)
+            const depth = corner.dot(normal)
+            const screenHeight = Math.max(Math.abs(corner.dot(up)), Math.abs(corner.dot(right)) / aspect)
+            halfDepth = Math.max(halfDepth, depth)
+            // Leave a small edge margin when the Top distance is too close.
+            const screenDistance = screenHeight / (0.95 * tangent)
+            distance = Math.max(distance, depth + near, orthographic ? screenDistance : depth + screenDistance)
+        }
         this.persCamera.far = Math.max(this.persCamera.far, distance + halfDepth + 1)
         this.orthCamera.far = this.persCamera.far
         this.persCamera.updateProjectionMatrix()
