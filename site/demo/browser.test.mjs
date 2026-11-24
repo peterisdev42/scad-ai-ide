@@ -38,6 +38,19 @@ test('native Workbench draws the actual Preview and reopens the same source file
         const preview=frame.frameLocator('iframe[title="SCAD AI IDE Preview"]')
         await preview.locator('#preview-root[data-preview-state="ready"]').waitFor({timeout:70000})
         assert.ok(await preview.locator('scad-app scad-preview canvas').count(),'actual Stage canvas exists')
+        // Verify the actual model, not just the existence of a canvas.
+        const materials=await preview.locator('scad-app scad-preview').evaluate(element=>{
+            const result=[]
+            element.stage.modelGroup.traverse(object=>{
+                if(!object.isMesh)return
+                for(const material of Array.isArray(object.material)?object.material:[object.material])
+                    result.push({pbr:material.isMeshStandardMaterial===true,color:material.color?.getHexString()})
+            })
+            return result
+        })
+        assert.ok(materials.length>0,'rendered 3MF contains meshes')
+        assert.ok(materials.every(material=>material.pbr),'3MF participates in the same studio lighting as STL')
+        assert.ok(materials.every(material=>material.color==='ffd52a'),'keep the original cheese color')
         await frame.locator('#workbench[data-demo-theme="light"]').waitFor()
         await preview.locator('body.vscode-light').waitFor()
         await page.locator('iframe[data-vsc-demo]').screenshot({path:'site-demo-light.png'})
