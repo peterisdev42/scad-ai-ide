@@ -1,4 +1,5 @@
 import { build } from 'esbuild'
+import { stageGeistFonts } from './geist/stage-fonts.mjs'
 import { mkdir, copyFile, stat, rm, readFile, writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
@@ -23,11 +24,5 @@ for(const name of ['codicon.css','codicon.ttf'])await copyFile(resolve(root,'nod
 execFileSync(process.platform==='win32'?'npm.cmd':'npm',['run','build','--prefix','tools/pages-workbench'],{cwd:root,stdio:'inherit',env:{...process.env,NODE_OPTIONS:'--max-old-space-size=6144'}})
 for(const name of ['cheese.3mf','cheese-preview.json','preview.js','workbench/index.html','codicons/codicon.css','codicons/codicon.ttf'])if(!(await stat(resolve(out,name))).size)throw Error('Empty demo asset: '+name)
 
-// Stage the official pinned Geist font package for same-origin serving.
-const fontRoot=resolve(root,'tools/pages-workbench/node_modules/geist');
-const fontOut=resolve(root,'site/assets/fonts');
-await mkdir(fontOut,{recursive:true});
-for(const [folder,name] of [['geist-sans','Geist-Variable.woff2'],['geist-mono','GeistMono-Variable.woff2']])await copyFile(resolve(fontRoot,'dist/fonts',folder,name),resolve(fontOut,name));
-let copiedLicense=false;
-for(const name of ['LICENSE.TXT','LICENSE','LICENSE.txt','OFL.txt','LICENSE.md']){try{await copyFile(resolve(fontRoot,name),resolve(fontOut,'LICENSE.txt'));copiedLicense=true;break}catch(error){if(error.code!=='ENOENT')throw error}}
-if(!copiedLicense)throw Error('Geist package license not found');
+
+await stageGeistFonts(root)

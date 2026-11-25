@@ -1,6 +1,12 @@
 name: Validate product website
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - 'tools/pages-workbench/**'
+      - '.github/workflows/pages-ci.yml'
   pull_request:
     paths:
       - 'site/**'
@@ -45,11 +51,12 @@ jobs:
       - name: Validate site and generated social asset
         run: |
           node --check site/main.js
+          node --check site/geist/theme.js
           node --check site/demo/preview-host.js
           node --check site/build-og.mjs
           node --check site/seo.test.mjs
           node site/build-og.mjs
-          node --test site/demo.test.mjs site/seo.test.mjs
+          node --test site/demo.test.mjs site/seo.test.mjs site/geist.test.mjs
       - name: Install Chromium for browser validation
         run: npx playwright install --with-deps chromium
       - name: Smoke test actual WebView and editor switching

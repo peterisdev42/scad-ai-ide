@@ -1,0 +1,44 @@
+/* Reusable native primitives: Button, Badge, Collapse, Code Block, Progress.
+   Use HTML elements for semantics and keyboard behavior. */
+.geist-button {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: var(--space-8); min-height: var(--size-control-md);
+  padding-inline: var(--space-16); font: var(--button-14);
+  color: var(--color-text); background: var(--color-bg);
+  border: var(--stroke) solid var(--color-border); border-radius: var(--radius-base);
+  cursor: pointer; text-decoration: none;
+  transition: background-color var(--motion-standard) var(--ease-standard), border-color var(--motion-standard) var(--ease-standard);
+}
+.geist-button:hover { background: var(--color-hover); border-color: var(--color-border-hover); text-decoration: none; }
+.geist-button:active { background: var(--color-active); border-color: var(--color-border-active); }
+.geist-button--primary { background: var(--color-primary); color: var(--color-on-primary); border-color: var(--color-primary); }
+.geist-button--primary:hover,.geist-button--primary:active { background: var(--ds-primary-hover); border-color: var(--ds-primary-hover); }
+.geist-button--icon { width: var(--size-target); min-height: var(--size-target); padding: 0; }
+.geist-button--small { min-height: var(--size-control-sm); padding-inline: var(--space-12); font: var(--button-12); }
+.geist-button--large { min-height: var(--size-control-lg); font: var(--button-16); padding-inline: var(--space-24); }
+.geist-button:disabled { cursor: not-allowed; color: var(--color-muted); background: var(--color-hover); border-color: var(--color-border); }
+.geist-icon { width: var(--size-icon); height: var(--size-icon); flex-shrink: 0; }
+.geist-theme-switcher { min-height: var(--size-target); }
+:root:not([data-theme="dark"]) .theme-sun, :root[data-theme="dark"] .theme-moon { display: none; }
+.geist-badge {
+  display: inline-flex; align-items: center; min-height: var(--space-24);
+  padding: var(--space-2) var(--space-8); border-radius: var(--radius-round);
+  font: var(--label-12); color: var(--color-muted); background: var(--ds-gray-200);
+}
+.geist-badge--success { color: var(--color-success); background: var(--ds-green-200); }
+.geist-badge--danger { color: var(--color-danger); background: var(--ds-red-200); }
+.geist-badge--warning { color: var(--color-warning); background: var(--ds-amber-200); }
+.geist-badge--info { color: var(--color-info); background: var(--ds-blue-200); }
+.geist-code-block {
+  font: var(--mono-13); white-space: pre-wrap; overflow-wrap: anywhere;
+  background: var(--color-surface); border: var(--stroke) solid var(--color-border);
+  padding: var(--space-20); border-radius: var(--radius-base); margin: 0;
+}
+.geist-collapse { border-top: var(--stroke) solid var(--color-border); padding-block: var(--space-16); }
+.geist-collapse summary { cursor: pointer; font: var(--label-16); font-weight: 500; min-height: var(--size-control-sm); display: flex; align-items: center; justify-content: space-between; gap: var(--space-16); list-style: none; }
+.geist-collapse summary::-webkit-details-marker { display: none; }
+.geist-collapse summary::after { content: ""; width: var(--space-8); height: var(--space-8); border-right: var(--stroke) solid currentColor; border-bottom: var(--stroke) solid currentColor; transform: rotate(45deg); flex-shrink: 0; transition: transform var(--motion-standard) var(--ease-standard); }
+.geist-collapse[open] summary::after { transform: rotate(225deg); }
+.geist-collapse p { margin-top: var(--space-12); max-width: 80ch; }
+.geist-progress { height: var(--space-4); background: var(--ds-gray-300); border-radius: var(--radius-round); overflow: hidden; }
+.geist-progress > span { display: block; height: 100%; background: var(--ds-gray-900); width: var(--progress-value); }

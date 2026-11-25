@@ -1,0 +1,11 @@
+/* Local motion policy: short, state-specific and reduced-motion safe. */
+:root {
+  --motion-fast: 100ms;
+  --motion-standard: 150ms;
+  --motion-overlay: 200ms;
+  --ease-standard: cubic-bezier(.4,0,.2,1);
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --motion-fast: 0ms; --motion-standard: 0ms; --motion-overlay: 0ms; }
+  html { scroll-behavior: auto !important; }
+}

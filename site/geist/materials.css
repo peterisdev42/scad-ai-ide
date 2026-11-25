@@ -1,0 +1,36 @@
+/* Surface and floating elevation roles: https://vercel.com/geist/materials */
+:root {
+  --radius-base: .375rem;
+  --radius-medium: .75rem;
+  --radius-round: 9999px;
+  --stroke: 1px;
+  --shadow-border: 0 0 0 var(--stroke) var(--ds-gray-alpha-200);
+  --shadow-small: 0 2px 2px rgb(0 0 0 / .04);
+  --shadow-medium: var(--shadow-small), 0 8px 8px -8px rgb(0 0 0 / .08);
+  --shadow-large: var(--shadow-small), 0 8px 16px -4px rgb(0 0 0 / .08);
+  --shadow-tooltip: 0 2px 8px rgb(0 0 0 / .12);
+  --shadow-menu: 0 4px 8px -4px rgb(0 0 0 / .08), 0 16px 24px -8px rgb(0 0 0 / .12);
+  --shadow-modal: 0 8px 16px -4px rgb(0 0 0 / .10), 0 24px 32px -8px rgb(0 0 0 / .16);
+  --shadow-fullscreen: 0 24px 48px rgb(0 0 0 / .20);
+}
+:root[data-theme="dark"] {
+  --shadow-small: 0 2px 2px rgb(0 0 0 / .24);
+  --shadow-medium: var(--shadow-small), 0 8px 8px -8px rgb(0 0 0 / .32);
+  --shadow-large: var(--shadow-small), 0 8px 16px -4px rgb(0 0 0 / .36);
+  --shadow-tooltip: 0 2px 8px rgb(0 0 0 / .40);
+  --shadow-menu: 0 4px 8px -4px rgb(0 0 0 / .32), 0 16px 24px -8px rgb(0 0 0 / .48);
+  --shadow-modal: 0 8px 16px -4px rgb(0 0 0 / .40), 0 24px 32px -8px rgb(0 0 0 / .56);
+  --shadow-fullscreen: 0 24px 48px rgb(0 0 0 / .64);
+}
+.material-base,.material-small,.material-medium,.material-large,.material-tooltip,.material-menu,.material-modal,.material-fullscreen {
+  background: var(--color-bg);
+  border: var(--stroke) solid var(--color-border);
+  border-radius: var(--radius-base);
+}
+.material-small { box-shadow: var(--shadow-small); }
+.material-medium { border-radius: var(--radius-medium); box-shadow: var(--shadow-medium); }
+.material-large { border-radius: var(--radius-medium); box-shadow: var(--shadow-large); }
+.material-tooltip { box-shadow: var(--shadow-tooltip); }
+.material-menu { border-radius: var(--radius-medium); box-shadow: var(--shadow-menu); }
+.material-modal { border-radius: var(--radius-medium); box-shadow: var(--shadow-modal); }
+.material-fullscreen { border-radius: var(--radius-medium); box-shadow: var(--shadow-fullscreen); }

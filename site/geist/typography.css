@@ -1,0 +1,90 @@
+/* Named presets map to the public Geist heading/copy/label/button vocabulary.
+   Local CSS values are not imported from Vercel's private implementation. */
+:root {
+  --heading-72: 600 4.5rem/4.5rem var(--font-sans);
+  --heading-72-tracking: -0.27rem;
+  --heading-64: 600 4rem/4rem var(--font-sans);
+  --heading-64-tracking: -0.24rem;
+  --heading-56: 600 3.5rem/3.5rem var(--font-sans);
+  --heading-56-tracking: -0.21rem;
+  --heading-48: 600 3rem/3.5rem var(--font-sans);
+  --heading-48-tracking: -0.18rem;
+  --heading-40: 600 2.5rem/3rem var(--font-sans);
+  --heading-40-tracking: -0.15rem;
+  --heading-32: 600 2rem/2.5rem var(--font-sans);
+  --heading-32-tracking: -0.08rem;
+  --heading-24: 600 1.5rem/2rem var(--font-sans);
+  --heading-24-tracking: -0.06rem;
+  --heading-20: 600 1.25rem/1.625rem var(--font-sans);
+  --heading-20-tracking: -0.025rem;
+  --heading-16: 600 1rem/1.5rem var(--font-sans);
+  --heading-16-tracking: -0.02rem;
+  --heading-14: 600 0.875rem/1.25rem var(--font-sans);
+  --heading-14-tracking: -0.0175rem;
+  --copy-24: 400 1.5rem/2.25rem var(--font-sans);
+  --copy-24-tracking: 0rem;
+  --copy-20: 400 1.25rem/2rem var(--font-sans);
+  --copy-20-tracking: 0rem;
+  --copy-18: 400 1.125rem/1.75rem var(--font-sans);
+  --copy-18-tracking: 0rem;
+  --copy-16: 400 1rem/1.5rem var(--font-sans);
+  --copy-16-tracking: 0rem;
+  --copy-14: 400 0.875rem/1.25rem var(--font-sans);
+  --copy-14-tracking: 0rem;
+  --copy-13: 400 0.8125rem/1.125rem var(--font-sans);
+  --copy-13-tracking: 0rem;
+  --copy-12: 400 0.75rem/1rem var(--font-sans);
+  --copy-12-tracking: 0rem;
+  --label-20: 400 1.25rem/2rem var(--font-sans);
+  --label-20-tracking: 0rem;
+  --label-18: 400 1.125rem/1.75rem var(--font-sans);
+  --label-18-tracking: 0rem;
+  --label-16: 400 1rem/1.5rem var(--font-sans);
+  --label-16-tracking: 0rem;
+  --label-14: 400 0.875rem/1.25rem var(--font-sans);
+  --label-14-tracking: 0rem;
+  --label-13: 400 0.8125rem/1.125rem var(--font-sans);
+  --label-13-tracking: 0rem;
+  --label-12: 400 0.75rem/1rem var(--font-sans);
+  --label-12-tracking: 0rem;
+  --button-16: 500 1rem/1.5rem var(--font-sans);
+  --button-16-tracking: 0rem;
+  --button-14: 500 0.875rem/1.25rem var(--font-sans);
+  --button-14-tracking: 0rem;
+  --button-12: 500 0.75rem/1rem var(--font-sans);
+  --button-12-tracking: 0rem;
+  --mono-12: 400 .75rem/1rem var(--font-mono);
+  --mono-13: 400 .8125rem/1.125rem var(--font-mono);
+  --mono-14: 400 .875rem/1.25rem var(--font-mono);
+}
+.text-heading-72 { font: var(--heading-72); letter-spacing: var(--heading-72-tracking); }
+.text-heading-64 { font: var(--heading-64); letter-spacing: var(--heading-64-tracking); }
+.text-heading-56 { font: var(--heading-56); letter-spacing: var(--heading-56-tracking); }
+.text-heading-48 { font: var(--heading-48); letter-spacing: var(--heading-48-tracking); }
+.text-heading-40 { font: var(--heading-40); letter-spacing: var(--heading-40-tracking); }
+.text-heading-32 { font: var(--heading-32); letter-spacing: var(--heading-32-tracking); }
+.text-heading-24 { font: var(--heading-24); letter-spacing: var(--heading-24-tracking); }
+.text-heading-20 { font: var(--heading-20); letter-spacing: var(--heading-20-tracking); }
+.text-heading-16 { font: var(--heading-16); letter-spacing: var(--heading-16-tracking); }
+.text-heading-14 { font: var(--heading-14); letter-spacing: var(--heading-14-tracking); }
+.text-copy-24 { font: var(--copy-24); letter-spacing: var(--copy-24-tracking); }
+.text-copy-20 { font: var(--copy-20); letter-spacing: var(--copy-20-tracking); }
+.text-copy-18 { font: var(--copy-18); letter-spacing: var(--copy-18-tracking); }
+.text-copy-16 { font: var(--copy-16); letter-spacing: var(--copy-16-tracking); }
+.text-copy-14 { font: var(--copy-14); letter-spacing: var(--copy-14-tracking); }
+.text-copy-13 { font: var(--copy-13); letter-spacing: var(--copy-13-tracking); }
+.text-copy-12 { font: var(--copy-12); letter-spacing: var(--copy-12-tracking); }
+.text-label-20 { font: var(--label-20); letter-spacing: var(--label-20-tracking); }
+.text-label-18 { font: var(--label-18); letter-spacing: var(--label-18-tracking); }
+.text-label-16 { font: var(--label-16); letter-spacing: var(--label-16-tracking); }
+.text-label-14 { font: var(--label-14); letter-spacing: var(--label-14-tracking); }
+.text-label-13 { font: var(--label-13); letter-spacing: var(--label-13-tracking); }
+.text-label-12 { font: var(--label-12); letter-spacing: var(--label-12-tracking); }
+.text-button-16 { font: var(--button-16); letter-spacing: var(--button-16-tracking); }
+.text-button-14 { font: var(--button-14); letter-spacing: var(--button-14-tracking); }
+.text-button-12 { font: var(--button-12); letter-spacing: var(--button-12-tracking); }
+.text-mono-12 { font: var(--mono-12); }
+.text-mono-13 { font: var(--mono-13); }
+.text-mono-14 { font: var(--mono-14); }
+.text-subtle { color: var(--color-muted); }
+.text-tabular { font-variant-numeric: tabular-nums; }

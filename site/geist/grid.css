@@ -1,0 +1,16 @@
+/* Responsive marketing guides. Desktop 12 / tablet 8 / mobile 4.
+   Grid cells remain in DOM reading order; guides are CSS decoration only. */
+:root {
+  --page-width: 75rem;
+  --page-margin: var(--space-24);
+  --grid-columns: 12;
+}
+.container { width: min(calc(100% - 2 * var(--page-margin)), var(--page-width)); margin-inline: auto; }
+.geist-grid { display: grid; grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr)); }
+.geist-guides {
+  background-image: linear-gradient(to right, var(--color-border) var(--stroke), transparent var(--stroke));
+  background-size: calc(100% / var(--grid-columns)) 100%;
+}
+.geist-grid > * { min-width: 0; }
+@media (max-width: 900px) { :root { --grid-columns: 8; } }
+@media (max-width: 680px) { :root { --grid-columns: 4; --page-margin: var(--space-12); } }
