@@ -24,11 +24,11 @@ test('native Workbench draws the actual Preview and reopens the same source file
     let browser
     try{
         browser=await chromium.launch({headless:true,args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']})
-        const page=await browser.newPage({viewport:{width:1440,height:1000}})
+        const page=await browser.newPage({viewport:{width:1440,height:1000},colorScheme:'dark'})
         const errors=[]
         page.on('pageerror',e=>errors.push(String(e)))
-        await page.addInitScript(()=>{if(window===window.top)localStorage.setItem('scad-theme','light')})
         await page.goto('http://127.0.0.1:'+server.address().port+prefix)
+        assert.equal(await page.locator('html').getAttribute('data-theme'),'light','first visit is light even with dark OS')
         await page.locator('iframe[data-vsc-demo]').scrollIntoViewIfNeeded()
         const frame=page.frameLocator('iframe[data-vsc-demo]')
         await frame.locator('#workbench[data-workbench-ready="true"]').waitFor({timeout:90000})
@@ -58,6 +58,8 @@ test('native Workbench draws the actual Preview and reopens the same source file
         await frame.locator('#workbench[data-demo-theme="dark"]').waitFor({timeout:20000})
         await preview.locator('body.vscode-dark').waitFor({timeout:20000})
         await page.locator('iframe[data-vsc-demo]').screenshot({path:'site-demo-dark.png'})
+        assert.equal(await page.evaluate(()=>localStorage.getItem('scad-theme')),'dark')
+        assert.equal(await page.locator('html').getAttribute('data-theme'),'dark')
         await page.locator('[data-theme-toggle]').click()
         await frame.locator('#workbench[data-demo-theme="light"]').waitFor({timeout:20000})
         await preview.locator('body.vscode-light').waitFor({timeout:20000})
@@ -73,6 +75,7 @@ test('native Workbench draws the actual Preview and reopens the same source file
         await page.setViewportSize({width:390,height:844})
         await page.locator('iframe[data-vsc-demo]').scrollIntoViewIfNeeded()
         await page.locator('iframe[data-vsc-demo]').screenshot({path:'site-demo-mobile.png'})
+        assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,'mobile page does not overflow')
         assert.deepEqual(errors,[])
     }finally{
         await browser?.close()

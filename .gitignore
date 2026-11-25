@@ -62,3 +62,5 @@ Thumbs.db
 
 # Generated static website demo bundles
 /site/demo/generated/
+
+/site/assets/fonts/

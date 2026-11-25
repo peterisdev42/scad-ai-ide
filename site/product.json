@@ -1,0 +1,269 @@
+{
+  "name": "SCAD AI IDE",
+  "canonical": "https://peterisdev42.github.io/scad-ai-ide/",
+  "sourceCommit": "e633bf7761b5c872c25cc9d32983560b6135f80c",
+  "license": "GPL-3.0",
+  "distribution": "source-first development preview; no official Marketplace listing or release installer",
+  "agentToolCounts": {
+    "tools": 53,
+    "skills": 12,
+    "instructions": 2
+  },
+  "modules": [
+    {
+      "id": "runtime-management",
+      "name": "Runtime management",
+      "headline": "Your OpenSCAD toolchain, managed.",
+      "summary": "Discover, install and select OpenSCAD CLI versions from one workspace. Use an existing executable, an available build or a local archive; switch between installed versions without manually assembling a toolchain.",
+      "capabilities": [
+        "Discover existing installations",
+        "Browse available CLI builds",
+        "Install supported builds or local archives",
+        "Add custom executables",
+        "Select or remove installed versions"
+      ],
+      "limitations": "Availability depends on platform and runtime build.",
+      "evidence": [
+        "https://github.com/peterisdev42/scad-ai-ide/blob/main/src/features/runtime/RuntimeService.ts",
+        "https://github.com/peterisdev42/scad-ai-ide/blob/main/README.md"
+      ],
+      "visual": "runtime",
+      "status": "implemented_acceptance_ongoing",
+      "url": "https://peterisdev42.github.io/scad-ai-ide/#runtime-management"
+    },
+    {
+      "id": "library-management",
+      "name": "Library and dependency management",
+      "headline": "Dependencies you can restore.",
+      "summary": "Discover OpenSCAD libraries through SCAD Registry, select an exact version, and restore a project on another machine using its declaration and lockfile. A shared global store supports multiple versions and project-local mounts; OpenSCAD processes receive a project-scoped OPENSCADPATH.",
+      "capabilities": [
+        "Registry / Global / Project views",
+        "Exact Tag or Snapshot Commit selection",
+        "Commit-pinned dependency restoration",
+        "Shared versioned cache and local links",
+        "Verify, repair and clean up cached libraries"
+      ],
+      "limitations": "Exact versions only; no automatic recursive dependency solver. Copy fallback requires confirmation; some Windows non-ASCII paths remain a known CLI limitation.",
+      "evidence": [
+        "https://github.com/peterisdev42/scad-ai-ide/blob/main/docs/library-manager.md",
+        "https://github.com/peterisdev42/scad-ai-ide/blob/main/src/features/libraries/LibraryService.ts"
+      ],
+      "visual": "library",
+      "status": "implemented_acceptance_ongoing",
+      "url": "https://peterisdev42.github.io/scad-ai-ide/#library-management"
+    },
+    {
+      "id": "language-intelligence",
+      "name": "OpenSCAD language support",
+      "headline": "Write CAD like software.",
+      "summary": "Use familiar editor tooling for OpenSCAD source and project libraries with a language server integrated into VS Code.",
+      "capabilities": [
+        "Syntax highlighting and snippets",
+        "Completions and diagnostics",
+        "Definition navigation",
+        "Rename and formatting",
+        "Project-aware language sessions"
+      ],
+      "limitations": "A compatible language server build is required.",
+      "evidence": [
+        "https://github.com/peterisdev42/scad-ai-ide/blob/main/README.md",
+        "https://github.com/peterisdev42/scad-ai-ide/blob/main/src/features/language/registerLanguage.ts"
+      ],
+      "visual": "language",
+      "status": "implemented_acceptance_ongoing",
+      "url": "https://peterisdev42.github.io/scad-ai-ide/#language-intelligence"
+    },
+    {
+      "id": "interactive-preview",
+      "name": "Interactive 3D preview",
+      "headline": "See your code become geometry.",
+      "summary": "Switch between source and the interactive Preview editor. Explore geometry in 3D, measure supported features and export the result using the selected OpenSCAD runtime.",
+      "capabilities": [
+        "Rotate, pan, zoom and fit",
+        "ViewCube with 26 directions; perspective and orthographic views",
+        "Measurement and surface picking",
+        "STL and 3MF export where supported",
+        "Model and drawing file previews"
+      ],
+      "limitations": "Operations vary with runtime and rendering mode. Fast CSG needs an additional Preview Exporter on supported macOS ARM64 setups; per-part coloring is experimental and visual-only.",
+      "evidence": [
+        "https://github.com/peterisdev42/scad-ai-ide/blob/main/docs/preview-integration.md",
+        "https://github.com/peterisdev42/scad-ai-ide/blob/main/README.md"
+      ],
+      "visual": "preview",
+      "status": "implemented_acceptance_ongoing",
+      "url": "https://peterisdev42.github.io/scad-ai-ide/#interactive-preview"
+    },
+    {
+      "id": "visual-customizer",
+      "name": "Visual Customizer",
+      "headline": "Tune the design without rewriting it.",
+      "summary": "Expose model parameters as visual controls. Adjust parameter overrides, preview changes and save OpenSCAD-compatible presets. Structured source analysis and guarded edits are available separately.",
+      "capabilities": [
+        "Visual parameter controls",
+        "Preview synchronization",
+        "Create, select, import and export presets",
+        "Reset overrides",
+        "Source analysis and guarded structured edits"
+      ],
+      "limitations": "Agent/model authoring acceptance is ongoing; continuous slider rendering depends on the supported backend.",
+      "evidence": [
+        "https://github.com/peterisdev42/scad-ai-ide/blob/main/docs/customizer-architecture-adr.md",
+        "https://github.com/peterisdev42/scad-ai-ide/blob/main/README.md"
+      ],
+      "visual": "customizer",
+      "status": "implemented_acceptance_ongoing",
+      "url": "https://peterisdev42.github.io/scad-ai-ide/#visual-customizer"
+    },
+    {
+      "id": "native-gui",
+      "name": "Native VS Code experience",
+      "headline": "One familiar workspace.",
+      "summary": "Use Quick Access, the Customizer sidebar, editor actions, Problems and the AI panel instead of juggling standalone tools. Interactive OpenSCAD code blocks in Markdown connect documentation and geometry.",
+      "capabilities": [
+        "Quick Access: AI, Libraries, Runtime, More",
+        "Native editor actions and shortcuts",
+        "Shared Problems diagnostics",
+        "Interactive Markdown preview",
+        "AI feature and group controls"
+      ],
+      "limitations": "The website demo is a limited workbench, not the full desktop extension.",
+      "evidence": [
+        "https://github.com/peterisdev42/scad-ai-ide/blob/main/src/features/sidebar/QuickAccessTreeProvider.ts",
+        "https://github.com/peterisdev42/scad-ai-ide/blob/main/docs/preview-integration.md",
+        "https://github.com/peterisdev42/scad-ai-ide/blob/main/README.md"
+      ],
+      "visual": "gui",
+      "status": "implemented_acceptance_ongoing",
+      "url": "https://peterisdev42.github.io/scad-ai-ide/#native-gui"
+    },
+    {
+      "id": "cad-verification",
+      "name": "CAD verification and design review",
+      "headline": "Go beyond a successful render.",
+      "summary": "Inspect CLI-backed CSG diagnostics and raw meshes, measure frozen geometry, check declared static assembly constraints and compare reports. Preserve evidence and request surface-specific human feedback.",
+      "capabilities": [
+        "CSG diagnostics and issue details",
+        "Raw STL/3MF topology and mesh checks",
+        "Frozen geometry measurements and PNG views",
+        "Declared-part static assembly checks",
+        "Report comparison, baselines and spatial feedback",
+        "Explicit-profile build-envelope and overhang screening"
+      ],
+      "limitations": "PASS, FAIL and UNRESOLVED describe tested evidence only. Printability remains NOT_CHECKED; no manufacturing guarantee, motion-path or general mechanical proof.",
+      "evidence": [
+        "https://github.com/peterisdev42/scad-ai-ide/blob/main/docs/cad-mesh-verification.md",
+        "https://github.com/peterisdev42/scad-ai-ide/blob/main/docs/cad-verification-architecture.md",
+        "https://github.com/peterisdev42/scad-ai-ide/blob/main/docs/cad/overall-progress.md"
+      ],
+      "visual": "cad",
+      "status": "implemented_acceptance_ongoing",
+      "url": "https://peterisdev42.github.io/scad-ai-ide/#cad-verification"
+    },
+    {
+      "id": "agent-integration",
+      "name": "Native AI Agent integration",
+      "headline": "Give agents CAD-aware tools.",
+      "summary": "Supported VS Code Agent hosts can access the same bounded domain services as GUI actions. Native tools, skills and instructions connect environment setup, parameter editing, diagnostics, geometry evidence and design review.",
+      "capabilities": [
+        "Inspect runtimes and libraries; request authorized changes",
+        "Read and adjust Customizer parameters and presets",
+        "Analyze model diagnostics and raw mesh evidence",
+        "Check declared assembly constraints and compare reports",
+        "Request human spatial feedback and return interactive preview links",
+        "Control integration, groups and individual tools in the AI panel"
+      ],
+      "limitations": "No bundled LLM or MCP server. Host/provider support, Workspace Trust, permissions and stale-state checks apply. Registered tools do not establish reliable autonomous-model acceptance.",
+      "evidence": [
+        "https://github.com/peterisdev42/scad-ai-ide/blob/main/docs/agent-capability-catalog.md",
+        "https://github.com/peterisdev42/scad-ai-ide/blob/main/docs/agent-capability-matrix.md",
+        "https://github.com/peterisdev42/scad-ai-ide/blob/main/docs/agent-verification.md"
+      ],
+      "visual": "agent",
+      "status": "implemented_acceptance_ongoing",
+      "url": "https://peterisdev42.github.io/scad-ai-ide/#agent-integration"
+    }
+  ],
+  "faq": [
+    {
+      "question": "What is SCAD AI IDE?",
+      "answer": "An independent, GPL-3.0 open-source OpenSCAD development environment inside Visual Studio Code, designed for humans and AI agents."
+    },
+    {
+      "question": "Is it a standalone CAD application?",
+      "answer": "No. It is a VS Code extension that integrates the OpenSCAD engine, editor and project tooling."
+    },
+    {
+      "question": "How is it different from a preview extension?",
+      "answer": "Its differentiator is the combination of managed runtimes, exact project dependencies, language support, visual customization, CAD evidence and bounded native Agent Tools."
+    },
+    {
+      "question": "Is it suitable for beginners?",
+      "answer": "Once running, the GUI reduces environment and library setup friction, and Preview and Customizer make parameterized geometry approachable. The current source build still requires developer tooling."
+    },
+    {
+      "question": "Can I use multiple OpenSCAD versions?",
+      "answer": "Yes. Runtime Manager discovers, installs and selects available CLI builds or custom executables."
+    },
+    {
+      "question": "Can I install BOSL2?",
+      "answer": "Yes, where the registry version and layout are supported. Install an exact version in Libraries and include BOSL2/std.scad."
+    },
+    {
+      "question": "Does it support dependency lockfiles?",
+      "answer": "Yes. .scad/dependencies.json declares exact versions and .scad/dependencies.lock.json pins the repository, commit and mount layout."
+    },
+    {
+      "question": "Can projects use different library versions?",
+      "answer": "Yes. The global store supports multiple versions, while each project has its own mounts and OPENSCADPATH."
+    },
+    {
+      "question": "Does it resolve transitive dependencies?",
+      "answer": "No automatic recursive dependency resolution or arbitrary version ranges are provided."
+    },
+    {
+      "question": "Can I preview OpenSCAD inside VS Code?",
+      "answer": "Yes. The extension offers an interactive 3D Preview editor, with navigation, measurement and supported exports."
+    },
+    {
+      "question": "Does the website run OpenSCAD in the browser?",
+      "answer": "No. It uses the actual Preview WebView inside Code-OSS Workbench, with geometry compiled from the actual cheese.scad source at build time."
+    },
+    {
+      "question": "Can I change model parameters without rewriting source?",
+      "answer": "Yes. Customizer applies parameter overrides and supports OpenSCAD-compatible presets."
+    },
+    {
+      "question": "What can AI agents do?",
+      "answer": "Supported hosts can use native tools to inspect the environment, request authorized runtime and library changes, adjust parameters and obtain CAD evidence and review results."
+    },
+    {
+      "question": "Does it provide an MCP server or bundled AI model?",
+      "answer": "No. Its current integration uses native VS Code Language Model Tools, Skills and Instructions; availability depends on the host and provider."
+    },
+    {
+      "question": "Does it guarantee a printable model?",
+      "answer": "No. CAD checks are evidence-scoped and printability remains NOT_CHECKED; limited explicit-profile screening is not manufacturing certification."
+    },
+    {
+      "question": "Can it verify mesh geometry and assemblies?",
+      "answer": "Yes, within the supported raw mesh checks and explicitly declared static assembly constraints. Insufficient evidence can produce UNRESOLVED."
+    },
+    {
+      "question": "Can I install it from the Marketplace today?",
+      "answer": "No. It is a source-first development preview, with no official Marketplace entry or GitHub Release installer at this audited revision."
+    },
+    {
+      "question": "What are the requirements?",
+      "answer": "VS Code 1.140.0 or newer, Node.js 24, npm and Git; source LSP builds may additionally require Rust/Cargo and platform tools."
+    },
+    {
+      "question": "Which features are experimental?",
+      "answer": "Fast CSG on supported macOS ARM64 setups and visual-only per-part coloring. Cross-platform and real-agent acceptance are still ongoing."
+    },
+    {
+      "question": "Is SCAD AI IDE affiliated with OpenSCAD or Microsoft?",
+      "answer": "No. It is an independent community project."
+    }
+  ]
+}

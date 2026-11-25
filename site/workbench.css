@@ -1,15 +1,1 @@
-/* Keep the embedded workbench isolated from marketing typography and theme. */
-.hero-section > .container { grid-template-columns:minmax(0,1fr); gap:45px; }
-.hero-copy { max-width:780px; margin:0 auto; text-align:center; }
-.hero-copy .hero-eyebrow { justify-content:center; }
-.hero-detail { max-width:690px; margin-left:auto; margin-right:auto; }
-.hero-copy .hero-ctas,.hero-copy .hero-note { justify-content:center; }
-.vsc-demo-wrap { min-width:0; width:100%; }
-.vsc-demo-heading { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px 12px; margin:0 0 10px; color:var(--text-soft); font-size:11px; }
-.vsc-demo-heading span:first-child { color:var(--text-muted); font-weight:760; letter-spacing:.1em; }
-.vsc-demo-frame { width:100%; height:600px; display:block; border:1px solid #363636; border-radius:8px; background:#1f1f1f; box-shadow:0 24px 66px rgba(9,15,29,.18); }
-.vsc-demo-caption { color:var(--text-soft); font-size:11px; line-height:1.65; margin:10px 2px 0; }
-.vsc-demo-caption a { color:var(--accent); font-weight:650; }
-.vsc-demo-caption a:hover { text-decoration:underline; }
-@media(max-width:970px){ .hero-section > .container{gap:32px;} .vsc-demo-frame{height:550px;} }
-@media(max-width:680px){ .hero-copy{text-align:left;margin:0;} .hero-copy .hero-ctas,.hero-copy .hero-note{justify-content:flex-start;} .hero-detail{margin-left:0;} .vsc-demo-frame{height:510px;} }
+/* Website demo frame styling lives in styles.css. Embedded Code-OSS owns its UI. */

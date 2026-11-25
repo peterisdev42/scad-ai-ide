@@ -11,8 +11,8 @@ import { dirname, join } from 'node:path';
 const WIDTH = 1200, HEIGHT = 630;
 const pixels = new Uint8Array(WIDTH * HEIGHT * 4);
 const color = (hex) => [parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16),255];
-const BG=color('#0e1728'), PANEL=color('#19253e'), BORDER=color('#35466d'), BLUE=color('#4b6fe6'),
-  WHITE=color('#eaf1ff'), SUB=color('#b3c9f9'), SOFT=color('#8396b5'), GOLD=color('#f6cb39');
+const BG=color('#ffffff'), PANEL=color('#fafafa'), BORDER=color('#dedede'), BLUE=color('#171717'),
+  WHITE=color('#171717'), SUB=color('#444444'), SOFT=color('#666666'), GOLD=color('#f6cb39');
 function rect(x,y,w,h,c) {
   const x0=Math.max(0,x|0),x1=Math.min(WIDTH,(x+w)|0),y0=Math.max(0,y|0),y1=Math.min(HEIGHT,(y+h)|0);
   for(let py=y0;py<y1;py++)for(let px=x0;px<x1;px++){const at=4*(py*WIDTH+px);pixels.set(c,at);}
@@ -57,7 +57,7 @@ write('SCAD AI IDE',133,106,12,WHITE);
 write('OPENSCAD INSIDE VISUAL STUDIO CODE',110,251,5,SUB);
 write('PREVIEW / TOOLCHAINS / LIBRARIES',110,339,5,SOFT);
 write('CAD EVIDENCE / NATIVE AGENT TOOLS',110,393,5,SOFT);
-rect(110,498,362,48,BLUE);write('SOURCE-FIRST PREVIEW',126,509,4,WHITE);
+rect(110,498,362,48,BLUE);write('SOURCE-FIRST PREVIEW',126,509,4,color('#ffffff'));
 // Brand-inspired geometric cheese motif, not a screenshot of the installed extension.
 rect(950,130,100,135,GOLD);disk(1006,175,14,PANEL);disk(970,230,10,PANEL);disk(1037,239,9,PANEL);
 function crc32(bytes){let crc=0xffffffff;for(const b of bytes){crc^=b;for(let i=0;i<8;i++)crc=(crc>>>1)^((crc&1)?0xedb88320:0);}return(crc^0xffffffff)>>>0;}

@@ -8,7 +8,7 @@ _From code to solid._
 
 SCAD AI IDE brings OpenSCAD language tooling, interactive 3D preview, runtime and library management, parameter customization, and evidence-aware CAD verification into one VS Code workflow. Native VS Code Agent Tools can use the same bounded services as the GUI, with explicit permission gates. It is currently a source-first development preview.
 
-[Website](https://peterisdev42.github.io/scad-ai-ide/) · [Why SCAD AI IDE](https://peterisdev42.github.io/scad-ai-ide/why-scad-ai-ide/) · [For beginners](https://peterisdev42.github.io/scad-ai-ide/for-beginners/) · [For AI agents](https://peterisdev42.github.io/scad-ai-ide/for-ai-agents/) · [Getting started](https://peterisdev42.github.io/scad-ai-ide/getting-started/) · [Documentation](docs/README.md) · [Contributing](CONTRIBUTING.md)
+[Website](https://peterisdev42.github.io/scad-ai-ide/) · [Why SCAD AI IDE](https://peterisdev42.github.io/scad-ai-ide/#comparison) · [For beginners](https://peterisdev42.github.io/scad-ai-ide/#audiences) · [For AI agents](https://peterisdev42.github.io/scad-ai-ide/#agent-integration) · [Getting started](https://peterisdev42.github.io/scad-ai-ide/#getting-started) · [Documentation](docs/README.md) · [Contributing](CONTRIBUTING.md)
 
 > **Project status — active development.** Core IDE workflows are implemented and can be run from source, but this is **not yet a general-availability release**. There is no official GitHub Release installer or Marketplace distribution. End-to-end Agent, real-host and cross-platform acceptance is still in progress. See [validation and known limitations](#validation-and-known-limitations).
 

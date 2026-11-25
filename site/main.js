@@ -33,7 +33,7 @@
       toggle.setAttribute("title", dark ? "Switch to light theme" : "Switch to dark theme");
     }
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", dark ? "#0d1119" : "#f8fafc");
+    if (meta) meta.setAttribute("content", dark ? "#000000" : "#ffffff");
   }
 
   applyTheme(root.dataset.theme === "dark" ? "dark" : "light");
