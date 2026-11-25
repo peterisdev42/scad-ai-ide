@@ -1,3 +1,4 @@
+import './focus-guard.js'
 import { mountPreview } from './generated/preview.js'
 const root=document.querySelector('#preview-root')
 let applied=[]

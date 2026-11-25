@@ -1,3 +1,4 @@
+import '../../site/demo/focus-guard.js'
 import { initialize, getService, IEditorService, IWorkbenchLayoutService, IThemeService, type EditorInput, type IEditorGroup } from '@codingame/monaco-vscode-api'
 import getWorkbenchServiceOverride from '@codingame/monaco-vscode-workbench-service-override'
 import { SimpleEditorPane, SimpleEditorInput, registerEditorPane, registerEditor, RegisteredEditorPriority, Parts } from '@codingame/monaco-vscode-workbench-service-override/common'
@@ -237,6 +238,7 @@ async function start(){
   })
   root.dataset.workbenchReady='true'
   boot.hidden=true
+  root.inert=false
   unlockHostFrame()
 }
 start().catch(error=>{

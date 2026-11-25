@@ -70,4 +70,7 @@ test('sticky header is the sole anchor offset; boot frame does not receive focus
   assert.match(workbench,/preserveFocus:true/);
   assert.doesNotMatch(workbench,/executeCommand\('workbench\.view\.explorer'\)/);
   assert.match(workbench,/unlockHostFrame\(\)/);
+  assert.match(workbench,/^import '\.\.\/\.\.\/site\/demo\/focus-guard\.js'/);
+  assert.match(read('../tools/pages-workbench/index.html'),/<div id="workbench" inert>/);
+  assert.match(read('./demo/preview-host.js'),/^import '\.\/focus-guard\.js'/);
 });

@@ -41,3 +41,12 @@ test('Pages uses the native Workbench and the actual Preview, not a copied shell
     assert.match(build,/OPENSCAD_CLI/)
     assert.doesNotMatch(workbench,/cheese\.stl/)
 })
+
+test('embedded startup guard suppresses passive focus without changing host or standalone behavior',()=>{
+    const guard=read('./demo/focus-guard.js')
+    assert.match(guard,/hasAttribute\('data-vsc-demo'\)/)
+    assert.match(guard,/event\.isTrusted/)
+    assert.match(guard,/activated && document\.hasFocus\(\)/)
+    assert.match(guard,/preventScroll: true/)
+    assert.match(guard,/Element\.prototype\.scrollIntoView/)
+})

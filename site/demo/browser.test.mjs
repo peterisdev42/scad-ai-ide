@@ -9,7 +9,7 @@ import test from 'node:test'
 const site=fileURLToPath(new URL('../',import.meta.url))
 const prefix='/scad-ai-ide/'
 const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.3mf':'application/vnd.ms-package.3dmanufacturing-3dmodel+xml','.scad':'text/plain','.png':'image/png','.svg':'image/svg+xml','.ttf':'font/ttf','.woff':'font/woff','.woff2':'font/woff2','.json':'application/json','.wasm':'application/wasm','.mjs':'text/javascript','.map':'application/json','.webmanifest':'application/manifest+json'}
-test('native Workbench draws the actual Preview and reopens the same source file', {timeout:300000}, async ()=>{
+test('native Workbench draws the actual Preview and reopens the same source file', {timeout:360000}, async ()=>{
     const server=createServer(async(req,res)=>{
         try{
             const pathname=new URL(req.url,'http://localhost').pathname
@@ -26,6 +26,13 @@ test('native Workbench draws the actual Preview and reopens the same source file
         browser=await chromium.launch({headless:true,args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']})
         const context=await browser.newContext({viewport:{width:1440,height:1000},colorScheme:'dark'})
         const page=await context.newPage()
+        await page.addInitScript(()=>{
+            if(window!==window.top)return
+            window.__startupScrollTrace=[]
+            window.addEventListener('scroll',()=>{
+                window.__startupScrollTrace.push({y:window.scrollY,active:document.activeElement?.tagName,at:performance.now()})
+            },{passive:true})
+        })
         const errors=[]
         page.on('pageerror',e=>errors.push(String(e)))
         await page.goto('http://127.0.0.1:'+server.address().port+prefix)
@@ -36,20 +43,29 @@ test('native Workbench draws the actual Preview and reopens the same source file
         const frame=page.frameLocator('iframe[data-vsc-demo]')
         await frame.locator('#workbench[data-workbench-ready="true"]').waitFor({timeout:90000})
         await page.waitForFunction(()=>!document.querySelector('[data-vsc-demo]').inert)
-        // Wait for real startup without scrolling the iframe into view. The
-        // top-level page must not be pulled down by the embedded Workbench.
-        assert.ok(await page.evaluate(()=>Math.abs(scrollY)<=1),'initial Workbench startup scrolled the homepage')
-        assert.equal(await page.evaluate(()=>document.activeElement===document.querySelector('[data-vsc-demo]')),false,'Workbench stole page focus')
+        const preview=frame.frameLocator('iframe[title="SCAD AI IDE Preview"]')
+        const assertPassiveStartup=async(label)=>{
+            // Include deferred Preview loading and rendering, not just the
+            // workbench-ready flag. No locator.click/scrollIntoView before this.
+            await preview.locator('#preview-root[data-preview-state="ready"]').waitFor({timeout:70000})
+            await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))))
+            const state=await page.evaluate(()=>({y:scrollY,focused:document.activeElement===document.querySelector('[data-vsc-demo]'),trace:window.__startupScrollTrace}))
+            assert.ok(Math.abs(state.y)<=1,label+' scrolled homepage: '+JSON.stringify(state))
+            assert.equal(state.focused,false,label+' stole page focus: '+JSON.stringify(state))
+            assert.ok(state.trace.every(x=>Math.abs(x.y)<=1),label+' transiently scrolled homepage: '+JSON.stringify(state.trace))
+        }
+        await assertPassiveStartup('first visit')
         await page.reload()
         await frame.locator('#workbench[data-workbench-ready="true"]').waitFor({timeout:90000})
         await page.waitForFunction(()=>!document.querySelector('[data-vsc-demo]').inert)
-        assert.ok(await page.evaluate(()=>Math.abs(scrollY)<=1),'refresh at top scrolled the homepage')
-        assert.equal(await page.evaluate(()=>document.activeElement===document.querySelector('[data-vsc-demo]')),false,'refresh stole page focus')
+        await assertPassiveStartup('refresh at top')
+        // Direct user scrolling must not be blocked or snapped back to top.
+        await page.mouse.wheel(0,320)
+        await page.waitForFunction(()=>scrollY>100)
         await page.locator('iframe[data-vsc-demo]').scrollIntoViewIfNeeded()
         assert.ok(await frame.locator('.monaco-workbench').count(),'real Workbench exists')
         await frame.getByText('cheese.scad',{exact:true}).first().waitFor({timeout:20000})
         assert.equal(await frame.getByText('cheese.stl',{exact:true}).count(),0)
-        const preview=frame.frameLocator('iframe[title="SCAD AI IDE Preview"]')
         await preview.locator('#preview-root[data-preview-state="ready"]').waitFor({timeout:70000})
         assert.ok(await preview.locator('scad-app scad-preview canvas').count(),'actual Stage canvas exists')
         // Inert must block real pointer/focus interaction, not remove the

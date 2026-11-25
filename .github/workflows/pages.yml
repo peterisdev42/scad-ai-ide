@@ -78,6 +78,15 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Verify responsive website before deployment
         run: node --test site/website.browser.test.mjs
+      - name: Verify real Workbench startup, refresh and Preview before deployment
+        run: node --test site/demo/browser.test.mjs
+      - name: Upload browser diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pages-browser-diagnostics
+          path: site-demo-*.png
+          if-no-files-found: ignore
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload website
