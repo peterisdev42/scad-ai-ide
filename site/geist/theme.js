@@ -20,13 +20,17 @@
   document.addEventListener("DOMContentLoaded", () => {
     apply(root.dataset.theme);
     const toggle = document.querySelector("[data-theme-toggle]");
-    if (toggle) toggle.addEventListener("click", () => {
+    if (toggle) {
+      toggle.hidden = false;
+      toggle.addEventListener("click", () => {
       const next = root.dataset.theme === "dark" ? "light" : "dark";
       apply(next);
       try { localStorage.setItem(key, next); } catch { /* Storage may be disabled. */ }
-    });
+      });
+    }
   }, { once: true });
   window.addEventListener("storage", event => {
+    if (event.storageArea && event.storageArea !== localStorage) return;
     if (event.key === key || event.key === null) apply(event.newValue);
   });
 })();

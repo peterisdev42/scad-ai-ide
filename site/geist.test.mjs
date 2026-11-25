@@ -52,3 +52,11 @@ test('build stages official WOFF2 fonts and their license',()=>{
   }
   if(process.env.CI) assert.ok(existsSync(new URL('./assets/fonts/LICENSE.txt',import.meta.url)));
 });
+
+test('FAQ uses explicit stable title and indicator, no native duplicate marker',()=>{
+  const component=read('./geist/components.css');
+  assert.match(component,/grid-template-columns: minmax\(0, 1fr\) var\(--space-16\)/);
+  assert.match(component,/\.geist-collapse-title[^}]+text-align: start/);
+  assert.match(component,/summary::-webkit-details-marker/);
+  assert.equal((html.match(/class="geist-collapse-title"/g)||[]).length,20);
+});

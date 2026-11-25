@@ -1,6 +1,6 @@
 *,*::before,*::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-height) + var(--space-16)); }
-body { margin: 0; background: var(--color-bg); color: var(--color-text); font: var(--copy-16); -webkit-font-smoothing: antialiased; }
+html { scroll-behavior: smooth; scrollbar-gutter: stable; scroll-padding-top: calc(var(--header-height) + var(--space-16)); }
+body { margin: 0; background: var(--color-bg); color: var(--color-text); font: var(--copy-16); overflow-wrap: anywhere; -webkit-font-smoothing: antialiased; }
 button { font: inherit; }
 a { color: inherit; text-decoration: none; }
 a:hover { text-decoration: underline; text-underline-offset: var(--space-4); }
@@ -10,3 +10,5 @@ p { color: var(--color-muted); }
 code,pre { font-family: var(--font-mono); overflow-wrap: anywhere; }
 .skip-link { position: absolute; top: -100px; left: var(--space-12); z-index: 50; background: var(--color-bg); padding: var(--space-12); }
 .skip-link:focus { top: var(--space-8); }
+
+:where(img,svg,iframe) { max-inline-size: 100%; }

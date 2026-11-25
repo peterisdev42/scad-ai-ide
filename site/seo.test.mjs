@@ -10,3 +10,20 @@ test('single canonical product page, static semantic modules and metadata',()=>{
 test('legacy links are redirect-only; all homepage anchors and local links resolve',()=>{for(const [route,id] of Object.entries({"for-beginners":"audiences","for-ai-agents":"agent-integration","why-scad-ai-ide":"comparison","getting-started":"getting-started"})){const h=read(route+'/index.html');assert.ok(h.includes('content="0;url=../#'+id+'"'));assert.ok(h.includes('href="'+base+'"'));assert.ok(!html.includes('href="./'+route+'/'));}for(const [,href] of html.matchAll(/<a\b[^>]*\bhref="([^"]+)"/g)){if(href.startsWith('#'))assert.ok(html.includes('id="'+href.slice(1)+'"'),href);else if(href.startsWith('./'))assert.ok(existsSync(join(site,href)),href);}});
 test('agent counts, source evidence and product limitations remain truthful',()=>{const pkg=JSON.parse(readFileSync(join(root,'package.json'),'utf8')),claims=JSON.parse(readFileSync(join(root,'docs/marketing/product-claims.json'),'utf8')),catalog=readFileSync(join(root,'docs/agent-capability-catalog.md'),'utf8');const actual={tools:pkg.contributes.languageModelTools.length,skills:pkg.contributes.chatSkills.length,instructions:pkg.contributes.chatInstructions.length};assert.deepEqual(manifest.agentToolCounts,actual);assert.deepEqual(claims.agentToolCounts,actual);assert.equal(catalog.split('\n').filter(x=>/^\| [a-z][^|]* \|/.test(x)).length,actual.tools);assert.ok(html.includes(actual.tools+' native VS Code Language Model Tools'));for(const m of manifest.modules)for(const p of m.evidence)assert.ok(existsSync(join(root,p.split('/blob/main/')[1])),p);for(const phrase of ['source-first','MCP server','UNRESOLVED','Windows','NOT_CHECKED','compiled from the actual cheese.scad source','npm run compile'])assert.ok(html.toLowerCase().includes(phrase.toLowerCase()),phrase);assert.ok((html.match(/<details(?:\s|>)/g)||[]).length>=20);assert.doesNotMatch(html,/cloud\.umami\.is|aggregateRating/);assert.match(read('llms.txt'),/not a Google search ranking prerequisite/);});
 test('default theme is light, and social card is valid',()=>{assert.doesNotMatch(html,/prefers-color-scheme/);assert.match(html,/<script src="\.\/geist\/theme\.js"><\/script>/);const png=join(site,'assets/og-card.png');assert.ok(statSync(png).size>3000);const bytes=readFileSync(png);assert.equal(bytes.readUInt32BE(16),1200);assert.equal(bytes.readUInt32BE(20),630);});
+
+
+test('FAQ text and machine-readable product facts match; IDs and ARIA references are unique and valid',()=>{
+  const decode=s=>s.replaceAll('&amp;','&').replaceAll('&lt;','<').replaceAll('&gt;','>').replaceAll('&quot;','"').replaceAll('&#39;',"'");
+  const actual=[...html.matchAll(/<details class="geist-collapse"><summary><span class="geist-collapse-title">([^<]+)<\/span><span class="geist-collapse-indicator" aria-hidden="true"><\/span><\/summary><p>([^<]+)<\/p><\/details>/g)].map(m=>({question:decode(m[1]),answer:decode(m[2])}));
+  assert.deepEqual(actual,manifest.faq);
+  const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);
+  assert.equal(new Set(ids).size,ids.length,'duplicate ID');
+  for(const [,refs] of html.matchAll(/aria-labelledby="([^"]+)"/g))for(const id of refs.split(/\s+/))assert.ok(ids.includes(id),'unresolved aria-labelledby '+id);
+  const llms=read('llms.txt');
+  for(const m of manifest.modules){
+    assert.ok(llms.includes(m.summary)&&llms.includes(m.limitations),m.id+' GEO content divergence');
+    assert.ok(html.includes(m.summary.replaceAll('&','&amp;'))&&html.includes(m.limitations.replaceAll('&','&amp;')),m.id+' HTML divergence');
+  }
+  for(const [,href] of html.matchAll(/\bhref="(\.\/[^"#]+)(?:#[^"]*)?"/g))assert.ok(existsSync(join(site,href)),href+' local stylesheet/icon/link');
+  for(const [,src] of html.matchAll(/\bsrc="(\.\/[^"]+)"/g))assert.ok(existsSync(join(site,src)),src+' local resource');
+});

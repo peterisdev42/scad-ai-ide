@@ -1,0 +1,120 @@
+// Independent marketing UI tests: isolate the expensive iframe; demo/browser.test.mjs
+// still exercises the actual compiled Workbench and Preview.
+import assert from 'node:assert/strict';
+import { createServer } from 'node:http';
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import { resolve, sep, extname } from 'node:path';
+import { chromium } from 'playwright';
+import test from 'node:test';
+const root=fileURLToPath(new URL('.',import.meta.url));
+const prefix='/scad-ai-ide/';
+const mime={'.html':'text/html','.css':'text/css','.js':'text/javascript','.svg':'image/svg+xml','.png':'image/png','.woff2':'font/woff2','.json':'application/json','.txt':'text/plain','.xml':'application/xml','.scad':'text/plain'};
+test('marketing website: responsive layout, every FAQ, theme, navigation, downloads and redirects', {timeout:120000},async()=>{
+  const server=createServer(async(req,res)=>{
+    try {
+      const path=new URL(req.url,'http://localhost').pathname;
+      if(!path.startsWith(prefix)){res.writeHead(404).end();return}
+      const rel=decodeURIComponent(path.slice(prefix.length));
+      const file=resolve(root,rel.endsWith('/')||!rel?rel+'index.html':rel);
+      if(!file.startsWith(resolve(root)+sep)){res.writeHead(403).end();return}
+      const bytes=await readFile(file);
+      res.writeHead(200,{'content-type':mime[extname(file)]||'application/octet-stream'}).end(bytes);
+    }catch{if(!res.headersSent)res.writeHead(404);res.end()}
+  });
+  await new Promise(r=>server.listen(0,'127.0.0.1',r));
+  const url='http://127.0.0.1:'+server.address().port+prefix;
+  let browser;
+  try {
+    browser=await chromium.launch({headless:true});
+    const context=await browser.newContext({viewport:{width:1440,height:960},colorScheme:'dark',reducedMotion:'reduce'});
+    await context.route('**/demo/**',route=>route.fulfill({status:200,contentType:'text/html',body:'<!doctype html><title>Demo isolated for marketing tests</title>'}));
+    const page=await context.newPage();
+    const errors=[],failed=[];
+    page.on('pageerror',e=>errors.push(String(e)));
+    page.on('response',response=>{if(response.url().startsWith(url)&&response.status()>=400)failed.push(response.url()+' '+response.status())});
+    await page.goto(url);
+    const theme=page.locator('[data-theme-toggle]');
+    await theme.waitFor({state:'visible'});
+    assert.equal(await page.locator('html').getAttribute('data-theme'),'light');
+    await page.evaluate(async()=>{await document.fonts.load('400 16px Geist');await document.fonts.load('400 13px "Geist Mono"');await document.fonts.ready});
+    assert.ok(await page.evaluate(()=>[...document.fonts].some(f=>f.family==='Geist'&&f.status==='loaded')));
+    assert.ok(await page.evaluate(()=>[...document.fonts].some(f=>f.family.replaceAll('"','')==='Geist Mono'&&f.status==='loaded')));
+    for (const mode of ['light','dark']) {
+      if(await page.locator('html').getAttribute('data-theme')!==mode)await theme.click();
+      assert.equal(await page.evaluate(()=>getComputedStyle(document.body).backgroundColor),mode==='light'?'rgb(255, 255, 255)':'rgb(0, 0, 0)');
+      for (const width of [320,390,680,768,900,1024,1440]) {
+        await page.setViewportSize({width,height:960});
+        const report=await page.evaluate(()=>{
+          const problems=[];
+          const root=document.documentElement;
+          if(root.scrollWidth>root.clientWidth+1)problems.push('document overflow '+root.scrollWidth+'/'+root.clientWidth);
+          const nav=[...document.querySelectorAll('.main-nav a,.nav-actions a,.nav-actions button')].filter(e=>!e.hidden);
+          for(const link of nav){const r=link.getBoundingClientRect();if(r.left<-1||r.right>root.clientWidth+1)problems.push('navigation clipped: '+link.textContent.trim())}
+          const faqs=[...document.querySelectorAll('.faq-items details')];
+          for(const d of faqs){
+            const s=d.querySelector('summary'),title=s.querySelector('.geist-collapse-title'),arrow=s.querySelector('.geist-collapse-indicator'),p=d.querySelector('p');
+            if(!title||!arrow){problems.push('missing stable summary columns');continue}
+            d.open=false;
+            const before=title.getBoundingClientRect(),iconBefore=arrow.getBoundingClientRect(),height=s.getBoundingClientRect().height;
+            s.click();
+            const after=title.getBoundingClientRect(),iconAfter=arrow.getBoundingClientRect();
+            if(!d.open||!p.getBoundingClientRect().height)problems.push('answer failed to expand');
+            if(Math.abs(before.left-after.left)>.5||Math.abs(before.width-after.width)>.5||Math.abs(before.height-after.height)>.5||Math.abs(height-s.getBoundingClientRect().height)>.5||Math.abs(iconBefore.left-iconAfter.left)>.5)problems.push('FAQ title shifted: '+title.textContent);
+            if(!['start','left'].includes(getComputedStyle(title).textAlign))problems.push('FAQ not left aligned');
+            if(after.right>iconAfter.left+.5)problems.push('FAQ arrow overlaps title');
+            s.click();if(d.open)problems.push('answer failed to collapse');
+          }
+          return {problems,count:faqs.length};
+        });
+        assert.equal(report.count,20);
+        assert.deepEqual(report.problems,[],mode+' at '+width+'px');
+      }
+      // Real mouse and keyboard, plus native summary state (no JS-dependent accordion).
+      await page.setViewportSize({width:390,height:844});
+      const summary=page.locator('#faq summary').first();
+      await summary.click();
+      assert.equal(await summary.evaluate(e=>e.parentElement.open),true);
+      await summary.press('Enter');
+      assert.equal(await summary.evaluate(e=>e.parentElement.open),false);
+      await summary.press('Space');
+      assert.equal(await summary.evaluate(e=>e.parentElement.open),true);
+      await page.screenshot({path:'site-demo-faq-'+mode+'-mobile.png'});
+      await summary.press('Space');
+      await page.setViewportSize({width:1440,height:960});
+      await page.locator('.main-nav a[href="#features"]').click();
+      assert.equal(new URL(page.url()).hash,'#features');
+      const top=await page.locator('#features').evaluate(e=>e.getBoundingClientRect().top);
+      const header=await page.locator('.site-header').evaluate(e=>e.getBoundingClientRect().bottom);
+      assert.ok(top>=header-1,'anchor hidden by sticky navigation');
+      await page.locator('.overview-grid a[href="#interactive-preview"]').click();
+      assert.equal(new URL(page.url()).hash,'#interactive-preview');
+      await page.locator('#interactive-preview a[href="#demo"]').click();
+      assert.equal(new URL(page.url()).hash,'#demo');
+      await page.locator('.hero-copy').scrollIntoViewIfNeeded();
+      await page.screenshot({path:'site-demo-marketing-'+mode+'.png'});
+    }
+    const persisted=await context.newPage();await persisted.goto(url);
+    assert.equal(await persisted.locator('html').getAttribute('data-theme'),'dark');
+    await theme.click();
+    await persisted.waitForFunction(()=>document.documentElement.dataset.theme==='light');
+    await persisted.close();
+    const download=page.waitForEvent('download');
+    await page.locator('a[download="cheese.scad"]').click();
+    assert.equal((await download).suggestedFilename(),'cheese.scad');
+    for(const [route,id] of [['for-beginners','audiences'],['for-ai-agents','agent-integration'],['why-scad-ai-ide','comparison'],['getting-started','getting-started']]){
+      await page.goto(url+route+'/');
+      await page.waitForURL(url+'#'+id);
+      assert.equal(await page.locator('#'+id).count(),1);
+    }
+    assert.deepEqual(errors,[]);assert.deepEqual(failed,[]);
+    const nojs=await browser.newContext({javaScriptEnabled:false});
+    await nojs.route('**/demo/**',route=>route.fulfill({status:200,contentType:'text/html',body:'<!doctype html><title>Isolated demo</title>'}));
+    const plain=await nojs.newPage();await plain.goto(url);
+    assert.equal(await plain.locator('main .capability').count(),8);
+    assert.equal(await plain.locator('[data-theme-toggle]').isVisible(),false);
+    const first=plain.locator('#faq summary').first();await first.click();
+    assert.equal(await plain.locator('#faq details[open]').count(),1);
+    await nojs.close();
+  }finally{await browser?.close();await new Promise(r=>server.close(r))}
+});

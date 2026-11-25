@@ -21,3 +21,7 @@ Product-level CSS belongs in `site/styles.css` (layout) or `site/components/` (i
 `node --test site/geist.test.mjs` checks the layer graph, colors, tokens and theme behavior. Existing SEO/demo tests and Chromium browser checks run in CI; screenshots cover website light/dark/mobile and native Preview. CI also runs on website pushes to main (no PR required).
 
 The root remains the sole canonical product page. All eight anchors, product manifest, FAQ, llms.txt, sitemap, status qualifications and legacy redirects are preserved. Illustrations remain illustrative; real desktop screenshots and recorded Agent acceptance are outstanding. Umami is out of scope.
+
+## Website regression policy
+
+FAQ summaries use explicit text and decorative indicator columns, with identical layout when open or closed, native details semantics and no JavaScript dependency. The dedicated `site/website.browser.test.mjs` suite covers all 20 FAQs, desktop/tablet/mobile widths (320–1440 CSS px), both themes, keyboard toggling, sticky-header anchors, local downloads, old URLs, loaded fonts, console/resource failures, persistence and no-JS content. Marketing tests intentionally isolate the heavy iframe; the separate native Workbench browser test validates actual rendering, theme sync and source/Preview actions. The Pages deployment workflow runs the marketing suite before publication. Browser screenshots are CI artifacts, not proof of manual visual approval.

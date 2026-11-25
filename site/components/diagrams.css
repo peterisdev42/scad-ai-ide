@@ -1,5 +1,7 @@
 /* Product-specific engineering diagrams, using Geist semantic tokens only. */
-.diagram-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-12); border-bottom: var(--stroke) solid var(--color-border); padding-block: var(--space-12); font: var(--label-13); }
+.diagram-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-12); border-bottom: var(--stroke) solid var(--color-border); padding-block: var(--space-12); font: var(--label-13); }
+.diagram-row > :first-child { min-width: 0; }
+.diagram-row > :last-child { margin-inline-start: auto; }
 .diagram-row span:last-child:not(.geist-badge) { color: var(--color-muted); text-align: right; }
 .node-flow { display: grid; gap: var(--space-8); text-align: center; }
 .node-flow b { font-weight: 400; color: var(--brand-line); }
@@ -11,5 +13,5 @@
 .metrics { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: var(--space-8); }
 .metrics > div { border-bottom: var(--stroke) solid var(--color-border); padding-block: var(--space-8); }
 .metrics strong { font: var(--heading-40); letter-spacing: var(--heading-40-tracking); font-variant-numeric: tabular-nums; display: block; }
-.metrics small { font: var(--label-12); color: var(--color-muted); }
+.metrics small { display: block; min-width: 0; font: var(--label-12); color: var(--color-muted); }
 @media (max-width: 680px) { .metrics strong { font: var(--heading-32); } .diagram-row { flex-wrap: wrap; } }

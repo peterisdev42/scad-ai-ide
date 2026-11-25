@@ -2,7 +2,7 @@
    Use HTML elements for semantics and keyboard behavior. */
 .geist-button {
   display: inline-flex; align-items: center; justify-content: center;
-  gap: var(--space-8); min-height: var(--size-control-md);
+  gap: var(--space-8); min-height: var(--size-target);
   padding-inline: var(--space-16); font: var(--button-14);
   color: var(--color-text); background: var(--color-bg);
   border: var(--stroke) solid var(--color-border); border-radius: var(--radius-base);
@@ -19,6 +19,7 @@
 .geist-button:disabled { cursor: not-allowed; color: var(--color-muted); background: var(--color-hover); border-color: var(--color-border); }
 .geist-icon { width: var(--size-icon); height: var(--size-icon); flex-shrink: 0; }
 .geist-theme-switcher { min-height: var(--size-target); }
+.geist-theme-switcher[hidden] { display: none; }
 :root:not([data-theme="dark"]) .theme-sun, :root[data-theme="dark"] .theme-moon { display: none; }
 .geist-badge {
   display: inline-flex; align-items: center; min-height: var(--space-24);
@@ -34,11 +35,28 @@
   background: var(--color-surface); border: var(--stroke) solid var(--color-border);
   padding: var(--space-20); border-radius: var(--radius-base); margin: 0;
 }
-.geist-collapse { border-top: var(--stroke) solid var(--color-border); padding-block: var(--space-16); }
-.geist-collapse summary { cursor: pointer; font: var(--label-16); font-weight: 500; min-height: var(--size-control-sm); display: flex; align-items: center; justify-content: space-between; gap: var(--space-16); list-style: none; }
-.geist-collapse summary::-webkit-details-marker { display: none; }
-.geist-collapse summary::after { content: ""; width: var(--space-8); height: var(--space-8); border-right: var(--stroke) solid currentColor; border-bottom: var(--stroke) solid currentColor; transform: rotate(45deg); flex-shrink: 0; transition: transform var(--motion-standard) var(--ease-standard); }
-.geist-collapse[open] summary::after { transform: rotate(225deg); }
-.geist-collapse p { margin-top: var(--space-12); max-width: 80ch; }
+/* Keep summary geometry identical in both states. Explicit text + indicator,
+   never anonymous flex text or browser-dependent details markers. */
+.geist-collapse { border-top: var(--stroke) solid var(--color-border); }
+.geist-collapse:last-child { border-bottom: var(--stroke) solid var(--color-border); }
+.geist-collapse > summary {
+  cursor: pointer; font: var(--label-16); font-weight: 500;
+  display: grid; grid-template-columns: minmax(0, 1fr) var(--space-16);
+  align-items: center; column-gap: var(--space-16); min-height: var(--size-target);
+  padding-block: var(--space-16); width: 100%; text-align: start;
+  list-style: none;
+}
+.geist-collapse > summary::marker { content: ""; }
+.geist-collapse > summary::-webkit-details-marker { display: none; }
+.geist-collapse-title { display: block; min-width: 0; text-align: start; overflow-wrap: anywhere; }
+.geist-collapse-indicator { display: grid; place-items: center; width: var(--space-16); height: var(--space-16); }
+.geist-collapse-indicator::before {
+  content: ""; display: block; width: var(--space-8); height: var(--space-8);
+  border-inline-end: var(--stroke) solid currentColor; border-block-end: var(--stroke) solid currentColor;
+  transform: translateY(-25%) rotate(45deg); transition: transform var(--motion-standard) var(--ease-standard);
+}
+.geist-collapse[open] > summary .geist-collapse-indicator::before { transform: translateY(25%) rotate(225deg); }
+.geist-collapse > summary:hover { color: var(--color-muted); }
+.geist-collapse > p { padding: 0 var(--space-32) var(--space-20) 0; max-width: 80ch; }
 .geist-progress { height: var(--space-4); background: var(--ds-gray-300); border-radius: var(--radius-round); overflow: hidden; }
 .geist-progress > span { display: block; height: 100%; background: var(--ds-gray-900); width: var(--progress-value); }

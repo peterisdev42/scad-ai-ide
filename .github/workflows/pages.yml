@@ -74,6 +74,10 @@ jobs:
           node --check site/seo.test.mjs
           node site/build-og.mjs
           node --test site/demo.test.mjs site/seo.test.mjs site/geist.test.mjs
+      - name: Install Chromium for website validation
+        run: npx playwright install --with-deps chromium
+      - name: Verify responsive website before deployment
+        run: node --test site/website.browser.test.mjs
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload website
