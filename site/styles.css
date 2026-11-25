@@ -1,5 +1,5 @@
 /* Product layout only. Visual primitives and tokens live in geist/. */
-:root { --header-height: var(--space-64); --brand-line: var(--ds-amber-900); --demo-height: 37.5rem; }
+:root { --header-height: calc(var(--space-64) + var(--stroke)); --brand-line: var(--ds-amber-900); --demo-height: 37.5rem; }
 .page-grid { border-inline: var(--stroke) solid var(--color-border); }
 .site-header { position: sticky; top: 0; z-index: 20; background: var(--color-bg); border-bottom: var(--stroke) solid var(--color-border); }
 .nav-shell { min-width: 0; min-height: var(--space-64); display: flex; align-items: center; gap: var(--space-24); }

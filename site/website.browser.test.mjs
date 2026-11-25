@@ -84,9 +84,19 @@ test('marketing website: responsive layout, every FAQ, theme, navigation, downlo
       await page.setViewportSize({width:1440,height:960});
       await page.locator('.main-nav a[href="#features"]').click();
       assert.equal(new URL(page.url()).hash,'#features');
-      const top=await page.locator('#features').evaluate(e=>e.getBoundingClientRect().top);
-      const header=await page.locator('.site-header').evaluate(e=>e.getBoundingClientRect().bottom);
-      assert.ok(top>=header-1,'anchor hidden by sticky navigation');
+      for(const width of [390,768,1024,1440]){
+        await page.setViewportSize({width,height:960});
+        // ResizeObserver publishes the actual sticky header height.
+        await page.waitForFunction(()=>Math.abs(parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop)-document.querySelector('.site-header').getBoundingClientRect().height)<=1);
+        for(const id of ['features','agent-integration','comparison','getting-started','top']){
+          const selector=id==='top'?'.site-header .brand':'.main-nav a[href="#'+id+'"]';
+          await page.locator(selector).click();
+          assert.equal(new URL(page.url()).hash,'#'+id);
+          const delta=await page.evaluate(id=>document.getElementById(id).getBoundingClientRect().top-document.querySelector('.site-header').getBoundingClientRect().bottom,id);
+          assert.ok(Math.abs(delta)<=1,mode+' '+width+'px #'+id+' differs from header edge by '+delta+'px');
+        }
+      }
+      await page.locator('.main-nav a[href="#features"]').click();
       await page.locator('.overview-grid a[href="#interactive-preview"]').click();
       assert.equal(new URL(page.url()).hash,'#interactive-preview');
       await page.locator('#interactive-preview a[href="#demo"]').click();
@@ -95,6 +105,13 @@ test('marketing website: responsive layout, every FAQ, theme, navigation, downlo
       await page.screenshot({path:'site-demo-marketing-'+mode+'.png'});
     }
     const persisted=await context.newPage();await persisted.goto(url);
+    assert.ok(await persisted.evaluate(()=>Math.abs(scrollY)<=1),'unfragmented navigation must start at top');
+    await persisted.reload();
+    assert.ok(await persisted.evaluate(()=>Math.abs(scrollY)<=1),'unfragmented reload must not scroll');
+    await persisted.setViewportSize({width:390,height:844});
+    await persisted.goto(url+'#comparison');
+    await persisted.waitForFunction(()=>Math.abs(document.getElementById('comparison').getBoundingClientRect().top-document.querySelector('.site-header').getBoundingClientRect().bottom)<=1);
+    await persisted.goto(url);
     assert.equal(await persisted.locator('html').getAttribute('data-theme'),'dark');
     await theme.click();
     await persisted.waitForFunction(()=>document.documentElement.dataset.theme==='light');

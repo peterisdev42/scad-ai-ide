@@ -60,3 +60,14 @@ test('FAQ uses explicit stable title and indicator, no native duplicate marker',
   assert.match(component,/summary::-webkit-details-marker/);
   assert.equal((html.match(/class="geist-collapse-title"/g)||[]).length,20);
 });
+
+test('sticky header is the sole anchor offset; boot frame does not receive focus',()=>{
+  const css=read('./geist/base.css');
+  assert.match(css,/scroll-padding-top: var\(--header-height\)/);
+  assert.doesNotMatch(css,/scroll-padding-top: calc\(/);
+  assert.match(html,/<iframe[^>]+data-vsc-demo inert/);
+  const workbench=read('../tools/pages-workbench/main.ts');
+  assert.match(workbench,/preserveFocus:true/);
+  assert.doesNotMatch(workbench,/executeCommand\('workbench\.view\.explorer'\)/);
+  assert.match(workbench,/unlockHostFrame\(\)/);
+});

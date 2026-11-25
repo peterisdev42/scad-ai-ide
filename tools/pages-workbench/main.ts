@@ -32,7 +32,15 @@ const source=vscode.Uri.joinPath(folder,'cheese.scad')
 const previewId='scad-ai-ide.demo.preview'
 const asset=(name:string)=>new URL('../../../assets/'+name,window.location.href)
 const previewUrl=new URL('../../preview.html',window.location.href)
-const options={pinned:true,preserveFocus:false}
+const options={pinned:true,preserveFocus:true}
+// The homepage starts with an inert demo frame. Never move focus or scroll the
+// host during initialization; unlock only after startup completes (or fails).
+function unlockHostFrame(){
+  try{
+    const frame=window.frameElement
+    if(frame instanceof window.parent.HTMLIFrameElement&&frame.hasAttribute('data-vsc-demo'))frame.inert=false
+  }catch{/* Standalone or cross-origin embed. */}
+}
 
 // The marketing page is the theme authority; all frames are same-origin.
 type DemoTheme='light'|'dark'
@@ -210,8 +218,7 @@ async function start(){
   layout.setPartHidden(true,Parts.PANEL_PART)
   layout.setPartHidden(true,Parts.AUXILIARYBAR_PART)
   layout.setPartHidden(window.innerWidth<580,Parts.SIDEBAR_PART)
-  await api.commands.executeCommand('workbench.view.explorer')
-  if(window.innerWidth<580)layout.setPartHidden(true,Parts.SIDEBAR_PART)
+  // defaultLayout already selects Explorer; the view command would focus it.
   await editor.openEditor({resource:source,options:{...options,override:previewId}})
   // The native Activity Bar is visual context only in this product demo.
   // Inert preserves its layout/theme while suppressing pointer, focus and
@@ -230,10 +237,12 @@ async function start(){
   })
   root.dataset.workbenchReady='true'
   boot.hidden=true
+  unlockHostFrame()
 }
 start().catch(error=>{
   console.error('SCAD demo startup failed',error)
   boot.textContent='Unable to initialize VS Code Workbench: '+String(error)
   boot.dataset.error='true'
   const link=document.createElement('a');link.href=previewUrl.href;link.textContent='Open standalone 3D Preview';boot.append(document.createElement('br'),link)
+  unlockHostFrame()
 })

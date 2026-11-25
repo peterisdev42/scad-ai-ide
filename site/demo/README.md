@@ -16,3 +16,5 @@ node --test site/demo/browser.test.mjs
 The Workbench dependencies are isolated from the desktop extension. Direct package versions are pinned; first CI generates the separate lockfile as an artifact for subsequent check-in. Production output lives in site/demo/generated; no node_modules are published. Vite uses relative URLs for the project Pages prefix. The browser test checks actual Workbench, actual renderer first frame, native editor title actions, source contents, both website themes and return to Preview. Review screenshots for desktop/mobile fidelity before merge. The preview-only fallback is available on boot failure and is not a mock Workbench.
 
 API reference: https://github.com/CodinGame/monaco-vscode-api/tree/v38.1.3/demo/src
+
+The embedded Workbench must not take focus from the marketing page during initialization. The homepage frame is inert until the Workbench finishes startup or reports an error; initial editor open preserves focus and Explorer is selected by the default layout. User-initiated interaction remains native after the frame unlocks.

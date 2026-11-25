@@ -9,7 +9,7 @@ import test from 'node:test'
 const site=fileURLToPath(new URL('../',import.meta.url))
 const prefix='/scad-ai-ide/'
 const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.3mf':'application/vnd.ms-package.3dmanufacturing-3dmodel+xml','.scad':'text/plain','.png':'image/png','.svg':'image/svg+xml','.ttf':'font/ttf','.woff':'font/woff','.woff2':'font/woff2','.json':'application/json','.wasm':'application/wasm','.mjs':'text/javascript','.map':'application/json','.webmanifest':'application/manifest+json'}
-test('native Workbench draws the actual Preview and reopens the same source file', {timeout:180000}, async ()=>{
+test('native Workbench draws the actual Preview and reopens the same source file', {timeout:300000}, async ()=>{
     const server=createServer(async(req,res)=>{
         try{
             const pathname=new URL(req.url,'http://localhost').pathname
@@ -33,9 +33,19 @@ test('native Workbench draws the actual Preview and reopens the same source file
         await page.evaluate(async()=>{await document.fonts.ready; await document.fonts.load('400 16px Geist')})
         assert.equal(await page.evaluate(()=>document.fonts.check('16px Geist')),true)
         assert.equal(await page.evaluate(()=>getComputedStyle(document.body).backgroundColor),'rgb(255, 255, 255)')
-        await page.locator('iframe[data-vsc-demo]').scrollIntoViewIfNeeded()
         const frame=page.frameLocator('iframe[data-vsc-demo]')
         await frame.locator('#workbench[data-workbench-ready="true"]').waitFor({timeout:90000})
+        await page.waitForFunction(()=>!document.querySelector('[data-vsc-demo]').inert)
+        // Wait for real startup without scrolling the iframe into view. The
+        // top-level page must not be pulled down by the embedded Workbench.
+        assert.ok(await page.evaluate(()=>Math.abs(scrollY)<=1),'initial Workbench startup scrolled the homepage')
+        assert.equal(await page.evaluate(()=>document.activeElement===document.querySelector('[data-vsc-demo]')),false,'Workbench stole page focus')
+        await page.reload()
+        await frame.locator('#workbench[data-workbench-ready="true"]').waitFor({timeout:90000})
+        await page.waitForFunction(()=>!document.querySelector('[data-vsc-demo]').inert)
+        assert.ok(await page.evaluate(()=>Math.abs(scrollY)<=1),'refresh at top scrolled the homepage')
+        assert.equal(await page.evaluate(()=>document.activeElement===document.querySelector('[data-vsc-demo]')),false,'refresh stole page focus')
+        await page.locator('iframe[data-vsc-demo]').scrollIntoViewIfNeeded()
         assert.ok(await frame.locator('.monaco-workbench').count(),'real Workbench exists')
         await frame.getByText('cheese.scad',{exact:true}).first().waitFor({timeout:20000})
         assert.equal(await frame.getByText('cheese.stl',{exact:true}).count(),0)

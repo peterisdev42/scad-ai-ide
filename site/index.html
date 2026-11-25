@@ -21,6 +21,7 @@
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="apple-touch-icon" href="./assets/cheese.png">
   <script src="./geist/theme.js"></script>
+  <link rel="preload" href="./assets/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="./geist/index.css">
   <link rel="stylesheet" href="./components/diagrams.css">
   <link rel="stylesheet" href="./styles.css">
@@ -55,7 +56,7 @@
   <main id="main" tabindex="-1" class="container page-grid">
 <section class="hero-section geist-guides" id="top"><div class="hero-copy"><span class="eyebrow">OPEN SOURCE / NATIVE VS CODE / AGENT READY</span><h1>From code to solid.</h1><p class="hero-lead">The complete OpenSCAD development environment.</p><p class="hero-detail">Manage runtimes and libraries, write parametric CAD, explore geometry and verify designs — one workspace for humans and AI agents.</p><div class="hero-ctas"><a class="geist-button geist-button--primary" href="#getting-started">Get started <span aria-hidden="true">→</span></a><a class="geist-button" href="#demo">Try the 3D demo <span aria-hidden="true">↓</span></a></div><p class="qualification">Source-first development preview · GPL-3.0</p></div><div class="vsc-demo-wrap" id="demo">
           <div class="vsc-demo-heading"><span>INTERACTIVE 3D DEMO</span><span>Actual SCAD AI IDE preview · cheese.scad · Built from source</span></div>
-          <iframe class="vsc-demo-frame material-base" data-vsc-demo src="./demo/index.html" title="Interactive SCAD AI IDE preview and source editor" loading="lazy"></iframe>
+          <iframe class="vsc-demo-frame material-base" data-vsc-demo inert src="./demo/index.html" title="Interactive SCAD AI IDE preview and source editor" loading="lazy"></iframe>
           <noscript><p class="vsc-demo-caption">JavaScript is required for the interactive demo. The product information and SCAD source download are still available.</p></noscript>
           <p class="vsc-demo-caption">Try the same Preview WebView used by SCAD AI IDE. Switch between the read-only source editor and the 3D view using the editor title action in the Code-OSS Workbench powered by CodinGame. This is a limited static product demo, not a full desktop extension host. The model is compiled from the actual cheese.scad source during the website build. No browser compiler, native clipping or external tools are running. <a href="./assets/cheese.scad" download="cheese.scad">Download SCAD source</a>.</p>
         </div></section>
