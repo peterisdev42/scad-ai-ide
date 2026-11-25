@@ -13,6 +13,7 @@
 - [Native AI Agent integration](https://peterisdev42.github.io/scad-ai-ide/#agent-integration): Supported VS Code Agent hosts can access the same bounded domain services as GUI actions. Native tools, skills and instructions connect environment setup, parameter editing, diagnostics, geometry evidence and design review. No bundled LLM or MCP server. Host/provider support, Workspace Trust, permissions and stale-state checks apply. Registered tools do not establish reliable autonomous-model acceptance.
 
 ## Product facts
+- [SCAD Registry](https://peterisdev42.github.io/scad-registry/): Companion OpenSCAD library catalog and commit-pinned metadata.
 - [Product manifest](https://peterisdev42.github.io/scad-ai-ide/product.json)
 - [Comparison](https://peterisdev42.github.io/scad-ai-ide/#comparison)
 - [Getting started](https://peterisdev42.github.io/scad-ai-ide/#getting-started)

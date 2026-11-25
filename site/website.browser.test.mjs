@@ -36,6 +36,7 @@ test('marketing website: responsive layout, every FAQ, theme, navigation, downlo
     await page.goto(url);
     const theme=page.locator('[data-theme-toggle]');
     await theme.waitFor({state:'visible'});
+    assert.equal(await page.locator('.main-nav a[href="https://peterisdev42.github.io/scad-registry/"]').count(),1);
     const cta=page.locator('.hero-ctas a[href="#demo"]');
     assert.equal(await cta.textContent(),'Try the 3D Demo');
     assert.equal(await cta.locator('*').count(),0);

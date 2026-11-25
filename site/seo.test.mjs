@@ -27,3 +27,11 @@ test('FAQ text and machine-readable product facts match; IDs and ARIA references
   for(const [,href] of html.matchAll(/\bhref="(\.\/[^"#]+)(?:#[^"]*)?"/g))assert.ok(existsSync(join(site,href)),href+' local stylesheet/icon/link');
   for(const [,src] of html.matchAll(/\bsrc="(\.\/[^"]+)"/g))assert.ok(existsSync(join(site,src)),src+' local resource');
 });
+
+test('companion Registry links are visible in navigation, library section and footer',()=>{
+  const target='https://peterisdev42.github.io/scad-registry/';
+  assert.ok(html.match(/<nav class="main-nav"[\s\S]*?<\/nav>/)[0].includes(target));
+  assert.ok(html.match(/<section class="capability geist-grid" id="library-management"[\s\S]*?<\/section>/)[0].includes(target));
+  assert.ok(html.match(/<footer[\s\S]*?<\/footer>/)[0].includes(target));
+  assert.ok(read('llms.txt').includes(target));
+});
