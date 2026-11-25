@@ -20,7 +20,7 @@ test('Pages ships the exact self-contained SCAD example without STL',()=>{
 })
 test('Pages uses the native Workbench and the actual Preview, not a copied shell',()=>{
     const homepage=read('./index.html'), adapter=read('./demo/preview.ts'), host=read('./demo/preview-host.js'), workbench=read('../tools/pages-workbench/main.ts'), build=read('./build-demo.mjs')
-    assert.match(homepage,/<iframe[^>]+src="\.\/demo\/index\.html"/)
+    assert.match(homepage,/<iframe[^>]+data-demo-src="\.\/demo\/generated\/workbench\/index\.html"/)
     assert.match(homepage,/Code-OSS Workbench/)
     assert.match(workbench,/getWorkbenchServiceOverride\(\)/)
     assert.match(workbench,/registerEditorPane\(previewId/)

@@ -7,6 +7,9 @@ import type { PreviewBackend } from '../../src/features/preview/shared/types/Pre
 import type { WebviewToExtensionMessage } from '../../src/features/preview/shared/types/WebviewToExtensionMessage'
 import type { SceneSnapshot } from '../../src/features/preview/webview/contexts/SceneContext'
 
+// Build-time metadata from the exact SCAD source. No runtime metadata request.
+declare const __SCAD_DEMO_COLOR__: string | null
+
 function base64(bytes: Uint8Array): string {
     let raw = ''
     for (let i=0; i<bytes.length; i+=16384) raw += String.fromCharCode(...bytes.subarray(i,i+16384))
@@ -31,9 +34,7 @@ export function mountPreview(root: HTMLElement, modelUrl: URL, status: (text: st
                     if (disposed) return
                     bridge.receive({type:'loadScene',snapshot})
                     // Stable OpenSCAD 3MF may omit color; use the source's default color.
-                    const metadata=await fetch(new URL('./cheese-preview.json',modelUrl)).then(r=>{if(!r.ok)throw new Error('Preview metadata unavailable');return r.json()}).catch(()=>null)
-                    if(disposed)return
-                    if(typeof metadata?.color==='string'&&/^#[0-9a-f]{6}$/i.test(metadata.color))app.viewSettingsContext.set('modelColor',metadata.color)
+                    if(typeof __SCAD_DEMO_COLOR__==='string'&&/^#[0-9a-f]{6}$/i.test(__SCAD_DEMO_COLOR__))app.viewSettingsContext.set('modelColor',__SCAD_DEMO_COLOR__)
                     bridge.receive({type:'previewBackend',backend})
                     bridge.receive({type:'updateParameters',parameters:[],parameterSets:{},activeSetName:undefined,overrides:{}})
                     bridge.receive({type:'loadingState',loading:true,message:'Loading cheese.scad preview…'})

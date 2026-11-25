@@ -37,4 +37,34 @@
     }
   }
   if (year) year.textContent = String(new Date().getFullYear());
+
+  // A cache worker is optional, never a prerequisite for the native demo.
+  // Start immediately on a controlled page. On a cold visit give the worker
+  // a bounded opportunity to claim this page, then fall back to normal HTTP.
+  const frame = document.querySelector("[data-demo-src]");
+  if (frame) {
+    const start = () => { if (!frame.hasAttribute("src")) frame.src = frame.dataset.demoSrc; };
+    const sw = navigator.serviceWorker;
+    if (!frame.hasAttribute("data-demo-cache") || !sw) start();
+    else {
+      const register = () => sw.register(new URL("./sw.js", location.href), { scope: "./", updateViaCache: "none" });
+      if (sw.controller) {
+        start();
+        register().catch(() => {});
+      } else {
+        let finished = false;
+        const finish = () => {
+          if (finished) return;
+          finished = true;
+          clearTimeout(deadline);
+          sw.removeEventListener("controllerchange", controlled);
+          start();
+        };
+        const controlled = () => { if (sw.controller) finish(); };
+        const deadline = setTimeout(finish, 1500);
+        sw.addEventListener("controllerchange", controlled);
+        register().then(controlled, finish);
+      }
+    }
+  }
 })();

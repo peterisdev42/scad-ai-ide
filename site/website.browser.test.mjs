@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { resolve, sep, extname } from 'node:path';
 import { chromium } from 'playwright';
 import test from 'node:test';
-const root=fileURLToPath(new URL('.',import.meta.url));
+const root=process.env.PAGES_ROOT?resolve(process.env.PAGES_ROOT):fileURLToPath(new URL('.',import.meta.url));
 const prefix='/scad-ai-ide/';
 const mime={'.html':'text/html','.css':'text/css','.js':'text/javascript','.svg':'image/svg+xml','.png':'image/png','.woff2':'font/woff2','.json':'application/json','.txt':'text/plain','.xml':'application/xml','.scad':'text/plain'};
 test('marketing website: responsive layout, every FAQ, theme, navigation, downloads and redirects', {timeout:120000},async()=>{
@@ -27,7 +27,7 @@ test('marketing website: responsive layout, every FAQ, theme, navigation, downlo
   let browser;
   try {
     browser=await chromium.launch({headless:true});
-    const context=await browser.newContext({viewport:{width:1440,height:960},colorScheme:'dark',reducedMotion:'reduce'});
+    const context=await browser.newContext({viewport:{width:1440,height:960},colorScheme:'dark',reducedMotion:'reduce',serviceWorkers:'block'});
     await context.route('**/demo/**',route=>route.fulfill({status:200,contentType:'text/html',body:'<!doctype html><title>Demo isolated for marketing tests</title>'}));
     const page=await context.newPage();
     const errors=[],failed=[];
@@ -36,6 +36,11 @@ test('marketing website: responsive layout, every FAQ, theme, navigation, downlo
     await page.goto(url);
     const theme=page.locator('[data-theme-toggle]');
     await theme.waitFor({state:'visible'});
+    const cta=page.locator('.hero-ctas a[href="#demo"]');
+    assert.equal(await cta.textContent(),'Try the 3D Demo');
+    assert.equal(await cta.locator('*').count(),0);
+    assert.equal(await cta.evaluate(e=>getComputedStyle(e).whiteSpace),'nowrap');
+    if(process.env.PAGES_ROOT)assert.equal(await page.locator('head link[rel="stylesheet"]').count(),1);
     assert.equal(await page.locator('html').getAttribute('data-theme'),'light');
     await page.evaluate(async()=>{await document.fonts.load('400 16px Geist');await document.fonts.load('400 13px "Geist Mono"');await document.fonts.ready});
     assert.ok(await page.evaluate(()=>[...document.fonts].some(f=>f.family==='Geist'&&f.status==='loaded')));

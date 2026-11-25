@@ -57,12 +57,16 @@ jobs:
           node --check site/seo.test.mjs
           node site/build-og.mjs
           node --test site/demo.test.mjs site/seo.test.mjs site/geist.test.mjs
+      - name: Assemble optimized Pages artifact
+        run: node site/build-pages.mjs
+      - name: Validate optimized artifact
+        run: node --test site/pages-build.test.mjs
       - name: Install Chromium for browser validation
         run: npx playwright install --with-deps chromium
       - name: Validate responsive marketing UI and FAQ
-        run: node --test site/website.browser.test.mjs
+        run: PAGES_ROOT=.build/pages node --test site/website.browser.test.mjs
       - name: Smoke test actual WebView and editor switching
-        run: node --test site/demo/browser.test.mjs
+        run: PAGES_ROOT=.build/pages node --test site/demo/browser.test.mjs
       - name: Upload generated Workbench dependency lock
         if: always()
         uses: actions/upload-artifact@v4

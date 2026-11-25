@@ -19,7 +19,7 @@ const sourceBytes=await readFile(source)
 const color=sourceBytes.toString('utf8').match(/cheese_color\s*=\s*"(#[0-9a-f]{6})"/i)?.[1]??null
 await writeFile(resolve(out,'cheese-preview.json'),JSON.stringify({source:'cheese.scad',sha256:createHash('sha256').update(sourceBytes).digest('hex'),color})+'\n')
 
-await build({absWorkingDir:root,bundle:true,platform:'browser',format:'esm',target:'es2022',minify:true,legalComments:'linked',logLevel:'info',entryPoints:['site/demo/preview.ts'],tsconfig:'tsconfig.webview.json',outfile:resolve(out,'preview.js'),loader:{'.stl':'binary','.glsl':'text'}})
+await build({absWorkingDir:root,bundle:true,platform:'browser',format:'esm',target:'es2022',minify:true,legalComments:'linked',logLevel:'info',entryPoints:['site/demo/preview.ts'],tsconfig:'tsconfig.webview.json',outfile:resolve(out,'preview.js'),define:{__SCAD_DEMO_COLOR__:JSON.stringify(color)},loader:{'.stl':'binary','.glsl':'text'}})
 for(const name of ['codicon.css','codicon.ttf'])await copyFile(resolve(root,'node_modules/@vscode/codicons/dist',name),resolve(out,'codicons',name))
 execFileSync(process.platform==='win32'?'npm.cmd':'npm',['run','build','--prefix','tools/pages-workbench'],{cwd:root,stdio:'inherit',env:{...process.env,NODE_OPTIONS:'--max-old-space-size=6144'}})
 for(const name of ['cheese.3mf','cheese-preview.json','preview.js','workbench/index.html','codicons/codicon.css','codicons/codicon.ttf'])if(!(await stat(resolve(out,name))).size)throw Error('Empty demo asset: '+name)

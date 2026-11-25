@@ -6,18 +6,21 @@ import { fileURLToPath } from 'node:url'
 import { resolve, extname, sep } from 'node:path'
 import { chromium } from 'playwright'
 import test from 'node:test'
-const site=fileURLToPath(new URL('../',import.meta.url))
+const site=process.env.PAGES_ROOT?resolve(process.env.PAGES_ROOT):fileURLToPath(new URL('../',import.meta.url))
+const published=Boolean(process.env.PAGES_ROOT)
 const prefix='/scad-ai-ide/'
 const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.3mf':'application/vnd.ms-package.3dmanufacturing-3dmodel+xml','.scad':'text/plain','.png':'image/png','.svg':'image/svg+xml','.ttf':'font/ttf','.woff':'font/woff','.woff2':'font/woff2','.json':'application/json','.wasm':'application/wasm','.mjs':'text/javascript','.map':'application/json','.webmanifest':'application/manifest+json'}
 test('native Workbench draws the actual Preview and reopens the same source file', {timeout:360000}, async ()=>{
+    const network=[]
     const server=createServer(async(req,res)=>{
         try{
             const pathname=new URL(req.url,'http://localhost').pathname
+            if(pathname.includes('/demo/releases/'))network.push(pathname)
             if(!pathname.startsWith(prefix)){res.writeHead(404).end();return}
             const local=decodeURIComponent(pathname.slice(prefix.length))
             const file=resolve(site,local.endsWith('/')||!local?local+'index.html':local)
             if(!file.startsWith(resolve(site)+sep)){res.writeHead(403).end();return}
-            res.writeHead(200,{'content-type':mime[extname(file)]||'application/octet-stream'}).end(await readFile(file))
+            res.writeHead(200,{'content-type':mime[extname(file)]||'application/octet-stream','cache-control':'no-store'}).end(await readFile(file))
         }catch{if(!res.headersSent)res.writeHead(404);res.end()}
     })
     await new Promise(r=>server.listen(0,'127.0.0.1',r))
@@ -35,6 +38,7 @@ test('native Workbench draws the actual Preview and reopens the same source file
         })
         const errors=[]
         page.on('pageerror',e=>errors.push(String(e)))
+        const coldStart=Date.now()
         await page.goto('http://127.0.0.1:'+server.address().port+prefix)
         assert.equal(await page.locator('html').getAttribute('data-theme'),'light','first visit is light even with dark OS')
         await page.evaluate(async()=>{await document.fonts.ready; await document.fonts.load('400 16px Geist')})
@@ -55,10 +59,20 @@ test('native Workbench draws the actual Preview and reopens the same source file
             assert.ok(state.trace.every(x=>Math.abs(x.y)<=1),label+' transiently scrolled homepage: '+JSON.stringify(state.trace))
         }
         await assertPassiveStartup('first visit')
+        const cold={readyMs:Date.now()-coldStart,networkRequests:network.length}
+        if(published){
+            assert.ok(await page.evaluate(()=>Boolean(navigator.serviceWorker.controller)),'cache worker did not claim homepage')
+            assert.ok(cold.networkRequests>0,'expected cold demo requests')
+            assert.ok(await page.evaluate(async()=>{const names=await caches.keys();for(const name of names){if(!name.startsWith('scad-ai-ide-pages-demo-v1:'))continue;const keys=await (await caches.open(name)).keys();if(keys.some(r=>r.url.endsWith('/generated/cheese.3mf'))&&keys.some(r=>r.url.endsWith('/generated/preview.js'))&&keys.some(r=>r.url.includes('/generated/workbench/assets/')&&r.url.endsWith('.js')))return true}return false}),'critical Demo assets not cached')
+        }
+        const countBeforeReload=network.length,warmStart=Date.now()
         await page.reload()
         await frame.locator('#workbench[data-workbench-ready="true"]').waitFor({timeout:90000})
         await page.waitForFunction(()=>!document.querySelector('[data-vsc-demo]').inert)
         await assertPassiveStartup('refresh at top')
+        const warm={readyMs:Date.now()-warmStart,networkRequests:network.length-countBeforeReload}
+        console.log('Demo startup metrics:',JSON.stringify({cold,warm}))
+        if(published)assert.ok(warm.networkRequests<cold.networkRequests,'warm reload did not reduce network requests: '+JSON.stringify({cold,warm}))
         // Direct user scrolling must not be blocked or snapped back to top.
         await page.mouse.wheel(0,320)
         await page.waitForFunction(()=>scrollY>100)
