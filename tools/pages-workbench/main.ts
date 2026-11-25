@@ -213,6 +213,21 @@ async function start(){
   await api.commands.executeCommand('workbench.view.explorer')
   if(window.innerWidth<580)layout.setPartHidden(true,Parts.SIDEBAR_PART)
   await editor.openEditor({resource:source,options:{...options,override:previewId}})
+  // The native Activity Bar is visual context only in this product demo.
+  // Inert preserves its layout/theme while suppressing pointer, focus and
+  // keyboard interaction, including the bottom Accounts/Manage controls.
+  let activityBar:HTMLElement|null=null
+  const lockActivityBar=()=>{
+    if(activityBar?.isConnected)return
+    activityBar=root.querySelector<HTMLElement>('.part.activitybar')
+    if(activityBar)activityBar.inert=true
+  }
+  lockActivityBar()
+  const activityBarObserver=new MutationObserver(lockActivityBar)
+  activityBarObserver.observe(root,{childList:true,subtree:true})
+  window.addEventListener('pagehide',event=>{
+    if(!event.persisted)activityBarObserver.disconnect()
+  })
   root.dataset.workbenchReady='true'
   boot.hidden=true
 }

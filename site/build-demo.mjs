@@ -29,5 +29,5 @@ const fontOut=resolve(root,'site/assets/fonts');
 await mkdir(fontOut,{recursive:true});
 for(const [folder,name] of [['geist-sans','Geist-Variable.woff2'],['geist-mono','GeistMono-Variable.woff2']])await copyFile(resolve(fontRoot,'dist/fonts',folder,name),resolve(fontOut,name));
 let copiedLicense=false;
-for(const name of ['LICENSE','LICENSE.txt','OFL.txt','LICENSE.md']){try{await copyFile(resolve(fontRoot,name),resolve(fontOut,'LICENSE.txt'));copiedLicense=true;break}catch(error){if(error.code!=='ENOENT')throw error}}
+for(const name of ['LICENSE.TXT','LICENSE','LICENSE.txt','OFL.txt','LICENSE.md']){try{await copyFile(resolve(fontRoot,name),resolve(fontOut,'LICENSE.txt'));copiedLicense=true;break}catch(error){if(error.code!=='ENOENT')throw error}}
 if(!copiedLicense)throw Error('Geist package license not found');
