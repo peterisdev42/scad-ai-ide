@@ -1,6 +1,6 @@
 # CAD 手动逐项验收单
 
-> 按 [Codex 原生 Agent 验收 SPEC](../agent-codex-acceptance-spec.md) 优先使用 **GPT-6.2 Sol（Low）**，目录缺少时使用 **GPT-6.1 Sol（Low）**。先完成 M11a，记录实际模型、等级和会话。
+> 按 [Codex 原生 Agent 验收 SPEC](../agent-codex-acceptance-spec.md) 在 VS Code 内置 Chat 的 Codex 会话使用 **GPT-6.1 Sol（Low）**。先在最终生产 VSIX 上完成 M11a，记录实际模型、推理等级和会话。
 
 所有条目初始为 **NOT_RUN**。本单专门记录必须由真人操作、或当前宿主自动化无法可靠执行的交互，不以自动点击、模拟 adapter 或模型回复代签。用户逐条填结果即可；失败请保留窗口和原始证据，不需要先判断归谁修。
 

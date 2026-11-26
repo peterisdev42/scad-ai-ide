@@ -36,7 +36,7 @@ async function fixture() {
 
 const unixOnly = { skip: process.platform === 'win32' }
 
-test('release checksum is downloaded and verified when present, and skipped only when absent', async (t) => {
+test('managed online installation requires a companion checksum and verifies the downloaded archive', async (t) => {
     const windows: RuntimeSystem = { platform: 'win32', architecture: 'x64', name: '', version: '' }
     const name = 'openscad-cli-windows-x86_64.zip'
     const download = `https://github.com/peterisdev42/openscad-cli-builder/releases/download/test/${name}`
@@ -70,7 +70,12 @@ test('release checksum is downloaded and verified when present, and skipped only
                         return { ...candidate, id: 'test', version: '2021.01', platform: 'win32', status: 'available' }
                     },
                 })
-                if (scenario === 'valid' || scenario === 'absent') {
+                if (scenario === 'absent') {
+                    await assert.rejects(installation, /does not provide a SHA256 checksum/)
+                    assert.deepEqual(await managedRuntimePaths(root, windows), [])
+                    assert.equal(calls.includes(download), false)
+                    assert.equal(probes, 0)
+                } else if (scenario === 'valid') {
                     const executable = await installation
                     assert.deepEqual(await managedRuntimePaths(root, windows), [executable])
                     assert.ok(probes > 0)
@@ -176,9 +181,9 @@ test('Windows ZIP installation preserves dependency files and discovers openscad
         const executable = await installRuntimeBuild(
             root,
             windows,
-            { ...build, name: 'openscad-cli-windows-x86_64.zip', checksumUrl: undefined, size: bytes.length },
+            { ...build, name: 'openscad-cli-windows-x86_64.zip', size: bytes.length },
             {
-                request: async () => new Response(Buffer.from(bytes)),
+                request: async (url) => String(url) === build.checksumUrl ? new Response(createHash('sha256').update(bytes).digest('hex')) : new Response(Buffer.from(bytes)),
                 check: async (candidate) => {
                     assert.equal(await readFile(candidate.command.executable, 'utf8'), 'test executable')
                     return { ...candidate, id: 'test', version: '2021.01', platform: 'win32', status: 'available' }
@@ -388,7 +393,7 @@ test('reinstall preserves matching offline imports until the replacement is read
     const root = await mkdtemp(path.join(os.tmpdir(), 'scad-reinstall-'))
     const windows: RuntimeSystem = { platform: 'win32', architecture: 'x64', name: 'Windows', version: '' }
     try {
-        const release = { ...build, name: 'openscad-cli-windows-x86_64.zip', tag: 'openscad-cli-2026.10-TEST4', checksumUrl: undefined }
+        const release = { ...build, name: 'openscad-cli-windows-x86_64.zip', tag: 'openscad-cli-2026.10-TEST4' }
         const bytes = zipSync({
             'openscad-cli-windows-x86_64/bin/openscad.exe': strToU8('test executable'),
             'openscad-cli-windows-x86_64/build-info.json': strToU8(JSON.stringify({ tag: 'openscad-2026.10-TEST4' })),
@@ -406,9 +411,9 @@ test('reinstall preserves matching offline imports until the replacement is read
         await writeFile(path.join(other, 'keep'), 'other version')
         const executable = await installRuntimeBuild(storage, windows, release, {
             check,
-            request: async () => {
+            request: async (url) => {
                 assert.equal(await readFile(local, 'utf8'), 'test executable')
-                return new Response(Buffer.from(bytes))
+                return String(url) === release.checksumUrl ? new Response(createHash('sha256').update(bytes).digest('hex')) : new Response(Buffer.from(bytes))
             },
         })
         await assert.rejects(readFile(local))

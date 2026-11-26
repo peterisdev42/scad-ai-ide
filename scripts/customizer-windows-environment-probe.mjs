@@ -6,7 +6,7 @@ import path from 'node:path'
 import os from 'node:os'
 import assert from 'node:assert/strict'
 
-// Diagnostic, not an acceptance gate. No user source or complete environment is collected.
+// Probe an isolated fixture. No user source or complete environment is collected.
 assert.equal(process.platform, 'win32', 'This diagnostic requires actual Windows')
 const binary = process.argv[2]
 assert.ok(binary, 'Supply an explicit native CLI')
@@ -30,7 +30,12 @@ try {
     const store = path.join(root, 'store'), empty = path.join(root, 'empty')
     await mkdir(store); await mkdir(empty)
     await writeFile(path.join(store, 'smoke.scad'), 'module test_shape() { cube(10); }\n')
-    const cleanEnv = Object.fromEntries(Object.entries(process.env).filter(([key]) => key.toUpperCase() !== 'OPENSCADPATH'))
+    const isolatedEnvironment = new Set(['OPENSCADPATH', 'HOME', 'USERPROFILE', 'APPDATA', 'LOCALAPPDATA', 'XDG_CONFIG_HOME', 'XDG_CACHE_HOME'])
+    const cleanEnv = Object.fromEntries(Object.entries(process.env).filter(([key]) => !isolatedEnvironment.has(key.toUpperCase())))
+    const profileEnv = (profile, appData, cache) => ({
+        HOME: profile, USERPROFILE: profile, APPDATA: appData, LOCALAPPDATA: cache, XDG_CONFIG_HOME: appData, XDG_CACHE_HOME: cache,
+    })
+    Object.assign(cleanEnv, profileEnv(root, root, root))
     const render = async ({ id, source, output, cwd, env, mount, kind }) => {
         const result = native(['--export-format', 'asciistl', '-o', output, source], { cwd, env })
         let width = null, sha256 = null, bytes = 0
@@ -86,6 +91,35 @@ try {
             ]) await render({ id: variant, source, output: path.join(ascii, variant + '.stl'), cwd: ascii, env, mount, kind })
         }
     }
+    for (const [label, name] of [['space', 'space only'], ['zh', '中文'], ['ja', '日本語'], ['nonbmp', '😀']]) {
+        const directory = path.join(root, name)
+        const source = path.join(directory, 'cube.scad')
+        const asciiSource = path.join(ascii, 'cube.scad')
+        await mkdir(directory)
+        await writeFile(source, 'cube(10);\n')
+        for (const [role, input, output, cwd, env] of [
+            ['source', source, ascii, ascii, cleanEnv],
+            ['output', asciiSource, directory, ascii, cleanEnv],
+            ['cwd', asciiSource, ascii, directory, cleanEnv],
+            ['profile', asciiSource, ascii, ascii, { ...cleanEnv, ...profileEnv(directory, root, root) }],
+            ['config', asciiSource, ascii, ascii, { ...cleanEnv, ...profileEnv(root, directory, root) }],
+            ['cache', asciiSource, ascii, ascii, { ...cleanEnv, ...profileEnv(root, root, directory) }],
+        ]) {
+            const id = `${role}-${label}`
+            await render({ id, source: input, output: path.join(output, id + '.stl'), cwd, env, kind: 'no-include' })
+        }
+        const includedSource = path.join(ascii, 'library-' + label + '.scad')
+        await writeFile(includedSource, 'include <fixture-library/smoke.scad>; test_shape();\n')
+        for (const kind of ['direct', 'junction', 'copy']) {
+            const lib = path.join(directory, kind)
+            const mount = path.join(lib, 'fixture-library')
+            await mkdir(lib)
+            if (kind === 'junction') await symlink(store, mount, 'junction')
+            else await cp(store, mount, { recursive: true })
+            const id = `library-${label}-${kind}`
+            await render({ id, source: includedSource, output: path.join(ascii, id + '.stl'), cwd: ascii, env: { ...cleanEnv, OPENSCADPATH: lib }, mount, kind })
+        }
+    }
     // Preserve the exact historical project/.scad/lib layout and relative-path experiment.
     for (const [label, project, linked] of [['historical-ascii', ascii, false], ['historical-unicode', unicode, false], ['historical-unicode-junction', path.join(root, '项目 B'), true]]) {
         const lib = path.join(project, '.scad/lib'), mount = path.join(lib, 'fixture-library')
@@ -94,9 +128,12 @@ try {
         else await cp(store, mount, { recursive: true })
         const source = path.join(project, 'main.scad')
         await writeFile(source, 'include <fixture-library/smoke.scad>; test_shape();\n')
-        for (const representation of ['absolute', 'relative']) await render({ id: `${label}-${representation}`, source, output: path.join(ascii, `${label}-${representation}.stl`), cwd: project, env: buildLibraryEnvironment([representation === 'absolute' ? lib : path.relative(project, lib)], process.env), mount, kind: linked ? 'junction' : 'direct' })
+        for (const representation of ['absolute', 'relative']) await render({ id: `${label}-${representation}`, source, output: path.join(ascii, `${label}-${representation}.stl`), cwd: project, env: buildLibraryEnvironment([representation === 'absolute' ? lib : path.relative(project, lib)], cleanEnv), mount, kind: linked ? 'junction' : 'direct' })
     }
 } finally { await rm(root, { recursive: true, force: true }) }
 const report = { scope: 'Actual Windows diagnostic; individual PASS does not imply Windows release gate PASS. Quoted-path is a probe, not a supported env contract.', binary, binarySha256, version, platform: process.platform, release: os.release(), arch: process.arch, node: process.version, image: { name: process.env.ImageOS, version: process.env.ImageVersion }, runUrl: process.env.GITHUB_RUN_ID ? `https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}` : null, sourceCommit: process.env.GITHUB_SHA ?? null, processEnvironment: 'Node spawnSync Unicode environment; no shell command concatenation', outcomes }
 if (process.argv[3]) await writeFile(process.argv[3], JSON.stringify(report, null, 2) + '\n')
 console.log(JSON.stringify(report, null, 2))
+if (process.argv.includes('--strict') && (version.exitCode !== 0 || outcomes.some(({ id, status }) => !['quoted-path', 'ascii-symlink'].includes(id) && status !== 'PASS'))) {
+    process.exitCode = 1
+}

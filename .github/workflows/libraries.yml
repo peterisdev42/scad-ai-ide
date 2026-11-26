@@ -28,36 +28,49 @@ jobs:
                   node-version: '24'
                   cache: npm
             - run: npm ci
-            - name: Install verified managed OpenSCAD CLI (Linux)
+            - name: Install native graphics dependencies
               if: runner.os == 'Linux'
               run: |
                   sudo apt-get update
-                  sudo apt-get install -y libegl1 libgl1 libopengl0
-                  customizer_archive="$RUNNER_TEMP/openscad-cli-linux-x86_64.tar.gz"
-                  customizer_runtime="$RUNNER_TEMP/customizer-native-runtime"
-                  curl --fail --location --silent --show-error 'https://github.com/peterisdev42/openscad-cli-builder/releases/download/openscad-2026.11-RC0/openscad-cli-linux-x86_64.tar.gz' -o "$customizer_archive"
-                  echo "c039d2fac28296b467dc6d85281a76e6a1b13bf078596a402ee34ee9ac8aed0f  $customizer_archive" | sha256sum --check
-                  mkdir -p "$customizer_runtime"
-                  tar -xzf "$customizer_archive" -C "$customizer_runtime"
-                  echo "SCAD_OPENSCAD_EXECUTABLE=$customizer_runtime/openscad-cli-linux-x86_64/bin/openscad" >> "$GITHUB_ENV"
-            - name: Install OpenSCAD (macOS)
-              if: runner.os == 'macOS'
-              run: |
-                  brew install --cask openscad@snapshot
-                  echo "SCAD_OPENSCAD_EXECUTABLE=$(command -v openscad)" >> "$GITHUB_ENV"
-            - name: Install verified managed OpenSCAD CLI (Windows)
-              if: runner.os == 'Windows'
+                  sudo apt-get install -y libegl1 libgl1 libopengl0 xvfb xauth
+            - name: Install verified managed OpenSCAD CLI
               shell: pwsh
               run: |
-                  $archive = Join-Path $env:RUNNER_TEMP 'openscad-cli-windows-x86_64.zip'
+                  $ErrorActionPreference = 'Stop'
+                  $lock = Get-Content .github/runtime-cli-lock.json -Raw | ConvertFrom-Json -AsHashtable
+                  $target = node -p 'process.platform + "-" + process.arch'
+                  $asset = $lock.targets[$target]
+                  if (!$asset) { throw "No native OpenSCAD CLI locked for $target" }
+                  $archive = Join-Path $env:RUNNER_TEMP $asset.name
                   $runtime = Join-Path $env:RUNNER_TEMP 'customizer-native-runtime'
-                  Invoke-WebRequest 'https://github.com/peterisdev42/openscad-cli-builder/releases/download/openscad-2026.11-RC0/openscad-cli-windows-x86_64.zip' -OutFile $archive
-                  $digest = (Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant()
-                  if ($digest -ne '8e17ce1f39a6b32ad6c710076f86037a74fda27c4110c70f613c649945c7c436') { throw 'OpenSCAD archive checksum mismatch' }
-                  Expand-Archive $archive -DestinationPath $runtime
-                  $executable = Join-Path $runtime 'openscad-cli-windows-x86_64/bin/openscad.exe'
-                  "SCAD_OPENSCAD_EXECUTABLE=$executable" >> $env:GITHUB_ENV
+                  Invoke-WebRequest $asset.url -OutFile $archive
+                  $checksumFile = "$archive.sha256"
+                  Invoke-WebRequest "$($asset.url).sha256" -OutFile $checksumFile
+                  $checksum = ((Get-Content $checksumFile -Raw).Trim() -split '\s+')[0]
+                  $archiveHash = (Get-FileHash $archive -Algorithm SHA256).Hash
+                  if ($checksum -ne $asset.archiveSha256 -or $archiveHash -ne $asset.archiveSha256) {
+                      throw 'OpenSCAD archive checksum mismatch'
+                  }
+                  if ($target -eq 'win32-x64') {
+                      Expand-Archive $archive -DestinationPath $runtime
+                  } else {
+                      New-Item -ItemType Directory -Path $runtime | Out-Null
+                      tar -xzf $archive -C $runtime
+                      if ($LASTEXITCODE -ne 0) { throw 'OpenSCAD archive extraction failed' }
+                  }
+                  $package = Join-Path $runtime ($asset.name -replace '\.(tar\.gz|zip)$', '')
+                  $metadata = Get-Content (Join-Path $package 'build-info.json') -Raw | ConvertFrom-Json
+                  if ($metadata.tag -ne $lock.tag -or $metadata.commit -ne $lock.upstreamCommit) {
+                      throw 'OpenSCAD build provenance mismatch'
+                  }
+                  $binary = Join-Path $package $asset.binary
+                  if ((Get-FileHash $binary -Algorithm SHA256).Hash -ne $asset.binarySha256) {
+                      throw 'OpenSCAD binary checksum mismatch'
+                  }
+                  $executable = Join-Path $package $asset.executable
                   & $executable --version
+                  if ($LASTEXITCODE -ne 0) { throw 'OpenSCAD version probe failed' }
+                  "SCAD_OPENSCAD_EXECUTABLE=$executable" >> $env:GITHUB_ENV
             - run: npm run check-types
             - run: npm run lint
             - run: npm run compile-tests
@@ -66,20 +79,33 @@ jobs:
               shell: bash
               run: |
                   mkdir -p .build
-                  node scripts/customizer-windows-environment-probe.mjs "$SCAD_OPENSCAD_EXECUTABLE" .build/customizer-windows-environment.json
+                  node scripts/customizer-windows-environment-probe.mjs "$SCAD_OPENSCAD_EXECUTABLE" .build/customizer-windows-environment.json --strict
             - name: Check native Customizer parity
+              if: always() && env.SCAD_OPENSCAD_EXECUTABLE != ''
               shell: bash
               run: |
                   mkdir -p .build
+                  set -euo pipefail
                   node scripts/customizer-native-audit.mjs "$SCAD_OPENSCAD_EXECUTABLE" .build/customizer-native.json --strict
                   node scripts/customizer-native-import-audit.mjs "$SCAD_OPENSCAD_EXECUTABLE" .build/customizer-native-import.json
             - name: Run required native library gate
+              if: always() && env.SCAD_OPENSCAD_EXECUTABLE != ''
               shell: bash
-              run: npm run test:libraries 2>&1 | tee .build/library-tests.log
+              run: |
+                  set -euo pipefail
+                  npm run test:libraries 2>&1 | tee .build/library-tests.log
             - name: Run required native CAD diagnostics gate
               if: always() && env.SCAD_OPENSCAD_EXECUTABLE != ''
               shell: bash
-              run: npm run test:cad:real 2>&1 | tee .build/cad-real.log
+              run: |
+                  set -euo pipefail
+                  npm run test:cad:real 2>&1 | tee .build/cad-real.log
+            - name: Run live Registry and offline recovery
+              if: always() && inputs.online && env.SCAD_OPENSCAD_EXECUTABLE != ''
+              shell: bash
+              run: |
+                  set -euo pipefail
+                  npm run test:libraries:online 2>&1 | tee .build/library-online.log
             - name: Preserve native comparison
               if: always()
               uses: actions/upload-artifact@v4
@@ -92,6 +118,7 @@ jobs:
                       .build/customizer-windows-environment.json
                       .build/library-tests.log
                       .build/cad-real.log
+                      .build/library-online.log
                   if-no-files-found: warn
             - name: Save test report context
               if: always()
