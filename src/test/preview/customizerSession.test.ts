@@ -10,14 +10,17 @@ import { transformSync } from 'esbuild'
 import { CustomizerService } from '../../core/customizer/CustomizerService'
 import { ScadParser } from '../../features/preview/extension/services/ScadParser'
 import { ScadParameters } from '../../features/preview/extension/core/ScadParameters'
+import { PreviewExporterUnavailableError } from '../../platform/previewExporter/runtime'
 
 function fixture(domain?: unknown) {
     let backend!: (state: { kind: 'pending' | 'csg' | 'mesh'; reason?: string; frameReady?: boolean }) => void
+    let renderError!: (error: Error) => void
     const service = new CustomizerService()
     let source = 'width=0.5; // [0:0.1:1]'
     service.load('file:///model.scad', source)
     const watchers = new Map<string, () => void>()
     const renders: { width?: number }[] = []
+    const renderModes: ('preview' | 'render')[] = []
     const disposable = { dispose() {} }
     const module = { exports: {} as { ScadSession: new (document: unknown, customizer: CustomizerService, domain?: unknown) => { dispose(): void; currentOverrides: Record<string, unknown>; setPreviewMode(mode: 'preview' | 'render'): void } } }
     runInNewContext(transformSync(readFileSync(new URL('../../features/preview/extension/core/ScadSession.ts', import.meta.url), 'utf8'), { loader: 'ts', format: 'cjs' }).code, {
@@ -29,6 +32,7 @@ function fixture(domain?: unknown) {
         require: (name: string) => {
             if (name.endsWith('/CustomizerPresets')) return presetCore
             if (name.endsWith('/preview/performance')) return { validPreviewTimings }
+            if (name.endsWith('/previewExporter/runtime')) return { PreviewExporterUnavailableError }
             if (name === 'node:path') return path
             if (name.endsWith('/ModelFormat')) return { ModelFormat }
             if (name === 'vscode')
@@ -54,14 +58,16 @@ function fixture(domain?: unknown) {
             if (name.endsWith('/ScadRenderer'))
                 return {
                     ScadRenderer: class {
-                        constructor(options: { onBackendChange: typeof backend }) {
+                        constructor(options: { onBackendChange: typeof backend; onError: typeof renderError }) {
                             backend = options.onBackendChange
+                            renderError = options.onError
                         }
                         renderLatest(_: string, values: { width?: number }) {
                             renders.push({ ...values })
                         }
-                        render(_: string, values: { width?: number }) {
+                        render(_: string, values: { width?: number }, mode: 'preview' | 'render') {
                             renders.push({ ...values })
+                            renderModes.push(mode)
                         }
                         dispose() {}
                     },
@@ -80,8 +86,16 @@ function fixture(domain?: unknown) {
         },
     })
     const session = new module.exports.ScadSession({ uri: { fsPath: '/model.scad', path: '/model.scad', toString: () => 'file:///model.scad' }, getText: () => source }, service, domain)
-    return { service, session, watchers, renders, changeSource: (text: string) => { source = text; service.load('file:///model.scad', source) }, backend: (state: Parameters<typeof backend>[0]) => backend(state) }
+    return { service, session, watchers, renders, renderModes, renderError, changeSource: (text: string) => { source = text; service.load('file:///model.scad', source) }, backend: (state: Parameters<typeof backend>[0]) => backend(state) }
 }
+
+test('an unavailable Preview Exporter retries the session with Full Render', () => {
+    const { session, renderModes, renderError } = fixture()
+    session.setPreviewMode('preview')
+    renderError(new PreviewExporterUnavailableError('Unavailable'))
+    assert.deepEqual(renderModes, ['preview', 'render'])
+    session.dispose()
+})
 
 test('preset selection renders immediately before file initialization and ordinary edits always update Preview', () => {
     const { service, session, watchers, renders } = fixture()

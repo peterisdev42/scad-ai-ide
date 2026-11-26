@@ -80,6 +80,28 @@ jobs:
               run: |
                   mkdir -p .build
                   node scripts/customizer-windows-environment-probe.mjs "$SCAD_OPENSCAD_EXECUTABLE" .build/customizer-windows-environment.json --strict
+            - name: Compare Windows paths using the pinned Snapshot
+              if: always() && runner.os == 'Windows' && env.SCAD_OPENSCAD_EXECUTABLE != ''
+              shell: pwsh
+              run: |
+                  $ErrorActionPreference = 'Stop'
+                  $url = 'https://github.com/peterisdev42/openscad-cli-builder/releases/download/openscad-2026.11.23/openscad-cli-windows-x86_64.zip'
+                  $archive = Join-Path $env:RUNNER_TEMP 'openscad-snapshot.zip'
+                  $runtime = Join-Path $env:RUNNER_TEMP 'openscad-snapshot'
+                  $expected = '8f8cb0f97fe8c07db9cf97a47099d546d56a09fdd67a4711d8b871092f19bd30'
+                  Invoke-WebRequest $url -OutFile $archive
+                  Invoke-WebRequest "$url.sha256" -OutFile "$archive.sha256"
+                  $checksum = ((Get-Content "$archive.sha256" -Raw).Trim() -split '\s+')[0]
+                  if ($checksum -ne $expected -or (Get-FileHash $archive -Algorithm SHA256).Hash -ne $expected) {
+                      throw 'Snapshot archive checksum mismatch'
+                  }
+                  Expand-Archive $archive -DestinationPath $runtime
+                  $package = Join-Path $runtime 'openscad-cli-windows-x86_64'
+                  $metadata = Get-Content (Join-Path $package 'build-info.json') -Raw | ConvertFrom-Json
+                  if ($metadata.tag -ne 'openscad-2026.11.23' -or $metadata.commit -ne '77a103b912c69e86f6b1217bd68500d2926ed1b2') {
+                      throw 'Snapshot build provenance mismatch'
+                  }
+                  node scripts/customizer-windows-environment-probe.mjs (Join-Path $package 'bin/openscad.exe') .build/customizer-windows-snapshot.json
             - name: Check native Customizer parity
               if: always() && env.SCAD_OPENSCAD_EXECUTABLE != ''
               shell: bash
@@ -116,6 +138,7 @@ jobs:
                       .build/customizer-native.json
                       .build/customizer-native-import.json
                       .build/customizer-windows-environment.json
+                      .build/customizer-windows-snapshot.json
                       .build/library-tests.log
                       .build/cad-real.log
                       .build/library-online.log
