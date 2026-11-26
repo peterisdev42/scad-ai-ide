@@ -1,33 +1,25 @@
 import { join } from 'node:path'
-import { commands, ConfigurationTarget, ProgressLocation, window, workspace, type ExtensionContext } from 'vscode'
-import { configureExporterResolver, discoverExporters, installExporter, managedExporterPath, probeExporter, assertExporterPlatform } from '../../../../platform/previewExporter/runtime'
+import { commands, ConfigurationTarget, window, workspace, type ExtensionContext } from 'vscode'
+import { configureExporterResolver, discoverExporters, probeExporter, assertExporterPlatform, PreviewExporterUnavailableError } from '../../../../platform/previewExporter/runtime'
 let storageRoot = ''
 export async function resolvePreviewExporter(): Promise<string> {
-    assertExporterPlatform()
-    const configured = workspace.getConfiguration('scad-ai-ide.preview').get<string>('exporterPath', '')
-    if (configured) return (await probeExporter(configured)).executable
-    const found = await discoverExporters(storageRoot)
-    if (!found.length) throw new Error('Preview Exporter is not installed. Run “SCAD AI IDE: Install Preview Exporter”, or select Full Render.')
-    return found[0].executable
+    try {
+        assertExporterPlatform()
+        const configured = workspace.getConfiguration('scad-ai-ide.preview').get<string>('exporterPath', '')
+        if (configured) return (await probeExporter(configured)).executable
+        const found = await discoverExporters(storageRoot)
+        if (found.length) return found[0].executable
+    } catch (cause) {
+        throw new PreviewExporterUnavailableError('Fast CSG requires a compatible local Preview Exporter. Using Full Render.', { cause })
+    }
+    throw new PreviewExporterUnavailableError('Fast CSG requires a compatible local Preview Exporter. Using Full Render.')
 }
 export function registerPreviewExporter(context: ExtensionContext) {
     storageRoot = context.globalStorageUri.fsPath
     configureExporterResolver(resolvePreviewExporter)
     context.subscriptions.push(
-        commands.registerCommand('scad-ai-ide.installPreviewExporter', async () => {
-            if (!workspace.isTrusted) throw new Error('Trust this workspace to install Preview Exporter.')
-            await window.withProgress({ location: ProgressLocation.Notification, title: 'Installing Preview Exporter', cancellable: true }, async (_p, token) => {
-                const controller = new AbortController(),
-                    sub = token.onCancellationRequested(() => controller.abort())
-                try {
-                    const installed = await installExporter(storageRoot, controller.signal)
-                    await workspace.getConfiguration('scad-ai-ide.preview').update('exporterPath', installed.executable, ConfigurationTarget.Global)
-                } finally {
-                    sub.dispose()
-                }
-            })
-        }),
         commands.registerCommand('scad-ai-ide.selectPreviewExporter', async () => {
+            if (!workspace.isTrusted) throw new Error('Trust this workspace to select and run Preview Exporter.')
             assertExporterPlatform()
             const found = await discoverExporters(storageRoot),
                 selection = await window.showQuickPick([...found.map((e) => ({ label: e.executable, description: `${e.tag} · Schema ${e.schemaVersion}` })), { label: 'Browse…', description: 'Select bin/openscad-preview-exporter' }], { title: 'Select independent Preview Exporter' })

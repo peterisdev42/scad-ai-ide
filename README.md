@@ -26,7 +26,7 @@ SCAD AI IDE brings OpenSCAD language tooling, interactive 3D preview, runtime an
 | **Mesh & assembly verification** | Raw STL/3MF checks, measurements, frozen PNG views, declared-part static assembly constraints and report comparison | Implemented; validation ongoing |
 | **Native Agent integration** | 53 VS Code Language Model Tools, 12 Skills and 2 Instructions using shared services and permission gates | Implemented; provider/host/model acceptance ongoing |
 | **Per-part coloring** | Distinct preview colors for separated parts | Experimental; visual-only |
-| **Fast CSG preview** | Image-space CSG rendering through a separate Preview Exporter | Experimental; supported macOS ARM64 setups |
+| **Fast CSG preview** | Image-space CSG rendering through a separate Preview Exporter | Experimental with a compatible local macOS ARM64 exporter |
 
 **Implemented** means the feature is present in the source, not that every machine, model and workflow has passed final release acceptance. Bricks is not currently a shipped workflow.
 
@@ -78,7 +78,7 @@ Switch between source and preview using **Cmd + Shift + V** on macOS or **Ctrl +
 
 The Preview displays models in the editor, supports navigation, measurement and section inspection, and can export STL/3MF or send supported outputs to a slicer. Available operations depend on the selected CLI and rendering mode. Parameter overrides are applied without silently rewriting the `.scad` source. Customizer also supports native-style presets and source diagnostics/structured edits through explicit operations.
 
-Experimental **Color parts separately** affects only the viewport and can misidentify overlapping/complex geometry. Experimental **Fast CSG preview** needs a separately installed Preview Exporter and currently has platform/geometry limitations. See [Preview integration](docs/preview-integration.md), [Preview Exporter](docs/preview-exporter-architecture.md) and [part-color limitations](docs/part-colors.md).
+Experimental **Color parts separately** affects only the viewport and can misidentify overlapping/complex geometry. Experimental **Fast CSG preview** requires a compatible local macOS ARM64 Preview Exporter. The OpenSCAD runtime provides Full Render when the exporter is unavailable. See [Preview integration](docs/preview-integration.md), [Preview Exporter](docs/preview-exporter-architecture.md) and [part-color limitations](docs/part-colors.md).
 
 ### Runtime and library dependencies
 

@@ -13,6 +13,7 @@ import { FileWatcher } from '../services/ScadWatcher'
 import { ScadParameters } from './ScadParameters'
 import type { PreviewBackend, PreviewTimings } from '../../shared/types/PreviewBackend'
 import type { PreviewMode } from '../../shared/types/PreviewMode'
+import { PreviewExporterUnavailableError } from '../../../../platform/previewExporter/runtime'
 
 /**
  * Represents a single SCAD document session.
@@ -177,7 +178,14 @@ export class ScadSession {
                 this.acceptPerformance({ watcherMs: performance.now() - watchersStarted })
                 this._onRenderCompleted.fire(data)
             },
-            onError: (err) => this._onRenderError.fire(err),
+            onError: (err) => {
+                if (err instanceof PreviewExporterUnavailableError && this.previewMode === 'preview') {
+                    this._onLog.fire(err.message)
+                    this.setPreviewMode('render')
+                    return
+                }
+                this._onRenderError.fire(err)
+            },
             onLog: (chunk) => this._onLog.fire(chunk),
         })
 

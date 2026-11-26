@@ -1,7 +1,7 @@
 import { libraryEnvironment } from '../../platform/libraries/LibraryEnvironment'
 import type { PreviewTimings } from '../../core/preview/performance'
 import { readCliDependencies } from '../../core/formats/dependencies'
-import { runExporter, resolveExporterExecutable } from '../../platform/previewExporter/runtime'
+import { runExporter, resolveExporterExecutable, PreviewExporterUnavailableError } from '../../platform/previewExporter/runtime'
 import { execFile } from 'node:child_process'
 import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -41,9 +41,13 @@ export async function renderScadModel(command: LaunchCommand | undefined, source
         return buffer
     }
     try {
-        const format = mode === 'preview' ? ModelFormat.PreviewScene : ModelFormat.STL
         const selectionStarted = performance.now()
-        const exporter = mode === 'preview' ? await resolveExporterExecutable() : undefined
+        const exporter = mode === 'preview' ? await resolveExporterExecutable().catch((error: unknown) => {
+            if (!(error instanceof PreviewExporterUnavailableError)) throw error
+            return undefined
+        }) : undefined
+        signal.throwIfAborted()
+        const format = exporter ? ModelFormat.PreviewScene : ModelFormat.STL
         if (exporter) exportTimings.selectionMs = performance.now() - selectionStarted
         const buffer = exporter ? await runExporter(exporter, source, cwd, {}, signal, undefined, undefined, (value) => Object.assign(exportTimings, value)) : await run(format)
         const dependencyStarted = performance.now()
@@ -53,7 +57,7 @@ export async function renderScadModel(command: LaunchCommand | undefined, source
         const encodeStarted = performance.now()
         const content = buffer.toString('base64')
         exportTimings.encodeMs = performance.now() - encodeStarted
-        model = { previewMode: mode, format, content, dependencies: csg?.dependencies ?? dependencies, backend: { kind: format === ModelFormat.PreviewScene ? 'csg' : 'mesh', elapsedMs: Date.now() - started, timings: { ...csg?.timings, ...exportTimings } } }
+        model = { previewMode: exporter ? 'preview' : 'render', format, content, dependencies: csg?.dependencies ?? dependencies, backend: { kind: format === ModelFormat.PreviewScene ? 'csg' : 'mesh', elapsedMs: Date.now() - started, timings: { ...csg?.timings, ...exportTimings } } }
     } finally {
         const cleanupStarted = performance.now()
         await rm(directory, { recursive: true, force: true })

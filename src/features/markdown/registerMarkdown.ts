@@ -186,7 +186,7 @@ export function registerMarkdown(context: vscode.ExtensionContext, runtime: Retu
                     if (state.status === 'ready') record.last = JSON.parse(state.model) as PreviewModel
                     const message = state.status === 'pending' ? 'Rendering OpenSCAD…' : state.status === 'error' ? `OpenSCAD: ${state.message}` : ''
                     const base = `${vscode.env?.uriScheme ?? 'vscode'}://${context.extension?.id ?? 'undefined_publisher.scad-ai-ide'}/markdown-mode?token=${encodeURIComponent(record.token)}&mode=`
-                    const model = record.last ? { ...record.last, pending: state.status === 'pending', previewMode: mode, modeLinks: { preview: base + 'preview', render: base + 'render' } } : undefined
+                    const model = record.last ? { ...record.last, pending: state.status === 'pending', previewMode: record.last.previewMode ?? mode, modeLinks: { preview: base + 'preview', render: base + 'render' } } : undefined
                     preview = (model ? `<div class="scad-markdown-viewer" data-scad-model="${escape(JSON.stringify(model))}" aria-label="Interactive OpenSCAD preview"></div>` : '') + (message ? `<p class="scad-markdown-status" role="status">${escape(message)}</p>` : '')
                 }
                 const sourceMap = token.map ? ` data-line="${token.map[0]}"` : ''

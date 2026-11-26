@@ -160,7 +160,7 @@ class OwnedMarkdownPreview implements vscode.Disposable {
         void this.panel.webview.postMessage({ type: 'markdownBody', html, mode: this.renderMode })
     }
     private model(id: string, record: BlockRecord, pending = false): PreviewModel {
-        return { ...record.model, pending, previewMode: this.blockModes.get(id) ?? this.renderMode, host: { blockId: id, modelVersion: record.version } }
+        return { ...record.model, pending, previewMode: record.model.previewMode ?? this.blockModes.get(id) ?? this.renderMode, host: { blockId: id, modelVersion: record.version } }
     }
     private watch(path: string) {
         if (this.watchers.has(path)) return
