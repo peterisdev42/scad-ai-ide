@@ -207,6 +207,7 @@ async function fixture(t, extraSource = '') {
             if (name === 'vscode') return api
             if (name.endsWith('/CustomizerPresets')) return require('../out/core/customizer/CustomizerPresets.js')
             if (name.endsWith('/core/preview/performance')) return require('../out/core/preview/performance.js')
+            if (name.endsWith('/previewExporter/runtime')) return require('../out/platform/previewExporter/runtime.js')
             if (name.endsWith('/ScadClient')) return { ScadClient: { cancelRender() {} } }
             if (name.endsWith('/ScadParser')) return require('../out/features/preview/extension/services/ScadParser.js')
             if (name.endsWith('/ScadParameters')) return require('../out/features/preview/extension/core/ScadParameters.js')
