@@ -85,7 +85,7 @@
         "STL and 3MF export where supported",
         "Model and drawing file previews"
       ],
-      "limitations": "Operations vary with runtime and rendering mode. Fast CSG needs an additional Preview Exporter on supported macOS ARM64 setups; per-part coloring is experimental and visual-only.",
+      "limitations": "Operations vary with runtime and rendering mode. Full Render uses the selected OpenSCAD runtime. Experimental Fast CSG requires a compatible local macOS ARM64 Preview Exporter. Per-part coloring is visual-only.",
       "evidence": [
         "https://github.com/peterisdev42/scad-ai-ide/blob/main/docs/preview-integration.md",
         "https://github.com/peterisdev42/scad-ai-ide/blob/main/README.md"
@@ -259,7 +259,7 @@
     },
     {
       "question": "Which features are experimental?",
-      "answer": "Fast CSG on supported macOS ARM64 setups and visual-only per-part coloring. Cross-platform and real-agent acceptance are still ongoing."
+      "answer": "Fast CSG with a compatible local macOS ARM64 Preview Exporter and visual-only per-part coloring. Cross-platform and real-agent acceptance are still ongoing."
     },
     {
       "question": "Is SCAD AI IDE affiliated with OpenSCAD or Microsoft?",

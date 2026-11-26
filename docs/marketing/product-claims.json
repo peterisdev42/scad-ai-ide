@@ -218,7 +218,7 @@
     },
     {
       "id": "fast-csg",
-      "claim": "Experimental Fast CSG preview needs an additional Preview Exporter on supported macOS ARM64 systems.",
+      "claim": "Experimental Fast CSG requires a compatible local macOS ARM64 Preview Exporter. Full Render uses the selected OpenSCAD runtime when the exporter is unavailable.",
       "status": "experimental",
       "audience": "all",
       "evidence": [

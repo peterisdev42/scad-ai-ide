@@ -419,7 +419,7 @@ export class ScadWebviewPanel {
                 {
                     value: ModelFormat.ThreeMF,
                     label: '3MF',
-                    description: 'Supports colors but requires OpenSCAD Nightly.',
+                    description: 'Requires an OpenSCAD build with 3MF export support.',
                 },
                 {
                     value: ModelFormat.STL,
