@@ -7,6 +7,9 @@ const out=fileURLToPath(new URL('../.build/pages/',import.meta.url))
 const read=p=>readFileSync(resolve(out,p),'utf8')
 test('publish only optimized, content-versioned runtime and SEO files',()=>{
   const html=read('index.html'),m=JSON.parse(read('build-metrics.json'))
+  assert.equal(html.split('<script defer src="https://cloud.umami.is/script.js" data-website-id="8b733577-948c-4d00-a61f-d59984ad88f3"></script>').length,2)
+  assert.equal((html.match(/cloud\.umami\.is/g)||[]).length,1)
+  for(const path of ['for-beginners/index.html','for-ai-agents/index.html','why-scad-ai-ide/index.html','getting-started/index.html','demo/index.html','demo/preview.html'])assert.doesNotMatch(read(path),/cloud\.umami\.is/)
   assert.match(m.release,/^[a-f0-9]{24}$/)
   assert.equal((html.match(/<link rel="stylesheet"/g)||[]).length,1)
   const css=html.match(/href="\.\/(assets\/site\.[a-f0-9]{16}\.css)"/)[1]

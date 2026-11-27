@@ -29,6 +29,7 @@ test('marketing website: responsive layout, every FAQ, theme, navigation, downlo
     browser=await chromium.launch({headless:true});
     const context=await browser.newContext({viewport:{width:1440,height:960},colorScheme:'dark',reducedMotion:'reduce',serviceWorkers:'block'});
     await context.route('**/demo/**',route=>route.fulfill({status:200,contentType:'text/html',body:'<!doctype html><title>Demo isolated for marketing tests</title>'}));
+    await context.route('https://cloud.umami.is/script.js',route=>route.fulfill({contentType:'application/javascript',body:'/* Analytics stub for CI */'}));
     const page=await context.newPage();
     const errors=[],failed=[];
     page.on('pageerror',e=>errors.push(String(e)));

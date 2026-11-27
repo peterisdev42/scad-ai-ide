@@ -28,6 +28,7 @@ test('native Workbench draws the actual Preview and reopens the same source file
     try{
         browser=await chromium.launch({headless:true,args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']})
         const context=await browser.newContext({viewport:{width:1440,height:1000},colorScheme:'dark'})
+        await context.route('https://cloud.umami.is/script.js',route=>route.fulfill({contentType:'application/javascript',body:'/* Analytics stub for CI */'}))
         const page=await context.newPage()
         await page.addInitScript(()=>{
             if(window!==window.top)return
