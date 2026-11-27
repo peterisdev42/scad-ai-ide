@@ -89,3 +89,20 @@ docs/                    现行功能、架构、安全边界与验证指南
 按 [AI 能力架构指南](docs/ai-feature-architecture.md) 添加类型化能力声明。在 `src/core/capabilities/gui-actions.json` 为每个 GUI 业务动作提供 capability 和符合其输入 schema 的 examples，运行 `npm run generate:agents` 更新 [生成的对等表](docs/gui-agent-parity.md)。`check:agents` 拒绝未分类 GUI 动作、无 Agent 参数契约、无效 schema 和过期生成物。业务测试还必须验证实际服务调用与后置状态；模型能否正确发现/选择工具必须单独验收。GUI 发起的任务也必须可以经共享服务取消。删除、授权、Workspace Trust、受管目录限制与缓存脱敏规则在两种入口保持一致。
 
 CAD 诊断开发需在功能分支进行，`npm run check:cad:branch` 验证分支。使用 `test:cad:unit`、`test:cad:real` 和 `test:cad:host` 验证诊断服务、真实官方 CLI 和隔离的 Extension Host。按 [CAD 收尾台账](docs/cad/acceptance-closeout.md#统一验收顺序) 运行 `test:cad:closeout -- baseline`。真实模型与人工交互使用 [CAD 手动验收清单](docs/cad/manual-acceptance.md)。
+
+## Contributor licensing
+
+The planned contribution policy for SCAD AI IDE is a non-exclusive CLA, separate from the public open-source license. The [proposed CLA](CLA.md) is **not yet effective**; do not sign it or merge external copyrightable contributions until the final agreement and checks are active.
+
+The GitHub Actions workflow will direct contributors to the immutable approved agreement and provide the exact signing comment. Signature metadata is stored publicly on the [cla-signatures branch](https://github.com/peterisdev42/scad-ai-ide/tree/cla-signatures); do not submit sensitive personal information. Contributors retain their copyright. No DCO or separate service account is required.
+
+### Maintainer activation and verification
+
+1. Confirm the licensor's legal identity and finalize the CLA after appropriate legal review. Replace the draft marker and all placeholders.
+2. Commit the final `CLA.md` to main, then create repository Actions variable `CLA_DOCUMENT_SHA` with that full commit SHA. Every distinct SHA uses an independent signature file; retain all earlier records.
+3. Verify the Action on an actual external fork PR, including a failed unsigned check, a successful signed recheck, and a new commit. Do not create fake signatures or treat this draft as accepted. The Action initializes its JSON file automatically.
+4. In repository rules, require a PR and the observed CLA check on main; keep existing checks, disable force pushes/deletion on main and cla-signatures, and permit the Action to append to cla-signatures. Do not require a PR for the signatures branch. Do not activate required checks while the CLA variable is unset. Protect changes to the CLA workflow and policy; a skipped check is not proof of a valid signature.
+5. Confirm the PR is still open and its current head has been checked. The coverage guard blocks PRs over 100 commits, unlinked authors, unsupported co-authored commits and unaccounted PR authors; resolve authorization independently before permitting a merge. Review third-party and corporate rights separately. The Action does not itself prove legal identity or copyright ownership.
+6. Back up signature records and immutable agreement versions. Retain previous authorization evidence on any change; disable any overlapping CLA GitHub App only after preserving existing records, if any.
+
+The workflow uses a pinned StepSecurity Action and the repository GITHUB_TOKEN only. It does not execute or check out external PR code.

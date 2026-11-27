@@ -1,0 +1,85 @@
+name: CLA Assistant
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, synchronize, reopened, edited]
+  issue_comment:
+    types: [created]
+
+permissions: {}
+
+jobs:
+  cla:
+    name: CLA
+    # No signing is solicited until the reviewed agreement is pinned.
+    if: >-
+      github.repository == 'peterisdev42/scad-ai-ide' &&
+      vars.CLA_DOCUMENT_SHA != '' &&
+      (github.event_name == 'pull_request_target' ||
+       (github.event.issue.pull_request != null &&
+        (github.event.comment.body == 'recheck' ||
+         github.event.comment.body == format('I agree to the CLA for SCAD AI IDE at commit {0}.', vars.CLA_DOCUMENT_SHA))))
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write
+      contents: write
+      pull-requests: write
+      statuses: write
+    steps:
+      - name: Validate agreement and contributor coverage
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CLA_DOCUMENT_SHA: ${{ vars.CLA_DOCUMENT_SHA }}
+        shell: bash
+        run: |
+          node <<'NODE'
+          // Trusted base-repository code only; no PR checkout or execution.
+          const event = JSON.parse(require('node:fs').readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
+          const repo = process.env.GITHUB_REPOSITORY;
+          const sha = process.env.CLA_DOCUMENT_SHA;
+          const allowed = new Set(['peterisdev42', 'dependabot[bot]', 'github-actions[bot]']);
+          const fail = (message) => { throw new Error(message); };
+          async function get(path) {
+            const response = await fetch(process.env.GITHUB_API_URL + '/repos/' + repo + path, {
+              headers: { Authorization: 'Bearer ' + process.env.GITHUB_TOKEN, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' }
+            });
+            if (!response.ok) fail('GitHub API returned ' + response.status);
+            return response.json();
+          }
+          (async () => {
+            if (!/^[0-9a-f]{40}$/.test(sha)) fail('Set CLA_DOCUMENT_SHA to the finalized CLA commit SHA.');
+            const doc = await get('/contents/CLA.md?ref=' + sha);
+            const content = Buffer.from(doc.content, 'base64').toString('utf8');
+            if (!content.startsWith('# Contributor License Agreement') || /DRAFT|NOT FOR SIGNATURE|\[LEGAL NAME OF LICENSOR\]/i.test(content)) fail('The CLA is not finalized.');
+            const number = event.pull_request?.number ?? event.issue?.number;
+            if (!Number.isInteger(number)) fail('No pull request.');
+            const pr = await get('/pulls/' + number);
+            if (pr.state !== 'open' || pr.base.ref !== 'main') fail('CLA applies only to open PRs targeting main.');
+            if (!Number.isInteger(pr.commits) || pr.commits < 1 || pr.commits > 100) fail('CLA Assistant checks at most 100 commits; split the PR or resolve authorization manually before merging.');
+            const commits = await get('/pulls/' + number + '/commits?per_page=100');
+            if (!Array.isArray(commits) || commits.length !== pr.commits || commits.at(-1)?.sha !== pr.head.sha) fail('Incomplete or changed PR commit list; recheck.');
+            const authors = new Set();
+            for (const c of commits) {
+              const author = c.author?.login;
+              if (!author || !c.author?.id) fail('Unlinked commit author; resolve attribution before merging.');
+              if (author.endsWith('[bot]') && !allowed.has(author)) fail('Unapproved bot author; review provenance before merging.');
+              if (/^\s*Co-authored-by\s*:/im.test(c.commit?.message ?? '')) fail('Co-authored commit requires separate authorization review; this CLA Action does not verify co-authors.');
+              authors.add(author.toLowerCase());
+            }
+            if (!allowed.has(pr.user.login) && !authors.has(pr.user.login.toLowerCase())) fail('PR opener is not a commit author; resolve authorization before merging.');
+            if ((await get('/pulls/' + number)).head.sha !== pr.head.sha) fail('PR changed during validation; recheck.');
+          })().catch(error => { console.error(error.message); process.exitCode = 1; });
+          NODE
+      - name: CLA Assistant
+        uses: step-security/contributor-assistant-github-action@b9bd60bf1b766fa48dae03427059187137236239 # v2.6.1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          path-to-document: https://github.com/peterisdev42/scad-ai-ide/blob/${{ vars.CLA_DOCUMENT_SHA }}/CLA.md
+          path-to-signatures: signatures/${{ vars.CLA_DOCUMENT_SHA }}/cla.json
+          branch: cla-signatures
+          allowlist: peterisdev42,dependabot[bot],github-actions[bot]
+          custom-pr-sign-comment: I agree to the CLA for SCAD AI IDE at commit ${{ vars.CLA_DOCUMENT_SHA }}.
+          use-dco-flag: 'false'
+          lock-pullrequest-aftermerge: 'false'
