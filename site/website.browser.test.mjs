@@ -10,7 +10,7 @@ import test from 'node:test';
 const root=process.env.PAGES_ROOT?resolve(process.env.PAGES_ROOT):fileURLToPath(new URL('.',import.meta.url));
 const prefix='/scad-ai-ide/';
 const mime={'.html':'text/html','.css':'text/css','.js':'text/javascript','.svg':'image/svg+xml','.png':'image/png','.woff2':'font/woff2','.json':'application/json','.txt':'text/plain','.xml':'application/xml','.scad':'text/plain'};
-test('marketing website: responsive layout, every FAQ, theme, navigation, downloads and redirects', {timeout:120000},async()=>{
+test('marketing website: responsive layout, every FAQ, theme, navigation and downloads', {timeout:120000},async()=>{
   const server=createServer(async(req,res)=>{
     try {
       const path=new URL(req.url,'http://localhost').pathname;
@@ -126,11 +126,6 @@ test('marketing website: responsive layout, every FAQ, theme, navigation, downlo
     const download=page.waitForEvent('download');
     await page.locator('a[download="cheese.scad"]').click();
     assert.equal((await download).suggestedFilename(),'cheese.scad');
-    for(const [route,id] of [['for-beginners','audiences'],['for-ai-agents','agent-integration'],['why-scad-ai-ide','comparison'],['getting-started','getting-started']]){
-      await page.goto(url+route+'/');
-      await page.waitForURL(url+'#'+id);
-      assert.equal(await page.locator('#'+id).count(),1);
-    }
     assert.deepEqual(errors,[]);assert.deepEqual(failed,[]);
     const nojs=await browser.newContext({javaScriptEnabled:false});
     await nojs.route('**/demo/**',route=>route.fulfill({status:200,contentType:'text/html',body:'<!doctype html><title>Isolated demo</title>'}));

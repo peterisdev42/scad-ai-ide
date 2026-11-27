@@ -23,7 +23,7 @@ async function walk(dir){
 }
 await rm(out,{recursive:true,force:true})
 await mkdir(out,{recursive:true})
-for(const path of ['assets','favicon.svg','product.json','llms.txt','sitemap.xml','for-beginners','for-ai-agents','why-scad-ai-ide','getting-started','geist/icons.svg'])await copy(path)
+for(const path of ['assets','favicon.svg','product.json','llms.txt','sitemap.xml','geist/icons.svg'])await copy(path)
 
 const imports=[...(await read('geist/index.css')).matchAll(/@import "\.\/([^"]+)";/g)].map(m=>'geist/'+m[1])
 if(imports.length!==9)throw Error('Unexpected Geist module graph')

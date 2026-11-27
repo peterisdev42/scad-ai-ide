@@ -62,10 +62,6 @@ jobs:
           test -s site/content.css
           test -s site/sitemap.xml
           test -s site/llms.txt
-          test -s site/for-beginners/index.html
-          test -s site/for-ai-agents/index.html
-          test -s site/why-scad-ai-ide/index.html
-          test -s site/getting-started/index.html
           test -s site/favicon.svg
           node --check site/main.js
           node --check site/geist/theme.js
