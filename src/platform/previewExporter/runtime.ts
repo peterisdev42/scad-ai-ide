@@ -183,11 +183,13 @@ async function exportPreparedScene(executable: string, source: string, cwd: stri
 }
 
 let exporterResolver: (() => Promise<string>) | undefined
+export class PreviewExporterUnavailableError extends Error {}
+
 export function configureExporterResolver(resolve: () => Promise<string>) {
     exporterResolver = resolve
 }
 export async function resolveExporterExecutable() {
-    if (!exporterResolver) throw new Error('Preview Exporter is not configured. Install Preview Exporter or select Full Render.')
+    if (!exporterResolver) throw new PreviewExporterUnavailableError('Preview Exporter is unavailable. Full Render uses the selected OpenSCAD runtime.')
     return exporterResolver()
 }
 

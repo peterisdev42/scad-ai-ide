@@ -1,6 +1,6 @@
 # CAD 手动逐项验收单
 
-> 按 [Codex 原生 Agent 验收 SPEC](../agent-codex-acceptance-spec.md) 优先使用 **GPT-6.2 Sol（Low）**，目录缺少时使用 **GPT-6.1 Sol（Low）**。先完成 M11a，记录实际模型、等级和会话。
+> 按 [Codex 原生 Agent 验收 SPEC](../agent-codex-acceptance-spec.md) 在 VS Code 内置 Chat 的 Codex 会话使用 **GPT-6.1 Sol（Low）**。先在最终生产 VSIX 上完成 M11a，记录实际模型、推理等级和会话。
 
 所有条目初始为 **NOT_RUN**。本单专门记录必须由真人操作、或当前宿主自动化无法可靠执行的交互，不以自动点击、模拟 adapter 或模型回复代签。用户逐条填结果即可；失败请保留窗口和原始证据，不需要先判断归谁修。
 
@@ -13,8 +13,8 @@
 | M03–M07 | 仍需真人点选、确认、动态目录与真正Restricted Mode；当前NOT_RUN |
 | M08 | 原生DataPart的Host类型/回退已有自动化；Provider实际图像可见性与真人观察单独记录 |
 | M09–M10 | 需目标平台/隔离测试环境；当前Windows Unicode缺口、其他未运行项保持原状态 |
-| M11 | 在 VS Code 1.146.0 使用 GPT-6.1 Sol（Low）完成只读探测、网格和装配。其他宿主的手动签署仍待验证。见 [Codex 运行记录](../agent-codex-acceptance-spec.md#本轮运行记录)。 |
-| M01–M02 | 本轮最低版与 Stable 均有 3 项窗口焦点失败。需真人核对键盘交互。 |
+| M11 | v0.1.0 候选初始状态为 NOT_RUN。VS Code 1.146.0 的只读探测、网格和装配属于 [历史运行记录](../agent-codex-acceptance-spec.md#本轮运行记录)。 |
+| M01–M02 | 需真人核对键盘交互。历史候选在最低版与 Stable 各有 3 项窗口焦点失败。 |
 
 勾选表示实际执行，不能仅因对应自动用例通过就勾成“真人已验”。
 

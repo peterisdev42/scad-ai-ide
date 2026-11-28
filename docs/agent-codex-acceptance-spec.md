@@ -2,21 +2,14 @@
 
 > 说明：下文的历史验收链接指向清理前的不可变 Git 提交；它们不代表当前版本已通过验收。
 
-VS Code Codex Agent Host 优先使用 `gpt-6.2-sol`。会话模型目录缺少该模型时，使用 `gpt-6.1-sol`。两者推理等级均为 `Low`，证据按实际模型登记。本轮包含 16 个主场景。旧候选和旧模型的结果保留在各自的历史台账。本轮状态见[运行记录](#本轮运行记录)。
+v0.1.0 Public Preview 正式验收使用 VS Code 内置 **Chat** 面板的 **Codex** 会话，模型固定为 `gpt-6.1-sol`，推理等级固定为 `low`。模型目录、会话入口或推理等级不可用时登记 `BLOCKED`。本轮包含 16 个主场景。下方运行记录保留历史候选和旧模型的证据。
 
 ## 候选与宿主
 
 1. 设置 `SCAD_OPENSCAD_EXECUTABLE` 指向官方 OpenSCAD，执行 `npm run test:cad:closeout -- baseline`。执行 `npm run test:customizer:source`、`npm run test:customizer:compatibility`、`npm run test:customizer` 和 `npm run test:agents:ui`。留存 `.build/cad-closeout/baseline.json` 与命令输出。按[开发指南](../CONTRIBUTING.md)构建生产 VSIX，并用同一包分别跑最低支持版与 Stable 的完整 Host、资源检查及隔离安装。
 2. 记录源码 HEAD、baseline candidate ID、构建与 VSIX SHA256。用 `npm run prepare:cad:manual` 生成合成夹具，记录输出的 `workspace`、`fixture.json` 和各文件 Hash。每个会改写文件的场景使用新生成的夹具。使用临时工作区和隔离配置，保持 Save Before Send 与 Auto Save 关闭。
-3. 先准备 Codex 扩展，再将生成命令输出的工作区路径传给现有启动脚本。默认 F5 **Run Extension + Codex** 仍打开开发仓库。
-
-   ```sh
-   node scripts/prepare-codex-dev.mjs
-   npm run prepare:cad:manual
-   node scripts/run-codex-dev.mjs 9236 .build/cad-manual/current/manual.code-workspace
-   ```
-
-4. 在隔离窗口选择 **Codex** 会话，检查模型目录并按上述顺序选择。在实际会话记录模型、推理等级、宿主版本和会话 ID。使用备选时留存目录证据。先用两次只读原生调用探测：对 `project-a/inward.stl` 调用 `scad_ai_ide_model_analyze`（`mode: "verify"`），对 `project-a/customizer.scad` 调用 `scad_ai_ide_customizer_sourceAnalyze`。记录工具输入输出及完成状态。工具目录、模型自述和直接 Host 调用只提供各自层级的证据。模型、等级或工具无法确认时，将受影响的场景标为 `BLOCKED`，继续独立 Host 验收。
+3. 为每个目标 VSIX 创建全新的 `--user-data-dir` 和 `--extensions-dir`。用对应 VS Code CLI 在同一扩展目录安装最终 VSIX 和 Codex 扩展，再以相同目录打开合成工作区。用 Production VSIX 的 Manifest 和 SHA256 绑定证据。`prepare-codex-dev.mjs`、`run-codex-dev.mjs` 和 F5 **Run Extension + Codex** 可用于开发宿主复现。
+4. 在隔离窗口的内置 **Chat** 面板选择 **Codex** 会话，选择 `gpt-6.1-sol` / `low`。记录实际会话 ID、模型 ID、推理等级、VS Code 和 Provider 版本。先用两次只读原生调用探测：对 `project-a/inward.stl` 调用 `scad_ai_ide_model_analyze`（`mode: "verify"`），对 `project-a/customizer.scad` 调用 `scad_ai_ide_customizer_sourceAnalyze`。记录工具输入输出及完成状态。工具目录、模型自述和直接 Host 调用只提供各自层级的证据。模型、等级或工具无法确认时，将受影响的场景标为 `BLOCKED`，继续独立 Host 验收。
 5. 每个正式场景使用独立会话。保持现有 Workspace Trust、原生编辑确认、路径授权及工具注册方式。编辑和写入限于本轮合成夹具或隔离的测试仓库与 profile。需真人授权、点选或提供目标环境时，记录实际决定与停点。
 
 ## 16 个主场景

@@ -304,6 +304,10 @@ export async function installRuntimeBuild(root: string, system: RuntimeSystem, b
         throw new Error('This build does not match the current system and architecture.')
     }
     options.signal?.throwIfAborted()
+    const checksumUrl = build.checksumUrl
+    if (!checksumUrl) {
+        throw new Error('This release does not provide a SHA256 checksum. Managed online installation requires a companion .sha256 asset.')
+    }
     const installed = await installedRuntimeBuilds(root, system, [build])
     const request = options.request ?? anonymousGitHubRequest
     const executable = await installPackage(
@@ -323,14 +327,12 @@ export async function installRuntimeBuild(root: string, system: RuntimeSystem, b
                     throw new Error(`GitHub runtime download returned no response body (HTTP ${response.status}).\nRequest: ${build.downloadUrl}`)
                 }
                 const hash = await writeArchive(response.body, archive, build.size, signal, (percent) => report('Downloading…', percent))
-                if (build.checksumUrl) {
-                    report('Downloading checksum…')
-                    const response = await requestGitHub(request, build.checksumUrl, { signal }, 'GitHub checksum download')
-                    const checksum = (await response.text()).trim().split(/\s+/)[0]
-                    report('Verifying download…')
-                    if (!/^[a-f0-9]{64}$/i.test(checksum) || hash !== checksum.toLowerCase()) {
-                        throw new Error('Runtime checksum verification failed.')
-                    }
+                report('Downloading checksum…')
+                const checksumResponse = await requestGitHub(request, checksumUrl, { signal }, 'GitHub checksum download')
+                const checksum = (await checksumResponse.text()).trim().split(/\s+/)[0]
+                report('Verifying download…')
+                if (!/^[a-f0-9]{64}$/i.test(checksum) || hash !== checksum.toLowerCase()) {
+                    throw new Error('Runtime checksum verification failed.')
                 }
                 return hash
             },

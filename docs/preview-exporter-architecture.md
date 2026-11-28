@@ -47,15 +47,15 @@ Highlight/Background 消费官方 Products，显式 RGBA 保留。着色使用 T
 
 Host 会话、RendererJobs 和版本化 ModelRepresentation 管理取消及资源释放。迟到结果不能替换新模型。WebGPU 设备丢失后，WebGL2 恢复使用相同 Goldfeather 路径。宿主、Customizer 与 Markdown 生命周期见 [Preview 集成](preview-integration.md)。
 
-## Exporter 安装
+## 本地 Exporter
 
-当前受支持的独立 Exporter 为 macOS ARM64：
+兼容的历史独立 Exporter 为 macOS ARM64：
 
 - Release：`openscad-2026.11-RC0`；Schema：1。
 - Commit：`9ba0cee7c94785fac0ca8dfe040b965a12a25ed1`。
 - SHA256：`42ebdbe75f3d8bf25c61675f756c86206b6a14077a5ea078fad355babf69a14f`。
 
-使用命令面板 **Install Preview Exporter** / **Select Preview Exporter**，或将 `scad-ai-ide.preview.exporterPath` 设置为包内 `bin/openscad-preview-exporter` 的绝对路径。安装校验发布 checksum、固定 SHA256、归档路径、Mach-O ARM64、build-info 和版本，独立于普通 CLI 管理。
+v0.1.0 验收时旧下载入口返回 HTTP 404。已有兼容本地包的用户可通过 **Select Preview Exporter** 选择，或设置 `scad-ai-ide.preview.exporterPath` 为包内 `bin/openscad-preview-exporter` 的绝对路径。选择时会检查 Mach-O ARM64、build-info 和版本。若找不到兼容 Exporter，编辑器及 Markdown 使用 Full Render。
 
 ```sh
 openscad-preview-exporter --export-format=preview-scene -o model.csgp model.scad

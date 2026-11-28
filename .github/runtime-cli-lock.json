@@ -1,0 +1,49 @@
+{
+    "tag": "openscad-2026.11-RC1",
+    "releaseId": 457839092,
+    "upstreamCommit": "2127234b37d77786a7b5b49b4493b37606c96cd5",
+    "targets": {
+        "darwin-arm64": {
+            "id": 790743444,
+            "name": "openscad-cli-macos-arm64.tar.gz",
+            "url": "https://github.com/peterisdev42/openscad-cli-builder/releases/download/openscad-2026.11-RC1/openscad-cli-macos-arm64.tar.gz",
+            "archiveSha256": "cd6a55d0fbf93c721359bb007076510f521a60a5b58adef26b8adf9bb7b56386",
+            "executable": "bin/openscad",
+            "binary": "OpenSCAD.app/Contents/MacOS/OpenSCAD",
+            "binarySha256": "edad471767d095fad5b4d999142d6353feca64104149361878352581f4a52129",
+            "abi": "Mach-O arm64",
+            "observedVersion": "OpenSCAD version 2026.11-RC1"
+        },
+        "darwin-x64": {
+            "id": 790743445,
+            "name": "openscad-cli-macos-x86_64.tar.gz",
+            "url": "https://github.com/peterisdev42/openscad-cli-builder/releases/download/openscad-2026.11-RC1/openscad-cli-macos-x86_64.tar.gz",
+            "archiveSha256": "ec4ff2aa75d80578da09b6ba01e96696a85e171d5805ff2f3fba4b4f5f891bd1",
+            "executable": "bin/openscad",
+            "binary": "OpenSCAD.app/Contents/MacOS/OpenSCAD",
+            "binarySha256": "ad8a9116d66d01d07af4922624b3fbdf08a9a099096db3732186488c071e4afb",
+            "abi": "Mach-O x86_64",
+            "observedVersion": "OpenSCAD version 2026.11-RC1"
+        },
+        "linux-x64": {
+            "id": 790743504,
+            "name": "openscad-cli-linux-x86_64.tar.gz",
+            "url": "https://github.com/peterisdev42/openscad-cli-builder/releases/download/openscad-2026.11-RC1/openscad-cli-linux-x86_64.tar.gz",
+            "archiveSha256": "5e9baa0af4f050e826cd7d135ac9ca4de75d405912f0ae973549e0cd28275172",
+            "executable": "bin/openscad",
+            "binary": "bin/openscad-bin",
+            "binarySha256": "0433a9249e03936652b85ef43b43737057cecf47ce51f7b23769e0cc315e67a1",
+            "abi": "ELF x86_64, glibc 2.35"
+        },
+        "win32-x64": {
+            "id": 790743453,
+            "name": "openscad-cli-windows-x86_64.zip",
+            "url": "https://github.com/peterisdev42/openscad-cli-builder/releases/download/openscad-2026.11-RC1/openscad-cli-windows-x86_64.zip",
+            "archiveSha256": "9e799650529854454162ebce3993406bf269b3a0eb08e145d3b23365810cd0e5",
+            "executable": "bin/openscad.exe",
+            "binary": "bin/openscad.exe",
+            "binarySha256": "2ad46724c2f0cba30d8381d8a0720ef75d5316c4e9d860d5d71e79b38298e597",
+            "abi": "PE32+ x86-64, MSVC 14.44.35112"
+        }
+    }
+}

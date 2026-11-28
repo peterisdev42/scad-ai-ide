@@ -134,11 +134,6 @@
                 "icon": "$(open-preview)"
             },
             {
-                "command": "scad-ai-ide.installPreviewExporter",
-                "title": "Install Preview Exporter",
-                "category": "SCAD AI IDE"
-            },
-            {
                 "command": "scad-ai-ide.selectPreviewExporter",
                 "title": "Select Preview Exporter",
                 "category": "SCAD AI IDE"
@@ -283,7 +278,7 @@
                             "stl"
                         ],
                         "default": "stl",
-                        "description": "The format to use for the 3D preview. 3MF supports colors but requires OpenSCAD Nightly. STL is universally supported."
+                        "description": "The format to use for the 3D preview. 3MF supports colors and requires an OpenSCAD build with 3MF export support. STL is universally supported."
                     },
                     "scad-ai-ide.preview.renderMode": {
                         "type": "string",
